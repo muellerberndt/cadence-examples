@@ -1,0 +1,142 @@
+<title>Cadence Chorale</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
+    --paper: #fbfaf6; --grid: #e6e2d8; --given: #9fb3c8; --written: #1f8a70; --now: #e4572e; --accent: #1f8a70; --accent-soft: #d5efe7;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --paper: #1f2734; --grid: #2c3547; --given: #4a5a70; --written: #3fbf9c; --accent: #3fbf9c; --accent-soft: #1d3a34; }
+  }
+  :root[data-theme="dark"] { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --paper: #1f2734; --grid: #2c3547; --given: #4a5a70; --written: #3fbf9c; --accent: #3fbf9c; --accent-soft: #1d3a34; }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 320px; }
+  header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
+  .hub { font-weight: 600; color: var(--accent); text-decoration: none; margin-right: auto; order: -1; flex-basis: 100%; }
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  canvas { width: 100%; display: block; border-radius: 12px; background: var(--paper); }
+  .status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; margin-top: 12px; }
+  button { font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  button.go { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  aside { display: grid; gap: 14px; align-content: start; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .card p { margin: 6px 0; line-height: 1.45; }
+  .pitches { display: grid; grid-template-columns: repeat(18, 1fr); gap: 2px; }
+  .pitches i { aspect-ratio: 1; border-radius: 2px; background: var(--accent); opacity: .08; display: block; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-variant-numeric: tabular-nums; }
+  dt { color: var(--muted); } dd { margin: 0; font-family: var(--mono); font-size: 13px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+<main>
+  <header>
+    <a class="hub" href="../index.html">← All examples</a>
+    <h1>Cadence Chorale</h1>
+    <p>A patch net that learned Bach chorales chord by chord. Give it eight chords of an opening; it settles once per beat and writes the next chord from what its 54 pitch owners come to rest at. Press play to hear it.</p>
+  </header>
+  <section>
+    <canvas id="roll" width="960" height="360"></canvas>
+    <div class="status">
+      <button id="opening">Another opening</button>
+      <button id="write" class="go">Write 16 chords</button>
+      <button id="play">Play</button>
+      <span id="status">Grey: the given opening. Green: what the net wrote.</span>
+    </div>
+  </section>
+  <aside>
+    <div class="card">
+      <h2>Output owners, last chord</h2>
+      <div class="pitches" id="pitches"></div>
+      <p id="settle">54 pitch owners; the ones above the threshold sound, at most four.</p>
+    </div>
+    <div class="card">
+      <h2>What this is</h2>
+      <p>Each beat, the last eight chords are clamped onto 8 × 54 input owners (one per pitch per beat). The net settles from rest; every output owner above the threshold is a pitch in the next chord. No recurrence: nothing is carried but the window.</p>
+      <p>It learned from 229 chorales, transposed up and down three semitones, with the quadratic nudge on a multi-hot target: several owners can be right at once.</p>
+      <dl id="facts"></dl>
+    </div>
+  </aside>
+</main>
+<script>
+const NET = /*NET*/null;
+const n = NET.n, W = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
+const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+const LOW = NET.music.low, HIGH = NET.music.high, P = HIGH - LOW + 1, WIN = NET.music.window, THRESHOLD = NET.music.threshold, TOL = 1e-4;
+const OPENINGS = NET.meta.openings;
+function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
+function settle(drive) {
+  const v = new Float64Array(n), s = new Float64Array(n), inbox = new Float64Array(n); let steps = 0;
+  for (let t = 0; t < 100; t++) {
+    inbox.fill(0);
+    for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) inbox[j] += si * W[row + j]; }
+    let moved = 0;
+    for (let j = 0; j < n; j++) { v[j] += R.dt * (-v[j] + inbox[j] + drive[j] + BIAS[j]); const ns = act(v[j]); moved = Math.max(moved, Math.abs(ns - s[j])); s[j] = ns; }
+    steps = t + 1; if (moved < TOL) break;
+  }
+  return { s, steps };
+}
+let chords = [], given = 0, openingIndex = 0, lastOut = null;
+function setOpening(k) { openingIndex = k % OPENINGS.length; chords = OPENINGS[openingIndex].map(c => c.slice()); given = chords.length; lastOut = null; draw(); document.getElementById('status').textContent = 'A chorale opening. Press “Write 16 chords”.'; }
+function nextChord() {
+  const drive = new Float64Array(n);
+  const window = chords.slice(-WIN);
+  for (let b = 0; b < WIN; b++) for (const p of window[b]) if (p >= LOW && p <= HIGH) drive[IN[b * P + (p - LOW)]] = R.clamp;
+  const { s, steps } = settle(drive);
+  const out = OUT.map(k => s[k]); lastOut = out;
+  const order = out.map((v, i) => i).sort((a, b) => out[b] - out[a]);
+  let chosen = order.slice(0, 4).filter(i => out[i] >= THRESHOLD);
+  if (!chosen.length) chosen = [order[0]];
+  document.getElementById('settle').textContent = `Rest in ${steps} steps; ${chosen.length} pitch owner${chosen.length === 1 ? '' : 's'} above ${THRESHOLD}.`;
+  return chosen.map(i => LOW + i).sort((a, b) => a - b);
+}
+async function writeChords(k) {
+  for (let i = 0; i < k; i++) { chords.push(nextChord()); draw(); await new Promise(r => setTimeout(r, 40)); }
+  document.getElementById('status').textContent = `Wrote ${k} chords. Press “Play”.`;
+}
+// --- piano roll
+const canvas = document.getElementById('roll'), ctx = canvas.getContext('2d');
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+let playing = -1;
+function draw() {
+  const Wd = canvas.width, Hd = canvas.height, cols = Math.max(chords.length, 24), cw = Wd / cols, rh = Hd / P;
+  ctx.fillStyle = css('--paper'); ctx.fillRect(0, 0, Wd, Hd);
+  ctx.strokeStyle = css('--grid'); ctx.lineWidth = 1;
+  for (let p = 0; p < P; p += 12) { const y = Hd - (p + 0.5) * rh; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(Wd, y); ctx.stroke(); }
+  chords.forEach((chord, i) => {
+    ctx.fillStyle = i < given ? css('--given') : css('--written');
+    if (i === playing) ctx.fillStyle = css('--now');
+    for (const p of chord) { const y = Hd - (p - LOW + 1) * rh; ctx.fillRect(i * cw + 1, y + 1, cw - 2, rh - 2); }
+  });
+  const el = document.getElementById('pitches');
+  if (lastOut) OUT.forEach((k, i) => { el.children[i].style.opacity = 0.08 + 0.92 * Math.max(0, Math.min(1, lastOut[i])); });
+}
+// --- sound: plain oscillators, one per voice, one beat per chord
+let audio = null;
+async function play() {
+  audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+  await audio.resume();
+  const beat = 0.5, t0 = audio.currentTime + 0.05;
+  chords.forEach((chord, i) => {
+    for (const p of chord) {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = 'triangle'; o.frequency.value = 440 * Math.pow(2, (p - 69) / 12);
+      g.gain.setValueAtTime(0.0001, t0 + i * beat); g.gain.exponentialRampToValueAtTime(0.12, t0 + i * beat + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t0 + (i + 1) * beat - 0.02);
+      o.connect(g); g.connect(audio.destination); o.start(t0 + i * beat); o.stop(t0 + (i + 1) * beat);
+    }
+    setTimeout(() => { playing = i; draw(); }, (i * beat + 0.05) * 1000);
+  });
+  setTimeout(() => { playing = -1; draw(); }, (chords.length * beat + 0.1) * 1000);
+}
+for (let i = 0; i < P; i++) document.getElementById('pitches').appendChild(document.createElement('i'));
+document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>held-out pitch-set F1</dt><dd>${NET.meta.f1.toFixed(3)}</dd><dt>bits per chord</dt><dd>${NET.meta.bits_per_chord.toFixed(1)}</dd>`;
+document.getElementById('opening').addEventListener('click', () => setOpening(openingIndex + 1));
+document.getElementById('write').addEventListener('click', () => writeChords(16));
+document.getElementById('play').addEventListener('click', play);
+setOpening(0);
+window.__chorale = { settle, nextChord, chords: () => chords };
+</script>

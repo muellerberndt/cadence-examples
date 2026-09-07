@@ -8,13 +8,19 @@ it makes sense, a page you can play with in a browser. Start at the
 [hub page](https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8), which lists the
 ladder with each receipt's numbers and links to the games. The ladder, from simple to complex:
 
+<!-- ladder -->
 | # | example | what it shows |
 |---|---|---|
-| 01 | [digits](01_digits/) | a patch net learns to classify with the owner-local free/nudged rule; receipt: 0.962 ± 0.003 held-out, 20 epochs |
-| 02 | [images](02_images/) | the same rule on MNIST, trained on the accelerator and read out in float64; receipt: 97.44% held-out in ten epochs against 97.79% for a same-size MLP |
-| 03 | [connect four](03_connect_four/) | self-play positions labelled by a depth-4 search, imitated by the rule; receipt: 0.527 agreement with the search, the same as an MLP of its size, and both beat random and lose to a two-ply search; [play it](https://claude.ai/code/artifact/7eaebd77-b8f7-4415-8a08-6aefc9aff570) |
-| 04 | [pong](04_pong/) | a paddle that learns from pixels and reward by advantage-weighted nudges; receipt: 79% of balls returned vs 59% for backprop REINFORCE at the same budget; [play it](https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3) |
-| 05 | embodiment | a nervous system in a physical body |
+| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a same-size MLP 0.967 in 50 |
+| 02 | [images](02_images/) | mnist, 784 pixels a picture, trained on apple silicon in float32 and read out on the float64 reference backend; receipt: 97.4% held-out in 10 epochs against 97.8% for a same-size MLP; the two backends agree on every prediction |
+| 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead; receipt: agrees with a depth-4 search on 0.527 of positions (MLP 0.533); 91-0-9 vs random, 2-0-98 vs depth 2; [play it](https://claude.ai/code/artifact/7eaebd77-b8f7-4415-8a08-6aefc9aff570) |
+| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage; receipt: reward-trained paddle returns 79.3% of balls against 58.5% for backprop REINFORCE on the same rollouts; [play it](https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3) |
+| 05 | [text](05_text/) | next-character prediction on shakespeare from a sixteen-character window: 1,040 input owners, 65 output owners, and a sample the net wrote; pending |
+| 06 | [sign writer](06_sign/) | show it a sign; it writes what it sees with a two-joint arm, looking through a 7×7 window around its pen; receipt: writes held-out signs at 0.988 overlap with the sign, the teacher's own score; the MLP the same; [play it](https://claude.ai/code/artifact/94e42c3b-134e-47c0-94bb-06106d3f6321) |
+| 07 | [chorales](07_music/) | continues bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; listen in the page; pending |
+| 08 | [cart-pole](08_cartpole/) | the classic control task from reward, with the state as a place code; receipt: balances for 154 steps of 500 against 392 for backprop REINFORCE |
+| 09 | [C. elegans](09_celegans/) | the published connectome learns four textbook facts and is scored on seventeen held-out ablation phenotypes against a shuffled wiring; receipt: count convention: nothing learned; fan-in convention: measured 5.2/17 held-out ablations vs shuffled 1.5/17, a structural signal, not a behavioural model |
+<!-- /ladder -->
 
 ## Play the games locally
 

@@ -50,12 +50,13 @@
     </div>
   </header>
   <section class="rungs">
+<!-- rungs -->
     <article class="rung">
       <div class="num">01</div>
       <div>
         <h2>Digits <span class="tag">classification</span></h2>
         <p>8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Selection on a validation split, the test set read once, three seeds.</p>
-        <div class="facts"><span>held-out <b>96.2 ± 0.3%</b></span><span>parameters <b>4,919</b></span><span>epochs <b>20</b></span><span>MLP same size <b>96.7%</b></span></div>
+        <div class="facts"><span>held-out <b>0.962 ± 0.003</b></span><span>parameters <b>4,919</b></span><span>epochs <b>20</b></span><span>MLP same size <b>0.967</b></span></div>
       </div>
       <div class="actions"><a class="btn" href="01_digits/README.md">Read the receipt</a></div>
     </article>
@@ -63,31 +64,76 @@
       <div class="num">02</div>
       <div>
         <h2>Images <span class="tag">image recognition</span></h2>
-        <p>MNIST, 784 pixels a picture, trained on Apple silicon in float32 and read out on the float64 reference backend. The two backends agree on every prediction.</p>
-        <div class="facts"><span>held-out <b>97.44%</b></span><span>parameters <b>204,359</b></span><span>epochs <b>10</b></span><span>MLP same size <b>97.79%</b></span></div>
+        <p>MNIST, 784 pixels a picture, trained on Apple silicon in float32 and read out on the float64 reference backend.</p>
+        <div class="facts"><span>held-out <b>97.4%</b></span><span>parameters <b>204,359</b></span><span>epochs <b>10</b></span><span>MLP same size <b>97.8%</b></span></div>
       </div>
       <div class="actions"><a class="btn" href="02_images/README.md">Read the receipt</a></div>
     </article>
     <article class="rung">
       <div class="num">03</div>
       <div>
-        <h2><span class="board"><i class="a"></i><i></i><i class="b"></i><i></i><i class="a"></i><i class="b"></i><i></i><i class="a"></i></span>Connect Four <span class="tag">game, play it</span></h2>
-        <p>Self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead. You play coral, the net plays gold, and the bars show its seven output owners coming to rest.</p>
+        <h2>Connect Four <span class="tag">game, play it</span></h2>
+        <p>Self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead. You play coral, the net plays gold.</p>
         <div class="facts"><span>agreement with the search <b>0.527</b></span><span>MLP same size <b>0.533</b></span><span>vs random <b>91-0-9</b></span><span>vs depth 2 <b>2-0-98</b></span></div>
       </div>
-      <div class="actions"><a class="btn play" href="03_connect_four/index.html">Play Connect Four</a><a class="btn" href="03_connect_four/README.md">Read the receipt</a></div>
+      <div class="actions"><a class="btn play" href="03_connect_four/index.html">Play</a><a class="btn" href="03_connect_four/README.md">Read the receipt</a></div>
     </article>
     <article class="rung">
       <div class="num">04</div>
       <div>
-        <h2><span class="paddle"></span>Pong <span class="tag">reward, play it</span></h2>
-        <p>A paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage. Mouse or arrow keys on the left; the net on the right settles every frame.</p>
-        <div class="facts"><span>balls returned <b>79%</b></span><span>backprop REINFORCE, same budget <b>59%</b></span><span>parameters <b>12,806</b></span><span>rollouts <b>300 × 64 games</b></span></div>
+        <h2>Pong <span class="tag">reward, play it</span></h2>
+        <p>A paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage. A second paddle learned from a tracker's moves.</p>
+        <div class="facts"><span>balls returned, from reward <b>79.3%</b></span><span>backprop REINFORCE, same budget <b>58.5%</b></span><span>from a tracker's moves <b>—</b></span><span>parameters <b>12,806</b></span></div>
       </div>
-      <div class="actions"><a class="btn play" href="04_pong/index.html">Play Pong</a><a class="btn" href="04_pong/README.md">Read the receipt</a></div>
+      <div class="actions"><a class="btn play" href="04_pong/index.html">Play</a><a class="btn" href="04_pong/README.md">Read the receipt</a></div>
     </article>
     <article class="rung next">
       <div class="num">05</div>
+      <div>
+        <h2>Text <span class="tag">language</span></h2>
+        <p>Next-character prediction on Shakespeare from a sixteen-character window: 1,040 input owners, 65 output owners, and a sample the net wrote.</p>
+        <div class="facts"><span>status <b>running</b></span></div>
+      </div>
+      <div class="actions"><a class="btn" href="05_text/README.md">Read the receipt</a></div>
+    </article>
+    <article class="rung">
+      <div class="num">06</div>
+      <div>
+        <h2>Sign writer <span class="tag">see and act, play it</span></h2>
+        <p>Show it a sign; it writes what it sees with a two-joint arm, looking through a 7×7 window around its pen.</p>
+        <div class="facts"><span>overlap with the sign <b>0.988</b></span><span>teacher <b>0.988</b></span><span>parameters <b>7,055</b></span><span>MLP same size <b>0.988</b></span></div>
+      </div>
+      <div class="actions"><a class="btn play" href="06_sign/index.html">Play</a><a class="btn" href="06_sign/README.md">Read the receipt</a></div>
+    </article>
+    <article class="rung next">
+      <div class="num">07</div>
+      <div>
+        <h2>Chorales <span class="tag">music, play it</span></h2>
+        <p>Continues Bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; listen in the page.</p>
+        <div class="facts"><span>status <b>running</b></span></div>
+      </div>
+      <div class="actions"><a class="btn" href="07_music/README.md">Read the receipt</a></div>
+    </article>
+    <article class="rung">
+      <div class="num">08</div>
+      <div>
+        <h2>Cart-pole <span class="tag">reward, a body</span></h2>
+        <p>The classic control task from reward, with the state as a place code.</p>
+        <div class="facts"><span>mean episode length <b>154 / 500</b></span><span>backprop REINFORCE <b>392 / 500</b></span><span>parameters <b>1,683</b></span><span>iterations <b>120</b></span></div>
+      </div>
+      <div class="actions"><a class="btn" href="08_cartpole/README.md">Read the receipt</a></div>
+    </article>
+    <article class="rung">
+      <div class="num">09</div>
+      <div>
+        <h2>C. elegans <span class="tag">measured wiring</span></h2>
+        <p>The published connectome learns four textbook facts and is scored on seventeen held-out ablation phenotypes against a shuffled wiring.</p>
+        <div class="facts"><span>fan-in, measured <b>5.2 / 17</b></span><span>fan-in, shuffled <b>1.5 / 17</b></span><span>count, either wiring <b>0.0 / 17</b></span><span>training facts <b>2.0 / 4</b></span></div>
+      </div>
+      <div class="actions"><a class="btn" href="09_celegans/README.md">Read the receipt</a></div>
+    </article>
+    <article class="rung next">
+      <div class="num">10</div>
       <div>
         <h2>Embodiment <span class="tag">next</span></h2>
         <p>A nervous system in a physical body: the FlyWire brain and MANC nerve cord driving a biomechanical fly in MuJoCo, ported onto the library.</p>
@@ -95,6 +141,7 @@
       </div>
       <div class="actions"></div>
     </article>
+<!-- /rungs -->
   </section>
   <footer>Where the patch net and the backprop model differ, the receipt says so, including wall-clock: a settlement is tens of steps where a forward pass is one, so on a laptop core the rule costs ten to a hundred times the time for the same accuracy and fewer epochs.</footer>
 </main>
