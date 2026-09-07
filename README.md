@@ -4,7 +4,9 @@ Worked examples for [Cadence](https://github.com/muellerberndt/cadence), the pat
 settlement library (`pip install cadence-net`, `import cadence`).
 
 Each example is a tutorial with its own README, a runnable script, a receipt, and, where
-it makes sense, a page you can play with in a browser. The ladder, from simple to complex:
+it makes sense, a page you can play with in a browser. Start at the
+[hub page](https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8), which lists the
+ladder with each receipt's numbers and links to the games. The ladder, from simple to complex:
 
 | # | example | what it shows |
 |---|---|---|

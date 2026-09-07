@@ -17,6 +17,8 @@
   header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
   h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
   header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .hub { font-weight: 600; color: var(--accent); text-decoration: none; margin-right: auto; order: -1; flex-basis: 100%; }
+  .hub:hover { text-decoration: underline; }
   .field-wrap { display: grid; gap: 10px; }
   canvas { width: 100%; max-width: 640px; aspect-ratio: 4 / 3; background: var(--field); border-radius: 12px; image-rendering: pixelated; display: block; cursor: ns-resize; touch-action: none; }
   .status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; }
@@ -42,6 +44,7 @@
 </style>
 <main>
   <header>
+    <a class="hub" href="https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8">← All examples</a>
     <h1>Cadence Pong</h1>
     <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. It learned from reward alone.</p>
   </header>

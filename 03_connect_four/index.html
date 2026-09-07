@@ -23,6 +23,8 @@
   header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
   h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
   header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .hub { font-weight: 600; color: var(--accent); text-decoration: none; margin-right: auto; order: -1; flex-basis: 100%; }
+  .hub:hover { text-decoration: underline; }
   .board-wrap { display: grid; gap: 10px; }
   .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; height: 88px; align-items: end; padding: 0 12px; }
   .bar { position: relative; height: 100%; border-radius: 6px 6px 2px 2px; background: var(--accent-soft); overflow: hidden; }
@@ -53,6 +55,7 @@
 </style>
 <main>
   <header>
+    <a class="hub" href="https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8">← All examples</a>
     <h1>Cadence Connect Four</h1>
     <p>You play coral; a patch net plays gold. Every move it makes is one settlement of 155 owners, run right here in the page. The bars show its seven output owners coming to rest.</p>
   </header>

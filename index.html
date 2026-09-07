@@ -1,0 +1,99 @@
+<title>Cadence Examples</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
+    --accent: #1f8a70; --accent-soft: #d5efe7; --you: #e4572e; --net: #f4b400; --board: #243b6e;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --accent: #3fbf9c; --accent-soft: #1d3a34; --board: #1b2d57; }
+  }
+  :root[data-theme="dark"] { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --accent: #3fbf9c; --accent-soft: #1d3a34; --board: #1b2d57; }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+  header { display: grid; gap: 10px; margin-bottom: 26px; }
+  h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 66ch; line-height: 1.5; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 16px; font-weight: 600; }
+  a { color: var(--accent); }
+  .rungs { display: grid; gap: 14px; }
+  .rung { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 16px; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .rung.next { opacity: .7; }
+  .num { font: 800 26px var(--mono); color: var(--accent); line-height: 1; padding-top: 2px; }
+  .rung h2 { margin: 0 0 4px; font-size: 19px; }
+  .rung p { margin: 4px 0 8px; line-height: 1.45; color: var(--muted); max-width: 62ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 13px var(--mono); font-variant-numeric: tabular-nums; }
+  .facts span b { color: var(--ink); font-weight: 600; }
+  .actions { display: grid; gap: 8px; min-width: 150px; }
+  .btn { display: inline-block; text-align: center; font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; text-decoration: none; }
+  .btn.play { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:hover { border-color: var(--accent); } .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tag { display: inline-block; font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+  .board { display: inline-grid; grid-template-columns: repeat(4, 10px); gap: 3px; background: var(--board); padding: 5px; border-radius: 5px; vertical-align: middle; margin-right: 8px; }
+  .board i { width: 10px; height: 10px; border-radius: 50%; background: var(--bg); } .board i.a { background: var(--you); } .board i.b { background: var(--net); }
+  .paddle { display: inline-block; width: 4px; height: 14px; background: var(--net); vertical-align: middle; margin-right: 8px; border-radius: 1px; }
+  footer { margin-top: 30px; color: var(--muted); font-size: 14px; line-height: 1.5; max-width: 66ch; }
+  @media (max-width: 700px) { .rung { grid-template-columns: 44px minmax(0, 1fr); } .actions { grid-column: 2; grid-auto-flow: column; } }
+</style>
+<main>
+  <header>
+    <h1>Cadence Examples</h1>
+    <p>A ladder of things a patch net can learn with one owner-local rule: two settlements and one comparison per batch, no backward pass. Every rung has a receipt that binds its numbers to its code and data, measured next to a same-sized backprop model on the same split. Two rungs are games you can play; the net settles in the page for every move.</p>
+    <div class="links">
+      <a href="https://github.com/muellerberndt/cadence-examples">cadence-examples on GitHub</a>
+      <a href="https://github.com/muellerberndt/cadence">the cadence library</a>
+      <a href="https://pypi.org/project/cadence-net/">cadence-net on PyPI</a>
+    </div>
+  </header>
+  <section class="rungs">
+    <article class="rung">
+      <div class="num">01</div>
+      <div>
+        <h2>Digits <span class="tag">classification</span></h2>
+        <p>8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Selection on a validation split, the test set read once, three seeds.</p>
+        <div class="facts"><span>held-out <b>96.2 ± 0.3%</b></span><span>parameters <b>4,919</b></span><span>epochs <b>20</b></span><span>MLP same size <b>96.7%</b></span></div>
+      </div>
+      <div class="actions"><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/01_digits">Read the receipt</a></div>
+    </article>
+    <article class="rung">
+      <div class="num">02</div>
+      <div>
+        <h2>Images <span class="tag">image recognition</span></h2>
+        <p>MNIST, 784 pixels a picture, trained on Apple silicon in float32 and read out on the float64 reference backend. The two backends agree on every prediction.</p>
+        <div class="facts"><span>held-out <b>97.44%</b></span><span>parameters <b>204,359</b></span><span>epochs <b>10</b></span><span>MLP same size <b>97.79%</b></span></div>
+      </div>
+      <div class="actions"><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/02_images">Read the receipt</a></div>
+    </article>
+    <article class="rung">
+      <div class="num">03</div>
+      <div>
+        <h2><span class="board"><i class="a"></i><i></i><i class="b"></i><i></i><i class="a"></i><i class="b"></i><i></i><i class="a"></i></span>Connect Four <span class="tag">game, play it</span></h2>
+        <p>Self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead. You play coral, the net plays gold, and the bars show its seven output owners coming to rest.</p>
+        <div class="facts"><span>agreement with the search <b>0.527</b></span><span>MLP same size <b>0.533</b></span><span>vs random <b>91-0-9</b></span><span>vs depth 2 <b>2-0-98</b></span></div>
+      </div>
+      <div class="actions"><a class="btn play" href="https://claude.ai/code/artifact/7eaebd77-b8f7-4415-8a08-6aefc9aff570">Play Connect Four</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/03_connect_four">Read the receipt</a></div>
+    </article>
+    <article class="rung">
+      <div class="num">04</div>
+      <div>
+        <h2><span class="paddle"></span>Pong <span class="tag">reward, play it</span></h2>
+        <p>A paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage. Mouse or arrow keys on the left; the net on the right settles every frame.</p>
+        <div class="facts"><span>balls returned <b>79%</b></span><span>backprop REINFORCE, same budget <b>59%</b></span><span>parameters <b>12,806</b></span><span>rollouts <b>300 × 64 games</b></span></div>
+      </div>
+      <div class="actions"><a class="btn play" href="https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3">Play Pong</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/04_pong">Read the receipt</a></div>
+    </article>
+    <article class="rung next">
+      <div class="num">05</div>
+      <div>
+        <h2>Embodiment <span class="tag">next</span></h2>
+        <p>A nervous system in a physical body: the FlyWire brain and MANC nerve cord driving a biomechanical fly in MuJoCo, ported onto the library.</p>
+        <div class="facts"><span>status <b>not started</b></span></div>
+      </div>
+      <div class="actions"></div>
+    </article>
+  </section>
+  <footer>Where the patch net and the backprop model differ, the receipt says so, including wall-clock: a settlement is tens of steps where a forward pass is one, so on a laptop core the rule costs ten to a hundred times the time for the same accuracy and fewer epochs.</footer>
+</main>
