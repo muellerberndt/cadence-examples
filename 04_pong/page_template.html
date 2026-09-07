@@ -1,0 +1,169 @@
+<title>Cadence Pong</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
+    --field: #0f1a2b; --pixel: #e8ecf2; --you: #e4572e; --net: #f4b400; --ball: #ffffff; --accent: #1f8a70; --accent-soft: #d5efe7;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --field: #060a12; --accent: #3fbf9c; --accent-soft: #1d3a34; }
+  }
+  :root[data-theme="dark"] { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --field: #060a12; --accent: #3fbf9c; --accent-soft: #1d3a34; }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 320px; }
+  header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .field-wrap { display: grid; gap: 10px; }
+  canvas { width: 100%; max-width: 640px; aspect-ratio: 4 / 3; background: var(--field); border-radius: 12px; image-rendering: pixelated; display: block; cursor: ns-resize; touch-action: none; }
+  .status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; }
+  .score { font: 800 22px var(--mono); }
+  .score .you { color: var(--you); } .score .net { color: var(--net); }
+  button { font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  aside { display: grid; gap: 14px; align-content: start; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .card p { margin: 6px 0; line-height: 1.45; }
+  .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; height: 90px; align-items: end; }
+  .act { position: relative; height: 100%; background: var(--accent-soft); border-radius: 6px 6px 2px 2px; overflow: hidden; }
+  .act i { position: absolute; left: 0; right: 0; bottom: 0; height: 0%; background: var(--accent); }
+  .act b { position: absolute; top: 4px; left: 0; right: 0; text-align: center; font: 600 11px var(--mono); color: var(--muted); }
+  .act.chosen { outline: 2px solid var(--net); }
+  .hidden-strip { display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; }
+  .hidden-strip i { aspect-ratio: 1; border-radius: 2px; background: var(--accent); opacity: .08; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-variant-numeric: tabular-nums; }
+  dt { color: var(--muted); } dd { margin: 0; font-family: var(--mono); font-size: 13px; }
+  kbd { font: 600 12px var(--mono); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+<main>
+  <header>
+    <h1>Cadence Pong</h1>
+    <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. It learned from reward alone.</p>
+  </header>
+  <section class="field-wrap">
+    <canvas id="field" width="512" height="384" aria-label="Pong field"></canvas>
+    <div class="status">
+      <span class="score"><span class="you" id="syou">0</span> : <span class="net" id="snet">0</span></span>
+      <span id="status">Move the mouse over the field or use <kbd>↑</kbd> <kbd>↓</kbd>.</span>
+      <button id="pause">Pause</button>
+      <button id="reset">Reset score</button>
+    </div>
+  </section>
+  <aside>
+    <div class="card">
+      <h2>Output owners</h2>
+      <div class="acts" id="acts"></div>
+      <p id="settle">Waiting for the first frame.</p>
+    </div>
+    <div class="card">
+      <h2>Hidden owners</h2>
+      <div class="hidden-strip" id="hidden"></div>
+    </div>
+    <div class="card">
+      <h2>What this is</h2>
+      <p>Each step the current frame and the previous one are clamped onto 384 input owners. The net settles from rest; the most active of three output owners (up, stay, down) moves its paddle one pixel. No search, no memory beyond that one earlier frame.</p>
+      <p>It was trained by playing: after each rollout, the actions that paid were nudged toward and the actions that cost were nudged away, and every overlap moved on its own two-phase difference.</p>
+      <dl id="facts"></dl>
+    </div>
+  </aside>
+</main>
+<script>
+const NET = /*NET*/null;
+const n = NET.n, Wm = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
+const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+const H = NET.field.H, W = NET.field.W, PADDLE = 3, TOL = 1e-4, PIX = H * W;
+function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
+function settle(drive) {
+  const v = new Float64Array(n), s = new Float64Array(n), inbox = new Float64Array(n); let steps = 0;
+  for (let t = 0; t < 100; t++) {
+    inbox.fill(0);
+    for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) inbox[j] += si * Wm[row + j]; }
+    let moved = 0;
+    for (let j = 0; j < n; j++) { v[j] += R.dt * (-v[j] + inbox[j] + drive[j] + BIAS[j]); const ns = act(v[j]); const d = Math.abs(ns - s[j]); if (d > moved) moved = d; s[j] = ns; }
+    steps = t + 1; if (moved < TOL) break;
+  }
+  return { s, steps };
+}
+// --- the same game as pong.py
+const game = { ball_r: 0, ball_c: 0, dr: 0, dc: 0, left: 0, right: 0 };
+let score = [0, 0], paused = false, target = null, keys = { up: false, down: false };
+function rnd(a, b) { return a + Math.floor(Math.random() * (b - a)); }
+function resetPoint() { game.ball_r = rnd(1, H - 1); game.ball_c = W >> 1; game.dr = rnd(-1, 2); game.dc = Math.random() < 0.5 ? -1 : 1; game.left = rnd(0, H - PADDLE + 1); game.right = rnd(0, H - PADDLE + 1); previous = null; }
+let previous = null;  // the last frame's pixels, as pong.py keeps them
+function pixels() {
+  const f = new Float64Array(PIX);
+  for (let k = 0; k < PADDLE; k++) { f[(game.left + k) * W] = 0.6; f[(game.right + k) * W + W - 1] = 0.6; }
+  f[game.ball_r * W + game.ball_c] = 1.0;
+  return f;
+}
+function observation() {
+  const now = pixels(); if (previous === null) previous = now;
+  const drive = new Float64Array(n);
+  for (let k = 0; k < PIX; k++) { drive[IN[k]] = now[k] * R.clamp; drive[IN[PIX + k]] = previous[k] * R.clamp; }
+  return drive;
+}
+function step(netAction, humanMove) {
+  previous = pixels();
+  game.right = Math.max(0, Math.min(H - PADDLE, game.right + (netAction - 1)));
+  game.left = Math.max(0, Math.min(H - PADDLE, game.left + humanMove));
+  let r = game.ball_r + game.dr;
+  if (r < 0 || r >= H) { game.dr = -game.dr; r = Math.max(0, Math.min(H - 1, r)); }
+  let c = game.ball_c + game.dc; let ended = null;
+  for (const [side, paddle, col] of [['net', game.right, W - 1], ['you', game.left, 0]]) {
+    if (c !== col) continue;
+    const covered = r >= paddle && r < paddle + PADDLE;
+    if (covered) { game.dc = -game.dc; game.dr = (r - paddle) - 1; c = col + (col === W - 1 ? -1 : 1); }
+    else ended = side;
+  }
+  game.ball_r = r; game.ball_c = Math.max(0, Math.min(W - 1, c));
+  if (ended) { if (ended === 'net') score[0]++; else score[1]++; resetPoint(); }
+  return ended;
+}
+// --- drawing
+const canvas = document.getElementById('field'), ctx = canvas.getContext('2d');
+const px = canvas.width / W, py = canvas.height / H;
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+function draw() {
+  ctx.fillStyle = css('--field'); ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(255,255,255,0.08)'; for (let r = 0; r < H; r += 2) ctx.fillRect(canvas.width / 2 - 1, r * py + 2, 2, py - 4);
+  ctx.fillStyle = css('--you'); ctx.fillRect(0, game.left * py, px, PADDLE * py);
+  ctx.fillStyle = css('--net'); ctx.fillRect(canvas.width - px, game.right * py, px, PADDLE * py);
+  ctx.fillStyle = css('--ball'); ctx.fillRect(game.ball_c * px, game.ball_r * py, px, py);
+}
+// --- panels
+const actsEl = document.getElementById('acts'), hiddenEl = document.getElementById('hidden'), settleEl = document.getElementById('settle');
+['up', 'stay', 'down'].forEach(l => { const d = document.createElement('div'); d.className = 'act'; d.innerHTML = '<i></i><b>' + l + '</b>'; actsEl.appendChild(d); });
+for (let i = 0; i < HID.length; i++) hiddenEl.appendChild(document.createElement('i'));
+document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>hits per point, greedy, in training</dt><dd>${NET.meta.hits_per_point.toFixed(2)}</dd>`;
+function showNet(s, steps, a) {
+  OUT.forEach((k, i) => { actsEl.children[i].firstChild.style.height = Math.max(0, Math.min(1, s[k])) * 100 + '%'; actsEl.children[i].classList.toggle('chosen', i === a); });
+  HID.forEach((k, i) => { hiddenEl.children[i].style.opacity = 0.08 + 0.92 * Math.max(0, Math.min(1, s[k])); });
+  settleEl.textContent = `Rest in ${steps} steps.`;
+}
+// --- input
+canvas.addEventListener('pointermove', e => { const rect = canvas.getBoundingClientRect(); target = Math.floor((e.clientY - rect.top) / rect.height * H) - (PADDLE >> 1); });
+canvas.addEventListener('pointerleave', () => { target = null; });
+window.addEventListener('keydown', e => { if (e.key === 'ArrowUp') { keys.up = true; e.preventDefault(); } if (e.key === 'ArrowDown') { keys.down = true; e.preventDefault(); } });
+window.addEventListener('keyup', e => { if (e.key === 'ArrowUp') keys.up = false; if (e.key === 'ArrowDown') keys.down = false; });
+document.getElementById('pause').addEventListener('click', e => { paused = !paused; e.target.textContent = paused ? 'Resume' : 'Pause'; });
+document.getElementById('reset').addEventListener('click', () => { score = [0, 0]; });
+// --- loop: 12 pixel-steps per second
+resetPoint(); draw();
+setInterval(() => {
+  if (paused) return;
+  const { s, steps } = settle(observation());
+  const outs = OUT.map(k => s[k]); let a = 0; for (let i = 1; i < 3; i++) if (outs[i] > outs[a]) a = i;
+  let humanMove = 0;
+  if (keys.up !== keys.down) humanMove = keys.up ? -1 : 1;
+  else if (target !== null) humanMove = Math.sign(target - game.left);
+  const ended = step(a, humanMove);
+  showNet(s, steps, a); draw();
+  document.getElementById('syou').textContent = score[0]; document.getElementById('snet').textContent = score[1];
+  if (ended) document.getElementById('status').textContent = ended === 'net' ? 'The net missed. Your point.' : 'You missed. The net scores.';
+}, 83);
+</script>
