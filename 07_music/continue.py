@@ -29,6 +29,7 @@ def main() -> None:
     args = parser.parse_args()
     net = json.loads((HERE / "net.json").read_text())
     n, rule, music = net["n"], net["rule"], net["music"]
+    music["slope"] = json.loads((HERE / "receipt.json").read_text())["body"]["slope"]  # the calibration chosen on validation
     weights = np.asarray(net["W"]).reshape(n, n)
     bias = np.asarray(net["bias"])
     inputs, outputs = net["sets"]["input"], net["sets"]["output"]
