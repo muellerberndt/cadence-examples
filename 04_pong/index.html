@@ -157,6 +157,7 @@ document.getElementById('pause').addEventListener('click', e => { paused = !paus
 document.getElementById('reset').addEventListener('click', () => { score = [0, 0]; });
 // --- loop: 12 pixel-steps per second
 resetPoint(); draw();
+window.__pong = { settle, step, observation, pixels, game, OUT, reset: resetPoint };
 setInterval(() => {
   if (paused) return;
   const { s, steps } = settle(observation());
