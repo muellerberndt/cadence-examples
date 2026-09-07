@@ -44,7 +44,7 @@
 </style>
 <main>
   <header>
-    <a class="hub" href="https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8">← All examples</a>
+    <a class="hub" href="../index.html">← All examples</a>
     <h1>Cadence Pong</h1>
     <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. It learned from reward alone.</p>
   </header>
@@ -157,6 +157,7 @@ document.getElementById('pause').addEventListener('click', e => { paused = !paus
 document.getElementById('reset').addEventListener('click', () => { score = [0, 0]; });
 // --- loop: 12 pixel-steps per second
 resetPoint(); draw();
+window.__pong = { settle, step, observation, pixels, game, OUT, reset: resetPoint };
 setInterval(() => {
   if (paused) return;
   const { s, steps } = settle(observation());

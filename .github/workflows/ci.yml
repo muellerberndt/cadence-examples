@@ -1,0 +1,24 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install "git+https://github.com/muellerberndt/cadence" scikit-learn pandas
+      - name: every receipt verifies against the code in this checkout
+        run: |
+          for d in 01_digits 02_images 03_connect_four 04_pong; do (cd $d && python train.py --verify receipt.json); done
+      - name: the game pages build from the committed nets
+        run: |
+          (cd 03_connect_four && python build_page.py)
+          (cd 04_pong && python build_page.py)
+          git diff --stat --exit-code 03_connect_four/index.html 04_pong/index.html
+      - name: a short learning run works end to end
+        run: (cd 01_digits && python train.py --seeds 1 --output /tmp/digits.json && python train.py --verify /tmp/digits.json)
