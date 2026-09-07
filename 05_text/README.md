@@ -54,10 +54,10 @@ validation; the training backend was mps float32 with three other runs sharing t
 | MLP, same window, Adam | 566,337 | 5 | 12 s | 3.11 | 41.3% |
 | one-layer transformer, Adam | 59,521 | 5 | 31 s | 3.08 | 42.1% |
 
-Read it plainly. At this window and budget every model is weak, and the patch net is the
-weakest by about a quarter of a bit: a bigram model is a fair summary of what a sixteen-
-character window has learned in five epochs, and the one-layer transformer with a tenth
-of the parameters is the best of the lot by a hair. The ranking is the interesting part.
+Read it plainly. At this window and budget every learned model is weak: the patch net
+is four tenths of a bit better than a bigram and a quarter of a bit behind the same-window
+MLP, and the one-layer transformer with a tenth of the parameters is the best of the lot
+by a hair. The ranking is the interesting part.
 On every supervised rung with a dense, low-dimensional input the rule matched a same-shape
 backprop net; here, with 1,040 mostly-silent one-hot input owners and 65 classes, it
 trails, and it costs three hours where the MLP costs twelve seconds. Two things are worth
