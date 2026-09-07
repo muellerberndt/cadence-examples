@@ -1,0 +1,186 @@
+<title>Cadence Sign Writer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
+    --paper: #fbfaf6; --grid: #e6e2d8; --sign: #9fb3c8; --drawn: #1c2430; --pen: #e4572e; --arm: #243b6e; --accent: #1f8a70; --accent-soft: #d5efe7;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --paper: #1f2734; --grid: #2c3547; --sign: #4a5a70; --drawn: #e8ecf2; --arm: #7fa0e0; --accent: #3fbf9c; --accent-soft: #1d3a34; }
+  }
+  :root[data-theme="dark"] { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --paper: #1f2734; --grid: #2c3547; --sign: #4a5a70; --drawn: #e8ecf2; --arm: #7fa0e0; --accent: #3fbf9c; --accent-soft: #1d3a34; }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 320px; }
+  header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
+  .hub { font-weight: 600; color: var(--accent); text-decoration: none; margin-right: auto; order: -1; flex-basis: 100%; }
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .stage { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; align-items: start; }
+  canvas { width: 100%; display: block; border-radius: 12px; background: var(--paper); }
+  .label { font: 600 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 6px 0; }
+  .status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; margin-top: 12px; }
+  button { font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  button.go { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  aside { display: grid; gap: 14px; align-content: start; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .card p { margin: 6px 0; line-height: 1.45; }
+  .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 120px; }
+  .acts i { aspect-ratio: 1; border-radius: 4px; background: var(--accent); opacity: .1; display: block; }
+  .window { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; width: 120px; }
+  .window i { aspect-ratio: 1; border-radius: 2px; background: var(--grid); display: block; }
+  .window i.s { background: var(--sign); } .window i.d { background: var(--drawn); } .window i.p { outline: 2px solid var(--pen); }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-variant-numeric: tabular-nums; }
+  dt { color: var(--muted); } dd { margin: 0; font-family: var(--mono); font-size: 13px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } .stage { grid-template-columns: 1fr; } }
+</style>
+<main>
+  <header>
+    <a class="hub" href="../index.html">← All examples</a>
+    <h1>Cadence Sign Writer</h1>
+    <p>Show the net a sign; it writes what it sees with a two-joint arm. It looks through a 7×7 window around its pen, settles, and chooses where the pen goes next. It learned by imitating a teacher that follows the stroke.</p>
+  </header>
+  <section>
+    <div class="stage">
+      <div><div class="label">the sign</div><canvas id="sign" width="256" height="256"></canvas></div>
+      <div><div class="label">the arm writes</div><canvas id="stage" width="640" height="420"></canvas></div>
+    </div>
+    <div class="status">
+      <button id="new">New sign</button>
+      <button id="go" class="go">Write it</button>
+      <span id="status">Press “Write it”.</span>
+    </div>
+  </section>
+  <aside>
+    <div class="card">
+      <h2>What the net sees</h2>
+      <div class="window" id="window"></div>
+      <p id="seen">The 7×7 window around the pen: sign cells in grey, inked cells in black, the pen outlined.</p>
+    </div>
+    <div class="card">
+      <h2>Output owners</h2>
+      <div class="acts" id="acts"></div>
+      <p id="settle">Nine pen moves; the brightest is taken.</p>
+    </div>
+    <div class="card">
+      <h2>Facts</h2>
+      <dl id="facts"></dl>
+    </div>
+  </aside>
+</main>
+<script>
+const NET = /*NET*/null;
+const n = NET.n, W = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
+const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+const G = NET.arm.G, K = NET.arm.K, STEPS = NET.arm.steps, LO = NET.arm.lo, SIDE = NET.arm.side, SHAPES = NET.arm.shapes, TOL = 1e-4;
+function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
+function settle(drive) {
+  const v = new Float64Array(n), s = new Float64Array(n), inbox = new Float64Array(n); let steps = 0;
+  for (let t = 0; t < 100; t++) {
+    inbox.fill(0);
+    for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) inbox[j] += si * W[row + j]; }
+    let moved = 0;
+    for (let j = 0; j < n; j++) { v[j] += R.dt * (-v[j] + inbox[j] + drive[j] + BIAS[j]); const ns = act(v[j]); moved = Math.max(moved, Math.abs(ns - s[j])); s[j] = ns; }
+    steps = t + 1; if (moved < TOL) break;
+  }
+  return { s, steps };
+}
+// --- signs, exactly as arm.py makes them
+function rnd(a, b) { return a + Math.random() * (b - a); }
+function polyline(shape) {
+  const size = rnd(0.55, 0.85);
+  const P = { bar: [[0.5, 0], [0.5, 1]], dash: [[0, 0.5], [1, 0.5]], slash: [[0, 0], [1, 1]], L: [[0.15, 1], [0.15, 0], [1, 0]], V: [[0, 1], [0.5, 0], [1, 1]], Z: [[0, 1], [1, 1], [0, 0], [1, 0]] }[shape];
+  const ox = rnd(0, 1 - size), oy = rnd(0, 1 - size);
+  return P.map(([u, v]) => [u * size + ox, v * size + oy]);
+}
+function strokeOf(points) {
+  const cells = [];
+  for (let k = 0; k + 1 < points.length; k++) {
+    const [u0, v0] = points[k], [u1, v1] = points[k + 1];
+    for (let i = 0; i < 96; i++) { const t = i / 95; const u = u0 + t * (u1 - u0), v = v0 + t * (v1 - v0);
+      const rc = [Math.min(Math.floor(v * G), G - 1), Math.min(Math.floor(u * G), G - 1)];
+      if (!cells.length || cells[cells.length - 1][0] !== rc[0] || cells[cells.length - 1][1] !== rc[1]) cells.push(rc); }
+  }
+  return cells;
+}
+let shape, stroke, sign, canvasCells, pen, step, running = false;
+function newSign() {
+  shape = SHAPES[Math.floor(Math.random() * SHAPES.length)]; stroke = strokeOf(polyline(shape));
+  sign = Array.from({ length: G }, () => new Array(G).fill(0)); for (const [r, c] of stroke) sign[r][c] = 1;
+  canvasCells = Array.from({ length: G }, () => new Array(G).fill(0)); pen = stroke[0]; canvasCells[pen[0]][pen[1]] = 1; step = 0; running = false;
+  document.getElementById('status').textContent = `A ${shape}. Press “Write it”.`; drawAll();
+}
+function windowOf(field) {
+  const h = (K - 1) / 2, out = new Float64Array(K * K);
+  for (let i = 0; i < K; i++) for (let j = 0; j < K; j++) { const r = pen[0] - h + i, c = pen[1] - h + j; out[i * K + j] = (r >= 0 && r < G && c >= 0 && c < G) ? field[r][c] : 0; }
+  return out;
+}
+function observation() {
+  const drive = new Float64Array(n); const ws = windowOf(sign), wc = windowOf(canvasCells);
+  for (let k = 0; k < K * K; k++) { drive[IN[k]] = ws[k] * R.clamp; drive[IN[K * K + k]] = wc[k] * R.clamp; }
+  return { drive, ws, wc };
+}
+// --- drawing
+const signC = document.getElementById('sign').getContext('2d'), stageC = document.getElementById('stage').getContext('2d');
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+function cellCentre(r, c) { return [LO + SIDE * (c + 0.5) / G, LO + SIDE * (r + 0.5) / G]; }
+function inverse(x, y) { const r2 = Math.min(Math.max(x * x + y * y, 0.05), 3.95); const b = Math.acos((r2 - 2) / 2); const a = Math.atan2(y, x) - Math.atan2(Math.sin(b), 1 + Math.cos(b)); return [a, b]; }
+function drawGrid(ctx, size, field, color) {
+  const cs = size / G;
+  ctx.fillStyle = css('--paper'); ctx.fillRect(0, 0, size, size);
+  ctx.strokeStyle = css('--grid'); ctx.lineWidth = 1;
+  for (let i = 0; i <= G; i++) { ctx.beginPath(); ctx.moveTo(i * cs, 0); ctx.lineTo(i * cs, size); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i * cs); ctx.lineTo(size, i * cs); ctx.stroke(); }
+  ctx.fillStyle = color;
+  for (let r = 0; r < G; r++) for (let c = 0; c < G; c++) if (field[r][c]) ctx.fillRect(c * cs + 1, (G - 1 - r) * cs + 1, cs - 2, cs - 2);
+}
+function drawAll() {
+  drawGrid(signC, 256, sign, css('--sign'));
+  // the stage: the arm's workspace with the canvas square inside
+  const S = 640, H = 420, scale = 190, ox = 40, oy = H - 30;  // plane origin at (ox, oy), y up
+  stageC.fillStyle = css('--paper'); stageC.fillRect(0, 0, S, H);
+  const px = x => ox + x * scale, py = y => oy - y * scale;
+  const cs = SIDE / G * scale;
+  stageC.strokeStyle = css('--grid'); stageC.lineWidth = 1;
+  for (let i = 0; i <= G; i++) { stageC.beginPath(); stageC.moveTo(px(LO + SIDE * i / G), py(LO)); stageC.lineTo(px(LO + SIDE * i / G), py(LO + SIDE)); stageC.stroke(); stageC.beginPath(); stageC.moveTo(px(LO), py(LO + SIDE * i / G)); stageC.lineTo(px(LO + SIDE), py(LO + SIDE * i / G)); stageC.stroke(); }
+  for (let r = 0; r < G; r++) for (let c = 0; c < G; c++) {
+    if (sign[r][c]) { stageC.fillStyle = css('--sign'); stageC.globalAlpha = 0.35; stageC.fillRect(px(LO + SIDE * c / G) + 1, py(LO + SIDE * (r + 1) / G) + 1, cs - 2, cs - 2); stageC.globalAlpha = 1; }
+    if (canvasCells[r][c]) { stageC.fillStyle = css('--drawn'); stageC.fillRect(px(LO + SIDE * c / G) + 1, py(LO + SIDE * (r + 1) / G) + 1, cs - 2, cs - 2); }
+  }
+  const [x, y] = cellCentre(pen[0], pen[1]); const [a, b] = inverse(x, y);
+  const ex = Math.cos(a), ey = Math.sin(a);
+  stageC.strokeStyle = css('--arm'); stageC.lineWidth = 8; stageC.lineCap = 'round'; stageC.lineJoin = 'round';
+  stageC.beginPath(); stageC.moveTo(px(0), py(0)); stageC.lineTo(px(ex), py(ey)); stageC.lineTo(px(x), py(y)); stageC.stroke();
+  stageC.fillStyle = css('--arm'); stageC.beginPath(); stageC.arc(px(0), py(0), 7, 0, 7); stageC.fill(); stageC.beginPath(); stageC.arc(px(ex), py(ey), 6, 0, 7); stageC.fill();
+  stageC.fillStyle = css('--pen'); stageC.beginPath(); stageC.arc(px(x), py(y), 5, 0, 7); stageC.fill();
+}
+// --- panels
+const winEl = document.getElementById('window'), actsEl = document.getElementById('acts');
+for (let i = 0; i < K * K; i++) winEl.appendChild(document.createElement('i'));
+for (let i = 0; i < 9; i++) actsEl.appendChild(document.createElement('i'));
+document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>held-out overlap with the sign</dt><dd>${(NET.meta.iou_sign * 100).toFixed(1)}%</dd>`;
+function showSeen(ws, wc, s, a, steps) {
+  const h = (K - 1) / 2;
+  for (let k = 0; k < K * K; k++) { const el = winEl.children[k]; el.className = (wc[k] ? 'd' : ws[k] ? 's' : '') + (k === h * K + h ? ' p' : ''); }
+  OUT.forEach((o, i) => { actsEl.children[i].style.opacity = 0.1 + 0.9 * Math.max(0, Math.min(1, s[o])); actsEl.children[i].style.outline = i === a ? '2px solid var(--pen)' : 'none'; });
+  document.getElementById('settle').textContent = `Nine pen moves; rest in ${steps} steps.`;
+}
+function tick() {
+  if (!running) return;
+  if (step >= STEPS) { running = false; let inter = 0, union = 0; for (let r = 0; r < G; r++) for (let c = 0; c < G; c++) { inter += sign[r][c] && canvasCells[r][c]; union += sign[r][c] || canvasCells[r][c]; }
+    document.getElementById('status').textContent = `Done: overlap with the sign ${(100 * inter / union).toFixed(0)}%.`; return; }
+  const { drive, ws, wc } = observation(); const { s, steps } = settle(drive);
+  let a = 0; for (let i = 1; i < 9; i++) if (s[OUT[i]] > s[OUT[a]]) a = i;
+  const dr = Math.floor(a / 3) - 1, dc = a % 3 - 1;
+  pen = [Math.min(Math.max(pen[0] + dr, 0), G - 1), Math.min(Math.max(pen[1] + dc, 0), G - 1)]; canvasCells[pen[0]][pen[1]] = 1; step++;
+  showSeen(ws, wc, s, a, steps); drawAll();
+  setTimeout(tick, 90);
+}
+document.getElementById('new').addEventListener('click', newSign);
+document.getElementById('go').addEventListener('click', () => { if (running) return; if (step >= STEPS) newSign(); running = true; tick(); });
+newSign();
+window.__sign = { settle, newSign, observation };
+</script>
