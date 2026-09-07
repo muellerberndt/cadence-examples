@@ -18,7 +18,7 @@ PAGES = {
     "03_connect_four": "https://claude.ai/code/artifact/7eaebd77-b8f7-4415-8a08-6aefc9aff570",
     "04_pong": "https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3",
     "06_sign": "https://claude.ai/code/artifact/94e42c3b-134e-47c0-94bb-06106d3f6321",
-    "07_music": None,
+    "07_music": "https://claude.ai/code/artifact/PENDING",
 }
 
 

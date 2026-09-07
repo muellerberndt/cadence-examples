@@ -45,6 +45,7 @@
       <button id="opening">Another opening</button>
       <button id="write" class="go">Write 16 chords</button>
       <button id="play">Play</button>
+      <label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="sampling" checked> draw pitches (uncheck for the most likely chord)</label>
       <span id="status">Grey: the given opening. Green: what the net wrote.</span>
     </div>
   </section>
@@ -66,7 +67,8 @@
 const NET = /*NET*/null;
 const n = NET.n, W = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
 const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
-const LOW = NET.music.low, HIGH = NET.music.high, P = HIGH - LOW + 1, WIN = NET.music.window, THRESHOLD = NET.music.threshold, TOL = 1e-4;
+const LOW = NET.music.low, HIGH = NET.music.high, P = HIGH - LOW + 1, WIN = NET.music.window, THRESHOLD = NET.music.threshold, SLOPE = NET.music.slope || 6, TOL = 1e-4;
+let sampling = true;  // draw pitches from the calibrated probabilities (unchecked: the most active owners above the threshold)
 const OPENINGS = NET.meta.openings;
 function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
 function settle(drive) {
@@ -89,9 +91,16 @@ function nextChord() {
   const { s, steps } = settle(drive);
   const out = OUT.map(k => s[k]); lastOut = out;
   const order = out.map((v, i) => i).sort((a, b) => out[b] - out[a]);
-  let chosen = order.slice(0, 4).filter(i => out[i] >= THRESHOLD);
+  let chosen;
+  if (sampling) {
+    const last = chords[chords.length - 1], before = chords[chords.length - 2];
+    const stuck = before && last.length === before.length && last.every((p, i) => p === before[i]);
+    const slope = SLOPE / (stuck ? 3 : 1);  // a held chord: draw more freely so the music moves
+    const prob = out.map(v => 1 / (1 + Math.exp(-slope * (v - THRESHOLD))));
+    chosen = order.filter(i => Math.random() < prob[i]).slice(0, 4);
+  } else chosen = order.slice(0, 4).filter(i => out[i] >= THRESHOLD);
   if (!chosen.length) chosen = [order[0]];
-  document.getElementById('settle').textContent = `Rest in ${steps} steps; ${chosen.length} pitch owner${chosen.length === 1 ? '' : 's'} above ${THRESHOLD}.`;
+  document.getElementById('settle').textContent = `Rest in ${steps} steps; ${chosen.length} pitch owner${chosen.length === 1 ? '' : 's'} chosen ${sampling ? 'by drawing from the calibrated probabilities' : 'above the threshold'}.`;
   return chosen.map(i => LOW + i).sort((a, b) => a - b);
 }
 async function writeChords(k) {
@@ -137,6 +146,7 @@ document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hi
 document.getElementById('opening').addEventListener('click', () => setOpening(openingIndex + 1));
 document.getElementById('write').addEventListener('click', () => writeChords(16));
 document.getElementById('play').addEventListener('click', play);
+document.getElementById('sampling').addEventListener('change', e => { sampling = e.target.checked; });
 setOpening(0);
 window.__chorale = { settle, nextChord, chords: () => chords };
 </script>

@@ -44,7 +44,31 @@ bits-per-chord figure. The baselines get the same calibration on the same valida
 
 ## 4. The numbers
 
-{{NUMBERS}}
+From `receipt.json`: validation hidden 128: F1 0.470, hidden 256: F1 0.276; the selected net, 64,253 parameters, trained
+10 epochs on 83,825 transposed rows; test rows 4,109 from 77 held-out chorales,
+read once. Threshold 0.3 and calibration slope 12.0 chosen on validation; the baselines
+calibrated the same way on the same validation chorales.
+
+| model | parameters | epochs | training | pitch-set F1 | precision | recall | bits per chord | exact chords |
+|---|---|---|---|---|---|---|---|---|
+| patch net 432-128-54, quadratic nudge | 64,253 | 10 | 1052 s | 0.483 | 0.455 | 0.514 | 16.6 | 0.045 |
+| MLP 432-128-54, sigmoid outputs, Adam | 62,390 | 10 | 2 s | 0.470 | 0.371 | 0.639 | 24.7 | 0.008 |
+| repeat the last chord | 0 | | | 0.369 | 0.369 | 0.368 | 40.3 | 0.114 |
+| per-pitch unigram | 54 | | | 0.000 | 0.000 | 0.000 | 23.5 | 0.004 |
+
+Read it plainly. This is the first rung where the patch net is ahead of the same-shape
+backprop network on its own terms: a slightly better pitch-set F1 and eight fewer bits per
+chord at the same parameter count and epochs, with the quadratic nudge on a multi-hot
+target doing what a sigmoid-and-cross-entropy output layer does for the MLP. Both are far
+from exact: a chord is right in its entirety one time in twenty, and "repeat the last
+chord" is right one time in nine, because chorales hold notes. Wall-clock is the usual
+factor, here several hundred, and the larger hidden layer (256) fell apart on validation
+(F1 0.276) at this learning rate, which is why the receipt binds 128.
+
+The continuation in the receipt takes the most active owners above the threshold and
+locks onto a held chord within a few beats; that is what the most likely next chord of a
+chorale is. `continue.py` and the page draw each pitch with its calibrated probability
+instead, keep at most four, and move.
 
 ## 5. The page
 
