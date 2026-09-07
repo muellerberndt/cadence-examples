@@ -9,10 +9,11 @@ reaches a paddle's column uncovered is a miss for that side and the point ends.
 
 The agent sees two frames, the current one and the one before, so the ball's direction
 is visible: the field as pixels, ball and paddles lit, twice. Actions are 0 = up,
-1 = stay, 2 = down. Rewards: +1 when the agent's paddle returns the ball, -1 when
-it misses, and a small shaping term each step for the distance between paddle centre and
-ball row, so credit does not have to travel a whole rally. The opponent tracks the ball
-with a fixed lag and is not learned.
+1 = stay, 2 = down. Rewards: +1 when the agent's paddle returns the ball, -1 when it
+misses, and a shaping term each step equal to how much the distance between the paddle
+centre and the ball row shrank during the step (potential-based shaping: it changes no
+optimal policy, it only tells the paddle sooner whether a move helped). The opponent
+tracks the ball with a fixed lag and is not learned.
 """
 
 from __future__ import annotations
@@ -23,7 +24,7 @@ import numpy as np
 
 H, W, PADDLE = 12, 16, 3
 ACTIONS = 3
-SHAPING = 0.05
+SHAPING = 1.0  # weight of the potential-based shaping, in units of one row's distance
 MAX_RALLY = 400  # a point ends after this many steps even if nobody misses
 
 
@@ -75,6 +76,7 @@ class Pong:
     def step(self, action: np.ndarray) -> tuple[np.ndarray, np.ndarray, dict[str, np.ndarray]]:
         """Apply the agent's actions; returns (reward, done, info) and resets finished games."""
         self.previous = self.frames()
+        distance_before = np.abs(self.ball_r - (self.right + PADDLE // 2))
         # paddles
         self.right = np.clip(self.right + (action - 1), 0, H - PADDLE)
         centre = self.left + PADDLE // 2
@@ -109,9 +111,9 @@ class Pong:
         self.age += 1
         done |= self.age >= MAX_RALLY
         self.ball_r, self.ball_c = r, np.clip(c, 0, W - 1)
-        # shaping: how far the agent's paddle centre is from the ball's row
-        distance = np.abs(self.ball_r - (self.right + PADDLE // 2)) / (H - 1)
-        reward -= SHAPING * distance
+        # shaping: how much closer the paddle centre came to the ball's row during this step
+        distance_after = np.abs(self.ball_r - (self.right + PADDLE // 2))
+        reward += SHAPING * (distance_before - distance_after) / (H - 1)
         info = {"hit": hits, "miss": misses, "opponent_miss": done & ~misses & (self.age < MAX_RALLY)}
         self.reset(done)
         return reward, done, info

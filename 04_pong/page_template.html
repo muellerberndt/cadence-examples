@@ -55,6 +55,7 @@
       <span id="status">Move the mouse over the field or use <kbd>↑</kbd> <kbd>↓</kbd>.</span>
       <button id="pause">Pause</button>
       <button id="reset">Reset score</button>
+      <label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="which" checked> imitation-trained paddle (uncheck for the reward-trained one)</label>
     </div>
   </section>
   <aside>
@@ -70,15 +71,17 @@
     <div class="card">
       <h2>What this is</h2>
       <p>Each step the current frame and the previous one are clamped onto 384 input owners. The net settles from rest; the most active of three output owners (up, stay, down) moves its paddle one pixel. No search, no memory beyond that one earlier frame.</p>
-      <p>It was trained by playing: after each rollout, the actions that paid were nudged toward and the actions that cost were nudged away, and every overlap moved on its own two-phase difference.</p>
+      <p>Two paddles are embedded. The reward-trained one learned by playing: after each rollout, the actions that paid were nudged toward and the actions that cost were nudged away. The imitation-trained one learned the same way but from a scripted tracker's moves as targets; it plays much better, and the tutorial says why the difference is credit assignment, not the rule.</p>
       <dl id="facts"></dl>
     </div>
   </aside>
 </main>
 <script>
-const NET = /*NET*/null;
-const n = NET.n, Wm = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
-const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+const NETS = { reward: /*NET*/null, imitation: /*NET_IMITATION*/null };
+let NET = NETS.imitation || NETS.reward;
+let n = NET.n, Wm = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
+let IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+function useNet(which) { NET = NETS[which]; n = NET.n; Wm = Float64Array.from(NET.W); BIAS = Float64Array.from(NET.bias); R = NET.rule; IN = NET.sets.input; HID = NET.sets.hidden; OUT = NET.sets.output; showFacts(); }
 const H = NET.field.H, W = NET.field.W, PADDLE = 3, TOL = 1e-4, PIX = H * W;
 function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
 function settle(drive) {
@@ -142,7 +145,9 @@ function draw() {
 const actsEl = document.getElementById('acts'), hiddenEl = document.getElementById('hidden'), settleEl = document.getElementById('settle');
 ['up', 'stay', 'down'].forEach(l => { const d = document.createElement('div'); d.className = 'act'; d.innerHTML = '<i></i><b>' + l + '</b>'; actsEl.appendChild(d); });
 for (let i = 0; i < HID.length; i++) hiddenEl.appendChild(document.createElement('i'));
-document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>hits per point, greedy, in training</dt><dd>${NET.meta.hits_per_point.toFixed(2)}</dd>`;
+function showFacts() { document.getElementById('facts').innerHTML = `<dt>learned from</dt><dd>${NET.meta.learned_from}</dd><dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>balls returned, greedy, vs the scripted opponent</dt><dd>${(100 * NET.meta.return_rate).toFixed(0)}%</dd><dt>returns per point</dt><dd>${NET.meta.hits_per_point.toFixed(2)}</dd>`; }
+showFacts();
+document.getElementById('which').addEventListener('change', e => { useNet(e.target.checked && NETS.imitation ? 'imitation' : 'reward'); });
 function showNet(s, steps, a) {
   OUT.forEach((k, i) => { actsEl.children[i].firstChild.style.height = Math.max(0, Math.min(1, s[k])) * 100 + '%'; actsEl.children[i].classList.toggle('chosen', i === a); });
   HID.forEach((k, i) => { hiddenEl.children[i].style.opacity = 0.08 + 0.92 * Math.max(0, Math.min(1, s[k])); });

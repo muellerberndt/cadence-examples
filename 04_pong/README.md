@@ -91,7 +91,45 @@ trained net is in section 6.
 
 ## 6. The numbers
 
-{{NUMBERS}}
+From `receipt.json`: 300 iterations of 64 games × 64 steps for the two reward learners;
+greedy play on fresh seeds until 1,000 points had ended; one laptop core, shared with
+other runs. The reward is +1 for a return, −1 for a miss, and the potential-based shaping
+of section 5 with a credit horizon of γ = 0.5.
+
+| policy | learned from | parameters | training | balls returned | returns per point |
+|---|---|---|---|---|---|
+| patch net 384-32-3, reward-nudged | reward | 12,806 | 886 s | 78% | 2.03 |
+| MLP 384-32-3, REINFORCE with Adam | reward, same rollouts | 12,419 | 10 s | 93% | 4.00 |
+| patch net 384-32-3, free/nudged rule | a scripted tracker's moves, 25,600 rows | 12,806 | 147 s | 97% | 5.91 |
+| untrained patch net | | 12,806 | — | 16% | 0.14 |
+| scripted tracker (for scale) | | | | 99.7% | |
+
+The policy tables, action chosen against the ball's row minus the paddle's centre, over
+every ball row and paddle position with the ball one column away and coming level:
+
+    reward-trained            ball − paddle:  −5    −3    −1     0    +1    +3    +5
+    up                                        6/6   6/8   5/10  6/10  5/10  3/8   1/6
+    stay                                      0     0     0     0     0     0     0
+    down                                      0/6   2/8   5/10  4/10  5/10  5/8   5/6
+
+    imitation-trained         ball − paddle:  −5    −3    −1     0    +1    +3    +5
+    up                                        6/6   8/8   9/10  2/10  0     0     0
+    stay                                      0     0     1/10  4/10  1/10  0     0
+    down                                      0     0     0     4/10  9/10  8/8   6/6
+
+Read it plainly. The same net, the same rule, the same seams: taught by a tracker's moves
+it becomes a tracker (the second table) and returns 97% of balls; taught by reward it
+stays a coin flip within a row of the ball (the first table) and returns 78%, while
+backprop with Adam on the same rollouts reaches 93%. The difference between the two
+patch-net rows is entirely in the target of the nudge, a clean move versus a noisy,
+advantage-weighted one; the difference between the reward rows is what an exact
+gradient with per-parameter step sizes does with that noise that a small-nudge estimate
+does not. Every variant of the reward setup was tried on this rung (nudge strength,
+settle tolerance, batch size, momentum, per-seam normalisation, immediate and
+potential-based credit, one and two frames) and none moved the reward-trained paddle
+past 79%; the receipt has the full per-iteration history. The page ships both paddles;
+the imitation-trained one is the default opponent because it plays, and the toggle is
+there so you can feel the difference.
 
 ## 7. What is different from the baseline
 

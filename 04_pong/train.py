@@ -31,10 +31,11 @@ SOURCES = [("04_pong/train.py", Path(__file__).resolve()), ("04_pong/pong.py", H
 INPUTS = 2 * H * W  # two frames
 HIDDEN = 32
 ENVS, HORIZON = 64, 64  # parallel games, steps per rollout
-GAMMA = 0.95
+GAMMA = 0.5  # short credit horizon: the shaping already says whether each step helped
 ITERATIONS = 300
 BATCH = 256
 ETA, DECAY = 2.0, 0.99
+ADVANTAGE_CLIP: float | None = None  # clip normalised advantages to [-clip, clip] so the nudge stays small
 CONFIG = cd.LearnerConfig(
     beta=0.1, eta=ETA, eta_bias=0.02, temperature=0.2, tolerance=3e-3, nudged_steps=12, free_steps=100
 )
@@ -155,6 +156,8 @@ def train(policy: Any, seed: int, iterations: int, log: str) -> tuple[list[dict[
     for it in range(1, iterations + 1):
         frames, actions, returns, stats = rollout(policy, env)
         advantages = (returns - returns.mean()) / (returns.std() + 1e-8)
+        if ADVANTAGE_CLIP is not None:
+            advantages = np.clip(advantages, -ADVANTAGE_CLIP, ADVANTAGE_CLIP)
         policy.update(frames, actions, advantages, eta)
         eta *= DECAY
         history.append({"iteration": it, **stats, "seconds": time.perf_counter() - t0})
@@ -175,6 +178,37 @@ def evaluate(policy: Any, seed: int, points: int) -> dict[str, float]:
         ended += int(d.sum())
         steps += ENVS
     return {"points": ended, "hits": hits, "misses": misses, "hits_per_point": hits / ended, "return_rate": hits / max(hits + misses, 1)}
+
+
+IMITATION_STEPS, IMITATION_EPOCHS = 400, 8
+
+
+def imitation(seed: int) -> tuple[PatchPolicy, dict[str, Any]]:
+    """The same net taught by the scripted tracker: rollouts of the tracker with random slips, labels from the tracker."""
+    from pong import track_policy
+
+    env = Pong(ENVS, seed=seed + 7)
+    rng = np.random.default_rng(seed)
+    frames, labels = [], []
+    for _ in range(IMITATION_STEPS):
+        obs = env.observation()
+        want = track_policy(env)
+        frames.append(obs)
+        labels.append(want)
+        env.step(np.where(rng.random(ENVS) < 0.3, rng.integers(0, ACTIONS, ENVS), want))
+    x, y = np.concatenate(frames), np.concatenate(labels)
+    policy = PatchPolicy(HIDDEN, seed)
+    learner = policy.learner
+    learner.config = dataclasses.replace(learner.config, temperature=0.1)
+    t0 = time.perf_counter()
+    for epoch in range(IMITATION_EPOCHS):
+        learner.config = dataclasses.replace(learner.config, eta=3.0 * 0.8**epoch, eta_bias=0.03 * 0.8**epoch)
+        order = rng.permutation(len(y))
+        for s in range(0, len(order), 64):
+            idx = order[s : s + 64]
+            learner.step(policy.drive(x[idx]), y[idx])
+    seconds = time.perf_counter() - t0
+    return policy, {"rows": int(len(y)), "epochs": IMITATION_EPOCHS, "seconds": seconds, "parameters": policy.parameters()}
 
 
 def export(policy: PatchPolicy, path: Path, meta: dict) -> None:
@@ -207,7 +241,12 @@ def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
     print(f"backprop: {base_final['hits_per_point']:.2f} hits per point, return rate {base_final['return_rate']:.2f} ({baseline.parameters()} parameters, {base_seconds:.0f}s)")
 
     conformance = cd.conformance(patch.learner.engine, patch.drive(Pong(1, seed=1).observation())[0], steps=100)
-    export(patch, HERE / "net.json", {"hits_per_point": final["hits_per_point"], "parameters": patch.parameters()})
+    export(patch, HERE / "net.json", {"hits_per_point": final["hits_per_point"], "return_rate": final["return_rate"], "parameters": patch.parameters(), "learned_from": "reward"})
+
+    imitator, imitation_meta = imitation(seed)
+    imitation_final = evaluate(imitator, seed + 100, EVAL_POINTS)
+    print(f"imitation of the tracker: {imitation_final['hits_per_point']:.2f} hits per point, return rate {imitation_final['return_rate']:.2f} ({imitation_meta['seconds']:.0f}s)", flush=True)
+    export(imitator, HERE / "net_imitation.json", {"hits_per_point": imitation_final["hits_per_point"], "return_rate": imitation_final["return_rate"], "parameters": imitator.parameters(), "learned_from": "the scripted tracker's actions"})
     body = {
         "environment": {"H": H, "W": W, "max_rally": MAX_RALLY, "envs": ENVS, "horizon": HORIZON, "gamma": GAMMA, "iterations": iterations, "batch": BATCH, "eta": ETA, "decay": DECAY},
         "config": CONFIG.to_dict(),
@@ -219,15 +258,17 @@ def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
         "training_seconds": seconds,
         "mean_free_steps": float(np.mean(patch.steps)),
         "final": final,
+        "imitation": {**imitation_meta, "final": imitation_final},
         "conformance": conformance,
         "comparison": [{"model": f"MLP {INPUTS}-{HIDDEN}-{ACTIONS}, REINFORCE with Adam", "parameters": baseline.parameters(), "history": base_history, "training_seconds": base_seconds, "final": base_final}],
         "boundary": {
             "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local; nudge target = action taken, nudge weight = normalised advantage",
             "goal_enters_only_through_the_nudge": True,
-            "reward": "+1 return, -1 miss, minus 0.05 times the paddle-to-ball row distance each step",
+            "reward": "+1 return, -1 miss, plus the change in paddle-to-ball row distance each step (potential-based shaping)",
             "opponent": "scripted tracker with skill 0.7, not learned",
             "same_rollout_budget_for_the_baseline": True,
             "evaluation_is_greedy_play_on_fresh_seeds": True,
+            "imitation_net_is_a_second_policy_for_the_page_and_is_not_learned_from_reward": True,
         },
     }
     receipt = cd.Receipt.build("cadence-examples/04-pong/v1", body, sources=SOURCES)
@@ -237,8 +278,7 @@ def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
 
 
 def check(body: dict) -> str | None:
-    for name in ("final", "untrained"):
-        row = body[name]
+    for name, row in (("final", body["final"]), ("untrained", body["untrained"]), ("imitation", body["imitation"]["final"])):
         if abs(row["hits"] / row["points"] - row["hits_per_point"]) > 1e-9:
             return f"{name}: hits per point does not follow from the counts"
     for row in body["history"]:
