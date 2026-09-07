@@ -43,7 +43,36 @@ characters written from a held-out opening.
 
 ## 4. The numbers
 
-{{NUMBERS}}
+From `receipt.json`: validation hidden 256: 4.01 bits, hidden 512: 3.94 bits; the selected net trained five epochs on the
+first 300,000 characters; the last 100,000 read once; softmax temperature 0.1 chosen on
+validation; the training backend was mps float32 with three other runs sharing the machine.
+
+| model | parameters | epochs | training | bits per character | next-character accuracy |
+|---|---|---|---|---|---|
+| patch net 1040-512-65, free/nudged rule | 569,457 | 5 | 10903 s | 3.33 | 37.2% |
+| bigram (Laplace) | 4,225 | 1 | 0 s | 3.71 | 26.5% |
+| MLP, same window, Adam | 566,337 | 5 | 12 s | 3.11 | 41.3% |
+| one-layer transformer, Adam | 59,521 | 5 | 31 s | 3.08 | 42.1% |
+
+Read it plainly. At this window and budget every model is weak, and the patch net is the
+weakest by about a quarter of a bit: a bigram model is a fair summary of what a sixteen-
+character window has learned in five epochs, and the one-layer transformer with a tenth
+of the parameters is the best of the lot by a hair. The ranking is the interesting part.
+On every supervised rung with a dense, low-dimensional input the rule matched a same-shape
+backprop net; here, with 1,040 mostly-silent one-hot input owners and 65 classes, it
+trails, and it costs three hours where the MLP costs twelve seconds. Two things are worth
+trying before reading more into it: a learned character embedding (a first layer of seams
+from 65 owners to a few dozen, shared across positions) instead of 1,040 raw owners, and a
+learning-rate schedule that does not decay to a tenth by the fifth epoch.
+
+What the net wrote from a held-out opening, drawing characters at the validation temperature:
+
+    t I tringto
+    s pating and hyrour'd nothone of the stes gecon me ofAat Whonot owringRongoublyoI wollgnkent now that sover heve doHZ not githt now lo tho gareit te live fore yourfettis bot it of newi&qy, and ou muce salp too a to cominge ofeby wnour? My guregrarting head 
+    RoGeryI youronse that limf with Mornesy beplide connt theik wee coun:
+    'sene difvoI seart,
+    The a may lighte heabKs to murthitW the 
+
 
 ## 5. What a window cannot do
 
