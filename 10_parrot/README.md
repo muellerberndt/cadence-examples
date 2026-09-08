@@ -34,9 +34,13 @@ sound was which.
 
 ## How it learns, exactly
 
-One net: 480 auditory owners (the context), 160 hidden owners, 40 output owners, tied seams
-between neighbouring layers and nothing else. Two learning signals, both the free/nudged
-rule with the quadratic nudge on one output group:
+One net: 480 context owners, two hidden populations that both read them (128 auditory
+owners under the memory group, 96 vocal owners under the motor group, as the caudomedial
+nidopallium and the song system are separate tissues), 40 output owners, tied seams between
+neighbouring layers and nothing else. Keeping the populations apart matters: with one shared
+hidden layer every motor nudge also moved the memory's seams, and recall fell from 0.55 to
+0.44. Three learning signals, all the free/nudged rule with the quadratic nudge on one
+output group:
 
 1. **Listening.** While a household sound is on (and for 300 ms after it stops), each 80 ms
    chunk gives eight rows: the context before each frame, and the frame. Settle free;
@@ -71,6 +75,17 @@ air sac closed for six frames.
 - both for the sounds heard often, the sounds heard rarely, and an untrained brain.
 
 <!-- results -->
+Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 101 spontaneous bouts, 52 babbles and 49 imitations; 544 s of wall-clock a day):
+
+| sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained |
+|---|---|---|---|---|---|---|---|
+| beeps | 139 / 9 | 0.861 | 0.408 | -0.123 | 0.185 | 0.253 | 0.255 |
+| doorbell | 132 / 10 | 0.219 | 0.330 | 0.016 | 0.582 | 0.475 | 0.238 |
+| ring | 152 / 11 | 0.533 | 0.313 | 0.144 | 0.722 | 0.770 | 0.478 |
+| siren | 207 / 10 | 0.834 | 0.287 | 0.011 | 0.693 | 0.707 | 0.244 |
+| whistle | 214 / 6 | 0.842 | 0.314 | -0.042 | 0.450 | 0.355 | 0.318 |
+
+Means: recall 0.658 when a sound was heard often against 0.330 when it was rare and 0.001 untrained; 4 of 5 sounds are recalled better after the day that repeated them. Imitation 0.527 / 0.512 / 0.306. Brain: 744 owners, 112,872 parameters. The receipt binds these numbers to the code and the seed.
 <!-- /results -->
 
 ## What we learned building it

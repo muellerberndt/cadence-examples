@@ -45,14 +45,14 @@ AROUSAL_RATE, AROUSAL_NOISE = 0.08, 0.05  # per second of quiet; a bout starts p
 BABBLE_SHARE = 0.5  # of bouts, before any cue exists every bout babbles
 BABBLE_FRAMES = (60, 140)
 REPLAY_FRAMES = 160
-CLOSED = 6  # frames of the mirror asking for no pressure that end a bout: the parrot stops when its own command says so
+CLOSED = 6  # frames of the mirror asking for no pressure, or of the memory expecting quiet, that end a bout
 CLOSING = 8  # frames of closed air sac the parrot adds at the end of every bout, so the mirror learns that quiet means closed
 REFINE = True  # reinforcement while imitating: noisy commands, and the command taken pulled toward by how much better than usual the result matched the expectation
 EXPLORE = 0.04  # standard deviation of the smooth noise on the commands during an imitation bout (the variability LMAN injects)
 REFINE_GAIN = 0.5  # weight of the advantage nudge against the mirror's plain association
 CUES = 24  # onset contexts the parrot keeps as replay cues
 AFTERGLOW = 30  # frames after a sound ends that the memory still learns from: how a sound stops is part of it
-ETA, DECAY = 0.3, 3e-4
+ETA, DECAY = 0.03, 3e-4  # two-day evaluations: at 0.3 recall 0.18; at 0.03 a sound recalls 0.55 after a day that repeated it and 0.32 after one that did not; at 0.01 0.59 and 0.53 (it keeps rare sounds too)
 
 
 def write_wav(path: Path, sound: np.ndarray) -> None:
@@ -165,7 +165,7 @@ class Parrot:
             b["trace"].append({"seen": seen[0], "expected": expected[0], "command": motor})
         if b["produced"]:  # the context is what the parrot hears of itself, one frame behind; the cue starts it
             b["window"], b["tail"] = advance(b["window"], self.history[-1], b["tail"])
-        b["closed"] = b["closed"] + 1 if pressure_of(motor["pressure"]) <= 0.0 else 0
+        b["closed"] = b["closed"] + 1 if pressure_of(motor["pressure"]) <= 0.0 or expected[0].max() < LOUD * 0.6 else 0
         if b["closed"] >= CLOSED:
             b["left"] = 0
         b["last"] = motor
@@ -289,13 +289,13 @@ def imitate(brain: Brain, cue: np.ndarray, tail: list[np.ndarray]) -> tuple[np.n
     sounds, commands = [], []
     closed = 0
     for _ in range(REPLAY_FRAMES):
-        expected, motor = brain.imagine(window[None])
+        expected, motor, _ = brain.imagine(window[None])
         cmd = {k: float(v[0]) for k, v in motor.items()}
         commands.append(cmd)
         sound = syrinx.frame(cmd["tension"], cmd["pressure"], cmd["tract"])
         sounds.append(sound)
         window, tail = advance(window, cochlea.frame(sound), tail)
-        closed = closed + 1 if pressure_of(cmd["pressure"]) <= 0.0 else 0
+        closed = closed + 1 if pressure_of(cmd["pressure"]) <= 0.0 or expected[0].max() < LOUD * 0.6 else 0
         if closed >= CLOSED:
             break
     return np.concatenate(sounds), commands
@@ -385,9 +385,9 @@ def run(seed: int, minutes: float, out: Path) -> dict[str, Any]:
         "day": {"minutes": minutes, "events": events, "heard": counts, "gap_seconds": GAP, "rare_weight": RARE_WEIGHT, "frequent": list(FREQUENT), "rare": list(RARE)},
         "day_b": {"events": events_b, "heard": counts_b, "frequent": list(swapped_frequent), "rare": list(swapped_rare), "seconds": seconds_b, "bouts": len(parrot_b.bouts), "timeline": timeline_b},
         "chunk_frames": CHUNK, "window_frames": WINDOW,
-        "brain": {"owners": parrot.brain.wiring.n, "hidden": parrot.brain.wiring.n - parrot.brain.inputs - parrot.brain.outputs, "parameters": parrot.brain.parameters(), "eta": ETA, "decay": DECAY, "learner": parrot.brain.learner.to_dict()},
+        "brain": {"owners": int(parrot.brain.wiring.n), "hidden": int(parrot.brain.wiring.n - parrot.brain.inputs - parrot.brain.outputs), "parameters": int(parrot.brain.parameters()), "eta": ETA, "decay": DECAY, "learner": parrot.brain.learner.to_dict()},
         "arousal": {"rate_per_second": AROUSAL_RATE, "noise": AROUSAL_NOISE, "babble_share": BABBLE_SHARE}, "reinforcement": {"on": REFINE, "explore": EXPLORE, "gain": REFINE_GAIN}, "per_sound": per_sound, "summary": summary, "timeline": timeline, "seconds": seconds,
-        "boundary": {"learning_rule": "free/nudged contrastive Hebbian, centered, owner-local, quadratic nudges on two output groups of one net, seams decaying every update", "memory_learns_from": "household sound and the 300 ms after it; gated off while the parrot sings (as auditory responses in the song system are)", "mirror_learns_from": "the parrot's own sound against the command issued one frame earlier, including the closed frames that end every bout", "reinforcement": "during imitation bouts the commands carry smooth noise; the command taken is pulled toward in the context that chose it, weighted by how much better than usual the heard frame matched the memory's expectation, or pushed from when worse", "names_never_reach_the_brain": True, "cues": "the first 80 ms after an onset following a quiet spell, up to 24 kept; replay draws among them by familiarity", "two_days": "day B swaps which sounds are frequent, with a fresh parrot and another seed, so each sound is scored once heard often and once heard rarely", "evaluation": "recall: the memory replayed from each sound's first 80 ms on its own expectations, against the sound itself (correlation of cochleagrams); imitation: from the same cue, expectation to mirror to syrinx to cochlea to the next context, against the sound; the untrained brain is the control"},
+        "boundary": {"learning_rule": "free/nudged contrastive Hebbian, centered, owner-local, quadratic nudges on two output groups of one net, seams decaying every update", "memory_learns_from": "household sound and the 300 ms after it; gated off while the parrot sings (as auditory responses in the song system are)", "mirror_learns_from": "the parrot's own sound against the command issued one frame earlier, including the closed frames that end every bout", "reinforcement": "during imitation bouts the commands carry smooth noise; the command taken is pulled toward in the context that chose it, weighted by how much better than usual the heard frame matched the memory's expectation, or pushed from when worse", "names_never_reach_the_brain": True, "cues": "the first 80 ms after an onset following a quiet spell, up to 24 kept; replay draws among them by familiarity", "two_days": "day B swaps which sounds are frequent, with a fresh parrot and another seed, so each sound is scored once heard often and once heard rarely", "bout_ends": "when the mirror keeps the air sac closed, or the memory expects quiet, for six frames", "evaluation": "recall: the memory replayed from each sound's first 80 ms on its own expectations, against the sound itself (correlation of cochleagrams); imitation: from the same cue, expectation to mirror to syrinx to cochlea to the next context, against the sound; the untrained brain is the control"},
     }
     r = cd.Receipt.build("cadence-examples/10_parrot/v1", body, sources=SOURCES)
     r.write(out)

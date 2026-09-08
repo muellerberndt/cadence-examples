@@ -39,7 +39,7 @@
   <div class="grid">
     <section class="card">
       <h2>The household</h2>
-      <p>Each play reaches the cochlea and the memory learns from it, as it did all day. Recall is how well the memory, replayed from the sound's first 80 ms, reproduces the rest (correlation; 1 is perfect).</p>
+      <p>Each play reaches the cochlea and the memory learns from it, as it did all day. Recall is how well the memory, replayed from the sound's first 80 ms, reproduces the rest (correlation; 1 is perfect). The net has 744 owners and settles in the page, so listening and speaking take a few seconds of thought.</p>
       <div id="sounds"></div>
       <div class="row"><button id="stop">Quiet</button><span class="status" id="hstatus"></span></div>
     </section>
@@ -72,7 +72,7 @@
     </section>
     <section class="card">
       <h2>How it works</h2>
-      <p>Cochlea: a bank of second-order band-pass filters, an RMS envelope per 10 ms, log-compressed. Brain: 480 auditory owners (the last eight frames, six bins of 50 ms and six of 200 ms behind them, whose fill is the parrot's clock) to 160 hidden owners to 40 output owners by tied seams; 24 outputs are the expected next frame, 16 are population codes for three muscles. Learning: settle free, settle with the output group pulled toward its target (and once pushed away), move each seam by the difference of the two Hebbian products; seams decay a little every update. Syrinx: the Amador–Mindlin labial oscillator into a one-resonance tract, integrated at 128 kHz. The parrot never sees a label; the names on this page are for you.</p>
+      <p>Cochlea: a bank of second-order band-pass filters, an RMS envelope per 10 ms, log-compressed. Brain: 480 context owners (the last eight frames, six bins of 50 ms and six of 200 ms behind them, whose fill is the parrot's clock) read by two hidden populations, 128 auditory owners under the 24 owners of the expected next frame and 96 vocal owners under 16 population-coded muscle owners, all by tied seams; 24 outputs are the expected next frame, 16 are population codes for three muscles. Learning: settle free, settle with the output group pulled toward its target (and once pushed away), move each seam by the difference of the two Hebbian products; seams decay a little every update. Syrinx: the Amador–Mindlin labial oscillator into a one-resonance tract, integrated at 128 kHz. The parrot never sees a label; the names on this page are for you.</p>
     </section>
   </div>
 </main>
@@ -86,10 +86,10 @@ const HEARD_KEEP = 640;
 // ---------- the owner rule and settlement, as in cadence
 function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
 function settle(drive, opts) {
-  // opts: {state, steps, nudge: {target, mask, beta}} ; returns {s, v}
+  // opts: {state, steps, tol, nudge: {target, mask, beta}} ; returns {s, v}
   const v = opts && opts.state ? Float64Array.from(opts.state.v) : new Float64Array(n);
   const s = opts && opts.state ? Float64Array.from(opts.state.s) : new Float64Array(n);
-  const inbox = new Float64Array(n), steps = opts && opts.steps || 60, nd = opts && opts.nudge;
+  const inbox = new Float64Array(n), steps = opts && opts.steps || 60, nd = opts && opts.nudge, tol = opts && opts.tol;
   for (let t = 0; t < steps; t++) {
     inbox.fill(0);
     for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) inbox[j] += si * W[row + j]; }
@@ -98,7 +98,7 @@ function settle(drive, opts) {
       let extra = 0; if (nd && nd.mask[j]) extra = nd.beta * (nd.target[j] - s[j]);
       v[j] += R.dt * (-v[j] + inbox[j] + drive[j] + BIAS[j] + extra); const ns = act(v[j]); moved = Math.max(moved, Math.abs(ns - s[j])); s[j] = ns;
     }
-    if (moved < (nd ? 3e-3 : 1e-4)) break;
+    if (moved < (tol || (nd ? 3e-3 : 1e-4))) break;
   }
   return { s, v };
 }
@@ -106,12 +106,13 @@ function settle(drive, opts) {
 function contextOf(frames) { let h = frames.slice(-NEED); while (h.length < NEED) h.unshift(new Float64Array(CH)); const ctx = []; let k = 0; for (const [count, span] of SCALES) { for (let b = 0; b < count; b++) { const m = new Float64Array(CH); for (let j = 0; j < span; j++) { const f = h[k + b * span + j]; for (let c = 0; c < CH; c++) m[c] += f[c] / span; } ctx.push(m); } k += count * span; } for (let i = k; i < NEED; i++) ctx.push(Float64Array.from(h[i])); return ctx; }
 function driveOf(ctx) { const d = new Float64Array(n); for (let f = 0; f < ctx.length; f++) for (let c = 0; c < CH; c++) d[IN[f * CH + c]] = R.clamp * ctx[f][c]; return d; }
 function levelOf(s, idx) { const k = idx.length; let num = 0, den = 0; for (let i = 0; i < k; i++) { const w = Math.max(s[idx[i]], 0) + 1e-6; num += w * i / (k - 1); den += w; } return num / den; }
-function think(ctx) { const { s } = settle(driveOf(ctx)); const expected = PRED.map(i => Math.min(Math.max(s[i], 0), 1)); const motor = { tension: levelOf(s, GROUPS.tension), pressure: levelOf(s, GROUPS.pressure), tract: levelOf(s, GROUPS.tract) }; return { expected, motor }; }
+function think(ctx, quick) { const { s } = settle(driveOf(ctx), quick ? { tol: 3e-3 } : undefined); const expected = PRED.map(i => Math.min(Math.max(s[i], 0), 1)); const motor = { tension: levelOf(s, GROUPS.tension), pressure: levelOf(s, GROUPS.pressure), tract: levelOf(s, GROUPS.tract) }; return { expected, motor }; }
 // what comes next, and the command that would make it: the memory expects, then the mirror is shown that expectation as the latest frame
 function imagine(ctx) { const { expected } = think(ctx); const shifted = ctx.slice(1).concat([Float64Array.from(expected)]); const { motor } = think(shifted); return { expected, motor }; }
 // ---------- learning: the memory group pulled toward the next frame, seams moved by the contrast, then decay
 const PRED_MASK = new Uint8Array(n); PRED.forEach(i => PRED_MASK[i] = 1);
-const SEAM = new Uint8Array(n * n); for (const i of IN) for (const h of HID) { SEAM[i * n + h] = 1; SEAM[h * n + i] = 1; } for (const h of HID) for (const o of OUT) { SEAM[h * n + o] = 1; SEAM[o * n + h] = 1; }
+const AUD = NET.sets.auditory, VOC = NET.sets.vocal, MOT = [].concat(GROUPS.tension, GROUPS.pressure, GROUPS.tract);
+const SEAM = new Uint8Array(n * n); function tie(A, B) { for (const a of A) for (const b of B) { SEAM[a * n + b] = 1; SEAM[b * n + a] = 1; } } tie(IN, AUD); tie(AUD, PRED); tie(IN, VOC); tie(VOC, MOT);
 function learnMemory(windows, targets) {
   const beta = L.beta, eta = L.eta, etaBias = L.eta_bias, decay = L.decay, B = windows.length;
   const dW = new Float64Array(n * n), dB = new Float64Array(n);
@@ -178,8 +179,8 @@ async function hear(wave, learn, status) {
   const all = frames.concat(learn ? glow : []);
   while (k < all.length && !quietRequested) {
     const chunk = all.slice(k, k + 8), windows = [], targets = [];
-    for (const f of chunk) { const w = windowAt(history.length); const { expected } = think(w); windows.push(w); targets.push(Array.from(f)); history.push(f); pushHeard(f, expected); }
-    if (learn) learnMemory(windows, targets);
+    for (const f of chunk) { const w = windowAt(history.length); const { expected } = think(w, true); windows.push(w); targets.push(Array.from(f)); history.push(f); pushHeard(f, expected); }
+    if (learn) { learnMemory(windows, targets); await yieldNow(); }
     k += 8; if (history.length > 400) history.splice(0, history.length - NEED);
     const due = t0 + (k * FRAME / SR) * 1000; await new Promise(r => setTimeout(r, Math.max(0, due - performance.now())));
     if (status) status(`${(k * FRAME / SR).toFixed(2)} s`);
@@ -187,21 +188,23 @@ async function hear(wave, learn, status) {
   busy = false;
 }
 // ---------- speaking: replay a memory through the mirror into the syrinx
-function replay(tail, maxFrames = 160) {
+const yieldNow = () => new Promise(r => setTimeout(r, 0));
+async function replay(tail, status, maxFrames = 160) {
   // tail: the frames behind the cue (silence, then the sound's first 80 ms). The memory expects, the mirror commands, the syrinx
   // sounds, the cochlea hears, and the heard frame is the next context: the loop runs through the body. It ends when the
-  // mirror keeps the air sac closed for six frames.
+  // mirror keeps the air sac closed, or the memory expects quiet, for six frames. Two settlements a frame, so it yields as it goes.
   const syrinx = new Syrinx(), ear = new Cochlea(); let frames = tail.map(f => Float64Array.from(f)); const out = [], cmds = []; let closed = 0;
   for (let t = 0; t < maxFrames; t++) {
-    const { motor } = imagine(contextOf(frames)); cmds.push(motor); const wave = syrinx.frame(motor.tension, motor.pressure, motor.tract); out.push(wave);
-    frames = frames.concat([ear.frame(wave)]).slice(-NEED); closed = motor.pressure <= 0.3 ? closed + 1 : 0; if (closed >= 6) break;
+    const { expected, motor } = imagine(contextOf(frames)); cmds.push(motor); const wave = syrinx.frame(motor.tension, motor.pressure, motor.tract); out.push(wave);
+    frames = frames.concat([ear.frame(wave)]).slice(-NEED); closed = (motor.pressure <= 0.3 || Math.max(...expected) < 0.15) ? closed + 1 : 0; if (closed >= 6) break;
+    if (t % 4 === 3) { if (status) status(`thinking, ${((t + 1) * FRAME / SR).toFixed(1)} s so far`); await yieldNow(); }
   }
   return { wave: cat(...out), cmds };
 }
 function babble(frames = 100) { const syrinx = new Syrinx(); let st = [0.2 + 0.6 * Math.random(), 0.7, 0.3 + 0.4 * Math.random()]; const out = [], cmds = []; for (let t = 0; t < frames; t++) { st = st.map((v, i) => Math.min(Math.max(v + 0.05 * ([0.5, 0.75, 0.5][i] - v) + [0.04, 0.03, 0.03][i] * gauss(), 0), 1)); let p = st[1]; if (frames - t < 6) p *= (frames - t) / 6; cmds.push({ tension: st[0], pressure: p, tract: st[2] }); out.push(syrinx.frame(st[0], p, st[2])); } return { wave: cat(...out), cmds }; }
 function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
-async function speak(result, status) {
-  if (busy) return; busy = true; const dur = play(result.wave); const t0 = performance.now(); const sung = cochleagram(result.wave);
+async function speak(making, status) {
+  if (busy) return; busy = true; const result = await making; const dur = play(result.wave); const t0 = performance.now(); const sung = cochleagram(result.wave);
   for (let k = 0; k < result.cmds.length; k++) {
     const m = result.cmds[k]; for (const key of ["tension", "pressure", "tract"]) { document.getElementById("m-" + key).style.width = `${100 * m[key]}%`; document.getElementById("v-" + key).textContent = m[key].toFixed(2); }
     drawGram(document.getElementById("sung"), sung.slice(0, k + 1), [255, 120, 120]);
@@ -214,7 +217,7 @@ async function speak(result, status) {
 // recall: replay the memory from the sound's first 80 ms and correlate with the sound itself
 function cueOf(frames) { const pad = []; for (let i = 0; i < NEED - WINDOW; i++) pad.push(new Float64Array(CH)); return pad.concat(frames.slice(0, WINDOW).map(f => Float64Array.from(f))); }
 function correlation(a, b) { let ma = 0, mb = 0; for (let i = 0; i < a.length; i++) { ma += a[i]; mb += b[i]; } ma /= a.length; mb /= a.length; let num = 0, da = 0, db = 0; for (let i = 0; i < a.length; i++) { num += (a[i] - ma) * (b[i] - mb); da += (a[i] - ma) ** 2; db += (b[i] - mb) ** 2; } return da > 0 && db > 0 ? num / Math.sqrt(da * db) : 0; }
-function recallOf(frames) { let hist = cueOf(frames); const got = [], want = []; for (let i = WINDOW; i < frames.length; i++) { const { expected } = think(contextOf(hist)); got.push(...expected); want.push(...frames[i]); hist = hist.concat([Float64Array.from(expected)]).slice(-NEED); } return correlation(got, want); }
+function recallOf(frames) { let hist = cueOf(frames); const got = [], want = []; for (let i = WINDOW; i < frames.length; i++) { const { expected } = think(contextOf(hist), true); got.push(...expected); want.push(...frames[i]); hist = hist.concat([Float64Array.from(expected)]).slice(-NEED); } return correlation(got, want); }
 function famScore(r) { return Math.max(0, r); }
 // ---------- the drawn whistle
 const drawCanvas = document.getElementById("draw"), contour = new Float32Array(64).fill(-1); let drawing = false;
@@ -224,22 +227,22 @@ drawCanvas.addEventListener("pointerdown", e => { drawing = true; pen(e); }); dr
 function drawnWave() { const idx = []; for (let i = 0; i < contour.length; i++) if (contour[i] >= 0) idx.push(i); if (idx.length < 2) return null; const nn = 9600, fr = new Float32Array(nn); for (let s = 0; s < nn; s++) { const p = s / nn * contour.length; let a = idx[0], b = idx[0]; for (const i of idx) { if (i <= p) a = i; if (i >= p) { b = i; break; } } const t = b === a ? 0 : (p - a) / (b - a); const lvl = contour[a] * (1 - t) + contour[b] * t; fr[s] = PITCH_LO * Math.pow(PITCH_HI / PITCH_LO, lvl); } return padded(tone(fr, scaled(env(nn), 0.4))); }
 // ---------- wiring the page
 const counts = {}; const famEls = {};
-function refreshFamiliarity() { for (const k in LIB) { const s = famScore(recallOf(GRAMS[k])); famEls[k].bar.style.width = `${100 * s}%`; famEls[k].val.textContent = s.toFixed(2); } const dw = drawnWave(); if (dw) { const s = famScore(recallOf(cochleagram(dw))); document.getElementById("fam-drawn").style.width = `${100 * s}%`; document.getElementById("famv-drawn").textContent = s.toFixed(2); } }
+async function refreshFamiliarity() { for (const k in LIB) { const s = famScore(recallOf(GRAMS[k])); famEls[k].bar.style.width = `${100 * s}%`; famEls[k].val.textContent = s.toFixed(2); await yieldNow(); } const dw = drawnWave(); if (dw) { const s = famScore(recallOf(cochleagram(dw))); document.getElementById("fam-drawn").style.width = `${100 * s}%`; document.getElementById("famv-drawn").textContent = s.toFixed(2); } }
 const soundsEl = document.getElementById("sounds"), speakEl = document.getElementById("speak");
 for (const k in LIB) {
   counts[k] = NET.sounds[k].heard; const row = document.createElement("div"); row.className = "sound";
   row.innerHTML = `<span>${k} <small style="color:var(--muted)">heard ${NET.sounds[k].frequent ? "often" : "rarely"} today: <b class="count"></b></small></span><div class="bar"><i></i></div><b class="val">–</b>`;
   const btn = document.createElement("button"); btn.textContent = "Play"; btn.addEventListener("click", () => hear(LIB[k], true, t => document.getElementById("hstatus").textContent = `${k} ${t}`).then(() => { counts[k]++; row.querySelector(".count").textContent = counts[k]; refreshFamiliarity(); }));
   row.querySelector(".count").textContent = counts[k]; row.prepend(btn); soundsEl.appendChild(row); famEls[k] = { bar: row.querySelector(".bar i"), val: row.querySelector(".val") };
-  const sb = document.createElement("button"); sb.textContent = `Say ${k}`; sb.addEventListener("click", () => speak(replay(cueOf(GRAMS[k])), t => document.getElementById("sstatus").textContent = `${k}: ${t}`)); speakEl.appendChild(sb);
+  const sb = document.createElement("button"); sb.textContent = `Say ${k}`; sb.addEventListener("click", () => { if (busy) return; const st = t => document.getElementById("sstatus").textContent = `${k}: ${t}`; speak(replay(cueOf(GRAMS[k]), st), st); }); speakEl.appendChild(sb);
 }
-const bb = document.createElement("button"); bb.textContent = "Babble"; bb.addEventListener("click", () => speak(babble(), t => document.getElementById("sstatus").textContent = `babble: ${t}`)); speakEl.appendChild(bb);
+const bb = document.createElement("button"); bb.textContent = "Babble"; bb.addEventListener("click", () => speak(Promise.resolve(babble()), t => document.getElementById("sstatus").textContent = `babble: ${t}`)); speakEl.appendChild(bb);
 document.getElementById("stop").addEventListener("click", () => quietRequested = true);
 document.getElementById("clear").addEventListener("click", () => { contour.fill(-1); drawContour(); });
 async function teach(times) { const dw = drawnWave(); if (!dw) { document.getElementById("tstatus").textContent = "draw a contour first"; return; } for (let i = 0; i < times; i++) { await hear(dw, true, t => document.getElementById("tstatus").textContent = `hearing ${i + 1} of ${times}: ${t}`); refreshFamiliarity(); await new Promise(r => setTimeout(r, 250)); } }
 document.getElementById("teach").addEventListener("click", () => teach(1));
 document.getElementById("teach5").addEventListener("click", () => teach(5));
-document.getElementById("say-whistle").addEventListener("click", () => { const dw = drawnWave(); if (!dw) return; speak(replay(cueOf(cochleagram(dw))), t => document.getElementById("sstatus").textContent = `your whistle: ${t}`); });
+document.getElementById("say-whistle").addEventListener("click", () => { const dw = drawnWave(); if (!dw || busy) return; const st = t => document.getElementById("sstatus").textContent = `your whistle: ${t}`; speak(replay(cueOf(cochleagram(dw)), st), st); });
 const facts = document.getElementById("facts"); for (const [k, v] of Object.entries(NET.facts)) { const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = v; facts.append(dt, dd); }
 drawContour(); refreshFamiliarity(); drawGram(document.getElementById("heard"), [], [255, 190, 90]); drawGram(document.getElementById("expected"), [], [120, 200, 255]); drawGram(document.getElementById("sung"), [], [255, 120, 120]);
 </script>

@@ -1,12 +1,17 @@
 """One equilibrium net that is the parrot's auditory memory and its vocal mirror.
 
-Owners: an auditory context (the last WINDOW cochlear frames), a hidden layer, and two
-output groups on the same hidden owners: the next cochlear frame it expects (the memory),
-and the motor command that would produce the sound it is hearing (the inverse model).
-Both learn by the free/nudged rule with the quadratic nudge on their own group; the seams
-decay a little every update, so what is not heard again fades and what repeats stays.
-Motor commands are population codes (a bump over a few owners per muscle), read out as
-the bump-weighted mean, because the rule learns a pattern far better than a level.
+Owners: an auditory context (recent cochlear frames and averaged bins behind them), two
+hidden populations that both read it, and two output groups: the next cochlear frame the
+parrot expects (the memory, on the auditory population, as the caudomedial nidopallium
+holds familiar sounds) and the motor command that would produce the sound it is hearing
+(the mirror, on the vocal population, as the song system's mirror neurons do). Keeping the
+populations apart keeps one learner's nudges from moving the other's seams: a nudge on
+the memory group changes the auditory owners, whose seams then move, while the vocal
+owners, tied only to the clamped context, barely stir. Both learn by the free/nudged rule
+with the quadratic nudge on their own group; the seams decay a little every update, so
+what is not heard again fades and what repeats stays. Motor commands are population codes
+(a bump over a few owners per muscle), read out as the bump-weighted mean, because the
+rule learns a pattern far better than a level.
 """
 
 from __future__ import annotations
@@ -26,7 +31,8 @@ SCALES = ((6, 20), (6, 5))  # older context as averaged bins, slowest first: six
 ROWS = sum(count for count, _ in SCALES)
 NEED = WINDOW + sum(count * span for count, span in SCALES)  # frames of history a context reads: 158
 CONTEXT = ROWS + WINDOW
-HIDDEN = 160
+AUDITORY, VOCAL = 128, 96  # hidden owners under the memory group and under the motor group
+HIDDEN = AUDITORY + VOCAL
 MOTOR = {"tension": 8, "pressure": 4, "tract": 4}  # owners per muscle group
 
 
@@ -65,12 +71,40 @@ def advance(ctx: np.ndarray, frame: np.ndarray, tail: list[np.ndarray]) -> tuple
     return context(tail), tail
 
 
+def wiring_of(inputs: int, outputs: int, seed: int) -> cd.Wiring:
+    """Context to two hidden populations by tied seams; the auditory one to the memory group, the vocal one to the motor group."""
+    rng = np.random.default_rng(seed)
+    n_in, n_a, n_v = inputs, AUDITORY, VOCAL
+    ctx = np.arange(n_in)
+    aud = np.arange(n_in, n_in + n_a)
+    voc = np.arange(n_in + n_a, n_in + n_a + n_v)
+    pred = np.arange(n_in + n_a + n_v, n_in + n_a + n_v + CHANNELS)
+    mot = np.arange(pred[-1] + 1, pred[-1] + 1 + outputs - CHANNELS)
+    pre, post, sign = [], [], []
+
+    def block(a: np.ndarray, b: np.ndarray) -> None:
+        i, j = np.meshgrid(a, b, indexing="ij")
+        magnitude = rng.uniform(0.0, 1.0, size=i.size) * np.sqrt(6.0 / (len(a) + len(b)))
+        s = rng.choice([-1.0, 1.0], size=i.size) * magnitude
+        pre.extend([i.ravel(), j.ravel()])
+        post.extend([j.ravel(), i.ravel()])
+        sign.extend([s, s])
+
+    block(ctx, aud)
+    block(aud, pred)
+    block(ctx, voc)
+    block(voc, mot)
+    n = int(mot[-1] + 1)
+    sets = {"input": range(n_in), "hidden": range(n_in, n_in + n_a + n_v), "auditory": aud.tolist(), "vocal": voc.tolist(), "output": range(pred[0], n)}
+    return cd.Wiring.from_edges(n, pre=np.concatenate(pre), post=np.concatenate(post), sign=np.concatenate(sign), sets=sets, label=f"parrot:{n_in}x({n_a}+{n_v})x{outputs}")
+
+
 class Brain:
     def __init__(self, seed: int, *, eta: float = 0.3, decay: float = 3e-4, beta: float = 0.1, momentum: float = 0.0, backend: str = "cpu") -> None:
         self.inputs = CONTEXT * CHANNELS
         self.motor_width = sum(MOTOR.values())
         self.outputs = CHANNELS + self.motor_width
-        self.wiring = cd.layered(self.inputs, HIDDEN, self.outputs, density=1.0, seed=seed)
+        self.wiring = wiring_of(self.inputs, self.outputs, seed)
         out = np.array(self.wiring.sets["output"])
         self.predict_index = out[:CHANNELS]
         self.motor_index = out[CHANNELS:]
@@ -152,7 +186,7 @@ class Brain:
         engine = self.learner.engine
         rule = engine.rule
         return {
-            "n": self.wiring.n, "window": WINDOW, "scales": [list(s) for s in SCALES], "need": NEED, "channels": CHANNELS, "hidden": HIDDEN, "motor": MOTOR,
+            "n": int(self.wiring.n), "window": WINDOW, "scales": [list(s) for s in SCALES], "need": NEED, "channels": CHANNELS, "hidden": HIDDEN, "auditory": AUDITORY, "vocal": VOCAL, "motor": MOTOR,
             "sets": {k: list(map(int, v)) for k, v in self.wiring.sets.items()}, "predict": self.predict_index.tolist(), "groups": {k: v.tolist() for k, v in self.groups.items()},
             "W": [round(float(w), 5) for w in engine.dense().ravel()], "bias": [round(float(v), 5) for v in engine.bias],
             "rule": {"slope": rule.slope, "threshold": rule.threshold, "leak": rule.leak, "dt": rule.dt, "clamp": rule.clamp_amplitude, "rest": rule.rest_emission},
