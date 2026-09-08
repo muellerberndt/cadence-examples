@@ -1,18 +1,22 @@
-# 10 · Grey parrot: hear, remember, imitate
+# 10 · Grey parrots: hear, remember, imitate
 
-An African grey lives in a household. Five sounds happen there: a doorbell, a phone, a
-microwave, a whistle, a siren. Three of them happen forty or fifty times a day, two a
-handful of times. The parrot has a cochlea, a syrinx with three muscles, and one
-equilibrium net for a brain. By the end of the day it can say the doorbell.
+Two African greys live in a household. Six sounds happen there: a doorbell, a phone, a
+microwave, a whistle, a siren, and someone saying hello. Three of them happen well over a
+hundred times a day, three a handful of times. Each parrot has a cochlea, a syrinx with
+three muscles, and one equilibrium net for a brain. By the end of the day it can say the
+microwave, and hello.
 
-**Play with it:** the page lets you play the household sounds to the parrot, let it speak,
-make it babble, and draw a whistle of your own and repeat it until the parrot picks it up.
-Every settlement and every learning update in the page is the same rule as in training.
+**Play with them:** the page shows both birds and both brains settling live. Play the
+household to them, record a noise of your own or draw a whistle and repeat it until a parrot
+picks it up, let one speak and watch the other listen and learn from it. Every settlement
+and every learning update in the page is the same rule as in training; the brain view shows
+every owner's activation and, after each update, the seams that moved.
 
 ```bash
-python train.py            # one day (about ten minutes of wall-clock); writes receipt.json, net.json, bouts.json, imitations/*.wav
+python train.py                     # two simulated hours (about twenty minutes); writes receipt.json, net.json, bouts.json, imitations/*.wav
+python train.py --seed 1 --tag _1   # the second parrot: receipt_1.json, net_1.json, ...
 python train.py --verify receipt.json
-python build_page.py       # embeds net.json and the cochlea's filters into index.html
+python build_page.py                # embeds both nets and the cochlea's filters into index.html, and the receipt's numbers into this README
 ```
 
 ## The biology, and where we took shortcuts
@@ -24,8 +28,8 @@ python build_page.py       # embeds net.json and the cochlea's filters into inde
 | the song system's mirror neurons: cells that fire both when the bird produces a sound and when it hears it, the inverse model that maps a heard sound onto the command that makes it | the same net's *motor group*: 16 owners nudged, while the parrot hears itself, toward the command it issued one frame earlier | one frame of delay between command and sound |
 | the anterior forebrain pathway (LMAN): the source of vocal variability, and of the drive to practise when the bird is alone | an arousal integrator that fills in quiet and opens a bout; babbling bouts are smooth random muscle commands; during imitation the commands carry smooth noise | a scalar arousal, a coin for babble against imitate |
 | dopamine from the ventral tegmental area, signalling whether a rendition came out better or worse than usual | while imitating, each command taken is pulled toward, in the context that chose it, by how much better than the running average the heard frame matched the memory's expectation, and pushed from when worse | the critic is the memory's own expectation; a scalar running average is the baseline |
-| the syrinx: two labia in an airflow, tension setting pitch, air-sac pressure switching phonation on | the Amador–Mindlin labial oscillator `x'' = -eps x - C x² x' + beta x'`: tension sets `eps` (pitch 300 Hz to 3.5 kHz), pressure sets `beta`, and phonation starts through a Hopf bifurcation at pressure level 0.3 | one sound source, not two |
-| the vocal tract, beak and tongue (parrots shape formants with the tongue) | one resonance whose centre a third muscle sets between 800 Hz and 4 kHz | one resonance |
+| the syrinx: two labia in an airflow, tension setting pitch, air-sac pressure switching phonation on | the Amador–Mindlin labial oscillator `x'' = -eps x - C x² x' + beta x'`: tension sets `eps` (pitch 300 Hz to 3.5 kHz), pressure sets `beta`, and phonation starts through a Hopf bifurcation at pressure level 0.3. The sound is the airflow the labia gate: they close once a cycle and cut the flow, so the source is a pulse train (its rate of change, as sound radiates) rich in harmonics, with turbulence noise in proportion to the pressure | one sound source, not two |
+| the vocal tract, beak and tongue (parrots shape formants with the tongue) | two resonances: the trachea's, fixed at 1.5 kHz, and one a third muscle sets between 800 Hz and 4 kHz; the radiated sound is soft-limited | two resonances |
 | what the bird attends to | the first 80 ms after an onset that follows a quiet spell is kept as a cue (up to 24); a replay draws among cues in proportion to how well the memory recalls them | the cue is a snapshot, not a memory of its own |
 | time | the context holds the last 80 ms at full resolution, plus six 50 ms bins and six 200 ms bins behind it; how many bins a sound has filled is the parrot's clock | a fixed window instead of an internal chain of time-locked bursts (HVC) |
 
@@ -64,6 +68,26 @@ from the context it hears; the mirror is shown a context whose latest frame is t
 expectation and answers with a command; the syrinx sounds; the cochlea hears it, and that
 frame is the next context. The loop runs through the body. It ends when the mirror keeps the
 air sac closed for six frames.
+
+## The web app
+
+Two parrots, Coco (seed 0) and Pepper (seed 1), trained on the same household from
+different seeds, so they babbled differently, chose different bouts, and hold slightly
+different memories. In the page:
+
+- **the body**: an African grey whose beak opens with the air-sac pressure, whose throat
+  swells with the tract setting, and whose head tilts to a sound;
+- **the brain**: every owner drawn as it settles, the context on top (24 channels across, 20
+  rows of time), the auditory and vocal populations, the expected next frame, the three
+  muscles as bumps; a red halo on the seams that moved in the last update;
+- **the household**: play a sound, both cochleas hear it and both memories learn from it;
+- **noises**: record two seconds from the microphone or draw a whistle, play it to a parrot
+  once or five times, watch recall climb, then let the parrot say it;
+- **each other**: when one parrot speaks, the other listens and learns from what it hears.
+
+The page carries both nets (744 owners each), so it thinks at about fifty milliseconds a
+settlement: a bout takes a few seconds of thought before it is heard, and the brain view
+shows that thought.
 
 ## What the receipt measures
 

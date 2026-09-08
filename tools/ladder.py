@@ -88,7 +88,7 @@ RUNGS = [
     ("07_music", "chorales", "music, play it", "Continues Bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; listen in the page."),
     ("08_cartpole", "cart-pole", "reward, a body", "The classic control task from reward, with the state as a place code."),
     ("09_celegans", "C. elegans", "measured wiring", "The published connectome learns four textbook facts and is scored on seventeen held-out ablation phenotypes against a shuffled wiring."),
-    ("10_parrot", "grey parrot", "vocal learning, play it", "A parrot with a physical syrinx and a cochlea; one net is its memory of what it hears often and the mirror that turns a memory into muscle commands. Teach it a whistle in the page."),
+    ("10_parrot", "grey parrots", "vocal learning, play it", "Two parrots with a physical syrinx and a cochlea each; one net per bird is its memory of what it hears often and the mirror that turns a memory into muscle commands. Watch the brains settle, record a noise and teach it, let them learn from each other."),
 ]
 
 

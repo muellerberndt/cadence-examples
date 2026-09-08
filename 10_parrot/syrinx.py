@@ -25,8 +25,9 @@ PITCH_LO, PITCH_HI = 300.0, 3500.0  # the syrinx's range, mapped from a tension 
 TRACT_LO, TRACT_HI = 800.0, 4000.0
 C = 1.0e7  # nonlinear damping of the labial model; with BETA_SCALE it sets the saturation amplitude
 BETA_SCALE = 1.0e3  # pressure units to 1/s: weak against the labial stiffness, so pitch stays with tension
-GAIN = 50.0  # sound units per unit of labial displacement
-MIX = 0.6  # share of the radiated sound that passes through the tract resonance; the rest radiates directly
+GAIN = 1.0  # overall output scale
+SOURCE = 1.2  # sound units per unit of airflow change a sample; the output is soft-limited, so a resonant note peaks near 0.75
+MIX = 0.6  # share of the radiated sound that passes through each tract resonance; the rest passes it by
 
 
 def pitch_of(tension: float) -> float:
@@ -42,38 +43,59 @@ def pressure_of(level: float) -> float:
     return -0.3 + 1.0 * float(np.clip(level, 0.0, 1.0))
 
 
-class Syrinx:
-    """State of the labia and the tract; renders one frame per motor command."""
+GAP = 6e-3  # resting opening of the labia; when the oscillation swings past it the labia close and the airflow is cut
+BREATH = 0.03  # aspiration noise per unit of pressure: the turbulence of air through the syrinx
+TRACHEA = 1500.0  # the fixed resonance of the trachea, Hz; the beak and tongue set the other
 
-    def __init__(self) -> None:
+
+class Syrinx:
+    """State of the labia, the airflow and the tract; renders one frame per motor command.
+
+    The sound is not the labial motion itself but the airflow it gates: the labia open and
+    close once per cycle and the flow through them is cut when they close, so the source is
+    a train of pulses (its time derivative, as sound radiates) rich in harmonics, with a
+    little turbulence noise on top. Two resonances shape it: the trachea's, fixed, and one
+    the beak and tongue set. That is what makes it sound like a bird rather than a flute.
+    """
+
+    def __init__(self, seed: int = 0) -> None:
         self.x, self.y = 1e-3, 0.0
-        self.tract = np.zeros(2)  # resonator state (two-pole)
+        self.flow = 0.0
+        self.tract = np.zeros(4)  # two two-pole resonators
+        self.rng = np.random.default_rng(seed)
 
     def frame(self, tension: float, pressure: float, tract: float) -> np.ndarray:
         eps = (2 * np.pi * pitch_of(tension)) ** 2
-        beta = pressure_of(pressure) * BETA_SCALE  # the Hopf onset takes a few ms
+        p = pressure_of(pressure)
+        beta = p * BETA_SCALE  # the Hopf onset takes a few ms
         dt = 1.0 / (SR * SUB)
-        out = np.empty(FRAME)
-        x, y = self.x, self.y
+        drive = float(np.sqrt(max(p, 0.0)))  # airflow for a given opening grows with the square root of the pressure
+        source = np.empty(FRAME)
+        x, y, flow = self.x, self.y, self.flow
+        noise = self.rng.normal(size=FRAME) * BREATH * max(p, 0.0)
         for i in range(FRAME):
             for _ in range(SUB):
                 y += dt * (-eps * x - C * x * x * y + beta * y)
                 x += dt * y
             x = float(np.clip(x, -0.05, 0.05))
-            out[i] = x
-        self.x, self.y = x, y
-        # the tract: one resonance at the beak/tongue setting, Q about 4
-        f0 = tract_of(tract)
-        r = np.exp(-np.pi * f0 / (4.0 * SR))
-        a1, a2 = -2 * r * np.cos(2 * np.pi * f0 / SR), r * r
-        z1, z2 = self.tract
-        wave = np.empty(FRAME)
-        for i in range(FRAME):
-            w = out[i] - a1 * z1 - a2 * z2
-            wave[i] = (1 - r) * (w - z2)
-            z2, z1 = z1, w
-        self.tract = np.array([z1, z2])
-        return np.clip((MIX * wave + (1 - MIX) * out) * GAIN, -1.0, 1.0)
+            opening = max(0.0, x + GAP)  # the labia close when the swing exceeds the resting gap
+            new_flow = drive * opening / GAP
+            source[i] = (new_flow - flow) * SOURCE + noise[i]  # radiated sound is the flow's rate of change
+            flow = new_flow
+        self.x, self.y, self.flow = x, y, flow
+        wave = source
+        for k, (f0, q) in enumerate(((tract_of(tract), 4.0), (TRACHEA, 2.5))):  # the beak/tongue resonance, then the trachea's
+            r = np.exp(-np.pi * f0 / (q * SR))
+            a1, a2 = -2 * r * np.cos(2 * np.pi * f0 / SR), r * r
+            z1, z2 = self.tract[2 * k], self.tract[2 * k + 1]
+            out = np.empty(FRAME)
+            for i in range(FRAME):
+                w = wave[i] - a1 * z1 - a2 * z2
+                out[i] = (1 - r) * (w - z2)
+                z2, z1 = z1, w
+            self.tract[2 * k], self.tract[2 * k + 1] = z1, z2
+            wave = MIX * out + (1 - MIX) * wave
+        return np.tanh(wave * GAIN)  # a soft limit: the radiation of a loud note is not linear either
 
     def render(self, tension: np.ndarray, pressure: np.ndarray, tract: np.ndarray) -> np.ndarray:
         return np.concatenate([self.frame(a, b, c) for a, b, c in zip(tension, pressure, tract, strict=True)])
@@ -146,9 +168,37 @@ def siren() -> np.ndarray:
     return tone(1050.0 + 450.0 * np.sin(2 * np.pi * t / 1.2 - np.pi / 2), 0.4 * envelope(n))
 
 
-SOUNDS = {"doorbell": doorbell, "ring": ring, "beeps": beeps, "whistle": whistle, "siren": siren}
-FREQUENT = ("doorbell", "ring", "beeps")  # heard many times a day
-RARE = ("whistle", "siren")  # heard a couple of times
+def resonate(wave: np.ndarray, f0: np.ndarray, q: float) -> np.ndarray:
+    """A two-pole resonance whose centre moves sample by sample."""
+    out = np.empty(len(wave))
+    z1 = z2 = 0.0
+    for i in range(len(wave)):
+        r = np.exp(-np.pi * f0[i] / (q * SR))
+        a1, a2 = -2 * r * np.cos(2 * np.pi * f0[i] / SR), r * r
+        w = wave[i] - a1 * z1 - a2 * z2
+        out[i] = (1 - r) * (w - z2)
+        z2, z1 = z1, w
+    return out
+
+
+def hello() -> np.ndarray:
+    """Two syllables of a voice: a 140 Hz pulse train with a falling pitch through two formants that glide, 'heh' to 'loh'."""
+    n = 8000
+    t_ = np.arange(n) / SR
+    pitch = 150.0 - 30.0 * t_ / (n / SR)
+    pulses = (np.mod(np.cumsum(pitch) / SR, 1.0) < 0.15).astype(float)  # a short open phase each period
+    glide = np.clip((t_ - 0.2) / 0.12, 0.0, 1.0)  # the tongue moves between 0.2 and 0.32 s
+    f1 = 450.0 + (550.0 - 450.0) * glide
+    f2 = 2100.0 - (2100.0 - 900.0) * glide
+    voiced = resonate(resonate(np.diff(pulses, prepend=0.0), f1, 6.0), f2, 8.0)
+    amp = envelope(n, 400, 1200) * (1.0 - 0.35 * np.exp(-((t_ - 0.24) / 0.03) ** 2))  # a dip between the syllables
+    voiced = voiced / (np.abs(voiced).max() + 1e-9) * 0.6 * amp
+    return voiced
+
+
+SOUNDS = {"doorbell": doorbell, "ring": ring, "beeps": beeps, "whistle": whistle, "siren": siren, "hello": hello}
+FREQUENT = ("doorbell", "beeps", "hello")  # heard many times a day
+RARE = ("ring", "whistle", "siren")  # heard a couple of times
 
 
 def waves() -> dict[str, np.ndarray]:

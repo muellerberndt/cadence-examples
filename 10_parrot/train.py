@@ -1,6 +1,7 @@
 """An African grey in a household: a day of listening, babbling and imitating, then a receipt.
 
-Run:  python train.py                (about ten minutes; writes receipt.json, net.json, bouts.json, imitations/*.wav)
+Run:  python train.py                       (two simulated hours, about twenty minutes; writes receipt.json, net.json, bouts.json, imitations/*.wav)
+      python train.py --seed 1 --tag _1     (a second parrot for the page: receipt_1.json, net_1.json, ...)
       python train.py --verify receipt.json
 
 The parrot hears the household through its cochlea. Three sounds recur many times a day
@@ -336,7 +337,7 @@ def live(seed: int, minutes: float, frequent: tuple[str, ...], rare: tuple[str, 
     return parrot, counts, timeline, time.perf_counter() - t0, len(events)
 
 
-def run(seed: int, minutes: float, out: Path) -> dict[str, Any]:
+def run(seed: int, minutes: float, out: Path, tag: str = "") -> dict[str, Any]:
     library = waves()
     cochleagrams = {name: Cochlea().frames(w) for name, w in library.items()}
     untrained = evaluate(Brain(seed + 1), library, cochleagrams)
@@ -349,14 +350,15 @@ def run(seed: int, minutes: float, out: Path) -> dict[str, Any]:
     (HERE / "imitations").mkdir(exist_ok=True)
     for name in library:
         write_wav(HERE / "imitations" / f"{name}_original.wav", library[name])
-        write_wav(HERE / "imitations" / f"{name}_imitation.wav", trained[name]["sound"])
+        write_wav(HERE / "imitations" / f"{name}_imitation{tag}.wav", trained[name]["sound"])
     imitations = {name: {"commands": r["commands"], "similarity": r["imitation_similarity"]} for name, r in trained.items()}
-    (HERE / "imitations.json").write_text(json.dumps(imitations, separators=(",", ":")))
+    (HERE / f"imitations{tag}.json").write_text(json.dumps(imitations, separators=(",", ":")))
     net = parrot.brain.export()
     net["cues"] = {name: onset_cue(frames)[0].round(4).tolist() for name, frames in cochleagrams.items()}
     net["sounds"] = {name: {"frames": int(len(f)), "heard": counts[name], "frequent": name in FREQUENT} for name, f in cochleagrams.items()}
-    (HERE / "net.json").write_text(json.dumps(net, separators=(",", ":")))
-    (HERE / "bouts.json").write_text(json.dumps(parrot.bouts, separators=(",", ":")))
+    net["seed"] = seed
+    (HERE / f"net{tag}.json").write_text(json.dumps(net, separators=(",", ":")))
+    (HERE / f"bouts{tag}.json").write_text(json.dumps(parrot.bouts, separators=(",", ":")))
     per_sound = {}
     for name in library:
         often, rarely = (trained[name], trained_b[name]) if name in FREQUENT else (trained_b[name], trained[name])
@@ -409,14 +411,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--minutes", type=float, default=MINUTES)
-    parser.add_argument("--output", type=Path, default=HERE / "receipt.json")
+    parser.add_argument("--tag", default="", help="suffix for a second parrot's net, bouts and imitations (e.g. _1)")
+    parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--verify", type=Path)
     args = parser.parse_args()
     if args.verify:
         ok, message = cd.Receipt.verify(args.verify, sources=SOURCES, check=check)
         print(message)
         return 0 if ok else 1
-    run(args.seed, args.minutes, args.output)
+    run(args.seed, args.minutes, args.output or HERE / f"receipt{args.tag}.json", args.tag)
     return 0
 
 
