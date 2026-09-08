@@ -74,8 +74,9 @@ def summarise(rung: str, b: dict) -> tuple[str, list[tuple[str, str]]]:
     if rung == "10_parrot":
         s = b["summary"]
         pitch = f"; the melody of its imitations tracks the original at {s['pitch_heard_often']:.3f} (untrained {s['pitch_untrained']:.3f})" if "pitch_heard_often" in s else ""
-        return (f"recall of a sound {s['recall_heard_often']:.3f} after a day that repeated it, {s['recall_heard_rarely']:.3f} after one that did not (untrained {s['recall_untrained']:.3f}); its imitations correlate {s['imitation_heard_often']:.3f} with the originals (untrained {s['imitation_untrained']:.3f}){pitch}; {s['bouts']} spontaneous bouts a day",
-                [("recall, heard often", f"{s['recall_heard_often']:.3f}"), ("recall, heard rarely", f"{s['recall_heard_rarely']:.3f}"), ("imitation, heard often", f"{s['imitation_heard_often']:.3f}"), ("pitch track", f"{s['pitch_heard_often']:.3f} / {s['pitch_untrained']:.3f}" if "pitch_heard_often" in s else "—"), ("spontaneous bouts", str(s["bouts"]))])
+        distance = f", their pitch sits {s['pitch_distance_heard_often']:.1f} channels from the original's (untrained {s['pitch_distance_untrained']:.1f})" if "pitch_distance_heard_often" in s else ""
+        return (f"recall of a sound {s['recall_heard_often']:.3f} after a day that repeated it, {s['recall_heard_rarely']:.3f} after one that did not (untrained {s['recall_untrained']:.3f}); its imitations correlate {s['imitation_heard_often']:.3f} with the originals (untrained {s['imitation_untrained']:.3f}){pitch}{distance}; {s['bouts']} spontaneous bouts a day",
+                [("recall, heard often", f"{s['recall_heard_often']:.3f}"), ("recall, heard rarely", f"{s['recall_heard_rarely']:.3f}"), ("imitation, heard often", f"{s['imitation_heard_often']:.3f}"), ("pitch track", f"{s['pitch_heard_often']:.3f} / {s['pitch_untrained']:.3f}" if "pitch_heard_often" in s else "—"), ("pitch distance, channels", f"{s['pitch_distance_heard_often']:.2f} / {s['pitch_distance_untrained']:.2f}" if "pitch_distance_heard_often" in s else "—"), ("spontaneous bouts", str(s["bouts"]))])
     raise KeyError(rung)
 
 

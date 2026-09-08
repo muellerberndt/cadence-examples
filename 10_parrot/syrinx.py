@@ -26,7 +26,7 @@ TRACT_LO, TRACT_HI = 800.0, 4000.0
 C = 1.0e7  # nonlinear damping of the labial model; with BETA_SCALE it sets the saturation amplitude
 BETA_SCALE = 1.0e3  # pressure units to 1/s: weak against the labial stiffness, so pitch stays with tension
 GAIN = 1.0  # overall output scale
-SOURCE = 1.2  # sound units per unit of airflow change a sample; the output is soft-limited, so a resonant note peaks near 0.75
+SOURCE = 2.0  # sound units per unit of airflow change a sample; the output is soft-limited
 MIX = 0.6  # share of the radiated sound that passes through each tract resonance; the rest passes it by
 
 
@@ -43,7 +43,7 @@ def pressure_of(level: float) -> float:
     return -0.3 + 1.0 * float(np.clip(level, 0.0, 1.0))
 
 
-GAP = 6e-3  # resting opening of the labia; when the oscillation swings past it the labia close and the airflow is cut
+GAP = 0.015  # resting opening of the labia; when the oscillation swings past it the labia close and the airflow is cut. At 6e-3 the labia were shut most of each cycle and the harmonics near the tract's resonances outweighed the fundamental (a buzz whose cochlear peak was not its pitch); at 0.015 the fundamental is the loudest channel at every tension and pressure
 BREATH = 0.03  # aspiration noise per unit of pressure: the turbulence of air through the syrinx
 TRACHEA = 1500.0  # the fixed resonance of the trachea, Hz; the beak and tongue set the other
 
