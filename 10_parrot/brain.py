@@ -72,7 +72,11 @@ def advance(ctx: np.ndarray, frame: np.ndarray, tail: list[np.ndarray]) -> tuple
 
 
 def wiring_of(inputs: int, outputs: int, seed: int) -> cd.Wiring:
-    """Context to two hidden populations by tied seams; the auditory one to the memory group, the vocal one to the motor group."""
+    """Context to two hidden populations by tied seams; the auditory one to the memory group, the vocal one to the motor group.
+
+    The auditory population reads the whole context (it needs the clock); the vocal population reads
+    only the last WINDOW frames: the command that makes a sound is a function of the sound now, and
+    a mirror that also saw the previous syllables answered with an average of them."""
     rng = np.random.default_rng(seed)
     n_in, n_a, n_v = inputs, AUDITORY, VOCAL
     ctx = np.arange(n_in)
@@ -90,12 +94,13 @@ def wiring_of(inputs: int, outputs: int, seed: int) -> cd.Wiring:
         post.extend([j.ravel(), i.ravel()])
         sign.extend([s, s])
 
+    recent = ctx[-WINDOW * CHANNELS :]  # the last WINDOW frames: what the mirror reads; the memory reads the whole context
     block(ctx, aud)
     block(aud, pred)
-    block(ctx, voc)
+    block(recent, voc)
     block(voc, mot)
     n = int(mot[-1] + 1)
-    sets = {"input": range(n_in), "hidden": range(n_in, n_in + n_a + n_v), "auditory": aud.tolist(), "vocal": voc.tolist(), "output": range(pred[0], n)}
+    sets = {"input": range(n_in), "hidden": range(n_in, n_in + n_a + n_v), "auditory": aud.tolist(), "vocal": voc.tolist(), "recent": recent.tolist(), "output": range(pred[0], n)}
     return cd.Wiring.from_edges(n, pre=np.concatenate(pre), post=np.concatenate(post), sign=np.concatenate(sign), sets=sets, label=f"parrot:{n_in}x({n_a}+{n_v})x{outputs}")
 
 

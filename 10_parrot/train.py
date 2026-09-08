@@ -45,6 +45,7 @@ LOUD = 0.25  # a cochlear level above this is sound
 AROUSAL_RATE, AROUSAL_NOISE = 0.08, 0.05  # per second of quiet; a bout starts past 1
 BABBLE_SHARE = 0.5  # of bouts, before any cue exists every bout babbles
 BABBLE_FRAMES = (60, 140)
+SYLLABLE = 60  # frames between the new pitch and tract a babbling bout jumps to: subsong is varied, and the mirror needs the whole range
 REPLAY_FRAMES = 160
 CLOSED = 6  # frames of the mirror asking for no pressure, or of the memory expecting quiet, that end a bout
 CLOSING = 8  # frames of closed air sac the parrot adds at the end of every bout, so the mirror learns that quiet means closed
@@ -172,6 +173,8 @@ class Parrot:
             drift = self.rng.normal(size=3) * np.array([0.04, 0.03, 0.03])
             target = np.array([0.5, 0.75, 0.5])
             b["state"] = np.clip(b["state"] + 0.05 * (target - b["state"]) + drift, 0.0, 1.0)
+            if len(b["produced"]) % SYLLABLE == 0:  # a new syllable: a fresh pitch and tract setting
+                b["state"][0], b["state"][2] = self.rng.uniform(0.05, 0.95), self.rng.uniform(0.1, 0.9)
             tension, pressure, tract = b["state"]
             if b["left"] < 6:
                 pressure *= b["left"] / 6.0  # close the air sac at the end of the bout
@@ -183,8 +186,10 @@ class Parrot:
             b["noise"] = 0.8 * b["noise"] + EXPLORE * self.rng.normal(size=3)
             motor = {k: float(np.clip(v + d, 0.0, 1.0)) for (k, v), d in zip(motor.items(), b["noise"], strict=True)}
             b["trace"].append({"seen": seen[0], "expected": expected[0], "command": motor})
-        if b["produced"]:  # the context is what the parrot hears of itself, one frame behind; the cue starts it
-            b["window"], b["tail"] = advance(b["window"], self.history[-1], b["tail"])
+        # the replay runs on the memory's own expectation: the template drives the mirror, as the bird's memory of the
+        # tutor drives its song; what the parrot hears of itself goes to the critic, not into this context (the memory
+        # never learned its own voice, and shown it as context it expected nothing useful)
+        b["window"], b["tail"] = advance(b["window"], expected[0], b["tail"])
         b["closed"] = b["closed"] + 1 if pressure_of(motor["pressure"]) <= 0.0 or expected[0].max() < LOUD * 0.6 else 0
         if b["closed"] >= CLOSED:
             b["left"] = 0
@@ -195,6 +200,7 @@ class Parrot:
     def step(self, t0: int, house: Household, familiar: dict[str, float]) -> None:
         frames, names, self_frames = [], [], []
         chunk_commands: list[dict[str, float] | None] = []
+        kinds: list[str | None] = []
         traces: list[tuple[dict[str, Any], np.ndarray]] = []
         for t in range(t0, t0 + CHUNK):
             env, name = house.frame(t)
@@ -202,6 +208,7 @@ class Parrot:
                 self.start_bout(t, familiar)
             if self.bout is not None:
                 traced = len(self.bout.get("trace", []))
+                kinds.append(self.bout["kind"])
                 cmd = self.command()
                 sound = self.syrinx.frame(cmd["tension"], cmd["pressure"], cmd["tract"])
                 self.bout["produced"].append(sound)
@@ -215,6 +222,7 @@ class Parrot:
                     self.finish_bout(t)
             else:
                 chunk_commands.append(None)
+                kinds.append(None)
                 heard = env
                 self_frames.append(False)
                 pending = None
@@ -246,8 +254,9 @@ class Parrot:
         external = np.array([nm is not None and not sf for nm, sf in zip(names, self_frames, strict=True)])
         if external.any():  # the memory listens to the house, gated off while the parrot sings
             self.brain.learn_memory(windows[external], targets[external])
-        own = [k for k, cmd in enumerate(chunk_commands) if cmd is not None and k >= 1 and chunk_commands[k - 1] is not None]
-        if own:  # the mirror: the sound heard now against the command issued one frame earlier
+        own = [k for k, cmd in enumerate(chunk_commands) if cmd is not None and k >= 1 and chunk_commands[k - 1] is not None and kinds[k] == "babble"]
+        if own:  # the mirror: the sound heard now against the command issued one frame earlier, from babbling only
+            # (an imitation bout's commands are the mirror's own answers; learning from them fixes it at whatever it says)
             cmds = {key: np.array([chunk_commands[k - 1][key] for k in own]) for key in ("tension", "pressure", "tract")}  # type: ignore[index]
             self.brain.learn_inverse(windows[own], cmds)
         if REFINE and traces:  # reinforcement: each command taken, weighted by how much better than usual its sound matched the expectation
@@ -301,9 +310,9 @@ def recall(brain: Brain, frames: np.ndarray) -> tuple[float, np.ndarray]:
 
 
 def imitate(brain: Brain, cue: np.ndarray, tail: list[np.ndarray]) -> tuple[np.ndarray, list[dict[str, float]]]:
-    """Sing from a cue: the memory expects, the mirror commands, the syrinx sounds, the cochlea hears, and the
-    heard frame becomes the next context, so the loop runs through the body; the sound and the commands."""
-    syrinx, cochlea = Syrinx(), Cochlea()
+    """Sing from a cue: the memory replays on its own expectations (the template), each expectation goes through the
+    mirror to the syrinx; the sound and the commands. It ends when the memory expects quiet or the mirror closes."""
+    syrinx = Syrinx()
     window = cue.copy()
     tail = list(tail)
     sounds, commands = [], []
@@ -312,9 +321,8 @@ def imitate(brain: Brain, cue: np.ndarray, tail: list[np.ndarray]) -> tuple[np.n
         expected, motor, _ = brain.imagine(window[None])
         cmd = {k: float(v[0]) for k, v in motor.items()}
         commands.append(cmd)
-        sound = syrinx.frame(cmd["tension"], cmd["pressure"], cmd["tract"])
-        sounds.append(sound)
-        window, tail = advance(window, cochlea.frame(sound), tail)
+        sounds.append(syrinx.frame(cmd["tension"], cmd["pressure"], cmd["tract"]))
+        window, tail = advance(window, expected[0], tail)
         closed = closed + 1 if pressure_of(cmd["pressure"]) <= 0.0 or expected[0].max() < LOUD * 0.6 else 0
         if closed >= CLOSED:
             break
@@ -430,7 +438,7 @@ def run(seed: int, minutes: float, out: Path, tag: str = "") -> dict[str, Any]:
         "chunk_frames": CHUNK, "window_frames": WINDOW,
         "brain": {"owners": int(parrot.brain.wiring.n), "hidden": int(parrot.brain.wiring.n - parrot.brain.inputs - parrot.brain.outputs), "parameters": int(parrot.brain.parameters()), "eta": ETA, "decay": DECAY, "learner": parrot.brain.learner.to_dict()},
         "arousal": {"rate_per_second": AROUSAL_RATE, "noise": AROUSAL_NOISE, "babble_share": BABBLE_SHARE}, "reinforcement": {"on": REFINE, "explore": EXPLORE, "gain": REFINE_GAIN}, "per_sound": per_sound, "summary": summary, "timeline": timeline, "seconds": seconds,
-        "boundary": {"learning_rule": "free/nudged contrastive Hebbian, centered, owner-local, quadratic nudges on two output groups of one net, seams decaying every update", "memory_learns_from": "household sound and the 300 ms after it; gated off while the parrot sings (as auditory responses in the song system are)", "mirror_learns_from": "the parrot's own sound against the command issued one frame earlier, including the closed frames that end every bout", "reinforcement": "during imitation bouts the commands carry smooth noise; the command taken is pulled toward in the context that chose it, weighted by how much better than usual the heard frame matched the memory's expectation, or pushed from when worse", "names_never_reach_the_brain": True, "cues": "the first 80 ms after an onset following a quiet spell, up to 24 kept; replay draws among them by familiarity", "two_days": "day B swaps which sounds are frequent, with a fresh parrot and another seed, so each sound is scored once heard often and once heard rarely", "bout_ends": "when the mirror keeps the air sac closed, or the memory expects quiet, for six frames", "imitation_shape": "the same correlation with each frame's mean level removed, so a loud broadband voice does not score on loudness alone", "imitation_pitch": "correlation of the dominant cochlear channel over the frames where both are loud: does the melody go where the original's goes", "evaluation": "recall: the memory replayed from each sound's first 80 ms on its own expectations, against the sound itself (correlation of cochleagrams); imitation: from the same cue, expectation to mirror to syrinx to cochlea to the next context, against the sound; the untrained brain is the control"},
+        "boundary": {"learning_rule": "free/nudged contrastive Hebbian, centered, owner-local, quadratic nudges on two output groups of one net, seams decaying every update", "memory_learns_from": "household sound and the 300 ms after it; gated off while the parrot sings (as auditory responses in the song system are)", "mirror_learns_from": "the parrot's own sound during babbling bouts against the command issued one frame earlier, including the closed frames that end a babble; never from imitation bouts, whose commands are the mirror's own answers", "reinforcement": "during imitation bouts the commands carry smooth noise; the command taken is pulled toward in the context that chose it, weighted by how much better than usual the heard frame matched the memory's expectation, or pushed from when worse", "names_never_reach_the_brain": True, "cues": "the first 80 ms after an onset following a quiet spell, up to 24 kept; replay draws among them by familiarity", "two_days": "day B swaps which sounds are frequent, with a fresh parrot and another seed, so each sound is scored once heard often and once heard rarely", "bout_ends": "when the mirror keeps the air sac closed, or the memory expects quiet, for six frames", "imitation_shape": "the same correlation with each frame's mean level removed, so a loud broadband voice does not score on loudness alone", "imitation_pitch": "correlation of the dominant cochlear channel over the frames where both are loud: does the melody go where the original's goes", "evaluation": "recall: the memory replayed from each sound's first 80 ms on its own expectations, against the sound itself (correlation of cochleagrams); imitation: the same replay, each expectation through the mirror into a fresh syrinx, the produced sound heard through a cochlea and scored against the sound; the untrained brain is the control"},
     }
     r = cd.Receipt.build("cadence-examples/10_parrot/v1", body, sources=SOURCES)
     r.write(out)

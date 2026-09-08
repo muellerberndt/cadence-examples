@@ -125,7 +125,8 @@ class Brain {
     this.net = net; this.n = net.n; this.W = Float64Array.from(net.W); this.BIAS = Float64Array.from(net.bias); this.R = net.rule; this.L = net.learner;
     this.IN = net.sets.input; this.AUD = net.sets.auditory; this.VOC = net.sets.vocal; this.PRED = net.predict; this.GROUPS = net.groups; this.MOT = [].concat(net.groups.tension, net.groups.pressure, net.groups.tract);
     const n = this.n; this.PRED_MASK = new Uint8Array(n); this.PRED.forEach(i => this.PRED_MASK[i] = 1);
-    this.SEAM = new Uint8Array(n * n); const tie = (A, B) => { for (const a of A) for (const b of B) { this.SEAM[a * n + b] = 1; this.SEAM[b * n + a] = 1; } }; tie(this.IN, this.AUD); tie(this.AUD, this.PRED); tie(this.IN, this.VOC); tie(this.VOC, this.MOT);
+    this.RECENT = net.sets.recent || this.IN;
+    this.SEAM = new Uint8Array(n * n); const tie = (A, B) => { for (const a of A) for (const b of B) { this.SEAM[a * n + b] = 1; this.SEAM[b * n + a] = 1; } }; tie(this.IN, this.AUD); tie(this.AUD, this.PRED); tie(this.RECENT, this.VOC); tie(this.VOC, this.MOT);
     this.activity = new Float64Array(n); this.glow = new Float64Array(n); this.updates = 0;
   }
   act(v) { const R = this.R; const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
@@ -258,12 +259,14 @@ class Parrot {
       }
     } finally { this.busy = false; this.body.listening = 0; this.body.tilt = 0; this.draw(); }
   }
-  // speaking: from a cue, the memory expects, the mirror commands, the syrinx sounds, the cochlea hears, and the heard frame is the next context
+  // speaking: the memory replays on its own expectations (the template that drives the mirror); each expectation becomes a
+  // command, the syrinx sounds, the cochlea hears it for the display; it ends when the memory expects quiet or the mirror
+  // keeps the air sac closed for six frames. Two settlements a frame, so it yields as it goes.
   async replay(tail, maxFrames = 160) {
     const syrinx = new Syrinx(), ear = new Cochlea(); let frames = tail.map(f => Float64Array.from(f)); const out = [], cmds = [], grams = []; let closed = 0;
     for (let t = 0; t < maxFrames; t++) {
       const { expected, motor } = this.brain.imagine(contextOf(frames)); cmds.push(motor); const wave = syrinx.frame(motor.tension, motor.pressure, motor.tract); out.push(wave);
-      const heard = ear.frame(wave); grams.push({ heard, expected: Float64Array.from(expected) }); frames = frames.concat([heard]).slice(-NEED);
+      const heard = ear.frame(wave); grams.push({ heard, expected: Float64Array.from(expected) }); frames = frames.concat([Float64Array.from(expected)]).slice(-NEED);
       closed = (motor.pressure <= 0.3 || Math.max(...expected) < 0.15) ? closed + 1 : 0; if (closed >= 6) break;
       this.showMotor(motor); if (t % 2 === 1) { this.draw(); this.el.say.textContent = `thinking, ${((t + 1) * FRAME / SR).toFixed(1)} s so far`; } await yieldNow();
     }

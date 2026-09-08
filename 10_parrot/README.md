@@ -38,13 +38,15 @@ sound was which.
 
 ## How it learns, exactly
 
-One net: 480 context owners, two hidden populations that both read them (128 auditory
-owners under the memory group, 96 vocal owners under the motor group, as the caudomedial
-nidopallium and the song system are separate tissues), 40 output owners, tied seams between
-neighbouring layers and nothing else. Keeping the populations apart matters: with one shared
-hidden layer every motor nudge also moved the memory's seams, and recall fell from 0.55 to
-0.44. Three learning signals, all the free/nudged rule with the quadratic nudge on one
-output group:
+One net: 480 context owners, two hidden populations (128 auditory owners under the memory
+group read the whole context, since the memory needs the clock; 96 vocal owners under the
+motor group read only the last 80 ms, since the command that makes a sound is a function of
+the sound now), 40 output owners, tied seams between neighbouring layers and nothing else.
+The separation is the caudomedial nidopallium's from the song system's, and it matters
+twice over: with one shared hidden layer every motor nudge also moved the memory's seams
+(recall 0.55 to 0.44), and a mirror that read the long context answered with an average of
+the previous syllables' pitches. Three learning signals, all the free/nudged rule with the
+quadratic nudge on one output group:
 
 1. **Listening.** While a household sound is on (and for 300 ms after it stops), each 80 ms
    chunk gives eight rows: the context before each frame, and the frame. Settle free;
@@ -52,10 +54,14 @@ output group:
    it pushed away; move each seam by the difference of the two Hebbian products; decay every
    seam by 0.03%. The memory is switched off while the parrot sings, as auditory responses
    in the song system are.
-2. **Singing.** During a bout, each frame the parrot hears (its own voice, one frame after
-   the command) gives a row: the context, and the command that produced it as a bump over
-   the motor owners. The same update, on the motor group. Babbling bouts are how it collects
-   these rows; every bout ends with eight frames of a closed air sac, so quiet maps to closed.
+2. **Babbling.** During a babbling bout, each frame the parrot hears (its own voice, one
+   frame after the command) gives a row: the recent frames, and the command that produced
+   them as a bump over the motor owners. The same update, on the motor group. Babbling jumps
+   to a new pitch and tract setting every 300 ms, as subsong is varied, so the mirror sees the
+   whole range; every bout ends with eight frames of a closed air sac, so quiet maps to
+   closed. The mirror never learns from imitation bouts: their commands are its own answers,
+   and a mirror taught its own answers settles on one command for everything (measured: it
+   did).
 3. **Getting better.** During an imitation bout the commands carry smooth exploratory noise.
    For each frame, the mismatch between what the parrot heard and what its memory expected
    is compared with the running average of that mismatch; the command it took is nudged
@@ -63,31 +69,15 @@ output group:
    away when the rendition was worse than usual. This is the reward rung's rule (Pong,
    cart-pole) with the parrot's own memory as the critic.
 
-To say something, the parrot takes a cue, and each frame: the memory expects the next frame
-from the context it hears; the mirror is shown a context whose latest frame is that
-expectation and answers with a command; the syrinx sounds; the cochlea hears it, and that
-frame is the next context. The loop runs through the body. It ends when the mirror keeps the
-air sac closed for six frames.
-
-## The web app
-
-Two parrots, Coco (seed 0) and Pepper (seed 1), trained on the same household from
-different seeds, so they babbled differently, chose different bouts, and hold slightly
-different memories. In the page:
-
-- **the body**: an African grey whose beak opens with the air-sac pressure, whose throat
-  swells with the tract setting, and whose head tilts to a sound;
-- **the brain**: every owner drawn as it settles, the context on top (24 channels across, 20
-  rows of time), the auditory and vocal populations, the expected next frame, the three
-  muscles as bumps; a red halo on the seams that moved in the last update;
-- **the household**: play a sound, both cochleas hear it and both memories learn from it;
-- **noises**: record two seconds from the microphone or draw a whistle, play it to a parrot
-  once or five times, watch recall climb, then let the parrot say it;
-- **each other**: when one parrot speaks, the other listens and learns from what it hears.
-
-The page carries both nets (744 owners each), so it thinks at about fifty milliseconds a
-settlement: a bout takes a few seconds of thought before it is heard, and the brain view
-shows that thought.
+To say something, the parrot takes a cue and lets the memory replay: each frame, the memory
+expects the next frame from the context so far; the mirror is shown a context whose latest
+frame is that expectation and answers with a command; the syrinx sounds; and the
+expectation, not the heard sound, becomes the next context. The template drives, as the
+bird's memory of the tutor drives its song; what the parrot hears of itself goes to the
+critic. The bout ends when the memory expects quiet, or the mirror keeps the air sac
+closed, for six frames. (Feeding the heard voice back as context, which we tried first,
+derails the memory: it never learned its own voice, and shown it as context it expected
+nothing useful.)
 
 ## What the receipt measures
 
@@ -99,18 +89,18 @@ shows that thought.
 - both for the sounds heard often, the sounds heard rarely, and an untrained brain.
 
 <!-- results -->
-Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 162 spontaneous bouts, 75 babbles and 87 imitations; 678 s of wall-clock a day). The first parrot, seed 0:
+Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 162 spontaneous bouts, 71 babbles and 91 imitations; 329 s of wall-clock a day). The first parrot, seed 0:
 
 | sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained | pitch track, heard often | pitch track, untrained |
 |---|---|---|---|---|---|---|---|---|---|
-| beeps | 153 / 6 | 0.169 | 0.506 | -0.123 | 0.298 | 0.206 | -0.073 | 0.000 | 0.000 |
-| doorbell | 129 / 7 | 0.491 | -0.150 | 0.016 | 0.216 | 0.071 | 0.000 | 0.141 | 0.000 |
-| hello | 137 / 8 | 0.861 | 0.090 | -0.037 | 0.318 | 0.321 | 0.000 | 0.183 | 0.000 |
-| ring | 150 / 4 | 0.631 | 0.447 | 0.144 | 0.480 | 0.445 | 0.000 | 0.000 | 0.000 |
-| siren | 139 / 9 | 0.570 | 0.153 | 0.011 | 0.478 | 0.486 | 0.000 | -0.002 | 0.000 |
-| whistle | 141 / 7 | 0.903 | 0.063 | -0.042 | 0.571 | 0.635 | 0.130 | -0.312 | 0.727 |
+| beeps | 153 / 6 | 0.153 | 0.484 | -0.128 | 0.416 | 0.410 | 0.000 | 0.000 | 0.000 |
+| doorbell | 129 / 7 | 0.631 | -0.157 | -0.000 | 0.253 | 0.318 | -0.166 | 0.084 | -0.806 |
+| hello | 137 / 8 | 0.842 | 0.069 | -0.067 | 0.312 | 0.359 | 0.014 | -0.074 | -0.301 |
+| ring | 150 / 4 | 0.551 | 0.538 | 0.107 | 0.522 | 0.513 | -0.179 | 0.000 | 0.000 |
+| siren | 139 / 9 | 0.650 | 0.148 | -0.010 | 0.549 | 0.500 | 0.508 | 0.489 | 0.115 |
+| whistle | 141 / 7 | 0.925 | 0.150 | -0.054 | 0.658 | 0.670 | 0.000 | 0.248 | 0.000 |
 
-Means: recall 0.604 when a sound was heard often against 0.185 when it was rare and -0.005 untrained; 5 of 6 sounds are recalled better after the day that repeated them. Imitation (whole cochleagram) 0.393 / 0.361 / 0.009; spectral shape 0.491 / 0.442 / 0.073; pitch track 0.002 / 0.007 / 0.121. Brain: 744 owners, 65,256 parameters. The second parrot (seed 1, its own receipt) recalls 0.567 / 0.323 and imitates at 0.384 / 0.373 against 0.442 untrained. The receipts bind these numbers to the code and the seeds.
+Means: recall 0.625 when a sound was heard often against 0.206 when it was rare and -0.026 untrained; 5 of 6 sounds are recalled better after the day that repeated them. Imitation (whole cochleagram) 0.452 / 0.462 / 0.030; spectral shape 0.495 / 0.512 / 0.100; pitch track 0.125 / 0.085 / -0.165. Brain: 744 owners, 65,256 parameters. The second parrot (seed 1, its own receipt) recalls 0.426 / 0.357 and imitates at 0.407 / 0.434 against 0.428 untrained. The receipts bind these numbers to the code and the seeds.
 <!-- /results -->
 
 ## What we learned building it
