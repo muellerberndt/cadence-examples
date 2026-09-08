@@ -25,5 +25,5 @@ jobs:
           git diff --stat --exit-code -- '*/index.html'
       - name: the ladder in the README and the hub is what the receipts say
         run: python tools/ladder.py && git diff --stat --exit-code README.md index.html hub_published.html
-      - name: a short learning run works end to end
-        run: (cd 01_digits && python train.py --seeds 1 --output /tmp/digits.json && python train.py --verify /tmp/digits.json)
+      - name: every rung runs end to end at a tiny budget and its receipt verifies
+        run: python tools/smoke.py
