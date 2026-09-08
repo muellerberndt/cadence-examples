@@ -99,18 +99,18 @@ shows that thought.
 - both for the sounds heard often, the sounds heard rarely, and an untrained brain.
 
 <!-- results -->
-Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 161 spontaneous bouts, 85 babbles and 76 imitations; 980 s of wall-clock a day). The first parrot, seed 0:
+Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 162 spontaneous bouts, 75 babbles and 87 imitations; 678 s of wall-clock a day). The first parrot, seed 0:
 
-| sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained |
-|---|---|---|---|---|---|---|---|
-| beeps | 153 / 6 | 0.138 | 0.478 | -0.123 | 0.441 | 0.423 | -0.073 |
-| doorbell | 129 / 7 | 0.467 | -0.136 | 0.016 | 0.201 | 0.052 | 0.000 |
-| hello | 137 / 8 | 0.864 | 0.106 | -0.037 | 0.277 | 0.229 | 0.000 |
-| ring | 150 / 4 | 0.581 | 0.448 | 0.144 | 0.652 | 0.514 | 0.000 |
-| siren | 139 / 9 | 0.613 | 0.142 | 0.011 | 0.460 | 0.483 | 0.000 |
-| whistle | 141 / 7 | 0.898 | 0.027 | -0.042 | 0.701 | 0.696 | 0.130 |
+| sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained | pitch track, heard often | pitch track, untrained |
+|---|---|---|---|---|---|---|---|---|---|
+| beeps | 153 / 6 | 0.169 | 0.506 | -0.123 | 0.298 | 0.206 | -0.073 | 0.000 | 0.000 |
+| doorbell | 129 / 7 | 0.491 | -0.150 | 0.016 | 0.216 | 0.071 | 0.000 | 0.141 | 0.000 |
+| hello | 137 / 8 | 0.861 | 0.090 | -0.037 | 0.318 | 0.321 | 0.000 | 0.183 | 0.000 |
+| ring | 150 / 4 | 0.631 | 0.447 | 0.144 | 0.480 | 0.445 | 0.000 | 0.000 | 0.000 |
+| siren | 139 / 9 | 0.570 | 0.153 | 0.011 | 0.478 | 0.486 | 0.000 | -0.002 | 0.000 |
+| whistle | 141 / 7 | 0.903 | 0.063 | -0.042 | 0.571 | 0.635 | 0.130 | -0.312 | 0.727 |
 
-Means: recall 0.594 when a sound was heard often against 0.178 when it was rare and -0.005 untrained; 5 of 6 sounds are recalled better after the day that repeated them. Imitation 0.455 / 0.399 / 0.009. Brain: 744 owners, 112,872 parameters. The second parrot (seed 1, its own receipt) recalls 0.600 / 0.338 and imitates at 0.470 / 0.410 against 0.442 untrained. The receipts bind these numbers to the code and the seeds.
+Means: recall 0.604 when a sound was heard often against 0.185 when it was rare and -0.005 untrained; 5 of 6 sounds are recalled better after the day that repeated them. Imitation (whole cochleagram) 0.393 / 0.361 / 0.009; spectral shape 0.491 / 0.442 / 0.073; pitch track 0.002 / 0.007 / 0.121. Brain: 744 owners, 65,256 parameters. The second parrot (seed 1, its own receipt) recalls 0.567 / 0.323 and imitates at 0.384 / 0.373 against 0.442 untrained. The receipts bind these numbers to the code and the seeds.
 <!-- /results -->
 
 ## What we learned building it
@@ -126,3 +126,12 @@ Means: recall 0.594 when a sound was heard often against 0.178 when it was rare 
 - A memory that never heard how a sound ends replays it forever; one that replays on its
   own damped expectations stops after 100 ms. Running the loop through the body, on what
   the parrot actually hears, is both the biological arrangement and the one that works.
+- Two learners in one net need their own decay. With one decay on every update, the
+  mirror's input seams, learned only during bouts, faded five times as often as they
+  learned, and the mirror settled on the mean babble command for any input; the plain
+  imitation score hid it, the pitch-track score exposed it. Now each population moves and
+  decays only on its own updates (`Learner.trainable_owners` beside `trainable_overlaps`).
+- The imitation score matters. Correlating whole cochleagrams rewards being loud in the
+  right places; a broadband voice scores 0.44 untrained. The receipt therefore also carries
+  the spectral shape (each frame's mean level removed) and the pitch track (the dominant
+  channel where both are loud), which is the one that tells melody from noise.

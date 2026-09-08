@@ -95,16 +95,35 @@ class Household:
         return out, name
 
 
-def similarity(original: np.ndarray, produced: np.ndarray) -> float:
-    """Correlation of two cochleagrams after stretching the produced one to the original's length."""
-    if len(produced) < 2:
-        return 0.0
+def stretched_to(original: np.ndarray, produced: np.ndarray) -> np.ndarray:
     idx = np.linspace(0, len(produced) - 1, len(original))
     lo = np.floor(idx).astype(int)
     hi = np.minimum(lo + 1, len(produced) - 1)
     frac = (idx - lo)[:, None]
-    stretched = produced[lo] * (1 - frac) + produced[hi] * frac
+    return produced[lo] * (1 - frac) + produced[hi] * frac
+
+
+def similarity(original: np.ndarray, produced: np.ndarray) -> float:
+    """Correlation of two cochleagrams after stretching the produced one to the original's length."""
+    if len(produced) < 2:
+        return 0.0
+    stretched = stretched_to(original, produced)
     a, b = original.ravel() - original.mean(), stretched.ravel() - stretched.mean()
+    denom = np.sqrt((a * a).sum() * (b * b).sum())
+    return float((a * b).sum() / denom) if denom > 0 else 0.0
+
+
+def shape_similarity(original: np.ndarray, produced: np.ndarray) -> float:
+    """The same correlation with each frame's mean level removed: the spectral shape over time, not the loudness envelope.
+
+    A broadband voice correlates with anything on the plain measure because both are loud when
+    the other is loud; this one asks whether the energy sits in the same channels."""
+    if len(produced) < 2:
+        return 0.0
+    stretched = stretched_to(original, produced)
+    a = original - original.mean(axis=1, keepdims=True)
+    b = stretched - stretched.mean(axis=1, keepdims=True)
+    a, b = a.ravel() - a.mean(), b.ravel() - b.mean()
     denom = np.sqrt((a * a).sum() * (b * b).sum())
     return float((a * b).sum() / denom) if denom > 0 else 0.0
 
@@ -302,6 +321,23 @@ def imitate(brain: Brain, cue: np.ndarray, tail: list[np.ndarray]) -> tuple[np.n
     return np.concatenate(sounds), commands
 
 
+def pitch_similarity(original: np.ndarray, produced: np.ndarray, loud: float = 0.3) -> tuple[float, float]:
+    """Correlation of the dominant channel over the frames where both sounds are loud, and the share of such frames.
+
+    A voice can be loud in the right places and have the right rough shape without following
+    the melody; this asks whether the pitch went up and down when the original's did."""
+    if len(produced) < 2:
+        return 0.0, 0.0
+    stretched = stretched_to(original, produced)
+    both = (original.max(axis=1) > loud) & (stretched.max(axis=1) > loud)
+    if both.sum() < 5:
+        return 0.0, float(both.mean())
+    a, b = original[both].argmax(axis=1).astype(float), stretched[both].argmax(axis=1).astype(float)
+    a, b = a - a.mean(), b - b.mean()
+    denom = np.sqrt((a * a).sum() * (b * b).sum())
+    return (float((a * b).sum() / denom) if denom > 0 else 0.0), float(both.mean())
+
+
 def evaluate(brain: Brain, library: dict[str, np.ndarray], cochleagrams: dict[str, np.ndarray]) -> dict[str, Any]:
     fam = familiarity(brain, cochleagrams)
     out = {}
@@ -310,7 +346,8 @@ def evaluate(brain: Brain, library: dict[str, np.ndarray], cochleagrams: dict[st
         rec, replayed = recall(brain, frames)
         sound, commands = imitate(brain, cue, tail)
         produced = Cochlea().frames(sound) if len(sound) >= FRAME else np.zeros((1, CHANNELS))
-        out[name] = {"familiarity_error": fam[name], "recall": rec, "recall_frames": int(len(replayed)), "imitation_similarity": similarity(frames, produced), "imitation_frames": int(len(produced)), "commands": commands, "sound": sound}
+        pitch, covered = pitch_similarity(frames, produced)
+        out[name] = {"familiarity_error": fam[name], "recall": rec, "recall_frames": int(len(replayed)), "imitation_similarity": similarity(frames, produced), "imitation_shape": shape_similarity(frames, produced), "imitation_pitch": pitch, "imitation_covered": covered, "imitation_frames": int(len(produced)), "commands": commands, "sound": sound}
     return out
 
 
@@ -367,12 +404,16 @@ def run(seed: int, minutes: float, out: Path, tag: str = "") -> dict[str, Any]:
             "heard_often": heard_often, "heard_rarely": heard_rarely, "frequent_on_day_a": name in FREQUENT,
             "recall_heard_often": often["recall"], "recall_heard_rarely": rarely["recall"], "recall_untrained": untrained[name]["recall"],
             "imitation_heard_often": often["imitation_similarity"], "imitation_heard_rarely": rarely["imitation_similarity"], "imitation_untrained": untrained[name]["imitation_similarity"],
+            "shape_heard_often": often["imitation_shape"], "shape_heard_rarely": rarely["imitation_shape"], "shape_untrained": untrained[name]["imitation_shape"],
+            "pitch_heard_often": often["imitation_pitch"], "pitch_heard_rarely": rarely["imitation_pitch"], "pitch_untrained": untrained[name]["imitation_pitch"], "covered_heard_often": often["imitation_covered"],
             "next_frame_error_heard_often": often["familiarity_error"], "next_frame_error_heard_rarely": rarely["familiarity_error"], "imitation_frames_day_a": trained[name]["imitation_frames"],
         }
     mean = lambda key: float(np.mean([r[key] for r in per_sound.values()]))  # noqa: E731
     summary = {
         "recall_heard_often": mean("recall_heard_often"), "recall_heard_rarely": mean("recall_heard_rarely"), "recall_untrained": mean("recall_untrained"),
         "imitation_heard_often": mean("imitation_heard_often"), "imitation_heard_rarely": mean("imitation_heard_rarely"), "imitation_untrained": mean("imitation_untrained"),
+        "shape_heard_often": mean("shape_heard_often"), "shape_heard_rarely": mean("shape_heard_rarely"), "shape_untrained": mean("shape_untrained"),
+        "pitch_heard_often": mean("pitch_heard_often"), "pitch_heard_rarely": mean("pitch_heard_rarely"), "pitch_untrained": mean("pitch_untrained"), "covered_heard_often": mean("covered_heard_often"),
         "repetition_effect_on_recall": mean("recall_heard_often") - mean("recall_heard_rarely"),
         "sounds_recalled_better_when_heard_often": int(sum(r["recall_heard_often"] > r["recall_heard_rarely"] for r in per_sound.values())),
         "bouts": len(parrot.bouts), "imitation_bouts": sum(1 for b in parrot.bouts if b["kind"] == "imitate"), "babble_bouts": sum(1 for b in parrot.bouts if b["kind"] == "babble"), "reinforced_frames": parrot.refinements,
@@ -380,16 +421,16 @@ def run(seed: int, minutes: float, out: Path, tag: str = "") -> dict[str, Any]:
         "frequent_recall": float(np.mean([trained[n]["recall"] for n in FREQUENT])), "rare_recall": float(np.mean([trained[n]["recall"] for n in RARE])), "untrained_recall": mean("recall_untrained"),
         "frequent_imitation_similarity": float(np.mean([trained[n]["imitation_similarity"] for n in FREQUENT])), "rare_imitation_similarity": float(np.mean([trained[n]["imitation_similarity"] for n in RARE])), "untrained_imitation_similarity": mean("imitation_untrained"),
     }
-    print(f"recall when heard often {summary['recall_heard_often']:.3f}, when heard rarely {summary['recall_heard_rarely']:.3f}, untrained {summary['recall_untrained']:.3f}; imitation {summary['imitation_heard_often']:.3f} / {summary['imitation_heard_rarely']:.3f} / {summary['imitation_untrained']:.3f}; {summary['sounds_recalled_better_when_heard_often']} of {len(per_sound)} sounds recalled better when heard often", flush=True)
+    print(f"recall when heard often {summary['recall_heard_often']:.3f}, when heard rarely {summary['recall_heard_rarely']:.3f}, untrained {summary['recall_untrained']:.3f}; imitation {summary['imitation_heard_often']:.3f} / {summary['imitation_heard_rarely']:.3f} / {summary['imitation_untrained']:.3f}; spectral shape {summary['shape_heard_often']:.3f} / {summary['shape_heard_rarely']:.3f} / {summary['shape_untrained']:.3f}; pitch track {summary['pitch_heard_often']:.3f} / {summary['pitch_heard_rarely']:.3f} / {summary['pitch_untrained']:.3f}; {summary['sounds_recalled_better_when_heard_often']} of {len(per_sound)} sounds recalled better when heard often", flush=True)
     for name, r in per_sound.items():
-        print(f"  {name:9s} heard {r['heard_often']:3d} / {r['heard_rarely']:2d}: recall {r['recall_heard_often']:.3f} / {r['recall_heard_rarely']:.3f} (untrained {r['recall_untrained']:.3f}), imitation {r['imitation_heard_often']:.3f} / {r['imitation_heard_rarely']:.3f} (untrained {r['imitation_untrained']:.3f}), {r['imitation_frames_day_a']} frames", flush=True)
+        print(f"  {name:9s} heard {r['heard_often']:3d} / {r['heard_rarely']:2d}: recall {r['recall_heard_often']:.3f} / {r['recall_heard_rarely']:.3f} (untrained {r['recall_untrained']:.3f}), imitation {r['imitation_heard_often']:.3f} / {r['imitation_heard_rarely']:.3f} (untrained {r['imitation_untrained']:.3f}), shape {r['shape_heard_often']:.3f} / {r['shape_heard_rarely']:.3f} (untrained {r['shape_untrained']:.3f}), pitch {r['pitch_heard_often']:.3f} / {r['pitch_heard_rarely']:.3f} (untrained {r['pitch_untrained']:.3f}), {r['imitation_frames_day_a']} frames", flush=True)
     body = {
         "day": {"minutes": minutes, "events": events, "heard": counts, "gap_seconds": GAP, "rare_weight": RARE_WEIGHT, "frequent": list(FREQUENT), "rare": list(RARE)},
         "day_b": {"events": events_b, "heard": counts_b, "frequent": list(swapped_frequent), "rare": list(swapped_rare), "seconds": seconds_b, "bouts": len(parrot_b.bouts), "timeline": timeline_b},
         "chunk_frames": CHUNK, "window_frames": WINDOW,
         "brain": {"owners": int(parrot.brain.wiring.n), "hidden": int(parrot.brain.wiring.n - parrot.brain.inputs - parrot.brain.outputs), "parameters": int(parrot.brain.parameters()), "eta": ETA, "decay": DECAY, "learner": parrot.brain.learner.to_dict()},
         "arousal": {"rate_per_second": AROUSAL_RATE, "noise": AROUSAL_NOISE, "babble_share": BABBLE_SHARE}, "reinforcement": {"on": REFINE, "explore": EXPLORE, "gain": REFINE_GAIN}, "per_sound": per_sound, "summary": summary, "timeline": timeline, "seconds": seconds,
-        "boundary": {"learning_rule": "free/nudged contrastive Hebbian, centered, owner-local, quadratic nudges on two output groups of one net, seams decaying every update", "memory_learns_from": "household sound and the 300 ms after it; gated off while the parrot sings (as auditory responses in the song system are)", "mirror_learns_from": "the parrot's own sound against the command issued one frame earlier, including the closed frames that end every bout", "reinforcement": "during imitation bouts the commands carry smooth noise; the command taken is pulled toward in the context that chose it, weighted by how much better than usual the heard frame matched the memory's expectation, or pushed from when worse", "names_never_reach_the_brain": True, "cues": "the first 80 ms after an onset following a quiet spell, up to 24 kept; replay draws among them by familiarity", "two_days": "day B swaps which sounds are frequent, with a fresh parrot and another seed, so each sound is scored once heard often and once heard rarely", "bout_ends": "when the mirror keeps the air sac closed, or the memory expects quiet, for six frames", "evaluation": "recall: the memory replayed from each sound's first 80 ms on its own expectations, against the sound itself (correlation of cochleagrams); imitation: from the same cue, expectation to mirror to syrinx to cochlea to the next context, against the sound; the untrained brain is the control"},
+        "boundary": {"learning_rule": "free/nudged contrastive Hebbian, centered, owner-local, quadratic nudges on two output groups of one net, seams decaying every update", "memory_learns_from": "household sound and the 300 ms after it; gated off while the parrot sings (as auditory responses in the song system are)", "mirror_learns_from": "the parrot's own sound against the command issued one frame earlier, including the closed frames that end every bout", "reinforcement": "during imitation bouts the commands carry smooth noise; the command taken is pulled toward in the context that chose it, weighted by how much better than usual the heard frame matched the memory's expectation, or pushed from when worse", "names_never_reach_the_brain": True, "cues": "the first 80 ms after an onset following a quiet spell, up to 24 kept; replay draws among them by familiarity", "two_days": "day B swaps which sounds are frequent, with a fresh parrot and another seed, so each sound is scored once heard often and once heard rarely", "bout_ends": "when the mirror keeps the air sac closed, or the memory expects quiet, for six frames", "imitation_shape": "the same correlation with each frame's mean level removed, so a loud broadband voice does not score on loudness alone", "imitation_pitch": "correlation of the dominant cochlear channel over the frames where both are loud: does the melody go where the original's goes", "evaluation": "recall: the memory replayed from each sound's first 80 ms on its own expectations, against the sound itself (correlation of cochleagrams); imitation: from the same cue, expectation to mirror to syrinx to cochlea to the next context, against the sound; the untrained brain is the control"},
     }
     r = cd.Receipt.build("cadence-examples/10_parrot/v1", body, sources=SOURCES)
     r.write(out)

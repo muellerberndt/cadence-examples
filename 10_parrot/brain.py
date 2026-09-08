@@ -120,6 +120,17 @@ class Brain:
         self.predict_mask[self.predict_index] = 1.0
         self.motor_mask = np.zeros(self.wiring.n)
         self.motor_mask[self.motor_index] = 1.0
+        # each population learns, and decays, only on its own updates: the memory's seams and owners on a memory
+        # update, the mirror's on a mirror update, so one learner's decay never erodes the other's seams
+        w = self.wiring
+        aud = np.zeros(w.n, dtype=bool)
+        aud[list(w.sets["auditory"])] = True
+        aud[self.predict_index] = True
+        voc = np.zeros(w.n, dtype=bool)
+        voc[list(w.sets["vocal"])] = True
+        voc[self.motor_index] = True
+        self.memory_edges, self.memory_owners = aud[w.pre] | aud[w.post], aud
+        self.mirror_edges, self.mirror_owners = voc[w.pre] | voc[w.post], voc
 
     def drive(self, windows: np.ndarray) -> np.ndarray:
         """Clamp levels for a batch of contexts, (batch, CONTEXT, CHANNELS)."""
@@ -165,6 +176,9 @@ class Brain:
         cfg = learner.config
         plus = learner.engine.settle_batch(drive, steps=cfg.nudged_steps, state=free, nudge=Nudge(target, mask, cfg.beta, weight=weight), tolerance=cfg.tolerance)
         minus = learner.engine.settle_batch(drive, steps=cfg.nudged_steps, state=free, nudge=Nudge(target, mask, -cfg.beta, weight=weight), tolerance=cfg.tolerance)
+        memory = mask is self.predict_mask
+        learner.trainable_overlaps = self.memory_edges if memory else self.mirror_edges
+        learner.trainable_owners = self.memory_owners if memory else self.mirror_owners
         return learner.update(free, plus, minus)
 
     def learn_memory(self, windows: np.ndarray, next_frames: np.ndarray, weight: np.ndarray | None = None) -> dict[str, float]:

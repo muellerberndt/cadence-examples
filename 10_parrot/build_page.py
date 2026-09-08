@@ -30,6 +30,8 @@ if __name__ == "__main__":
         name = ["Coco", "Pepper"][k] if k < 2 else f"parrot {k + 1}"
         payload["facts"][f"{name}: recall of a sound heard often / rarely / untrained"] = f"{s['recall_heard_often']:.3f} / {s['recall_heard_rarely']:.3f} / {s['recall_untrained']:.3f}"
         payload["facts"][f"{name}: imitation, heard often / rarely / untrained"] = f"{s['imitation_heard_often']:.3f} / {s['imitation_heard_rarely']:.3f} / {s['imitation_untrained']:.3f}"
+        if "pitch_heard_often" in s:
+            payload["facts"][f"{name}: pitch track of the imitation, heard often / rarely / untrained"] = f"{s['pitch_heard_often']:.3f} / {s['pitch_heard_rarely']:.3f} / {s['pitch_untrained']:.3f}"
         payload["facts"][f"{name}: spontaneous bouts on day A"] = f"{s['bouts']} ({s['babble_bouts']} babbles, {s['imitation_bouts']} imitations)"
     r0 = receipts[0]
     payload["facts"]["a day"] = f"{r0['day']['minutes']:.0f} minutes, {r0['day']['events']} household sounds; two days each, the second with the frequent and rare roles swapped"
@@ -38,9 +40,10 @@ if __name__ == "__main__":
     (HERE / "index.html").write_text(html)
     print(f"index.html: {len(html) / 1e3:.0f} kB, {len(nets)} parrots of {first['n']} owners")
     s = r0["summary"]
-    rows = ["| sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained |", "|---|---|---|---|---|---|---|---|"]
+    pitched = "pitch_heard_often" in s
+    rows = ["| sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained |" + (" pitch track, heard often | pitch track, untrained |" if pitched else ""), "|---|---|---|---|---|---|---|---|" + ("---|---|" if pitched else "")]
     for name, r in r0["per_sound"].items():
-        rows.append(f"| {name} | {r['heard_often']} / {r['heard_rarely']} | {r['recall_heard_often']:.3f} | {r['recall_heard_rarely']:.3f} | {r['recall_untrained']:.3f} | {r['imitation_heard_often']:.3f} | {r['imitation_heard_rarely']:.3f} | {r['imitation_untrained']:.3f} |")
+        rows.append(f"| {name} | {r['heard_often']} / {r['heard_rarely']} | {r['recall_heard_often']:.3f} | {r['recall_heard_rarely']:.3f} | {r['recall_untrained']:.3f} | {r['imitation_heard_often']:.3f} | {r['imitation_heard_rarely']:.3f} | {r['imitation_untrained']:.3f} |" + (f" {r['pitch_heard_often']:.3f} | {r['pitch_untrained']:.3f} |" if pitched else ""))
     second = ""
     if len(receipts) > 1:
         s1 = receipts[1]["summary"]
@@ -51,7 +54,9 @@ if __name__ == "__main__":
         "",
         *rows,
         "",
-        f"Means: recall {s['recall_heard_often']:.3f} when a sound was heard often against {s['recall_heard_rarely']:.3f} when it was rare and {s['recall_untrained']:.3f} untrained; {s['sounds_recalled_better_when_heard_often']} of {len(r0['per_sound'])} sounds are recalled better after the day that repeated them. Imitation {s['imitation_heard_often']:.3f} / {s['imitation_heard_rarely']:.3f} / {s['imitation_untrained']:.3f}. Brain: {r0['brain']['owners']} owners, {r0['brain']['parameters']:,} parameters.{second} The receipts bind these numbers to the code and the seeds.",
+        f"Means: recall {s['recall_heard_often']:.3f} when a sound was heard often against {s['recall_heard_rarely']:.3f} when it was rare and {s['recall_untrained']:.3f} untrained; {s['sounds_recalled_better_when_heard_often']} of {len(r0['per_sound'])} sounds are recalled better after the day that repeated them. Imitation (whole cochleagram) {s['imitation_heard_often']:.3f} / {s['imitation_heard_rarely']:.3f} / {s['imitation_untrained']:.3f}"
+        + (f"; spectral shape {s['shape_heard_often']:.3f} / {s['shape_heard_rarely']:.3f} / {s['shape_untrained']:.3f}; pitch track {s['pitch_heard_often']:.3f} / {s['pitch_heard_rarely']:.3f} / {s['pitch_untrained']:.3f}" if pitched else "")
+        + f". Brain: {r0['brain']['owners']} owners, {r0['brain']['parameters']:,} parameters.{second} The receipts bind these numbers to the code and the seeds.",
         "<!-- /results -->",
     ])
     readme = HERE / "README.md"
