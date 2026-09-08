@@ -19,6 +19,7 @@ PAGES = {
     "04_pong": "https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3",
     "06_sign": "https://claude.ai/code/artifact/94e42c3b-134e-47c0-94bb-06106d3f6321",
     "07_music": "https://claude.ai/code/artifact/06f247a3-5acb-4663-91c6-9474f087a51e",
+    "10_parrot": "https://claude.ai/code/artifact/173c5de8-8250-48a0-8f5c-03bd6c9f1e07",
 }
 
 
