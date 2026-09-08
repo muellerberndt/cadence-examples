@@ -70,6 +70,10 @@ def summarise(rung: str, b: dict) -> tuple[str, list[tuple[str, str]]]:
         f = s.get("fan_in", {})
         return (f"count convention: nothing learned; fan-in convention: measured {f.get('measured_mean', 0):.1f}/17 held-out ablations vs shuffled {f.get('shuffled_mean', 0):.1f}/17, a structural signal, not a behavioural model",
                 [("fan-in, measured", f"{f.get('measured_mean', 0):.1f} / 17"), ("fan-in, shuffled", f"{f.get('shuffled_mean', 0):.1f} / 17"), ("count, either wiring", f"{s['count']['measured_mean']:.1f} / 17"), ("training facts", f"{f.get('measured_training_mean', 0):.1f} / 4")])
+    if rung == "10_parrot":
+        s = b["summary"]
+        return (f"recall of a sound {s['recall_heard_often']:.3f} after a day that repeated it, {s['recall_heard_rarely']:.3f} after one that did not (untrained {s['recall_untrained']:.3f}); its imitations correlate {s['imitation_heard_often']:.3f} with the originals (untrained {s['imitation_untrained']:.3f}); {s['bouts']} spontaneous bouts a day",
+                [("recall, heard often", f"{s['recall_heard_often']:.3f}"), ("recall, heard rarely", f"{s['recall_heard_rarely']:.3f}"), ("imitation, heard often", f"{s['imitation_heard_often']:.3f}"), ("untrained", f"{s['recall_untrained']:.3f} / {s['imitation_untrained']:.3f}"), ("spontaneous bouts", str(s["bouts"]))])
     raise KeyError(rung)
 
 
@@ -83,6 +87,7 @@ RUNGS = [
     ("07_music", "chorales", "music, play it", "Continues Bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; listen in the page."),
     ("08_cartpole", "cart-pole", "reward, a body", "The classic control task from reward, with the state as a place code."),
     ("09_celegans", "C. elegans", "measured wiring", "The published connectome learns four textbook facts and is scored on seventeen held-out ablation phenotypes against a shuffled wiring."),
+    ("10_parrot", "grey parrot", "vocal learning, play it", "A parrot with a physical syrinx and a cochlea; one net is its memory of what it hears often and the mirror that turns a memory into muscle commands. Teach it a whistle in the page."),
 ]
 
 
@@ -103,7 +108,7 @@ def main() -> None:
         facts_html = "".join(f"<span>{label} <b>{value}</b></span>" for label, value in facts)
         actions = (f'<a class="btn play" href="{{PLAY_{rung}}}">Play</a>' if page else "") + f'<a class="btn" href="{{README_{rung}}}">Read the receipt</a>'
         cards.append(f'    <article class="rung{"" if status == "done" else " next"}">\n      <div class="num">{k:02d}</div>\n      <div>\n        <h2>{name[0].upper() + name[1:]} <span class="tag">{tag}</span></h2>\n        <p>{blurb}</p>\n        <div class="facts">{facts_html}</div>\n      </div>\n      <div class="actions">{actions}</div>\n    </article>')
-    cards.append('    <article class="rung next">\n      <div class="num">10</div>\n      <div>\n        <h2>Embodiment <span class="tag">next</span></h2>\n        <p>A nervous system in a physical body: the FlyWire brain and MANC nerve cord driving a biomechanical fly in MuJoCo, ported onto the library.</p>\n        <div class="facts"><span>status <b>not started</b></span></div>\n      </div>\n      <div class="actions"></div>\n    </article>')
+    cards.append('    <article class="rung next">\n      <div class="num">11</div>\n      <div>\n        <h2>Embodiment <span class="tag">next</span></h2>\n        <p>A nervous system in a physical body: the FlyWire brain and MANC nerve cord driving a biomechanical fly in MuJoCo, ported onto the library.</p>\n        <div class="facts"><span>status <b>not started</b></span></div>\n      </div>\n      <div class="actions"></div>\n    </article>')
     table = "| # | example | what it shows |\n|---|---|---|\n" + "\n".join(readme_rows)
     readme = ROOT / "README.md"
     text = readme.read_text()
