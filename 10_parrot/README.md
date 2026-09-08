@@ -99,17 +99,18 @@ shows that thought.
 - both for the sounds heard often, the sounds heard rarely, and an untrained brain.
 
 <!-- results -->
-Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 101 spontaneous bouts, 52 babbles and 49 imitations; 544 s of wall-clock a day):
+Two 60-minute days, the second with the roles swapped so every sound is scored once heard often and once heard rarely (day A: 439 household sounds, 161 spontaneous bouts, 85 babbles and 76 imitations; 980 s of wall-clock a day). The first parrot, seed 0:
 
 | sound | heard often / rarely | recall, heard often | recall, heard rarely | recall, untrained | imitation, heard often | imitation, heard rarely | imitation, untrained |
 |---|---|---|---|---|---|---|---|
-| beeps | 139 / 9 | 0.861 | 0.408 | -0.123 | 0.185 | 0.253 | 0.255 |
-| doorbell | 132 / 10 | 0.219 | 0.330 | 0.016 | 0.582 | 0.475 | 0.238 |
-| ring | 152 / 11 | 0.533 | 0.313 | 0.144 | 0.722 | 0.770 | 0.478 |
-| siren | 207 / 10 | 0.834 | 0.287 | 0.011 | 0.693 | 0.707 | 0.244 |
-| whistle | 214 / 6 | 0.842 | 0.314 | -0.042 | 0.450 | 0.355 | 0.318 |
+| beeps | 153 / 6 | 0.138 | 0.478 | -0.123 | 0.441 | 0.423 | -0.073 |
+| doorbell | 129 / 7 | 0.467 | -0.136 | 0.016 | 0.201 | 0.052 | 0.000 |
+| hello | 137 / 8 | 0.864 | 0.106 | -0.037 | 0.277 | 0.229 | 0.000 |
+| ring | 150 / 4 | 0.581 | 0.448 | 0.144 | 0.652 | 0.514 | 0.000 |
+| siren | 139 / 9 | 0.613 | 0.142 | 0.011 | 0.460 | 0.483 | 0.000 |
+| whistle | 141 / 7 | 0.898 | 0.027 | -0.042 | 0.701 | 0.696 | 0.130 |
 
-Means: recall 0.658 when a sound was heard often against 0.330 when it was rare and 0.001 untrained; 4 of 5 sounds are recalled better after the day that repeated them. Imitation 0.527 / 0.512 / 0.306. Brain: 744 owners, 112,872 parameters. The receipt binds these numbers to the code and the seed.
+Means: recall 0.594 when a sound was heard often against 0.178 when it was rare and -0.005 untrained; 5 of 6 sounds are recalled better after the day that repeated them. Imitation 0.455 / 0.399 / 0.009. Brain: 744 owners, 112,872 parameters. The second parrot (seed 1, its own receipt) recalls 0.600 / 0.338 and imitates at 0.470 / 0.410 against 0.442 untrained. The receipts bind these numbers to the code and the seeds.
 <!-- /results -->
 
 ## What we learned building it
