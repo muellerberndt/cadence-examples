@@ -11,15 +11,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install "git+https://github.com/muellerberndt/cadence" scikit-learn pandas scipy
+      - run: |
+          python -m pip install "git+https://github.com/muellerberndt/cadence" scikit-learn pandas scipy
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: every receipt verifies against the code in this checkout
         run: |
-          for d in 01_digits 02_images 03_connect_four 04_pong 05_text 06_sign 07_music 08_cartpole 09_celegans 10_parrot; do
+          for d in 01_digits 02_images 03_connect_four 04_pong 05_text 06_sign 07_music 08_cartpole 09_celegans; do
             if [ -f $d/receipt.json ]; then (cd $d && python train.py --verify receipt.json); else echo "$d: no receipt yet"; fi
           done
       - name: the game pages build from the committed nets
         run: |
-          for d in 03_connect_four 04_pong 06_sign 07_music 10_parrot; do
+          for d in 03_connect_four 04_pong 06_sign 07_music; do
             if [ -f $d/net.json ]; then (cd $d && python build_page.py); fi
           done
           git diff --stat --exit-code -- '*/index.html'

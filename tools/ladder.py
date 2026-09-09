@@ -19,7 +19,6 @@ PAGES = {
     "04_pong": "https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3",
     "06_sign": "https://claude.ai/code/artifact/94e42c3b-134e-47c0-94bb-06106d3f6321",
     "07_music": "https://claude.ai/code/artifact/06f247a3-5acb-4663-91c6-9474f087a51e",
-    "10_parrot": "https://claude.ai/code/artifact/173c5de8-8250-48a0-8f5c-03bd6c9f1e07",
 }
 
 
@@ -71,12 +70,6 @@ def summarise(rung: str, b: dict) -> tuple[str, list[tuple[str, str]]]:
         f = s.get("fan_in", {})
         return (f"count convention: nothing learned; fan-in convention: measured {f.get('measured_mean', 0):.1f}/17 held-out ablations vs shuffled {f.get('shuffled_mean', 0):.1f}/17, a structural signal, not a behavioural model",
                 [("fan-in, measured", f"{f.get('measured_mean', 0):.1f} / 17"), ("fan-in, shuffled", f"{f.get('shuffled_mean', 0):.1f} / 17"), ("count, either wiring", f"{s['count']['measured_mean']:.1f} / 17"), ("training facts", f"{f.get('measured_training_mean', 0):.1f} / 4")])
-    if rung == "10_parrot":
-        s = b["summary"]
-        pitch = f"; the melody of its imitations tracks the original at {s['pitch_heard_often']:.3f} (untrained {s['pitch_untrained']:.3f})" if "pitch_heard_often" in s else ""
-        distance = f", their pitch sits {s['pitch_distance_heard_often']:.1f} channels from the original's (untrained {s['pitch_distance_untrained']:.1f})" if "pitch_distance_heard_often" in s else ""
-        return (f"recall of a sound {s['recall_heard_often']:.3f} after a day that repeated it, {s['recall_heard_rarely']:.3f} after one that did not (untrained {s['recall_untrained']:.3f}); its imitations correlate {s['imitation_heard_often']:.3f} with the originals (untrained {s['imitation_untrained']:.3f}){pitch}{distance}; {s['bouts']} spontaneous bouts a day",
-                [("recall, heard often", f"{s['recall_heard_often']:.3f}"), ("recall, heard rarely", f"{s['recall_heard_rarely']:.3f}"), ("imitation, heard often", f"{s['imitation_heard_often']:.3f}"), ("pitch track", f"{s['pitch_heard_often']:.3f} / {s['pitch_untrained']:.3f}" if "pitch_heard_often" in s else "—"), ("pitch distance, channels", f"{s['pitch_distance_heard_often']:.2f} / {s['pitch_distance_untrained']:.2f}" if "pitch_distance_heard_often" in s else "—"), ("spontaneous bouts", str(s["bouts"]))])
     raise KeyError(rung)
 
 
@@ -90,7 +83,6 @@ RUNGS = [
     ("07_music", "chorales", "music, play it", "Continues Bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; listen in the page."),
     ("08_cartpole", "cart-pole", "reward, a body", "The classic control task from reward, with the state as a place code."),
     ("09_celegans", "C. elegans", "measured wiring", "The published connectome learns four textbook facts and is scored on seventeen held-out ablation phenotypes against a shuffled wiring."),
-    ("10_parrot", "grey parrots", "vocal learning, play it", "Two parrots with a physical syrinx and a cochlea each; one net per bird is its memory of what it hears often and the mirror that turns a memory into muscle commands. Watch the brains settle, record a noise and teach it, let them learn from each other."),
 ]
 
 

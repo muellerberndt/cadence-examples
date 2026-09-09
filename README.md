@@ -3,10 +3,11 @@
 Worked examples for [Cadence](https://github.com/muellerberndt/cadence), the patch-net
 settlement library (`pip install cadence-net`, `import cadence`).
 
-Each example is a tutorial with its own README, a runnable script, a receipt, and, where
-it makes sense, a page you can play with in a browser. Start at the
+Each example is a tutorial with its own README, a runnable script, a receipt that binds its
+numbers to the code and data that produced them, and, where it makes sense, a page you can
+play with in a browser. Start at the
 [hub page](https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8), which lists the
-ladder with each receipt's numbers and links to the games. The ladder, from simple to complex:
+ladder with each receipt's numbers and links to the pages. The ladder, from simple to complex:
 
 <!-- ladder -->
 | # | example | what it shows |
@@ -20,29 +21,53 @@ ladder with each receipt's numbers and links to the games. The ladder, from simp
 | 07 | [chorales](07_music/) | continues bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; listen in the page; receipt: next-chord pitch-set F1 0.483, 16.6 bits/chord; repeat-last 0.369, MLP 0.470; [play it](https://claude.ai/code/artifact/06f247a3-5acb-4663-91c6-9474f087a51e) |
 | 08 | [cart-pole](08_cartpole/) | the classic control task from reward, with the state as a place code; receipt: balances for 154 steps of 500 against 392 for backprop REINFORCE |
 | 09 | [C. elegans](09_celegans/) | the published connectome learns four textbook facts and is scored on seventeen held-out ablation phenotypes against a shuffled wiring; receipt: count convention: nothing learned; fan-in convention: measured 5.2/17 held-out ablations vs shuffled 1.5/17, a structural signal, not a behavioural model |
-| 10 | [grey parrots](10_parrot/) | two parrots with a physical syrinx and a cochlea each; one net per bird is its memory of what it hears often and the mirror that turns a memory into muscle commands; receipt: recall of a sound 0.986 after a day that repeated it, 0.796 after one that did not (untrained 0.042); its imitations correlate 0.692 with the originals (untrained 0.034); the melody of its imitations tracks the original at 0.476 (untrained -0.125), their pitch sits 1.4 channels from the original's (untrained 8.0); 284 spontaneous bouts a day; [play it](https://claude.ai/code/artifact/173c5de8-8250-48a0-8f5c-03bd6c9f1e07) |
 <!-- /ladder -->
 
-## Play the games locally
+[How a patch net learns](HOW_IT_LEARNS.md) is the tutorial the rungs build on: owners,
+seams, settlement, and the one local rule that every rung uses, whether the target is a
+label, a teacher's move, or a reward.
 
-The trained nets are in the repo (`03_connect_four/net.json`, 245 kB; `04_pong/net.json`,
-743 kB) and already embedded in each game's `index.html`, so nothing needs training or
-downloading:
+## Run an example
 
 ```bash
 git clone https://github.com/muellerberndt/cadence-examples
 cd cadence-examples
+python -m pip install cadence-net scikit-learn pandas scipy
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu   # the baselines each receipt measures
+cd 01_digits && python train.py && python train.py --verify receipt.json
+```
+
+Every `train.py` selects on a validation split, reads its test set once, measures the
+obvious baselines on the same split, and writes a receipt; `--verify` checks a receipt
+against the code in the checkout and its own arithmetic. The datasets under `data/` are not
+in the repo: the scripts fetch or generate them (Connect Four's `dataset.py` plays the
+self-play games), and every receipt records their digests. Each tutorial says what a full run
+costs, from seconds (digits) to about an hour (the sign writer).
+
+## Play the pages
+
+The trained nets are in the repo and already embedded in each page's `index.html`, so
+nothing needs training or downloading:
+
+```bash
 python serve.py                    # serves the repo and opens http://localhost:8765/
 ```
 
-The hub at that address links to both games and to every tutorial. Opening
-`03_connect_four/index.html` or `04_pong/index.html` straight from the file system works
-too. To retrain a game and rebuild its page: `python train.py && python build_page.py` in
-its directory (see each tutorial for what that costs). The datasets under `data/` are not
-in the repo; the scripts fetch or generate them, and every receipt records their digests.
+The hub at that address links to the four pages (Connect Four, Pong, the sign writer, the
+chorales) and to every tutorial; opening a page's `index.html` straight from the file
+system works too. To retrain a page's net and rebuild it: `python train.py && python
+build_page.py` in its directory. Each page runs the same settlement in JavaScript that the
+receipt scored in Python.
 
-Status: 01 to 04 are complete with verified receipts and, for the games, pages you can
-play; 05 is next.
+## What holds it together
+
+- `tools/smoke.py` runs every rung end to end at a tiny budget and verifies the receipt it
+  writes; the committed receipts stay untouched. It is the test suite, and CI runs it.
+- `tools/ladder.py` regenerates the ladder table above and the hub pages from the receipts,
+  so the numbers in three places are one set of numbers.
+- CI verifies every committed receipt against the checkout, rebuilds every page from its
+  committed net and checks that nothing changed, regenerates the ladder and checks the
+  same, then runs the smoke suite.
 
 Each example measures the obvious legacy baselines on the same split and puts them in its
 receipt next to the patch net's accuracy, parameter count, epochs, and wall-clock. The
