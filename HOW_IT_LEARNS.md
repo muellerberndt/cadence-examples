@@ -16,10 +16,10 @@ into `j`'s inbox. That is the only way one owner affects another.
 
 Some owners are **input owners**. They receive a **clamp**: a fixed drive, one number per
 owner, that is the net's input. For the digits, an 8×8 picture is 64 input owners and the
-clamp on each is its pixel's brightness in [0, 1]. For Connect Four, the board is 84 input
-owners, two 6×7 planes, and the clamp is 1 where a disc sits. For Pong, the screen is 192
-pixels twice (this frame and the last), so 384 input owners, and the clamp is each pixel's
-brightness. Nothing else is clamped.
+clamp on each is its pixel's brightness in [0, 1]. For Pong, the screen is 192 pixels twice
+(this frame and the last), so 384 input owners, and the clamp is each pixel's brightness.
+For the chorales, each of the last eight chords is a block of twelve pitch-class owners.
+Nothing else is clamped.
 
 Some owners are **output owners**: one per class, one per column, one per action. Their
 activations at rest are the net's answer. The rest are **hidden owners**.
@@ -114,11 +114,12 @@ example does, twenty times over.
 
 ## 4. Learning from a teacher's move, and from a reward
 
-**A teacher.** Connect Four has no labels, but a search can say which column it prefers
-in any position. So: play many varied games, label every position with a depth-4
-search's choice for the side to move, and the problem is section 3 with seven classes.
-At play time the net settles under the board, illegal columns are masked, and the most
-active legal output is the move. There is no search in the net; it imitates one.
+**A teacher.** A game has no labels, but a search, or a player, can say which move it
+prefers in any position. Label every position with the teacher's choice for the side to
+move, and the problem is section 3 with one class per move. At play time the net settles
+under the board, illegal moves are masked, and the most active output owner moves. The
+net imitates the teacher without lookahead; how well is a number in a receipt. (Pong's
+second paddle learned this way, from a scripted tracker's moves.)
 
 **A reward.** Pong has no teacher, only what happened: the paddle returned the ball or
 missed it. The rule stays the same with one change. The net acts by settling and drawing

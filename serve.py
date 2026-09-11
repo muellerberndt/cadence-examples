@@ -20,7 +20,7 @@ PORT = 8765
 
 
 def main() -> int:
-    missing = [p for p in ("03_connect_four/index.html", "04_pong/index.html") if not (HERE / p).exists()]
+    missing = [p for p in ("04_pong/index.html", "07_music/index.html") if not (HERE / p).exists()]
     for p in missing:
         print(f"note: {p} is not built yet; run build_page.py in that directory")
     handler = lambda *a, **k: http.server.SimpleHTTPRequestHandler(*a, directory=str(HERE), **k)  # noqa: E731

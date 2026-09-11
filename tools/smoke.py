@@ -1,7 +1,7 @@
 """Run every rung end to end at a tiny budget and verify the receipt it writes; the files in the repo stay untouched.
 
 Run:  python tools/smoke.py            (all rungs; a few minutes)
-      python tools/smoke.py 04_pong 08_cartpole
+      python tools/smoke.py 04_pong 07_music
 
 Each rung's script is imported unchanged (its receipt binds it, so it is never edited for a test) and its budget
 constants are replaced on the module before ``run`` is called with an output in a temporary directory. What is
@@ -44,45 +44,24 @@ def restore(name: str, before: set[str]) -> None:
 def load_rung(name: str):  # type: ignore[no-untyped-def]
     """Import a rung's train.py with its directory first on the path (its sibling modules import lazily)."""
     for k in list(sys.modules):
-        if k in ("train", "arm", "pong", "board", "dataset", "connect4", "worm", "chorales", "cartpole"):
+        if k in ("train", "pong", "chorales"):
             del sys.modules[k]
     sys.path[:] = [p for p in sys.path if not p.startswith(str(ROOT))]
     sys.path.insert(0, str(ROOT / name))
     return importlib.import_module("train")
 
 
-def positions_for_smoke(m) -> None:  # type: ignore[no-untyped-def]
-    """Connect Four trains on a generated dataset that is not in the repo; when it is missing (a fresh checkout, the CI), build a small one."""
-    import dataset
-
-    if not dataset.DATA.exists():
-        x, y, meta = dataset.build(games=60, seed=0)
-        dataset.DATA.parent.mkdir(exist_ok=True)
-        np.savez_compressed(dataset.DATA, x=x, y=y, meta=np.array(meta, dtype=object))
-        print(f"  built a smoke dataset of {meta['positions']} positions from 60 games")
-
-
 BUDGETS = {
     "01_digits": lambda m: (setattr(m, "GRID", m.GRID[:1]), setattr(m, "VALIDATION_SEEDS", 1), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 2})),
-    "02_images": lambda m: (setattr(m, "GRID", [{"hidden": 32}]), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "VALIDATION", 500)),
-    "03_connect_four": lambda m: (positions_for_smoke(m), setattr(m, "GRID", [{"hidden": 16}]), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "GAMES_PER_OPPONENT", 4), setattr(m, "CONTROL_EPOCHS", 1)),
+    "03_recall": lambda m: (setattr(m, "LENGTHS", (4, 8)), setattr(m, "TRIALS", 3), setattr(m, "TRAIN_STEPS", 5)),
     "04_pong": lambda m: None,
-    "05_text": lambda m: (setattr(m, "GRID", [{"hidden": 32}]), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "TRAIN_CHARS", 20_000), setattr(m, "VALIDATION_CHARS", 5_000), setattr(m, "TEST_CHARS", 5_000), setattr(m, "GRID_CHARS", 10_000), setattr(m, "GRID_EPOCHS", 1)),
-    "06_sign": lambda m: (setattr(m, "DEMOS_PER_SHAPE", 40), setattr(m, "HELD_OUT_PER_SHAPE", 4), setattr(m, "GRID", [{"hidden": 16}]), setattr(m, "GRID_EPOCHS", 1), setattr(m, "GRID_ROWS", 4000), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1})),
     "07_music": lambda m: (setattr(m, "GRID", [{"hidden": 32}]), setattr(m, "GRID_EPOCHS", 1), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "TRANSPOSITIONS", [0])),
-    "08_cartpole": lambda m: None,
-    "09_celegans": lambda m: setattr(m, "UPDATES", 30),
 }
 ARGS = {
     "01_digits": lambda m, out: m.run(0, out, 1),
-    "02_images": lambda m, out: m.run(0, out, "cpu"),
-    "03_connect_four": lambda m, out: m.run(0, out),
+    "03_recall": lambda m, out: m.run(0, out, 1),
     "04_pong": lambda m, out: m.run(0, out, 2),
-    "05_text": lambda m, out: m.run(0, out, "cpu"),
-    "06_sign": lambda m, out: m.run(0, out, "cpu"),
     "07_music": lambda m, out: m.run(0, out, "cpu"),
-    "08_cartpole": lambda m, out: m.run(0, out, 2),
-    "09_celegans": lambda m, out: m.run(out, 1, 1),
 }
 
 
