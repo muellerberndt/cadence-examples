@@ -15,8 +15,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {
-    "04_pong": "https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3",
-    "07_music": "https://claude.ai/code/artifact/06f247a3-5acb-4663-91c6-9474f087a51e",
+    "04_pong": "https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04",
+    "07_music": "https://claude.ai/code/artifact/ed371f22-b7ea-4545-85f7-b6b573448528",
 }
 
 

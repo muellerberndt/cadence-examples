@@ -6,7 +6,7 @@ settlement library (`pip install cadence-net`, `import cadence`).
 Each example is a tutorial with its own README, a runnable script, a receipt that binds its
 numbers to the code and data that produced them, and, where it makes sense, a page you can
 play with in a browser. Start at the
-[hub page](https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8). An example
+[hub page](https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60). An example
 stays on this ladder only while its receipt shows the patch net ahead of the strongest
 backprop model in the same script on a primary measure; the digits rung stays as the
 tutorial, where the advantage is fewer passes over the data at the same accuracy.
@@ -16,8 +16,8 @@ tutorial, where the advantage is fewer passes over the data at the same accuracy
 |---|---|---|
 | 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a same-size MLP 0.967 in 50 |
 | 03 | [recall](03_recall/) | associative recall with no trained parameters: each key-value pair is one hebbian outer product, each query a settlement with the key clamped, at any context length; receipt: the value of any key in a context of up to 128 pairs: 1.00 settled, 1.00 in one read, with no trained parameters; a two-layer transformer trained on the task 0.30 at 4 pairs, 0.01 at 128 |
-| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage; receipt: reward-trained paddle returns 78.0% of balls against 92.9% for backprop REINFORCE on the same rollouts; the same net taught the tracker's moves 96.6%; [play it](https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3) |
-| 07 | [chorales](07_music/) | continues bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; ahead of a same-size mlp on both measures; listen in the page; receipt: next-chord pitch-set F1 0.483, 16.6 bits/chord; repeat-last 0.369, MLP 0.470; [play it](https://claude.ai/code/artifact/06f247a3-5acb-4663-91c6-9474f087a51e) |
+| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage; receipt: reward-trained paddle returns 78.0% of balls against 92.9% for backprop REINFORCE on the same rollouts; the same net taught the tracker's moves 96.6%; [play it](https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04) |
+| 07 | [chorales](07_music/) | continues bach chorales chord by chord from an eight-chord window with a multi-hot quadratic nudge; ahead of a same-size mlp on both measures; listen in the page; receipt: next-chord pitch-set F1 0.483, 16.6 bits/chord; repeat-last 0.369, MLP 0.470; [play it](https://claude.ai/code/artifact/ed371f22-b7ea-4545-85f7-b6b573448528) |
 <!-- /ladder -->
 [How a patch net learns](HOW_IT_LEARNS.md) is the tutorial the rungs build on: owners,
 seams, settlement, and the one local rule the rungs use, whether the target is a label, a
