@@ -15,10 +15,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {  # the published copies of each rung's index.html
-    "01_digits": "https://claude.ai/code/artifact/20255a93-c6f1-4a65-8ae0-62362fd6636c",
-    "02_recall": "https://claude.ai/code/artifact/3e74cec0-ac36-4e81-8bbb-be9997f495bf",
-    "03_connect_four": "https://claude.ai/code/artifact/7eaebd77-b8f7-4415-8a08-6aefc9aff570",
-    "04_pong": "https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3",
+    "01_digits": "https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618",
+    "02_recall": "https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b",
+    "03_connect_four": "https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc",
+    "04_pong": "https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04",
 }
 
 

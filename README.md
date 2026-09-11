@@ -8,15 +8,15 @@ that trains something with the owner-local rule and measures the obvious backpro
 on the same split in the same run, a receipt that binds the numbers to the code and data
 that produced them, the trained net in the repo, and a page you can play in a browser,
 where the same net settles in JavaScript for every reading or move. Start at the
-[hub page](https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8).
+[hub page](https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60).
 
 <!-- ladder -->
 | # | example | what it shows |
 |---|---|---|
-| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a same-size MLP 0.967 in 50; [play it](https://claude.ai/code/artifact/20255a93-c6f1-4a65-8ae0-62362fd6636c) |
-| 02 | [recall](02_recall/) | associative recall with no trained parameters: each key-value pair is one Hebbian outer product, each query a settlement with the key clamped, at any context length; receipt: the value of any key in a context of up to 128 pairs: 1.00 settled, 1.00 in one read, with no trained parameters; a two-layer transformer given 5,000 Adam steps on the task did not learn it (0.30 at 4 pairs, 0.01 at 128); [play it](https://claude.ai/code/artifact/3e74cec0-ac36-4e81-8bbb-be9997f495bf) |
-| 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead, at the MLP's agreement; receipt: agrees with a depth-4 search on 0.527 of positions (MLP 0.533); 91-0-9 vs random, 2-0-98 vs depth 2; [play it](https://claude.ai/code/artifact/7eaebd77-b8f7-4415-8a08-6aefc9aff570) |
-| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history; receipt: reward-trained paddle returns 87.8% of balls against 92.9% for backprop REINFORCE on the same rollouts; the same net taught the tracker's moves 96.0%; [play it](https://claude.ai/code/artifact/112fbedd-4191-42dd-b890-064f629befc3) |
+| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a same-size MLP 0.967 in 50; [play it](https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618) |
+| 02 | [recall](02_recall/) | associative recall with no trained parameters: each key-value pair is one Hebbian outer product, each query a settlement with the key clamped, at any context length; receipt: the value of any key in a context of up to 128 pairs: 1.00 settled, 1.00 in one read, with no trained parameters; a two-layer transformer given 5,000 Adam steps on the task did not learn it (0.30 at 4 pairs, 0.01 at 128); [play it](https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b) |
+| 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead, at the MLP's agreement; receipt: agrees with a depth-4 search on 0.527 of positions (MLP 0.533); 91-0-9 vs random, 2-0-98 vs depth 2; [play it](https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc) |
+| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history; receipt: reward-trained paddle returns 87.8% of balls against 92.9% for backprop REINFORCE on the same rollouts; the same net taught the tracker's moves 96.0%; [play it](https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04) |
 <!-- /ladder -->
 [How a patch net learns](HOW_IT_LEARNS.md) is the tutorial the rungs build on: owners,
 seams, settlement, and the one local rule the rungs use, whether the target is a label, a
@@ -82,7 +82,8 @@ The trained nets are in the repo and already embedded in each page's `index.html
 nothing needs training or downloading:
 
 ```bash
-python serve.py                    # serves the repo and opens http://localhost:8765/
+python serve.py                    # serves the repo and opens the hub at http://localhost:8765/
+python serve.py pong               # or straight into a page: digits, recall, connect-four, pong
 ```
 
 The hub at that address links to the four pages (draw a digit, write and ask a memory,
@@ -98,9 +99,14 @@ held-out pictures it ships, and the recall page reproduces the receipt's 1.00 at
   writes; the committed receipts stay untouched. It is the test suite, and CI runs it.
 - `tools/ladder.py` regenerates the ladder table above and the hub pages from the receipts,
   so the numbers in three places are one set of numbers.
+- `tools/pages.py` opens every page in a real browser: it must load without script errors
+  and decode as UTF-8, the digits page must read its held-out pictures, the Connect Four
+  games must play to a result, Pong must keep twelve decisions a second, and on every
+  sampled position the page must choose what the Python engine chooses on the same net.
 - CI verifies every committed receipt against the checkout, rebuilds every page from its
   committed net and checks that nothing changed, regenerates the ladder and checks the
-  same, then runs the smoke suite; it installs the library from its main branch.
+  same, runs the smoke suite, then plays the pages; it installs the library from its main
+  branch.
 
 Each example measures the obvious legacy baselines on the same split and puts them in its
 receipt next to the patch net's accuracy, parameter count, epochs, and wall-clock. The

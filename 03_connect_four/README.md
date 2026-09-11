@@ -118,7 +118,7 @@ has the comparison.
 settlement runs in JavaScript, owner by owner, with the same rule. The bars above the
 board replay the output owners' activations step by step; the strip on the right shows
 the hidden owners at rest. Nothing is precomputed. A published copy is linked from the
-[hub](https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8).
+[hub](https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60).
 
 ## 9. Things to try
 
