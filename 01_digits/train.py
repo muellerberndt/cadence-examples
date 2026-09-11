@@ -159,6 +159,22 @@ def baselines(x: np.ndarray, y: np.ndarray, x_test: np.ndarray, y_test: np.ndarr
     return out
 
 
+def export(net: Digits, path: Path, meta: dict) -> None:
+    """The settled engine as JSON for the page: dense overlap matrix, biases, rule, sets."""
+    engine = net.learner.engine
+    rule = engine.rule
+    payload = {
+        "n": net.wiring.n,
+        "sets": {k: [int(i) for i in v] for k, v in net.wiring.sets.items()},
+        "W": [round(float(w), 5) for w in engine.dense().ravel()],
+        "bias": [round(float(b), 5) for b in engine.bias],
+        "rule": {"slope": rule.slope, "threshold": rule.threshold, "leak": rule.leak, "dt": rule.dt, "clamp": rule.clamp_amplitude, "rest": rule.rest_emission},
+        "readout_tolerance": READOUT_TOLERANCE,
+        "meta": meta,
+    }
+    path.write_text(json.dumps(payload, separators=(",", ":")))
+
+
 def run(seed: int, out: Path, seeds: int) -> dict[str, Any]:
     x_train, y_train, x_test, y_test = load(seed)
 
@@ -226,6 +242,11 @@ def run(seed: int, out: Path, seeds: int) -> dict[str, Any]:
         confusion[truth, guess] += 1
 
     comparison = baselines(x_train, y_train, x_test, y_test)
+    samples = [int(np.flatnonzero(y_test == c)[0]) for c in range(CLASSES)]  # one held-out picture per class, for the page
+    export(first, HERE / "net.json", {
+        "test_accuracy": runs[0]["test_accuracy"], "parameters": first.learner.parameters(), "epochs": SCHEDULE["epochs"],
+        "samples": [{"label": int(y_test[i]), "pixels": [int(round(v * 16)) for v in x_test[i]]} for i in samples],
+    })
     body = {
         "dataset": {
             "name": "sklearn digits",

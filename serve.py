@@ -3,7 +3,7 @@
 Run:  python serve.py            (then http://localhost:8765/)
 
 The pages are plain HTML with the trained nets embedded; nothing is computed on the
-server. If a game page is missing, run that example's build_page.py first.
+server. If a page is missing, run that example's build_page.py first (the recall page has no net to embed).
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ PORT = 8765
 
 
 def main() -> int:
-    missing = [p for p in ("04_pong/index.html", "07_music/index.html") if not (HERE / p).exists()]
+    missing = [p for p in ("01_digits/index.html", "03_connect_four/index.html", "04_pong/index.html") if not (HERE / p).exists()]
     for p in missing:
         print(f"note: {p} is not built yet; run build_page.py in that directory")
     handler = lambda *a, **k: http.server.SimpleHTTPRequestHandler(*a, directory=str(HERE), **k)  # noqa: E731

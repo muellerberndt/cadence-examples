@@ -9,8 +9,8 @@ becomes a nudge, how the paddle learns to be in the right place, and what went w
 first time.
 
 ```bash
-pip install "cadence-net[accel]>=0.2"      # torch is used for the backprop baseline only
-python train.py                             # a quarter of an hour: the patch net, then the baseline, then the receipt
+pip install "cadence-net>=0.7" torch        # torch is used for the backprop baseline only
+python train.py                             # about ten minutes: the patch net, the baseline, the imitation net, the receipt
 python build_page.py                        # embeds net.json into index.html; open it and play
 python train.py --verify receipt.json
 ```
@@ -54,10 +54,18 @@ that was taken and the nudge is multiplied by the advantage:
     nudge[k] = β · A · (onehot(action)[k] − p[k])       on the three output owners
 
 A transition whose action paid pulls that action's owner up in that state; one whose
-action cost pushes it down. Every seam then moves on the difference of its own two
-endpoint products between the `+β` and `−β` settlements, as always. Summed over the batch
-this is `Σ A · ∇ log p(action | frames)`, the REINFORCE gradient. 300 iterations, `η` from
-2 decaying by 0.99 per iteration.
+action cost pushes it down. Every seam then reads the difference of its own two endpoint
+products between the `+β` and `−β` settlements, as always. Summed over the batch this is
+`Σ A · ∇ log p(action | frames)`, the REINFORCE gradient.
+
+One thing is added to the step, and it is still local. Each seam keeps a running average
+of its own contrasts (forgetting factor 0.9) and a running mean of their squares (0.999),
+both corrected for their short history, and steps by `η = 5·10⁻⁴` times the average over
+the root of the mean square. That is the per-parameter step of an adaptive optimiser,
+read from a seam's own history and nothing else; the baseline gets the same thing from
+Adam. 300 iterations, no anneal. With the plain step (`η` from 2 decaying by 0.99) the
+paddle stalled at 78% of balls returned whatever else was varied; the adaptive step is
+what moved it, and the numbers below say how far.
 
 ## 5. How the paddle learns to be in the right place
 
@@ -98,9 +106,9 @@ of section 5 with a credit horizon of γ = 0.5.
 
 | policy | learned from | parameters | training | balls returned | returns per point |
 |---|---|---|---|---|---|
-| patch net 384-32-3, reward-nudged | reward | 12,806 | 886 s | 78% | 2.03 |
-| MLP 384-32-3, REINFORCE with Adam | reward, same rollouts | 12,419 | 10 s | 93% | 4.00 |
-| patch net 384-32-3, free/nudged rule | a scripted tracker's moves, 25,600 rows | 12,806 | 147 s | 97% | 5.91 |
+| patch net 384-32-3, reward-nudged, adaptive local step | reward | 12,806 | 163 s | 88% | 3.09 |
+| MLP 384-32-3, REINFORCE with Adam | reward, same rollouts | 12,419 | 13 s | 93% | 4.00 |
+| patch net 384-32-3, free/nudged rule | a scripted tracker's moves, 25,600 rows | 12,806 | 22 s | 96% | 5.64 |
 | untrained patch net | | 12,806 | — | 16% | 0.14 |
 | scripted tracker (for scale) | | | | 99.7% | |
 
@@ -108,9 +116,9 @@ The policy tables, action chosen against the ball's row minus the paddle's centr
 every ball row and paddle position with the ball one column away and coming level:
 
     reward-trained            ball − paddle:  −5    −3    −1     0    +1    +3    +5
-    up                                        6/6   6/8   5/10  6/10  5/10  3/8   1/6
+    up                                        6/6   8/8   8/10  5/10  6/10  2/8   0/6
     stay                                      0     0     0     0     0     0     0
-    down                                      0/6   2/8   5/10  4/10  5/10  5/8   5/6
+    down                                      0/6   0/8   2/10  5/10  4/10  6/8   6/6
 
     imitation-trained         ball − paddle:  −5    −3    −1     0    +1    +3    +5
     up                                        6/6   8/8   9/10  2/10  0     0     0
@@ -118,25 +126,28 @@ every ball row and paddle position with the ball one column away and coming leve
     down                                      0     0     0     4/10  9/10  8/8   6/6
 
 Read it plainly. The same net, the same rule, the same seams: taught by a tracker's moves
-it becomes a tracker (the second table) and returns 97% of balls; taught by reward it
-stays a coin flip within a row of the ball (the first table) and returns 78%, while
-backprop with Adam on the same rollouts reaches 93%. The difference between the two
-patch-net rows is entirely in the target of the nudge, a clean move versus a noisy,
-advantage-weighted one; the difference between the reward rows is what an exact
-gradient with per-parameter step sizes does with that noise that a small-nudge estimate
-does not. Every variant of the reward setup was tried on this rung (nudge strength,
-settle tolerance, batch size, momentum, per-seam normalisation, immediate and
-potential-based credit, one and two frames) and none moved the reward-trained paddle
-past 79%; the receipt has the full per-iteration history. The page ships both paddles;
-the imitation-trained one is the default opponent because it plays, and the toggle is
-there so you can feel the difference.
+it becomes a tracker (the second table) and returns 96% of balls; taught by reward it
+learns the relative rule at a distance, up when the ball is three rows above, down when
+it is three below, and stays a coin flip within a row or two of the ball (the first
+table), returning 88%, while backprop with Adam on the same rollouts reaches 93%. The
+adaptive local step is what carried the reward-trained paddle from 78% to 88%: with the
+plain step, every variant of the setup (nudge strength, settle tolerance, batch size,
+momentum, per-seam normalisation without the history correction, immediate and
+potential-based credit, one and two frames) stopped at 79%. With it, three seeds land at
+88%, 88% and 90%; longer training, an anneal, a larger nudge, a tighter settle, a larger
+hidden layer and a longer credit horizon were each tried and none passed 90%. The five
+points left to the baseline are what an exact gradient does with the same noisy
+advantages that a small-nudge estimate does not; the receipt has the full per-iteration
+history for both. The page ships both paddles; the imitation-trained one is the default
+opponent because it plays best, and the toggle is there so you can feel the difference.
 
 ## 7. What is different from the baseline
 
 The baseline is a 384-32-3 network of the same shape trained by REINFORCE with Adam: the
 same rollouts, the same reward and advantages, the same 300 iterations, and a backward
-pass to turn `A · ∇ log p` into weight updates. The patch net does that with two nudged
-settlements per batch and a local rule. Section 6 of
+pass to turn `A · ∇ log p` into weight updates, with Adam's per-parameter step. The patch
+net does that with two nudged settlements per batch, a local rule, and the same
+per-parameter step read from each seam's own history. Section 6 of
 [How a patch net learns](../HOW_IT_LEARNS.md) has the full comparison.
 
 ## 8. The page

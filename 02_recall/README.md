@@ -1,4 +1,4 @@
-# 03 · Recall
+# 02 · Recall
 
 A memory that is the seams. A context of key-value pairs, then a query key: what was its
 value? A patch net answers with no training at all, at any context length, and a
@@ -8,8 +8,8 @@ claim "attention is one settlement step of a Hebbian memory" is a number. Read
 learning rule is needed here.
 
 ```bash
-pip install "cadence-net>=0.6" torch
-python train.py                    # about fifteen minutes; the transformer baseline is most of it
+pip install "cadence-net>=0.7" torch
+python train.py                    # about seven minutes; the transformer baseline is most of it
 python train.py --verify receipt.json
 ```
 
@@ -43,7 +43,10 @@ of 32 episodes on contexts of 2 to 32 pairs, then tested at every length. The li
 result is that attention learns recall inside the lengths it was trained on and does not
 carry it beyond them; in this budget the baseline did not learn the task at all (final
 training loss 3.99 against a chance level of 4.85 nats), and the receipt says so rather than
-tuning until it does.
+tuning until it does. Four times the budget (20,000 steps, loss 3.45) gave 0.27 at 4 pairs,
+so the row is a statement about this architecture at this size and budget, not about
+attention; the comparison the rung rests on is the one in the receipt's first two rows,
+exact recall at every length with nothing trained.
 
 ## 4. The numbers
 
@@ -56,11 +59,22 @@ From `receipt.json`, three seeds, a hundred episodes per length:
 | transformer, trained | 0.30 | 0.10 | 0.05 | 0.03 | 0.02 | 0.03 | 0.01 | 0.01 |
 
 The patch net has no trained parameter and no window: the context length is whatever was
-written, and a hundred episodes at every length take about twenty seconds on a laptop
-core, against four to five minutes of training for the baseline per seed. The reference
+written, and a hundred episodes at every length take a few seconds on a laptop core,
+against about two minutes of training for the baseline per seed. The reference
 engine settles the same memory owner by owner and agrees with the fast engine to 0.0.
 
-## 5. What it shows, and what it does not
+## 5. The page
+
+`index.html` is the same memory in JavaScript: 128 key owners, 128 value owners, 32,768
+seams at zero, the rule of `train.py` (unit slope, leak 0.1, clamp 3.0, at most thirty steps
+to a tolerance of 10⁻⁴). Write a random context of 4 to 128 pairs, or add a pair of your own,
+then click any key: the bars replay the eight most active value owners coming to rest, the
+strip shows all 128, and the caption gives both readings, the settled one and the one-step
+attention read. Under the receipt's protocol (a hundred random contexts per length, distinct
+keys, random values) the page scores 1.00 at every length, settled and in one read. Nothing
+in it was trained; the memory is whatever you wrote.
+
+## 6. What it shows, and what it does not
 
 It shows the thing the paper argues: the retrieval a transformer does with attention over
 a window, a patch net does with seams it wrote itself, and one settlement step is the

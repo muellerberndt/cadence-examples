@@ -1,0 +1,184 @@
+<title>Cadence Connect Four</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
+    --board: #243b6e; --hole: #eef1f5; --you: #e4572e; --net: #f4b400; --accent: #1f8a70; --accent-soft: #d5efe7;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547;
+      --board: #1b2d57; --hole: #12171f; --accent: #3fbf9c; --accent-soft: #1d3a34;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547;
+    --board: #1b2d57; --hole: #12171f; --accent: #3fbf9c; --accent-soft: #1d3a34;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 320px; }
+  header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .hub { font-weight: 600; color: var(--accent); text-decoration: none; margin-right: auto; order: -1; flex-basis: 100%; }
+  .hub:hover { text-decoration: underline; }
+  .board-wrap { display: grid; gap: 10px; }
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; height: 88px; align-items: end; padding: 0 12px; }
+  .bar { position: relative; height: 100%; border-radius: 6px 6px 2px 2px; background: var(--accent-soft); overflow: hidden; }
+  .bar i { position: absolute; left: 0; right: 0; bottom: 0; height: 0%; background: var(--accent); transition: height 40ms linear; }
+  .bar b { position: absolute; top: 4px; left: 0; right: 0; text-align: center; font: 600 11px var(--mono); color: var(--muted); }
+  .bar.chosen { outline: 2px solid var(--net); }
+  .board { background: var(--board); border-radius: 14px; padding: 12px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cell { aspect-ratio: 1; border-radius: 50%; background: var(--hole); position: relative; cursor: pointer; }
+  .cell.you { background: var(--you); } .cell.net { background: var(--net); }
+  .cell.win::after { content: ""; position: absolute; inset: 28%; border-radius: 50%; background: rgba(255,255,255,.55); }
+  .cell.ghost { box-shadow: inset 0 0 0 3px var(--you); }
+  .status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 600; }
+  .status .who { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+  button { font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  aside { display: grid; gap: 14px; align-content: start; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .card p { margin: 6px 0; line-height: 1.45; }
+  .hidden-strip { display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; }
+  .hidden-strip i { aspect-ratio: 1; border-radius: 2px; background: var(--accent); opacity: .08; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-variant-numeric: tabular-nums; }
+  dt { color: var(--muted); } dd { margin: 0; font-family: var(--mono); font-size: 13px; }
+  .score { font: 800 22px var(--mono); }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+<main>
+  <header>
+    <a class="hub" href="../index.html" data-published="https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8">← All examples</a>
+    <h1>Cadence Connect Four</h1>
+    <p>You play coral; a patch net plays gold. Every move it makes is one settlement of 155 owners, run right here in the page. The bars show its seven output owners coming to rest.</p>
+  </header>
+  <section class="board-wrap">
+    <div class="bars" id="bars"></div>
+    <div class="board" id="board" aria-label="Connect Four board"></div>
+    <div class="status">
+      <span id="status">Your move. Click a column.</span>
+      <button id="new">New game</button>
+      <button id="netfirst">Let the net start</button>
+      <span class="score" id="score">0 : 0</span>
+    </div>
+  </section>
+  <aside>
+    <div class="card">
+      <h2>Hidden owners</h2>
+      <div class="hidden-strip" id="hidden"></div>
+      <p id="settle">Waiting for a position.</p>
+    </div>
+    <div class="card">
+      <h2>What this is</h2>
+      <p>The board reaches the net as 84 clamped input owners: its own discs and yours. The net settles under that clamp with no search and no lookahead; the most active output owner among the legal columns is its move.</p>
+      <p>It learned by imitating a depth-4 search on self-play positions, with the free/nudged rule: two settlements and one local comparison per batch, no backward pass.</p>
+      <dl id="facts"></dl>
+    </div>
+  </aside>
+</main>
+<script>
+const NET = /*NET*/null;
+const n = NET.n, W = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
+const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+const TOL = NET.readout_tolerance || 1e-4;
+function act(v) {
+  const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest;
+  return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest;
+}
+function settle(drive) {
+  const v = new Float64Array(n), s = new Float64Array(n), inbox = new Float64Array(n);
+  const trace = []; let steps = 0;
+  for (let t = 0; t < 100; t++) {
+    inbox.fill(0);
+    for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) inbox[j] += si * W[row + j]; }
+    let moved = 0;
+    for (let j = 0; j < n; j++) {
+      v[j] = v[j] + R.dt * (-v[j] + inbox[j] + drive[j] + BIAS[j]);
+      const ns = act(v[j]); const d = Math.abs(ns - s[j]); if (d > moved) moved = d; s[j] = ns;
+    }
+    trace.push(OUT.map(k => s[k])); steps = t + 1;
+    if (moved < TOL) break;
+  }
+  return { s, trace, steps };
+}
+// --- game
+const COLS = 7, ROWS = 6;
+let grid, human = 1, netSide = 2, turn = 1, over = false, score = [0, 0], busy = false;
+const boardEl = document.getElementById('board'), barsEl = document.getElementById('bars'), hiddenEl = document.getElementById('hidden');
+const statusEl = document.getElementById('status'), settleEl = document.getElementById('settle'), scoreEl = document.getElementById('score');
+for (let c = 0; c < COLS; c++) { const b = document.createElement('div'); b.className = 'bar'; b.innerHTML = '<i></i><b>' + (c + 1) + '</b>'; barsEl.appendChild(b); }
+for (let i = 0; i < HID.length; i++) { const d = document.createElement('i'); hiddenEl.appendChild(d); }
+document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>agreement with the search</dt><dd>${(NET.meta.agreement * 100).toFixed(1)}%</dd>` + NET.meta.strength.map(s => `<dt>vs ${s.opponent}</dt><dd>${s.wins}-${s.draws}-${s.losses}</dd>`).join('');
+function reset(first) {
+  grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0)); over = false; turn = first; render();
+  statusEl.textContent = first === human ? 'Your move. Click a column.' : 'The net opens.';
+  if (first === netSide) setTimeout(netMove, 300);
+}
+function drop(col, who) { for (let r = 0; r < ROWS; r++) if (grid[r][col] === 0) { grid[r][col] = who; return r; } return -1; }
+function legal() { return [...Array(COLS).keys()].filter(c => grid[ROWS - 1][c] === 0); }
+function winner() {
+  const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { const w = grid[r][c]; if (!w) continue;
+    for (const [dr, dc] of dirs) { const cells = [[r, c]]; let rr = r, cc = c;
+      for (let k = 1; k < 4; k++) { rr += dr; cc += dc; if (rr < 0 || rr >= ROWS || cc < 0 || cc >= COLS || grid[rr][cc] !== w) break; cells.push([rr, cc]); }
+      if (cells.length === 4) return { who: w, cells }; } }
+  return null;
+}
+function render(win) {
+  boardEl.innerHTML = '';
+  for (let r = ROWS - 1; r >= 0; r--) for (let c = 0; c < COLS; c++) {
+    const d = document.createElement('div'); d.className = 'cell' + (grid[r][c] === human ? ' you' : grid[r][c] === netSide ? ' net' : '');
+    if (win && win.cells.some(([rr, cc]) => rr === r && cc === c)) d.classList.add('win');
+    d.dataset.col = c; d.addEventListener('click', () => humanMove(c)); boardEl.appendChild(d);
+  }
+  scoreEl.textContent = `${score[0]} : ${score[1]}`;
+}
+function finish() {
+  const w = winner();
+  if (w) { over = true; render(w); if (w.who === human) { score[0]++; statusEl.textContent = 'You win. Four in a row.'; } else { score[1]++; statusEl.textContent = 'The net wins.'; } render(w); return true; }
+  if (legal().length === 0) { over = true; statusEl.textContent = 'A draw: the board is full.'; return true; }
+  return false;
+}
+function humanMove(col) {
+  if (over || busy || turn !== human || grid[ROWS - 1][col] !== 0) return;
+  drop(col, human); render(); if (finish()) return; turn = netSide; statusEl.textContent = 'The net is settling…'; setTimeout(netMove, 60);
+}
+function planes() {
+  const drive = new Float64Array(n);
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { const k = r * COLS + c; if (grid[r][c] === netSide) drive[IN[k]] = R.clamp; else if (grid[r][c] === human) drive[IN[42 + k]] = R.clamp; }
+  return drive;
+}
+function netMove() {
+  if (over) return; busy = true;
+  const t0 = performance.now(); const { s, trace, steps } = settle(planes()); const ms = performance.now() - t0;
+  const ok = legal(); const final = trace[trace.length - 1];
+  const col = ok.reduce((best, c) => (final[c] > final[best] || (final[c] === final[best] && Math.abs(c - 3) < Math.abs(best - 3))) ? c : best, ok[0]);
+  const bars = barsEl.children; let frame = 0;
+  const playback = () => {
+    const row = trace[Math.min(frame, trace.length - 1)];
+    for (let c = 0; c < COLS; c++) { bars[c].firstChild.style.height = Math.max(0, Math.min(1, row[c])) * 100 + '%'; bars[c].classList.toggle('chosen', frame >= trace.length - 1 && c === col); }
+    frame++;
+    if (frame <= trace.length) requestAnimationFrame(playback);
+    else {
+      HID.forEach((k, i) => { hiddenEl.children[i].style.opacity = 0.08 + 0.92 * Math.max(0, Math.min(1, s[k])); });
+      settleEl.textContent = `Came to rest in ${steps} steps (${ms.toFixed(1)} ms). Column ${col + 1} was the most active legal output.`;
+      drop(col, netSide); render(); busy = false;
+      if (!finish()) { turn = human; statusEl.textContent = 'Your move.'; }
+    }
+  };
+  requestAnimationFrame(playback);
+}
+document.getElementById('new').addEventListener('click', () => reset(human));
+document.getElementById('netfirst').addEventListener('click', () => reset(netSide));
+reset(human);
+
+// The hub link: relative in a checkout (a file, or serve.py on localhost), the published hub anywhere else.
+{ const hub = document.querySelector('a.hub'); const local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); if (hub && !local) hub.href = hub.dataset.published; }
+</script>

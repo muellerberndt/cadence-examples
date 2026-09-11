@@ -18,8 +18,8 @@ Some owners are **input owners**. They receive a **clamp**: a fixed drive, one n
 owner, that is the net's input. For the digits, an 8×8 picture is 64 input owners and the
 clamp on each is its pixel's brightness in [0, 1]. For Pong, the screen is 192 pixels twice
 (this frame and the last), so 384 input owners, and the clamp is each pixel's brightness.
-For the chorales, each of the last eight chords is a block of twelve pitch-class owners.
-Nothing else is clamped.
+For Connect Four, the board is two planes of 42 owners, the mover's discs and the
+opponent's. Nothing else is clamped.
 
 Some owners are **output owners**: one per class, one per column, one per action. Their
 activations at rest are the net's answer. The rest are **hidden owners**.
@@ -193,10 +193,11 @@ state, arriving through the seams it already has.
 | the network at rest | is not a thing; the network is a function | is a state you can inspect, clamp, ablate, and watch |
 
 The consequences run through every receipt in this repository: the patch net reaches
-the accuracy of a same-sized backprop network in fewer passes over the data, learns more
-from the same Pong rollouts, and costs ten to a hundred times the wall-clock on a laptop
-core because a settlement is tens of steps where a pass is one. Parameter counts match:
-a seam is a weight.
+the accuracy of a same-sized backprop network in fewer passes over the data, recalls a
+written pair at any context length with nothing trained, learns less from the same Pong
+rollouts than an exact gradient with Adam does, and costs ten to a hundred times the
+wall-clock on a laptop core because a settlement is tens of steps where a pass is one.
+Parameter counts match: a seam is a weight.
 
 ## 7. Glossary
 

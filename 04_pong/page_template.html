@@ -44,7 +44,7 @@
 </style>
 <main>
   <header>
-    <a class="hub" href="../index.html">← All examples</a>
+    <a class="hub" href="../index.html" data-published="https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8">← All examples</a>
     <h1>Cadence Pong</h1>
     <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. It learned from reward alone.</p>
   </header>
@@ -175,4 +175,7 @@ setInterval(() => {
   document.getElementById('syou').textContent = score[0]; document.getElementById('snet').textContent = score[1];
   if (ended) document.getElementById('status').textContent = ended === 'net' ? 'The net missed. Your point.' : 'You missed. The net scores.';
 }, 83);
+
+// The hub link: relative in a checkout (a file, or serve.py on localhost), the published hub anywhere else.
+{ const hub = document.querySelector('a.hub'); const local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); if (hub && !local) hub.href = hub.dataset.published; }
 </script>

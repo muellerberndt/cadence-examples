@@ -1,0 +1,172 @@
+<title>Cadence Digits</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
+    --paper: #ffffff; --pixel: #1c2430; --net: #f4b400; --accent: #1f8a70; --accent-soft: #d5efe7;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547;
+      --paper: #060a12; --pixel: #e8ecf2; --accent: #3fbf9c; --accent-soft: #1d3a34;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547;
+    --paper: #060a12; --pixel: #e8ecf2; --accent: #3fbf9c; --accent-soft: #1d3a34;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 320px; }
+  header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; }
+  h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .hub { font-weight: 600; color: var(--accent); text-decoration: none; margin-right: auto; order: -1; flex-basis: 100%; }
+  .hub:hover { text-decoration: underline; }
+  .wrap { display: grid; gap: 12px; }
+  .bars { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; height: 96px; align-items: end; }
+  .bar { position: relative; height: 100%; border-radius: 6px 6px 2px 2px; background: var(--accent-soft); overflow: hidden; }
+  .bar i { position: absolute; left: 0; right: 0; bottom: 0; height: 0%; background: var(--accent); transition: height 40ms linear; }
+  .bar b { position: absolute; top: 4px; left: 0; right: 0; text-align: center; font: 600 12px var(--mono); color: var(--muted); }
+  .bar.chosen { outline: 2px solid var(--net); }
+  canvas { width: 100%; max-width: 384px; aspect-ratio: 1; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; image-rendering: pixelated; display: block; cursor: crosshair; touch-action: none; }
+  .status { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-weight: 600; }
+  button { font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .samples { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .samples button { padding: 6px 10px; font-family: var(--mono); }
+  .verdict { font: 800 34px var(--mono); min-width: 2ch; }
+  aside { display: grid; gap: 14px; align-content: start; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .card p { margin: 6px 0; line-height: 1.45; }
+  .hidden-strip { display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; }
+  .hidden-strip i { aspect-ratio: 1; border-radius: 2px; background: var(--accent); opacity: .08; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-variant-numeric: tabular-nums; }
+  dt { color: var(--muted); } dd { margin: 0; font-family: var(--mono); font-size: 13px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+<main>
+  <header>
+    <a class="hub" href="../index.html" data-published="https://claude.ai/code/artifact/ee7a8b53-be8c-4c34-9f91-43d6eaf77be8">← All examples</a>
+    <h1>Cadence Digits</h1>
+    <p>Draw a digit on the 8×8 grid, or load a held-out one. The 64 pixels clamp 64 input owners; the net settles here in the page, and the most active of ten output owners is its reading.</p>
+  </header>
+  <section class="wrap">
+    <div class="bars" id="bars"></div>
+    <canvas id="pad" width="8" height="8" aria-label="drawing grid"></canvas>
+    <div class="status">
+      <span>Reads</span><span class="verdict" id="verdict">·</span>
+      <span id="status">Draw with the mouse or a finger.</span>
+      <button id="clear">Clear</button>
+    </div>
+    <div class="samples" id="samples"><span style="color:var(--muted)">held-out pictures:</span></div>
+  </section>
+  <aside>
+    <div class="card">
+      <h2>Hidden owners</h2>
+      <div class="hidden-strip" id="hidden"></div>
+      <p id="settle">Waiting for a picture.</p>
+    </div>
+    <div class="card">
+      <h2>What this is</h2>
+      <p>Each pixel's grey level, 0 to 16, is the clamp on its input owner. From rest, every owner moves its potential toward its total drive until no activation changes by more than 10⁻⁴; the bars replay the ten output owners step by step.</p>
+      <p>The net learned with the free/nudged rule: for every batch, a settlement under the picture, a settlement nudged toward the label and one nudged away, and every seam moving on the difference of its own two endpoint products. No backward pass. The hand-drawn digits are off the training distribution (scikit-learn's were scanned and blurred), so expect misreadings on a thin stroke.</p>
+      <dl id="facts"></dl>
+    </div>
+  </aside>
+</main>
+<script>
+const NET = /*NET*/null;
+const n = NET.n, W = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
+const IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
+const TOL = NET.readout_tolerance || 1e-4;
+function act(v) {
+  const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest;
+  return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest;
+}
+function settle(drive) {
+  const v = new Float64Array(n), s = new Float64Array(n), inbox = new Float64Array(n);
+  const trace = []; let steps = 0;
+  for (let t = 0; t < 100; t++) {
+    inbox.fill(0);
+    for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) inbox[j] += si * W[row + j]; }
+    let moved = 0;
+    for (let j = 0; j < n; j++) {
+      v[j] = v[j] + R.dt * (-v[j] + inbox[j] + drive[j] + BIAS[j]);
+      const ns = act(v[j]); const d = Math.abs(ns - s[j]); if (d > moved) moved = d; s[j] = ns;
+    }
+    trace.push(OUT.map(k => s[k])); steps = t + 1;
+    if (moved < TOL) break;
+  }
+  return { s, trace, steps };
+}
+// --- the pad: 8x8 grey levels in 0..16, painted with a soft brush
+const pixels = new Float64Array(64);
+const pad = document.getElementById('pad'), ctx = pad.getContext('2d');
+const barsEl = document.getElementById('bars'), hiddenEl = document.getElementById('hidden');
+const statusEl = document.getElementById('status'), settleEl = document.getElementById('settle'), verdictEl = document.getElementById('verdict');
+for (let c = 0; c < 10; c++) { const b = document.createElement('div'); b.className = 'bar'; b.innerHTML = '<i></i><b>' + c + '</b>'; barsEl.appendChild(b); }
+for (let i = 0; i < HID.length; i++) hiddenEl.appendChild(document.createElement('i'));
+document.getElementById('facts').innerHTML = `<dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters.toLocaleString()}</dd><dt>epochs</dt><dd>${NET.meta.epochs}</dd><dt>held-out accuracy</dt><dd>${NET.meta.test_accuracy.toFixed(3)}</dd>`;
+const ink = () => getComputedStyle(document.documentElement).getPropertyValue('--pixel').trim();
+const paper = () => getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+function draw() {
+  ctx.fillStyle = paper(); ctx.fillRect(0, 0, 8, 8);
+  ctx.fillStyle = ink();
+  for (let k = 0; k < 64; k++) { const a = pixels[k] / 16; if (a <= 0) continue; ctx.globalAlpha = a; ctx.fillRect(k % 8, Math.floor(k / 8), 1, 1); }
+  ctx.globalAlpha = 1;
+}
+let pending = null;
+function read() {
+  const drive = new Float64Array(n);
+  for (let k = 0; k < 64; k++) drive[IN[k]] = (pixels[k] / 16) * R.clamp;
+  const t0 = performance.now(); const { s, trace, steps } = settle(drive); const ms = performance.now() - t0;
+  const final = trace[trace.length - 1]; let best = 0; for (let c = 1; c < 10; c++) if (final[c] > final[best]) best = c;
+  const bars = barsEl.children; let frame = 0;
+  if (pending) cancelAnimationFrame(pending);
+  const playback = () => {
+    const row = trace[Math.min(frame, trace.length - 1)];
+    for (let c = 0; c < 10; c++) { bars[c].firstChild.style.height = Math.max(0, Math.min(1, row[c])) * 100 + '%'; bars[c].classList.toggle('chosen', frame >= trace.length - 1 && c === best); }
+    frame++;
+    if (frame <= trace.length) pending = requestAnimationFrame(playback);
+    else {
+      HID.forEach((k, i) => { hiddenEl.children[i].style.opacity = 0.08 + 0.92 * Math.max(0, Math.min(1, s[k])); });
+      settleEl.textContent = `Came to rest in ${steps} steps (${ms.toFixed(1)} ms). Output owner ${best} was the most active.`;
+      verdictEl.textContent = String(best);
+    }
+  };
+  pending = requestAnimationFrame(playback);
+}
+function empty() { return pixels.every(p => p === 0); }
+function paint(ev) {
+  const r = pad.getBoundingClientRect(); const x = (ev.clientX - r.left) / r.width * 8, y = (ev.clientY - r.top) / r.height * 8;
+  for (let k = 0; k < 64; k++) {
+    const dx = (k % 8) + 0.5 - x, dy = Math.floor(k / 8) + 0.5 - y; const d = Math.sqrt(dx * dx + dy * dy);
+    const add = Math.max(0, 1.1 - d) * 16;  // a brush about one pixel wide, with soft edges like the scanned originals
+    if (add > 0) pixels[k] = Math.min(16, pixels[k] + add);
+  }
+  draw(); read();
+}
+let down = false;
+pad.addEventListener('pointerdown', ev => { down = true; pad.setPointerCapture(ev.pointerId); paint(ev); });
+pad.addEventListener('pointermove', ev => { if (down) paint(ev); });
+pad.addEventListener('pointerup', () => { down = false; });
+pad.addEventListener('pointercancel', () => { down = false; });
+document.getElementById('clear').addEventListener('click', () => { pixels.fill(0); draw(); verdictEl.textContent = '·'; for (const b of barsEl.children) { b.firstChild.style.height = '0%'; b.classList.remove('chosen'); } settleEl.textContent = 'Waiting for a picture.'; });
+const samplesEl = document.getElementById('samples');
+for (const sample of NET.meta.samples) {
+  const b = document.createElement('button'); b.textContent = String(sample.label); b.title = 'a held-out ' + sample.label;
+  b.addEventListener('click', () => { pixels.set(sample.pixels); draw(); read(); statusEl.textContent = `A held-out ${sample.label}; draw over it or clear.`; });
+  samplesEl.appendChild(b);
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+draw();
+window.__digits = { settle, pixels, read };
+
+// The hub link: relative in a checkout (a file, or serve.py on localhost), the published hub anywhere else.
+{ const hub = document.querySelector('a.hub'); const local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); if (hub && !local) hub.href = hub.dataset.published; }
+</script>

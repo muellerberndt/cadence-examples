@@ -7,9 +7,10 @@ settlements. This rung is the tutorial for `cadence.Learner`; read
 or *nudge* are new.
 
 ```bash
-pip install "cadence-net>=0.2" scikit-learn
+pip install "cadence-net>=0.7" scikit-learn
 python train.py                    # about 20 s on a laptop
 python train.py --verify receipt.json
+python build_page.py               # embeds net.json into index.html; open it and draw a digit
 ```
 
 ## 1. The data
@@ -74,21 +75,21 @@ same training set and read on the same test set by the same script.
 ## 6. The numbers
 
 From `receipt.json`: seed 0 split, validation selected 64 hidden owners, three seeds of
-that net, one laptop core.
+that net, one laptop core shared with other runs.
 
 | model | parameters | epochs | training time | held-out accuracy |
 |---|---|---|---|---|
-| patch net 64-64-10, free/nudged rule | 4,919 | 20 | 2.5 s | 0.962 ± 0.003 |
-| MLP 64-32-10, Adam, batch 32 | 2,410 | 50 | 0.19 s | 0.967 |
-| MLP 64-32-10, Adam, batch 32 | 2,410 | 12 | 0.05 s | 0.925 |
-| MLP 64-16-10, Adam, batch 32 | 1,210 | 50 | 0.18 s | 0.961 |
-| logistic regression, lbfgs | 650 | 73 | 0.02 s | 0.967 |
+| patch net 64-64-10, free/nudged rule | 4,919 | 20 | 5.6 s | 0.962 ± 0.003 |
+| MLP 64-32-10, Adam, batch 32 | 2,410 | 50 | 0.84 s | 0.967 |
+| MLP 64-32-10, Adam, batch 32 | 2,410 | 12 | 0.20 s | 0.925 |
+| MLP 64-16-10, Adam, batch 32 | 1,210 | 50 | 0.70 s | 0.961 |
+| logistic regression, lbfgs | 650 | 73 | 0.07 s | 0.967 |
 
 Read it plainly. The rule reaches the accuracy of the small MLPs, and it gets there in far
 fewer passes over the data: at 12 epochs the MLPs are at 0.91 to 0.93 and the patch net is
 past 0.96. It does not get there in less wall-clock or with fewer parameters. Every update
 is three settlements of tens of steps each rather than one forward and one backward pass,
-and on a CPU at this size that is a factor of ten in time; and the validation split, with
+and on a CPU at this size that is a factor of seven in time; and the validation split, with
 fewer images to fit on, prefers the largest net in the grid. Trained on the full training
 set, the 32-hidden net reaches 0.969 ± 0.002 over three seeds (2,519 parameters, 2.3 s),
 but that number was read after looking at the test set and is not what the receipt binds.
@@ -121,7 +122,19 @@ the full comparison.
 hashes to what the receipt says, and re-derives the accuracy from the confusion matrix and
 the selection from the validation table.
 
-## 9. Things to try
+## 9. The page
+
+`index.html` is self-contained: the trained net's dense overlap matrix and biases are
+embedded (`net.json`, exported by `train.py` from the first seed's net), and the settlement
+runs in JavaScript, owner by owner, with the same rule. Draw on the 8×8 grid, or load one of
+the ten held-out pictures the page ships, one per class; the bars replay the ten output
+owners step by step and the strip shows the hidden owners at rest. On those ten pictures the
+page's activations agree with the Python engine to 5·10⁻⁵ (the matrix is rounded to five
+decimals). A hand-drawn stroke is off the training distribution, which was scanned and
+blurred, so a thin "1" or a "7" without a bar is read wrong more often than the receipt's
+accuracy suggests; that is what a 1,437-picture training set buys.
+
+## 10. Things to try
 
 - `--seeds 5` for tighter error bars; `--seed 1` for a different split.
 - Change `GRID` to include `{"hidden": 32, "eta": 2.0}` and watch the validation table.

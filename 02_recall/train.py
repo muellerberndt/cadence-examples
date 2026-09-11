@@ -26,7 +26,7 @@ import numpy as np
 import cadence as cd
 
 HERE = Path(__file__).resolve().parent
-SOURCES = [("03_recall/train.py", Path(__file__).resolve())]
+SOURCES = [("02_recall/train.py", Path(__file__).resolve())]
 VOCAB = 128
 LENGTHS = (4, 8, 16, 32, 48, 64, 96, 128)
 TRAIN_MAX = 32  # the transformer trains on contexts of up to this many pairs

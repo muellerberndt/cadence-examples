@@ -44,24 +44,35 @@ def restore(name: str, before: set[str]) -> None:
 def load_rung(name: str):  # type: ignore[no-untyped-def]
     """Import a rung's train.py with its directory first on the path (its sibling modules import lazily)."""
     for k in list(sys.modules):
-        if k in ("train", "pong", "chorales"):
+        if k in ("train", "pong", "dataset", "connect4"):
             del sys.modules[k]
     sys.path[:] = [p for p in sys.path if not p.startswith(str(ROOT))]
     sys.path.insert(0, str(ROOT / name))
     return importlib.import_module("train")
 
 
+def positions_for_smoke(m) -> None:  # type: ignore[no-untyped-def]
+    """Connect Four trains on a generated dataset that is not in the repo; when it is missing (a fresh checkout, the CI), build a small one."""
+    import dataset
+
+    if not dataset.DATA.exists():
+        x, y, meta = dataset.build(games=60, seed=0)
+        dataset.DATA.parent.mkdir(exist_ok=True)
+        np.savez_compressed(dataset.DATA, x=x, y=y, meta=np.array(meta, dtype=object))
+        print(f"  built a smoke dataset of {meta['positions']} positions from 60 games")
+
+
 BUDGETS = {
     "01_digits": lambda m: (setattr(m, "GRID", m.GRID[:1]), setattr(m, "VALIDATION_SEEDS", 1), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 2})),
-    "03_recall": lambda m: (setattr(m, "LENGTHS", (4, 8)), setattr(m, "TRIALS", 3), setattr(m, "TRAIN_STEPS", 5)),
+    "02_recall": lambda m: (setattr(m, "LENGTHS", (4, 8)), setattr(m, "TRIALS", 3), setattr(m, "TRAIN_STEPS", 5)),
+    "03_connect_four": lambda m: (positions_for_smoke(m), setattr(m, "GRID", [{"hidden": 16}]), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "GAMES_PER_OPPONENT", 4), setattr(m, "CONTROL_EPOCHS", 1)),
     "04_pong": lambda m: None,
-    "07_music": lambda m: (setattr(m, "GRID", [{"hidden": 32}]), setattr(m, "GRID_EPOCHS", 1), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "TRANSPOSITIONS", [0])),
 }
 ARGS = {
     "01_digits": lambda m, out: m.run(0, out, 1),
-    "03_recall": lambda m, out: m.run(0, out, 1),
+    "02_recall": lambda m, out: m.run(0, out, 1),
+    "03_connect_four": lambda m, out: m.run(0, out),
     "04_pong": lambda m, out: m.run(0, out, 2),
-    "07_music": lambda m, out: m.run(0, out, "cpu"),
 }
 
 

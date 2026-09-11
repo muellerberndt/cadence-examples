@@ -8,7 +8,9 @@ output owners (up, stay, down). Acting is a free settlement and a draw from the 
 activations. Learning is the same free/nudged rule as classification, with one change:
 the target of the nudge is the action that was taken, and the strength of the nudge is
 that action's advantage, so actions that paid are pulled toward and actions that cost are
-pushed away. That is the policy gradient, entering through the nudge alone.
+pushed away. That is the policy gradient, entering through the nudge alone. Each seam then
+steps on a running average of its own contrasts divided by their running RMS, the local
+form of an adaptive step, which is what the baseline gets from Adam.
 """
 
 from __future__ import annotations
@@ -34,7 +36,12 @@ ENVS, HORIZON = 64, 64  # parallel games, steps per rollout
 GAMMA = 0.5  # short credit horizon: the shaping already says whether each step helped
 ITERATIONS = 300
 BATCH = 256
-ETA, DECAY = 2.0, 0.99
+ETA, DECAY = 5e-4, 1.0  # the local step per seam, with no anneal: the running RMS below sets the scale
+# Each seam steps on a running average of its own contrasts, divided by the running RMS of them,
+# both corrected for their short history: the per-parameter step of an adaptive optimiser, kept
+# local (a seam reads only its own two endpoints and its own history). The baseline gets the
+# same treatment from Adam; without it the plain rule stalled at 78% of balls returned.
+MOMENTUM, RMS, FLOOR = 0.9, 0.999, 1e-8
 ADVANTAGE_CLIP: float | None = None  # clip normalised advantages to [-clip, clip] so the nudge stays small
 CONFIG = cd.LearnerConfig(
     beta=0.1, eta=ETA, eta_bias=0.02, temperature=0.2, tolerance=3e-3, nudged_steps=12, free_steps=100
@@ -62,6 +69,12 @@ class PatchPolicy:
         )
         self.rng = np.random.default_rng(seed)
         self.steps: list[float] = []
+        # per-seam and per-owner running average and RMS of the contrast, and the update count
+        self.velocity = np.zeros(self.wiring.edges)
+        self.second = np.zeros(self.wiring.edges)
+        self.velocity_bias = np.zeros(self.wiring.n)
+        self.second_bias = np.zeros(self.wiring.n)
+        self.updates = 0
 
     def drive(self, frames: np.ndarray) -> np.ndarray:
         return self.learner.engine.clamp_levels(np.pad(frames, ((0, 0), (0, self.wiring.n - INPUTS))))
@@ -80,13 +93,29 @@ class PatchPolicy:
         return (self.rng.random(len(p))[:, None] < p.cumsum(axis=1)).argmax(axis=1)
 
     def update(self, frames: np.ndarray, actions: np.ndarray, advantages: np.ndarray, eta: float) -> None:
+        """Free phase, the two nudged phases toward and away from the action taken (weighted by its
+        advantage), the contrast every seam reads, then the adaptive local step."""
         learner = self.learner
-        learner.config = dataclasses.replace(learner.config, eta=eta, eta_bias=CONFIG.eta_bias * eta / ETA)
         order = self.rng.permutation(len(actions))
         for start in range(0, len(order), BATCH):
             idx = order[start : start + BATCH]
-            _, report = learner.step(self.drive(frames[idx]), actions[idx], weight=advantages[idx])
-            self.steps.append(report["free_steps"])
+            drive = self.drive(frames[idx])
+            target = learner.targets(actions[idx])
+            free = learner.free(drive)
+            toward = learner.nudged(drive, free, target, weight=advantages[idx])
+            away = learner.nudged(drive, free, target, sign=-1.0, weight=advantages[idx])
+            contrast, contrast_bias = learner.contrast(free, toward, away)
+            self.updates += 1
+            self.velocity = MOMENTUM * self.velocity + (1 - MOMENTUM) * contrast
+            self.second = RMS * self.second + (1 - RMS) * contrast**2
+            self.velocity_bias = MOMENTUM * self.velocity_bias + (1 - MOMENTUM) * contrast_bias
+            self.second_bias = RMS * self.second_bias + (1 - RMS) * contrast_bias**2
+            c1, c2 = 1 - MOMENTUM**self.updates, 1 - RMS**self.updates
+            learner.apply(
+                eta * (self.velocity / c1) / (np.sqrt(self.second / c2) + FLOOR),
+                eta * (self.velocity_bias / c1) / (np.sqrt(self.second_bias / c2) + FLOOR),
+            )
+            self.steps.append(free.steps)
 
     def parameters(self) -> int:
         return self.learner.parameters()
@@ -249,6 +278,7 @@ def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
     export(imitator, HERE / "net_imitation.json", {"hits_per_point": imitation_final["hits_per_point"], "return_rate": imitation_final["return_rate"], "parameters": imitator.parameters(), "learned_from": "the scripted tracker's actions"})
     body = {
         "environment": {"H": H, "W": W, "max_rally": MAX_RALLY, "envs": ENVS, "horizon": HORIZON, "gamma": GAMMA, "iterations": iterations, "batch": BATCH, "eta": ETA, "decay": DECAY},
+        "local_step": {"momentum": MOMENTUM, "rms": RMS, "floor": FLOOR, "bias_corrected": True},
         "config": CONFIG.to_dict(),
         "wiring": patch.wiring.summary(),
         "rule": patch.learner.engine.rule.to_dict(),
@@ -262,7 +292,7 @@ def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
         "conformance": conformance,
         "comparison": [{"model": f"MLP {INPUTS}-{HIDDEN}-{ACTIONS}, REINFORCE with Adam", "parameters": baseline.parameters(), "history": base_history, "training_seconds": base_seconds, "final": base_final}],
         "boundary": {
-            "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local; nudge target = action taken, nudge weight = normalised advantage",
+            "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local; nudge target = action taken, nudge weight = normalised advantage; each seam's step is its running-average contrast over its running RMS",
             "goal_enters_only_through_the_nudge": True,
             "reward": "+1 return, -1 miss, plus the change in paddle-to-ball row distance each step (potential-based shaping)",
             "opponent": "scripted tracker with skill 0.7, not learned",
