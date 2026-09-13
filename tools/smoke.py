@@ -10,6 +10,7 @@ checked: the run completes, the receipt it wrote verifies against the rung's sou
 
 from __future__ import annotations
 
+import argparse
 import importlib
 import shutil
 import sys
@@ -17,9 +18,8 @@ import tempfile
 import time
 from pathlib import Path
 
-import numpy as np
-
 import cadence as cd
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -74,22 +74,30 @@ ARGS = {
 
 
 def main() -> int:
-    names = sys.argv[1:] or list(BUDGETS)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("rungs", nargs="*", help="numbered example directories; default: all six")
+    names = parser.parse_args().rungs or list(BUDGETS)
+    unknown = [name for name in names if name not in BUDGETS]
+    if unknown:
+        parser.error(f"unknown rung(s): {', '.join(unknown)}; choose from {', '.join(BUDGETS)}")
     failed = []
     for name in names:
         t0 = time.perf_counter()
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copytree(ROOT / name, root / name, ignore=shutil.ignore_patterns("__pycache__"))
-            module = load_rung(name, root)
-            BUDGETS[name](module)
-            out = root / "receipt.json"
-            try:
+        original_path = sys.path.copy()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                shutil.copytree(ROOT / name, root / name, ignore=shutil.ignore_patterns("__pycache__"))
+                module = load_rung(name, root)
+                BUDGETS[name](module)
+                out = root / "receipt.json"
                 ARGS[name](module, out)
                 sources = module.SOURCES if hasattr(module, "SOURCES") else module.sources()
                 ok, message = cd.Receipt.verify(out, sources=sources, check=getattr(module, "check", None))
-            except Exception as error:  # noqa: BLE001
-                ok, message = False, f"{type(error).__name__}: {error}"
+        except Exception as error:  # noqa: BLE001
+            ok, message = False, f"{type(error).__name__}: {error}"
+        finally:
+            sys.path[:] = original_path
         print(f"{'ok  ' if ok else 'FAIL'} {name:16s} {time.perf_counter() - t0:6.0f}s  {message}", flush=True)
         if not ok:
             failed.append(name)

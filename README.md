@@ -35,30 +35,68 @@ The earlier experiments remain available at [tag v0.5.0](https://github.com/muel
 
 ## Run
 
+Clone this repository and run these commands from its root. The four browser pages
+already contain their trained nets and need only Python, with no packages installed:
+
 ```bash
-pip install -r requirements.txt torch
-cd 05_memory
-python train.py --steps 800 --seeds 3
-python train.py --verify receipt.json
+python serve.py
 ```
 
-These examples require the repository version of Cadence containing
-`FastSeams(rule="delta")`; while working with sibling checkouts, install with
-`pip install -e ../cadence` from this repository's root.
+Use `python serve.py pong` to open one game, or
+`python serve.py --port 0 --no-browser` to print an available local URL. Stop the
+server with Ctrl-C. Publicly hosted copies are historical and are not updated by
+editing this checkout.
 
-The numbered tutorials explain each data source and run budget. Existing trained
-pages need no retraining: `python serve.py` opens the local hub. Publicly hosted copies
-are historical and are not updated by editing this checkout.
+For the two short Python demos, use Python 3.11 or newer and Git. The default
+dependency file installs the supported Cadence revision with the latest fixes:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python 05_memory/demo.py
+python 06_interventions/demo.py
+```
+
+On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`. The numbered
+tutorials explain the full training runs; those write new receipts and, for examples
+01, 03 and 04, trained nets. Examples 02 and 04–06 use PyTorch for their trained
+baselines: `python -m pip install torch`.
+
+To develop against a sibling Cadence checkout, install it with
+`python -m pip install -e '../cadence[fast]'`. Smoke runs can test that version;
+the saved receipts still certify their original source bytes.
 
 ## Reproduction
 
-- `python tools/verify_receipts.py` verifies current source digests or explicitly
-  reports pinned historical provenance. This is an integrity check, not a rerun.
+Check the saved measurements in a separate environment using their original
+Cadence pin. From the repository root:
+
+```bash
+python -m venv .venv-reproduce
+source .venv-reproduce/bin/activate
+python -m pip install -r requirements-reproduce.txt
+python tools/verify_receipts.py
+deactivate
+```
+
+This checks source integrity and recorded arithmetic, not a rerun of training.
+Examples 01–04 report their older Git provenance. The receipts for 05–06 bind the
+Cadence revision in `requirements-reproduce.txt`; compatibility checks on a newer
+library do not replace those measurements. CI verifies saved artifacts with this
+pin, then installs `requirements.txt` for current-library checks.
+
+In your ordinary development environment:
+
 - `python tools/smoke.py` runs small budgets in isolated temporary copies. It leaves
-  modified source files and existing nets untouched.
-- `python -m pytest -q tests` checks reflection isolation and benchmark controls.
+  modified source files and existing nets untouched. Pass a directory such as
+  `05_memory` to run one example. Install PyTorch first to run all six.
+- `python -m pip install pytest`, then `python -m pytest -q tests`, checks reflection
+  isolation and benchmark controls.
 - `python tools/ladder.py` regenerates the table and hub cards from receipts.
-- `python tools/pages.py` checks the playable pages and their Python/JavaScript parity.
+- For browser checks, run `python -m pip install playwright` and
+  `python -m playwright install chromium`, then `python tools/pages.py`.
+  This checks the playable pages and their Python/JavaScript parity.
 
 [How a patch net learns](HOW_IT_LEARNS.md) explains the slower equilibrium-propagation
 learner used by the supervised and reward examples. Fast residual memory is a separate

@@ -25,13 +25,18 @@ slow network and does not require equilibrium propagation.
 
 ```bash
 # From cadence-examples:
-pip install -r requirements.txt torch
+python -m pip install -r requirements.txt torch
 cd 05_memory
-python train.py --steps 800 --seeds 3 --trials 100
-python train.py --verify receipt.json
+python train.py --steps 800 --seeds 3 --trials 100 --output local_receipt.json
+python train.py --verify local_receipt.json
 ```
 
-The dependency file pins the matching Cadence Git revision. The
+This writes a fresh result using the current supported library. To verify the saved
+`receipt.json`, use the separate environment installed from
+[`requirements-reproduce.txt`](../requirements-reproduce.txt), as shown in the
+[reproduction instructions](../README.md#reproduction), then run
+`python tools/verify_receipts.py 05_memory` from the repository root. The saved
+measurements bind that original dependency, not later library fixes. The
 [original receipt and producer](history/2026-09-13-before-source-clarification/)
 remain available with their historical source revision.
 

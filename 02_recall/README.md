@@ -5,8 +5,11 @@ Hebbian outer product to its seams; a query clamps a key and reads the resulting
 activation. The current demonstration uses 128 distinct one-hot keys. This gives the
 memory a known address for every key; a Python dictionary solves the same task exactly.
 
+From the repository root, after activating your Python environment:
+
 ```bash
-pip install "cadence-net>=0.8" torch
+python -m pip install -r requirements.txt torch
+cd 02_recall
 python train.py
 python train.py --verify receipt.json
 ```

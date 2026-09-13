@@ -1,7 +1,7 @@
 # 03 · Connect Four
 
 The checked-in receipt is a **historical measurement** of its preserved source version.
-`python ../tools/verify_receipts.py 03_connect_four` checks that provenance. It does not
+From the repository root, `python tools/verify_receipts.py 03_connect_four` checks that provenance. It does not
 certify later code or Cadence changes; a fresh run writes a new receipt.
 
 
@@ -11,8 +11,11 @@ of this rung: you can watch seven output owners come to rest and see which one w
 [How a patch net learns](../HOW_IT_LEARNS.md) first for the mechanism; this page is about
 turning a game into something the rule can learn, and being honest about what it learned.
 
+From the repository root, after activating your Python environment:
+
 ```bash
-pip install "cadence-net>=0.8" scikit-learn
+python -m pip install -r requirements.txt
+cd 03_connect_four
 python dataset.py                  # a few minutes: self-play positions labelled by a depth-4 search
 python train.py                    # under an hour: selection, training, matches, baselines, receipt
 python build_page.py               # embeds net.json into index.html; open it in a browser

@@ -14,17 +14,20 @@ incoming messages and repairs its state. The independent equation check and
 
 ```bash
 # From cadence-examples:
-pip install -r requirements.txt torch
+python -m pip install -r requirements.txt torch
 cd 06_interventions
 python demo.py
-python train.py --steps 2000 --seeds 3 --trials 128
-python train.py --verify receipt.json
+python train.py --steps 2000 --seeds 3 --trials 128 --output local_receipt.json
+python train.py --verify local_receipt.json
 ```
 
-The dependency file pins the matching Cadence Git revision and installs optional
-Numba acceleration. The package is named `cadence-net`; its PyPI release may
-differ from these sources. Source verification detects a different library
-revision. There is no cloud or GPU requirement. The
+This writes a fresh result with the supported Cadence revision and optional Numba
+acceleration. To verify the saved `receipt.json`, use the separate environment
+installed from [`requirements-reproduce.txt`](../requirements-reproduce.txt), as
+shown in the [reproduction instructions](../README.md#reproduction), then run
+`python tools/verify_receipts.py 06_interventions` from the repository root. Saved
+measurements bind that original dependency; compatibility checks with newer code
+do not refresh them. There is no cloud or GPU requirement. The
 [original receipt and producer](history/2026-09-13-before-mask-fix/) remain
 available with their historical source revision.
 

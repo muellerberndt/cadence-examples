@@ -1,7 +1,7 @@
 # 01 · Digits
 
 The checked-in receipt is a **historical measurement** of its preserved source version.
-`python ../tools/verify_receipts.py 01_digits` checks that provenance. It does not
+From the repository root, `python tools/verify_receipts.py 01_digits` checks that provenance. It does not
 certify later code or Cadence changes; a fresh run writes a new receipt.
 
 
@@ -11,8 +11,11 @@ settlements. This rung is the tutorial for `cadence.Learner`; read
 [How a patch net learns](../HOW_IT_LEARNS.md) first if the words *owner*, *seam*, *clamp*,
 or *nudge* are new.
 
+From the repository root, after activating your Python environment:
+
 ```bash
-pip install "cadence-net>=0.8" scikit-learn
+python -m pip install -r requirements.txt
+cd 01_digits
 python train.py                    # about 20 s on a laptop
 python train.py --verify receipt.json
 python build_page.py               # embeds net.json into index.html; open it and draw a digit

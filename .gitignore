@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-reproduce/
 data/
 *_receipt.json
 train.log

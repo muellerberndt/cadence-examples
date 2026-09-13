@@ -1,7 +1,7 @@
 # 04 · Pong
 
 The checked-in receipt is a **historical measurement** of its preserved source version.
-`python ../tools/verify_receipts.py 04_pong` checks that provenance. It does not
+From the repository root, `python tools/verify_receipts.py 04_pong` checks that provenance. It does not
 certify later code or Cadence changes; a fresh run writes a new receipt.
 
 
@@ -14,8 +14,11 @@ policy gradient. Read
 becomes a nudge, how the paddle learns to be in the right place, and what went wrong the
 first time.
 
+From the repository root, after activating your Python environment:
+
 ```bash
-pip install "cadence-net>=0.8" torch        # torch is used for the backprop baseline only
+python -m pip install -r requirements.txt torch  # torch supplies the backprop baseline
+cd 04_pong
 python train.py                             # about ten minutes: the patch net, the baseline, the imitation net, the receipt
 python build_page.py                        # embeds net.json into index.html; open it and play
 python train.py --verify receipt.json
