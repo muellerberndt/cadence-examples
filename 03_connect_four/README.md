@@ -7,7 +7,7 @@ of this rung: you can watch seven output owners come to rest and see which one w
 turning a game into something the rule can learn, and being honest about what it learned.
 
 ```bash
-pip install "cadence-net>=0.7" scikit-learn
+pip install "cadence-net>=0.8" scikit-learn
 python dataset.py                  # a few minutes: self-play positions labelled by a depth-4 search
 python train.py                    # under an hour: selection, training, matches, baselines, receipt
 python build_page.py               # embeds net.json into index.html; open it in a browser

@@ -7,7 +7,7 @@ settlements. This rung is the tutorial for `cadence.Learner`; read
 or *nudge* are new.
 
 ```bash
-pip install "cadence-net>=0.7" scikit-learn
+pip install "cadence-net>=0.8" scikit-learn
 python train.py                    # about 20 s on a laptop
 python train.py --verify receipt.json
 python build_page.py               # embeds net.json into index.html; open it and draw a digit

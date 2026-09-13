@@ -8,7 +8,7 @@ claim "attention is one settlement step of a Hebbian memory" is a number. Read
 learning rule is needed here.
 
 ```bash
-pip install "cadence-net>=0.7" torch
+pip install "cadence-net>=0.8" torch
 python train.py                    # about seven minutes; the transformer baseline is most of it
 python train.py --verify receipt.json
 ```

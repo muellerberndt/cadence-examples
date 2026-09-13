@@ -9,7 +9,7 @@ becomes a nudge, how the paddle learns to be in the right place, and what went w
 first time.
 
 ```bash
-pip install "cadence-net>=0.7" torch        # torch is used for the backprop baseline only
+pip install "cadence-net>=0.8" torch        # torch is used for the backprop baseline only
 python train.py                             # about ten minutes: the patch net, the baseline, the imitation net, the receipt
 python build_page.py                        # embeds net.json into index.html; open it and play
 python train.py --verify receipt.json
