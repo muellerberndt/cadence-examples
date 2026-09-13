@@ -1,9 +1,15 @@
 # 04 · Pong
 
+The checked-in receipt is a **historical measurement** of its preserved source version.
+`python ../tools/verify_receipts.py 04_pong` checks that provenance. It does not
+certify later code or Cadence changes; a fresh run writes a new receipt.
+
+
 A paddle learns Pong from pixels and reward, with the same rule as the classifiers and
 one change: the target of the nudge is the action that was taken, and the strength of the
 nudge is that action's advantage. Actions that paid are pulled toward; actions that cost
-are pushed away. That is the policy gradient, and it enters through the nudge alone. Read
+are pushed away. In the converged small-nudge limit this estimates a temperature-scaled
+policy gradient. Read
 [How a patch net learns](../HOW_IT_LEARNS.md) first; this page is about how a reward
 becomes a nudge, how the paddle learns to be in the right place, and what went wrong the
 first time.
@@ -56,7 +62,7 @@ that was taken and the nudge is multiplied by the advantage:
 A transition whose action paid pulls that action's owner up in that state; one whose
 action cost pushes it down. Every seam then reads the difference of its own two endpoint
 products between the `+β` and `−β` settlements, as always. Summed over the batch this is
-`Σ A · ∇ log p(action | frames)`, the REINFORCE gradient.
+`Σ A · ∇ log p(action | frames)`, the REINFORCE direction in the small-nudge, converged-phase limit, up to temperature scale.
 
 One thing is added to the step, and it is still local. Each seam keeps a running average
 of its own contrasts (forgetting factor 0.9) and a running mean of their squares (0.999),
@@ -87,27 +93,24 @@ using the ball's row alone and ignoring where its own paddle was, because that r
 collects some of the delayed reward and the learner found it first. It returned 79% of
 balls against the lenient scripted opponent and looked bad against a person.
 
-The fix is not in the rule, it is in the credit: each step's reward now includes how much
-closer the paddle's centre came to the ball's row during that step. This is potential-based
-shaping (Ng, Harada, and Russell 1999): the extra terms telescope along any trajectory, so
-the best policy is unchanged, but each move is told at once whether it helped. With the
-short credit horizon, the advantage of "up" in a state where the ball is above the paddle
-is positive and of "down" negative, so the seams from the pixels that mean "ball above my
-paddle" to the up owner strengthen, and the pixels that mean that include the paddle's
-own pixels. The net learns the *relative* rule, the one that tracks. The table for the
-trained net is in section 6.
+The training reward includes the decrease in paddle-to-ball distance at each step.
+This is useful feedback for the tracking task, but it is not policy-invariant shaping
+under the script's discount `γ = 0.5`. Such a guarantee would require
+`γ Φ(next_state) − Φ(state)`, with appropriate terminal handling; the implemented
+undiscounted difference can change the best policy. The historical results below
+measure this shaped task.
 
 ## 6. The numbers
 
 From `receipt.json`: 300 iterations of 64 games × 64 steps for the two reward learners;
 greedy play on fresh seeds until 1,000 points had ended; one laptop core, shared with
-other runs. The reward is +1 for a return, −1 for a miss, and the potential-based shaping
+other runs. The reward is +1 for a return, −1 for a miss, and the task-specific shaping
 of section 5 with a credit horizon of γ = 0.5.
 
 | policy | learned from | parameters | training | balls returned | returns per point |
 |---|---|---|---|---|---|
 | patch net 384-32-3, reward-nudged, adaptive local step | reward | 12,806 | 163 s | 88% | 3.09 |
-| MLP 384-32-3, REINFORCE with Adam | reward, same rollouts | 12,419 | 13 s | 93% | 4.00 |
+| MLP 384-32-3, REINFORCE with Adam | reward, same rollout budget | 12,419 | 13 s | 93% | 4.00 |
 | patch net 384-32-3, free/nudged rule | a scripted tracker's moves, 25,600 rows | 12,806 | 22 s | 96% | 5.64 |
 | untrained patch net | | 12,806 | — | 16% | 0.14 |
 | scripted tracker (for scale) | | | | 99.7% | |
@@ -129,22 +132,21 @@ Read it plainly. The same net, the same rule, the same seams: taught by a tracke
 it becomes a tracker (the second table) and returns 96% of balls; taught by reward it
 learns the relative rule at a distance, up when the ball is three rows above, down when
 it is three below, and stays a coin flip within a row or two of the ball (the first
-table), returning 88%, while backprop with Adam on the same rollouts reaches 93%. The
+table), returning 88%, while backprop with Adam on the same rollout budget reaches 93%. The
 adaptive local step is what carried the reward-trained paddle from 78% to 88%: with the
 plain step, every variant of the setup (nudge strength, settle tolerance, batch size,
 momentum, per-seam normalisation without the history correction, immediate and
-potential-based credit, one and two frames) stopped at 79%. With it, three seeds land at
+distance-based credit, one and two frames) stopped at 79%. With it, three seeds land at
 88%, 88% and 90%; longer training, an anneal, a larger nudge, a tighter settle, a larger
-hidden layer and a longer credit horizon were each tried and none passed 90%. The five
-points left to the baseline are what an exact gradient does with the same noisy
-advantages that a small-nudge estimate does not; the receipt has the full per-iteration
-history for both. The page ships both paddles; the imitation-trained one is the default
+hidden layer and a longer credit horizon were each tried and none passed 90%. The measured gap does not isolate gradient accuracy: the independently acting
+policies see different states and advantages, and their optimisation also differs.
+The receipt has the full per-iteration history for both. The page ships both paddles; the imitation-trained one is the default
 opponent because it plays best, and the toggle is there so you can feel the difference.
 
 ## 7. What is different from the baseline
 
 The baseline is a 384-32-3 network of the same shape trained by REINFORCE with Adam: the
-same rollouts, the same reward and advantages, the same 300 iterations, and a backward
+same rollout budget, the same reward definition, independently sampled advantages, the same 300 iterations, and a backward
 pass to turn `A · ∇ log p` into weight updates, with Adam's per-parameter step. The patch
 net does that with two nudged settlements per batch, a local rule, and the same
 per-parameter step read from each seam's own history. Section 6 of

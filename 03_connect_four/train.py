@@ -52,13 +52,21 @@ def mirror_planes(x: np.ndarray) -> np.ndarray:
     return planes.reshape(len(x), INPUTS)
 
 
+def grouped_split(x: np.ndarray, fraction: float, seed: int) -> tuple[np.ndarray, np.ndarray]:
+    """Keep a board and its reflection together, including duplicates from augmentation."""
+    reflected = mirror_planes(x)
+    groups = [min(row.tobytes(), mirror.tobytes()) for row, mirror in zip(x, reflected, strict=True)]
+    unique = sorted(set(groups))
+    order = np.random.default_rng(seed).permutation(len(unique))
+    selected = {unique[i] for i in order[:int(fraction * len(unique))]}
+    mask = np.asarray([key in selected for key in groups])
+    return np.flatnonzero(mask), np.flatnonzero(~mask)
+
+
 def prepare(seed: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, dict]:
-    """Load, mirror-augment, and split the positions 90/10; test positions are never mirrored."""
+    """Group board/reflection equivalents before the 90/10 split, then augment training."""
     x, y, meta = load()
-    rng = np.random.default_rng(seed)
-    order = rng.permutation(len(y))
-    cut = int(0.9 * len(y))
-    train, test = order[:cut], order[cut:]
+    train, test = grouped_split(x, 0.9, seed)
     x_train = np.concatenate([x[train], mirror_planes(x[train])]).astype(float)
     y_train = np.concatenate([y[train], np.array([mirror_col(int(c)) for c in y[train]])]).astype(int)
     return x_train, y_train, x[test].astype(float), y[test].astype(int), meta
@@ -225,10 +233,8 @@ def run(seed: int, out: Path) -> dict[str, Any]:
     print(f"{meta['positions']} positions (digest {meta['digest'][:16]}...); {len(y_train)} training rows after mirroring, {len(y_test)} test positions")
 
     # 1. Select the hidden size on a validation split of the training rows.
-    cut = int(0.9 * len(y_train))
     rng = np.random.default_rng(seed)
-    order = rng.permutation(len(y_train))
-    fit_idx, val_idx = order[:cut], order[cut:]
+    fit_idx, val_idx = grouped_split(x_train, 0.9, seed + 1)
     table = []
     for candidate in GRID:
         net = Net(candidate["hidden"], SCHEDULE["eta"], seed)
@@ -288,7 +294,7 @@ def run(seed: int, out: Path) -> dict[str, Any]:
             "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local",
             "goal_enters_only_through_the_nudge": True,
             "teacher": "depth-4 alpha-beta with a threat-count heuristic; the net imitates it and cannot exceed it in kind",
-            "selection_on_validation_split_of_training_rows_only": True,
+            "selection_on_board_reflection_grouped_validation_only": True,
             "test_positions_read_once_after_selection": True,
             "strength_measured_by_play_against_fixed_opponents_alternating_first_move": True,
             "baselines_measured_here_on_the_same_positions": True,

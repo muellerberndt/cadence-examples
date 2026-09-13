@@ -1,16 +1,10 @@
-"""03 recall: a memory that is the seams. Associative recall with no trained parameters.
+"""02 recall: historical one-hot Hebbian-memory comparison.
 
-Run:  python train.py                       (about ten minutes on a laptop; the transformer baseline is most of it)
-      python train.py --verify receipt.json
-
-A context of key-value pairs, then a query key: answer its value. A patch net does this
-without training. Each pair is written as one local Hebbian outer product between the key's
-owner and the value's owner, and a query is a settlement with the key clamped: the value
-owners come to rest on the answer. One settlement step is exactly an attention read
-(Ramsauer et al. 2021); a few more steps clean it. There is no window and no context
-length: the memory is the seams. A two-layer transformer trained on the same task in the
-same script is the comparison; attention learns recall inside the lengths it saw and does
-not carry it beyond them, and in this budget it does not learn it at all.
+Run python train.py to reproduce this fixed protocol. The checked-in receipt belongs
+ to the preserved source version documented in ../tools/receipt_history.json.
+A two-step read is linear associative transport, not softmax attention. Distinct
+one-hot keys encode the lookup solution; the original transformer comparison has a
+parser disadvantage and untrained positions beyond its training lengths. See README.
 """
 
 from __future__ import annotations
@@ -157,7 +151,7 @@ def run(seed: int, out: Path, seeds: int) -> dict[str, Any]:
     for k in range(seeds):
         s = seed + k
         t0 = time.perf_counter()
-        one = recall_patch(s, steps=2)  # the key lights, one transport: an attention read
+        one = recall_patch(s, steps=2)  # the key lights, then one linear transport
         settled = recall_patch(s, steps=30)
         patch_seconds = time.perf_counter() - t0
         transformer = transformer_arm(s)
@@ -165,7 +159,9 @@ def run(seed: int, out: Path, seeds: int) -> dict[str, Any]:
         print(f"seed {s}: one read {one}; settled {settled}; transformer {transformer['accuracy']} ({transformer['seconds']:.0f}s, loss {transformer['final_loss']:.2f} of {transformer['chance_loss']:.2f} chance)", flush=True)
     summary = {arm: {str(L): float(np.mean([(r[arm] if arm != "transformer" else r["transformer"]["accuracy"])[str(L)] for r in runs])) for L in LENGTHS} for arm in ("patch_one_read", "patch_settled", "transformer")}
     memory = Memory()
-    engine = cd.Settlement(memory.wiring, memory.rule)
+    memory.write(0, 1)
+    memory.write(2, 1)
+    engine = cd.Settlement(memory.wiring, memory.rule, edge_scale=memory.strength)
     conformance = cd.conformance(engine, {0: CLAMP}, steps=30)
     body = {
         "task": {"vocabulary": VOCAB, "lengths": list(LENGTHS), "trials_per_length": TRIALS, "transformer_trained_up_to": TRAIN_MAX},

@@ -1,115 +1,65 @@
 # Cadence examples
 
-Worked examples for [Cadence](https://github.com/muellerberndt/cadence), the patch-net
-settlement library (`pip install cadence-net`, `import cadence`).
+Small runnable examples for [Cadence](https://github.com/muellerberndt/cadence).
+Patch nets are observer-like self-reading systems: local owners hold state, declared
+seams carry information across their boundaries, queries cause readback, and local
+feedback repairs state or memory. Scripts produce evidence receipts.
 
-Every example on the ladder has the same five parts: a README that is a tutorial, a script
-that trains something with the owner-local rule and measures the obvious backprop baselines
-on the same split in the same run, a receipt that binds the numbers to the code and data
-that produced them, the trained net in the repo, and a page you can play in a browser,
-where the same net settles in JavaScript for every reading or move. Start at the
-[hub page](https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60).
+Start with [updating memory](05_memory/): a few lines add fast residual writes to a
+fixed-size memory. The benchmark compares changing associations with additive writes,
+exact retrieval and a trained transformer. The exact algorithm is included because
+explicit symbolic keys make this a lookup task; beating one trained model does not
+establish a general advantage over transformers.
+
+[Circuit interventions](06_interventions/) shows the complementary idea: retain
+a known local mechanism, then change drives, wiring or ablations without training
+an input/output surrogate. Its comparison includes a trained MLP, direct solver
+and an explicitly unrolled recurrence with the same complete circuit information.
 
 <!-- ladder -->
 | # | example | what it shows |
 |---|---|---|
-| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a same-size MLP 0.967 in 50; [play it](https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618) |
-| 02 | [recall](02_recall/) | associative recall with no trained parameters: each key-value pair is one Hebbian outer product, each query a settlement with the key clamped, at any context length; receipt: the value of any key in a context of up to 128 pairs: 1.00 settled, 1.00 in one read, with no trained parameters; a two-layer transformer given 5,000 Adam steps on the task did not learn it (0.30 at 4 pairs, 0.01 at 128); [play it](https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b) |
-| 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead, at the MLP's agreement; receipt: agrees with a depth-4 search on 0.529 of positions (MLP 0.533); 98-0-2 vs random, 2-1-97 vs depth 2; [play it](https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc) |
-| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history; receipt: reward-trained paddle returns 87.8% of balls against 92.9% for backprop REINFORCE on the same rollouts; the same net taught the tracker's moves 96.0%; [play it](https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04) |
+| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a smaller MLP (2,410 parameters) 0.967 in 50; [play it](https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618) |
+| 02 | [recall](02_recall/) | distinct one-hot keys written into 128-key Hebbian memory; receipt: historical distinct-key recall 1.00; dictionary also solves this lookup task; original transformer comparison has parser and position disadvantages; [play it](https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b) |
+| 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead; receipt: agrees with a depth-4 search on 0.529 of positions (MLP 0.533); 98-0-2 vs random, 2-1-97 vs depth 2; [play it](https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc) |
+| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history; receipt: reward-trained paddle returns 87.8% of balls against 92.9% for backprop REINFORCE on the same rollout budget; the same net taught the tracker's moves 96.0%; [play it](https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04) |
+| 05 | [updating memory](05_memory/) | a fixed-size memory corrects its own readback when an association changes; receipt: 128 writes, orthogonal keys: residual 1.000, additive 0.260, dictionary 1.000, trained transformer 0.145; correlated-key results in the receipt |
+| 06 | [circuit interventions](06_interventions/) | owners read incoming messages and repair their local state as drives, wiring and ablations change; receipt: declared feedback circuits answer new interventions without training; maximum residual 7.4e-12, trained MLP mean MSE 0.0052; direct and tied-recurrence controls also solve the task |
 <!-- /ladder -->
 
-The receipts on the ladder were taken under cadence-net 0.8.1 on 2026-09-14, all four rungs re-run on it; the numbers are those of the 0.7.1 run to the last digit.
-[How a patch net learns](HOW_IT_LEARNS.md) is the tutorial the rungs build on: owners,
-seams, settlement, and the one local rule the rungs use, whether the target is a label, a
-teacher's move, or a reward.
+Examples 01–04 retain **historical receipts**. Their numbers describe the pinned source
+versions, and those receipts did not bind the Cadence dependency. The Connect Four
+receipt predates a board/reflection split fix; the recall transformer comparison has
+parser and positional-embedding disadvantages. Each tutorial explains its limits.
+The earlier experiments remain available at [tag v0.5.0](https://github.com/muellerberndt/cadence-examples/tree/v0.5.0).
 
-## What left the ladder, and why
-
-Nine rungs were measured at tag `v0.5.0` and five of them are gone: MNIST (0.974 against an
-MLP's 0.978), the sign-writing arm (0.988 against 0.988), the character model of Shakespeare
-(3.33 bits against a transformer's 3.08), cart-pole from reward with the plain nudge rule
-(154 steps against 392), and the chorale writer (pitch-set F1 0.483 against an MLP's 0.470,
-a margin too thin to hang a rung on). Each showed parity with the backprop model in the same
-script at ten to a hundred times the wall-clock, and parity at that price is not worth a
-tutorial; the character model continues in another place, and cart-pole's successor, the
-three-factor rule that reaches the threshold in half of PPO's steps with a fifth of the
-parameters, is measured in the paper and will return here when it is an example rather than
-an experiment. Connect Four is also at parity (0.527 against 0.533 agreement with the
-search) and stays, because a game you can play against the net in the browser is the
-clearest way to see a settlement decide something; its tutorial says what it learned and
-what it did not.
-
-The *C. elegans* rung asked a different question: does the library tell us anything about
-the worm's nervous system? The receipt's answer is narrow. Under the connectome's own
-convention (drive per contact times synapse count) the owner-local rule learned nothing on
-the measured wiring or on a shuffled one; under a fan-in normalisation it fitted two of the
-four textbook facts, saturated the net, and passed 5.2 of 17 held-out ablation phenotypes
-where the shuffled wiring passed 1.5. What separates the two wirings is structural: removing
-a command interneuron (AVA, AVD, PVC) changes the common-mode speed in the real wiring and
-not in the shuffle, which is the hub structure anatomy already knows. The behavioural facts
-themselves were not learned, and the reason is the one the rule predicts: a nudge on the
-motor neurons reaches upstream only along seams that end on owners it moved, and a directed
-connectome does not carry it back past the command interneurons. So the rung showed where
-the rule stops, not something new about the worm, and a settle-and-score protocol with a
-shuffled control on that wiring is a test of graph structure rather than a model of the
-animal. It left the ladder for that reason. The measured-wiring machinery (fixtures with
-custody, protocols with predicates, the shuffled control) stays in the library, where the
-[protocols](https://github.com/muellerberndt/cadence/blob/main/docs/protocols.md) doc
-describes it; a claim about the worm would need learning that reaches the whole wiring,
-which is what the observer patch net programme's global-gradient lane did (9.1 of 17 against
-4.6) and the local rule does not.
-
-## Run an example
+## Run
 
 ```bash
-git clone https://github.com/muellerberndt/cadence-examples
-cd cadence-examples
-python -m pip install cadence-net scikit-learn pandas scipy
-python -m pip install torch --index-url https://download.pytorch.org/whl/cpu   # the baselines each receipt measures
-cd 01_digits && python train.py && python train.py --verify receipt.json && python build_page.py
+pip install -r requirements.txt torch
+cd 05_memory
+python train.py --steps 800 --seeds 3
+python train.py --verify receipt.json
 ```
 
-Every `train.py` selects on a validation split where there is one, reads its test set
-once, measures the obvious baselines in the same script, writes a receipt, and exports the
-trained net as `net.json` where there is one to export; `--verify` checks a receipt against
-the code in the checkout and its own arithmetic, and `build_page.py` embeds the net into the
-page. The datasets under `data/` are not in the repo: the scripts fetch or generate them
-(Connect Four's `dataset.py` plays the games), and every receipt records their digests. Each
-tutorial says what a full run costs, from seconds (digits) to under an hour (Connect Four).
+These examples require the repository version of Cadence containing
+`FastSeams(rule="delta")`; while working with sibling checkouts, install with
+`pip install -e ../cadence` from this repository's root.
 
-## Play the pages
+The numbered tutorials explain each data source and run budget. Existing trained
+pages need no retraining: `python serve.py` opens the local hub. Publicly hosted copies
+are historical and are not updated by editing this checkout.
 
-The trained nets are in the repo and already embedded in each page's `index.html`, so
-nothing needs training or downloading:
+## Reproduction
 
-```bash
-python serve.py                    # serves the repo and opens the hub at http://localhost:8765/
-python serve.py pong               # or straight into a page: digits, recall, connect-four, pong
-```
+- `python tools/verify_receipts.py` verifies current source digests or explicitly
+  reports pinned historical provenance. This is an integrity check, not a rerun.
+- `python tools/smoke.py` runs small budgets in isolated temporary copies. It leaves
+  modified source files and existing nets untouched.
+- `python -m pytest -q tests` checks reflection isolation and benchmark controls.
+- `python tools/ladder.py` regenerates the table and hub cards from receipts.
+- `python tools/pages.py` checks the playable pages and their Python/JavaScript parity.
 
-The hub at that address links to the four pages (draw a digit, write and ask a memory,
-Connect Four, Pong) and to every tutorial; opening a page's `index.html` straight from the
-file system works too. To retrain a page's net and rebuild it: `python train.py && python
-build_page.py` in its directory. Each page runs the same settlement in JavaScript that the
-receipt scored in Python; the digits page agrees with the Python engine to 5·10⁻⁵ on the
-held-out pictures it ships, and the recall page reproduces the receipt's 1.00 at every length.
-
-## What holds it together
-
-- `tools/smoke.py` runs every rung end to end at a tiny budget and verifies the receipt it
-  writes; the committed receipts stay untouched. It is the test suite, and CI runs it.
-- `tools/ladder.py` regenerates the ladder table above and the hub pages from the receipts,
-  so the numbers in three places are one set of numbers.
-- `tools/pages.py` opens every page in a real browser: it must load without script errors
-  and decode as UTF-8, the digits page must read its held-out pictures, the Connect Four
-  games must play to a result, Pong must keep twelve decisions a second, and on every
-  sampled position the page must choose what the Python engine chooses on the same net.
-- CI verifies every committed receipt against the checkout, rebuilds every page from its
-  committed net and checks that nothing changed, regenerates the ladder and checks the
-  same, runs the smoke suite, then plays the pages; it installs the library from its main
-  branch.
-
-Each example measures the obvious legacy baselines on the same split and puts them in its
-receipt next to the patch net's accuracy, parameter count, epochs, and wall-clock. The
-ladder is only worth climbing if those comparisons stay in view.
+[How a patch net learns](HOW_IT_LEARNS.md) explains the slower equilibrium-propagation
+learner used by the supervised and reward examples. Fast residual memory is a separate
+mechanism; it does not require that learner or an equilibrium solve for each write.

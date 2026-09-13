@@ -1,0 +1,18 @@
+{
+  "03_connect_four": {
+    "commit": "7c54362fc565796debd36a090b75684c3be5492e",
+    "receipt_digest": "8fc04d55400cf767361f59cd2059a43c31405f20cd6cdef039a418a6ce9cf79f"
+  },
+  "01_digits": {
+    "commit": "7c54362fc565796debd36a090b75684c3be5492e",
+    "receipt_digest": "95ea646215ff86d76de114de59bbe056bb5aa574059cd6338704bca7be98afae"
+  },
+  "02_recall": {
+    "commit": "7c54362fc565796debd36a090b75684c3be5492e",
+    "receipt_digest": "7cf7aa6abcdc33786530c852a16c0e6070e54237c8eaddb6f6a4486f436cd2ea"
+  },
+  "04_pong": {
+    "commit": "7c54362fc565796debd36a090b75684c3be5492e",
+    "receipt_digest": "0266477a2a4451ba9f73724d826b76b1df9114584faf8af33f53790e07d07f06"
+  }
+}

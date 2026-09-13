@@ -90,9 +90,9 @@
     <div class="card">
       <h2>What this is</h2>
       <p>128 key owners and 128 value owners, every key joined to every value by a seam that starts at zero: 32,768 seams and nothing else. Writing <b>k → v</b> adds one unit to the seam between k's owner and v's owner, both ways, because the two were active together. Nothing else in the net changes.</p>
-      <p>Asking clamps k's owner at 3.0 and settles: the value owners come to rest and the most active one is the answer. The first step after the clamp is exactly an attention read over the stored pairs (a modern Hopfield network); the settlement cleans it. The page reports both.</p>
-      <p>There is no window and no context length: the context is whatever was written. What a memory like this cannot do is keep keys apart when they resemble each other; here every key is one owner, so there is no interference at any length.</p>
-      <dl id="facts"><dt>trained parameters</dt><dd>0</dd><dt>seams</dt><dd>32,768</dd><dt>receipt, 4 to 128 pairs</dt><dd>1.00 settled, 1.00 in one read</dd><dt>transformer, 5,000 Adam steps</dt><dd>0.30 at 4 pairs, 0.01 at 128</dd></dl>
+      <p>Asking clamps k's owner at 3.0 and settles: the value owners come to rest and the most active one is the answer. The first transport is a linear associative read, not softmax attention. The page reports it alongside the longer settlement; the historical distinct-key test gets the same accuracy from both.</p>
+      <p>Capacity here is 128 distinct keys. Each key has its own owner. Rewriting a key adds to its old association, so the memory can disagree with the latest context label. A dictionary solves the distinct-key task exactly too.</p>
+      <dl id="facts"><dt>trained parameters</dt><dd>0</dd><dt>seams</dt><dd>32,768</dd><dt>historical receipt, 4 to 128 pairs</dt><dd>1.00 settled, 1.00 in one read</dd><dt>transformer, 5,000 Adam steps</dt><dd>0.30 at 4 pairs, 0.01 at 128</dd></dl>
     </div>
   </aside>
 </main>
@@ -104,7 +104,7 @@ const REST = 1 / (1 + Math.exp(R.slope * R.threshold));
 const SYMBOLS = ('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' + 'αβγδεζηθικλμνξοπρστυφχψω' + 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞß' + '♠♣♥♦★☆☀☁☂☃♪♫✓✗').split('').slice(0, V);
 if (SYMBOLS.length !== V) throw new Error('vocabulary');
 const strength = new Float64Array(V * V);  // strength[k * V + v]: the seam between key k and value v, used in both directions
-let context = [];  // [{k, v}] in the order written; a key written twice keeps its last value (the receipt draws distinct keys)
+let context = [];  // [{k, v}] in the order written; the label shows the latest value; seam writes still accumulate (the receipt draws distinct keys)
 function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - REST; return r > 0 ? r / (1 - REST) : R.leak * r / REST; }
 function settle(key, maxSteps) {
   // Owners 0..V-1 are keys, V..2V-1 values; the seams are symmetric, so a value's inbox is the keys' activations through its column and vice versa.
@@ -144,7 +144,7 @@ let pending = null;
 function ask(k) {
   render(k);
   const t0 = performance.now(); const { values, trace, steps } = settle(k, MAX_STEPS); const ms = performance.now() - t0;
-  const oneRead = settle(k, 2).values;  // the key lights, one transport: an attention read
+  const oneRead = settle(k, 2).values;  // the key lights, then one linear transport
   const order = [...Array(V).keys()].sort((a, b) => values[b] - values[a]); const best = order[0];
   let bestOne = 0; for (let v = 1; v < V; v++) if (oneRead[v] > oneRead[bestOne]) bestOne = v;
   const want = context.find(p => p.k === k).v;

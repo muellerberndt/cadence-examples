@@ -11,8 +11,8 @@ The agent sees two frames, the current one and the one before, so the ball's dir
 is visible: the field as pixels, ball and paddles lit, twice. Actions are 0 = up,
 1 = stay, 2 = down. Rewards: +1 when the agent's paddle returns the ball, -1 when it
 misses, and a shaping term each step equal to how much the distance between the paddle
-centre and the ball row shrank during the step (potential-based shaping: it changes no
-optimal policy, it only tells the paddle sooner whether a move helped). The opponent
+centre and the ball row shrank during the step (task-specific shaping; with a discount below one, this undiscounted difference
+does not guarantee policy invariance). The opponent
 tracks the ball with a fixed lag and is not learned.
 """
 
@@ -24,7 +24,7 @@ import numpy as np
 
 H, W, PADDLE = 12, 16, 3
 ACTIONS = 3
-SHAPING = 1.0  # weight of the potential-based shaping, in units of one row's distance
+SHAPING = 1.0  # weight of the task-specific shaping, in units of one row's distance
 MAX_RALLY = 400  # a point ends after this many steps even if nobody misses
 
 

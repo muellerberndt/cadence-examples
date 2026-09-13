@@ -1,5 +1,10 @@
 # 03 · Connect Four
 
+The checked-in receipt is a **historical measurement** of its preserved source version.
+`python ../tools/verify_receipts.py 03_connect_four` checks that provenance. It does not
+certify later code or Cadence changes; a fresh run writes a new receipt.
+
+
 A patch net learns to play Connect Four from positions a shallow search has labelled, and
 then plays you in the browser, settling in the page for every move. The page is the point
 of this rung: you can watch seven output owners come to rest and see which one wins. Read
@@ -126,3 +131,8 @@ the hidden owners at rest. Nothing is precomputed. A published copy is linked fr
 - `LABEL_DEPTH = 6` in `dataset.py` for a stronger teacher (slower to label).
 - Add a one-ply tactical check at play time (take a win, block a loss) and see how the
   records change; then note that the net is no longer the whole player.
+
+The current script groups each board with its reflection before either split, then
+augments training. The historical receipt predates that fix: reflected boards could
+cross validation or test boundaries, so its agreement estimate is not a clean measure
+of generalisation to unseen reflection groups.

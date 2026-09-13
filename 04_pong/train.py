@@ -1,6 +1,6 @@
 """04 Pong: a paddle learns from pixels and reward, by nudging toward the actions that paid.
 
-Run:  python train.py                      (a few minutes; then a backprop baseline on the same rollouts)
+Run:  python train.py                      (a few minutes; then a backprop baseline on the same rollout budget)
       python train.py --verify receipt.json
 
 The policy is a patch net: 384 input owners (the pixels of two frames), hidden owners, 3
@@ -8,7 +8,7 @@ output owners (up, stay, down). Acting is a free settlement and a draw from the 
 activations. Learning is the same free/nudged rule as classification, with one change:
 the target of the nudge is the action that was taken, and the strength of the nudge is
 that action's advantage, so actions that paid are pulled toward and actions that cost are
-pushed away. That is the policy gradient, entering through the nudge alone. Each seam then
+pushed away. Converged small nudges estimate a temperature-scaled policy gradient. Each seam then
 steps on a running average of its own contrasts divided by their running RMS, the local
 form of an adaptive step, which is what the baseline gets from Adam.
 """
@@ -294,7 +294,7 @@ def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
         "boundary": {
             "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local; nudge target = action taken, nudge weight = normalised advantage; each seam's step is its running-average contrast over its running RMS",
             "goal_enters_only_through_the_nudge": True,
-            "reward": "+1 return, -1 miss, plus the change in paddle-to-ball row distance each step (potential-based shaping)",
+            "reward": "+1 return, -1 miss, plus the change in paddle-to-ball row distance each step (task-specific distance shaping)",
             "opponent": "scripted tracker with skill 0.7, not learned",
             "same_rollout_budget_for_the_baseline": True,
             "evaluation_is_greedy_play_on_fresh_seeds": True,

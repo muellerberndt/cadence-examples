@@ -1,5 +1,10 @@
 # 01 · Digits
 
+The checked-in receipt is a **historical measurement** of its preserved source version.
+`python ../tools/verify_receipts.py 01_digits` checks that provenance. It does not
+certify later code or Cadence changes; a fresh run writes a new receipt.
+
+
 A patch net learns to read the 8×8 scikit-learn digits with the owner-local free/nudged
 rule. No backward pass: every seam moves on what its own two endpoints did in two
 settlements. This rung is the tutorial for `cadence.Learner`; read
@@ -17,8 +22,8 @@ python build_page.py               # embeds net.json into index.html; open it an
 
 1,797 pictures of handwritten digits, 8×8 pixels each with 17 grey levels, ten classes.
 `train.py` divides pixel values by 16 so each is in [0, 1], and splits the pictures 80/20,
-stratified by class, with a fixed seed: 1,437 for training, 360 held out. The held-out 360
-are read once, at the very end, after every decision has been made.
+stratified by class, with a fixed seed: 1,437 for training, 360 held out. The held-out 360 are excluded from configuration selection; the script evaluates
+trained and untrained models, controls and the final confusion matrix on them.
 
 ## 2. The net
 
@@ -86,8 +91,7 @@ that net, one laptop core shared with other runs.
 | logistic regression, lbfgs | 650 | 73 | 0.07 s | 0.967 |
 
 Read it plainly. The rule reaches the accuracy of the small MLPs, and it gets there in far
-fewer passes over the data: at 12 epochs the MLPs are at 0.91 to 0.93 and the patch net is
-past 0.96. It does not get there in less wall-clock or with fewer parameters. Every update
+fewer passes over the data: the 20-epoch patch run reaches 0.962 and the 50-epoch MLP reaches 0.967. It does not get there in less wall-clock or with fewer parameters. Every update
 is three settlements of tens of steps each rather than one forward and one backward pass,
 and on a CPU at this size that is a factor of seven in time; and the validation split, with
 fewer images to fit on, prefers the largest net in the grid. Trained on the full training
@@ -103,8 +107,9 @@ backprop: Adam receives the gradient of the cross-entropy for every weight from 
 backward pass that multiplies the output error by `W₂ᵀ`. The patch net has no pass in
 either direction. Its prediction is a rest state reached by tens of owner-local repairs,
 its hidden owners feel the output owners, and its weights learn from a second settlement
-under a nudge. The two nets have the same shape and the same number of numbers, and they
-end at the same accuracy. Section 6 of [How a patch net learns](../HOW_IT_LEARNS.md) has
+under a nudge. The selected patch net has 64 hidden owners and 4,919 parameters,
+while the strongest listed MLP has 32 hidden units and 2,410 parameters. Their measured
+accuracy is similar; this comparison gives the patch net no parameter advantage. Section 6 of [How a patch net learns](../HOW_IT_LEARNS.md) has
 the full comparison.
 
 ## 8. What to look at in the receipt

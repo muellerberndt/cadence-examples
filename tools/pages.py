@@ -130,7 +130,11 @@ def main() -> int:
         links = sorted({h for h in page.eval_on_selector_all("a[href]", "as => as.map(a => a.getAttribute('href'))") if not h.startswith(("http", "#"))})
         for h in links:
             try:
-                urllib.request.urlopen(f"{base}/{h}").read(1)
+                # A link-presence probe needs no response body; closing a GET after
+                # one byte caused harmless but noisy server BrokenPipe tracebacks.
+                request = urllib.request.Request(f"{base}/{h}", method="HEAD")
+                with urllib.request.urlopen(request):
+                    pass
             except Exception as e:  # noqa: BLE001
                 fail(f"hub: link {h} does not answer ({e})")
         report["hub"]["local_links"] = len(links)

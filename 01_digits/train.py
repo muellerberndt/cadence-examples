@@ -74,7 +74,7 @@ class Digits:
         # 64 input owners (one per pixel), hidden owners, 10 output owners (one per class).
         # Forward and feedback overlaps share one scale per seam; no lateral overlaps.
         self.wiring = cd.layered(INPUTS, hidden, CLASSES, density=1.0, seed=seed)
-        rule = cd.learning_rule(dt=1.0)  # unit slope, threshold 0, leak 0.1, unit clamp
+        rule = cd.learning_rule(dt=1.0)  # sigmoid slope parameter 1, threshold 0, leak 0.1, unit clamp
         self.learner = cd.Learner(
             cd.Settlement(self.wiring, rule),
             self.wiring.sets["output"],
@@ -275,7 +275,7 @@ def run(seed: int, out: Path, seeds: int) -> dict[str, Any]:
             "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local",
             "goal_enters_only_through_the_nudge": True,
             "selection_on_validation_split_of_training_set_only": True,
-            "test_set_read_once_per_seed_after_selection": True,
+            "test_set_excluded_from_configuration_selection": True,
             "baselines_measured_here_on_the_same_split": True,
             "no_claim_beyond_this_dataset_and_split": True,
         },

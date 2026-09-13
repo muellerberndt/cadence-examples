@@ -25,9 +25,9 @@ Some owners are **output owners**: one per class, one per column, one per action
 activations at rest are the net's answer. The rest are **hidden owners**.
 
 There is no forward direction. A hidden owner has overlaps from the input owners *and*
-from the output owners, and the output owners have overlaps back to it. In every net
-here, an overlap and its reverse form one **seam** and share one strength, so `W[i→j] =
-W[j→i]`. This symmetry is what makes learning work, as section 5 explains.
+from the output owners, and the output owners have overlaps back to it. The recurrent hidden/output block uses tied reciprocal **seams**, so `W[i→j] =
+W[j→i]` there. Inputs have fixed drive and no incoming overlaps. This symmetry in
+the free variables supports the energy argument in section 5.
 
 ## 2. A settlement, step by step
 
@@ -92,9 +92,9 @@ smaller, it weakens. Every owner does the same with itself:
 
     Δ bias[i] = η_b · ( s⁺[i] − s⁻[i] ) / (2β)
 
-That is the entire rule. A seam reads two activations; an owner reads one. Nothing is
-stored from the free phase for later, nothing is transposed, no error is computed
-anywhere and sent along a separate path.
+That is the entire rule. A seam reads two activations; an owner reads one. The free state is kept as the common initial state for both nudged phases. There is
+no reverse-mode tape of the settlement trajectory. The output nudge is an error signal
+and the softmax couples the output owners; seam updates use their endpoints.
 
 **In numbers.** In the six-owner example in the library docs (two inputs, two hidden,
 two outputs, input `(1.0, 0.2)`, label 1), the free phase rests with the two outputs at
@@ -132,14 +132,15 @@ multiplied by the advantage:
     nudge[k] = β · A · (onehot(action)[k] − p[k])
 
 An action that paid (`A > 0`) is pulled up in the state it was taken in; an action that
-cost (`A < 0`) is pushed down. The seam update is unchanged. Summed over a batch this is
+cost (`A < 0`) is pushed down. The seam update is unchanged. In the converged small-nudge limit, and up to the temperature scale, this estimates
 the policy gradient (REINFORCE): the seams move to make actions with positive advantage
 more likely. The reward entered through the nudge and nowhere else.
 
 **How the paddle learns to be in the right place.** The reward is `+1` for a return, `−1`
 for a miss, plus, each step, how much closer the paddle's centre came to the ball's row
-during that step (a potential-based shaping term: it changes which policy is best not at
-all, it only says sooner whether a move helped). With a short credit horizon, the
+during that step. This is a task-specific shaping reward. With the script's discount
+`γ = 0.5`, the undiscounted distance difference does not guarantee an unchanged optimal
+policy. With a short credit horizon, the
 advantage of "up" in a state where the ball is above the paddle is positive and of "down"
 negative, so the seams from the pixels that encode "ball above my paddle" to the "up"
 output strengthen. Because the paddle's own pixels are in the clamp too, the net can
@@ -149,22 +150,30 @@ badly.
 
 ## 5. Why this is learning and not just a heuristic
 
-With symmetric seams, the settlement is a descent of an energy: every step lowers
+For fixed input activations and symmetric recurrent seams, the continuous-time
+dynamics of the free owners descend this energy:
 
-    E = Σ_i ∫₀^{v[i]} u · act'(u) du − ½ Σ_{i≠j} W[i→j] s[i] s[j] − Σ_i (clamp[i] + bias[i]) s[i]
+    E = Σ_i ∫₀^{v[i]} u · act'(u) du − ½ Σ_{i,j} W[i→j] s[i] s[j] − Σ_i d[i] s[i]
+    d[i] = clamp[i] + bias[i] + Σ_{k in input} W[k→i] s[k]
 
-and rest is a minimum. The nudge adds `β · L` to the energy, where `L` is the loss whose
-gradient the nudge drive is (the cross-entropy of `p` against the target). A theorem
-(Scellier and Bengio, *Equilibrium Propagation*, 2017) says that for a small `β`, the
+Here `i,j` range over free owners only. The fixed inputs contribute to `d`; their
+one-way overlaps are not counted in the symmetric recurrent sum.
+
+Stable equilibria can be local minima. A finite Euler step need not lower energy, and
+a step budget need not reach equilibrium. The nudge adds `β · L` to the energy, with
+`L = T · cross_entropy(p, target)` for the nudge written above. A theorem
+(Scellier and Bengio, *Equilibrium Propagation*, 2017) says that, in the limit `β → 0` along a differentiable stable equilibrium branch, the
 change in the product `s[i] · s[j]` between the free and the nudged rest, divided by `β`,
-is exactly minus the derivative of the loss with respect to `W[i↔j]`. So the seam update
+approaches minus the derivative of the loss with respect to `W[i↔j]`. So the seam update
 is gradient descent on the loss, and the two-sided version (`+β` against `−β`) removes
 the first-order error in `β`. The library's test suite checks this on random nets: the
 contrast correlates above 0.9 with finite differences of the loss.
 
-The theorem needs three things, and the rule's settings exist to provide them: seams
-symmetric (tied), owners with a slope everywhere (the leak below rest, unit slope above),
-and phases settled to rest (a tolerance, not a fixed step count).
+The argument requires an energy with reciprocal free-variable couplings, suitable
+smoothness near the chosen equilibria, and phases converged on the same stable branch.
+The leaky activation is piecewise smooth with a kink at zero; its slope varies with
+potential. Tolerances and budgets approximate these requirements, and convergence
+should be checked rather than assumed.
 
 ## 6. What is different from a feed-forward network with backprop
 
@@ -193,8 +202,8 @@ state, arriving through the seams it already has.
 | the network at rest | is not a thing; the network is a function | is a state you can inspect, clamp, ablate, and watch |
 
 The consequences run through every receipt in this repository: the patch net reaches
-the accuracy of a same-sized backprop network in fewer passes over the data, recalls a
-written pair at any context length with nothing trained, learns less from the same Pong
+similar accuracy to the listed backprop networks with different parameter counts and budgets, recalls a
+written pair among at most 128 distinct one-hot keys with nothing trained, learns less from the same Pong
 rollouts than an exact gradient with Adam does, and costs ten to a hundred times the
 wall-clock on a laptop core because a settlement is tens of steps where a pass is one.
 Parameter counts match: a seam is a weight.

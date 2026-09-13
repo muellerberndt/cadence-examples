@@ -8,17 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: |
-          python -m pip install "git+https://github.com/muellerberndt/cadence" scikit-learn pandas scipy
+          python -m pip install -r requirements.txt
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: every receipt verifies against the code in this checkout
-        run: |
-          for d in 01_digits 02_recall 03_connect_four 04_pong; do
-            if [ -f $d/receipt.json ]; then (cd $d && python train.py --verify receipt.json); else echo "$d: no receipt yet"; fi
-          done
+      - name: receipts retain verifiable current or historical source provenance
+        run: python tools/verify_receipts.py
+      - name: reflection isolation and benchmark evidence tests
+        run: python -m pip install pytest && python -m pytest -q tests
       - name: the pages build from the committed nets
         run: |
           for d in 01_digits 03_connect_four 04_pong; do
@@ -26,7 +27,7 @@ jobs:
           done
           git diff --stat --exit-code -- '*/index.html'
       - name: the ladder in the README and the hub is what the receipts say
-        run: python tools/ladder.py && git diff --stat --exit-code README.md index.html hub_published.html
+        run: python tools/ladder.py && git diff --stat --exit-code README.md 05_memory/README.md 06_interventions/README.md index.html hub_published.html
       - name: every rung runs end to end at a tiny budget and its receipt verifies
         run: python tools/smoke.py
       - name: every page works in a real browser and chooses what the engine chooses
