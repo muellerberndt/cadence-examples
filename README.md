@@ -18,6 +18,8 @@ where the same net settles in JavaScript for every reading or move. Start at the
 | 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead, at the MLP's agreement; receipt: agrees with a depth-4 search on 0.529 of positions (MLP 0.533); 98-0-2 vs random, 2-1-97 vs depth 2; [play it](https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc) |
 | 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history; receipt: reward-trained paddle returns 87.8% of balls against 92.9% for backprop REINFORCE on the same rollouts; the same net taught the tracker's moves 96.0%; [play it](https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04) |
 <!-- /ladder -->
+
+The receipts on the ladder were taken under cadence-net 0.8.1 on 2026-09-14, all four rungs re-run on it; the numbers are those of the 0.7.1 run to the last digit.
 [How a patch net learns](HOW_IT_LEARNS.md) is the tutorial the rungs build on: owners,
 seams, settlement, and the one local rule the rungs use, whether the target is a label, a
 teacher's move, or a reward.
