@@ -1,0 +1,5 @@
+-e ../cadence
+numpy>=1.26
+mido>=1.3.3
+torch>=2.2
+pytest>=8

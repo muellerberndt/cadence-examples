@@ -1,0 +1,492 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b1419;
+  --panel: #112028;
+  --line: #29404a;
+  --ink: #e4efed;
+  --muted: #9cafaf;
+  --green: #89e6bf;
+  --purple: #baa7fb;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 65% 0, #162e32, transparent 60%), var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.5 system-ui,
+    -apple-system,
+    sans-serif;
+}
+header {
+  height: 64px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3vw;
+}
+.brand {
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.brand span {
+  color: var(--green);
+}
+.brand i {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-left: 15px;
+}
+.badge,
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--green);
+}
+main {
+  max-width: 1580px;
+  margin: auto;
+  padding: 22px 3vw;
+}
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.intro h1 {
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  margin: 5px 0;
+}
+.intro p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.score-panel,
+.brain-panel {
+  background: linear-gradient(145deg, #14262dcc, #102026cc);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  min-width: 0;
+}
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+textarea,
+input,
+select {
+  background: #0b181e;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font: inherit;
+  padding: 9px;
+  outline-color: var(--green);
+}
+textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 62px;
+}
+.presets,
+.compose-row,
+.versions,
+.feedback,
+.brain-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+button {
+  border: 1px solid var(--line);
+  background: #162b31;
+  color: var(--ink);
+  border-radius: 7px;
+  padding: 8px 11px;
+  cursor: pointer;
+  font: 12px system-ui;
+  min-height: 36px;
+}
+button:hover {
+  border-color: var(--green);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.presets {
+  margin: 6px 0 12px;
+}
+.presets button {
+  font-size: 11px;
+  padding: 5px 9px;
+  background: transparent;
+}
+.primary {
+  background: var(--green);
+  color: #0b231d;
+  font-weight: 600;
+  padding: 11px 15px;
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+.seed {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+}
+.seed input {
+  width: 72px;
+}
+.status {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 17px 0 6px;
+  color: var(--green);
+}
+#score {
+  width: 100%;
+  height: 150px;
+  display: block;
+  background: #0b181c;
+  border-radius: 7px;
+}
+.score-key,
+.legend {
+  font-size: 10px;
+  display: flex;
+  gap: 14px;
+  color: var(--muted);
+  margin: 6px 0;
+}
+.score-key span:first-child,
+.green {
+  color: var(--green);
+}
+.purple {
+  color: var(--purple);
+}
+audio {
+  width: 100%;
+  height: 38px;
+  margin: 10px 0;
+}
+.versions a {
+  font-size: 11px;
+  color: var(--green);
+  margin-left: auto;
+}
+.versions button.selected {
+  border-color: var(--green);
+}
+#review {
+  font-size: 12px;
+  color: #b2c4c4;
+  min-height: 36px;
+}
+.feedback {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.feedback span {
+  margin-right: auto;
+}
+.small {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.brain-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.brain-title h2 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 5px 0 12px;
+}
+#neurons {
+  font: 11px ui-monospace;
+  text-align: right;
+  color: var(--green);
+}
+.brain-toolbar {
+  gap: 6px;
+  font-size: 11px;
+}
+.brain-toolbar label {
+  margin: 0;
+}
+.brain-toolbar select {
+  padding: 5px;
+  font-size: 11px;
+  max-width: 160px;
+}
+#brain {
+  display: block;
+  width: 100%;
+  height: 320px;
+}
+@media (min-width: 901px) {
+  .brain-toolbar button {
+    padding: 6px 9px;
+    min-height: 30px;
+    font-size: 11px;
+  }
+  .brain-toolbar select {
+    max-width: 150px;
+  }
+}
+#waves {
+  display: block;
+  width: 100%;
+  height: 124px;
+}
+#equilibrium {
+  font: 10px ui-monospace;
+  color: var(--green);
+  margin: 9px 0;
+}
+#modulators {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#modulators span {
+  flex: 1;
+  background: #0c191ecc;
+  border-left: 2px solid var(--purple);
+  padding: 5px 8px;
+  font-size: 10px;
+}
+#modulators b {
+  display: block;
+  font: 14px ui-monospace;
+}
+.details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+  padding-top: 26px;
+}
+.details h2 {
+  font-size: 17px;
+  font-weight: 500;
+}
+.details p {
+  color: var(--muted);
+  font-size: 12px;
+}
+.region {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding: 5px 0;
+  font-size: 12px;
+}
+.region b {
+  color: var(--green);
+  font-family: ui-monospace;
+}
+.candidate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.candidate meter {
+  flex: 1;
+  accent-color: var(--green);
+}
+.footer {
+  font-size: 10px;
+  color: var(--muted);
+  padding: 25px 0;
+}
+@media (min-width: 1100px) and (max-height: 800px) {
+  header {
+    height: 48px;
+  }
+  main {
+    padding-top: 12px;
+  }
+  .intro {
+    margin-bottom: 8px;
+  }
+  .intro h1 {
+    font-size: 28px;
+  }
+  .score-panel,
+  .brain-panel {
+    padding: 13px;
+  }
+  #brain {
+    height: 300px;
+  }
+  #score {
+    height: 126px;
+  }
+  .presets {
+    margin-bottom: 7px;
+  }
+  .status {
+    margin-top: 9px;
+  }
+  #review {
+    margin: 6px 0;
+  }
+}
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .details {
+    grid-template-columns: 1fr;
+  }
+  .intro p {
+    display: none;
+  }
+  .badge {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .intro h1 {
+    font-size: 28px;
+  }
+  .brand {
+    font-size: 13px;
+  }
+  .brand i {
+    font-size: 8px;
+    margin-left: 4px;
+  }
+  header {
+    padding: 0 16px;
+  }
+  main {
+    padding: 20px 14px;
+  }
+  .versions a {
+    margin-left: 0;
+  }
+  .brain-panel {
+    padding: 12px;
+  }
+  #brain {
+    height: 320px;
+  }
+  .brain-title h2 {
+    font-size: 15px;
+  }
+  button {
+    min-height: 40px;
+  }
+  .brain-toolbar {
+    gap: 5px;
+  }
+}
+.candidate meter {
+  min-width: 0;
+  width: 0;
+}
+.details article {
+  min-width: 0;
+}
+.brain-title > div {
+  min-width: 0;
+}
+#neurons {
+  white-space: pre-line;
+  flex-shrink: 0;
+}
+
+.brain-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #09171c;
+}
+#brain-network {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+#brain {
+  position: relative;
+}
+.brain-panel:fullscreen {
+  background: #0b181e;
+  border-radius: 0;
+  padding: 20px;
+}
+.brain-panel:fullscreen #brain {
+  height: 65vh;
+}
+.brain-panel:fullscreen #waves {
+  height: 15vh;
+}
+.thought-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 11px;
+  min-height: 24px;
+}
+#thought {
+  color: #ffc875;
+}
+#trial-info {
+  color: var(--muted);
+  font-size: 10px;
+}
+#note-votes {
+  display: flex;
+  gap: 4px;
+}
+#note-votes span {
+  font-size: 9px;
+  color: #dec4ff;
+  border: 1px solid #554568;
+  border-radius: 4px;
+  padding: 1px 4px;
+}

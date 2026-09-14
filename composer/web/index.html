@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cadence · Composer studio</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">C<span>·</span>ADENCE <i>COMPOSER</i></a
+      ><span class="badge">PRIVATE RESEARCH STUDIO</span>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <div class="eyebrow">MUSIC THROUGH LOCAL REPAIR</div>
+          <h1>Imagine. Listen. Rewrite.</h1>
+        </div>
+        <p>
+          A learned brain explores musical continuations.<br />One shared
+          state. Many small, interacting repairs.
+        </p>
+      </div>
+      <div class="workspace">
+        <section class="score-panel">
+          <form id="brief">
+            <label for="prompt">What should it feel like?</label
+            ><textarea id="prompt" maxlength="500" rows="2">
+A sad, gentle piano piece with a returning melody</textarea>
+            <div class="presets">
+              <button
+                type="button"
+                data-prompt="A sad, gentle piano piece with a returning melody"
+              >
+                Reflective piano</button
+              ><button
+                type="button"
+                data-prompt="A bright heroic cinematic orchestral theme"
+              >
+                Cinematic orchestra</button
+              ><button
+                type="button"
+                data-prompt="A calm baroque piano miniature"
+              >
+                Baroque miniature
+              </button>
+            </div>
+            <div class="compose-row">
+              <button class="primary" id="compose">
+                Compose one minute <span>↗</span></button
+              ><label class="seed"
+                >Seed
+                <input
+                  id="seed"
+                  type="number"
+                  value="17"
+                  min="0"
+                  max="4294967295"
+              /></label>
+            </div>
+          </form>
+          <div class="status">
+            <span id="phase">Loading the trained brain…</span
+            ><span id="duration">60 seconds</span>
+          </div>
+          <div class="thought-strip">
+            <strong id="thought">Ready to imagine</strong
+            ><span id="trial-info"></span>
+          </div>
+          <div
+            id="note-votes"
+            aria-label="Current neural note preferences"
+          ></div>
+          <canvas
+            id="score"
+            aria-label="Generated melody as a piano roll; revised phrase is highlighted"
+          ></canvas>
+          <div class="score-key">
+            <span>● Melody</span><span>▧ Revised phrase</span
+            ><span id="notes"></span>
+          </div>
+          <audio id="audio" controls preload="metadata"></audio>
+          <div class="versions">
+            <button id="draft">Listen to draft</button
+            ><button id="final" class="selected">Listen to final</button
+            ><a id="midi">Download MIDI ↗</a><a id="wav">Download audio ↗</a>
+          </div>
+          <p id="review">
+            A trained checkpoint is loaded. Compose a piece or listen to the
+            latest saved session.
+          </p>
+          <div class="feedback">
+            <span>Teach a preference</span
+            ><button id="like">More like this</button
+            ><button id="dislike">Less like this</button>
+          </div>
+          <p class="small" id="feedback-status">
+            Feedback teaches relative chord, rhythm and interval preferences. A
+            held-out retention check can reject the update.
+          </p>
+        </section>
+        <section class="brain-panel">
+          <div class="brain-title">
+            <div>
+              <div class="eyebrow">THE COMPOSING CIRCUIT</div>
+              <h2>Different functions. A common state.</h2>
+            </div>
+            <span id="neurons"></span>
+          </div>
+          <div class="brain-toolbar">
+            <button id="fit-brain">Fit whole brain</button
+            ><button id="expand-brain">Expand</button>
+            <label for="signal">Color</label
+            ><select id="signal">
+              <option value="repair">Repair activity</option>
+              <option value="mismatch">Equation mismatch</option>
+              <option value="activation">Activation</option>
+              <option value="plasticity">Learned synapse changes</option></select
+            ><button id="replay">Replay repairs</button
+            ><button id="release">Release the drive</button>
+          </div>
+          <div class="brain-stage">
+            <canvas id="brain-network" aria-hidden="true"></canvas
+            ><canvas
+              id="brain"
+              aria-label="Measured brain activity arranged into named functional populations"
+            ></canvas>
+            <div id="brain-labels" aria-hidden="true"></div>
+          </div>
+          <canvas
+            id="waves"
+            aria-label="Measured population activity and mismatch across simulation iterations"
+          ></canvas>
+          <div class="legend">
+            <span>Regions: function colors</span
+            ><span class="hot">Glow: change between iterations</span
+            ><span class="green">Waves: mean activity</span
+            ><span class="purple">Waves: mismatch</span>
+          </div>
+          <div id="equilibrium">Waiting for a captured settling</div>
+          <div id="modulators"></div>
+          <p class="small" id="sampling">
+            Every neuron and every synapse is drawn as one brain scan: regions
+            sit where their connections place them, tissue brightness follows the
+            chosen signal, the glow marks neurons that changed between recorded
+            iterations, and messages travel along the synapses of active neurons.
+            Wheel or pinch to zoom, drag to pan. Live traces sample the actual
+            settling of candidates. Traces replay sampled simulation steps.
+            Brightness and messages are scaled to the largest activation,
+            repair and mismatch of this captured trace. These are model
+            signals, not EEG or neurotransmitter concentrations.
+          </p>
+        </section>
+      </div>
+      <section class="details">
+        <article>
+          <h2>Inside this brain</h2>
+          <div id="regions"></div>
+          <p>
+            The auditory history, harmony, rhythm, phrase context and note
+            intention regions settle together. Changed messages alter
+            neighboring synaptic inputs; those neurons repair their state in turn. A
+            finite settling budget does not guarantee a unique or globally
+            best equilibrium.
+          </p>
+        </article>
+        <article>
+          <h2>What it learned—and what we supplied</h2>
+          <p id="training">Reading checkpoint receipt…</p>
+          <p>
+            Learned: event predictions and abstract harmony, interval and groove
+            relationships from MIDI music. Supplied: keyword mood/style
+            controls, tonal and four-bar structure, motif readback,
+            voice-leading preferences, accompaniment and orchestration.
+            “Cinematic” is a broad musical setting, not an artist imitation
+            model.
+          </p>
+          <p>
+            The composer tests multiple continuations, scores them, synthesizes
+            the draft and inspects its waveform. Revisions must improve the
+            explicit score and pass audio health checks. Human-level musical
+            judgment and a transformer efficiency advantage have not been
+            established.
+          </p>
+        </article>
+        <article>
+          <h2>Imagined alternatives</h2>
+          <div id="alternatives">
+            Compose to inspect competing phrases and the chosen continuation.
+          </div>
+          <p>
+            No imagined candidate changes the audible piece until it is
+            selected. A rejected revision leaves the earlier score intact.
+          </p>
+        </article>
+      </section>
+      <p class="footer">
+        Cadence Composer · private prototype · symbolic MIDI learning ·
+        GeneralUser GS synthesis by S. Christian Collins
+      </p>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
