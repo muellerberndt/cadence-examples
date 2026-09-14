@@ -3,13 +3,13 @@
 export function regionColor(name) {
   const key = name.toLowerCase();
   if (/retina|visual|vision|eye/.test(key)) return [218, 146, 246];
-  if (/motor|motion|joint|pencil|action/.test(key)) return [85, 210, 232];
+  if (/motor|motion|joint|pencil|action|actuator/.test(key)) return [85, 210, 232];
   if (/rhythm|timing|tempo/.test(key)) return [107, 166, 255];
   if (/harmon|chord/.test(key)) return [244, 186, 101];
   if (/memory|recall|record|motif|phrase/.test(key)) return [176, 147, 255];
-  if (/future|plan|reason|monitor|intention|value/.test(key))
+  if (/future|plan|reason|monitor|intention|value|candidate|option/.test(key))
     return [246, 145, 173];
-  if (/sensory|auditory|heard|input|cue|key/.test(key)) return [116, 220, 172];
+  if (/sensory|sensor|smell|auditory|heard|input|cue|key/.test(key)) return [116, 220, 172];
   if (/place|spatial/.test(key)) return [106, 194, 255];
   if (/instrument|ensemble/.test(key)) return [246, 157, 101];
   return [143, 200, 190];
