@@ -32,8 +32,11 @@ uniform float dpr;
 uniform float changeScale;
 uniform vec3 camera;
 out vec4 color;
+out vec2 uv;
 vec4 item(sampler2D tex,int id){return texelFetch(tex,ivec2(id%256,id/256),0);}
 void main(){
+ uv=vec2(0.0);
+ if(pass==4){uv=vec2(float((gl_VertexID<<1)&2),float(gl_VertexID&2));gl_Position=vec4(uv*2.0-1.0,0.0,1.0);color=vec4(0.0);return;}
  int a=int(edge.x), b=int(edge.y);
  if(pass==1){a=gl_VertexID;b=a;}
  vec4 la=item(layoutTex,a), lb=item(layoutTex,b);
@@ -67,9 +70,12 @@ const fragment = `#version 300 es
 precision highp float;
 precision highp int;
 in vec4 color;
+in vec2 uv;
+uniform sampler2D cachedTex;
 uniform int pass;
 out vec4 result;
 void main(){
+ if(pass==4){vec3 rgb=texture(cachedTex,uv).rgb;result=vec4(vec3(.035,.075,.09)+1.0-exp(-rgb*.65),1.0);return;}
  float alpha=color.a;
  if(pass==1||pass==2){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;alpha*=pow(1.0-r,.55);}
  result=vec4(color.rgb,alpha);
@@ -119,6 +125,7 @@ export class CircuitMap {
           "dpr",
           "camera",
           "changeScale",
+          "cachedTex",
         ].map((k) => [k, gl.getUniformLocation(this.program, k)]),
       );
       this.textures = [0, 1, 2].map((unit) => {
@@ -134,6 +141,7 @@ export class CircuitMap {
       gl.uniform1i(this.uniform.layoutTex, 0);
       gl.uniform1i(this.uniform.stateTex, 1);
       gl.uniform1i(this.uniform.colorTex, 2);
+      gl.uniform1i(this.uniform.cachedTex, 3);
       this.vao = gl.createVertexArray();
       gl.bindVertexArray(this.vao);
       this.buffer = gl.createBuffer();
@@ -385,27 +393,21 @@ export class CircuitMap {
       ),
     );
     if (this.dirty) {
+      gl.activeTexture(gl.TEXTURE3);
+      gl.bindTexture(gl.TEXTURE_2D, this.textures[2]);
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.cache);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform1i(this.uniform.pass, 0);
       gl.drawArraysInstanced(gl.LINES, 0, 2, this.edges);
       this.dirty = false;
     }
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.cache);
-    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-    gl.blitFramebuffer(
-      0,
-      0,
-      width,
-      height,
-      0,
-      0,
-      width,
-      height,
-      gl.COLOR_BUFFER_BIT,
-      gl.NEAREST,
-    );
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.activeTexture(gl.TEXTURE3);
+    gl.bindTexture(gl.TEXTURE_2D, this.cacheTexture);
+    gl.disable(gl.BLEND);
+    gl.uniform1i(this.uniform.pass, 4);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.enable(gl.BLEND);
     if (channel === 3 && this.changes) {
       gl.uniform1f(this.uniform.changeScale, this.changeScale);
       gl.uniform1i(this.uniform.pass, 3);
