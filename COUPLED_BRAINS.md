@@ -6,7 +6,7 @@ For each fixed observation, all connected regions settle together before the
 body acts or the strategy controller requests another search depth.
 
 The public Cadence library provides
-[`couple(regions, bridges)`](https://github.com/muellerberndt/cadence/blob/main/docs/brains.md#different-regions-one-equilibrium).
+[`couple(regions, bridges)`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#several-regions-one-equilibrium).
 The browser's small `settleTogether` implementation assembles the same sparse
 owner graph and applies Cadence's existing graded rule. It does not concatenate
 separately solved circuits. The tests independently replay all six controllers

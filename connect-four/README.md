@@ -30,7 +30,7 @@ extraction and rules are explicit application operations. No weights train durin
 this game; imagined outcomes are not presented as observed rewards. The search
 runs in a browser worker so interaction and circuit inspection remain responsive.
 
-The optional core [`cadence.brains`](https://github.com/muellerberndt/cadence/blob/main/docs/brains.md)
+The optional core [`cadence.brains`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#imagined-futures)
 provides generic isolated-future comparison, sensor/motor wiring and the same
 activity-monitor design. This page specializes the generic branching pattern to
 game search with pruning and iterative deepening. It is deliberately wired
