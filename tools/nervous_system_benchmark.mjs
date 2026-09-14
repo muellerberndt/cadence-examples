@@ -177,10 +177,11 @@ for (const folder of ["eye-arm", "mouse", "worm", "fly"])
   writeFileSync(
     new URL(`${folder}/evidence.json`, root),
     // Evidence precision exceeds the spatial success tolerance while avoiding
-    // platform-specific last-bit differences in exp/tanh implementations.
+    // platform-specific last-bit differences accumulated over 6,000 control steps.
+    // Seven decimal places remain far below the 0.024 spatial success threshold.
     JSON.stringify(
       result,
-      (_, v) => (typeof v === "number" ? Math.round(v * 1e9) / 1e9 : v),
+      (_, v) => (typeof v === "number" ? Math.round(v * 1e7) / 1e7 : v),
       2,
     ) + "\n",
   );

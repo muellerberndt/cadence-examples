@@ -17,7 +17,7 @@
     "showcase/embodied.js": "e551c3a3f53d0c9d4de18015a0dfec3e77ec80ada402ed3265d6edb53e5b2887",
     "showcase/worm_arena.js": "11ddb137681fc9742a410d25d28e7cc70e850804ffc86f40f05347d8a242d3d5",
     "showcase/telemetry.js": "a41a9c55015bacd0a8b17bcae53264db8d2f95afcfb40e4dcbd1be17499c6339",
-    "tools/nervous_system_benchmark.mjs": "2803615a000524a9beae58c32432c4fb914d2967934ad8ed214ab0c99f7b3038"
+    "tools/nervous_system_benchmark.mjs": "179186f1e0c8a4468de692515d15b4a5291cba337f06587d9ba50d820e4284e3"
   },
   "arm": [
     {
@@ -29,7 +29,7 @@
       "contact": 681,
       "targets": 60,
       "completed": true,
-      "displacement": 0.103947056
+      "displacement": 0.1039471
     },
     {
       "image": "square",
@@ -40,23 +40,23 @@
       "contact": 695,
       "targets": 60,
       "completed": true,
-      "displacement": 0.103947056
+      "displacement": 0.1039471
     },
     {
       "image": "square",
       "condition": "feedback_off",
-      "coverage": 0.283333333,
+      "coverage": 0.2833333,
       "ink": 681,
       "raised": 5319,
       "contact": 681,
       "targets": 60,
       "completed": true,
-      "displacement": 0.286549222
+      "displacement": 0.2865492
     },
     {
       "image": "square",
       "condition": "joint_motors_off",
-      "coverage": 0.033333333,
+      "coverage": 0.0333333,
       "ink": 5994,
       "raised": 6,
       "contact": 5994,
@@ -73,7 +73,7 @@
       "contact": 0,
       "targets": 60,
       "completed": false,
-      "displacement": 0.054841649
+      "displacement": 0.0548416
     },
     {
       "image": "square",
@@ -95,7 +95,7 @@
       "contact": 534,
       "targets": 52,
       "completed": true,
-      "displacement": 0.203975101
+      "displacement": 0.2039751
     },
     {
       "image": "flower",
@@ -106,23 +106,23 @@
       "contact": 547,
       "targets": 52,
       "completed": true,
-      "displacement": 0.203975101
+      "displacement": 0.2039751
     },
     {
       "image": "flower",
       "condition": "feedback_off",
-      "coverage": 0.326923077,
+      "coverage": 0.3269231,
       "ink": 534,
       "raised": 5466,
       "contact": 534,
       "targets": 52,
       "completed": true,
-      "displacement": 0.213066767
+      "displacement": 0.2130668
     },
     {
       "image": "flower",
       "condition": "joint_motors_off",
-      "coverage": 0.038461538,
+      "coverage": 0.0384615,
       "ink": 5994,
       "raised": 6,
       "contact": 5994,
@@ -139,7 +139,7 @@
       "contact": 0,
       "targets": 52,
       "completed": false,
-      "displacement": 0.054841649
+      "displacement": 0.0548416
     },
     {
       "image": "flower",
@@ -161,7 +161,7 @@
       "contact": 337,
       "targets": 24,
       "completed": true,
-      "displacement": 0.359375008
+      "displacement": 0.359375
     },
     {
       "image": "two_marks",
@@ -172,18 +172,18 @@
       "contact": 341,
       "targets": 24,
       "completed": true,
-      "displacement": 0.359375008
+      "displacement": 0.359375
     },
     {
       "image": "two_marks",
       "condition": "feedback_off",
-      "coverage": 0.333333333,
+      "coverage": 0.3333333,
       "ink": 337,
       "raised": 5663,
       "contact": 337,
       "targets": 24,
       "completed": true,
-      "displacement": 0.029693518
+      "displacement": 0.0296935
     },
     {
       "image": "two_marks",
@@ -205,7 +205,7 @@
       "contact": 0,
       "targets": 24,
       "completed": false,
-      "displacement": 0.191959265
+      "displacement": 0.1919593
     },
     {
       "image": "two_marks",
