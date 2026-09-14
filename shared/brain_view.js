@@ -1,5 +1,6 @@
 import { settlingTrace } from "./telemetry.js";
 import { CircuitMap, regionColor } from "./circuit_map.js";
+import { thoughtSnapshot } from "./thought_trace.js";
 
 const labels = {
   sensory: "Sensory input",
@@ -71,6 +72,21 @@ export class BrainView {
       (this.signal = this.$("brain-signal").value);
     this.$("brain-speed").onchange = () =>
       (this.rate = +this.$("brain-speed").value);
+    this.$("brain-step-back").onclick = () => this.seek(-1);
+    this.$("brain-step-next").onclick = () => this.seek(1);
+    this.$("brain-timeline").oninput = () => this.seek(0, +this.$("brain-timeline").value);
+    this.$("brain-future").oninput = () => {
+      const thought = this.source?.thought;
+      const index = +this.$("brain-future").value;
+      if (!thought?.evaluations[index]) return;
+      const captured = thoughtSnapshot(this.source, thought.evaluations[index], index, thought.evaluations.length);
+      this.source = captured;
+      this.auto = this.pending = null;
+      this.trace = this.prepareTrace(captured, false);
+      this.frame = this.credit = 0;
+      this.frozen = true;
+      this.$("brain-freeze").textContent = "Resume view";
+    };
     this.$("brain-fit").onclick = () => this.map.fit();
     this.$("brain-expand").onclick = () => {
       const panel = this.canvas.closest(".brain-panel");
@@ -93,9 +109,16 @@ export class BrainView {
     this.source = this.old = this.trace = this.auto = this.pending = null;
     this.diagnostic = null;
     this.frozen = false;
-    this.signal = "activity";
+    this.signal = "repair";
     this.rate = 40;
     this.age = this.frame = this.credit = this.writes = this.cascades = 0;
+    this.received = this.coalesced = 0;
+    this.lastPublication = null;
+    this.thoughtEpoch = null;
+    this.thoughtCursor = -1;
+    this.thoughtClock = 0;
+    this.waveHistory = {};
+    this.waveStamp = null;
     this.changes = [];
     this.repairs = [];
     this.history = [];
@@ -103,7 +126,7 @@ export class BrainView {
     this.hover = null;
     this.trailStamp = null;
     this.displayed = null;
-    this.$("brain-signal").value = "activity";
+    this.$("brain-signal").value = "repair";
     this.$("brain-speed").value = "40";
     this.$("brain-freeze").textContent = "Pause view";
     this.followLabel();
@@ -128,7 +151,7 @@ export class BrainView {
       values.forEach((v, i) => {
         const g = source.groups?.[i] ?? "patch";
         trace.scales[kind][g] = Math.max(
-          trace.scales[kind][g] ?? 1e-12,
+          trace.scales[kind][g] ?? 0.01,
           Math.abs(v),
         );
       });
@@ -159,6 +182,27 @@ export class BrainView {
     this.pending = null;
     this.cascades++;
   }
+  capture(source) {
+    this.trace = this.auto = this.pending = null;
+    this.update(source);
+    if (this.follow && source?.recurrent) this.startCascade(source);
+  }
+  seek(delta, absolute = null) {
+    if (!this.source) return;
+    if (!this.trace) {
+      const captured = this.auto?.source ?? this.source;
+      const frame = this.auto?.frame ?? 0;
+      this.source = captured;
+      this.trace = this.auto?.trace ?? this.prepareTrace(captured, false);
+      this.auto = this.pending = null;
+      this.frame = frame;
+    }
+    this.frame = Math.max(0, Math.min(this.trace.frames.length - 1,
+      absolute ?? this.frame + delta));
+    this.credit = this.frame;
+    this.frozen = true;
+    this.$("brain-freeze").textContent = "Resume view";
+  }
   replay(release) {
     if (!this.source?.recurrent) return;
     this.auto = this.pending = null;
@@ -173,6 +217,9 @@ export class BrainView {
   }
   update(source) {
     if (!source || this.frozen || this.trace) return;
+    const newPublication = source !== this.lastPublication;
+    this.lastPublication = source;
+    if (newPublication) this.received++;
     const weights = source.weights ?? source.edges.map((e) => e[2]);
     const learned = Object.fromEntries(
       (source.learned ?? []).map(([, id, value]) => [id, value]),
@@ -209,6 +256,27 @@ export class BrainView {
       different(this.source?.mask ?? [], source.mask ?? []);
     this.old = { state: source.state.slice(), learned, consolidated };
     this.source = copy(source);
+    if (this.auto && this.auto.source.state.length !== source.state.length)
+      this.startCascade(source);
+    if (changed || !this.diagnostic)
+      this.diagnostic = this.prepareTrace(this.source, false);
+    if (changed && this.follow && source.recurrent) {
+      if (!this.auto || this.auto.frame >= this.auto.trace.frames.length - 1)
+        this.startCascade(source);
+      else {
+        // Preserve the largest detuning until it has been displayed. A quiet
+        // motor tick must not erase a just-published task/map change.
+        const peak = Math.max(0, ...(this.diagnostic?.mismatches?.[0] ?? []).map(Math.abs));
+        if (!this.pending || peak >= this.pendingPeak) {
+          this.pending = this.source;
+          this.pendingPeak = peak;
+        }
+        this.coalesced++;
+      }
+    }
+    this.readout(source);
+  }
+  syncTopology(source) {
     const topology = this.map.topology;
     if (
       !topology ||
@@ -219,12 +287,8 @@ export class BrainView {
       )
     )
       this.map.graph(source.state.length, source.edges);
-    if (changed || !this.diagnostic)
-      this.diagnostic = this.prepareTrace(this.source, false);
-    if (changed && this.follow && source.recurrent) {
-      if (!this.auto || this.auto.elapsed >= 1.6) this.startCascade(source);
-      else this.pending = this.source;
-    }
+  }
+  readout(source) {
     this.history.push(
       Math.max(
         0,
@@ -267,6 +331,29 @@ export class BrainView {
     c.clearRect(0, 0, w, h);
     if (!this.frozen) {
       this.age += dt;
+      const thought = this.source.thought;
+      this.$("brain-futures").hidden = !thought;
+      if (thought) {
+        if (thought.epoch !== this.thoughtEpoch) {
+          this.thoughtEpoch = thought.epoch;
+          this.thoughtCursor = -1;
+          this.thoughtClock = 0;
+        }
+        this.$("brain-future").max = Math.max(0, thought.evaluations.length - 1);
+        this.$("brain-future-count").textContent = `${thought.evaluated.toLocaleString()} actual value evaluations recorded`;
+        this.thoughtClock += dt;
+        if (!this.trace && this.follow && this.thoughtClock >= 0.3
+            && this.thoughtCursor < thought.evaluations.length - 1) {
+          // Live playback samples the complete retained evaluation history.
+          // The separate future slider can inspect every recorded evaluation.
+          this.thoughtCursor = Math.min(thought.evaluations.length - 1,
+            this.thoughtCursor + Math.max(1, Math.ceil((thought.evaluations.length - this.thoughtCursor) / 16)));
+          this.$("brain-future").value = this.thoughtCursor;
+          this.startCascade(thoughtSnapshot(this.source,
+            thought.evaluations[this.thoughtCursor], this.thoughtCursor, thought.evaluations.length));
+          this.thoughtClock = 0;
+        }
+      }
       if (this.trace) {
         this.credit += dt * this.rate;
         this.frame = Math.min(
@@ -275,19 +362,17 @@ export class BrainView {
         );
       } else if (this.auto) {
         this.auto.elapsed += dt;
-        // Time expansion of early iterations, compression of the long convergence tail.
         const end = this.auto.trace.frames.length - 1;
         this.auto.frame = Math.min(
           end,
-          Math.floor(
-            Math.expm1(Math.min(1, this.auto.elapsed / 1.6) * Math.log1p(end)),
-          ),
+          Math.floor(this.auto.elapsed * (this.auto.source.phase ? 8 : Math.max(this.rate, end / 3))),
         );
-        if (this.auto.elapsed >= 1.6 && this.pending)
+        if (this.auto.frame === end && this.pending)
           this.startCascade(this.pending);
       }
     }
     const source = this.auto?.source ?? this.source;
+    this.syncTopology(source);
     const trace = this.trace ?? this.auto?.trace;
     const frame = this.trace ? this.frame : (this.auto?.frame ?? 0);
     const s = trace ? trace.frames[frame] : source.state;
@@ -323,8 +408,8 @@ export class BrainView {
       repairMax = {};
     values.forEach((v, i) => {
       const g = groups[i];
-      maxima[g] = Math.max(maxima[g] ?? 1e-12, Math.abs(v));
-      repairMax[g] = Math.max(repairMax[g] ?? 1e-12, Math.abs(diff[i]));
+      maxima[g] = Math.max(maxima[g] ?? 0.01, Math.abs(v));
+      repairMax[g] = Math.max(repairMax[g] ?? 0.01, Math.abs(diff[i]));
     });
     const scales = trace?.scales[this.signal] ?? maxima;
     const norm = values.map((v, i) =>
@@ -412,19 +497,11 @@ export class BrainView {
       }
       const members = groups.flatMap((v, i) => (v === g ? [i] : []));
       regions[g] = { x, y, rw, rh, members };
-      const halo = c.createRadialGradient(
-        x + rw * 0.5,
-        y + rh * 0.5,
-        0,
-        x + rw * 0.5,
-        y + rh * 0.5,
-        Math.max(rw, rh) * 0.7,
-      );
       const role = regionColor(g);
-      halo.addColorStop(0, `rgba(${role.join(",")},.17)`);
-      halo.addColorStop(1, "#0c161c00");
-      c.fillStyle = halo;
-      c.fillRect(x - 5, y - 5, rw + 10, rh + 10);
+      c.fillStyle = `rgba(${role.join(",")},.045)`;
+      c.fillRect(x, y, rw, rh);
+      c.strokeStyle = `rgba(${role.join(",")},.22)`;
+      c.strokeRect(x + 0.5, y + 0.5, rw - 1, rh - 1);
       c.strokeStyle = `rgba(${role.join(",")},.75)`;
       c.lineWidth = 1;
       c.beginPath();
@@ -486,6 +563,7 @@ export class BrainView {
       time: this.age,
       moving: !this.frozen && !!trace && frame < trace.frames.length - 1,
       nodes: false,
+      activeSynapses: source.activeSynapses,
     });
     const slowWeights = Object.fromEntries((source.consolidated ?? []).map(([i, , v]) => [i, v]));
     if (!this.map.enabled || plastic)
@@ -496,7 +574,8 @@ export class BrainView {
           ((lasting ? this.slowChanges : this.changes)[i] ?? 0) *
           Math.max(0, 1 - (this.age - ((lasting ? this.slowFlashAt : this.flashAt) ?? -10)) / 1.5);
         const strength = Math.min(1, Math.abs(s[a] * weight) / max);
-        const pulse = repairs[a] * Math.min(1, Math.abs(weight));
+        const pulse = i < (source.activeSynapses ?? source.edges.length)
+          ? repairs[a] * Math.min(1, Math.abs(weight)) : 0;
         c.strokeStyle = plastic
           ? `rgba(${delta < 0 ? "121,184,255" : "255,196,113"},${0.04 + Math.min(1, Math.abs(weight)) * 0.3 + Math.min(1, Math.abs(delta)) * 0.6})`
           : `rgba(${pulse > 0.08 ? "191,168,255" : "130,182,200"},${0.035 + strength * 0.18 + pulse * 0.55})`;
@@ -512,7 +591,7 @@ export class BrainView {
         c.stroke();
         // A packet represents a changed outgoing message at this captured iteration.
         // No change means no moving packet, including at a fixed point.
-        const message = diff[a] * weight;
+        const message = i < (source.activeSynapses ?? source.edges.length) ? diff[a] * weight : 0;
         if (
           !plastic &&
           trace &&
@@ -544,23 +623,15 @@ export class BrainView {
     positions.forEach(([x, y], i) => {
       const value = Math.abs(norm[i]),
         muted = source.mask?.[i] === 0;
-      const radius = s.length <= 12 ? 4 + value * 4 : 1.4 + value * 1.7;
+      const radius = s.length <= 32 ? 3.5 + value * 3 : 1.6 + value * 1.8;
       const rgb = norm[i] < 0 ? "121,184,255" : "255,196,113";
-      if (this.heat && !plastic && !muted && value > 0.001) {
-        const size = s.length <= 12 ? 25 : 10;
-        const glow = c.createRadialGradient(x, y, 0, x, y, size);
-        glow.addColorStop(0, `rgba(${rgb},${value * 0.45})`);
-        glow.addColorStop(1, `rgba(${rgb},0)`);
-        c.fillStyle = glow;
-        c.fillRect(x - size, y - size, size * 2, size * 2);
-      }
       c.fillStyle = muted
         ? "#653647"
         : (this.heat && !plastic) ||
             this.signal === "repair" ||
             this.signal === "input"
           ? `rgb(${rgb})`
-          : "#96f0cc";
+          : `rgb(${regionColor(groups[i]).join(",")})`;
       c.globalAlpha = muted ? 0.4 : 0.22 + 0.78 * value;
       c.beginPath();
       c.arc(x, y, radius, 0, Math.PI * 2);
@@ -612,7 +683,7 @@ export class BrainView {
     Object.values(regions).forEach(({ x, y, rw, rh, members }) => {
       const enabled = members.filter((i) => source.mask?.[i] !== 0).length;
       c.fillText(
-        `${enabled}/${members.length} enabled`,
+        `${members.filter(i => Math.abs(diff[i]) > 1e-8).length} repairing · ${enabled}/${members.length} neurons`,
         x + 9,
         y + rh - 5,
         rw - 18,
@@ -640,11 +711,22 @@ export class BrainView {
     });
     c.stroke();
     this.$("brain-status").textContent = trace
-      ? `${trace.release ? "Input released in an isolated copy" : this.trace ? "Settling replay" : "Sampled settling"} · iteration ${frame}/${trace.frames.length - 1}${frame === trace.frames.length - 1 ? " · replay complete" : ""}`
+      ? `${source.phase ?? (trace.release ? "Input released in an isolated copy" : this.trace ? "Settling replay" : "Sampled settling")} · iteration ${frame}/${trace.frames.length - 1}${frame === trace.frames.length - 1 ? " · replay complete" : ""}`
       : `Live ${source.recurrent ? "settled state" : "associative read/write"} · ${this.writes} observed weight changes`;
     const equilibrium = source.equilibrium;
+    const mismatch = trace?.mismatches?.[frame] ?? this.diagnostic?.mismatches?.at(-1) ?? [];
+    const error = Math.max(0, ...mismatch.map(Math.abs));
+    const changing = diff.filter((v, i) => source.mask?.[i] !== 0 && Math.abs(v) > 1e-8).length;
+    const messages = source.edges.filter(([a, b, weight], i) => i < (source.activeSynapses ?? source.edges.length) && source.mask?.[a] !== 0
+      && source.mask?.[b] !== 0 && Math.abs(diff[a] * weight) > 1e-8).length;
+    this.$("brain-repair-count").textContent = `${changing} / ${s.length}`;
+    this.$("brain-message-count").textContent = `${messages} / ${source.edges.length}`;
+    this.$("brain-error-now").textContent = error.toExponential(1);
+    this.$("brain-timeline").max = (trace ?? this.diagnostic)?.frames.length - 1 || 0;
+    this.$("brain-timeline").value = trace ? frame : this.$("brain-timeline").max;
+    this.$("brain-step-label").textContent = `${trace ? frame : this.$("brain-timeline").max} / ${this.$("brain-timeline").max}`;
     this.$("brain-equilibrium").textContent = equilibrium
-      ? `${equilibrium.converged ? "Joint equilibrium within tolerance" : "Iteration budget reached"} · endpoint error ${equilibrium.residual.toExponential(1)} · ${equilibrium.links} active links between regions`
+      ? `${source.phase ? "Isolated future value cortex" : error <= equilibrium.tolerance ? "At equilibrium" : "Repairing the displayed state"} · error now ${error.toExponential(1)} → final ${equilibrium.residual.toExponential(1)}`
       : "Reference circuit · independently inspected";
     this.$("brain-equilibrium").title = equilibrium
       ? Object.entries(equilibrium.regions)
@@ -662,10 +744,20 @@ export class BrainView {
     this.$("brain-scale").textContent = plastic
       ? `Max |synaptic strength| ${Math.max(0, ...(lasting ? source.consolidated ?? [] : source.edges).map(([, , v]) => Math.abs(v))).toExponential(2)} · connections show ${lasting ? "persistent" : "total"} weights; flashes show their signed changes. Neuron colors still show activity.`
       : `Max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. ${trace ? "Captured trajectory scales" : "Current region scales"}; hover or tap for signed values. No neurotransmitter concentrations are modeled.`;
+    const waveTrace = trace ?? this.diagnostic;
+    const waveFrame = trace ? frame : (this.diagnostic?.frames.length ?? 1) - 1;
+    if (!this.frozen && stamp !== this.waveStamp) {
+      for (const [group, series] of Object.entries(waveTrace?.populations ?? {})) {
+        const history = this.waveHistory[group] ??= [];
+        history.push(series[waveFrame]);
+        if (history.length > 180) history.shift();
+      }
+      this.waveStamp = stamp;
+    }
     this.drawWaves(
       source,
-      trace ?? this.diagnostic,
-      trace ? frame : (this.diagnostic?.frames.length ?? 1) - 1,
+      this.trace ? waveTrace : { populations: this.waveHistory },
+      this.trace ? waveFrame : 179,
       regionLabel,
     );
     this.$("brain-modulators").textContent = source.modulators
@@ -687,6 +779,8 @@ export class BrainView {
       frame,
       regions: groupNames.map(regionLabel),
       trail: this.trail.slice(),
+      changing, messages, error,
+      phase: source.phase ?? "Joint equilibrium",
     };
   }
   drawWaves(source, trace, frame, label) {
@@ -706,7 +800,7 @@ export class BrainView {
     c.fillStyle = "#96aaa9";
     c.font = "9px ui-monospace, monospace";
     c.fillText(
-      "POPULATION WAVES · signed activity / mismatch · simulation steps, not EEG",
+      this.trace ? "CAPTURED ITERATIONS · activity / mismatch" : "POPULATION HISTORY · displayed activity / mismatch",
       4,
       10,
       w - 8,
@@ -719,7 +813,7 @@ export class BrainView {
       c.fillStyle = "#a3b4b9";
       c.fillText(label(g), 4, y + rh * 0.65, 120);
       const peak = Math.max(
-        1e-12,
+        0.01,
         ...series.flatMap((v) => [Math.abs(v.mean), v.mismatch]),
       );
       for (const [key, color] of [
@@ -730,7 +824,7 @@ export class BrainView {
         c.lineWidth = 1;
         c.beginPath();
         series.slice(0, frame + 1).forEach((v, i) => {
-          const x = 132 + ((w - 138) * i) / Math.max(1, series.length - 1),
+          const x = 132 + ((w - 138) * i) / Math.max(this.trace ? 1 : 179, series.length - 1),
             py = y + rh * 0.55 - ((rh - 2) * 0.45 * v[key]) / peak;
           i ? c.lineTo(x, py) : c.moveTo(x, py);
         });
@@ -756,6 +850,8 @@ export class BrainView {
       weights: this.source?.weights,
       follow: this.follow,
       cascades: this.cascades,
+      received: this.received,
+      coalesced: this.coalesced,
       automatic: !!this.auto,
       behavior: this.source?.behavior,
       displayed: this.displayed,

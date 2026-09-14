@@ -324,9 +324,9 @@
     "boundary": "Pondering reduces new response work here but uses more total work; the fixed game cache is not learned synaptic memory."
   },
   "sources": {
-    "connect-four/brain.js": "567f973688e04ec7d0f1a962c150494c107432777be022928b60a137151392cd",
+    "connect-four/brain.js": "ef5c7447943ef692dd3dddce45bad68ecbeccc1528e0eed785a4850131ca8537",
     "connect-four/benchmark.mjs": "b71a83cd134be0429424063ef472c6967050d5a3626d72d486be88ebde836f24",
-    "connect-four/worker.js": "d12bc9012bf2e386e0418850c01718e551a4e0c20e52bcebf7a81d3b747e6bc2",
+    "connect-four/worker.js": "baf5b6431cb921baabdcf24b5848b84da79637f5b18d3988b799a60ac7eff431",
     "shared/nervous_system.js": "13a4d24662bcb2fc397f9005ef8e5887fb2dbee184dd75d07263a86bf9b592e7"
   },
   "boundary": "Supplied game rules and threat evaluator. Adversarial search is explicit; conventional minimax with the same evaluator can match it. Finite-depth play, not a solved or learned world model."

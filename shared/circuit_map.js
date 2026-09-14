@@ -30,6 +30,7 @@ uniform float moving;
 uniform float baseAlpha;
 uniform float dpr;
 uniform float changeScale;
+uniform int activeSynapses;
 uniform vec3 camera;
 out vec4 color;
 out vec2 uv;
@@ -51,6 +52,10 @@ void main(){
  }else if(pass==3){
    p=gl_VertexID==0?la.xy:lb.xy;
    color=vec4(edgeChange<0.0?vec3(.55,.7,1.0):vec3(1.0,.72,.35),clamp(abs(edgeChange)/changeScale,0.0,1.0)*.45);
+ }else if(pass==5){
+   p=gl_VertexID==0?la.xy:lb.xy;
+   float flux=sqrt(clamp(abs(sa.y*edge.z),0.0,1.0));
+   color=vec4(sa.y*edge.z<0.0?vec3(.40,.67,1.0):vec3(1.0,.72,.35),flux*.7*moving);
  }else if(pass==1){
    float intensity=clamp(abs(value),0.0,1.0);
    vec3 tint=value<0.0?vec3(.45,.66,1.0):vec3(1.0,.94,.76);
@@ -59,11 +64,11 @@ void main(){
  }else{
    float travel=fract(clock*.85+float(gl_InstanceID%23)/23.0);
    p=mix(la.xy,lb.xy,travel);
-   color=vec4(sa.y*edge.z<0.0?vec3(.45,.7,1.0):vec3(1.0,.8,.42),min(.85,strength*2.0)*moving);
-   if(strength<.025)color.a=0.0;
+   color=vec4(sa.y*edge.z<0.0?vec3(.45,.7,1.0):vec3(1.0,.8,.42),min(.95,sqrt(strength)*2.0)*moving);
    gl_PointSize=dpr*(1.5+2.5*strength);
  }
  color.a*=la.w*lb.w;
+ if((pass==2||pass==5)&&gl_InstanceID>=activeSynapses)color.a=0.0;
  gl_Position=vec4(p*camera.z+camera.xy,0.0,1.0);
 }`;
 const fragment = `#version 300 es
@@ -77,7 +82,7 @@ out vec4 result;
 void main(){
  if(pass==4){vec3 rgb=texture(cachedTex,uv).rgb;result=vec4(vec3(.035,.075,.09)+1.0-exp(-rgb*.65),1.0);return;}
  float alpha=color.a;
- if(pass==1||pass==2){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;alpha*=pow(1.0-r,.55);}
+ if(pass==1||pass==2){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;}
  result=vec4(color.rgb,alpha);
 }`;
 
@@ -126,6 +131,7 @@ export class CircuitMap {
           "camera",
           "changeScale",
           "cachedTex",
+          "activeSynapses",
         ].map((k) => [k, gl.getUniformLocation(this.program, k)]),
       );
       this.textures = [0, 1, 2].map((unit) => {
@@ -292,6 +298,7 @@ export class CircuitMap {
     time = 0,
     moving = true,
     nodes = true,
+    activeSynapses = this.edges,
   }) {
     if (!this.enabled || !this.n || positions.length !== this.n) return;
     const gl = this.gl,
@@ -384,12 +391,13 @@ export class CircuitMap {
     gl.uniform1i(this.uniform.channel, channel);
     gl.uniform1f(this.uniform.clock, time);
     gl.uniform1f(this.uniform.moving, moving ? 1 : 0);
+    gl.uniform1i(this.uniform.activeSynapses, activeSynapses);
     gl.uniform1f(this.uniform.dpr, dpr);
     gl.uniform1f(
       this.uniform.baseAlpha,
       Math.max(
         this.floatCache ? 0.00004 : 0.006,
-        0.05 / Math.pow(Math.max(1, this.edges / 3000), 0.65),
+        0.13 / Math.pow(Math.max(1, this.edges / 3000), 0.65),
       ),
     );
     if (this.dirty) {
@@ -413,6 +421,8 @@ export class CircuitMap {
       gl.uniform1i(this.uniform.pass, 3);
       gl.drawArraysInstanced(gl.LINES, 0, 2, this.edges);
     } else if (moving) {
+      gl.uniform1i(this.uniform.pass, 5);
+      gl.drawArraysInstanced(gl.LINES, 0, 2, this.edges);
       gl.uniform1i(this.uniform.pass, 2);
       gl.drawArraysInstanced(gl.POINTS, 0, 1, this.edges);
     }

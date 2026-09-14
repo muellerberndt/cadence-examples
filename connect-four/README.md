@@ -14,7 +14,8 @@ on desktop and stacks below on mobile.
 **Think between turns** is on by default. While you choose, the reasoner considers
 possible human moves and its own replies. You can play immediately; hypothetical
 stones never enter the real board. The shared value/choice/monitor circuit updates
-when a search depth completes. Once the depth or node budget is reached, its state
+when a search depth completes. Every actual leaf-value evaluation is also recorded,
+so the brain panel can show the work between completed depths. Once the depth or node budget is reached, its state
 remains available while computation waits for a new observation.
 
 The worker yields every 128 search events, so a human move cancels obsolete work
@@ -40,6 +41,14 @@ The [runtime tests](pondering.test.mjs) cover bounded slices, board isolation,
 cancellation, cache limits, score equivalence and an actual worker receiving a
 replacement observation mid-search. Browser tests verify default pondering, usable
 human controls, pausing, cache reuse and no speculative board moves.
+
+The full map keeps all 19 neurons and 39 synapses visible. During a labeled
+**recorded future**, the six evaluator neurons execute their actual two-step
+readout; the remaining thirteen hold the last decision. The future slider selects
+any recorded evaluation, and the repair timeline steps through it. Live playback
+samples the complete retained history and can continue after search finishes.
+Completed-depth replays show the coupled whole-brain decision. Quiet regions stay
+quiet; no decorative neurons or artificial oscillations are added.
 
 ## Its task brain
 

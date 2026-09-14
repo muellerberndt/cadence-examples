@@ -75,6 +75,7 @@ export function mountEmbodied(mode, api) {
         .join("");
     }
     function perform() {
+      cue = +$("task-cue").value;
       const destination = lessons.recall(cue);
       if (destination === null) {
         waiting = true;
@@ -83,8 +84,12 @@ export function mountEmbodied(mode, api) {
         return;
       }
       waiting = false;
+      paused = false;
+      $("pause").textContent = "Pause";
+      api.resume?.();
       mouse.world.goal = stations(mouse.world)[destination];
       mouse.bindTask(lessons.memory, cue, destination);
+      api.observe?.(mouse.joint);
       $("lesson-status").textContent =
         `Task ${cue + 1}: memory recalls ${["cheese", "home", "water", "flag"][destination]}, and the mouse heads there.`;
     }
@@ -92,6 +97,17 @@ export function mountEmbodied(mode, api) {
       cue = +$("task-cue").value;
       perform();
     };
+    const commands = document.createElement("div");
+    commands.className = "buttons task-commands";
+    commands.setAttribute("aria-label", "Give the mouse a task");
+    for (const [value, label] of [[0, "Find cheese"], [1, "Go home"], [2, "Get water"]]) {
+      const button = document.createElement("button");
+      button.textContent = label;
+      button.dataset.task = value;
+      button.onclick = () => { $("task-cue").value = value; perform(); };
+      commands.append(button);
+    }
+    $("scene").after(commands);
     $("perform-task").onclick = perform;
     $("teach-task").onclick = () => {
       lessons.teach(cue, +$("teach-goal").value);
@@ -334,6 +350,11 @@ export function mountEmbodied(mode, api) {
         motors: mouse.nerves.state.slice(),
         goal: mouse.world.goal,
         lessons: lessons.records,
+        task: cue,
+        destination: mouse.destination,
+        paused,
+        waiting,
+        arrivals: mouse.arrivals,
         moves: mouse.moves,
         residual: mouse.circuit.residual,
       };

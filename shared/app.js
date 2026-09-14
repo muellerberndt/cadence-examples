@@ -51,7 +51,11 @@ let field,
 const brainView = new BrainView();
 const motorGate = new MotorGate();
 function act(make) {
-  if (motorGate.prepare(make, () => brainSource().steps ?? 24)) {
+  if (motorGate.prepare(() => {
+    const commit = make();
+    brainView.update(brainSource());
+    return commit;
+  }, () => brainSource().steps ?? 24)) {
     brainView.trace = null;
     brainView.update(brainSource());
     brainView.replay(false);
@@ -252,6 +256,7 @@ function setMode(next) {
     );
   document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", game: "Connect Four reasoner" }[mode]}`;
   bodyView = null;
+  document.querySelector(".task-commands")?.remove();
   paused = false;
   if (!document.body.dataset.demo) location.hash = next;
   document
@@ -294,6 +299,13 @@ function setMode(next) {
         line,
         text,
         act,
+        observe: source => brainView.capture(source),
+        resume: () => {
+          motorGate.cancel();
+          brainView.trace = brainView.auto = brainView.pending = null;
+          brainView.frozen = false;
+          $("brain-freeze").textContent = "Pause view";
+        },
         evidence: composite,
       },
     );

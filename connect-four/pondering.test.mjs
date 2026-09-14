@@ -4,6 +4,8 @@ import { Worker } from "node:worker_threads";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { Reasoner, reason, drop, brainSnapshot } from "./brain.js";
+import { thoughtSnapshot } from "../shared/thought_trace.js";
+import { settlingTrace } from "../shared/telemetry.js";
 
 function finish(planner, chunk = 17) {
   while (planner.active) {
@@ -148,4 +150,25 @@ test("rendering brain readback never mutates the stored decision", () => {
   const before = JSON.stringify(result);
   brainSnapshot(board, 1, result);
   assert.equal(JSON.stringify(result), before);
+});
+
+test("all actual future value evaluations are observable without changing search", () => {
+  const board = drop(Array(42).fill(0), 3, 1), evaluations = [];
+  const observed = reason(board, -1, {depth: 4, onEvaluation: state => evaluations.push(state)});
+  const plain = reason(board, -1, {depth: 4});
+  assert.deepEqual(observed, plain);
+  assert.ok(evaluations.length > 100 && evaluations.length <= observed.nodes);
+  const base = brainSnapshot(board, -1, observed), before = JSON.stringify(base);
+  for (const [index, values] of evaluations.slice(0, 30).entries()) {
+    const snapshot = thoughtSnapshot(base, values, index, evaluations.length);
+    const trace = settlingTrace(snapshot);
+    assert.equal(snapshot.state.length, base.state.length);
+    assert.equal(snapshot.edges.length, base.edges.length);
+    assert.deepEqual(snapshot.state.slice(6), base.state.slice(6));
+    snapshot.state.slice(0, 6).forEach((v, i) => assert.ok(Math.abs(v - values[i]) < 1e-14));
+    assert.equal(trace.frames.length, 3);
+    assert.ok(Math.max(...trace.mismatches.at(-1).map(Math.abs)) < 1e-14);
+    assert.equal(snapshot.activeSynapses, 5);
+  }
+  assert.equal(JSON.stringify(base), before);
 });

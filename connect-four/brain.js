@@ -58,9 +58,11 @@ export function features(b, p) {
 }
 const weights = [1, 4, -1, -4, 0.3];
 // Exact two-step graded circuit: input neurons settle first, then the value neuron.
-export function evaluate(b, p) {
+export function evaluate(b, p, observe = null) {
   const f = features(b, p);
-  return Math.tanh(f.reduce((s, v, i) => s + v * weights[i], 0)) * 100;
+  const value = Math.tanh(f.reduce((s, v, i) => s + v * weights[i], 0));
+  observe?.([...f, value]);
+  return value * 100;
 }
 export function valueCircuit(b, p) {
   const f = features(b, p),
@@ -214,6 +216,7 @@ export function* reasonSteps(
     cache = new Map(),
     monitor = new Monitor(),
     cacheLimit = 20000,
+    onEvaluation = null,
   } = {},
 ) {
   if (
@@ -251,7 +254,7 @@ export function* reasonSteps(
     if (win) return { score: win * p * (100000 + left), sequence: [] };
     const moves = legal(b);
     if (!moves.length) return { score: 0, sequence: [] };
-    if (!left) return { score: evaluate(b, p), sequence: [] };
+    if (!left) return { score: evaluate(b, p, onEvaluation), sequence: [] };
     const startAlpha = alpha;
     const key = b.join(",") + ":" + p + ":" + left;
     const cached = cache.get(key);

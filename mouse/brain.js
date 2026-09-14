@@ -1,4 +1,4 @@
-import { Mouse as SpatialMouse } from "../shared/embodied.js";
+import { Mouse as SpatialMouse, mazeCircuit } from "../shared/embodied.js";
 import { SynapticMemory, keys, zeros } from "../shared/engine.js";
 import {
   MotorSystem,
@@ -24,11 +24,16 @@ export class Mouse extends SpatialMouse {
     this.repair();
   }
   repair() {
-    super.repair();
-    if (!this.nerves) return;
+    if (!this.nerves) return super.repair();
+    const previous = this.place;
+    this.circuit = mazeCircuit(this.world, false);
+    this.target = -1;
     const c = this.circuit;
     this.place = {
-      state: c.state.slice(),
+      // The changed boundary repairs the retained whole brain. Pre-solving the
+      // spatial field separately would hide the largest cascade from the viewer.
+      state: previous?.state.slice() ?? zeros(c.state.length),
+      potential: previous?.potential?.slice() ?? zeros(c.state.length),
       mask: c.mask,
       edges: c.brain.data.edges,
       names: c.state.map((_, i) => `Place ${i}`),
@@ -65,7 +70,7 @@ export class Mouse extends SpatialMouse {
           adapters:
             "Task recall → spatial goal field → position error ↔ motors · one shared equilibrium",
           memory:
-            "Lessons change FastSynapses between settling runs. The fixed map, active task cue and body pose define the current boundary; task, field and motor neurons settle together before motion. Neighbor selection is an explicit readout.",
+            "Observed lessons change transient and persistent synapses. The map, active task cue and body pose define the boundary; retained task, field and motor neurons repair together before motion. Neighbor selection is an explicit readout.",
         },
       },
     );

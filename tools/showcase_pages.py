@@ -77,6 +77,17 @@ def main():
             )
             page.locator("#mouse-motors").click()
             # Choosing a task acts at once; an untaught task waits for a lesson.
+            page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
+            assert page.evaluate("showcase.snapshot().body.arrivals") == 1
+            # A command is an explicit request to resume, including after Pause.
+            page.locator("#pause").click()
+            page.locator('[data-task="1"]').click()
+            assert not page.evaluate("showcase.snapshot().body.paused")
+            page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
+            assert page.evaluate("showcase.snapshot().body.arrivals") == 2
+            page.locator("#task-cue").select_option("2")
+            page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
+            assert page.evaluate("showcase.snapshot().body.arrivals") == 3
             page.locator("#task-cue").select_option("1")
             home_goal = page.evaluate("showcase.snapshot().body.goal")
             page.locator("#task-cue").select_option("3")
@@ -221,6 +232,7 @@ def main():
             # Pondering is on by default, without placing stones or blocking the human.
             page.wait_for_function("showcase.snapshot().body.result?.depth >= 4")
             thought = page.evaluate("showcase.snapshot().body")
+            assert thought["evaluated"] > 0
             assert thought["background"] and not thought["busy"]
             assert thought["board"] == [0] * 42 and thought["turn"] == 1
             assert page.locator('[data-column="3"]').is_enabled()
@@ -288,6 +300,14 @@ def main():
                     brain["equilibrium"]["residual"]
                     <= brain["equilibrium"]["tolerance"]
                 )
+                # The iteration controls traverse the whole captured state, one step at a time.
+                page.locator("#brain-replay").click()
+                page.locator("#brain-timeline").fill("0")
+                page.wait_for_function("showcase.snapshot().brain.displayed.frame === 0")
+                page.locator("#brain-step-next").click()
+                page.wait_for_function("showcase.snapshot().brain.displayed.frame === 1")
+                assert len(page.evaluate("showcase.snapshot().brain.displayed.state")) == brain["neurons"]
+                page.locator("#brain-live").click()
                 if mode == "worm":
                     page.locator("#brain-replay").click()
                     snapshot = page.evaluate("showcase.snapshot().brain")
@@ -454,6 +474,8 @@ def main():
                         "isolated_futures_and_monitor_budget": True,
                         "default_pondering_pause_and_cache_reuse": True,
                         "worm_idle_canvas_is_stationary": True,
+                        "mouse_successive_arrivals": True,
+                        "whole_brain_iteration_controls": True,
                         "browser_errors": errors,
                     }
                 )

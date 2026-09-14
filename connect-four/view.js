@@ -11,6 +11,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     job = 0,
     status = "Your turn · choose a column",
     error = null;
+  let activity = { epoch: 0, evaluations: [], evaluated: 0 };
   const worker = new Worker(new URL("./worker.js", import.meta.url), {
     type: "module",
   });
@@ -83,6 +84,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     pondering = internal;
     result = null;
     preview = null;
+    activity = { epoch: job + 1, evaluations: [], evaluated: 0 };
     status = internal ? "Your turn · analyzing possible moves…" : "Comparing possible replies…";
     update();
     worker.postMessage({
@@ -170,6 +172,13 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
   $("future-step").oninput = () => (previewStep = +$("future-step").value);
   worker.onmessage = ({ data }) => {
     if (data.id !== job) return;
+    if (data.kind === "activity") {
+      // Hard search budget bounds this history (80,000 positions). All actual
+      // value evaluations are retained; cache hits and terminal checks are not evaluations.
+      for (const state of data.evaluations) activity.evaluations.push(state);
+      activity.evaluated = data.evaluated;
+      return;
+    }
     if (data.kind === "error") {
       error = data.message;
       status = "Thinking stopped: " + error;
@@ -323,6 +332,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     brain() {
       return {
         ...brainSnapshot(board, turn, result),
+        thought: activity,
         behavior: {
           label: busy || pondering
             ? (pondering ? "Thinking during your turn" : "Imagining replies")
@@ -345,6 +355,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
         preview,
         previewStep,
         error,
+        evaluated: activity.evaluated,
       };
     },
   };

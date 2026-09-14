@@ -79,13 +79,12 @@
               ><span id="stage-readout"></span>
             </div>
           </div>
-          <aside class="controls" id="controls"></aside>
         </section>
         <section class="brain-panel" aria-labelledby="brain-title">
           <div class="brain-heading">
             <div>
               <div class="eyebrow">INSIDE THE BRAIN</div>
-              <h2 id="brain-title">Different regions. One equilibrium.</h2>
+              <h2 id="brain-title">The whole brain, repairing together.</h2>
             </div>
             <span id="brain-count">Reading neurons…</span>
           </div>
@@ -102,6 +101,11 @@
             <span data-tone="neutral">● Idle / paused</span>
           </div>
           <p id="brain-equilibrium" aria-live="off">Measuring joint equilibrium…</p>
+          <div class="brain-meters" aria-label="Measured activity in the displayed iteration">
+            <div><span>Neurons repairing</span><strong id="brain-repair-count">0</strong></div>
+            <div><span>Changed messages</span><strong id="brain-message-count">0</strong></div>
+            <div><span>Mismatch now</span><strong id="brain-error-now">0</strong></div>
+          </div>
           <div class="brain-layout">
             <canvas
               id="brain-scene"
@@ -114,6 +118,16 @@
             role="img"
             aria-label="Actual population activity and mismatch by simulation iteration, not clinical EEG"
           ></canvas>
+          <div class="brain-transport" aria-label="Inspect every settling iteration">
+            <button id="brain-step-back" aria-label="Previous repair iteration">‹</button>
+            <input id="brain-timeline" type="range" min="0" max="0" value="0" aria-label="Settling iteration" />
+            <button id="brain-step-next" aria-label="Next repair iteration">›</button>
+            <output id="brain-step-label">0 / 0</output>
+          </div>
+          <div id="brain-futures" class="brain-future-picker" hidden>
+            <label for="brain-future" id="brain-future-count">Recorded future evaluations</label>
+            <input id="brain-future" type="range" min="0" max="0" value="0" aria-label="Inspect a recorded future value evaluation" />
+          </div>
           <div class="brain-modulators" id="brain-modulators">
             Learning modulators: not modeled in this controller
           </div>
@@ -134,7 +148,7 @@
             aria-label="Signed heatmap legend"
           >
             <span id="brain-legend-label"
-              >Activity · relative region scale</span
+              >Activity change · relative region scale</span
             >
             <div class="brain-colorbar"></div>
             <div class="brain-color-ticks">
@@ -194,26 +208,31 @@
               visual purple, motor cyan, memory violet, sensory green, planning
               rose. Hover or tap a neuron for its value. Colors use
               dimensionless model units. The heatmap shows positive values in
-              amber and negative values in blue; its smooth halos are a display
-              overlay around actual neurons. Turning it off restores the node
+              amber and negative values in blue. Flat region tints identify the
+              functions and bright links show changing messages. Turning it off restores the node
               view. Plasticity highlights recent learned weight changes
               separately. The trace plots peak activity. Couplings that change
               with arm geometry are not counted as plasticity.
             </p>
             <p>
-              Follow settling automatically reconstructs sampled settling runs from
-              their captured inputs, initial states and couplings. It slows the
-              early settling steps and compresses the later ones; the live body
-              continues. Components may use different iteration counts. Rapid
-              updates are coalesced, so this is not a recording of every body
-              tick. Violet rings fade for one second after a displayed activity change:
+              Follow settling reconstructs sampled runs from their captured inputs,
+              initial states and couplings. Every neuron contributes to the map,
+              mismatch and population traces. Rapid updates are coalesced while the
+              body continues; the strongest waiting detuning is retained. Drag the
+              timeline or use the arrows to inspect each iteration without skips.
+              Slow thought holds the body while a solve is inspected. Violet rings
+              fade for one second after a displayed activity change:
               this is display history, not short-term memory in the controller.
               Replay lets you inspect one captured settling run at a fixed rate.
               Release input sets the drive to zero in an isolated copy, exposing
               recurrent decay or ringing; it does not control the body or imply
               a learned short-term memory. No oscillation is added for
-              appearance. Memory-only circuits have no recurrent replay. Live
+              appearance. Live
               body operation continues while you inspect a copy.
+              Connect Four also records every actual future value readout. Its
+              future slider selects any recorded evaluation: the value cortex
+              updates while the remaining regions retain the shared decision.
+              Recorded playback may continue after computation finishes.
             </p>
             <p class="behavior-key">
               Behavior colors: green = food or goal reached; blue = seeking or
@@ -236,6 +255,7 @@
           </details>
         </section>
       </div>
+      <aside class="controls task-controls" id="controls" aria-label="Demo controls"></aside>
       <section
         class="demo-guide"
         aria-label="Starting state, learning and advantages"

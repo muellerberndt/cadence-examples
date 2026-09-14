@@ -68,6 +68,10 @@ or release input in an isolated copy to see recurrent decay. Labeled behavior
 colors identify seeking, correction and positive outcomes. The layout stacks on
 mobile. [Read the circuit view](METHODS.md#read-the-brain-view).
 
+Flat region maps show current mismatch, repairing neurons and changed messages.
+Drag the repair timeline or step with the arrows to inspect each iteration.
+Connect Four also exposes the actual value evaluations inside its imagined futures.
+
 Every website explains its starting state, how to observe learning or feedback,
 and **why Cadence fits the task**, including the relevant conventional controls.
 See the [two-minute guide](METHODS.md#a-two-minute-demonstration),

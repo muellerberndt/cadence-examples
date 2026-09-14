@@ -1128,7 +1128,7 @@
   "sources": {
     "benchmarks/memory/history_benchmark.mjs": "831dadb1302be87ab5ae0c1ba11e7595087f3d0c0b9712ad0a8709e054e40511",
     "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",
-    "evidence/evidence.json": "7a029235fbc3fb1fff57f904e3749da02b05b7670f50d7145813c0bff48dd8fa"
+    "evidence/evidence.json": "7c52b7e83d1fa9c56b3d255ff64b94c77098ba8f6c5d195f561bebee53e3f468"
   },
   "boundary": "A fixed deterministic function of the current cue alone cannot distinguish histories with different correct labels. This restriction excludes retained activations, changed weights, past-context tokens, a clock and an external store. A history lookup also solves the task. No general impossibility claim about MLPs or transformers with memory/context."
 }

@@ -63,7 +63,7 @@ export function neighbors(world, i) {
     )
     .map(([a, b]) => b * cols + a);
 }
-export function mazeCircuit(world) {
+export function mazeCircuit(world, settle = true) {
   const n = world.grid.length,
     edges = [];
   for (let i = 0; i < n; i++) {
@@ -75,7 +75,8 @@ export function mazeCircuit(world) {
     drive = zeros(n),
     mask = world.grid.map((v) => 1 - v);
   drive[world.goal] = 0.03;
-  const result = brain.settle(drive, mask, 2400, 1e-13);
+  const result = settle ? brain.settle(drive, mask, 2400, 1e-13)
+    : { state: zeros(n), residual: Infinity, steps: 0 };
   return { brain, drive, mask, ...result };
 }
 export class Mouse {

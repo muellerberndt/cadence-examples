@@ -139,20 +139,27 @@ time are excluded from numerical efficiency comparisons.
 - **Violet activity-change trails:** one second of display history. They are not neural
   memory. **Plasticity** separately highlights learned weight changes.
 - **Following settling:** reconstructs one captured joint trajectory from its
-  actual input, weights and initial state. It expands early iterations and
-  compresses later ones into 1.6 seconds. Rapid updates are coalesced; this is
-  a sampled diagnostic replay, not a recording of every body tick.
-- **Joint equilibrium:** reports the maximum potential-equation error over all
-  regions, plus active cross-region links. Expand controls for regional errors.
+  actual input, weights and initial state. Long runs play within three seconds;
+  rapid body updates are coalesced, retaining the largest waiting detuning.
+  The timeline and arrow buttons inspect **every iteration** of the captured
+  run without skipping. Live playback is sampled, not every body tick.
+- **Repair counters:** show neurons changing by more than 1e-8 and directed
+  messages changing by more than 1e-8 at the displayed iteration. The full map
+  still includes quiet neurons and synapses. These thresholds suppress numerical noise.
+- **Joint equilibrium:** reports the current displayed potential-equation error
+  and the final error, so a replay shows the actual reduction in disagreement.
+  Expand controls for regional endpoint errors.
   A small residual does not guarantee the best possible action.
 - **Replay settling:** inspect a captured update at a selected iteration rate.
   Stateful motor circuits start from their retained potentials, not from zero.
 - **Release input:** removes drives in an isolated copy and shows recurrent decay.
   It does not change the body or its actual memory.
 - **Population waves:** green is signed mean activation; violet is RMS neuron-equation
-  mismatch. Every unmasked neuron contributes. These are measured simulation-step
-  traces, not biological EEG. Oscillations appear only when the circuit produces
-  them; a settled circuit is allowed to become quiet.
+  mismatch. Every unmasked neuron contributes. Live history retains the last 180
+  displayed samples across updates; manual replay plots that captured solve's
+  iterations. Distinct input changes and isolated game futures are separate
+  computations, not one biological time series. Oscillations appear only when
+  the values produce them; a settled circuit is allowed to become quiet.
 - **Moving synapse signals:** a packet marks a changed outgoing message on an actual
   synapse. Time-expanded motion illustrates transport, not physical propagation speed.
 - **Slow thought:** in the four body demos, hold the actuator command while its
@@ -170,7 +177,18 @@ transient neural state really is carried during behavior. Associative weights
 and visited-target records provide different forms of retained information.
 Neither transient motor state nor the isolated release probe demonstrates a
 learned working-memory task. The mouse's spatial field is recalculated after map
-or goal changes. The memory page also exposes the graded recall trajectory and its isolated decay.
+or goal changes, starting from the retained state in the joint solve.
+
+Connect Four retains **every actual leaf-value evaluation** within the 80,000-node
+search budget. Live playback samples this history; the extra future slider selects
+any recorded evaluation, and the iteration controls inspect its two-step graded
+readout. During this explicitly labeled isolated phase, six value-cortex neurons
+update while the other thirteen retain the last shared decision. Only the five
+evaluator synapses carry its changing messages; the whole 19-neuron, 39-synapse map
+remains visible. Completed depths supply actual joint value/candidate/monitor
+repairs. Cache hits and terminal checks do not fabricate neural evaluations.
+Telemetry does not change search choices or budgets; the tests compare both paths.
+Playback may continue after the worker finishes and is labeled recorded thought.
 
 ## Brain colors and neurotransmitters
 
