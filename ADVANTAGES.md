@@ -10,9 +10,9 @@ transformer could implement. None establishes universal architectural superiorit
 | Example | Intervention and supported benefit | Comparison and limit |
 |---|---|---|
 | [Embodied memory benchmark](benchmarks/memory/) | Replace distinct-key records in one residual write while retaining earlier keys. The recorded 128-write stream gives 996/996 correct queries. | Same observations and queries for an online MLP at 1, 10 and 100 updates. See the measured table for fast and consolidating kernels separately; explicit keys, one recorded runtime stream. A dictionary is also exact. Correlated keys can favor the MLP. |
-| [Teachable mouse](mouse/) | Teach or revise a cue/destination pair during use; retained lessons work in a new maze. Spatial feedback and motor activity adapt the route to the goal. | 24/24 current intact/moved-goal trials succeed; 12 motor ablations cannot move. Earlier field trials also compare BFS, which succeeds. The full map and symbolic task cues are supplied; this is not natural-language task learning or a speed win over BFS. |
 | [Eye & arm](eye-arm/) | Reference and actual-ink readback drive missing-mark neurons; connected-pixel attention guides continuous strokes. Joint and pencil motors control movement and contact. | Tests inspect continuous ink, separated strokes, erased-mark repair and sensory/motor ablations. Silenced joints cannot move; silenced raised-pencil motors cannot draw. Coverage measures actual ink at reference samples, not exact image similarity. These are causal controls, not a trained neural baseline. |
 | [C. elegans habitat](worm/) | Local food signals drive the chemical graph and directional motor circuit. Changed walls alter the supplied odor field and behavior. | Two food patches consumed in the fixed intact trial; smell, chemical-motor, directional-motor and sealed-wall controls acquire none. The separate 297-cell circuit comparison tests exact dynamics under interventions; its MLP surrogate is faster but approximate. No whole-worm simulation or overall speed claim. |
+| [Composer](composer/) | A pretrained musician of wired cortices, trained by local free/nudged contrasts, imagines continuations through its own predictions, listens to the whole draft and edits its weakest passage. | Held-out surprise 1.023 per attribute versus 0.708 for a GRU trained with backpropagation through time on the same streams ([model card](composer/MODEL_CARD.md)). The GRU predicts better; the composer's benefit is an inspectable, revisable composition loop, not prediction accuracy. |
 | [Fly-inspired forager](fly/) | Actual flower contact revises nectar memory; sensory/motor activity moves the body. Changing nectar creates new observations during use. | Fixed actuator trial: 26 contacts intact, zero with motors disabled. Live MLP and Cadence agents share motor design but see different trajectories; nectar totals are illustrative, not a matched learning benchmark. Use the memory stream for the controlled learner comparison. |
 | [Connect Four](connect-four/) | Compare hypothetical replies without changing the live board; monitor own option-value changes and ambiguity to allocate further search. | 8/8 wins against one-ply evaluation, 5/8 against four-ply search over four openings and both sides. Same evaluator, different search budgets. Conventional minimax can match this; recurrence does not automatically provide a world model, and the monitor is not evidence of consciousness. |
 
@@ -43,8 +43,7 @@ lookup control demonstrates that conventional memory also removes the obstacle.
 The bundled MLP's initialization cannot weaken this conclusion: even an optimally
 trained fixed query-only predictor faces the same bound.
 
-This test isolates the retained-association mechanism used by the teachable mouse
-and forager. It does not prove whole-body performance on new tasks. Run
+This test isolates the retained-association mechanism used by the forager. It does not prove whole-body performance on new tasks. Run
 `node benchmarks/memory/history_benchmark.mjs`; the receipt keeps every query, its actual
 cue vector, predictions, source hashes and the exact comparison boundary.
 
@@ -58,7 +57,7 @@ establish the feedback, intervention or planning effects described in the table.
 A capability claim must specify what the comparator can observe, retain, update
 and compute. Compare frozen inference, an adaptive neural controller, and the
 appropriate strong conventional method separately. In these tasks those include
-dictionary memory, BFS, classical feedback and minimax. Motor ablations locate
+dictionary memory, classical feedback, recurrent sequence models and minimax. Motor ablations locate
 causal mechanisms; they cannot substitute for those performance comparisons.
 
 ## Measured processing time
@@ -103,7 +102,7 @@ It excludes the newer graded readout, the coupled body controllers and the web
 visualization. Their additional computation is not covered by the recorded speed
 ratios. See [the joint-brain design](COUPLED_BRAINS.md).
 
-The mouse and fly use **consolidating** memory, with 32 persistent
+The fly uses **consolidating** memory, with 32 persistent
 and 32 transient values. The fast reference uses 32 values. Runtime rows include
 both mechanisms and the same query schedule; they exclude the graded readout,
 body simulation and visualization. [Retention controls](benchmarks/memory/consolidation_evidence.json)

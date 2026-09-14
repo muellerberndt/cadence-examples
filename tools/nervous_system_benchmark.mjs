@@ -3,8 +3,6 @@ import { writeFileSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { DrawingArm, RETINA } from "../eye-arm/brain.js";
 import { imageFixture } from "../eye-arm/fixtures.js";
-import { Mouse } from "../mouse/brain.js";
-import { neighbors } from "../shared/embodied.js";
 import { Forager } from "../fly/brain.js";
 import { WormArena } from "../worm/brain.js";
 import { SynapticMemory, flowers } from "../shared/engine.js";
@@ -58,37 +56,6 @@ for (const image of ["square", "flower", "two_marks"])
     if (["pencil_motors_off", "eye_off"].includes(condition))
       assert.equal(row.ink, 0);
     arm.push(row);
-  }
-const mouse = [];
-for (const seed of [13, 23, 33, 43, 53, 63, 73, 83, 93, 103, 113, 123])
-  for (const condition of ["intact", "moved_goal", "motors_off"]) {
-    const m = new Mouse(seed);
-    if (condition === "moved_goal") {
-      const floors = m.world.grid.flatMap((v, i) =>
-        !v && i !== m.cell ? [i] : [],
-      );
-      m.world.goal = floors[(seed * 17) % floors.length];
-      m.repair();
-    }
-    if (condition === "motors_off") m.nerves.mask.fill(0, 2);
-    let collision = false;
-    for (let t = 0; t < 12000 && m.cell !== m.world.goal; t++) {
-      m.step(0.05);
-      collision ||=
-        !!m.world.grid[Math.floor(m.y) * m.world.cols + Math.floor(m.x)];
-    }
-    const row = {
-      seed,
-      condition,
-      reached: m.cell === m.world.goal,
-      moves: m.moves,
-      collision,
-    };
-    assert.ok(!collision);
-    condition === "motors_off"
-      ? assert.equal(m.moves, 0)
-      : assert.ok(row.reached, JSON.stringify(row));
-    mouse.push(row);
   }
 const data = JSON.parse(readFileSync(new URL("worm/worm.json", root))),
   worm = [];
@@ -149,7 +116,6 @@ const files = [
   "eye-arm/brain.js",
   "eye-arm/paper.js",
   "eye-arm/fixtures.js",
-  "mouse/brain.js",
   "fly/brain.js",
   "worm/brain.js",
   "shared/nervous_system.js",
@@ -169,15 +135,14 @@ const sources = Object.fromEntries(
 );
 const result = {
   schema: "cadence.task-nervous-systems/v1",
-  steps: { arm: 6000, mouse: 12000, worm: 250, fly: 4000 },
+  steps: { arm: 6000, worm: 250, fly: 4000 },
   sources,
   arm,
-  mouse,
   worm,
   fly,
   parity,
 };
-for (const folder of ["eye-arm", "mouse", "worm", "fly"])
+for (const folder of ["eye-arm", "worm", "fly"])
   writeFileSync(
     new URL(`${folder}/evidence.json`, root),
     // Evidence precision exceeds the spatial success tolerance while avoiding
@@ -189,4 +154,4 @@ for (const folder of ["eye-arm", "mouse", "worm", "fly"])
       2,
     ) + "\n",
   );
-console.log(JSON.stringify({ arm, mouse: mouse.length, worm, fly, parity }));
+console.log(JSON.stringify({ arm, worm, fly, parity }));

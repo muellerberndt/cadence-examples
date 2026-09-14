@@ -1,6 +1,6 @@
 # Memory benchmarks for embodied learning
 
-These reproducible kernel comparisons support the mouse and forager demos. They
+These reproducible kernel comparisons support the forager demo. They
 have no standalone website. The live bodies use the same `SynapticMemory` rule:
 observed experiences change transient and persistent weights; predictions alone
 do not write new memories.

@@ -1,4 +1,4 @@
-"""Independent Cadence checks for the coupled visual/motor circuit and spatial field."""
+"""Independent Cadence checks for the coupled visual/motor circuit."""
 
 import cadence as cd
 import numpy as np
@@ -32,27 +32,3 @@ def motor_settling(q, target):
     drive = np.r_[np.asarray(target) - tip, [0, 0]]
     return brain.settle(drive, steps=80, tolerance=0).activation
 
-
-def maze_settling(world):
-    grid, cols = world["grid"], world["cols"]
-    edges = []
-    for i, wall in enumerate(grid):
-        if wall:
-            continue
-        x, y = i % cols, i // cols
-        ns = [
-            b * cols + a
-            for a, b in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
-            if 0 <= a < cols and 0 <= b < world["rows"] and not grid[b * cols + a]
-        ]
-        edges.extend((j, i, 0.985 / len(ns)) for j in ns)
-    pre, post, weights = zip(*edges)
-    brain = cd.Brain(
-        cd.Connectome.from_synapses(len(grid), pre=pre, post=post, sign=weights),
-        cd.NeuronModel(gain=1, slope=2, threshold=0, leak=1, dt=1, stimulus_amplitude=1),
-    )
-    drive = np.zeros(len(grid))
-    drive[world["goal"]] = 0.03
-    return brain.settle(
-        drive, mask=1 - np.asarray(grid), steps=2400, tolerance=1e-13
-    ).activation

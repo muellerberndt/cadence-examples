@@ -1,14 +1,17 @@
 # Cadence live systems
 
-Five separate browser examples expose Cadence brains: graded neurons with bounded
-local state, ports, readback, retained records and feedback. Each page puts the
-actual circuit beside the task at the top on desktop; mobile stacks the panels.
+Five official examples expose Cadence brains: graded neurons with bounded
+local state, ports, readback, retained records and feedback. Four run in the
+browser. The composer studio runs locally with its pretrained model. Each page puts
+the actual circuit beside the task at the top on desktop; mobile stacks the panels.
 
 ## Launch any demo
 
-From the repository root, run `python serve.py eye-arm`, `python serve.py mouse`,
-`python serve.py worm`, `python serve.py fly`, or `python serve.py connect-four`.
+From the repository root, run `python serve.py eye-arm`, `python serve.py worm`,
+`python serve.py fly`, or `python serve.py connect-four`.
 Python 3.11+ is enough to serve them. No account, packages or GPU are required.
+`python serve.py composer` starts the composer studio once its requirements and the
+maestro-1 model are installed ([composer/README.md](composer/README.md)).
 The launcher opens the example's own directory URL on an available local port.
 Use `--no-browser` to print the address. Open `/` for the gallery.
 
@@ -18,13 +21,13 @@ Use `--no-browser` to print the address. Open `/` for the gallery.
    pixels; the arm raises the pencil, moves its joints and lowers it to draw.
    Disable **Pencil motors** after **Copy again**: no ink appears. Restore them,
    then disturb a joint to watch feedback correct the pose.
-2. **Mouse:** teach the fourth task, perform it, then change a corridor. Task
-   memory retains the lesson while spatial and motor state update. Disable
-   **Motor neurons** to stop the body. New maze retains the task lessons.
-3. **Worm:** place food and draw a wall. Odor, chemical-circuit activity and
+2. **Worm:** place food and draw a wall. Odor, chemical-circuit activity and
    directional motor neurons determine the next body step. Open a passage to
    restore access to sealed-off food. Switch to Circuit to inspect the supplied
    chemical network and its MLP comparator.
+3. **Composer:** choose a mood and compose. Watch candidate continuations
+   compete in the piano roll, then compare the draft with the edited final piece
+   while every neuron replays in sync with playback.
 4. **Forager:** watch nectar contact update memory, then change the nectar.
    Motor populations turn and propel the body toward selected flowers.
 5. **Connect Four:** select **Watch before moving**, play a column, and inspect
@@ -36,8 +39,8 @@ Use `--no-browser` to print the address. Open `/` for the gallery.
 | Example | Initial state | What changes |
 |---|---|---|
 | Eye & arm | Supplied geometry and pixel/motor circuit; a sample drawing | Retinal, error, motor and proprioceptive activity; no weight training |
-| Mouse | Three cue/destination demonstrations | New task associations persist in browser storage; field and motor state follow the body |
 | Worm | Public chemical graph plus an engineered directional motor circuit | Odor and body/circuit state; fixed weights |
+| Composer | Pretrained maestro-1 musician | Working memory, form record and intention state per event; the draft is revised, trained synapses stay fixed while composing |
 | Forager | Working sensor/motor loop, blank nectar memory | Contact reveals nectar and changes associative weights |
 | Connect Four | Supplied game rules, threat evaluator and monitor | Hypothetical boards, option values and budget readback; no weight training |
 
@@ -50,14 +53,14 @@ complete biological brains, learned perception or learned anatomy.
 | Example | Mechanism and supported advantage |
 |---|---|
 | Eye & arm | Visual error and joint coordination exchange local feedback; motor outputs actuate the body. Readback repairs disturbances. This is a feedback/ablation comparison, not a trained-MLP comparison. |
-| Mouse | A learned task record selects a destination; a spatial equilibrium updates routes and motor state follows positional error. BFS and dictionary lookup are strong conventional controls and also work. |
 | Worm | The chemical graph is reused after stimulation or lesions. Its equilibrium agrees with the numerical reference; a trained MLP is faster but approximate. The habitat adds engineered motor control and is separately tested. |
+| Composer | Hearing, working memory, form record and intention settle in one brain trained by local contrasts. It imagines continuations through its own predictions and edits its weakest passage. A GRU trained with backpropagation through time predicts held-out events better ([model card](composer/MODEL_CARD.md)). |
 | Forager | One residual write revises a contacted flower's value. Both learners share the same motor design; live trajectories contain different experiences, so nectar totals are illustrative. |
 | Connect Four | Isolated futures and activity readback control search depth. The same evaluator wins more scheduled games with lookahead; ordinary minimax can also do this. |
 
 ## One joint state per task
 
-Different functions share a common equilibrium through their synapses. The five
+Different functions share a common equilibrium through their synapses. The
 controllers assemble their regions **before** settling, then read the resulting
 motor or decision state. The circuit panel reports global and regional equation
 errors. [Task connectomes and reproducible tests](COUPLED_BRAINS.md) describe every
@@ -75,10 +78,12 @@ input is distinct from globally optimal task performance.
   motor units complete the controller. Contact writes the same 192 × 192 ink
   raster that the eye reads and the view displays. Erased marks reactivate
   repair. The controller receives pixels, never the user's stroke coordinates.
-- **Mouse:** task memory → destination lookup → supplied occupancy map/spatial
-  field → positional readout → antagonistic directional motors → body position.
 - **Worm:** adjacent odor → public chemical network and directional odor readback
   → motor population → body step → contact consumption.
+- **Composer:** the last 16 note events, pitch intervals, chroma and beat → melody,
+  harmony, rhythm, timbre and form cortices → phrase cortex with working memory and a
+  bar-keyed form record → intention over pitch, duration, attack, family and velocity.
+  [MUSICIAN.md](composer/MUSICIAN.md) gives every region and synapse block.
 - **Forager:** visible flower cue/bearing → nectar memory and target selection →
   turn/propulsion motor units → body → contact reward and memory write.
 
@@ -92,15 +97,13 @@ bounds. Motor ablations test whether the neural output really causes movement.
 | Demo | Allocated neurons | Declared synapses | Mutable memory values |
 |---|---|---|---|
 | Eye & arm | 3N + 17 for N dark samples: reference, ink, missing marks + controller | up to 2N + 28 | 0 |
-| Mouse, seed 13 | 265; 132 unmasked initially | 285 | 32 persistent + 32 transient |
 | Worm habitat | 309: 297 chemical + 12 directional | up to 4,108 | 0 |
 | Worm circuit probe | 297 | 3,604 | 0 |
 | Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | up to 44 | 32 persistent + 32 transient |
 | Connect Four | 19: 6 evaluator + 7 candidates + 6 monitor | 39 | 0 |
+| Composer, maestro-1 | 17,855 in 14 regions | 68,570,458 directed | 52,849,100 trained parameters |
 
-The mouse allocates 247 spatial slots (133 initially masked walls), 12 memory
-ports and six sensor/motor neurons. Its initial synapses are 242 spatial, 32 memory,
-four motor and seven task/field/feedback synapses between regions. Maze edits change the counts. Retina neurons have independent
+Retina neurons have independent
 sensory drives; they do not add a dense all-to-all matrix. A memory contact carries a persistent component and a transient residual; 64 stored scalars do not mean 64 anatomical synapses. These counts exclude
 body/environment variables, attention records and comparison MLPs.
 
@@ -180,8 +183,7 @@ The current motor circuits retain graded potentials between control ticks, so
 transient neural state really is carried during behavior. Associative weights
 and visited-target records provide different forms of retained information.
 Neither transient motor state nor the isolated release probe demonstrates a
-learned working-memory task. The mouse's spatial field is recalculated after map
-or goal changes, starting from the retained state in the joint solve.
+learned working-memory task.
 
 Connect Four retains **every actual leaf-value evaluation** within the 80,000-node
 search budget. Live playback samples this history; the extra future slider selects
@@ -260,8 +262,6 @@ by hashes, all scheduled conditions are retained, and CI reruns the producer.
   between samples, connected components, erased-ink repair and causal
   missing-mark ablations. Sampling can lose fine detail; unwanted ink cannot be
   erased by the pencil, and sampled coverage does not certify image fidelity.
-- **Mouse:** 12 seeds × intact, moved goal and motor ablation. The 24 reachable
-  navigation trials finish without collision; motor ablations produce no moves.
 - **Worm:** intact habitat consumes two patches in 41 moves. Smell, either motor
   population, and sealed-wall controls acquire no food.
 - **Forager:** a fixed 4,000-step run produces 26 contacts; motor ablation prevents
@@ -304,8 +304,8 @@ python tools/build_showcase.py
 
 The test suite independently checks motor dynamics against Python Cadence from
 retained state and under lesions, replay endpoints, motor/visual ablations,
-freehand drawing, image upload, task persistence, separate URLs and responsive
-layout. `build_showcase.py` generates five pages plus the gallery from authored
+freehand drawing, image upload, separate URLs and responsive
+layout. `build_showcase.py` generates four browser pages plus the gallery from authored
 shells. Models and views remain in their example folders; shared browser code is in
 `shared/`, cross-example receipts in `evidence/` and producers in `tools/`.
 

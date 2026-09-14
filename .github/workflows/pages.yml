@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: '3.12'
       - uses: actions/configure-pages@v5
-      - name: Build all five examples and the unlisted replay
+      - name: Build the gallery and the official examples
         run: python tools/build_pages.py --output _site
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -35,16 +35,3 @@ jobs:
       - name: Publish the verified site
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify the deployed browser experience
-        env:
-          FLIGHT_SITE_URL: ${{ steps.deployment.outputs.page_url }}
-        run: |
-          python -m pip install playwright
-          python -m playwright install --with-deps chromium
-          FLIGHT_HTTPS_URL="${FLIGHT_SITE_URL/#http:/https:}"
-          python tools/flight_preview_check.py --url "${FLIGHT_HTTPS_URL%/}/previews/1943/" --output runs/flight-live-browser
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: flight-live-browser-screenshots
-          path: runs/flight-live-browser/*.png

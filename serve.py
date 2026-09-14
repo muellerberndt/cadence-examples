@@ -1,13 +1,17 @@
-"""Open a Cadence demo: python serve.py [mouse|eye-arm|fly|worm|connect-four].
+"""Open a Cadence example: python serve.py [eye-arm|worm|composer|fly|connect-four].
 
-Only Python's standard library is needed. Every demo ships its browser assets.
-The server binds to this computer only. Ctrl-C stops it.
+The four browser demos need only Python's standard library and ship their assets.
+`composer` starts the composer studio, which needs its requirements and the
+pretrained maestro-1 model (see composer/README.md). Servers bind to this
+computer only. Ctrl-C stops them.
 """
 
 from __future__ import annotations
 
 import argparse
 import http.server
+import importlib.util
+import os
 import sys
 import threading
 import webbrowser
@@ -16,7 +20,6 @@ from typing import ClassVar
 
 HERE = Path(__file__).resolve().parent
 PAGES = {
-    "mouse": "mouse",
     "eye-arm": "eye-arm",
     "arm": "eye-arm",
     "fly": "fly",
@@ -24,6 +27,36 @@ PAGES = {
     "connect-four": "connect-four",
     "game": "connect-four",
 }
+
+COMPOSER = HERE / "composer"
+COMPOSER_CHECKPOINT = COMPOSER / "checkpoints" / "maestro-1" / "brain.npz"
+COMPOSER_SETUP = """The composer studio needs its requirements and the maestro-1 model:
+
+  cd composer
+  python -m venv .venv && source .venv/bin/activate
+  pip install -r requirements.txt
+  python tools/fetch_model.py
+  cd .. && python serve.py composer
+
+Details: composer/README.md
+"""
+
+
+def serve_composer(port: int) -> int:
+    """Replace this process with the composer studio, or print its setup steps."""
+    if importlib.util.find_spec("cadence") is None or not COMPOSER_CHECKPOINT.is_file():
+        sys.stderr.write(COMPOSER_SETUP)
+        return 1
+    port = port or 8079
+    print(
+        f"Cadence · composer\nhttp://127.0.0.1:{port}/\n"
+        "Open the address once the studio reports that maestro-1 is loaded (a few minutes).",
+        flush=True,
+    )
+    os.chdir(COMPOSER)
+    args = [sys.executable, "serve_musician.py", "--checkpoint", str(COMPOSER_CHECKPOINT), "--port", str(port)]
+    os.execv(sys.executable, args)
+    return 0
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -64,7 +97,7 @@ def port_number(value: str) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "page", nargs="?", default="mouse", type=str.lower, choices=PAGES
+        "page", nargs="?", default="eye-arm", type=str.lower, choices=[*PAGES, "composer"]
     )
     parser.add_argument(
         "--port",
@@ -78,6 +111,8 @@ def main(argv: list[str] | None = None) -> int:
         help="print the URL without opening a browser",
     )
     args = parser.parse_args(argv)
+    if args.page == "composer":
+        return serve_composer(args.port)
     try:
         server = http.server.ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     except OSError as error:

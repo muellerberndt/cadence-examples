@@ -7,7 +7,7 @@ from pathlib import Path
 
 import cadence as cd
 import numpy as np
-from embodied import maze_settling, motor_settling
+from embodied import motor_settling
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -41,9 +41,6 @@ def main():
     )
     parity = body.pop("parity")
     errors = {
-        "maze": float(
-            np.max(np.abs(maze_settling(parity["world"]) - parity["maze_state"]))
-        ),
         "motor": float(
             np.max(
                 np.abs(
@@ -54,7 +51,6 @@ def main():
         ),
     }
     assert max(errors.values()) < 1e-10, errors
-    assert all(r["success"] and not r["collision"] for r in body["mouse"])
     body.update(
         schema="cadence.composite-showcase/v1",
         sources=sources(),
@@ -67,7 +63,6 @@ def main():
         json.dumps(body, separators=(",", ":")) + "\n"
     )
     print("Composite parity:", errors)
-    print("Mouse:", len(body["mouse"]), "/", len(body["mouse"]), "successful scenarios")
     for mode in (True, False):
         print(
             "Arm feedback",

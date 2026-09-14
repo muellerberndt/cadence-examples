@@ -1,4 +1,4 @@
-"""Real-browser interactions for all five demos, including taught tasks and image input."""
+"""Real-browser interactions for the four browser demos, including image input."""
 
 import functools
 import http.server
@@ -44,71 +44,26 @@ def main():
             page = b.new_page(viewport={"width": 1440, "height": 1050})
             errors = []
             page.on("pageerror", lambda e: errors.append(str(e)))
-            page.goto(f"http://127.0.0.1:{server.server_address[1]}/mouse/")
+            page.goto(f"http://127.0.0.1:{server.server_address[1]}/eye-arm/")
             page.wait_for_function("window.showcase !== undefined")
-            assert page.evaluate("showcase.snapshot().mode") == "mouse"
+            assert page.evaluate("showcase.snapshot().mode") == "arm"
             page.wait_for_function("showcase.snapshot().brain.neurons > 0")
             topology=page.evaluate("showcase.snapshot().brain.topology")
             assert topology["neurons"]==page.evaluate("showcase.snapshot().brain.neurons")
             assert topology["allEdgesSubmitted"]
-            page.screenshot(path=str(screenshots / "mouse-initial.png"))
+            page.screenshot(path=str(screenshots / "arm-initial.png"))
             brain_bounds=page.locator("#brain-scene").bounding_box()
             page.mouse.move(brain_bounds["x"]+brain_bounds["width"]*.5,brain_bounds["y"]+brain_bounds["height"]*.5)
             page.mouse.wheel(0,-400)
             page.wait_for_function("showcase.snapshot().brain.topology.zoom > 1")
             page.locator("#brain-fit").click()
             assert page.evaluate("showcase.snapshot().brain.topology.zoom")==1
-            # Inspecting a thought holds the actual actuator, then releases it.
-            page.locator("#brain-think").click()
-            expect(page.locator("#brain-behavior")).to_contain_text("motor output held")
-            held_position = page.evaluate("[showcase.snapshot().body.x,showcase.snapshot().body.y]")
-            page.wait_for_timeout(180)
-            assert held_position == page.evaluate("[showcase.snapshot().body.x,showcase.snapshot().body.y]")
-            page.wait_for_function("p => JSON.stringify(p) !== JSON.stringify([showcase.snapshot().body.x,showcase.snapshot().body.y])", arg=held_position, timeout=10000)
-            page.locator("#brain-think").click()
-            # Motor activity, not a direct position update, drives the body.
-            page.locator("#mouse-motors").click()
-            page.wait_for_timeout(300)
-            position = page.evaluate(
-                "[showcase.snapshot().body.x,showcase.snapshot().body.y]"
-            )
-            page.wait_for_timeout(300)
-            assert position == page.evaluate(
-                "[showcase.snapshot().body.x,showcase.snapshot().body.y]"
-            )
-            page.locator("#mouse-motors").click()
-            # Choosing a task acts at once; an untaught task waits for a lesson.
-            page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
-            assert page.evaluate("showcase.snapshot().body.arrivals") == 1
-            # A command is an explicit request to resume, including after Pause.
-            page.locator("#pause").click()
-            page.locator("#brain-think").click()
-            page.locator('[data-task="1"]').click()
-            assert not page.evaluate("showcase.snapshot().body.paused")
-            assert page.locator("#brain-think").get_attribute("aria-pressed") == "false"
-            page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
-            assert page.evaluate("showcase.snapshot().body.arrivals") == 2
-            page.locator("#task-cue").select_option("2")
-            page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
-            assert page.evaluate("showcase.snapshot().body.arrivals") == 3
-            page.locator("#task-cue").select_option("1")
-            home_goal = page.evaluate("showcase.snapshot().body.goal")
-            page.locator("#task-cue").select_option("3")
-            assert "No lesson" in page.locator("#lesson-status").inner_text()
-            page.locator("#teach-goal").select_option("3")
-            page.locator("#teach-task").click()
-            assert [3, 3] in page.evaluate("showcase.snapshot().body.lessons")
-            assert page.evaluate("showcase.snapshot().body.goal") != home_goal
-            page.locator("#new-maze").click()
-            assert [3, 3] in page.evaluate("showcase.snapshot().body.lessons")
-            page.reload()
-            page.wait_for_function("window.showcase !== undefined")
-            assert [3, 3] in page.evaluate("showcase.snapshot().body.lessons")
-            page.locator("#task-cue").select_option("3")
-            page.locator("#teach-goal").select_option("2")
-            page.locator("#teach-task").click()
-            lessons = page.evaluate("showcase.snapshot().body.lessons")
-            assert all(r in lessons for r in [[0, 0], [1, 1], [2, 2], [3, 2]])
+            # The composer is linked from every demo's navigation and from the gallery.
+            assert page.locator('.tabs a[href="composer/"]').count() == 1
+            page.goto(f"http://127.0.0.1:{server.server_address[1]}/composer/")
+            expect(page.locator("h1")).to_contain_text("Hear")
+            page.goto(f"http://127.0.0.1:{server.server_address[1]}/eye-arm/")
+            page.wait_for_function("window.showcase?.snapshot().brain.neurons > 0")
             choose(page, "worm")
             page.locator('[data-worm-view="circuit"]').click()
             before = page.evaluate("showcase.snapshot().result.state")
@@ -300,7 +255,7 @@ def main():
                 sum(v != 0 for v in page.evaluate("showcase.snapshot().body.board"))
                 == 1
             )
-            for mode in ["mouse", "arm", "fly", "worm", "game"]:
+            for mode in ["arm", "fly", "worm", "game"]:
                 choose(page, mode)
                 page.wait_for_function("showcase.snapshot().brain.neurons > 0")
                 page.locator("#brain-options").evaluate("el => el.open = true")
@@ -308,7 +263,6 @@ def main():
                 assert (
                     brain["neurons"]
                     == {
-                        "mouse": 265,
                         "arm": (
                             page.evaluate("showcase.snapshot().body.targets * 3 + 17")
                             if mode == "arm" else None
@@ -319,7 +273,7 @@ def main():
                     }[mode]
                 )
                 assert page.locator("#brain-replay").is_enabled() == (
-                    mode in ["mouse", "arm", "worm", "fly", "game"]
+                    mode in ["arm", "worm", "fly", "game"]
                 )
                 assert brain["equilibrium"]["converged"], (mode, brain["equilibrium"])
                 assert (
@@ -378,13 +332,6 @@ def main():
                 assert (
                     brain["displayed"]["regions"]
                     == {
-                        "mouse": [
-                            "Spatial planning",
-                            "Task cue",
-                            "Task memory",
-                            "Position error",
-                            "Directional motor neurons",
-                        ],
                         "arm": [
                             "Retina · reference marks",
                             "Target & proprioception",
@@ -491,8 +438,7 @@ def main():
             print(
                 json.dumps(
                     {
-                        "demos": 5,
-                        "task_teaching_and_persistence": True,
+                        "demos": 4,
                         "image_upload": True,
                         "mobile_layout": True,
                         "desktop_body_and_circuit_visible": True,
@@ -500,7 +446,6 @@ def main():
                         "isolated_futures_and_monitor_budget": True,
                         "default_pondering_pause_and_cache_reuse": True,
                         "worm_idle_canvas_is_stationary": True,
-                        "mouse_successive_arrivals": True,
                         "whole_brain_iteration_controls": True,
                         "browser_errors": errors,
                     }

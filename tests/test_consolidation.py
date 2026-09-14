@@ -38,20 +38,6 @@ console.log(JSON.stringify(rows));
         np.testing.assert_allclose(row['c'], m.consolidated, atol=1e-12, rtol=0)
 
 
-def test_mouse_checkpoint_preserves_strengths_without_replaying_or_forgetting_repetition():
-    result = node('''
-import {TaskLessons} from './shared/embodied.js';
-const a = new TaskLessons();
-for (let i = 0; i < 40; i++) a.teach(3, 3);
-a.teach(3, 2);
-const b = new TaskLessons(JSON.parse(JSON.stringify(a)));
-console.log(JSON.stringify({same:JSON.stringify(a)===JSON.stringify(b),
-  recalled:b.recall(3), strength:b.memory.consolidated[3][3], revised:b.memory.w[3][2]}));
-''')
-    assert result['same'] and result['recalled'] == 2
-    assert result['strength'] > .8 and result['revised'] == 1
-
-
 def test_repeat_salience_and_distraction_have_measured_persistent_effects():
     result = node('''
 import {run} from './benchmarks/memory/consolidation_benchmark.mjs';

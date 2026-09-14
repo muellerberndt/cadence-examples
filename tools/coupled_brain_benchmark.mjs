@@ -1,11 +1,10 @@
-// Reproducible joint-equation and cross-region ablations for the five live brains.
+// Reproducible joint-equation and cross-region ablations for the four browser brains.
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { DrawingArm } from "../eye-arm/brain.js";
 import { imageFixture } from "../eye-arm/fixtures.js";
-import { Mouse } from "../mouse/brain.js";
 import { WormArena } from "../worm/brain.js";
 import { Forager } from "../fly/brain.js";
 import { SynapticMemory, flowers, keys } from "../shared/engine.js";
@@ -16,8 +15,6 @@ const root = new URL("../", import.meta.url);
 export function samples() {
   const arm = new DrawingArm(imageFixture("square"));
   for (let i = 0; i < 20; i++) arm.step();
-  const mouse = new Mouse(13);
-  mouse.step();
   const worm = new WormArena(
     JSON.parse(readFileSync(new URL("worm/worm.json", root))),
   );
@@ -30,7 +27,6 @@ export function samples() {
   [3, 2, 3, 4].forEach((c, i) => (board = drop(board, c, i % 2 ? -1 : 1)));
   return {
     arm: arm.brain.snapshot(),
-    mouse: mouse.joint,
     worm: worm.brain(),
     fly: fly.brain(field),
     game: brainSnapshot(
@@ -103,7 +99,6 @@ export function benchmark() {
     "eye-arm/brain.js",
     "eye-arm/paper.js",
     "eye-arm/fixtures.js",
-    "mouse/brain.js",
     "worm/brain.js",
     "fly/brain.js",
     "connect-four/brain.js",

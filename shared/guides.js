@@ -14,20 +14,6 @@ const guides = {
       "Value, candidate and self-monitor neurons settle jointly; search branches stay isolated. The monitor can request more depth. Conventional search can do this too; no exclusive planning advantage is claimed.",
     ],
   ],
-  mouse: [
-    [
-      "Ready with three lessons",
-      "Cheese, home and water are supplied cue/destination demonstrations. The fourth cue starts untaught. Your additional lessons persist in this browser. The maze and navigation rule are supplied.",
-    ],
-    [
-      "Watch a lesson take effect",
-      "Choose New task: the mouse stops, because it has no lesson. Pick Flag and press Teach: one memory write, and it walks to the flag. Teach it another destination and it changes course; earlier distinct cues retain their lessons. New maze carries the same task memory into another layout.",
-    ],
-    [
-      "Why Cadence fits",
-      "Task recall, spatial field and motors share one equilibrium: one local write revises a goal, while recurrent settling finds a route through the supplied map. A frozen route cannot adapt; BFS and dictionary lookup can. This is a compositional control demo, not a trained-MLP win.",
-    ],
-  ],
   arm: [
     [
       "Ready to draw",

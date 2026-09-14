@@ -1,11 +1,10 @@
-"""Build five independent demo pages and a small gallery from authored shells."""
+"""Build four browser demo pages and a small gallery from authored shells."""
 
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {
-    "mouse": "mouse",
     "eye-arm": "arm",
     "fly": "fly",
     "worm": "worm",
@@ -36,4 +35,4 @@ for folder, mode in PAGES.items():
     )
 for name in ("index.html", "hub_published.html"):
     (ROOT / name).write_bytes((ROOT / "shared/gallery.html").read_bytes())
-print("Five demo pages and gallery rebuilt.")
+print("Four demo pages and gallery rebuilt.")

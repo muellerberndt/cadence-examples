@@ -27,7 +27,7 @@
     "eye-arm/brain.js": "3d7afa134b7b4894a12e3eae038858ac7e850d8fd8c09d15a5b8563c2e8a205e",
     "eye-arm/paper.js": "f33344e4e543b8fe3c2955ac83562cd86c4458e04be63694906032ebc09edaff",
     "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",
-    "shared/embodied.js": "26fe1469a35a67bcf8d68497dc4693d8445bbf644e06db31ed9e61f2f24d9aa0",
+    "shared/embodied.js": "7de3a98eb480be5eca2fbcf6abde974d6951832642ada90bc0d3542a17533906",
     "shared/nervous_system.js": "13a4d24662bcb2fc397f9005ef8e5887fb2dbee184dd75d07263a86bf9b592e7"
   },
   "fly": [

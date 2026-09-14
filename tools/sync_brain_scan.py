@@ -3,8 +3,8 @@
     python tools/sync_brain_scan.py [--source PATH]
 
 The renderer is `cadence.brain_scan_script()` from an installed cadence-net that ships it;
-`--source` copies a checkout's `src/cadence/brain_scan.js` instead. The copies (the shared demos and the 1943
-preview) are committed so the pages need no build step and the site stays static.
+`--source` copies a checkout's `src/cadence/brain_scan.js` instead. The copy is committed so
+the pages need no build step and the site stays static.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGETS = [ROOT / "shared" / "brain_scan.js", ROOT / "previews" / "1943" / "brain_scan.js"]
+TARGETS = [ROOT / "shared" / "brain_scan.js"]
 
 
 def main() -> None:

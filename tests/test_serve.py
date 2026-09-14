@@ -50,6 +50,13 @@ def test_server_bind_error_has_actionable_message(monkeypatch, capsys):
     assert "Try --port 0" in capsys.readouterr().err
 
 
+def test_composer_without_model_prints_setup_and_starts_nothing(monkeypatch, capsys, tmp_path):
+    monkeypatch.setattr(module, "COMPOSER_CHECKPOINT", tmp_path / "missing.npz")
+    monkeypatch.setattr(module.os, "execv", lambda *a: pytest.fail("started without a model"))
+    assert module.main(["composer", "--no-browser"]) == 1
+    assert "python tools/fetch_model.py" in capsys.readouterr().err
+
+
 @pytest.mark.parametrize(
     "args,code",
     [
@@ -58,6 +65,7 @@ def test_server_bind_error_has_actionable_message(monkeypatch, capsys):
         (["--port", "65536"], 2),
         (["missing"], 2),
         (["memory"], 2),
+        (["mouse"], 2),
     ],
 )
 def test_invalid_or_help_arguments_do_not_start_a_server(args, code, monkeypatch):

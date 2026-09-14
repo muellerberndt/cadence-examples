@@ -5,7 +5,6 @@ import { BrainView } from "./brain_view.js";
 import { mountWorm } from "../worm/view.js";
 import { showGuide } from "./guides.js";
 import { mountArm } from "../eye-arm/view.js";
-import { mountEmbodied } from "../mouse/view.js";
 import {
   Worm,
   MLP,
@@ -249,7 +248,7 @@ function renderEvidence() {
       }),
     );
     $("boundary").textContent =
-      "The reference kernel uses 32 fast-memory values and a residual write. The mouse and fly add 32 persistent weights, for 64 stored values across the same 32 memory contacts. The MLP uses 420 parameters and 1, 10 or 100 SGD updates on the identical new sample. More MLP work is not a guarantee of retaining old associations. Explicit keys also admit exact dictionary storage, which succeeds. Correlated keys interfere with residual memory. The fly is a simplified 2D body with supplied visual ports, steering and exploration; it is not a FlyWire reconstruction. Each live agent collects its own encounters, so live nectar totals are illustrative, not a matched benchmark.";
+      "The reference kernel uses 32 fast-memory values and a residual write. The fly adds 32 persistent weights, for 64 stored values across the same 32 memory contacts. The MLP uses 420 parameters and 1, 10 or 100 SGD updates on the identical new sample. More MLP work is not a guarantee of retaining old associations. Explicit keys also admit exact dictionary storage, which succeeds. Correlated keys interfere with residual memory. The fly is a simplified 2D body with supplied visual ports, steering and exploration; it is not a FlyWire reconstruction. Each live agent collects its own encounters, so live nectar totals are illustrative, not a matched benchmark.";
   }
 }
 function setMode(next) {
@@ -264,7 +263,7 @@ function setMode(next) {
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.wormView === wormView)),
     );
-  document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", game: "Connect Four reasoner" }[mode]}`;
+  document.title = `Cadence · ${{ arm: "Eye & arm", fly: "Fly-inspired forager", worm: "C. elegans", game: "Connect Four reasoner" }[mode]}`;
   bodyView = null;
   document.querySelector(".task-commands")?.remove();
   document.querySelector(".primary-controls")?.remove();
@@ -297,9 +296,8 @@ function setMode(next) {
     fit();
     return;
   }
-  if (mode === "mouse" || mode === "arm") {
-    bodyView = (mode === "arm" ? (_, api) => mountArm(api) : mountEmbodied)(
-      mode,
+  if (mode === "arm") {
+    bodyView = mountArm(
       {
         $,
         metrics,
@@ -325,7 +323,7 @@ function setMode(next) {
         evidence: composite,
       },
     );
-    if (mode === "arm") primaryControls(["clear-pad", "restart-arm", "pause"]);
+    primaryControls(["clear-pad", "restart-arm", "pause"]);
     fit();
     return;
   }
@@ -739,7 +737,7 @@ document.querySelectorAll("[data-tab]").forEach((b) => {
 });
 window.addEventListener("hashchange", () => {
   const next = location.hash.slice(1);
-  if (["worm", "fly", "mouse", "arm", "game"].includes(next) && mode !== next)
+  if (["worm", "fly", "arm", "game"].includes(next) && mode !== next)
     setMode(next);
 });
 try {
@@ -766,11 +764,11 @@ try {
   net = new MLP(evidence.browser.worm_mlp);
   setMode(
     document.body.dataset.demo ||
-      (["worm", "fly", "mouse", "arm", "game"].includes(
+      (["worm", "fly", "arm", "game"].includes(
         location.hash.slice(1),
       )
         ? location.hash.slice(1)
-        : "mouse"),
+        : "arm"),
   );
   requestAnimationFrame(animate);
   // Read-only snapshots support reproducible engine/UI checks.

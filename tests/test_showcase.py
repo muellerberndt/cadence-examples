@@ -77,24 +77,6 @@ console.log(JSON.stringify({a:[a.x,a.y,a.target,a.encounters],b:[b.x,b.y,b.targe
     assert result["a"] == result["b"] and result["a"][-1] == 0
 
 
-def test_new_task_revises_without_erasing_old_tasks_and_restores():
-    result = node("""
-import {TaskLessons} from './shared/embodied.js';
-const m=new TaskLessons(),before=m.recall(3);m.teach(3,3);const after=m.recall(3);m.teach(3,2);const restored=new TaskLessons(m.records);
-console.log(JSON.stringify({before,after,answers:[0,1,2,3].map(i=>restored.recall(i))}));
-""")
-    assert result == {"before": None, "after": 3, "answers": [0, 1, 2, 2]}
-
-
-def test_mouse_stops_when_goal_is_disconnected():
-    result = node("""
-import {Mouse,neighbors} from './shared/embodied.js';
-const m=new Mouse();neighbors(m.world,m.world.goal).forEach(i=>m.world.grid[i]=1);m.repair();for(let k=0;k<500;k++)m.step();
-console.log(JSON.stringify({moves:m.moves,next:m.next()}));
-""")
-    assert result["next"] == -1
-
-
 def test_receipts_are_complete_and_source_bound():
     verify(json.loads((ROOT / "evidence/evidence.json").read_text()), hashes())
     verify(
@@ -142,12 +124,12 @@ def test_diagnostic_replays_match_executed_settling_and_release_decays():
     result = node("""
 import {readFileSync} from 'node:fs';
 import {Worm,zeros} from './shared/engine.js';
-import {Mouse,motorSettling} from './shared/embodied.js';
+import {motorSettling} from './shared/embodied.js';
 import {settlingTrace} from './shared/telemetry.js';
 const data=JSON.parse(readFileSync('./worm/worm.json')),w=new Worm(data),drive=zeros(w.n),mask=Array(w.n).fill(1);
 data.stimuli.odor.forEach(i=>drive[i]=1);
-const r=w.settle(drive,mask),m=new Mouse(),a=motorSettling([-1.8,1.1],[.45,.35]);
-const sources=[{...r,drive,mask,edges:data.edges},{...m.circuit,edges:m.circuit.brain.data.edges},{...a,steps:80,dt:.25}];
+const r=w.settle(drive,mask),a=motorSettling([-1.8,1.1],[.45,.35]);
+const sources=[{...r,drive,mask,edges:data.edges},{...a,steps:80,dt:.25}];
 const errors=sources.map(s=>Math.max(...settlingTrace(s).frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))));
 const release=settlingTrace(sources[0],true);
 console.log(JSON.stringify({errors,initial:Math.max(...release.frames[0]),released:Math.max(...release.frames.at(-1))}));
@@ -206,11 +188,11 @@ console.log(JSON.stringify({initial:s.initialState.some(v=>v!==0),error:Math.max
 
 
 def test_current_nervous_system_receipts_bind_all_controller_sources():
-    for folder in ["eye-arm", "mouse", "worm", "fly"]:
+    for folder in ["eye-arm", "worm", "fly"]:
         body = json.loads((ROOT / folder / "evidence.json").read_text())
         for filename, digest in body["sources"].items():
             assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest
-        assert len(body["arm"]) == 18 and len(body["mouse"]) == 36
+        assert len(body["arm"]) == 18 and "mouse" not in body
         assert len(body["worm"]) == 5 and len(body["fly"]) == 2
 
 

@@ -22,7 +22,7 @@
           <h1>Change its world.<br />Watch its nervous system respond.</h1>
         </div>
         <p>
-          Five separate experiments. Each opens with its live circuit beside the
+          Five official examples. Each opens with its live circuit beside the
           task, so you can see the state that drives behavior.
         </p>
       </div>
@@ -36,24 +36,24 @@
           </p>
           <b>Open eye & arm →</b></a
         >
-        <a href="mouse/"
-          ><span>02 / MEMORY & NAVIGATION</span>
-          <h2>Teach a mouse a new destination.</h2>
-          <p>
-            Task memory recalls the goal, a spatial field finds a route, and
-            directional motor neurons move the body. Change a corridor or teach
-            another task.
-          </p>
-          <b>Open teachable mouse →</b></a
-        >
         <a href="worm/"
-          ><span>03 / CHEMICAL SENSING</span>
+          ><span>02 / CHEMICAL SENSING</span>
           <h2>Feed a worm. Build its world.</h2>
           <p>
             Place food and draw barriers. Follow a public C. elegans chemical
             circuit and its engineered directional motor system.
           </p>
           <b>Open worm habitat →</b></a
+        >
+        <a href="composer/"
+          ><span>03 / MUSIC & IMAGINATION</span>
+          <h2>Describe a mood. Hear it composed.</h2>
+          <p>
+            maestro-1, a pretrained musician of wired cortices, imagines
+            continuations, listens to the whole draft and edits its weakest
+            passage. Runs locally with its model.
+          </p>
+          <b>Open composer →</b></a
         >
         <a href="fly/"
           ><span>04 / LEARNING THROUGH CONTACT</span>
@@ -77,18 +77,17 @@
       </div>
       <p class="gallery-note">
         These are simplified computational nervous systems, with supplied
-        bodies, sensory encodings and circuit designs. The memory example
-        isolates one subsystem. Each page documents its mechanisms and measured
-        limits.
+        bodies, sensory encodings and circuit designs. Each page documents its
+        mechanisms and measured limits. The
+        <a href="https://github.com/muellerberndt/cadence-examples/tree/main/cortices">cortex catalogue</a>
+        provides reusable regions for new brains.
       </p>
     </main>
     <script>
       const old = {
         arm: "eye-arm",
-        mouse: "mouse",
         fly: "fly",
         worm: "worm",
-        memory: "memory",
         game: "connect-four",
       }[location.hash.slice(1)];
       if (old) location.replace(old + "/");
