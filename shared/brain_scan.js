@@ -159,6 +159,7 @@ export class BrainScan {
     this.pointers = new Map();
     this.clock = 0;
     this.lastTime = 0;
+    this.pending = true;
     this.labels = options.labels || null;
     this.strip = options.strip || null;
     this.labelElements = [];
@@ -382,7 +383,7 @@ export class BrainScan {
     target.addEventListener("pointermove", (e) => {
       if (!this.pointers.has(e.pointerId)) { if (this.onhover) this.onhover(this.inspect(e.clientX, e.clientY)); return; }
       const old = this.pointers.get(e.pointerId), r = target.getBoundingClientRect();
-      if (this.pointers.size === 1) { this.camera.x += ((e.clientX - old[0]) * 2) / r.width / this.aspect()[0]; this.camera.y -= ((e.clientY - old[1]) * 2) / r.height / this.aspect()[1]; this.fitted = false; this.dirty = true; }
+      if (this.pointers.size === 1) { this.camera.x += ((e.clientX - old[0]) * 2) / r.width / this.aspect()[0]; this.camera.y -= ((e.clientY - old[1]) * 2) / r.height / this.aspect()[1]; this.fitted = false; this.dirty = true; this.pending = true; }
       this.pointers.set(e.pointerId, [e.clientX, e.clientY]);
       this.draw();
     });
@@ -446,9 +447,10 @@ export class BrainScan {
     this.camera.zoom = z;
     this.fitted = false;
     this.dirty = true;
+    this.pending = true;
   }
 
-  fit() { this.camera = { x: 0, y: 0, zoom: 1 }; this.fitted = true; this._frame(); this.dirty = true; this.draw(); }
+  fit() { this.camera = { x: 0, y: 0, zoom: 1 }; this.fitted = true; this._frame(); this.dirty = true; this.pending = true; this.draw(); }
 
   /** Start a new settling from a new stimulus: the next step measures change against this state. */
   reset(activation = null) {
@@ -479,6 +481,7 @@ export class BrainScan {
     this.stepCount++;
     this._record(total / this.n, peak);
     this._uploadState();
+    this.pending = true;
     this.draw();
     return { peak, mean: total / this.n };
   }
@@ -491,6 +494,7 @@ export class BrainScan {
     this.message = null;
     if (extra.potential) this.potential = Float32Array.from(extra.potential);
     this._uploadState();
+    this.pending = true;
     this.draw();
   }
 
@@ -504,6 +508,7 @@ export class BrainScan {
     this.scale = 1;
     if (extra.potential) this.potential = Float32Array.from(extra.potential);
     this._uploadState();
+    this.pending = true;
     this.draw();
   }
 
@@ -537,6 +542,9 @@ export class BrainScan {
   }
 
   draw(time = performance.now()) {
+    // A software renderer draws a new frame at most every 200 ms; a state change always draws.
+    if (this.software && !this.pending && time - this.lastTime < 200) return;
+    this.pending = false;
     this.clock += Math.min(0.1, (time - this.lastTime) / 1000);
     this.lastTime = time;
     this._drawLabels();
@@ -610,7 +618,7 @@ export class BrainScan {
     gl.enable(gl.BLEND);
     gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE);
     if (this.edges) {
-      if (this.hot > 0.01) { gl.uniform1i(this.uniform.pass, 3); synapses(this.edges); }
+      if (this.hot > 0.01 && !(this.software && dust)) { gl.uniform1i(this.uniform.pass, 3); synapses(this.edges); }
       if (this.options.particles) { gl.uniform1i(this.uniform.pass, 2); gl.drawArraysInstanced(gl.POINTS, 0, 1, Math.min(this.edges, this.options.particleBudget)); }
     }
     gl.uniform1i(this.uniform.pass, 1);
