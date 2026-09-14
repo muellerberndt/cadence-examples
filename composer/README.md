@@ -49,6 +49,16 @@ python tools/practice_musician.py --checkpoint runs/large-v2-nobelt/brain.npz --
 python tools/compose_musician.py --checkpoint checkpoints/maestro-1/brain.npz --mood "a bright, heroic, loud orchestral theme" --bars 32 --record --render --settle 48
 ```
 
+Design version 3 (the plan head, the theme record and the whole-piece listener; see
+[MUSICIAN.md](MUSICIAN.md#version-3-the-form-of-the-piece-as-a-learned-quantity)) trains
+on a corpus prepared with bar profiles, on the deduplicated pool or the full public-domain
+pool with every arrangement:
+
+```sh
+python tools/prepare_musician.py --workers 16 --name musician-full --pool full
+python tools/train_musician.py --name maestro-2 --dataset musician-full --version 3 --no-belt --batch 256 --updates 100000 --evaluate-every 2000 --tonic 1.0 --eta 0.001 --eta-final 0.0002 --decay 0.00001 --rollback 1.15 --device cuda:0
+```
+
 ## Use the studio
 
 1. Choose a preset or write a brief, then **Compose one minute**. The seed makes

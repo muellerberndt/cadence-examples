@@ -154,6 +154,48 @@ backpropagation through time, evaluated on the same held-out streams.
 Imagined futures never write the live working memory, form record or synapses
 (`tests/test_musician.py::test_futures_are_isolated_and_never_write_the_live_state`).
 
+## Version 3: the form of the piece as a learned quantity
+
+Version 2 writes a piece two bars at a time and judges each phrase by how typical its
+events are. Measured on the sixteen-bar orchestral theme composed with `maestro-1`, no bar
+returns to an earlier one and the last bar does not fall away from the peak, while the
+corpus returns in about half of its bars and ends with an energy drop in most pieces
+(`composer/form.py`, threshold 0.5 on a melody-weighted bar similarity). The piece trace
+covers fewer than two bars at thirty events per bar, the form record recalls the same bar
+of the previous sixteen-bar cycle (never in a sixteen-bar piece), and an edit re-samples a
+passage under the same local objective, so it rarely improves the whole.
+
+Version 3 gives the brain the bar as a unit and the piece as a plan:
+
+| Addition | What it is | Supplied or learned |
+|---|---|---|
+| bar profile | eight measured classes of a bar: density, register, range, dynamics, texture, tension, typical duration, and the **lag** to the earlier bar it returns to (0 for new material), from melodic-bigram and onset similarity | supplied measurement (`composer/form.py`) |
+| `plan` | clamped input, 39 neurons: the profile of the bar being written, present for half the training rows and absent for the other half | supplied conditioning; the head below learns what to do with it |
+| `bars` | clamped input, 312 neurons: the profiles of the eight bars before | supplied |
+| plan head | eight more softmax slots of the intention: the profile classes of the bar being written, trained by teacher forcing | learned |
+| theme record | the `recall` region becomes a delta-rule record keyed by the absolute bar (32 keys), written at every new bar and read at the bar the lag points to; a planned return replays what the phrase cortex held there | supplied rule, learned reading |
+| piece trace | decay 0.995, about seven bars | supplied |
+
+Composing in version 3 has four movements. **Plan**: `Musician.imagine_plan` rolls
+several plans of the whole piece forward at bar resolution through the plan head alone
+(the opening, the mood, the clock at each bar and the plan so far; the plan input absent)
+and `Listener.score_plan` keeps the plan whose own surprise is nearest the plan head's
+held-out target and whose shape has contrast, a climax in the second half, an ending that
+falls away and a return to earlier material. **Write**: phrase by phrase as before, with
+the plan of each bar clamped, the measured profiles of the finished bars in `bars`, and
+the theme record read at the plan's returns; futures are also ranked by how far their
+realised bars match the plan. **Listen**: `Musician.review` hears the whole draft with the
+plan input absent and reports the plan head's surprise at every realised bar beside the
+note surprise. **Edit**: the two-bar window whose bars disagree most with the plan and with
+the brain's own expectation is re-imagined under the plan and kept only if the whole
+piece scores higher on `Listener.score_piece`, which adds the shape measures, the plan fit
+and the fidelity of every claimed return.
+
+Every shape measure is supplied and stated as such; what is learned is which profile comes
+next and how to realise a given one. `tests/test_form.py` checks the measurement, the
+isolation of imagined plans, the round trip of a version 3 checkpoint and the planned
+composition end to end.
+
 ## Supplied and learned
 
 Supplied: the event vocabulary and encoders, the seven mood classes and the keyword

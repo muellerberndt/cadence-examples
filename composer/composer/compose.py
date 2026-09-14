@@ -33,7 +33,7 @@ def sample(p, rng, temperature=0.8, top=16):
 
 class Composer:
     def __init__(self, checkpoint=None, taste=None):
-        self.path = Path(checkpoint or ROOT / "checkpoints/best/brain.npz")
+        self.path = Path(checkpoint or next((p for p in (ROOT / "checkpoints/phrase-composer/brain.npz", ROOT / "checkpoints/best/brain.npz") if p.exists()), ROOT / "checkpoints/phrase-composer/brain.npz"))
         self.learner = cd.Learner.load(self.path, backend="cpu", precision="float64")
         self.intuition = Intuition(taste)
         self.performer = MotifBrain(self.learner, self.intuition)
