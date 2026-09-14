@@ -26,6 +26,8 @@ import cadence as cd
 
 HERE = Path(__file__).resolve().parent
 SOURCES = [("01_digits/train.py", Path(__file__).resolve())]
+SOURCES += [(f"cadence/{p.name}", p) for p in sorted(Path(cd.__file__).parent.glob("*.py"))]
+
 INPUTS, CLASSES = 64, 10
 
 # The declared search: every configuration below is tried on the validation split.

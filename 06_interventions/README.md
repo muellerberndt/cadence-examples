@@ -83,15 +83,15 @@ Mean CPU microseconds per query across all five slices:
 
 | arm | sequential | within a batch of 128 |
 |---|---|---|
-| Cadence | 26.5 | not measured |
-| warm | 27.7 | not measured |
-| MLP | 32.8 | 5.2 |
-| one propagation | 4.1 | 0.3 |
-| 8 steps | 13.0 | 1.0 |
-| 32 steps | 48.1 | 4.0 |
-| Newton | 43.8 | not measured |
+| Cadence | 33.9 | not measured |
+| warm | 35.7 | not measured |
+| MLP | 36.7 | 6.8 |
+| one propagation | 5.1 | 0.4 |
+| 8 steps | 16.4 | 1.3 |
+| 32 steps | 63.3 | 5.1 |
+| Newton | 56.1 | not measured |
 
-Across the complete run, both MLP candidates and their checkpoint selection took 11.34 s, plus 0.54 s to prepare training/validation inputs and labels. All Cadence cold/warm graph bindings took 0.030 s, plus 0.293 s to initialize kernels. These costs are additional to the query timings.
+Across the complete run, both MLP candidates and their checkpoint selection took 14.46 s, plus 0.69 s to prepare training/validation inputs and labels. All Cadence cold/warm graph bindings took 0.046 s, plus 0.290 s to initialize kernels. These costs are additional to the query timings.
 <!-- /intervention-results -->
 
 The MLP slightly improves on one propagation for new drives on familiar

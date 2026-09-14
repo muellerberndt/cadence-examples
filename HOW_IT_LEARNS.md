@@ -16,10 +16,10 @@ into `j`'s inbox. That is the only way one owner affects another.
 
 Some owners are **input owners**. They receive a **clamp**: a fixed drive, one number per
 owner, that is the net's input. For the digits, an 8×8 picture is 64 input owners and the
-clamp on each is its pixel's brightness in [0, 1]. For Pong, the screen is 192 pixels twice
-(this frame and the last), so 384 input owners, and the clamp is each pixel's brightness.
+clamp on each is its pixel's brightness in [0, 1]. For Pong, the screen is 192 pixels, supplied once per decision. Another 192 owners
+carry a fading trace of earlier input activity through `Afterglow`.
 For Connect Four, the board is two planes of 42 owners, the mover's discs and the
-opponent's. Nothing else is clamped.
+opponent's. The temporal context, when present, is also a clamp.
 
 Some owners are **output owners**: one per class, one per column, one per action. Their
 activations at rest are the net's answer. The rest are **hidden owners**.
@@ -118,11 +118,12 @@ example does, twenty times over.
 prefers in any position. Label every position with the teacher's choice for the side to
 move, and the problem is section 3 with one class per move. At play time the net settles
 under the board, illegal moves are masked, and the most active output owner moves. The
-net imitates the teacher without lookahead; how well is a number in a receipt. (Pong's
-second paddle learned this way, from a scripted tracker's moves.)
+raw net imitates the teacher; the Connect Four page can also examine four plies with
+the supplied game rules. Its raw-policy, planning, and search-only results are separate.
+Pong first imitates a teacher that demonstrates diagonal returns.
 
-**A reward.** Pong has no teacher, only what happened: the paddle returned the ball or
-missed it. The rule stays the same with one change. The net acts by settling and drawing
+**A reward.** After imitation, Pong experiments through play. Its outcomes include
+returning the ball, missing it, and making the opponent miss. The rule stays the same with one change. The net acts by settling and drawing
 an action from `softmax(s[outputs] / T)`. After a rollout, each transition has a
 **return** (the discounted sum of the rewards that followed) and an **advantage** (the
 return minus the batch mean, divided by the batch standard deviation). Then, for each
@@ -136,17 +137,17 @@ cost (`A < 0`) is pushed down. The seam update is unchanged. In the converged sm
 the policy gradient (REINFORCE): the seams move to make actions with positive advantage
 more likely. The reward entered through the nudge and nowhere else.
 
-**How the paddle learns to be in the right place.** The reward is `+1` for a return, `−1`
-for a miss, plus, each step, how much closer the paddle's centre came to the ball's row
-during that step. This is a task-specific shaping reward. With the script's discount
-`γ = 0.5`, the undiscounted distance difference does not guarantee an unchanged optimal
-policy. With a short credit horizon, the
-advantage of "up" in a state where the ball is above the paddle is positive and of "down"
-negative, so the seams from the pixels that encode "ball above my paddle" to the "up"
-output strengthen. Because the paddle's own pixels are in the clamp too, the net can
-learn the *relative* rule. The Pong tutorial shows what happens without the shaping: the
-net learns an absolute rule ("ball high, go up") that ignores its own position, and plays
-badly.
+**Corrective lessons and retention.** Pong adds a reward when the opponent misses,
+and discounts returns by 0.97. Teacher corrections and earlier demonstrations are
+mixed with experience. The best checkpoint is retained on validation games; practice
+is allowed to fail to improve it. See [Pong](04_pong/) for the measured outcome.
+The teacher can inspect simulator velocity, while the paddle receives one frame
+and a causal activity trace. These are different information privileges.
+
+**Comparing futures.** A controller can branch a state, simulate candidate actions,
+and evaluate their consequences before acting. Cadence documents and tests this
+[deliberation pattern](https://github.com/muellerberndt/cadence/blob/main/docs/deliberation.md).
+Imagined outcomes remain predictions; real outcomes supply learning evidence.
 
 ## 5. Why this is learning and not just a heuristic
 
@@ -195,18 +196,17 @@ state, arriving through the seams it already has.
 | influence | forward only | both ways, over the same seams |
 | learning signal | an error computed by a controller and propagated backward with transposed weights | a nudge on the outputs, felt by the rest of the net through its own seams |
 | what a weight reads to update | its gradient, delivered | its own two endpoints, twice |
-| stored state | every layer's activations, for the backward pass | nothing |
+| stored state | layer activations for the backward pass | free and nudged states; no trajectory tape |
 | weight sharing | none needed | a seam is one strength in both directions |
 | is it a gradient? | exactly | in the small-nudge limit, and checked numerically |
 | cost per update | 2 passes | 3 settlements of tens of steps |
 | the network at rest | is not a thing; the network is a function | is a state you can inspect, clamp, ablate, and watch |
 
-The consequences run through every receipt in this repository: the patch net reaches
-similar accuracy to the listed backprop networks with different parameter counts and budgets, recalls a
-written pair among at most 128 distinct one-hot keys with nothing trained, learns less from the same Pong
-rollouts than an exact gradient with Adam does, and costs ten to a hundred times the
-wall-clock on a laptop core because a settlement is tens of steps where a pass is one.
-Parameter counts match: a seam is a weight.
+The receipts measure each concrete task, including controls with the same task
+information. Supplied-rule solvers and exact dictionaries can solve their respective
+tasks too. Pong's reward-only MLP control has no teacher phase and therefore does not
+establish a matched training-efficiency comparison. Repeated settlement has a cost;
+learning without a reverse-mode tape does not by itself establish a speed advantage.
 
 ## 7. Glossary
 

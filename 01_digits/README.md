@@ -1,9 +1,7 @@
 # 01 · Digits
 
-The checked-in receipt is a **historical measurement** of its preserved source version.
-From the repository root, `python tools/verify_receipts.py 01_digits` checks that provenance. It does not
-certify later code or Cadence changes; a fresh run writes a new receipt.
-
+The receipt binds this producer and the installed Cadence source. It records
+validation selection, three training seeds, and held-out accuracy.
 
 A patch net learns to read the 8×8 scikit-learn digits with the owner-local free/nudged
 rule. No backward pass: every seam moves on what its own two endpoints did in two

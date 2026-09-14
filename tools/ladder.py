@@ -14,12 +14,9 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = {  # the published copies of each rung's index.html
-    "01_digits": "https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618",
-    "02_recall": "https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b",
-    "03_connect_four": "https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc",
-    "04_pong": "https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04",
-}
+PAGES = {name: f"{name}/index.html" for name in
+         ("01_digits", "02_recall", "03_connect_four", "04_pong")}
+
 
 
 def pct(x: float) -> str:
@@ -33,10 +30,10 @@ def summarise(rung: str, b: dict) -> tuple[str, list[tuple[str, str]]]:
         return (f"{b['test_accuracy_mean']:.3f} ± {b['test_accuracy_std']:.3f} held-out in {b['schedule']['epochs']} epochs; a smaller MLP ({m['parameters']:,} parameters) {m['test_accuracy']:.3f} in {m['epochs']}",
                 [("held-out", f"{b['test_accuracy_mean']:.3f} ± {b['test_accuracy_std']:.3f}"), ("parameters", f"{b['learner']['parameters']:,}"), ("epochs", str(b["schedule"]["epochs"])), ("smaller MLP", f"{m['test_accuracy']:.3f}")])
     if rung == "02_recall":
-        summary = b["summary"]
-        length = str(max(b["task"]["lengths"]))
-        return (f"historical distinct-key recall {summary['patch_settled'][length]:.2f}; dictionary also solves this lookup task; original transformer comparison has parser and position disadvantages",
-                [("historical distinct-key recall", f"{summary['patch_settled'][length]:.2f}"), ("capacity", "128 keys"), ("trained parameters", "0"), ("comparison", "see tutorial limits")])
+        rows = b["rows"]
+        revised = sum(r["correct"]["revised"] for r in rows) / sum(r["queries"] for r in rows)
+        return (f"residual writes: {pct(revised)} correct after replacing repeatedly written associations; exact dictionary also succeeds",
+                [("corrected associations", pct(revised)), ("capacity", "128 keys"), ("offline training", "none"), ("memory", "residual fast seams")])
     if rung == "05_memory":
         rows = [row for run in b["runs"] for row in run["rows"] if row["length"] == 128 and row["key_correlation"] == 0.0]
         means = {arm: sum(row["arms"][arm]["accuracy"] for row in rows) / len(rows) for arm in ("delta", "hebb", "dictionary", "transformer")}
@@ -49,25 +46,24 @@ def summarise(rung: str, b: dict) -> tuple[str, list[tuple[str, str]]]:
         return (f"declared feedback circuits answer new interventions without training; maximum residual {residual:.1e}, trained MLP mean MSE {mlp_mse:.4f}; direct and tied-recurrence controls also solve the task",
                 [("owners", "16"), ("Cadence training examples", "0"), ("maximum residual", f"{residual:.1e}"), ("trained MLP mean MSE", f"{mlp_mse:.4f}")])
     if rung == "03_connect_four":
-        s = {r["opponent"]: r for r in b["strength"]}
-        m = b["comparison"][0]
-        rec = lambda r: f"{r['wins']}-{r['draws']}-{r['losses']}"  # noqa: E731
-        return (f"agrees with a depth-4 search on {b['test_agreement']:.3f} of positions (MLP {m['agreement']:.3f}); {rec(s['random'])} vs random, {rec(s['search-2'])} vs depth 2",
-                [("agreement with the search", f"{b['test_agreement']:.3f}"), ("MLP same size", f"{m['agreement']:.3f}"), ("vs random", rec(s["random"])), ("vs depth 2", rec(s["search-2"]))])
+        raw = {r["opponent"]: r for r in b["strength"]}
+        deployed = {r["opponent"]: r for r in b["deployed_strength"]}
+        control = {r["opponent"]: r for r in b["search_only_strength"]}
+        win = lambda r: pct(r["wins"] / r["games"])
+        return (f"with depth-4 lookahead: {win(deployed['random'])} wins vs random, {win(deployed['search-2'])} vs depth 2; search alone {win(control['search-2'])}; raw policy {win(raw['search-2'])}",
+                [("lookahead vs depth 2", win(deployed["search-2"])), ("search alone vs depth 2", win(control["search-2"])), ("raw policy vs depth 2", win(raw["search-2"])), ("held-out teacher agreement", f"{b['test_agreement']:.3f}")])
     if rung == "04_pong":
-        base = b["comparison"][0]["final"]
-        im = b.get("imitation", {}).get("final")
-        extra = f"; the same net taught the tracker's moves {pct(im['return_rate'])}" if im else ""
-        return (f"reward-trained paddle returns {pct(b['final']['return_rate'])} of balls against {pct(base['return_rate'])} for backprop REINFORCE on the same rollout budget{extra}",
-                [("balls returned, from reward", pct(b["final"]["return_rate"])), ("backprop REINFORCE, same budget", pct(base["return_rate"])), ("from a tracker's moves", pct(im["return_rate"]) if im else "—"), ("parameters", f"{b['learner']['parameters']:,}")])
+        f = b["final"]
+        return (f"one frame plus a fading neural trace; imitation then practice: {pct(f['win_rate'])} points won vs skill-0.7 tracker, {pct(f['return_rate'])} balls returned; stronger opponent results in the receipt",
+                [("points won, skill 0.7", pct(f["win_rate"])), ("balls returned", pct(f["return_rate"])), ("incoming frames", "1"), ("parameters", f"{b['learner']['parameters']:,}")])
     raise KeyError(rung)
 
 
 RUNGS = [
-    ("01_digits", "digits", "the tutorial, draw one", "8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Historical classification measurement: selection on validation data and three patch-net seeds, with fixed MLP baselines. Draw a digit in the page and watch the ten output owners settle."),
-    ("02_recall", "recall", "memory as seams, play it", "Distinct one-hot keys written into 128-key Hebbian memory. Linear transport retrieves an association; a dictionary solves the same task. The historical transformer comparison has important limitations. Write a context in the page and ask it."),
-    ("03_connect_four", "Connect Four", "imitation, play it", "Self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead. The historical agreement measurement predates a reflection-split fix. You play coral, the net plays gold."),
-    ("04_pong", "Pong", "reward, play it", "A paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history. Behind backprop REINFORCE with Adam on the same rollout budget; the same net taught a tracker's moves returns 96%. You play coral, the net plays gold."),
+    ("01_digits", "digits", "the tutorial, draw one", "8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Classification: selection on validation data and three patch-net seeds, with fixed MLP baselines. Draw a digit in the page and watch the ten output owners settle."),
+    ("02_recall", "recall", "memory as seams, play it", "Residual fast seams learn on each write and correct old associations. A dictionary solves the same explicitly addressed task. Write a context, then replace a value."),
+    ("03_connect_four", "Connect Four", "imitation, play it", "Imitate a teacher, play, and revisit mistakes. Optional four-ply deliberation uses the game rules; raw-policy and search-only controls distinguish learned skill from planning. Local learning mode preserves lessons."),
+    ("04_pong", "Pong", "reward, play it", "A paddle sees one frame and keeps a fading trace of its activity. It imitates diagonal returns, practises, and revisits teacher examples. Local learning mode saves every completed game as a reusable lesson."),
     ("05_memory", "updating memory", "residual writes", "A fixed-size memory corrects its own readback when an association changes. Additive memory, exact lookup, and a trained transformer receive identical explicit key/value episodes."),
     ("06_interventions", "circuit interventions", "known local rules", "Owners read incoming messages and repair their local state as drives, wiring and ablations change. A supplied feedback rule reaches checked equilibrium without training. A trained MLP, direct solver and tied recurrence receive the same complete circuit."),
 ]
@@ -121,6 +117,24 @@ def main() -> None:
             body = json.loads(receipt.read_text())["body"]
             line, facts = summarise(rung, body)
             status = "done"
+            if rung in ("03_connect_four", "04_pong"):
+                if rung == "03_connect_four":
+                    rows = ["Wins / draws / losses, 100 games per opponent:", "",
+                            "| player | random | depth 2 | depth 4 |", "|---|---|---|---|"]
+                    for label, key in (("raw policy", "strength"), ("policy + depth-4 search", "deployed_strength"), ("depth-4 search alone", "search_only_strength")):
+                        games = {r["opponent"]: r for r in body[key]}
+                        values = [f"{games[k]['wins']} / {games[k]['draws']} / {games[k]['losses']}" for k in ("random", "search-2", "search-4")]
+                        rows.append("| " + label + " | " + " | ".join(values) + " |")
+                else:
+                    rows = ["| tracker skill | wins | losses | draws | points won |", "|---|---:|---:|---:|---:|"]
+                    for skill in (.7, 1.):
+                        games = [r for r in body["held_out_play"] if r["opponent_skill"] == skill]
+                        counts = {k: sum(r[k] for r in games) for k in ("wins", "losses", "draws", "points")}
+                        rows.append(f"| {skill:g}, seeds 101–103 | {counts['wins']:,} | {counts['losses']:,} | {counts['draws']:,} | {pct(counts['wins']/counts['points'])} |")
+                path = ROOT / rung / "README.md"
+                path.write_text(re.sub(r"<!-- game-results -->.*?<!-- /game-results -->",
+                                       "<!-- game-results -->\n" + "\n".join(rows) + "\n<!-- /game-results -->",
+                                       path.read_text(), flags=re.S))
             if rung == "06_interventions":
                 path = ROOT / rung / "README.md"
                 text = re.sub(r"<!-- intervention-results -->.*?<!-- /intervention-results -->",
@@ -150,7 +164,7 @@ def main() -> None:
         else:
             line, facts, status = "pending", [("status", "running")], "pending"
         link = f"[{name}]({rung}/)"
-        play = f"; [play it]({page})" if page else ""
+        play = f"; [browser page]({page})" if page else ""
         lead = blurb.split(".")[0]
         lead = lead[0].lower() + lead[1:]
         readme_rows.append(f"| {k:02d} | {link} | {lead}; receipt: {line}{play} |" if status == "done" else f"| {k:02d} | {link} | {lead}; {line} |")

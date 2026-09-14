@@ -45,9 +45,9 @@
 </style>
 <main>
   <header>
-    <a class="hub" href="../index.html" data-published="https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60">← All examples</a>
+    <a class="hub" href="../index.html">← All examples</a>
     <h1>Cadence Pong</h1>
-    <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. The default paddle learned from a scripted player; uncheck the box below to play the reward-trained version.</p>
+    <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees one frame at a time and carries a fading trace of its own activity. It first learned from a teacher, then practised through play.</p>
   </header>
   <section class="field-wrap">
     <canvas id="field" width="512" height="384" aria-label="Pong field"></canvas>
@@ -56,7 +56,7 @@
       <span id="status">Move the mouse over the field or use <kbd>↑</kbd> <kbd>↓</kbd>.</span>
       <button id="pause">Pause</button>
       <button id="reset">Reset score</button>
-      <label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="which" checked> imitation-trained paddle (uncheck for the reward-trained one)</label>
+      <label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="which"> teacher-only paddle (uncheck for the paddle trained through play)</label>
     </div>
   </section>
   <aside>
@@ -71,19 +71,34 @@
     </div>
     <div class="card">
       <h2>What this is</h2>
-      <p>Each step the current frame and the previous one are clamped onto 384 input owners. The net settles from rest; the most active of three output owners (up, stay, down) moves its paddle one pixel. No search, no memory beyond that one earlier frame.</p>
-      <p>Two paddles are embedded. The reward-trained one learned by playing: after each rollout, the actions that paid were nudged toward and the actions that cost were nudged away. The imitation-trained one learned the same way but from a scripted tracker's moves as targets; it has the higher measured return rate. The two runs also use different training settings, so this comparison does not isolate the cause.</p>
+      <p>Each step, 192 input owners receive the current pixels. A separate range carries a fading trace of prior input activity. The net settles under both; one of three output owners chooses up, stay or down. The trace resets between points.</p>
+      <p>Both paddles learned a teacher's diagonal returns. The practice paddle then explored in games and revisited teacher examples to retain its skill. The teacher can see velocity; the net receives only the current pixels and its own fading trace.</p>
       <dl id="facts"></dl>
     </div>
   </aside>
 </main>
 <script>
+/*LOCAL_LESSONS*/
 const NETS = { reward: /*NET*/null, imitation: /*NET_IMITATION*/null };
-let NET = NETS.imitation || NETS.reward;
+let NET = NETS.reward;
 let n = NET.n, Wm = Float64Array.from(NET.W), BIAS = Float64Array.from(NET.bias), R = NET.rule;
 let IN = NET.sets.input, HID = NET.sets.hidden, OUT = NET.sets.output;
-function useNet(which) { NET = NETS[which]; n = NET.n; Wm = Float64Array.from(NET.W); BIAS = Float64Array.from(NET.bias); R = NET.rule; IN = NET.sets.input; HID = NET.sets.hidden; OUT = NET.sets.output; showFacts(); }
+function useNet(which, resetTrace = true) { NET = NETS[which]; n = NET.n; Wm = Float64Array.from(NET.W); BIAS = Float64Array.from(NET.bias); R = NET.rule; IN = NET.sets.input; HID = NET.sets.hidden; OUT = NET.sets.output; if (resetTrace) resetMemory(); showFacts(); }
 const H = NET.field.H, W = NET.field.W, PADDLE = 3, TOL = 1e-4, PIX = H * W;
+let memory = null, lastInput = null, cold = true;
+function resetMemory() { memory = new Float64Array(PIX); lastInput = new Float64Array(PIX); cold = true; }
+function remember(s) {
+  if (!NET.trace) return;
+  const cfg = NET.trace; let mean = 0;
+  for (let k = 0; k < PIX; k++) mean += Math.abs(s[IN[k]] - lastInput[k]) / PIX;
+  for (let k = 0; k < PIX; k++) {
+    const h = s[IN[k]];
+    const weight = cold || !cfg.focus ? 1 : Math.pow(Math.abs(h - lastInput[k]) / (mean + 1e-9), cfg.focus);
+    memory[k] = cfg.decay * memory[k] + (1 - cfg.decay) * weight * h;
+    lastInput[k] = h;
+  }
+  cold = false;
+}
 function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - R.rest; return r > 0 ? r / (1 - R.rest) : R.leak * r / R.rest; }
 function settle(drive) {
   const v = new Float64Array(n), s = new Float64Array(n), inbox = new Float64Array(n); let steps = 0;
@@ -97,10 +112,10 @@ function settle(drive) {
   return { s, steps };
 }
 // --- the same game as pong.py
-const game = { ball_r: 0, ball_c: 0, dr: 0, dc: 0, left: 0, right: 0 };
+const game = { age: 0, ball_r: 0, ball_c: 0, dr: 0, dc: 0, left: 0, right: 0 };
 let score = [0, 0], paused = false, target = null, keys = { up: false, down: false };
 function rnd(a, b) { return a + Math.floor(Math.random() * (b - a)); }
-function resetPoint() { game.ball_r = rnd(1, H - 1); game.ball_c = W >> 1; game.dr = rnd(-1, 2); game.dc = Math.random() < 0.5 ? -1 : 1; game.left = rnd(0, H - PADDLE + 1); game.right = rnd(0, H - PADDLE + 1); previous = null; }
+function resetPoint() { game.age = 0; resetMemory(); game.ball_r = rnd(1, H - 1); game.ball_c = W >> 1; game.dr = rnd(-1, 2); game.dc = Math.random() < 0.5 ? -1 : 1; game.left = rnd(0, H - PADDLE + 1); game.right = rnd(0, H - PADDLE + 1); previous = null; }
 let previous = null;  // the last frame's pixels, as pong.py keeps them
 function pixels() {
   const f = new Float64Array(PIX);
@@ -111,7 +126,11 @@ function pixels() {
 function observation() {
   const now = pixels(); if (previous === null) previous = now;
   const drive = new Float64Array(n);
-  for (let k = 0; k < PIX; k++) { drive[IN[k]] = now[k] * R.clamp; drive[IN[PIX + k]] = previous[k] * R.clamp; }
+  for (let k = 0; k < PIX; k++) {
+    drive[IN[k]] = now[k] * R.clamp;
+    if (NET.trace) drive[NET.sets.afterglow[k]] = NET.trace.amplitude * memory[k];
+    else drive[IN[PIX + k]] = previous[k] * R.clamp;
+  }
   return drive;
 }
 function step(netAction, humanMove) {
@@ -128,7 +147,9 @@ function step(netAction, humanMove) {
     else ended = side;
   }
   game.ball_r = r; game.ball_c = Math.max(0, Math.min(W - 1, c));
-  if (ended) { if (ended === 'net') score[0]++; else score[1]++; resetPoint(); }
+  game.age++;
+  if (!ended && game.age >= 400) ended = "draw";
+  if (ended) { if (ended === 'net') score[0]++; else if (ended === 'you') score[1]++; resetPoint(); }
   return ended;
 }
 // --- drawing
@@ -146,9 +167,9 @@ function draw() {
 const actsEl = document.getElementById('acts'), hiddenEl = document.getElementById('hidden'), settleEl = document.getElementById('settle');
 ['up', 'stay', 'down'].forEach(l => { const d = document.createElement('div'); d.className = 'act'; d.innerHTML = '<i></i><b>' + l + '</b>'; actsEl.appendChild(d); });
 for (let i = 0; i < HID.length; i++) hiddenEl.appendChild(document.createElement('i'));
-function showFacts() { document.getElementById('facts').innerHTML = `<dt>learned from</dt><dd>${NET.meta.learned_from}</dd><dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>balls returned, greedy, vs the scripted opponent</dt><dd>${(100 * NET.meta.return_rate).toFixed(0)}%</dd><dt>returns per point</dt><dd>${NET.meta.hits_per_point.toFixed(2)}</dd>`; }
+function showFacts() { document.getElementById('facts').innerHTML = `<dt>learned from</dt><dd>${NET.meta.learned_from}</dd><dt>owners</dt><dd>${n}</dd><dt>hidden</dt><dd>${HID.length}</dd><dt>parameters</dt><dd>${NET.meta.parameters}</dd><dt>shipped test: points won vs skill 0.7</dt><dd>${(100 * NET.meta.win_rate).toFixed(1)}%</dd><dt>shipped test: balls returned</dt><dd>${(100 * NET.meta.return_rate).toFixed(0)}%</dd><dt>shipped test: returns per point</dt><dd>${NET.meta.hits_per_point.toFixed(2)}</dd>`; }
 showFacts();
-document.getElementById('which').addEventListener('change', e => { useNet(e.target.checked && NETS.imitation ? 'imitation' : 'reward'); });
+document.getElementById('which').addEventListener('change', e => { useNet(e.target.checked && NETS.imitation ? 'imitation' : 'reward'); lesson = {drives:[], actions:[], targets:[], rewards:[]}; resetPoint(); });
 function showNet(s, steps, a) {
   OUT.forEach((k, i) => { actsEl.children[i].firstChild.style.height = Math.max(0, Math.min(1, s[k])) * 100 + '%'; actsEl.children[i].classList.toggle('chosen', i === a); });
   HID.forEach((k, i) => { hiddenEl.children[i].style.opacity = 0.08 + 0.92 * Math.max(0, Math.min(1, s[k])); });
@@ -161,22 +182,34 @@ window.addEventListener('keydown', e => { if (e.key === 'ArrowUp') { keys.up = t
 window.addEventListener('keyup', e => { if (e.key === 'ArrowUp') keys.up = false; if (e.key === 'ArrowDown') keys.down = false; });
 document.getElementById('pause').addEventListener('click', e => { paused = !paused; e.target.textContent = paused ? 'Resume' : 'Pause'; });
 document.getElementById('reset').addEventListener('click', () => { score = [0, 0]; });
+let lesson = {drives:[], actions:[], targets:[], rewards:[]};
+let submitLesson = async () => {};
+localLessons('pong', net => { NETS.reward = net; if (!document.getElementById('which').checked) useNet('reward', false); }).then(send => { submitLesson = send; });
 // --- loop: 12 pixel-steps per second
 resetPoint(); draw();
-window.__pong = { settle, step, observation, pixels, game, OUT, reset: resetPoint };
+window.__pong = { settle, remember, step, observation, pixels, game, OUT, reset: resetPoint };
 setInterval(() => {
   if (paused) return;
-  const { s, steps } = settle(observation());
+  const drive = observation();
+  const { s, steps } = settle(drive);
   const outs = OUT.map(k => s[k]); let a = 0; for (let i = 1; i < 3; i++) if (outs[i] > outs[a]) a = i;
   let humanMove = 0;
   if (keys.up !== keys.down) humanMove = keys.up ? -1 : 1;
   else if (target !== null) humanMove = Math.sign(target - game.left);
+  const row = Math.max(0, Math.min(H - 1, game.ball_r + game.dr));
+  const targetRow = row + (row < H / 2 ? 1 : -1);
+  const teaching = Math.sign(targetRow - (game.right + 1)) + 1;
+  const direction = game.dc;
+  remember(s);
   const ended = step(a, humanMove);
+  if (!document.getElementById('which').checked) {
+    lesson.drives.push(Array.from(drive)); lesson.actions.push(a); lesson.targets.push(teaching);
+    lesson.rewards.push(ended === 'you' ? 2 : ended === 'net' ? -1 : direction === 1 && game.dc === -1 ? 1 : 0);
+    if (ended) { const completed = lesson; lesson = {drives:[], actions:[], targets:[], rewards:[]}; submitLesson(completed); }
+  }
   showNet(s, steps, a); draw();
   document.getElementById('syou').textContent = score[0]; document.getElementById('snet').textContent = score[1];
-  if (ended) document.getElementById('status').textContent = ended === 'net' ? 'The net missed. Your point.' : 'You missed. The net scores.';
+  if (ended) document.getElementById('status').textContent = ended === 'draw' ? 'Long rally: a draw.' : ended === 'net' ? 'The net missed. Your point.' : 'You missed. The net scores.';
 }, 83);
 
-// The hub link: relative in a checkout (a file, or serve.py on localhost), the published hub anywhere else.
-{ const hub = document.querySelector('a.hub'); const local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); if (hub && !local) hub.href = hub.dataset.published; }
 </script>

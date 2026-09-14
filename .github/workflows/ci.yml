@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: install the recorded measurement environment
+      - name: install the pinned Cadence revision and evaluation dependencies
         run: |
           python -m pip install -r requirements-reproduce.txt
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -26,15 +26,13 @@ jobs:
           done
           git diff --stat --exit-code -- '*/index.html'
       - name: the ladder in the README and the hub is what the receipts say
-        run: python tools/ladder.py && git diff --stat --exit-code README.md 05_memory/README.md 06_interventions/README.md index.html hub_published.html
-      - name: install the current supported Cadence revision for compatibility checks
-        run: |
-          python -m pip uninstall -y cadence-net
-          python -m pip install -r requirements.txt
+        run: python tools/ladder.py && git diff --stat --exit-code README.md 03_connect_four/README.md 04_pong/README.md 05_memory/README.md 06_interventions/README.md index.html hub_published.html
       - name: reflection isolation and benchmark evidence tests against current Cadence
         run: python -m pip install pytest && python -m pytest -q tests
       - name: every rung runs end to end at a tiny budget and its receipt verifies
         run: python tools/smoke.py
+      - name: shipped players meet fresh performance thresholds
+        run: python tools/performance.py
       - name: every page works in a real browser and chooses what the engine chooses
         run: |
           python -m pip install playwright

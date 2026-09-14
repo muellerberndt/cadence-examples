@@ -34,6 +34,8 @@ SOURCES = [
     ("03_connect_four/connect4.py", HERE / "connect4.py"),
     ("03_connect_four/dataset.py", HERE / "dataset.py"),
 ]
+SOURCES += [(f"cadence/{p.name}", p) for p in sorted(Path(cd.__file__).parent.glob("*.py"))]
+
 INPUTS, OUTPUTS = 84, COLS
 GRID = [{"hidden": 64}, {"hidden": 128}]
 SCHEDULE = {"epochs": 15, "batch": 64, "decay": 0.8, "eta": 3.0}
@@ -128,6 +130,48 @@ class Net:
         scores = self.outputs(pos.planes()[None, :])[0]
         legal = pos.legal()
         return max(legal, key=lambda c: (scores[c], -abs(c - 3)))
+
+
+class DeliberatingPlayer:
+    """The learned policy breaks ties between depth-four counterfactual outcomes.
+
+    Planning uses the supplied game rules. Its strength is reported separately from
+    the raw network, and a search-only control receives the same planning budget.
+    """
+    def __init__(self, net: Net, depth: int = 4) -> None:
+        self.net, self.depth = net, depth
+
+    def move(self, pos: Position) -> int:
+        _, values = search(pos, self.depth)
+        scores = self.net.outputs(pos.planes()[None])[0]
+        return max(values, key=lambda c: (values[c], scores[c], -abs(c - 3)))
+
+
+def practice(net: Net, x: np.ndarray, y: np.ndarray, seed: int, games: int = 30, forbidden: np.ndarray | None = None) -> dict:
+    """Play, ask the teacher about mistakes, and rehearse old examples alongside them."""
+    rng = np.random.default_rng(seed)
+    excluded = set() if forbidden is None else {row.tobytes() for row in np.concatenate([forbidden, mirror_planes(forbidden)])}
+    frames, labels = [], []
+    for game in range(games):
+        pos = Position()
+        mine = game % 2 == 0
+        while not pos.terminal():
+            if mine:
+                action = net.move(pos)
+                target = search(pos, 4)[0]
+                if action != target and pos.planes().tobytes() not in excluded:
+                    frames.append(pos.planes())
+                    labels.append(target)
+            else:
+                action = search(pos, 2)[0]
+            pos = pos.play(action)
+            mine = not mine
+    if frames:
+        replay = rng.choice(len(y), min(len(y), max(512, len(labels))), replace=False)
+        net.fit(np.concatenate([x[replay], frames]), np.concatenate([y[replay], labels]),
+                epochs=3, batch=64, decay=.9, eta=.3)
+    return {"games": games, "corrective_examples": len(labels),
+            "rehearsal": "old training positions mixed with teacher corrections on visited positions"}
 
 
 class MLPPlayer:
@@ -247,6 +291,7 @@ def run(seed: int, out: Path) -> dict[str, Any]:
     # 2. Train the selected net on all training rows; read the test positions once.
     net = Net(selected["hidden"], SCHEDULE["eta"], seed)
     seconds = net.fit(x_train, y_train, **SCHEDULE)
+    practice_report = practice(net, x_train, y_train, seed + 1000, forbidden=x_test)
     steps = np.asarray(net.steps).mean(axis=0)
     agreement = net.agreement(x_test, y_test)
     print(f"selected hidden {selected['hidden']}: test agreement {agreement:.3f} ({seconds:.0f}s, {net.learner.parameters()} parameters)")
@@ -257,6 +302,14 @@ def run(seed: int, out: Path) -> dict[str, Any]:
         strength.append(play_match(net, kind, GAMES_PER_OPPONENT, seed))
         print(f"vs {kind}: {strength[-1]['wins']}-{strength[-1]['draws']}-{strength[-1]['losses']} (score {strength[-1]['score']:.2f})")
 
+    deployed = [play_match(DeliberatingPlayer(net), kind, GAMES_PER_OPPONENT, seed + 100)
+                for kind in ("random", "search-2", "search-4")]
+    class SearchOnly:
+        def move(self, pos):
+            return search(pos, 4)[0]
+    planning_control = [play_match(SearchOnly(), kind, GAMES_PER_OPPONENT, seed + 100)
+                        for kind in ("random", "search-2", "search-4")]
+    print("with deliberation:", deployed, flush=True)
     # 4. Controls and conformance.
     shuffled = Net(selected["hidden"], SCHEDULE["eta"], seed)
     shuffled.fit(x_train, rng.permutation(y_train), **{**SCHEDULE, "epochs": CONTROL_EPOCHS})
@@ -267,7 +320,9 @@ def run(seed: int, out: Path) -> dict[str, Any]:
         confusion[truth, guess] += 1
 
     comparison = baselines(x_train, y_train, x_test, y_test, selected["hidden"], seed)
-    export(net, HERE / "net.json", {"agreement": agreement, "strength": strength, "parameters": net.learner.parameters()})
+    out.parent.mkdir(parents=True, exist_ok=True)
+    export(net, out.parent / "net.json", {"agreement": agreement, "strength": strength, "deployed_strength": deployed, "parameters": net.learner.parameters()})
+    net.learner.save(out.parent / "learner.npz")
 
     body = {
         "dataset": {"file": str(DATA.relative_to(HERE)), **meta, "train_rows_after_mirroring": int(len(y_train)), "test_positions": int(len(y_test)), "split_seed": seed},
@@ -286,6 +341,7 @@ def run(seed: int, out: Path) -> dict[str, Any]:
         "test_agreement": agreement,
         "confusion": confusion.tolist(),
         "strength": strength,
+        "practice": practice_report, "deployed_strength": deployed, "search_only_strength": planning_control,
         "shuffled_label_control_agreement": label_control,
         "shuffled_label_control_epochs": CONTROL_EPOCHS,
         "conformance": conformance,
@@ -293,7 +349,9 @@ def run(seed: int, out: Path) -> dict[str, Any]:
         "boundary": {
             "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local",
             "goal_enters_only_through_the_nudge": True,
-            "teacher": "depth-4 alpha-beta with a threat-count heuristic; the net imitates it and cannot exceed it in kind",
+            "teacher": "depth-4 alpha-beta with a threat-count heuristic",
+            "deployed_player_uses_depth4_search_with_neural_tie_breaking": True,
+            "raw_policy_and_search_only_controls_reported_separately": True,
             "selection_on_board_reflection_grouped_validation_only": True,
             "test_positions_read_once_after_selection": True,
             "strength_measured_by_play_against_fixed_opponents_alternating_first_move": True,

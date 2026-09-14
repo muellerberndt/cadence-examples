@@ -19,19 +19,29 @@ and an explicitly unrolled recurrence with the same complete circuit information
 <!-- ladder -->
 | # | example | what it shows |
 |---|---|---|
-| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a smaller MLP (2,410 parameters) 0.967 in 50; [play it](https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618) |
-| 02 | [recall](02_recall/) | distinct one-hot keys written into 128-key Hebbian memory; receipt: historical distinct-key recall 1.00; dictionary also solves this lookup task; original transformer comparison has parser and position disadvantages; [play it](https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b) |
-| 03 | [Connect Four](03_connect_four/) | self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead; receipt: agrees with a depth-4 search on 0.529 of positions (MLP 0.533); 98-0-2 vs random, 2-1-97 vs depth 2; [play it](https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc) |
-| 04 | [Pong](04_pong/) | a paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history; receipt: reward-trained paddle returns 87.8% of balls against 92.9% for backprop REINFORCE on the same rollout budget; the same net taught the tracker's moves 96.0%; [play it](https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04) |
+| 01 | [digits](01_digits/) | 8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners; receipt: 0.962 ± 0.003 held-out in 20 epochs; a smaller MLP (2,410 parameters) 0.967 in 50; [browser page](01_digits/index.html) |
+| 02 | [recall](02_recall/) | residual fast seams learn on each write and correct old associations; receipt: residual writes: 100.0% correct after replacing repeatedly written associations; exact dictionary also succeeds; [browser page](02_recall/index.html) |
+| 03 | [Connect Four](03_connect_four/) | imitate a teacher, play, and revisit mistakes; receipt: with depth-4 lookahead: 100.0% wins vs random, 56.0% vs depth 2; search alone 51.0%; raw policy 1.0%; [browser page](03_connect_four/index.html) |
+| 04 | [Pong](04_pong/) | a paddle sees one frame and keeps a fading trace of its activity; receipt: one frame plus a fading neural trace; imitation then practice: 94.5% points won vs skill-0.7 tracker, 94.9% balls returned; stronger opponent results in the receipt; [browser page](04_pong/index.html) |
 | 05 | [updating memory](05_memory/) | a fixed-size memory corrects its own readback when an association changes; receipt: 128 writes, orthogonal keys: residual 1.000, additive 0.260, dictionary 1.000, trained transformer 0.145; correlated-key results in the receipt |
 | 06 | [circuit interventions](06_interventions/) | owners read incoming messages and repair their local state as drives, wiring and ablations change; receipt: declared feedback circuits answer new interventions without training; maximum residual 7.4e-12, trained MLP mean MSE 0.0052; direct and tied-recurrence controls also solve the task |
 <!-- /ladder -->
 
-Examples 01–04 retain **historical receipts**. Their numbers describe the pinned source
-versions, and those receipts did not bind the Cadence dependency. The Connect Four
-receipt predates a board/reflection split fix; the recall transformer comparison has
-parser and positional-embedding disadvantages. Each tutorial explains its limits.
-The earlier experiments remain available at [tag v0.5.0](https://github.com/muellerberndt/cadence-examples/tree/v0.5.0).
+All six examples run on the pinned current core. Their receipts bind the producer
+and Cadence implementation; historical versions remain in Git history.
+
+| example | mechanism used |
+|---|---|
+| digits | local free/nudged learning; capacity selected on validation images |
+| recall | residual fast writes that correct a previous association |
+| Connect Four | imitation, play, corrective teaching; optional explicit lookahead |
+| Pong | one incoming frame, carried `Afterglow`, imitation, practice and rehearsal |
+| updating memory | residual writes with additive, retrieval and learned controls |
+| circuit interventions | feedback settlement, warm state and independent residual checks |
+
+For the game-learning sequence and persistent browser lessons, see
+[Training a player](TRAINING.md). Temporal memory is used where observations omit
+history; static images and fully visible boards do not need an extra frame buffer.
 
 ## Run
 
@@ -60,7 +70,7 @@ python 06_interventions/demo.py
 
 On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`. The numbered
 tutorials explain the full training runs; those write new receipts and, for examples
-01, 03 and 04, trained nets. Examples 02 and 04–06 use PyTorch for their trained
+01, 03 and 04, trained nets. Examples 04–06 use PyTorch for their trained
 baselines: `python -m pip install torch`.
 
 To develop against a sibling Cadence checkout, install it with
@@ -69,22 +79,10 @@ the saved receipts still certify their original source bytes.
 
 ## Reproduction
 
-Check the saved measurements in a separate environment using their original
-Cadence pin. From the repository root:
-
-```bash
-python -m venv .venv-reproduce
-source .venv-reproduce/bin/activate
-python -m pip install -r requirements-reproduce.txt
-python tools/verify_receipts.py
-deactivate
-```
-
-This checks source integrity and recorded arithmetic, not a rerun of training.
-Examples 01–04 report their older Git provenance. The receipts for 05–06 bind the
-Cadence revision in `requirements-reproduce.txt`; compatibility checks on a newer
-library do not replace those measurements. CI verifies saved artifacts with this
-pin, then installs `requirements.txt` for current-library checks.
+Install `requirements-reproduce.txt` to check the recorded measurements with the
+same supported core revision, then run `python tools/verify_receipts.py`. This checks
+source integrity and recorded arithmetic, not a rerun of training. CI also runs small
+fresh experiments, performance checks, and Python/JavaScript parity checks.
 
 In your ordinary development environment:
 

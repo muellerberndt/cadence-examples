@@ -1,16 +1,10 @@
-"""04 Pong: a paddle learns from pixels and reward, by nudging toward the actions that paid.
+"""04 Pong: a single-frame brain learns a teacher, practises, and revisits its mistakes.
 
-Run:  python train.py                      (a few minutes; then a backprop baseline on the same rollout budget)
-      python train.py --verify receipt.json
-
-The policy is a patch net: 384 input owners (the pixels of two frames), hidden owners, 3
-output owners (up, stay, down). Acting is a free settlement and a draw from the softmax of the output
-activations. Learning is the same free/nudged rule as classification, with one change:
-the target of the nudge is the action that was taken, and the strength of the nudge is
-that action's advantage, so actions that paid are pulled toward and actions that cost are
-pushed away. Converged small nudges estimate a temperature-scaled policy gradient. Each seam then
-steps on a running average of its own contrasts divided by their running RMS, the local
-form of an adaptive step, which is what the baseline gets from Adam.
+Run python train.py, then python build_page.py. Add --device cuda or --device mps
+for GPU execution. Use --output runs/my-pong/receipt.json to keep separate candidates.
+Each observation is 192 pixels. Afterglow carries prior input activity; reward
+replay uses the causal clamps saved when each action was taken. The teacher can
+see simulator velocity; the learned player must infer it from its own trace.
 """
 
 from __future__ import annotations
@@ -30,11 +24,13 @@ from pong import ACTIONS, H, MAX_RALLY, W, Pong
 
 HERE = Path(__file__).resolve().parent
 SOURCES = [("04_pong/train.py", Path(__file__).resolve()), ("04_pong/pong.py", HERE / "pong.py")]
+SOURCES += [(f"cadence/{p.name}", p) for p in sorted(Path(cd.__file__).parent.glob("*.py"))]
+
 INPUTS = 2 * H * W  # two frames
-HIDDEN = 32
+HIDDEN = 128
 ENVS, HORIZON = 64, 64  # parallel games, steps per rollout
 GAMMA = 0.5  # short credit horizon: the shaping already says whether each step helped
-ITERATIONS = 300
+ITERATIONS = 30
 BATCH = 256
 ETA, DECAY = 5e-4, 1.0  # the local step per seam, with no anneal: the running RMS below sets the scale
 # Each seam steps on a running average of its own contrasts, divided by the running RMS of them,
@@ -44,7 +40,7 @@ ETA, DECAY = 5e-4, 1.0  # the local step per seam, with no anneal: the running R
 MOMENTUM, RMS, FLOOR = 0.9, 0.999, 1e-8
 ADVANTAGE_CLIP: float | None = None  # clip normalised advantages to [-clip, clip] so the nudge stays small
 CONFIG = cd.LearnerConfig(
-    beta=0.1, eta=ETA, eta_bias=0.02, temperature=0.2, tolerance=3e-3, nudged_steps=12, free_steps=100
+    beta=0.1, eta=ETA, eta_bias=0.02, temperature=0.2, tolerance=1e-4, nudged_steps=24, free_steps=100
 )
 EVAL_POINTS = 1000
 
@@ -62,8 +58,12 @@ def returns_from(rewards: np.ndarray, dones: np.ndarray) -> np.ndarray:
 class PatchPolicy:
     """The patch-net policy and its reward-nudged learner."""
 
-    def __init__(self, hidden: int, seed: int, *, device: str = "cpu") -> None:
+    def __init__(self, hidden: int, seed: int, *, device: str = "cpu", memory: bool = True, decay: float = 0.5, focus: float = 0.0) -> None:
         self.wiring = cd.layered(INPUTS, hidden, ACTIONS, density=1.0, seed=seed)
+        self.memory = memory
+        if memory:
+            self.wiring.sets["input"] = tuple(range(H * W))
+            self.wiring.sets["afterglow"] = tuple(range(H * W, INPUTS))
         self.learner = cd.Learner(
             cd.Settlement(
                 self.wiring, cd.learning_rule(dt=1.0),
@@ -73,19 +73,44 @@ class PatchPolicy:
         )
         self.rng = np.random.default_rng(seed)
         self.steps: list[float] = []
+        self.trace = cd.Afterglow(self.wiring, source="input", decay=decay, focus=focus,
+                                 amplitude=self.learner.engine.rule.clamp_amplitude) if memory else None
+        self.last_drive: np.ndarray | None = None
+
+    def reset(self, batch: int, rows: np.ndarray | None = None) -> None:
+        if self.trace is not None:
+            self.trace.reset(batch, rows=rows)
+
+    def observation(self, env: Pong) -> np.ndarray:
+        return env.frames() if self.memory else env.observation()
 
     def drive(self, frames: np.ndarray) -> np.ndarray:
-        return self.learner.engine.clamp_levels(np.pad(frames, ((0, 0), (0, self.wiring.n - INPUTS))))
+        if frames.shape[1] == self.wiring.n:
+            return frames  # replay the exact causal clamp recorded during the rollout
+        drive = np.zeros((len(frames), self.wiring.n))
+        count = H * W if self.memory else INPUTS
+        drive[:, :count] = self.learner.engine.clamp_levels(frames[:, :count])
+        return self.trace.clamp(drive) if self.trace is not None else drive
 
     def probabilities(self, frames: np.ndarray) -> np.ndarray:
-        s = self.learner.free(self.drive(frames)).activation[:, self.learner.output_index]
+        self.last_drive = self.drive(frames)
+        free = self.learner.free(self.last_drive)
+        if self.trace is not None:
+            self.trace.update(free)
+        s = free.activation[:, self.learner.output_index]
         z = s / self.learner.config.temperature
         z = z - z.max(axis=1, keepdims=True)
         p = np.exp(z)
         return p / p.sum(axis=1, keepdims=True)
 
     def act(self, frames: np.ndarray, greedy: bool = False) -> np.ndarray:
-        p = self.probabilities(frames)
+        config = self.learner.config
+        if greedy:
+            self.learner.config = dataclasses.replace(config, tolerance=1e-4)
+        try:
+            p = self.probabilities(frames)
+        finally:
+            self.learner.config = config
         if greedy:
             return p.argmax(axis=1)
         return (self.rng.random(len(p))[:, None] < p.cumsum(axis=1)).argmax(axis=1)
@@ -156,10 +181,12 @@ def rollout(policy: Any, env: Pong) -> tuple[np.ndarray, np.ndarray, np.ndarray,
     frames, actions, rewards, dones = [], [], [], []
     hits = misses = 0
     for _ in range(HORIZON):
-        f = env.observation()
+        f = policy.observation(env) if isinstance(policy, PatchPolicy) else env.observation()
         a = policy.act(f)
         r, d, info = env.step(a)
-        frames.append(f)
+        frames.append(policy.last_drive.copy() if isinstance(policy, PatchPolicy) else f)
+        if isinstance(policy, PatchPolicy):
+            policy.reset(env.envs, rows=d)
         actions.append(a)
         rewards.append(r)
         dones.append(d)
@@ -173,6 +200,8 @@ def rollout(policy: Any, env: Pong) -> tuple[np.ndarray, np.ndarray, np.ndarray,
 def train(policy: Any, seed: int, iterations: int, log: str) -> tuple[list[dict[str, float]], float]:
     env = Pong(ENVS, seed=seed)
     history = []
+    if isinstance(policy, PatchPolicy):
+        policy.reset(env.envs)
     eta = ETA
     t0 = time.perf_counter()
     for it in range(1, iterations + 1):
@@ -192,9 +221,14 @@ def evaluate(policy: Any, seed: int, points: int, *, opponent_skill: float = 0.7
     """Greedy play until ``points`` points have ended: hits per point and rally length."""
     env = Pong(ENVS, seed=seed, opponent_skill=opponent_skill)
     hits = misses = ended = wins = 0
+    if hasattr(policy, "reset"):
+        policy.reset(env.envs)
     steps = 0
     while ended < points:
-        r, d, info = env.step(policy.act(env.observation(), greedy=True))
+        obs = policy.observation(env) if hasattr(policy, "observation") else env.observation()
+        r, d, info = env.step(policy.act(obs, greedy=True))
+        if hasattr(policy, "reset"):
+            policy.reset(env.envs, rows=d)
         hits += int(info["hit"].sum())
         misses += int(info["miss"].sum())
         wins += int(info["opponent_miss"].sum())
@@ -203,24 +237,35 @@ def evaluate(policy: Any, seed: int, points: int, *, opponent_skill: float = 0.7
     return {"points": ended, "wins": wins, "losses": misses, "draws": ended - wins - misses, "win_rate": wins / ended, "opponent_skill": opponent_skill, "hits": hits, "misses": misses, "hits_per_point": hits / ended, "return_rate": hits / max(hits + misses, 1)}
 
 
-IMITATION_STEPS, IMITATION_EPOCHS = 400, 8
+IMITATION_STEPS, IMITATION_EPOCHS = 800, 12
 
 
-def imitation(seed: int, *, device: str = "cpu") -> tuple[PatchPolicy, dict[str, Any]]:
+def teacher(env: Pong) -> np.ndarray:
+    """Return at an edge of the paddle to keep the ball diagonal, rather than drawing flat rallies.
+
+    The teacher can see simulator velocity; the learned policy must infer it from its trace.
+    """
+    row = np.clip(env.ball_r + env.ball_dr, 0, H - 1)
+    target = row + np.where(row < H // 2, 1, -1)
+    return (np.sign(target - (env.right + 1)) + 1).astype(int)
+
+
+def imitation(seed: int, *, device: str = "cpu", decay: float = 0.5, focus: float = 0.0) -> tuple[PatchPolicy, dict[str, Any]]:
     """The same net taught by the scripted tracker: rollouts of the tracker with random slips, labels from the tracker."""
-    from pong import track_policy
-
     env = Pong(ENVS, seed=seed + 7)
     rng = np.random.default_rng(seed)
     frames, labels = [], []
+    policy = PatchPolicy(HIDDEN, seed, device=device, decay=decay, focus=focus)
     for _ in range(IMITATION_STEPS):
-        obs = env.observation()
-        want = track_policy(env)
-        frames.append(obs)
+        obs = policy.observation(env)
+        want = teacher(env)
+        policy.probabilities(obs)
+        frames.append(policy.last_drive.copy())
         labels.append(want)
-        env.step(np.where(rng.random(ENVS) < 0.3, rng.integers(0, ACTIONS, ENVS), want))
+        _, done, _ = env.step(np.where(rng.random(ENVS) < 0.3, rng.integers(0, ACTIONS, ENVS), want))
+        policy.reset(env.envs, rows=done)
     x, y = np.concatenate(frames), np.concatenate(labels)
-    policy = PatchPolicy(HIDDEN, seed, device=device)
+    policy.rehearsal = (x[::max(1, len(x) // 512)].copy(), y[::max(1, len(y) // 512)].copy())
     learner = policy.learner
     learner.config = dataclasses.replace(learner.config, temperature=0.1)
     t0 = time.perf_counter()
@@ -234,6 +279,70 @@ def imitation(seed: int, *, device: str = "cpu") -> tuple[PatchPolicy, dict[str,
     return policy, {"rows": int(len(y)), "epochs": IMITATION_EPOCHS, "seconds": seconds, "parameters": policy.parameters()}
 
 
+def practice(policy: PatchPolicy, seed: int, iterations: int) -> dict:
+    """Explore after imitation, then coach mistakes on the states actually encountered.
+
+    Replay clamps include only the trace available when the action was taken.
+    Validation selects a retained checkpoint; test opponents never train the model.
+    """
+    initial = evaluate(policy, 200, 500)
+    best_score, best_engine = initial["win_rate"], policy.learner.engine
+    history = []
+    coached = 0
+    env = Pong(ENVS, seed=seed)
+    policy.reset(ENVS)
+    t0 = time.perf_counter()
+    for iteration in range(1, iterations + 1):
+        drives, actions, labels, rewards, dones = [], [], [], [], []
+        for _ in range(HORIZON):
+            labels.append(teacher(env))
+            action = policy.act(policy.observation(env))
+            drives.append(policy.last_drive.copy())
+            reward, done, info = env.step(action)
+            rewards.append(reward + 2 * info["opponent_miss"])
+            dones.append(done)
+            actions.append(action)
+            policy.reset(ENVS, rows=done)
+        x, a, y = np.concatenate(drives), np.concatenate(actions), np.concatenate(labels)
+        reward = np.asarray(rewards)
+        returns = np.zeros_like(reward)
+        running = np.zeros(ENVS)
+        for t in reversed(range(HORIZON)):
+            running = reward[t] + .97 * running * (~np.asarray(dones[t]))
+            returns[t] = running
+        advantage = returns.ravel()
+        advantage = np.clip((advantage - advantage.mean()) / (advantage.std() + 1e-8), -2, 2)
+        learner = policy.learner
+        order = policy.rng.permutation(len(a))
+        for start in range(0, len(a), BATCH):
+            ix = order[start:start + BATCH]
+            learner.config = dataclasses.replace(learner.config, eta=.003, eta_bias=.00003,
+                                                  momentum=0, normalize=0)
+            free, _ = learner.step(x[ix], a[ix], weight=advantage[ix])
+            wrong = free.free.activation[:, learner.output_index].argmax(axis=1) != y[ix]
+            if wrong.any():
+                learner.config = dataclasses.replace(learner.config, eta=.1, eta_bias=.001)
+                learner.step(x[ix], y[ix])
+                coached += int(wrong.sum())
+        if hasattr(policy, "rehearsal"):
+            learner.step(*policy.rehearsal)
+        if iteration % 10 == 0 or iteration == iterations:
+            result = evaluate(policy, 200, 500)
+            keep = result["win_rate"] >= best_score
+            if keep:
+                best_score, best_engine = result["win_rate"], learner.engine
+            history.append({"iteration": iteration, "validation": result, "retained": keep,
+                            "coached_rows": coached})
+            print(f"practice {iteration}: validation win rate {result['win_rate']:.3f}, retained {keep}", flush=True)
+            env = Pong(ENVS, seed=seed + iteration)
+            policy.reset(ENVS)
+    policy.learner.engine = best_engine
+    return {"initial_validation": initial, "history": history, "iterations": iterations,
+            "coached_rows": coached, "seconds": time.perf_counter() - t0,
+            "reward": "return/miss and distance shaping, plus 2 for opponent miss; discount .97",
+            "selection": "best validation win rate on seed 200; no test feedback"}
+
+
 def export(policy: PatchPolicy, path: Path, meta: dict) -> None:
     engine = policy.learner.engine
     rule = engine.rule
@@ -244,7 +353,8 @@ def export(policy: PatchPolicy, path: Path, meta: dict) -> None:
         "bias": [round(float(b), 5) for b in engine.bias],
         "rule": {"slope": rule.slope, "threshold": rule.threshold, "leak": rule.leak, "dt": rule.dt, "clamp": rule.clamp_amplitude, "rest": rule.rest_emission},
         "temperature": policy.learner.config.temperature,
-        "field": {"H": H, "W": W, "frames": 2},
+        "field": {"H": H, "W": W, "frames": 1 if policy.memory else 2},
+        "trace": policy.trace.to_dict() if policy.trace is not None else None,
         "meta": meta,
     }
     path.write_text(json.dumps(payload, separators=(",", ":")))
@@ -254,46 +364,52 @@ def run(seed: int, out: Path, iterations: int, *, device: str = "cpu") -> dict[s
     out.parent.mkdir(parents=True, exist_ok=True)
     patch = PatchPolicy(HIDDEN, seed, device=device)
     untrained = evaluate(patch, seed + 100, 200)
-    print(f"untrained: {untrained['hits_per_point']:.2f} hits per point")
-    history, seconds = train(patch, seed, iterations, "patch net")
+    patch, imitation_meta = imitation(seed, device=device)
+    imitation_final = evaluate(patch, seed + 100, EVAL_POINTS)
+    export(patch, out.parent / "net_imitation.json", {**imitation_final,
+           "parameters": patch.parameters(), "learned_from": "a teacher's diagonal returns"})
+    practiced = practice(patch, seed + 1000, iterations)
     final = evaluate(patch, seed + 100, EVAL_POINTS)
-    print(f"patch net: {final['hits_per_point']:.2f} hits per point, return rate {final['return_rate']:.2f} ({patch.parameters()} parameters, {seconds:.0f}s)")
-
+    tests = [evaluate(patch, s, EVAL_POINTS, opponent_skill=skill)
+             for skill in (.7, 1.0) for s in (101, 102, 103)]
+    seconds = imitation_meta["seconds"] + practiced["seconds"]
+    history = []
     baseline = TorchPolicy(HIDDEN, seed, device=device)
-    base_history, base_seconds = train(baseline, seed, iterations, "backprop")
+    base_history, base_seconds = train(baseline, seed, iterations, "MLP reward-only reference")
     base_final = evaluate(baseline, seed + 100, EVAL_POINTS)
-    print(f"backprop: {base_final['hits_per_point']:.2f} hits per point, return rate {base_final['return_rate']:.2f} ({baseline.parameters()} parameters, {base_seconds:.0f}s)")
-
-    conformance = cd.conformance(patch.learner.engine, patch.drive(Pong(1, seed=1).observation())[0], steps=100)
-    export(patch, out.parent / "net.json", {"hits_per_point": final["hits_per_point"], "return_rate": final["return_rate"], "parameters": patch.parameters(), "learned_from": "reward"})
-
-    imitator, imitation_meta = imitation(seed, device=device)
-    imitation_final = evaluate(imitator, seed + 100, EVAL_POINTS)
-    print(f"imitation of the tracker: {imitation_final['hits_per_point']:.2f} hits per point, return rate {imitation_final['return_rate']:.2f} ({imitation_meta['seconds']:.0f}s)", flush=True)
-    export(imitator, out.parent / "net_imitation.json", {"hits_per_point": imitation_final["hits_per_point"], "return_rate": imitation_final["return_rate"], "parameters": imitator.parameters(), "learned_from": "the scripted tracker's actions"})
+    conformance = cd.conformance(patch.learner.engine, patch.drive(Pong(1, seed=1).frames())[0], steps=100)
+    export(patch, out.parent / "net.json", {**final, "parameters": patch.parameters(),
+           "learned_from": "imitation, practice, and corrective teaching"})
+    patch.learner.save(out.parent / "learner.npz")
+    np.savez_compressed(out.parent / "rehearsal.npz", x=patch.rehearsal[0], y=patch.rehearsal[1])
+    print(f"staged paddle: {final['win_rate']:.3f} wins, {final['return_rate']:.3f} returns", flush=True)
     body = {
+        "memory": {"incoming_frames": 1, "trace": patch.trace.to_dict(), "replay": "frozen causal clamps; no gradient through time"},
         "execution": {"device": device, "backend": patch.learner.engine.backend,
                       "precision": patch.learner.engine.precision, "environment_device": "cpu"},
         "environment": {"H": H, "W": W, "max_rally": MAX_RALLY, "envs": ENVS, "horizon": HORIZON, "gamma": GAMMA, "iterations": iterations, "batch": BATCH, "eta": ETA, "decay": DECAY},
-        "local_step": {"momentum": MOMENTUM, "rms": RMS, "floor": FLOOR, "bias_corrected": True},
+        "local_step": {"momentum": 0, "normalize": 0, "reward_eta": .003, "reward_eta_bias": .00003, "teacher_eta": .1, "teacher_eta_bias": .001, "practice_discount": .97},
         "config": CONFIG.to_dict(),
         "wiring": patch.wiring.summary(),
         "rule": patch.learner.engine.rule.to_dict(),
         "learner": patch.learner.to_dict(),
         "untrained": untrained,
+        "practice": practiced, "held_out_play": tests,
         "history": history,
         "training_seconds": seconds,
-        "mean_free_steps": float(np.mean(patch.steps)),
+        "mean_free_steps": float(np.mean(patch.steps)) if patch.steps else 0.0,
         "final": final,
         "imitation": {**imitation_meta, "final": imitation_final},
         "conformance": conformance,
         "comparison": [{"model": f"MLP {INPUTS}-{HIDDEN}-{ACTIONS}, REINFORCE with Adam", "parameters": baseline.parameters(), "history": base_history, "training_seconds": base_seconds, "final": base_final}],
         "boundary": {
-            "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local; nudge target = action taken, nudge weight = normalised advantage; each seam's step is its running-average contrast over its running RMS",
+            "learning_rule": "free/nudged contrastive Hebbian, centered, owner-local; plain local steps, advantage-weighted action nudges and teacher corrections",
             "goal_enters_only_through_the_nudge": True,
-            "reward": "+1 return, -1 miss, plus the change in paddle-to-ball row distance each step (task-specific distance shaping)",
+            "reward": "practice: +1 return, -1 miss, +2 opponent miss, plus paddle-to-ball distance shaping; reward-only MLP omits opponent-miss bonus and uses environment gamma",
             "opponent": "scripted tracker with skill 0.7, not learned",
-            "same_rollout_budget_for_the_baseline": True,
+            "staged_policy_receives_teacher_labels_baseline_does_not": True,
+            "same_play_rollout_budget_after_imitation": True,
+            "baseline_observation": "two explicit frames; patch sees one frame and keeps its own input-activity trace",
             "evaluation_is_greedy_play_on_fresh_seeds": True,
             "imitation_net_is_a_second_policy_for_the_page_and_is_not_learned_from_reward": True,
         },

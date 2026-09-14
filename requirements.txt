@@ -1,4 +1,4 @@
-cadence-net[fast] @ git+https://github.com/muellerberndt/cadence@1ca1266ed6aa5cd764c0d4a2b9c65d94f13d76c7
+cadence-net[fast] @ git+https://github.com/muellerberndt/cadence@3df6ecf6f86178024a36980e9d77a1cba90a44bf
 scikit-learn
 pandas
 scipy

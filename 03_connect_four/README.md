@@ -1,141 +1,76 @@
 # 03 · Connect Four
 
-The checked-in receipt is a **historical measurement** of its preserved source version.
-From the repository root, `python tools/verify_receipts.py 03_connect_four` checks that provenance. It does not
-certify later code or Cadence changes; a fresh run writes a new receipt.
-
-
-A patch net learns to play Connect Four from positions a shallow search has labelled, and
-then plays you in the browser, settling in the page for every move. The page is the point
-of this rung: you can watch seven output owners come to rest and see which one wins. Read
-[How a patch net learns](../HOW_IT_LEARNS.md) first for the mechanism; this page is about
-turning a game into something the rule can learn, and being honest about what it learned.
-
-From the repository root, after activating your Python environment:
+A patch net imitates a teacher, plays games, and revisits teacher examples where
+its actions disagree. In the browser it can also compare possible futures using
+four-ply search. Toggle **Think four moves ahead** to compare that player with its
+raw learned policy.
 
 ```bash
+# From the repository root
 python -m pip install -r requirements.txt
-cd 03_connect_four
-python dataset.py                  # a few minutes: self-play positions labelled by a depth-4 search
-python train.py                    # under an hour: selection, training, matches, baselines, receipt
-python build_page.py               # embeds net.json into index.html; open it in a browser
-python train.py --verify receipt.json
+python serve.py connect-four
+python serve.py connect-four --learn  # save lessons and resume learning locally
 ```
 
-## 1. Where the positions come from
+The board supplies two 42-cell planes: the current player's discs and the
+opponent's. Hidden and output owners communicate through reciprocal seams;
+free/nudged local updates learn seven action scores. A fully visible board needs
+no temporal image buffer. Illegal moves are masked.
 
-There are no labelled Connect Four positions to download, so `dataset.py` makes them:
+## Learning and deliberation
 
-1. **Games.** Two players who search two plies ahead play each other, and a quarter of
-   the time either plays a random legal column instead. The randomness matters: two
-   deterministic searchers would play the same game every time. 8,000 games.
-2. **Positions.** Every non-terminal position of every game, from the side to move's
-   point of view, deduplicated: 107,637 of them.
-3. **Labels.** For each position, the column a depth-4 alpha-beta search prefers for the
-   side to move. The search sees wins and losses four plies out and scores everything
-   else by counting two- and three-in-a-window threats, centre first on ties. It is the
-   teacher, and the net can learn at most what the teacher knows.
+Training compares 64 and 128 hidden owners on validation data, then trains the
+selected size. A depth-4 search labels the demonstrations. Equivalent boards and
+their reflections stay together across splits, preventing mirrored test leakage.
+The practice stage plays 30 games against a depth-2 opponent, asks the teacher
+about disagreements, and rehearses earlier training examples. Those games start
+from the empty board; repeated deterministic paths limit their diversity.
+Held-out boards and their reflections are excluded from corrective teaching.
 
-`connect4.py` is the game on bitboards: a position is two integers, one per side, and a
-four-in-a-row test is four shifts. The dataset's digest goes into the receipt, and
-`--verify` checks the file on disk against it.
+Deliberation is an architectural pattern. The browser's supplied game simulator
+branches legal moves; a supplied threat heuristic evaluates futures. Learned
+scores break ties between equally valued moves. This is a strong playable
+composition, but its strength cannot be attributed entirely to the neural policy.
+The receipt reports three separate players: raw policy, policy plus search, and
+search alone, with identical search budgets for the last two.
 
-## 2. From a board to a clamp
+Cadence also provides a tested example with a **learned terminal evaluator**:
+[Comparing possible futures](https://github.com/muellerberndt/cadence/blob/main/docs/deliberation.md).
+Neither example claims to learn the transition model.
 
-The board reaches the net as 84 input owners: one plane of the mover's discs and one of
-the opponent's, 6 × 7 each, clamped at 1 where a disc sits and 0 elsewhere. Because the
-planes are "mine" and "theirs" rather than "red" and "yellow", one net plays both colours.
-The 7 output owners are the columns. Training rows are mirrored left-right (and the label
-with them), which doubles the data at no cost; test positions are not mirrored.
+With `--learn`, completed human games provide new positions for teacher correction
+and rehearsal. Episodes and checkpoints persist under `runs/learning/`. The server
+checks retention on initial rehearsal examples before accepting an update. See
+[Training a player](../TRAINING.md) for the complete lifecycle and its limits.
 
-## 3. The net and a move
+## Measured play
 
-`cadence.layered(84, hidden, 7, density=1.0)` with hidden 64 or 128: every board owner
-reaches every hidden owner, every hidden owner reaches every column owner, and each
-hidden↔column pair is one seam. To move, the net settles under the board's clamp to a
-tolerance of 10⁻⁴ (about 30 steps), the full columns are masked, and the most active
-remaining column owner is played. There is no search in the net and no lookahead; the
-search was its teacher.
+<!-- game-results -->
+Wins / draws / losses, 100 games per opponent:
 
-## 4. How it learns
+| player | random | depth 2 | depth 4 |
+|---|---|---|---|
+| raw policy | 95 / 0 / 5 | 1 / 3 / 96 | 5 / 5 / 90 |
+| policy + depth-4 search | 100 / 0 / 0 | 56 / 9 / 35 | 57 / 9 / 34 |
+| depth-4 search alone | 100 / 0 / 0 | 51 / 11 / 38 | 45 / 21 / 34 |
+<!-- /game-results -->
 
-This is classification with seven classes, and the mechanism is exactly section 3 of
-[How a patch net learns](../HOW_IT_LEARNS.md): for a batch of 64 positions, a free
-settlement, a settlement nudged toward the teacher's column (`β = 0.1`, `T = 0.1`) and one
-nudged away, and every seam moving on the difference of its own two endpoint products.
-Fifteen epochs over 193,746 rows, `η` from 3 decaying by 0.8 per epoch.
+## Reproduce
 
-Why imitation and not self-play reinforcement learning? Because a search that already
-plays well is available and cheap, so the question this rung asks is "can the rule absorb
-a teacher's policy into a net that then plays without searching", which is answerable in
-an hour and measurable exactly. Learning a game from the win/loss signal alone is the
-harder problem and it is what Pong (rung 04) does in a smaller setting.
+```bash
+cd 03_connect_four
+python dataset.py
+python train.py --output receipt.json
+python ../tools/rehearsal.py
+python build_page.py
+```
 
-## 5. Selection, matches, and the control
-
-The hidden size is chosen by agreement with the teacher on a validation split of the
-training rows; the test positions are read once. Then the net plays 100 games against
-each of four opponents, alternating who starts, from random two-ply openings (the net and
-the searches are deterministic, so without the random opening every game on the same
-side would be the same game): a random mover, and searches of depth 1, 2, and 4 (the
-teacher itself). An MLP of the selected size trained by Adam on the same rows plays the
-same matches. A net trained for five epochs on shuffled labels is the control.
-
-## 6. The numbers
-
-From `receipt.json`: 107,637 positions from 8,000 games (193,746 training rows after
-mirroring, 10,764 held-out positions), validation hidden 64: 0.498, hidden 128: 0.518,
-100 games per opponent from random two-ply openings, one laptop core.
-
-| model | parameters | epochs | training | agreement | vs random | vs depth 1 | vs depth 2 | vs depth 4 |
-|---|---|---|---|---|---|---|---|---|
-| patch net 84-128-7, free/nudged rule | 11,888 | 15 | 1181 s | 0.527 | 91-0-9 | 25-1-74 | 2-0-98 | 9-2-89 |
-| MLP 84-128-7, Adam | 11,783 | 15 | 11 s | 0.533 | 93-0-7 | 29-4-67 | 8-8-84 | 2-4-94 |
-| MLP 84-128-7, Adam | 11,783 | 50 | 32 s | 0.557 | 94-0-6 | 30-3-67 | 5-2-93 | 9-0-91 |
-
-Records are wins-draws-losses for the net. The shuffled-label control agrees with the
-teacher on 0.147 of positions, which is chance for seven columns. Agreement is a hard
-target: on a sample of positions 84% have a unique best move at depth 4, so a perfect
-imitator would score above 0.9.
-
-Read it plainly. The patch net and the MLP learn the same amount from these positions:
-about half the teacher's moves, and the MLP with three times the epochs gains three
-points. Both beat a random mover and both lose to a two-ply search, because a policy that
-agrees with its teacher half the time misses a forced block often enough to lose almost
-every game against an opponent that never does. That is what imitation of a shallow
-search on a hundred thousand positions buys a one-hidden-layer net, whichever rule trains
-it; a stronger player needs search at play time or far more positions, and this example
-deliberately has neither. Wall-clock is the usual factor: the settlements cost a hundred
-times the MLP's passes.
-
-So when you play the page: it will block some threats and miss others, it will take an
-open win most of the time, and a patient human beats it. What you are watching is a net
-that learned, locally, to reproduce half of a search's judgement.
-
-## 7. What is different from the MLP
-
-The two policies have the same shape, the same numbers, the same data, and the same
-agreement. The MLP's move is one pass; the patch net's move is a settlement you can watch
-form on the page, bar by bar, and its hidden owners at rest carry the influence of the
-column owners as well as the board. Section 6 of [How a patch net learns](../HOW_IT_LEARNS.md)
-has the comparison.
-
-## 8. The page
-
-`index.html` is self-contained: the dense overlap matrix and biases are embedded, and the
-settlement runs in JavaScript, owner by owner, with the same rule. The bars above the
-board replay the output owners' activations step by step; the strip on the right shows
-the hidden owners at rest. Nothing is precomputed. A published copy is linked from the
-[hub](https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60).
-
-## 9. Things to try
-
-- `dataset.py --games 20000` for more positions; watch agreement and the depth-2 record.
-- `LABEL_DEPTH = 6` in `dataset.py` for a stronger teacher (slower to label).
-- Add a one-ply tactical check at play time (take a win, block a loss) and see how the
-  records change; then note that the net is no longer the whole player.
-
-The current script groups each board with its reflection before either split, then
-augments training. The historical receipt predates that fix: reflected boards could
-cross validation or test boundaries, so its agreement estimate is not a clean measure
-of generalisation to unseen reflection groups.
+The full run takes tens of minutes on a laptop. It writes the model, learner
+checkpoint and a source-bound receipt. The shared rehearsal helper extracts
+training-only anchors for later browser lessons. Results against random,
+depth-1, depth-2 and depth-4 opponents include wins, losses and draws, alternating
+who starts after random two-ply openings. The root [results table](../README.md) is generated from the receipt.
+MLPs receive the same labelled board dataset; their teacher agreement and raw play
+strength are recorded separately from the planning players. The patch net also
+receives the practice corrections described above; that extra teaching is not
+matched in the MLP runs.

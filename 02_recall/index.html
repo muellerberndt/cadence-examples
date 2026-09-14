@@ -60,9 +60,9 @@
 </style>
 <main>
   <header>
-    <a class="hub" href="../index.html" data-published="https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60">← All examples</a>
+    <a class="hub" href="../index.html">← All examples</a>
     <h1>Cadence Recall</h1>
-    <p>A memory with no trained parameters. Writing a pair is one Hebbian outer product between a key owner and a value owner; asking is a settlement with the key clamped. Write a context, then click any key.</p>
+    <p>A memory that learns on every write. It reads the old association, compares it with the new value, and writes the difference. Write a context, then change a key and ask again.</p>
   </header>
   <section class="wrap">
     <div class="controls">
@@ -82,50 +82,36 @@
       <span id="status">Click a key in the context to ask for its value.</span>
       <span style="color:var(--muted)">the eight most active value owners</span>
       <div class="bars" id="bars"></div>
-      <span style="color:var(--muted)">all 128 value owners at rest</span>
+      <span style="color:var(--muted)">all 128 value readbacks</span>
       <div class="strip" id="strip"></div>
     </div>
   </section>
   <aside>
     <div class="card">
       <h2>What this is</h2>
-      <p>128 key owners and 128 value owners, every key joined to every value by a seam that starts at zero: 32,768 seams and nothing else. Writing <b>k → v</b> adds one unit to the seam between k's owner and v's owner, both ways, because the two were active together. Nothing else in the net changes.</p>
-      <p>Asking clamps k's owner at 3.0 and settles: the value owners come to rest and the most active one is the answer. The first transport is a linear associative read, not softmax attention. The page reports it alongside the longer settlement; the historical distinct-key test gets the same accuracy from both.</p>
-      <p>Capacity here is 128 distinct keys. Each key has its own owner. Rewriting a key adds to its old association, so the memory can disagree with the latest context label. A dictionary solves the distinct-key task exactly too.</p>
-      <dl id="facts"><dt>trained parameters</dt><dd>0</dd><dt>seams</dt><dd>32,768</dd><dt>historical receipt, 4 to 128 pairs</dt><dd>1.00 settled, 1.00 in one read</dd><dt>transformer, 5,000 Adam steps</dt><dd>0.30 at 4 pairs, 0.01 at 128</dd></dl>
+      <p>128 key owners read 128 value owners through 16,384 mutable fast seams. Each write corrects the difference between the requested value and the current readback, using Cadence's residual memory rule.</p>
+      <p>Repeatedly writing an old value does not prevent a later correction. Capacity here is 128 distinct one-hot keys; a dictionary also solves this explicitly addressed task.</p>
+      <dl id="facts"><dt>offline training</dt><dd>none</dd><dt>mutable entries</dt><dd>16,384</dd><dt>rule</dt><dd>read, compare, correct</dd></dl>
     </div>
   </aside>
 </main>
 <script>
-// The rule and the numbers of 02_recall/train.py: learning_rule(gain=1, dt=1) (slope 1, threshold 0, leak 0.1), clamp 3.0,
-// the key owners 0..127, the value owners 128..255, a settlement of at most 30 steps to a tolerance of 1e-4.
-const V = 128, N = 2 * V, CLAMP = 3.0, TOL = 1e-4, MAX_STEPS = 30, R = { slope: 1, threshold: 0, leak: 0.1, dt: 1 };
-const REST = 1 / (1 + Math.exp(R.slope * R.threshold));
+// Residual fast memory: one mutable row per one-hot key.
+const V = 128, MAX_STEPS = 1;
 const SYMBOLS = ('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' + 'αβγδεζηθικλμνξοπρστυφχψω' + 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞß' + '♠♣♥♦★☆☀☁☂☃♪♫✓✗').split('').slice(0, V);
 if (SYMBOLS.length !== V) throw new Error('vocabulary');
-const strength = new Float64Array(V * V);  // strength[k * V + v]: the seam between key k and value v, used in both directions
-let context = [];  // [{k, v}] in the order written; the label shows the latest value; seam writes still accumulate (the receipt draws distinct keys)
-function act(v) { const r = 1 / (1 + Math.exp(-R.slope * (v - R.threshold))) - REST; return r > 0 ? r / (1 - REST) : R.leak * r / REST; }
+const strength = new Float64Array(V * V);  // strength[k * V + v]: the seam between key k and value v, read by its key
+let context = [];  // [{k, v}] in the order written; the label shows the latest value; residual writes replace that key's readback
 function settle(key, maxSteps) {
-  // Owners 0..V-1 are keys, V..2V-1 values; the seams are symmetric, so a value's inbox is the keys' activations through its column and vice versa.
-  const pot = new Float64Array(N), s = new Float64Array(N), inbox = new Float64Array(N);
-  const trace = []; let steps = 0;
-  for (let t = 0; t < maxSteps; t++) {
-    inbox.fill(0);
-    for (let k = 0; k < V; k++) { const sk = s[k]; if (sk === 0) continue; const row = k * V; for (let v = 0; v < V; v++) inbox[V + v] += sk * strength[row + v]; }
-    for (let v = 0; v < V; v++) { const sv = s[V + v]; if (sv === 0) continue; for (let k = 0; k < V; k++) inbox[k] += sv * strength[k * V + v]; }
-    let moved = 0;
-    for (let j = 0; j < N; j++) {
-      const drive = j === key ? CLAMP : 0;
-      pot[j] = pot[j] + R.dt * (-pot[j] + inbox[j] + drive);
-      const ns = act(pot[j]); const d = Math.abs(ns - s[j]); if (d > moved) moved = d; s[j] = ns;
-    }
-    trace.push(s.slice(V)); steps = t + 1;
-    if (moved < TOL) break;
-  }
-  return { values: s.slice(V), trace, steps };
+  const values = strength.slice(key * V, (key + 1) * V);
+  return { values, trace: [values], steps: 1 };
 }
-function write(k, v) { strength[k * V + v] += 1; const i = context.findIndex(p => p.k === k); if (i >= 0) context[i] = { k, v }; else context.push({ k, v }); }
+function write(k, v) {
+  // FastSeams(rule="delta"): read, then write key outer (target - readback).
+  for (let j = 0; j < V; j++) strength[k * V + j] += (j === v ? 1 : 0) - strength[k * V + j];
+  const i = context.findIndex(p => p.k === k);
+  if (i >= 0) context[i] = { k, v }; else context.push({ k, v });
+}
 const contextEl = document.getElementById('context'), barsEl = document.getElementById('bars'), stripEl = document.getElementById('strip');
 const statusEl = document.getElementById('status'), qk = document.getElementById('qk'), qv = document.getElementById('qv'), note = document.getElementById('note');
 for (let i = 0; i < 8; i++) { const b = document.createElement('div'); b.className = 'bar'; b.innerHTML = '<i></i><b></b>'; barsEl.appendChild(b); }
@@ -149,7 +135,7 @@ function ask(k) {
   let bestOne = 0; for (let v = 1; v < V; v++) if (oneRead[v] > oneRead[bestOne]) bestOne = v;
   const want = context.find(p => p.k === k).v;
   qk.textContent = SYMBOLS[k]; qv.textContent = SYMBOLS[best];
-  statusEl.textContent = `${steps} steps to rest (${ms.toFixed(1)} ms); one read says ${SYMBOLS[bestOne]}; the pair written was ${SYMBOLS[k]} → ${SYMBOLS[want]}${best === want ? '.' : ' — a miss.'}`;
+  statusEl.textContent = `${steps} memory read (${ms.toFixed(1)} ms); one read says ${SYMBOLS[bestOne]}; the pair written was ${SYMBOLS[k]} → ${SYMBOLS[want]}${best === want ? '.' : ' — a miss.'}`;
   const bars = barsEl.children; const top = order.slice(0, 8); let frame = 0;
   if (pending) cancelAnimationFrame(pending);
   const playback = () => {
@@ -166,16 +152,14 @@ function fill(count) {
   clear();
   const keys = [...Array(V).keys()]; for (let i = keys.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [keys[i], keys[j]] = [keys[j], keys[i]]; }  // distinct keys, as in the receipt
   for (let i = 0; i < count; i++) write(keys[i], Math.floor(Math.random() * V));  // values may repeat
-  render(); note.textContent = `${count} pairs written, ${count} seams moved.`;
+  render(); note.textContent = `${count} pairs written.`;
 }
 const countEl = document.getElementById('count'), countV = document.getElementById('countv');
 countEl.addEventListener('input', () => { countV.textContent = countEl.value; });
 document.getElementById('fill').addEventListener('click', () => fill(+countEl.value));
 document.getElementById('clear').addEventListener('click', () => { clear(); note.textContent = ''; });
-document.getElementById('add').addEventListener('click', () => { const k = +document.getElementById('addk').value, v = +document.getElementById('addv').value; write(k, v); render(); note.textContent = `${SYMBOLS[k]} → ${SYMBOLS[v]} written: one seam, one unit.`; ask(k); });
+document.getElementById('add').addEventListener('click', () => { const k = +document.getElementById('addk').value, v = +document.getElementById('addv').value; write(k, v); render(); note.textContent = `${SYMBOLS[k]} → ${SYMBOLS[v]} written: the readback was corrected.`; ask(k); });
 fill(32);
 window.__recall = { settle, write, strength, SYMBOLS };
 
-// The hub link: relative in a checkout (a file, or serve.py on localhost), the published hub anywhere else.
-{ const hub = document.querySelector('a.hub'); const local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); if (hub && !local) hub.href = hub.dataset.published; }
 </script>

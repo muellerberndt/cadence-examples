@@ -42,7 +42,7 @@
 <main>
   <header>
     <h1>Cadence Examples</h1>
-    <p>Small patch-net examples with explicit memory, local feedback and evidence receipts. The first four pages retain historical trained artifacts. Updating memory compares residual writes with additive memory, exact retrieval and a trained transformer; each tutorial states its assumptions and limits. Publicly hosted copies are historical.</p>
+    <p>Small patch-net examples with explicit memory, local feedback and evidence receipts. All six examples use the current core, with source-bound receipts. Updating memory compares residual writes with additive memory, exact retrieval and a trained transformer; each tutorial states its assumptions and limits. Serve this checkout to play the current models.</p>
     <div class="links">
       <a href="https://github.com/muellerberndt/cadence-examples/blob/main/HOW_IT_LEARNS.md">How a patch net learns</a>
       <a href="https://github.com/muellerberndt/cadence-examples">cadence-examples on GitHub</a>
@@ -56,37 +56,37 @@
       <div class="num">01</div>
       <div>
         <h2>Digits <span class="tag">the tutorial, draw one</span></h2>
-        <p>8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Historical classification measurement: selection on validation data and three patch-net seeds, with fixed MLP baselines. Draw a digit in the page and watch the ten output owners settle.</p>
+        <p>8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Classification: selection on validation data and three patch-net seeds, with fixed MLP baselines. Draw a digit in the page and watch the ten output owners settle.</p>
         <div class="facts"><span>held-out <b>0.962 ± 0.003</b></span><span>parameters <b>4,919</b></span><span>epochs <b>20</b></span><span>smaller MLP <b>0.967</b></span></div>
       </div>
-      <div class="actions"><a class="btn play" href="https://claude.ai/code/artifact/0f6136f7-79ca-4b0e-9cef-65fd70fc6618">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/01_digits">Read the receipt</a></div>
+      <div class="actions"><a class="btn play" href="01_digits/index.html">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/01_digits">Read the receipt</a></div>
     </article>
     <article class="rung">
       <div class="num">02</div>
       <div>
         <h2>Recall <span class="tag">memory as seams, play it</span></h2>
-        <p>Distinct one-hot keys written into 128-key Hebbian memory. Linear transport retrieves an association; a dictionary solves the same task. The historical transformer comparison has important limitations. Write a context in the page and ask it.</p>
-        <div class="facts"><span>historical distinct-key recall <b>1.00</b></span><span>capacity <b>128 keys</b></span><span>trained parameters <b>0</b></span><span>comparison <b>see tutorial limits</b></span></div>
+        <p>Residual fast seams learn on each write and correct old associations. A dictionary solves the same explicitly addressed task. Write a context, then replace a value.</p>
+        <div class="facts"><span>corrected associations <b>100.0%</b></span><span>capacity <b>128 keys</b></span><span>offline training <b>none</b></span><span>memory <b>residual fast seams</b></span></div>
       </div>
-      <div class="actions"><a class="btn play" href="https://claude.ai/code/artifact/ff0e3f63-b674-494e-8c0f-a99d845d678b">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/02_recall">Read the receipt</a></div>
+      <div class="actions"><a class="btn play" href="02_recall/index.html">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/02_recall">Read the receipt</a></div>
     </article>
     <article class="rung">
       <div class="num">03</div>
       <div>
         <h2>Connect Four <span class="tag">imitation, play it</span></h2>
-        <p>Self-play positions labelled by a depth-4 search; the net imitates the search and plays with no lookahead. The historical agreement measurement predates a reflection-split fix. You play coral, the net plays gold.</p>
-        <div class="facts"><span>agreement with the search <b>0.529</b></span><span>MLP same size <b>0.533</b></span><span>vs random <b>98-0-2</b></span><span>vs depth 2 <b>2-1-97</b></span></div>
+        <p>Imitate a teacher, play, and revisit mistakes. Optional four-ply deliberation uses the game rules; raw-policy and search-only controls distinguish learned skill from planning. Local learning mode preserves lessons.</p>
+        <div class="facts"><span>lookahead vs depth 2 <b>56.0%</b></span><span>search alone vs depth 2 <b>51.0%</b></span><span>raw policy vs depth 2 <b>1.0%</b></span><span>held-out teacher agreement <b>0.512</b></span></div>
       </div>
-      <div class="actions"><a class="btn play" href="https://claude.ai/code/artifact/a75ef805-c396-4c9d-b64d-6ca5fe60badc">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/03_connect_four">Read the receipt</a></div>
+      <div class="actions"><a class="btn play" href="03_connect_four/index.html">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/03_connect_four">Read the receipt</a></div>
     </article>
     <article class="rung">
       <div class="num">04</div>
       <div>
         <h2>Pong <span class="tag">reward, play it</span></h2>
-        <p>A paddle that learned from pixels and reward: the nudge's target is the action taken, its strength the action's advantage, each seam's step read from its own history. Behind backprop REINFORCE with Adam on the same rollout budget; the same net taught a tracker's moves returns 96%. You play coral, the net plays gold.</p>
-        <div class="facts"><span>balls returned, from reward <b>87.8%</b></span><span>backprop REINFORCE, same budget <b>92.9%</b></span><span>from a tracker's moves <b>96.0%</b></span><span>parameters <b>12,806</b></span></div>
+        <p>A paddle sees one frame and keeps a fading trace of its activity. It imitates diagonal returns, practises, and revisits teacher examples. Local learning mode saves every completed game as a reusable lesson.</p>
+        <div class="facts"><span>points won, skill 0.7 <b>94.5%</b></span><span>balls returned <b>94.9%</b></span><span>incoming frames <b>1</b></span><span>parameters <b>50,054</b></span></div>
       </div>
-      <div class="actions"><a class="btn play" href="https://claude.ai/code/artifact/4b3fe725-e687-4acb-a29c-5f2eb9a69e04">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/04_pong">Read the receipt</a></div>
+      <div class="actions"><a class="btn play" href="04_pong/index.html">Play</a><a class="btn" href="https://github.com/muellerberndt/cadence-examples/tree/main/04_pong">Read the receipt</a></div>
     </article>
     <article class="rung">
       <div class="num">05</div>

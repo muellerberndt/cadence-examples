@@ -59,7 +59,7 @@ BUDGETS = {
     "01_digits": lambda m: (setattr(m, "GRID", m.GRID[:1]), setattr(m, "VALIDATION_SEEDS", 1), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 2})),
     "02_recall": lambda m: (setattr(m, "LENGTHS", (4, 8)), setattr(m, "TRIALS", 3), setattr(m, "TRAIN_STEPS", 5)),
     "03_connect_four": lambda m: (positions_for_smoke(m), setattr(m, "GRID", [{"hidden": 16}]), setattr(m, "SCHEDULE", {**m.SCHEDULE, "epochs": 1}), setattr(m, "GAMES_PER_OPPONENT", 4), setattr(m, "CONTROL_EPOCHS", 1)),
-    "04_pong": lambda m: None,
+    "04_pong": lambda m: tuple(setattr(m, key, value) for key, value in {"HIDDEN": 8, "ENVS": 4, "HORIZON": 8, "IMITATION_STEPS": 8, "IMITATION_EPOCHS": 1, "EVAL_POINTS": 8}.items()),
     "05_memory": lambda m: None,
     "06_interventions": lambda m: None,
 }

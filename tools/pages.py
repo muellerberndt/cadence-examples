@@ -59,8 +59,12 @@ def engine_from(path: Path) -> tuple[cd.Settlement, dict]:
 
 
 def engine_outputs(engine: cd.Settlement, net: dict, drives: list) -> np.ndarray:
-    state = engine.settle_batch(np.asarray(drives, float), steps=100, tolerance=net.get("readout_tolerance", 1e-4))
-    return state.activation[:, net["sets"]["output"]]
+    # The page settles one query at a time. A shared batch tolerance can run an
+    # already-converged row longer while waiting for a slower row.
+    return np.concatenate([
+        engine.settle_batch(row[None], steps=100, tolerance=net.get("readout_tolerance", 1e-4)).activation[:, net["sets"]["output"]]
+        for row in np.asarray(drives, float)
+    ])
 
 
 def c4_winner(grid: list) -> int:
@@ -159,6 +163,23 @@ def main() -> int:
         page, errors = open_page("recall", "02_recall/index.html")
         symbols = page.evaluate("Array.from(__recall.SYMBOLS).join('')")
         report["recall"]["symbols"] = len(symbols)
+        revisions = page.evaluate("""() => {
+            __recall.strength.fill(0);
+            for(let k=0;k<128;k++) { for(let t=0;t<20;t++) __recall.write(k,(k+1)%128); __recall.write(k,(k+2)%128); }
+            return Array.from({length:128},(_,k)=>Array.from(__recall.settle(k,1).values));
+        }""")
+        memory = cd.FastSeams(np.arange(128), np.arange(128,256), rule="delta")
+        keys = np.eye(128)
+        memory.reset(1)
+        for k in range(128):
+            for _ in range(20):
+                memory.observe(keys[k:k+1], keys[(k+1)%128][None])
+            memory.observe(keys[k:k+1], keys[(k+2)%128][None])
+        reference = np.stack([memory.recall(keys[k:k+1])[0] for k in range(128)])
+        if not np.allclose(revisions, reference, atol=1e-12):
+            fail("recall: residual correction differs from FastSeams")
+        report["recall"]["corrected_keys"] = int((np.argmax(revisions,axis=1) == (np.arange(128)+2)%128).sum())
+
         if "α" not in symbols or "Â" in symbols.replace("Â", "", 1) and "Ã" in symbols and "α" not in symbols:
             fail("recall: the symbol alphabet is garbled")
         if errors:
@@ -189,8 +210,37 @@ def main() -> int:
         py = engine_outputs(engine, net, drives)
         same = float((js.argmax(1) == py.argmax(1)).mean())
         report["connect_four"].update({"page_vs_engine_same_column": same, "page_vs_engine_max_abs": float(np.abs(js - py).max())})
-        if same < 1.0:
-            fail(f"connect four: the page picks the engine's column on {same:.2f} of positions")
+        if same < 1.0 or np.max(np.abs(js - py)) > 1e-8:
+            fail(f"connect four: page/engine disagreement: action match {same:.2f}, max error {np.max(np.abs(js-py)):.2e}")
+        sys.path.insert(0, str(ROOT / "03_connect_four"))
+        from connect4 import Position, search
+        sys.path.pop(0)
+        positions = []
+        for _ in range(20):
+            pos = Position()
+            for _ in range(int(rng.integers(0, 25))):
+                candidate = pos.play(int(rng.choice(pos.legal())))
+                if candidate.terminal():
+                    break
+                pos = candidate
+            positions.append(pos)
+        expected, imagined = [], []
+        for pos in positions:
+            drive = np.zeros(net["n"])
+            drive[net["sets"]["input"]] = pos.planes() * net["rule"]["clamp"]
+            scores = engine_outputs(engine, net, [drive])[0]
+            _, values = search(pos, 4)
+            expected.append(max(values, key=lambda c: (values[c], scores[c], -abs(c-3))))
+            imagined.append({"board": list(reversed(pos.grid())), "scores": scores.tolist()})
+        chosen = page.evaluate("rows => rows.map(row => chooseMove(row.board,1,row.scores,4))", imagined)
+        if chosen != expected:
+            fail("connect four: browser deliberation differs from Python")
+        report["connect_four"]["deliberation_same_action"] = float(np.mean(np.asarray(chosen)==expected))
+        page.evaluate("reset(netSide); netMove(); reset(human)")
+        page.wait_for_timeout(500)
+        if not page.evaluate("grid.flat().every(x=>x===0) && !busy && turn===human && lesson.drives.length===0"):
+            fail("connect four: a cancelled move changed the new game")
+        report["connect_four"]["reset_cancels_pending_move"] = True
         results = []
         for g in range(args.games):
             smart, net_first, prng = g >= args.games // 2, g % 2 == 1, random.Random(g)
@@ -225,6 +275,34 @@ def main() -> int:
             same = float((js.argmax(1) == py.argmax(1)).mean())
             if same < 1.0:
                 fail(f"pong ({which}): the page picks the engine's action on {same:.2f} of frames")
+            if net.get("trace"):
+                sequence = page.evaluate("""() => {
+                    paused=true; __pong.reset(); const rows=[];
+                    for(let t=0;t<40;t++) {
+                        const d=observation(), f=settle(d); remember(f.s);
+                        const scores=OUT.map(k=>f.s[k]); const a=scores.indexOf(Math.max(...scores));
+                        const ended=step(a,Math.sign(game.ball_r-(game.left+1)));
+                        rows.push({drive:Array.from(d), scores, ended:!!ended});
+                    }
+                    paused=false; return rows;
+                }""")
+                cfg = net["trace"]
+                trace = cd.Afterglow(engine.wiring, source="input", decay=cfg["decay"], focus=cfg["focus"], amplitude=cfg["amplitude"])
+                trace.reset(1)
+                deviations = []
+                for row in sequence:
+                    drive = np.zeros((1, net["n"]))
+                    drive[:, net["sets"]["input"]] = np.asarray(row["drive"])[net["sets"]["input"]]
+                    expected_drive = trace.clamp(drive)
+                    deviations.append(float(np.max(np.abs(expected_drive[0]-row["drive"]))))
+                    state = engine.settle_batch(expected_drive, steps=100, tolerance=1e-4)
+                    deviations.append(float(np.max(np.abs(state.activation[0,net["sets"]["output"]]-row["scores"]))))
+                    trace.update(state)
+                    if row["ended"]:
+                        trace.reset(1)
+                if max(deviations) > 1e-8:
+                    fail(f"pong ({which}): sequential neural trace differs by {max(deviations)}")
+                report[name]["sequential_trace_max_abs"] = max(deviations)
             page.evaluate("""() => { score = [0, 0]; window.__n = { calls: 0, hits: 0, misses: 0 };
                 const s0 = settle; settle = d => { __n.calls++; return s0(d); };
                 const st0 = step; step = (a, h) => { const dc = game.dc; const e = st0(a, h); if (!e && dc === 1 && game.dc === -1) __n.hits++; if (e === 'net') __n.misses++; return e; };

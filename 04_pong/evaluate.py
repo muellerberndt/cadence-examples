@@ -31,17 +31,31 @@ class ExportedPolicy:
         if abs(rule.rest_emission - r["rest"]) > 1e-12:
             raise ValueError("exported rest emission does not match the rule")
         self.engine = cd.Settlement(wiring, rule, bias=np.asarray(net["bias"]))
+        cfg = net.get("trace")
+        self.trace = cd.Afterglow(wiring, source="input", decay=cfg["decay"],
+                                 focus=cfg["focus"], amplitude=cfg["amplitude"]) if cfg else None
+
+    def reset(self, batch: int, rows: np.ndarray | None = None) -> None:
+        if self.trace is not None:
+            self.trace.reset(batch, rows=rows)
+
+    def observation(self, env):
+        return env.frames() if self.trace is not None else env.observation()
 
     def act(self, frames: np.ndarray, greedy: bool = True) -> np.ndarray:
         drive = np.zeros((len(frames), self.net["n"]))
         drive[:, self.net["sets"]["input"]] = frames * self.net["rule"]["clamp"]
+        if self.trace is not None:
+            drive = self.trace.clamp(drive)
         settled = self.engine.settle_batch(drive, steps=100, tolerance=1e-4)
+        if self.trace is not None:
+            self.trace.update(settled)
         return settled.activation[:, self.net["sets"]["output"]].argmax(axis=1)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--net", type=Path, default=Path(__file__).parent / "net_imitation.json")
+    parser.add_argument("--net", type=Path, default=Path(__file__).parent / "net.json")
     parser.add_argument("--seed", type=int, default=100)
     parser.add_argument("--points", type=int, default=1000)
     parser.add_argument("--opponent-skill", type=float, default=0.7,

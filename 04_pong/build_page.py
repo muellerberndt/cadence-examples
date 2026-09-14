@@ -23,6 +23,7 @@ if __name__ == "__main__":
         html = html.replace("/*NET_IMITATION*/null", "null")
     hub = os.path.relpath(HERE.parent / "index.html", args.output.resolve().parent)
     html = html.replace('href="../index.html"', f'href="{Path(hub).as_posix()}"')
+    html = html.replace("/*LOCAL_LESSONS*/", (HERE.parent / "learn.js").read_text())
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(html)
     print(f"{args.output}: {len(html) / 1e3:.0f} kB, {net['n']} owners")
