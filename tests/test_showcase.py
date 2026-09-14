@@ -265,3 +265,39 @@ def test_strategy_and_runtime_receipts_bind_their_producers():
         body = json.loads((ROOT / folder / "evidence.json").read_text())
         for filename, digest in body["sources"].items():
             assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest
+
+
+def test_history_required_comparison_replays_and_has_a_tight_stateless_bound():
+    from collections import Counter, defaultdict
+
+    receipt = json.loads((ROOT / "memory/history_evidence.json").read_text())
+    actual = node("""
+import {runHistoryBenchmark} from './memory/history_benchmark.mjs';
+console.log(JSON.stringify(runHistoryBenchmark()));
+""")
+    assert actual == receipt
+    assert len(receipt["rows"]) == receipt["queries"] == 128
+    by_input = defaultdict(Counter)
+    predictions = defaultdict(set)
+    reference = fast_memory()
+    for round in range(16):
+        rows = receipt["rows"][round * 8 : (round + 1) * 8]
+        for _, key, target, *_ in rows:
+            assert target == (round + key) % 4
+            reference.observe(
+                np.array([receipt["cues"][key]]), np.eye(4)[target : target + 1]
+            )
+        for r, key, target, predicted, frozen, lookup in rows:
+            assert r == round
+            cue = tuple(receipt["cues"][key])
+            by_input[cue][target] += 1
+            predictions[cue].add(frozen)
+            assert predicted == lookup == target
+            assert np.argmax(reference.recall(np.array([cue]))[0]) == predicted
+    # Hindsight's best fixed answer for each identical input is an upper bound
+    # on every frozen deterministic query-only network, whatever its size/training.
+    bound = sum(max(counts.values()) for counts in by_input.values()) / 128
+    assert bound == receipt["scores"]["best_fixed_query_only"] == 0.25
+    assert all(len(answers) == 1 for answers in predictions.values())
+    for filename, digest in receipt["sources"].items():
+        assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest

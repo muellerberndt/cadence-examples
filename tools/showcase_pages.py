@@ -119,6 +119,10 @@ def main():
             assert page.evaluate("showcase.snapshot().body.walls[3*31+8]")
             assert not page.evaluate("showcase.snapshot().body.walls[3*31+9]")
             choose(page, "memory")
+            expect(page.locator("#history-proof")).to_contain_text(
+                "100.0% Cadence recall"
+            )
+            expect(page.locator("#history-proof")).to_contain_text("25.0% ceiling")
             page.locator("#value").select_option("3")
             page.locator("#teach").click()
             page.locator("#value").select_option("1")

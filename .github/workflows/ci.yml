@@ -22,7 +22,8 @@ jobs:
           node showcase/habitat_benchmark.mjs
           node tools/nervous_system_benchmark.mjs
           node connect-four/benchmark.mjs
-          git diff --exit-code -- eye-arm/evidence.json mouse/evidence.json worm/evidence.json fly/evidence.json connect-four/evidence.json
+          node memory/history_benchmark.mjs
+          git diff --exit-code -- eye-arm/evidence.json mouse/evidence.json worm/evidence.json fly/evidence.json connect-four/evidence.json memory/history_evidence.json
       - name: generated websites agree with the authored shell
         run: |
           python tools/build_showcase.py

@@ -35,6 +35,11 @@ The strategy agent wins **8/8** scheduled games against one-ply evaluation and
 **5/8** against four-ply search. These are small, reproducible task comparisons,
 not evidence that transformers cannot reason or that every demo is faster.
 
+A separate [history-required test](memory/README.md#same-cue-a-newly-taught-meaning)
+shows 100% recall after changed lessons versus a provable 25% ceiling for any
+fixed predictor receiving only the current cue. A conventional history store
+also reaches 100%; giving a transformer the lesson history removes this restriction.
+
 ## Live composite brains
 
 ![The teachable mouse: task memory, a spatial field and a moving body](showcase/preview.png)

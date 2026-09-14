@@ -227,6 +227,7 @@ python -m pip install -r requirements-reproduce.txt pytest playwright
 python showcase/verify.py
 node tools/nervous_system_benchmark.mjs
 node connect-four/benchmark.mjs
+node memory/history_benchmark.mjs
 python -m pytest -q tests
 python tools/showcase_pages.py
 python tools/build_showcase.py

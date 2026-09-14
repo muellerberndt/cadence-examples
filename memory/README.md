@@ -26,3 +26,18 @@ stream at 0.435 ms median per 128-write/996-query stream, versus 1.338, 3.170 an
 22.430 ms for the MLP's 1/10/100-update settings. That is about 3×/7×/52× lower
 time on the recorded Apple M4/Node runtime. It is not a general speed or energy
 claim; see the [full comparison contract](../ADVANTAGES.md#measured-processing-time).
+
+## Same cue, a newly taught meaning
+
+Teach a distinct key one value, then teach that same key a different value. The
+current query is identical; the retained lesson is what allows a new answer.
+`node memory/history_benchmark.mjs` tests this in a balanced 128-query schedule:
+Cadence and conventional last-value lookup score 100%; a frozen query-only MLP
+scores 25%. **Any fixed deterministic function of the same current cues is
+bounded by 25%**, even if chosen optimally in hindsight.
+
+The [receipt](history_evidence.json) retains all queries and predictions.
+This boundary assumes no retained activations, weight updates, history/context
+tokens, clock or external store. A transformer with lesson history can use that
+information too. The [derivation and controls](../ADVANTAGES.md#a-precise-limit-of-frozen-inference-without-history)
+explain exactly what is impossible under the restriction.

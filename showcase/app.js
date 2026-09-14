@@ -35,6 +35,7 @@ let composite,
 let data,
   evidence,
   memoryRuntime,
+  historyEvidence,
   strategyEvidence,
   worm,
   net,
@@ -440,6 +441,16 @@ function setMode(next) {
           ["MLP · seen-key accuracy", "—", "slow-score"],
         ],
       )}<div id="memory-status" class="status" aria-live="polite"></div>`;
+    const historyProof = document.createElement("p");
+    historyProof.id = "history-proof";
+    historyProof.className = "note";
+    historyProof.style.gridColumn = "1 / -1";
+    historyProof.textContent = `Recorded history test: ${pct(historyEvidence.scores.cadence)} Cadence recall versus a ${pct(historyEvidence.scores.best_fixed_query_only)} ceiling for any fixed current-cue-only predictor. Conventional history lookup also reaches ${pct(historyEvidence.scores.history_lookup)}. Networks given lesson history are outside this restriction. `;
+    const proofLink = document.createElement("a");
+    proofLink.href = "memory/README.md#same-cue-a-newly-taught-meaning";
+    proofLink.textContent = "Why the same cue needs memory";
+    historyProof.append(proofLink);
+    $("controls").append(historyProof);
     $("value").value = value;
     $("value").onchange = () => (value = +$("value").value);
     $("correlation").value = correlation;
@@ -834,20 +845,27 @@ window.addEventListener("hashchange", () => {
     setMode(next);
 });
 try {
-  [data, evidence, composite, memoryRuntime, strategyEvidence] =
-    await Promise.all(
-      [
-        "showcase/worm.json",
-        "showcase/evidence.json",
-        "showcase/composite_evidence.json",
-        "memory/evidence.json",
-        "connect-four/evidence.json",
-      ].map(async (url) => {
-        const r = await fetch(url);
-        if (!r.ok) throw Error(url);
-        return r.json();
-      }),
-    );
+  [
+    data,
+    evidence,
+    composite,
+    memoryRuntime,
+    strategyEvidence,
+    historyEvidence,
+  ] = await Promise.all(
+    [
+      "showcase/worm.json",
+      "showcase/evidence.json",
+      "showcase/composite_evidence.json",
+      "memory/evidence.json",
+      "connect-four/evidence.json",
+      "memory/history_evidence.json",
+    ].map(async (url) => {
+      const r = await fetch(url);
+      if (!r.ok) throw Error(url);
+      return r.json();
+    }),
+  );
   worm = new Worm(data);
   net = new MLP(evidence.browser.worm_mlp);
   setMode(

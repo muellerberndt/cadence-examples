@@ -16,6 +16,52 @@ transformer could implement. None establishes universal architectural superiorit
 | [Fly-inspired forager](fly/) | Actual flower contact revises nectar memory; sensory/motor activity moves the body. Changing nectar creates new observations during use. | Fixed actuator trial: 25 contacts intact, zero with motors disabled. Live MLP and Cadence agents share motor design but see different trajectories; nectar totals are illustrative, not a matched learning benchmark. Use the memory stream for the controlled learner comparison. |
 | [Connect Four](connect-four/) | Compare hypothetical replies without changing the live board; monitor own option-value changes and ambiguity to allocate further search. | 8/8 wins against one-ply evaluation, 5/8 against four-ply search over four openings and both sides. Same evaluator, different search budgets. Conventional minimax can match this; recurrence does not automatically provide a world model, and the monitor is not evidence of consciousness. |
 
+## A precise limit of frozen inference without history
+
+The [history-required experiment](memory/history_evidence.json) presents eight
+distinct cues over 16 rounds. Each round first teaches their new meanings, then
+queries them. Each cue takes each of four meanings equally often. The query
+contains only that cue, with no history, clock, round index or previous answer.
+
+| Controller | Correct queries | Information retained between lessons and queries |
+|---|---:|---|
+| Cadence residual memory | 128/128 (100%) | Updated associative weights |
+| Conventional last-value lookup | 128/128 (100%) | Stored latest lesson for each cue |
+| Frozen example MLP | 32/128 (25%) | None |
+| Best possible fixed deterministic function of the current cue | At most 32/128 (25%) | None; bound allows optimal answers chosen in hindsight |
+
+The bound follows directly: a fixed function must return one answer for each
+identical input. Each answer is correct on only four of that cue's sixteen
+queries. More layers or parameters cannot resolve this missing information.
+For a history-independent randomized predictor the same bound holds in
+expectation; it is not a bound on every random finite-sample realization.
+
+This is an impossibility result for the **specified information restriction**.
+It is not an impossibility result for transformers with lesson history in their
+context, recurrent networks, online weight updates or external storage. The
+lookup control demonstrates that conventional memory also removes the obstacle.
+The bundled MLP's initialization cannot weaken this conclusion: even an optimally
+trained fixed query-only predictor faces the same bound.
+
+This test isolates the retained-association mechanism used by the teachable mouse
+and forager. It does not prove whole-body performance on new tasks. Run
+`node memory/history_benchmark.mjs`; the receipt keeps every query, its actual
+cue vector, predictions, source hashes and the exact comparison boundary.
+
+## Choosing an efficiency or capability claim
+
+An efficiency comparison should fix task quality and information access, count
+training and adaptation as well as inference, and report memory, hardware and
+latency. Two orders of magnitude means 100× on the named metric. The recorded memory result is about 52× against one specified update
+budget, rather than a demonstrated 100× advantage. The other examples currently
+establish the feedback, intervention or planning effects described in the table.
+
+A capability claim must specify what the comparator can observe, retain, update
+and compute. Compare frozen inference, an adaptive neural controller, and the
+appropriate strong conventional method separately. In these tasks those include
+dictionary memory, BFS, classical feedback and minimax. Motor ablations locate
+causal mechanisms; they cannot substitute for those performance comparisons.
+
 ## Measured processing time
 
 The [runtime receipt](memory/evidence.json) records Node 25.8.1 on an Apple M4,
