@@ -514,6 +514,7 @@ export function mountEmbodied(mode, api) {
         return {
           state: [...c.state, ...m.state],
           drive: [...c.drive, ...m.state],
+          input: [...c.drive, ...m.input],
           mask: [...c.mask, ...m.state.map(() => 1)],
           names: [...c.state.map((_, i) => `Place ${i}`), ...m.names],
           groups: [...c.state.map(() => "place"), ...m.groups],

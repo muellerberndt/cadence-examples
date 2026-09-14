@@ -42,6 +42,7 @@ export function memoryCircuit(memory, key) {
   const state = [...key, ...memory.predict(key)];
   return {
     state,
+    input: [...key, ...Array(4).fill(0)],
     names: [
       ...key.map((_, i) => `Key ${i + 1}`),
       ...Array.from({ length: 4 }, (_, i) => `Value ${i}`),

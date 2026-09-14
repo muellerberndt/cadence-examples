@@ -98,11 +98,13 @@
             <select id="brain-signal">
               <option value="activity">Activity · local state</option>
               <option value="repair">Repair · state change</option>
+              <option value="input">Input · supplied drive</option>
               <option value="plasticity">Plasticity · memory writes</option>
             </select>
             <div class="buttons">
               <button id="brain-live">Live</button
               ><button id="brain-freeze">Pause view</button>
+              <button id="brain-heat" aria-pressed="true">Heatmap on</button>
             </div>
             <div class="buttons">
               <button id="brain-replay">Replay repair</button
@@ -117,6 +119,17 @@
             <p id="brain-memory"></p>
           </div>
         </div>
+        <div
+          id="brain-legend"
+          class="brain-legend"
+          aria-label="Signed heatmap legend"
+        >
+          <span id="brain-legend-label">Activity · relative region scale</span>
+          <div class="brain-colorbar"></div>
+          <div class="brain-color-ticks">
+            <span>−1 · negative</span><span>0</span><span>+1 · positive</span>
+          </div>
+        </div>
         <p id="brain-status">Live activity</p>
         <p id="brain-scale"></p>
         <details>
@@ -124,10 +137,12 @@
           <p>
             The medical-style silhouette is a layout metaphor, not an anatomical
             scan. Dots and seams are actual model elements; hover for owner
-            values. Green shows activity, amber/blue show increasing/decreasing
-            repair or recent learned weight changes. The trace plots peak
-            activity. Couplings that change with arm geometry are not counted as
-            plasticity.
+            values in dimensionless model units. The heatmap shows positive
+            values in amber and negative values in blue; its smooth halos are a
+            display overlay around actual owners. Turning it off restores the
+            node view. Plasticity highlights recent learned weight changes
+            separately. The trace plots peak activity. Couplings that change
+            with arm geometry are not counted as plasticity.
           </p>
           <p>
             Replay recomputes the captured numerical settlement and slows it
@@ -136,6 +151,16 @@
             imply a learned short-term memory. No oscillation is added for
             appearance. Memory-only circuits have no recurrent replay. Live body
             operation continues while you inspect a copy.
+          </p>
+          <p>
+            These models do not simulate neurotransmitter concentrations.
+            Activity, input drive and weight changes are different signals.
+            Clinical fMRI measures a blood-oxygen-related signal; PET uses
+            specific tracers to study molecular targets. Neither is a generic
+            live map of all neurotransmitters. See the
+            <a href="showcase/README.md#brain-colors-and-neurotransmitters"
+              >imaging explanation and sources</a
+            >.
           </p>
         </details>
       </section>

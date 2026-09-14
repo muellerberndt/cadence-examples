@@ -7,7 +7,7 @@ import threading
 from pathlib import Path
 
 from playwright.sync_api import Error as PlaywrightError
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -170,6 +170,30 @@ def main():
                     page.wait_for_function("showcase.snapshot().brain.frame > 0")
                     assert page.evaluate("showcase.snapshot().brain.release")
                     page.locator("#brain-live").click()
+                page.locator("#brain-signal").select_option("input")
+                page.wait_for_function("showcase.snapshot().brain.signal === 'input'")
+                assert (
+                    len(page.evaluate("showcase.snapshot().brain.input"))
+                    == brain["owners"]
+                )
+                if mode in ["memory", "fly"]:
+                    assert page.evaluate(
+                        "showcase.snapshot().brain.input.slice(8)"
+                    ) == [0, 0, 0, 0]
+                if not page.evaluate("showcase.snapshot().brain.heatmap"):
+                    page.locator("#brain-heat").click()
+                page.wait_for_function(
+                    "!document.querySelector('#brain-legend').hidden"
+                )
+                expect(page.locator("#brain-legend-label")).to_contain_text(
+                    "Input drive"
+                )
+                page.locator("#brain-heat").click()
+                page.wait_for_function("document.querySelector('#brain-legend').hidden")
+                page.locator("#brain-heat").click()
+                page.locator("#brain-signal").select_option("plasticity")
+                page.wait_for_function("document.querySelector('#brain-legend').hidden")
+                page.locator("#brain-signal").select_option("activity")
                 guide = page.locator("#demo-guide")
                 assert guide.get_attribute("data-demo") == mode
                 assert guide.locator("h3").count() == 3

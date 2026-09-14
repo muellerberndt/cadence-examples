@@ -139,6 +139,11 @@ capacity the model does not have.
 | Forager | 8 key ports and 4 value ports | The Cadence agent's actual 32 memory entries, updated on nectar contact |
 | Changing memory | 8 key ports and 4 value ports | Current key/value readout and observed residual writes |
 
+- **Heatmap on/off** switches between soft colored overlays and the node view.
+  Amber is positive and blue is negative; the legend spans −1 to +1 relative to
+  each region’s scale. Halos are display smoothing, not extra model elements.
+- **Input** shows the supplied drive. For memory circuits this lights key ports,
+  not recalled value ports. It is not a neurotransmitter signal.
 - **Activity** shows live model values. Brightness is normalized within each
   region; input-release probes keep the captured scales fixed so fading remains
   visible. The numerical scale is printed and hovering reveals owner values.
@@ -167,6 +172,34 @@ capacity the model does not have.
 The existing capacity is exposed faithfully. Drawing needs four coupled error
 owners in this supplied controller; adding untrained nodes would not make that
 controller more capable. GPU training is not required for these diagnostics.
+
+## Brain colors and neurotransmitters
+
+The viewer colors **model state, input drive, state changes or learned weights**.
+It does not model dopamine, serotonin, glutamate or GABA concentrations. Numerical
+values are dimensionless model units, not blood oxygenation, tracer binding or
+chemical concentration. Signed weights do not identify a neurotransmitter.
+
+Brain imaging uses different measurements:
+
+- Structural MRI provides anatomical contrast. Functional MRI commonly maps
+  changes related to blood oxygenation as an indirect activity signal; a colored
+  activation map is not a neurotransmitter map.
+  [NIH MRI introduction](https://www.nibib.nih.gov/science-education/science-topics/magnetic-resonance-imaging-mri)
+- PET uses a chosen radiotracer to investigate particular molecular targets,
+  including neurotransmitter receptors and transporters. Appropriate tracer
+  experiments and models can infer changes in transmitter release; this is not
+  a direct, simultaneous live measurement of every neurotransmitter.
+  [NIMH PET research](https://www.nimh.nih.gov/research/research-conducted-at-nimh/research-areas/clinics-and-labs/mib/sprs/section-on-pet-radiopharmaceutical-sciences),
+  [dopamine-release experiment](https://pubmed.ncbi.nlm.nih.gov/18442926/)
+- MR spectroscopy can estimate regional chemical pools, such as glutamate.
+  A regional concentration estimate is distinct from moment-to-moment synaptic
+  release. [Combined PET/MRS study](https://www.nature.com/articles/s41398-021-01515-3)
+
+An application that explicitly computes a reward prediction error could expose
+that scalar as a **modulatory learning signal**. Calling it a dopamine
+concentration would require a biochemical model and calibration. The current
+showcase plots only quantities its controllers actually compute.
 
 ## Food and walls in the worm habitat
 

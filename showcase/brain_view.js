@@ -5,7 +5,15 @@ export class BrainView {
     this.canvas = document.getElementById("brain-scene");
     this.ctx = this.canvas.getContext("2d");
     this.$ = (id) => document.getElementById(id);
+    this.heat = true;
     this.reset();
+    this.$("brain-heat").onclick = () => {
+      this.heat = !this.heat;
+      this.$("brain-heat").setAttribute("aria-pressed", String(this.heat));
+      this.$("brain-heat").textContent = this.heat
+        ? "Heatmap on"
+        : "Heatmap off";
+    };
     this.$("brain-live").onclick = () => {
       this.trace = null;
       this.frozen = false;
@@ -94,6 +102,7 @@ export class BrainView {
       state: source.state.slice(),
       edges: source.edges.map((e) => e.slice()),
       drive: source.drive?.slice(),
+      input: (source.input ?? source.drive)?.slice(),
       mask: source.mask?.slice(),
       weights: weights.slice(),
     };
@@ -142,6 +151,17 @@ export class BrainView {
     const diff = this.trace
       ? s.map((v, i) => v - this.trace.frames[Math.max(0, this.frame - 1)][i])
       : this.repairs;
+    const input = (this.source.input ?? s.map(() => 0)).map((v, i) =>
+      this.trace?.release && i < (this.source.recurrentCount ?? s.length)
+        ? 0
+        : v,
+    );
+    const values =
+      this.signal === "input" ? input : this.signal === "repair" ? diff : s;
+    const scaleValues =
+      this.signal === "activity" && this.trace?.release
+        ? this.source.state
+        : values;
     const max = Math.max(1e-12, ...s.map(Math.abs)),
       dm = Math.max(1e-12, ...diff.map(Math.abs));
     const cx = w * 0.5,
@@ -257,26 +277,42 @@ export class BrainView {
       c.stroke();
     });
     const groupMax = {};
-    (this.trace?.release ? this.source.state : s).forEach((v, i) => {
+    scaleValues.forEach((v, i) => {
       const g = this.source.groups?.[i] ?? "patch";
       groupMax[g] = Math.max(groupMax[g] ?? 1e-12, Math.abs(v));
     });
+    const heatColor = (v) => (v < 0 ? "#79b8ff" : "#ffc471");
+    const normalized = values.map((v, i) =>
+      Math.max(
+        -1,
+        Math.min(1, v / groupMax[this.source.groups?.[i] ?? "patch"]),
+      ),
+    );
+    if (this.heat && !plastic) {
+      positions.forEach(([x, y], i) => {
+        if (this.source.mask?.[i] === 0 || Math.abs(normalized[i]) < 1e-6)
+          return;
+        const radius = rx * (s.length < 20 ? 0.22 : 0.08);
+        const intensity = Math.abs(normalized[i]);
+        const rgb = normalized[i] < 0 ? "121,184,255" : "255,196,113";
+        const glow = c.createRadialGradient(x, y, 0, x, y, radius);
+        glow.addColorStop(0, `rgba(${rgb},${intensity * 0.42})`);
+        glow.addColorStop(1, `rgba(${rgb},0)`);
+        c.fillStyle = glow;
+        c.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      });
+    }
     let hovered = -1,
       nearest = 16;
     positions.forEach(([x, y], i) => {
-      const value = Math.min(
-        1,
-        this.signal === "repair"
-          ? Math.abs(diff[i]) / dm
-          : Math.abs(s[i]) / groupMax[this.source.groups?.[i] ?? "patch"],
-      );
+      const value = Math.abs(normalized[i]);
       const muted = this.source.mask?.[i] === 0;
       c.fillStyle = muted
         ? "#653647"
-        : this.signal === "repair"
-          ? diff[i] < 0
-            ? "#89baff"
-            : "#ffc77d"
+        : (this.heat && !plastic) ||
+            this.signal === "repair" ||
+            this.signal === "input"
+          ? heatColor(values[i])
           : "#96f0cc";
       c.globalAlpha = muted ? 0.35 : 0.2 + 0.8 * value;
       c.shadowColor = c.fillStyle;
@@ -309,7 +345,7 @@ export class BrainView {
     c.textAlign = "left";
     if (hovered >= 0)
       c.fillText(
-        `${this.source.names?.[hovered] ?? `Owner ${hovered}`} · ${s[hovered].toExponential(3)}`,
+        `${this.source.names?.[hovered] ?? `Owner ${hovered}`} · ${values[hovered].toExponential(3)} ${this.signal === "repair" ? "change" : this.signal === "input" ? "drive" : "state"}`,
         14,
         h - 38,
       );
@@ -329,8 +365,18 @@ export class BrainView {
     this.$("brain-status").textContent = this.trace
       ? `${this.trace.release ? "Input released in an isolated copy" : "Repair replay"} · iteration ${this.frame}/${this.trace.frames.length - 1} · ${this.rate} iterations/s${this.frame === this.trace.frames.length - 1 ? " · complete" : ""}`
       : `Live activity · ${this.source.recurrent ? "recurrent settlement" : "direct associative read/write"} · ${this.writes} observed weight changes`;
+    const legend = this.$("brain-legend");
+    legend.hidden = !this.heat || plastic;
+    this.$("brain-legend-label").textContent =
+      `${this.signal === "input" ? "Input drive" : this.signal === "repair" ? "State change" : "Activity"} · relative region scale${this.trace?.release && this.signal === "activity" ? " · fixed during decay" : ""}`;
+    const quantity = {
+      activity: "State",
+      repair: "State change",
+      input: "Input drive",
+      plasticity: "State (edges show learned weights)",
+    }[this.signal];
     this.$("brain-scale").textContent =
-      `Activity max ${max.toExponential(2)} · ${this.trace ? "per-iteration repair" : "between-observation change"} max ${dm.toExponential(2)}. Activity brightness uses ${this.trace?.release ? "the captured region scales (fixed during decay)" : "current region scales"}; hover for values.`;
+      `${quantity} max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. Colors use ${this.trace?.release && this.signal === "activity" ? "captured region scales (fixed during decay)" : "current region scales"}; hover for signed values. No neurotransmitter concentrations are modeled.`;
   }
   snapshot() {
     return {
@@ -339,6 +385,8 @@ export class BrainView {
       recurrent: this.source?.recurrent ?? false,
       writes: this.writes,
       signal: this.signal,
+      heatmap: this.heat,
+      input: this.source?.input,
       replay: !!this.trace,
       release: this.trace?.release ?? false,
       frame: this.frame,

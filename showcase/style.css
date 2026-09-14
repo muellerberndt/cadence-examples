@@ -629,3 +629,24 @@ canvas:focus-visible {
     width: 100%;
   }
 }
+
+.brain-legend {
+  width: min(100%, 360px);
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.brain-colorbar {
+  height: 9px;
+  border-radius: 5px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, #79b8ff, #182028 50%, #ffc471);
+}
+.brain-color-ticks {
+  display: flex;
+  justify-content: space-between;
+  font:
+    10px ui-monospace,
+    monospace;
+  margin-top: 4px;
+}
