@@ -1,3 +1,7 @@
+import { BrainView } from "./brain_view.js";
+import { memoryCircuit } from "./telemetry.js";
+import { mountWorm } from "./worm_view.js";
+import { showGuide } from "./guides.js";
 import { mountEmbodied } from "./embodied_view.js";
 import {
   Worm,
@@ -23,7 +27,9 @@ const $ = (id) => document.getElementById(id),
 const pct = (x) => (100 * x).toFixed(1) + "%",
   sci = (x) => x.toExponential(1),
   mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
-let composite, bodyView;
+let composite,
+  bodyView,
+  wormView = "habitat";
 let data,
   evidence,
   worm,
@@ -49,6 +55,7 @@ let memory,
   mlpState,
   points = [],
   drag = -1;
+const brainView = new BrainView();
 const canvas = $("scene"),
   ctx = canvas.getContext("2d");
 let width = 900,
@@ -208,6 +215,15 @@ function renderEvidence() {
 }
 function setMode(next) {
   mode = next;
+  brainView.reset();
+  showGuide($("demo-guide"), mode);
+  $("worm-views").hidden = mode !== "worm";
+  document
+    .querySelectorAll("[data-worm-view]")
+    .forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.wormView === wormView)),
+    );
+  document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", memory: "Changing memory" }[mode]}`;
   bodyView = null;
   auto = false;
   paused = false;
@@ -217,6 +233,14 @@ function setMode(next) {
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.tab === next)),
     );
+  if (mode === "worm" && wormView === "habitat") {
+    bodyView = mountWorm({ data, $, ctx, metrics, explain });
+    document.querySelector(".evidence details a").href =
+      "showcase/evidence.json";
+    renderEvidence();
+    fit();
+    return;
+  }
   if (mode === "mouse" || mode === "arm") {
     bodyView = mountEmbodied(mode, {
       $,
@@ -253,6 +277,7 @@ function setMode(next) {
       `<div><h2>Ask the circuit a new question.</h2><p>Local activity settles through measured connections and a supplied rule.</p></div><div><label>Stimulate</label><div class="buttons">${Object.keys(
         data.stimuli,
       )
+        .filter((k) => data.stimuli[k].length)
         .map(
           (k, i) =>
             `<button data-stim="${k}" aria-pressed="${i === 0}">${{ anterior: "Front touch", posterior: "Tail touch", nose: "Nose", odor: "Odor" }[k]}</button>`,
@@ -643,6 +668,28 @@ function drawMemory() {
     "center",
   );
 }
+function brainSource() {
+  if (bodyView) return bodyView.brain?.();
+  if (mode === "worm")
+    return {
+      state: result.state,
+      drive,
+      mask,
+      edges: data.edges,
+      names: data.names,
+      groups: data.groups,
+      recurrent: true,
+      steps: result.steps,
+      memory:
+        "Supplied chemical circuit: no trained plasticity. Release input shows transient recurrent decay, not durable task memory.",
+    };
+  if (mode === "fly") {
+    const agent = agents[0],
+      key = agent.target >= 0 ? keys()[field[agent.target].kind] : zeros(8);
+    return memoryCircuit(agent.memory, key);
+  }
+  return memoryCircuit(memory, keys(correlation)[selected]);
+}
 let previous = 0;
 function animate(t) {
   const dt = Math.min(0.05, (t - previous) / 1000 || 0.016);
@@ -664,6 +711,8 @@ function animate(t) {
       );
     drawMemory();
   }
+  if (frame % 6 === 0) brainView.update(brainSource());
+  brainView.draw(dt);
   requestAnimationFrame(animate);
 }
 canvas.addEventListener("pointerdown", (e) => {
@@ -671,6 +720,7 @@ canvas.addEventListener("pointerdown", (e) => {
     x = e.clientX - r.left,
     y = e.clientY - r.top;
   if (bodyView) {
+    canvas.setPointerCapture(e.pointerId);
     bodyView.pointer(x, y, width, height);
     return;
   }
@@ -701,6 +751,11 @@ canvas.addEventListener("pointerdown", (e) => {
   }
 });
 canvas.addEventListener("pointermove", (e) => {
+  if (bodyView?.pointerMove) {
+    const r = canvas.getBoundingClientRect();
+    bodyView.pointerMove(e.clientX - r.left, e.clientY - r.top);
+    return;
+  }
   if (drag < 0 || mode !== "fly") return;
   const r = canvas.getBoundingClientRect();
   field[drag].x = Math.max(
@@ -712,8 +767,22 @@ canvas.addEventListener("pointermove", (e) => {
     Math.min(0.95, (e.clientY - r.top - 35) / (height - 70)),
   );
 });
-canvas.addEventListener("pointerup", () => (drag = -1));
-canvas.addEventListener("pointercancel", () => (drag = -1));
+canvas.addEventListener("pointerup", () => {
+  drag = -1;
+  bodyView?.pointerEnd?.();
+});
+canvas.addEventListener("pointercancel", () => {
+  drag = -1;
+  bodyView?.pointerEnd?.();
+});
+canvas.addEventListener("keydown", (e) => bodyView?.key?.(e));
+document.querySelectorAll("[data-worm-view]").forEach(
+  (b) =>
+    (b.onclick = () => {
+      wormView = b.dataset.wormView;
+      setMode("worm");
+    }),
+);
 window.addEventListener("resize", fit);
 document
   .querySelectorAll("[data-tab]")
@@ -747,6 +816,7 @@ try {
   window.showcase = {
     snapshot: () => ({
       mode,
+      brain: brainView.snapshot(),
       body: bodyView?.snapshot(),
       mask: mask?.slice(),
       drive: drive?.slice(),

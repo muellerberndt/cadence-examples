@@ -1,0 +1,61 @@
+// Read-only diagnostic replay. Never feeds rendered values back into a controller.
+export function repairTrace(source, release = false) {
+  const n = source.state.length,
+    mask = source.mask ?? Array(n).fill(1),
+    dt = source.dt ?? 1;
+  let state = release ? source.state.slice() : Array(n).fill(0);
+  let potential = release
+    ? state.map((x) =>
+        Math.atanh(Math.max(-0.999999999, Math.min(0.999999999, x))),
+      )
+    : Array(n).fill(0);
+  const drive = release ? Array(n).fill(0) : source.drive;
+  for (let i = source.recurrentCount ?? n; i < n; i++)
+    state[i] = source.state[i];
+  const frames = [state.slice()],
+    residuals = [0];
+  const steps = release ? Math.min(source.steps ?? 200, 400) : source.steps;
+  for (let t = 0; t < steps; t++) {
+    const inbox = Array(n).fill(0);
+    for (const [a, b, w] of source.edges) inbox[b] += w * state[a];
+    potential = potential.map((v, i) =>
+      i >= (source.recurrentCount ?? n)
+        ? Math.atanh(
+            Math.max(-0.999999999, Math.min(0.999999999, source.state[i])),
+          )
+        : dt === 1
+          ? inbox[i] + drive[i]
+          : v + dt * (inbox[i] + drive[i] - v),
+    );
+    const next = potential.map((v, i) =>
+      i >= (source.recurrentCount ?? n)
+        ? source.state[i]
+        : mask[i] * Math.tanh(v),
+    );
+    residuals.push(Math.max(...next.map((v, i) => Math.abs(v - state[i]))));
+    state = next;
+    frames.push(state.slice());
+  }
+  return { frames, residuals, release };
+}
+export function memoryCircuit(memory, key) {
+  const state = [...key, ...memory.predict(key)];
+  return {
+    state,
+    names: [
+      ...key.map((_, i) => `Key ${i + 1}`),
+      ...Array.from({ length: 4 }, (_, i) => `Value ${i}`),
+    ],
+    groups: [...key.map(() => "key"), ...Array(4).fill("record")],
+    edges: memory.w.flatMap((row, i) =>
+      row.map((w, j) => [i, key.length + j, w]),
+    ),
+    weights: memory.w.flat(),
+    learned: memory.w.flatMap((row, i) =>
+      row.map((w, j) => [i * 4 + j, `key-${i}-value-${j}`, w]),
+    ),
+    recurrent: false,
+    memory:
+      "Associative seams retain observations; no reverberating activity in this circuit.",
+  };
+}

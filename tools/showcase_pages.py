@@ -37,6 +37,7 @@ def main():
             page.goto(f"http://127.0.0.1:{server.server_address[1]}/")
             page.wait_for_function("window.showcase !== undefined")
             assert page.evaluate("showcase.snapshot().mode") == "mouse"
+            page.wait_for_function("showcase.snapshot().brain.owners > 0")
             page.locator("#task-cue").select_option("3")
             page.locator("#perform-task").click()
             assert "unfamiliar" in page.locator("#lesson-status").inner_text()
@@ -55,6 +56,7 @@ def main():
             lessons = page.evaluate("showcase.snapshot().body.lessons")
             assert all(r in lessons for r in [[0, 0], [1, 1], [2, 2], [3, 2]])
             page.locator('[data-tab="worm"]').click()
+            page.locator('[data-worm-view="circuit"]').click()
             before = page.evaluate("showcase.snapshot().result.state")
             page.locator("#cut-many").click()
             after = page.evaluate("showcase.snapshot()")
@@ -63,6 +65,40 @@ def main():
                 and before != after["result"]["state"]
             )
             assert after["result"]["residual"] < 1e-8
+            page.locator('[data-worm-view="habitat"]').click()
+            page.locator("#worm-pause").click()
+            page.locator("#worm-clear-food").click()
+            page.locator("#scene").focus()
+            page.keyboard.press("ArrowRight")
+            page.keyboard.press("Space")
+            assert len(page.evaluate("showcase.snapshot().body.food")) == 1
+            page.locator("#worm-smell").click()
+            page.locator("#worm-pause").click()
+            before = page.evaluate("showcase.snapshot().body.moves")
+            page.wait_for_timeout(500)
+            assert page.evaluate("showcase.snapshot().body.moves") == before
+            page.locator("#worm-smell").click()
+            page.wait_for_function("showcase.snapshot().body.eaten > 0")
+            page.locator("#worm-pause").click()
+            # Draw a continuous wall across multiple input events, then erase it.
+            bounds = page.locator("#scene").bounding_box()
+            size = min((bounds["width"] - 32) / 31, (bounds["height"] - 42) / 21)
+            left = bounds["x"] + (bounds["width"] - 31 * size) / 2
+            top = bounds["y"] + (bounds["height"] - 21 * size) / 2
+            page.locator('[data-worm-tool="wall"]').click()
+            page.mouse.move(left + 8.5 * size, top + 3.5 * size)
+            page.mouse.down()
+            page.mouse.move(left + 15.5 * size, top + 3.5 * size, steps=8)
+            page.mouse.up()
+            walls = page.evaluate("showcase.snapshot().body.walls")
+            assert all(walls[3 * 31 + x] for x in range(8, 16))
+            page.locator('[data-worm-tool="erase"]').click()
+            page.mouse.click(left + 9.5 * size, top + 3.5 * size)
+            assert not page.evaluate("showcase.snapshot().body.walls[3*31+9]")
+            page.locator('[data-worm-view="circuit"]').click()
+            page.locator('[data-worm-view="habitat"]').click()
+            assert page.evaluate("showcase.snapshot().body.walls[3*31+8]")
+            assert not page.evaluate("showcase.snapshot().body.walls[3*31+9]")
             page.locator('[data-tab="memory"]').click()
             page.locator("#value").select_option("3")
             page.locator("#teach").click()
@@ -105,12 +141,49 @@ def main():
             )
             for mode in ["mouse", "arm", "fly", "worm", "memory"]:
                 page.locator(f'[data-tab="{mode}"]').click()
+                page.wait_for_function("showcase.snapshot().brain.owners > 0")
+                brain = page.evaluate("showcase.snapshot().brain")
+                assert (
+                    brain["owners"]
+                    == {"mouse": 259, "arm": 4, "fly": 12, "worm": 297, "memory": 12}[
+                        mode
+                    ]
+                )
+                assert page.locator("#brain-replay").is_enabled() == (
+                    mode in ["mouse", "arm", "worm"]
+                )
+                if mode == "memory":
+                    page.locator("#value").select_option("2")
+                    page.locator("#teach").click()
+                    page.wait_for_function("showcase.snapshot().brain.writes > 0")
+                elif mode == "worm":
+                    page.locator("#brain-replay").click()
+                    snapshot = page.evaluate("showcase.snapshot().brain")
+                    assert (
+                        max(
+                            abs(a - b)
+                            for a, b in zip(snapshot["last"], snapshot["state"])
+                        )
+                        < 1e-8
+                    )
+                    page.locator("#brain-release").click()
+                    page.wait_for_function("showcase.snapshot().brain.frame > 0")
+                    assert page.evaluate("showcase.snapshot().brain.release")
+                    page.locator("#brain-live").click()
+                guide = page.locator("#demo-guide")
+                assert guide.get_attribute("data-demo") == mode
+                assert guide.locator("h3").count() == 3
+                assert guide.locator("h3").last.inner_text() == "Why Cadence fits"
+                assert (
+                    "Inside the feedback loop"
+                    in page.locator(".mechanism summary").inner_text()
+                )
                 page.set_viewport_size({"width": 390, "height": 844})
                 page.wait_for_timeout(80)
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > innerWidth"
                 ), mode
-                assert page.locator("canvas").bounding_box()["height"] >= 300
+                assert page.locator("#scene").bounding_box()["height"] >= 300
                 page.set_viewport_size({"width": 1440, "height": 1050})
             assert not errors, errors
             print(

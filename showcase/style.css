@@ -258,6 +258,17 @@ input[type="range"] {
   flex-direction: column;
   gap: 12px;
 }
+.demo-guide {
+  border-bottom: 1px solid var(--line);
+}
+.mechanism {
+  margin: 18px 0 26px;
+}
+.mechanism summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+}
 .explain {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -504,5 +515,117 @@ input::file-selector-button {
   }
   .controls details {
     grid-column: 1/-1;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+.view-switch {
+  margin: 0 0 18px;
+}
+canvas {
+  touch-action: none;
+}
+canvas:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -3px;
+}
+
+.brain-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #0c161c;
+}
+.brain-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.brain-heading h2 {
+  font-size: 22px;
+  margin: 5px 0 14px;
+}
+.brain-heading > span {
+  color: var(--muted);
+  font:
+    12px ui-monospace,
+    monospace;
+}
+.brain-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 265px;
+  gap: 24px;
+}
+#brain-scene {
+  width: 100%;
+  height: 330px;
+}
+.brain-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.brain-controls label {
+  color: var(--muted);
+  font-size: 12px;
+}
+.brain-controls p,
+.brain-panel > p,
+.brain-panel details {
+  color: var(--muted);
+  font-size: 12px;
+}
+.brain-controls p {
+  margin: 0;
+}
+.brain-panel summary {
+  cursor: pointer;
+}
+.brain-panel button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+#brain-status {
+  color: var(--green);
+  margin: 12px 0 4px;
+}
+#brain-scale {
+  margin: 0 0 12px;
+}
+@media (max-width: 680px) {
+  .brain-panel {
+    padding: 14px;
+  }
+  .brain-heading {
+    display: block;
+  }
+  .brain-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  #brain-scene {
+    height: 300px;
+  }
+  .brain-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .brain-controls label,
+  .brain-controls p {
+    grid-column: 1/-1;
+  }
+  .brain-controls select {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .brain-controls select {
+    grid-column: 1/-1;
+    width: 100%;
   }
 }

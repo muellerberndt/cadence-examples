@@ -1,3 +1,5 @@
+import { memoryCircuit } from "./telemetry.js";
+import { keys } from "./engine.js";
 import {
   Mouse,
   Arm,
@@ -502,6 +504,49 @@ export function mountEmbodied(mode, api) {
         a = Math.floor((x - ox) / cell),
         b = Math.floor((y - oy) / cell);
       if (a >= 0 && a < 19 && b >= 0 && b < 13) mouse.toggle(b * 19 + a);
+    },
+    brain() {
+      if (mode === "mouse") {
+        const m = memoryCircuit(lessons.memory, keys()[cue]);
+        const c = mouse.circuit,
+          n = c.state.length,
+          offset = c.engine.data.edges.length;
+        return {
+          state: [...c.state, ...m.state],
+          drive: [...c.drive, ...m.state],
+          mask: [...c.mask, ...m.state.map(() => 1)],
+          names: [...c.state.map((_, i) => `Place ${i}`), ...m.names],
+          groups: [...c.state.map(() => "place"), ...m.groups],
+          edges: [
+            ...c.engine.data.edges,
+            ...m.edges.map(([a, b, w]) => [a + n, b + n, w]),
+          ],
+          learned: m.learned.map(([i, id, v]) => [i + offset, id, v]),
+          recurrent: true,
+          recurrentCount: n,
+          steps: c.steps,
+          memory:
+            "Task associations persist in plastic seams. The place field is recalculated from the map; no behavioral Afterglow trace is used here.",
+        };
+      }
+      const c = arm.settlement;
+      return c
+        ? {
+            ...c,
+            names: [
+              "Visual error X",
+              "Visual error Y",
+              "Motor correction 1",
+              "Motor correction 2",
+            ],
+            groups: ["visual", "visual", "motor", "motor"],
+            recurrent: true,
+            steps: 80,
+            dt: 0.25,
+            memory:
+              "Four coupled owners. Joint geometry changes the couplings; these are supplied weights, not learned plasticity. Release input probes transient recurrent decay.",
+          }
+        : null;
     },
     snapshot() {
       return mode === "mouse"

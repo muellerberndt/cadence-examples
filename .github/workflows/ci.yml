@@ -8,42 +8,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: install the pinned Cadence revision and evaluation dependencies
-        run: |
-          python -m pip install -r requirements-reproduce.txt
-          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: showcase evidence and generated hubs agree
+      - name: install reproducible test dependencies
+        run: python -m pip install -r requirements-reproduce.txt pytest playwright
+      - name: verify measured evidence and execute habitat behavior trials
         run: |
           python showcase/verify.py
+          node showcase/habitat_benchmark.mjs
+      - name: generated websites agree with the authored shell
+        run: |
           python tools/build_showcase.py
           git diff --exit-code -- index.html hub_published.html
-      - name: receipts retain verifiable current or historical source provenance
-        run: python tools/verify_receipts.py
-      - name: the pages build from the committed nets
+      - name: launcher, numerical parity and evidence integrity
+        run: python -m pytest -q tests
+      - name: all five websites work in a real browser
         run: |
-          for d in 01_digits 03_connect_four 04_pong; do
-            if [ -f $d/net.json ]; then (cd $d && python build_page.py); fi
-          done
-          git diff --stat --exit-code -- '*/index.html'
-      - name: the ladder in the README and the hub is what the receipts say
-        run: python tools/ladder.py && git diff --stat --exit-code README.md 03_connect_four/README.md 04_pong/README.md 05_memory/README.md 06_interventions/README.md index.html hub_published.html tutorials.html
-      - name: reflection isolation and benchmark evidence tests against current Cadence
-        run: python -m pip install pytest && python -m pytest -q tests
-      - name: every rung runs end to end at a tiny budget and its receipt verifies
-        run: python tools/smoke.py
-      - name: shipped players meet fresh performance thresholds
-        run: python tools/performance.py
-      - name: every page works in a real browser and chooses what the engine chooses
-        run: |
-          python -m pip install playwright
           python -m playwright install --with-deps chromium
-          python tools/pages.py --rally 6
           python tools/showcase_pages.py

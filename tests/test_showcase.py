@@ -119,3 +119,39 @@ def test_receipt_gate_rejects_forged_results_even_with_recomputed_digest(mutatio
     ).hexdigest()
     with pytest.raises(ValueError):
         verify(body, hashes())
+
+
+def test_habitat_circuit_matches_cadence():
+    result = node("""
+import {WormArena} from './showcase/worm_arena.js';
+import {readFileSync} from 'node:fs';
+const w=new WormArena(JSON.parse(readFileSync('./showcase/worm.json')));
+w.step();
+console.log(JSON.stringify({state:w.state,drive:w.drive,mask:w.mask,moves:w.moves}));
+""")
+    actual = (
+        worm_engine()
+        .settle(result["drive"], mask=result["mask"], steps=200, tolerance=1e-10)
+        .activation
+    )
+    np.testing.assert_allclose(result["state"], actual, atol=1e-9, rtol=0)
+    assert result["moves"] == 1
+
+
+def test_diagnostic_replays_match_executed_settlements_and_release_decays():
+    result = node("""
+import {readFileSync} from 'node:fs';
+import {Worm,zeros} from './showcase/engine.js';
+import {Mouse,motorSettlement} from './showcase/embodied.js';
+import {repairTrace} from './showcase/telemetry.js';
+const data=JSON.parse(readFileSync('./showcase/worm.json')),w=new Worm(data),drive=zeros(w.n),mask=Array(w.n).fill(1);
+data.stimuli.odor.forEach(i=>drive[i]=1);
+const r=w.settle(drive,mask),m=new Mouse(),a=motorSettlement([-1.8,1.1],[.45,.35]);
+const sources=[{...r,drive,mask,edges:data.edges},{...m.circuit,edges:m.circuit.engine.data.edges},{...a,steps:80,dt:.25}];
+const errors=sources.map(s=>Math.max(...repairTrace(s).frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))));
+const release=repairTrace(sources[0],true);
+console.log(JSON.stringify({errors,initial:Math.max(...release.frames[0]),released:Math.max(...release.frames.at(-1))}));
+""")
+    assert max(result["errors"]) < 1e-12
+    assert result["initial"] > 0
+    assert result["released"] < result["initial"] * 1e-6

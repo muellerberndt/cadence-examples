@@ -1,4 +1,5 @@
 """The local launcher must be usable without a browser or its default port."""
+
 import importlib.util
 from pathlib import Path
 
@@ -10,7 +11,10 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 
-def test_headless_server_uses_selected_port_and_loopback(monkeypatch, capsys):
+@pytest.mark.parametrize("page,fragment", list(module.PAGES.items()))
+def test_headless_server_uses_selected_port_and_loopback(
+    page, fragment, monkeypatch, capsys
+):
     class Server:
         server_address = ("127.0.0.1", 41234)
 
@@ -31,8 +35,8 @@ def test_headless_server_uses_selected_port_and_loopback(monkeypatch, capsys):
 
     monkeypatch.setattr(module.http.server, "ThreadingHTTPServer", Server)
     monkeypatch.setattr(module.webbrowser, "open", unexpected_browser)
-    assert module.main(["pong", "--port", "0", "--no-browser"]) == 0
-    assert "http://127.0.0.1:41234/04_pong/index.html" in capsys.readouterr().out
+    assert module.main([page, "--port", "0", "--no-browser"]) == 0
+    assert f"http://127.0.0.1:41234/#{fragment}" in capsys.readouterr().out
 
 
 def test_server_bind_error_has_actionable_message(monkeypatch, capsys):
@@ -46,8 +50,15 @@ def test_server_bind_error_has_actionable_message(monkeypatch, capsys):
     assert "Try --port 0" in capsys.readouterr().err
 
 
-@pytest.mark.parametrize("args,code", [(["--help"], 0), (["--port", "-1"], 2),
-                                       (["--port", "65536"], 2), (["missing"], 2)])
+@pytest.mark.parametrize(
+    "args,code",
+    [
+        (["--help"], 0),
+        (["--port", "-1"], 2),
+        (["--port", "65536"], 2),
+        (["missing"], 2),
+    ],
+)
 def test_invalid_or_help_arguments_do_not_start_a_server(args, code, monkeypatch):
     def unexpected_server(*args):
         pytest.fail("invalid arguments started a server")
