@@ -1,10 +1,10 @@
-"""One Cadence patch graph: auditory history, harmony, rhythm, phrase and note output."""
+"""One Cadence brain: auditory history, harmony, rhythm, phrase and note output."""
 
 from dataclasses import dataclass
 
 import cadence as cd
 import numpy as np
-from cadence.constitution import Constitution, Projection, Region, grow
+from cadence.genome import Genome, Projection, Region, develop
 
 from .encoding import EVENT_SIZE, INPUTS, SIZES, features
 
@@ -29,27 +29,27 @@ def build(design=None, backend="cpu", device=None):
     projections = []
     for name in ["harmony", "rhythm", "phrase_memory"]:
         projections += [
-            Projection("auditory_history", name, scale=0.6, symmetric=False),
+            Projection("auditory_history", name, scale=0.6, reciprocal=False),
             Projection(name, "note_intention", scale=0.6),
         ]
     projections += [
-        Projection("auditory_history", "note_intention", scale=0.5, symmetric=False),
+        Projection("auditory_history", "note_intention", scale=0.5, reciprocal=False),
         Projection("harmony", "phrase_memory", density=0.2, scale=0.2),
         Projection("rhythm", "phrase_memory", density=0.2, scale=0.2),
     ]
-    wiring = grow(
-        Constitution(regions, tuple(projections), label="composer"), seed=design.seed
+    connectome = develop(
+        Genome(regions, tuple(projections), label="composer"), seed=design.seed
     )
-    engine = cd.Settlement(
-        wiring,
-        cd.learning_rule(dt=1, leak=0.1),
+    brain = cd.Brain(
+        connectome,
+        cd.learning_neuron_model(dt=1, leak=0.1),
         backend=backend,
         device=device,
         precision="float32" if backend == "torch" else None,
     )
-    inputs = np.array(wiring.sets["auditory_history"])
-    trainable = np.ones(wiring.n, dtype=bool)
-    trainable[inputs] = False
+    inputs = np.array(connectome.populations["auditory_history"])
+    plastic = np.ones(connectome.n, dtype=bool)
+    plastic[inputs] = False
     config = cd.LearnerConfig(
         beta=0.3,
         eta=0.2,
@@ -65,10 +65,10 @@ def build(design=None, backend="cpu", device=None):
         decay=1e-6,
     )
     learner = cd.Learner(
-        engine,
-        wiring.sets["note_intention"],
+        brain,
+        connectome.populations["note_intention"],
         config,
-        trainable_owners=trainable,
+        plastic_neurons=plastic,
         slots=SIZES,
     )
     return learner
@@ -76,7 +76,7 @@ def build(design=None, backend="cpu", device=None):
 
 def drives(learner, context, extra):
     x = features(context, extra)
-    out = np.zeros((len(x), learner.engine.wiring.n), dtype=np.float32)
+    out = np.zeros((len(x), learner.brain.connectome.n), dtype=np.float32)
     out[:, :INPUTS] = x * 2.5
     return out
 
@@ -84,7 +84,7 @@ def drives(learner, context, extra):
 def probabilities(learner, context, extra, *, trace=False):
     drive = drives(learner, context, extra)
     if trace:
-        state = learner.engine.settle_batch(
+        state = learner.brain.settle_batch(
             drive, steps=64, tolerance=1e-5, trajectory=True
         )
     else:
@@ -103,15 +103,17 @@ def probabilities(learner, context, extra, *, trace=False):
 
 
 def describe(learner):
-    w = learner.engine.wiring
+    w = learner.brain.connectome
     base = getattr(learner, "base", learner)
     return {
-        "owners": w.n,
-        "directed_seams": w.edges,
+        "neurons": w.n,
+        "directed_synapses": w.synapses,
         "trainable_parameters": learner.parameters(),
-        "regions": {k: len(v) for k, v in w.sets.items()},
+        "regions": {k: len(v) for k, v in w.populations.items()},
         "learning": "Cadence centered free/nudged local contrast; no backpropagation graph",
-        "inputs": len(w.sets.get("auditory_history", w.sets.get("heard_events", ()))),
+        "inputs": len(
+            w.populations.get("auditory_history", w.populations.get("heard_events", ()))
+        ),
         "output_slots": base.slot_sizes.tolist(),
     }
 
@@ -119,14 +121,14 @@ def describe(learner):
 def settle_checked(
     learner, drive, *, tolerance=1e-5, budget=512, observer=None, warm=None
 ):
-    """Continue the existing rule until its equations agree, or report the finite cap."""
-    engine = learner.engine
+    """Continue the existing neuron model until its equations agree, or report the finite cap."""
+    brain = learner.brain
     state = warm
     steps = 0
     error = None
     if observer is not None:
         if state is None:
-            state = engine.settle_batch(drive, steps=0)
+            state = brain.settle_batch(drive, steps=0)
         observer(0, state)
     while steps < budget:
         count = min(
@@ -137,11 +139,11 @@ def settle_checked(
             else 32,
             budget - steps,
         )
-        state = engine.settle_batch(drive, steps=count, state=state, tolerance=0)
+        state = brain.settle_batch(drive, steps=count, state=state, tolerance=0)
         steps += count
         if observer is not None:
             observer(steps, state)
-        error = engine.residual(drive, state)
+        error = brain.residual(drive, state)
         if steps >= 32 and np.all(error <= tolerance):
             break
     return state, {

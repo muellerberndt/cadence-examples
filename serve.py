@@ -40,7 +40,7 @@ def main():
     }
     state["trace"] = capture(
         composer.performer,
-        np.zeros((1, composer.performer.engine.wiring.n)),
+        np.zeros((1, composer.performer.brain.connectome.n)),
         packed=True,
     )
     state["trace"]["origin"] = "Rest with learned biases; no sensory input"
@@ -130,7 +130,7 @@ def main():
                 ):
                     return self.send({"error": "Not found"}, 404)
                 target = ROOT / "runs/compositions" / path.removeprefix("/output/")
-            elif path in ("/", "/app.js", "/style.css", "/circuit_map.js"):
+            elif path in ("/", "/app.js", "/style.css", "/brain_scan.js"):
                 target = ROOT / "web" / ("index.html" if path == "/" else path[1:])
             else:
                 return self.send({"error": "Not found"}, 404)
@@ -221,7 +221,7 @@ def main():
 
     server = ThreadingHTTPServer(("127.0.0.1", a.port), Handler)
     print(
-        f"Cadence Composer: http://127.0.0.1:{a.port} · {describe(composer.performer)['owners']:,} owners",
+        f"Cadence Composer: http://127.0.0.1:{a.port} · {describe(composer.performer)['neurons']:,} neurons",
         flush=True,
     )
     try:

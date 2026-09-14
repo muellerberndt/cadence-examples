@@ -6,7 +6,7 @@ from pathlib import Path
 
 import cadence as cd
 import numpy as np
-from cadence.constitution import Constitution, Projection, Region, grow
+from cadence.genome import Genome, Projection, Region, develop
 
 HISTORY = 8
 DELTAS = np.array([0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64])
@@ -80,33 +80,33 @@ def build(design=None, *, backend="cpu", device=None):
         Region("rhythm_assembly", d.size // 2),
         Region("ensemble_intention", EVENTS),
     )
-    edges = []
+    projections = []
     for name in ["harmonic_assembly", "instrument_assembly", "rhythm_assembly"]:
-        edges += [
-            Projection("heard_events", name, scale=0.6, symmetric=False),
+        projections += [
+            Projection("heard_events", name, scale=0.6, reciprocal=False),
             Projection(name, "ensemble_intention", scale=0.6),
         ]
-    edges += [
-        Projection("heard_events", "ensemble_intention", scale=0.5, symmetric=False),
+    projections += [
+        Projection("heard_events", "ensemble_intention", scale=0.5, reciprocal=False),
         Projection("harmonic_assembly", "instrument_assembly", density=0.2, scale=0.2),
         Projection("rhythm_assembly", "instrument_assembly", density=0.2, scale=0.2),
     ]
-    wiring = grow(
-        Constitution(parts, tuple(edges), label="polyphonic-ensemble"), seed=d.seed
+    connectome = develop(
+        Genome(parts, tuple(projections), label="polyphonic-ensemble"), seed=d.seed
     )
-    engine = cd.Settlement(
-        wiring,
-        cd.learning_rule(dt=1, leak=0.1),
+    brain = cd.Brain(
+        connectome,
+        cd.learning_neuron_model(dt=1, leak=0.1),
         backend=backend,
         device=device,
         dense_limit=8192,
         precision="float32" if backend == "torch" else None,
     )
-    trainable = np.ones(wiring.n, bool)
-    trainable[list(wiring.sets["heard_events"])] = False
+    plastic = np.ones(connectome.n, bool)
+    plastic[list(connectome.populations["heard_events"])] = False
     return cd.Learner(
-        engine,
-        wiring.sets["ensemble_intention"],
+        brain,
+        connectome.populations["ensemble_intention"],
         cd.LearnerConfig(
             beta=0.3,
             eta=0.16,
@@ -121,14 +121,14 @@ def build(design=None, *, backend="cpu", device=None):
             normalize_floor=0.01,
             decay=1e-6,
         ),
-        trainable_owners=trainable,
+        plastic_neurons=plastic,
         slots=SIZES,
     )
 
 
 def drives(brain, context, extra):
     x = encode(context, extra)
-    out = np.zeros((len(x), brain.engine.wiring.n), np.float32)
+    out = np.zeros((len(x), brain.brain.connectome.n), np.float32)
     out[:, :INPUTS] = x * 2.5
     return out
 

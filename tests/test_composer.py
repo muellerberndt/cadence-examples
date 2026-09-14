@@ -37,18 +37,19 @@ def test_exact_populations_and_equation_error():
     extra = np.array([music_features(history[0], 0, 0)])
     d = drives(b, history, extra)
     observation = capture(b, d, steps=32, include_release=False)
-    final = b.engine.settle_batch(d, steps=32, tolerance=0)
+    final = b.brain.settle_batch(d, steps=32, tolerance=0)
     np.testing.assert_allclose(
-        observation["equation_error"][-1], b.engine.residual(d, final)[0], atol=1e-12
+        observation["equation_error"][-1], b.brain.residual(d, final)[0], atol=1e-12
     )
-    for name, ids in b.engine.wiring.sets.items():
+    for name, ids in b.brain.connectome.populations.items():
         np.testing.assert_allclose(
             observation["populations"][-1][name]["mean"],
             final.activation[0, list(ids)].mean(),
             atol=1e-12,
         )
     assert (
-        sum(r["owners"] for r in observation["regions"].values()) == b.engine.wiring.n
+        sum(r["neurons"] for r in observation["regions"].values())
+        == b.brain.connectome.n
     )
 
 
@@ -57,7 +58,7 @@ def test_actual_weight_learning_and_isolated_candidate_rehearsal(tmp_path):
     file = tmp_path / "brain.npz"
     brain.save(file)
     c = Composer(file)
-    before = c.learner.engine.edge_scale.copy()
+    before = c.learner.brain.efficacy.copy()
     previous = [[24, 3, 0, 12]] * 4
     selected, _history, record, _drive = c.phrase(
         parse_prompt("calm piano"), previous, 0, 1, np.random.default_rng(7), variants=3
@@ -67,20 +68,19 @@ def test_actual_weight_learning_and_isolated_candidate_rehearsal(tmp_path):
     assert record["winner"] == int(
         np.argmax([r["critique"]["score"] for r in record["candidates"]])
     )
-    np.testing.assert_array_equal(before, c.learner.engine.edge_scale)
+    np.testing.assert_array_equal(before, c.learner.brain.efficacy)
     assert previous == [[24, 3, 0, 12]] * 4
     assert (
         selected[0]["step"] == 0
         and selected[-1]["step"] + selected[-1]["duration"] == 16
     )
     assert all(
-        r["residual"] <= r["tolerance"] or r["steps"] == 512
-        for r in record["settlements"]
+        r["residual"] <= r["tolerance"] or r["steps"] == 512 for r in record["settling"]
     )
     context = np.array([previous])
     extra = np.array([music_features(previous, 0, 0)])
     c.learner.step(drives(c.learner, context, extra), np.array([[28, 3, 0, 12]]))
-    assert np.max(np.abs(before - c.learner.engine.edge_scale)) > 0
+    assert np.max(np.abs(before - c.learner.brain.efficacy)) > 0
 
 
 def test_critic_penalizes_note_collapse():
@@ -99,7 +99,7 @@ def test_one_trial_motif_memory_changes_shared_equilibrium():
     from composer.motif import MotifBrain
 
     b = MotifBrain(build(Design(8, 4, 4)))
-    n = b.engine.wiring.n
+    n = b.brain.connectome.n
     d = np.zeros((1, n))
     d[:, b.cues[0]] = 2.5
     before, _ = settle_checked(b, d)
@@ -112,7 +112,9 @@ def test_one_trial_motif_memory_changes_shared_equilibrium():
         > before.activation[0, b.output_index[24]] + 0.3
     )
     assert b.memory.writes == 6
-    assert len(b.engine.wiring.sets) == (10 if b.intuition.tables is not None else 7)
+    assert len(b.brain.connectome.populations) == (
+        10 if b.intuition.tables is not None else 7
+    )
 
 
 def test_phrase_density_is_independent_of_location():
@@ -151,7 +153,7 @@ def test_motif_cue_releases_after_the_opening():
 
     b = MotifBrain(build(Design(8, 4, 4)))
     b.remember([60, 62, 64, 65, 67, 64])
-    drive = np.zeros((1, b.engine.wiring.n))
+    drive = np.zeros((1, b.brain.connectome.n))
     b.cue(drive, 6)
     assert not drive.any()
 
@@ -214,16 +216,16 @@ def test_corpus_expectation_has_a_causal_path_to_note_intention():
     memory.tables = {"chords": np.ones((2, 24, 24)), "rhythm": np.ones((3, 4, 12, 12))}
     memory.tables["chords"][0, 0, 7] = 10000
     b = MotifBrain(build(Design(8, 4, 4)), memory)
-    d = np.zeros((1, b.engine.wiring.n))
+    d = np.zeros((1, b.brain.connectome.n))
     d[0, b.expectation_cues[0]] = 2.5
     intact, _ = settle_checked(b, d)
-    mask = np.ones(b.engine.wiring.n)
-    mask[list(b.engine.wiring.sets["harmonic_expectation"])] = 0
-    lesioned = b.engine.settle_batch(d, mask=mask, steps=512, tolerance=0)
-    # The learned dominant expectation changes the actual chord-intention owner.
-    chord_owner = b.output_index[61 + 12 + 7]
+    mask = np.ones(b.brain.connectome.n)
+    mask[list(b.brain.connectome.populations["harmonic_expectation"])] = 0
+    lesioned = b.brain.settle_batch(d, mask=mask, steps=512, tolerance=0)
+    # The learned dominant expectation changes the actual chord-intention neuron.
+    chord_neuron = b.output_index[61 + 12 + 7]
     assert (
-        intact.activation[0, chord_owner] > lesioned.activation[0, chord_owner] + 0.01
+        intact.activation[0, chord_neuron] > lesioned.activation[0, chord_neuron] + 0.01
     )
 
 

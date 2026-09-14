@@ -65,27 +65,27 @@ def test_polyphony_held_notes_and_causal_inputs(tmp_path, monkeypatch):
 
 
 def test_full_topology_and_actual_warm_state_recorder():
-    brain = build(Design(8, 4, 4))
-    engine = brain.engine
-    graph = topology(engine)
+    learner = build(Design(8, 4, 4))
+    brain = learner.brain
+    graph = topology(brain)
     file = (
         Path(__file__).resolve().parents[1] / "runs/topology" / Path(graph["url"]).name
     )
     edges = np.fromfile(file, dtype="<f4").reshape(-1, 3)
-    order = np.asarray(graph["owner_ids"])
+    order = np.asarray(graph["neuron_ids"])
     inverse = np.argsort(order)
-    np.testing.assert_array_equal(edges[:, 0], inverse[engine.wiring.pre])
-    np.testing.assert_array_equal(edges[:, 1], inverse[engine.wiring.post])
-    np.testing.assert_allclose(edges[:, 2], engine.weights, rtol=1e-7)
-    assert len(edges) == engine.wiring.edges and len(order) == engine.wiring.n
-    first = np.ones((1, engine.wiring.n)) * 0.1
-    warm, _ = settle_checked(brain, first)
+    np.testing.assert_array_equal(edges[:, 0], inverse[brain.connectome.pre])
+    np.testing.assert_array_equal(edges[:, 1], inverse[brain.connectome.post])
+    np.testing.assert_allclose(edges[:, 2], brain.weights, rtol=1e-7)
+    assert len(edges) == brain.connectome.synapses and len(order) == brain.connectome.n
+    first = np.ones((1, brain.connectome.n)) * 0.1
+    warm, _ = settle_checked(learner, first)
     old = warm.activation.copy()
     next_drive = first.copy()
     next_drive[0, 0] = 2
-    recorder = Recorder(brain, next_drive)
+    recorder = Recorder(learner, next_drive)
     final, receipt = settle_checked(
-        brain, next_drive, warm=warm, observer=recorder.observe
+        learner, next_drive, warm=warm, observer=recorder.observe
     )
     np.testing.assert_allclose(recorder.frames[0]["activation"], old[0, order])
     np.testing.assert_allclose(
@@ -95,4 +95,6 @@ def test_full_topology_and_actual_warm_state_recorder():
         warm.activation, old
     )  # caller-owned candidate state stays intact
     assert receipt["converged"]
-    assert recorder.finish(packed=True)["encoded_frames"]["shape"][2] == engine.wiring.n
+    assert (
+        recorder.finish(packed=True)["encoded_frames"]["shape"][2] == brain.connectome.n
+    )

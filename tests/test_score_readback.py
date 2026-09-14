@@ -1,4 +1,4 @@
-"""Playing a score drives real patches but cannot train on the playback."""
+"""Playing a score drives real neurons but cannot train on the playback."""
 
 import sys
 from pathlib import Path
@@ -33,10 +33,10 @@ def test_readback_is_causal_and_does_not_write_weights(tmp_path):
         "events": events,
         "draft": events,
     }
-    weights = c.performer.engine.weights.copy()
+    weights = c.performer.brain.weights.copy()
     trace = c.hear(report, 1)["trace"]
     assert trace["origin"].startswith("MIDI score readback")
-    assert trace["topology"]["owners"] == c.performer.engine.wiring.n
+    assert trace["topology"]["neurons"] == c.performer.brain.connectome.n
     first = c.hearing_state.activation.copy()
     changed = {
         **report,
@@ -51,4 +51,4 @@ def test_readback_is_causal_and_does_not_write_weights(tmp_path):
     assert np.max(np.abs(first - c.hearing_state.activation)) > 0.01
     released = c.release()
     assert released["released"] and released["origin"].endswith("MIDI score readback")
-    np.testing.assert_array_equal(weights, c.performer.engine.weights)
+    np.testing.assert_array_equal(weights, c.performer.brain.weights)

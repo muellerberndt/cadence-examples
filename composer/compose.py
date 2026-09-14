@@ -75,7 +75,7 @@ class Composer:
         phase="Imagining",
     ):
         learner = self.performer
-        engine = learner.engine
+        brain = learner.brain
         plan = plan if plan is not None else harmonic_plan(brief, self.intuition)
         role = phrase_role(brief, start_bar)
         start = start_bar * 16
@@ -84,11 +84,11 @@ class Composer:
         events = [[] for _ in range(variants)]
         positions = np.full(variants, start)
         last_drives = [None] * variants
-        settlements = []
+        settling = []
         rehearsal_state = None
         hidden = np.concatenate(
             [
-                np.asarray(engine.wiring.sets[name])
+                np.asarray(brain.connectome.populations[name])
                 for name in ["harmony", "rhythm", "phrase_memory"]
             ]
         )
@@ -123,7 +123,7 @@ class Composer:
                     modulators={
                         "detuning": {
                             "value": detune,
-                            "effect": "actual Gaussian perturbation of the rehearsing latent owners",
+                            "effect": "actual Gaussian perturbation of the rehearsing latent neurons",
                         },
                         "plasticity": {
                             "value": 0,
@@ -134,7 +134,7 @@ class Composer:
                 if progress is not None and iteration % 4 == 0
                 else None
             )
-            state, settlement = settle_checked(
+            state, receipt = settle_checked(
                 learner,
                 drive,
                 observer=recorder.observe if recorder else None,
@@ -142,13 +142,13 @@ class Composer:
             )
             if recorder is not None:
                 self.last_observation = (
-                    engine,
+                    brain,
                     state,
                     observed_row,
                     "actual rehearsal",
                 )
             rehearsal_state = state
-            settlements.append(settlement)
+            settling.append(receipt)
             logits = (
                 state.activation[:, learner.output_index] / learner.config.temperature
             )
@@ -278,7 +278,7 @@ class Composer:
                     {"notes": e, "critique": s} for e, s in zip(events, scores)
                 ],
                 "winner": winner,
-                "settlements": settlements,
+                "settling": settling,
                 "detuning_std": detune,
             },
             last_drives[winner],
@@ -374,11 +374,11 @@ class Composer:
                     },
                     "detuning": {
                         "value": record["detuning_std"],
-                        "effect": "Gaussian hidden-owner drive during rehearsal",
+                        "effect": "Gaussian hidden-neuron drive during rehearsal",
                     },
                     "plasticity": {
                         "value": self.performer.memory.writes if bar == 0 else 0,
-                        "effect": "one-trial motif seam writes; corpus weights held until explicit feedback",
+                        "effect": "one-trial motif synapse writes; corpus weights held until explicit feedback",
                     },
                 },
             )
@@ -529,7 +529,7 @@ class Composer:
         )
         drive = drives(self.performer, context, features)
         self.performer.expect(drive, brief, context, np.asarray([position]))
-        identity = (report["id"], version, id(self.performer.engine))
+        identity = (report["id"], version, id(self.performer.brain))
         warm = getattr(self, "hearing_state", None)
         if getattr(self, "hearing_id", None) != identity or seconds < getattr(
             self, "hearing_seconds", 0
@@ -543,7 +543,7 @@ class Composer:
         state, _ = settle_checked(
             self.performer, drive, warm=warm, observer=recorder.observe
         )
-        self.last_observation = (self.performer.engine, state, 0, "MIDI score readback")
+        self.last_observation = (self.performer.brain, state, 0, "MIDI score readback")
         self.hearing_state, self.hearing_id, self.hearing_seconds = (
             state,
             identity,
@@ -556,18 +556,18 @@ class Composer:
         }
 
     def release(self):
-        """Release the last measured state on its captured wiring in an isolated copy."""
+        """Release the last measured state on its captured connectome in an isolated copy."""
         if not hasattr(self, "last_observation"):
             raise ValueError("Compose or play a score first")
-        engine, state, row, origin = self.last_observation
-        isolated = cd.SettledState(
+        brain, state, row, origin = self.last_observation
+        isolated = cd.BrainState(
             v=state.v[row : row + 1].copy(),
             activation=state.activation[row : row + 1].copy(),
             adaptation=state.adaptation[row : row + 1].copy(),
             steps=state.steps,
         )
         result = capture(
-            SimpleNamespace(engine=engine),
+            SimpleNamespace(brain=brain),
             np.zeros_like(isolated.activation),
             state=isolated,
             include_release=False,
@@ -585,7 +585,7 @@ class Composer:
         old_tables = {k: v.copy() for k, v in self.intuition.tables.items()}
         self.performer = MotifBrain(self.learner, self.intuition)
         self.performer.remember(report["motif"])
-        old_weights = self.performer.engine.weights.copy()
+        old_weights = self.performer.brain.weights.copy()
         events = report["events"]
         brief = parse_prompt(report["brief"]["prompt"])
         tokens = [e["token"] for e in events]
@@ -613,7 +613,7 @@ class Composer:
             self.intuition.tables = old_tables
         self.performer = MotifBrain(self.learner, self.intuition)
         self.performer.remember(report["motif"])
-        change_weights = self.performer.engine.weights - old_weights
+        change_weights = self.performer.brain.weights - old_weights
         drive = drives(self.performer, contexts[:1], extra[:1])
         self.performer.expect(drive, brief, contexts[:1], [events[4]["step"]])
         trace = capture(
@@ -629,7 +629,7 @@ class Composer:
                 },
                 "plasticity": {
                     "value": float(np.linalg.norm(change_weights)),
-                    "effect": "retained effective seam change norm; zero after rollback",
+                    "effect": "retained effective synapse change norm; zero after rollback",
                 },
             },
         )
@@ -642,8 +642,8 @@ class Composer:
             "before": before,
             "after": after,
             "change": {
-                "max_effective_seam_change": float(np.abs(change_weights).max()),
-                "changed_seams": int(np.count_nonzero(change_weights)),
+                "max_effective_synapse_change": float(np.abs(change_weights).max()),
+                "changed_synapses": int(np.count_nonzero(change_weights)),
             },
             "guard": "Reject if held-out relationship NLL increases by more than 1%; this is not a music-quality guarantee.",
             "learning": "Local signed association updates to key-relative chord, interval and rhythm patterns. No exact-note rehearsal; pretrained event weights remain held.",

@@ -28,7 +28,7 @@ with sync_playwright() as p:
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.goto("http://127.0.0.1:8078")
     print("Studio loaded", flush=True)
-    expect(page.locator("#owners")).to_contain_text("owners", timeout=20000)
+    expect(page.locator("#neurons")).to_contain_text("neurons", timeout=20000)
     if not args.existing:
         page.locator("#prompt").fill("A bright heroic orchestral theme")
         page.locator("#seed").fill("23")
@@ -47,8 +47,8 @@ with sync_playwright() as p:
     )
     graph = page.evaluate("window.__composerDebug().graph")
     assert (
-        graph["owners"] == 2614
-        and graph["seams"] == 1702938
+        graph["neurons"] == 2614
+        and graph["synapses"] == 1702938
         and graph["allEdgesSubmitted"]
     )
     assert page.evaluate("window.__composerDebug().glError") == 0

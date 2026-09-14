@@ -1,4 +1,4 @@
-"""Full owner/seam indexing, with float32 weights for the browser map."""
+"""Full neuron/synapse indexing, with float32 weights for the browser map."""
 
 import hashlib
 from pathlib import Path
@@ -9,17 +9,28 @@ ROOT = Path(__file__).resolve().parents[1]
 _cached = None
 
 
-def topology(engine):
+def topology(brain, limit=None):
+    """Every neuron, and every directed synapse unless ``limit`` is below their number, in
+    which case the ``limit`` strongest synapses by |weight| are exported and both counts are
+    reported. Activity frames always cover every neuron."""
     global _cached
-    if _cached is not None and _cached[0] is engine:
+    if _cached is not None and _cached[0] is brain and _cached[2] == limit:
         return _cached[1]
-    w = engine.wiring
-    selected = np.concatenate([np.asarray(ids, dtype=int) for ids in w.sets.values()])
+    w = brain.connectome
+    selected = np.concatenate(
+        [np.asarray(ids, dtype=int) for ids in w.populations.values()]
+    )
     if len(selected) != w.n or len(np.unique(selected)) != w.n:
-        raise ValueError("The full map requires disjoint regions covering every owner.")
+        raise ValueError(
+            "The full map requires disjoint regions covering every neuron."
+        )
     inverse = np.empty(w.n, dtype=int)
     inverse[selected] = np.arange(w.n)
-    data = np.column_stack((inverse[w.pre], inverse[w.post], engine.weights)).astype(
+    weights = brain.weights
+    keep = slice(None)
+    if limit is not None and w.synapses > limit:
+        keep = np.sort(np.argpartition(np.abs(weights), w.synapses - limit)[w.synapses - limit :])
+    data = np.column_stack((inverse[w.pre[keep]], inverse[w.post[keep]], weights[keep])).astype(
         "<f4"
     )
     payload = data.tobytes()
@@ -31,19 +42,20 @@ def topology(engine):
         path.write_bytes(payload)
     regions = {}
     cursor = 0
-    for name, ids in w.sets.items():
-        regions[name] = {"start": cursor, "shown": len(ids), "owners": len(ids)}
+    for name, ids in w.populations.items():
+        regions[name] = {"start": cursor, "shown": len(ids), "neurons": len(ids)}
         cursor += len(ids)
     result = {
         "id": digest,
         "url": f"/graph/{digest}.bin",
         "format": "float32le triples: source, target, weight",
-        "owners": w.n,
-        "seams": w.edges,
-        "owner_ids": selected.tolist(),
+        "neurons": w.n,
+        "synapses": int(len(data)),
+        "synapses_total": int(w.synapses),
+        "neuron_ids": selected.tolist(),
         "regions": regions,
     }
-    _cached = (engine, result)
+    _cached = (brain, result, limit)
     return result
 
 

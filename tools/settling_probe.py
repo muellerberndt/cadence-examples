@@ -33,19 +33,19 @@ for j, e in enumerate(extra):
     )
     position = int(e[12:28].argmax() + 16 * e[28:36].argmax())
     brain.expect(drive[j : j + 1], brief, context[j : j + 1], np.array([position]))
-brain.engine.settle_batch(drive[:1], steps=2)  # compile outside the timed interval
+brain.brain.settle_batch(drive[:1], steps=2)  # compile outside the timed interval
 for dt in [1, 0.85, 0.65, 0.5, 0.3]:
-    engine = copy.copy(brain.engine)
-    engine.rule = replace(engine.rule, dt=dt)
+    variant = copy.copy(brain.brain)
+    variant.neuron_model = replace(variant.neuron_model, dt=dt)
     started = time.monotonic()
-    state = engine.settle_batch(drive, steps=2048, tolerance=1e-9)
+    state = variant.settle_batch(drive, steps=2048, tolerance=1e-9)
     elapsed = time.monotonic() - started
     rows.append(
         {
             "dt": dt,
             "steps": state.steps,
             "seconds": elapsed,
-            "equation_error": float(engine.residual(drive, state).max()),
+            "equation_error": float(variant.residual(drive, state).max()),
         }
     )
     states.append(state.activation)

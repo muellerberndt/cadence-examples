@@ -29,12 +29,12 @@ def main():
     measured = evaluate(b, test, count=8192)
     ids = np.random.default_rng(19).choice(len(test["labels"]), 128, replace=False)
     drive = drives(b, test["context"][ids], test["extra"][ids])
-    intact, settlement = settle_checked(b, drive)
+    intact, settling = settle_checked(b, drive)
     lesions = {}
     for name in ["harmony", "rhythm", "phrase_memory"]:
-        mask = np.ones(b.engine.wiring.n)
-        mask[list(b.engine.wiring.sets[name])] = 0
-        altered = b.engine.settle_batch(drive, steps=512, mask=mask, tolerance=0)
+        mask = np.ones(b.brain.connectome.n)
+        mask[list(b.brain.connectome.populations[name])] = 0
+        altered = b.brain.settle_batch(drive, steps=512, mask=mask, tolerance=0)
         lesions[name] = {
             "mean_absolute_output_change": float(
                 np.abs(
@@ -61,7 +61,7 @@ def main():
     result = {
         "checkpoint_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "test_prediction": measured,
-        "settlement": settlement,
+        "settling": settling,
         "region_lesions": lesions,
         "sources": {
             str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -92,9 +92,9 @@ def main():
                     ]
                 }
                 row["revision_accepted"] = r["revision"]["accepted"]
-                row["settlements"] = sum(len(p["settlements"]) for p in r["phrases"])
-                row["capped_settlements"] = sum(
-                    not s["converged"] for p in r["phrases"] for s in p["settlements"]
+                row["settling_runs"] = sum(len(p["settling"]) for p in r["phrases"])
+                row["capped_settling_runs"] = sum(
+                    not s["converged"] for p in r["phrases"] for s in p["settling"]
                 )
                 row["motif"] = r["motif"]
                 result["compositions"].append(row)
@@ -116,7 +116,7 @@ def main():
     out = ROOT / "runs/assessment.json"
     out.write_text(json.dumps(result, indent=2))
     print(
-        json.dumps({"test": measured, "lesions": lesions, "settlement": settlement}),
+        json.dumps({"test": measured, "lesions": lesions, "settling": settling}),
         flush=True,
     )
 

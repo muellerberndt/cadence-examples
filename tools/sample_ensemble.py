@@ -41,19 +41,19 @@ def draw_event(brain, state, drive, rng, *, conditional=False):
     uniforms = rng.random(len(SIZES))
     token, probabilities = [0] * len(SIZES), [None] * len(SIZES)
     offsets = np.cumsum((0,) + SIZES[:-1])
-    mask = np.zeros(brain.engine.wiring.n)
+    mask = np.zeros(brain.brain.connectome.n)
     target = np.zeros_like(drive)
     for k in (3, 0, 2, 1, 4):
-        owners = brain.output_index[offsets[k] : offsets[k] + SIZES[k]]
-        z = state.activation[0, owners] / brain.config.temperature
+        neurons = brain.output_index[offsets[k] : offsets[k] + SIZES[k]]
+        z = state.activation[0, neurons] / brain.config.temperature
         q = np.exp((z - z.max()) / 0.85)
         q /= q.sum()
         probabilities[k] = q
         token[k] = min(SIZES[k] - 1, int(np.searchsorted(q.cumsum(), uniforms[k])))
         if conditional and k != 4:
-            mask[owners] = 1
-            target[0, owners[token[k]]] = 1
-            state = brain.engine.settle_batch(
+            mask[neurons] = 1
+            target[0, neurons[token[k]]] = 1
+            state = brain.brain.settle_batch(
                 drive,
                 steps=16,
                 state=state,
@@ -256,7 +256,7 @@ def main():
         "retained_state": not a.cold,
         "conditional_attribute_repairs": a.conditional,
         "attribute_repair_steps": 64 if a.conditional else 0,
-        "settlement": f"{brain.config.free_steps} local steps per generated event; finite budget, no claim of equation convergence",
+        "settling": f"{brain.config.free_steps} local steps per generated event; finite budget, no claim of equation convergence",
         "supplied": [
             "eight-note generic tonal context",
             "keyword mode/style/arousal",

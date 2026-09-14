@@ -1,6 +1,6 @@
 # Cadence Composer
 
-A private music studio built around a trained Cadence patch net. Describe a mood,
+A private music studio built around a trained Cadence brain. Describe a mood,
 rehearse alternative phrases, listen to a one-minute piano or orchestral sketch,
 and compare the draft with its revision. Teach a preference with **More like this**
 or **Less like this**. The live interface shows the actual brain's equation
@@ -23,13 +23,38 @@ sad/minor/dark, calm/gentle/slow, bright/heroic/energetic. “Cinematic orchestr
 selects broad instrumentation and mood. It is not an unrestricted language model
 or a model of a particular composer's style.
 
+## The musician (2026-09-14)
+
+A second brain, built from scratch as wired cortices (ear, belt, melody, harmony, rhythm,
+timbre, form, phrase, working memory, form record, intention) that learns by imitation of
+whole pieces as streams, takes a mood input, imagines continuations through its own
+predictions, listens back to the whole draft and edits its weakest passages. Design and
+measurements: [MUSICIAN.md](MUSICIAN.md). Its own studio shows it composing live with
+every neuron and synapse mapped and every settling iteration replayed in sync with playback:
+
+```sh
+../cadence/.venv/bin/python serve_musician.py --checkpoint runs/large-v2/brain.npz --backend torch --device mps
+```
+
+Open **http://127.0.0.1:8079**. Reproduce its training on a GPU machine:
+
+```sh
+python tools/prepare_musician.py --workers 44 --name musician
+python tools/prepare_musician.py --composers all --name musician-focus
+python tools/train_musician.py --name large-v2-nobelt --version 2 --no-belt --batch 256 --updates 50000 --eta 0.001 --eta-final 0.0002 --decay 0.00001 --rollback 1.15 --device cuda:0
+python tools/train_musician.py --name large-focus --version 2 --no-belt --resume runs/large-v2-nobelt/brain.npz --focus musician-focus --focus-share 0.4 --eta 0.0004 --eta-final 0.0001 --updates 12000 --evaluate-every 1000 --rollback 1.15 --device cuda:1
+python tools/practice_musician.py --checkpoint runs/large-focus/brain.npz --name large-practice --rounds 40 --pieces 6 --bars 12 --own-scale 0.25 --guard 1.03 --device cuda:2
+python tools/baseline_musician.py --name gru-control --hidden 1024 --batch 256 --updates 60000 --device cuda:3
+python tools/compose_musician.py --checkpoint runs/large-practice/brain.npz --mood "a bright, heroic, loud orchestral theme" --bars 32 --record --render --settle 48
+```
+
 ## Use the studio
 
 1. Choose a preset or write a brief, then **Compose one minute**. The seed makes
    a given checkpoint and configuration reproducible.
-2. Inspect all ten functional populations: **2,614 owners and 1,702,938 directed
-   seams** in the current performing brain. Wheel/pinch to zoom, drag to pan or
-   expand the map. Every owner is measured and mapped. Live traces sample actual
+2. Inspect all ten functional populations: **2,614 neurons and 1,702,938 directed
+   synapses** in the current performing brain. Wheel/pinch to zoom, drag to pan or
+   expand the map. Every neuron is measured and mapped. Live traces sample actual
    rehearsal states; amber/purple score overlays show competing continuations.
 3. Listen to **draft** and **final**, and inspect the competing phrase scores.
    Playback feeds the playing MIDI score back into an isolated retained brain state.
@@ -37,7 +62,7 @@ or a model of a particular composer's style.
    A rejected revision preserves the draft. Download MIDI or a 60-second WAV.
 4. Teach a preference. A signed valence moves the chord, rhythm and interval
    relationships in the piece toward or away from what it contained; exact notes
-   never enter this memory and the trained event seams stay unchanged. A held-out
+   never enter this memory and the trained event synapses stay unchanged. A held-out
    check rejects updates that raise relationship loss by more than 1%. Accepted
    tables are saved to `checkpoints/personal/music.npz`. Launch with `--taste` to
    reuse them.
@@ -45,12 +70,12 @@ or a model of a particular composer's style.
 Each phrase is a future simulation. Six candidate continuations roll forward
 through the brain's own predictions in isolated batch rows, the critic compares
 where they lead, and the winner is committed. Learned corpus expectations for the
-next chord and duration are seams in the same settlement as note intention.
+next chord and duration are synapses in the same brain as note intention.
 
 The circuit's plotted waves are measured software states, not clinical EEG.
 Valence is an explicit numerical objective, not a claim of feelings or dopamine
 chemistry. The memory cue, trained musical populations and note intention exchange
-messages in one joint settlement. Finite repair budgets are reported; no global
+messages in one joint brain. Finite repair budgets are reported; no global
 optimality or biological equivalence is assumed.
 
 ## Reproduce training
@@ -110,7 +135,7 @@ python tools/baseline_ensemble.py --size 1024 --updates 30000 --batch 512
 python tools/sample_ensemble.py --seed 41 --conditional --prompt "heroic orchestral theme"
 ```
 
-The completed four-A10G run used 5,270 owners and 6,653,982 directed seams, with
+The completed four-A10G run used 5,270 neurons and 6,653,982 directed synapses, with
 5,562,501 trainable parameters, drawing from 65,188 training pieces. It generates
 multitrack MIDI; the same-input MLP control still predicts held-out events better.
 See [the measured comparison and audio review](EVIDENCE.md#polyphonic-scaling-experiment).

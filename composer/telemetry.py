@@ -1,4 +1,4 @@
-"""Measure every owner and seam. Rehearsal traces use the composer's actual states."""
+"""Measure every neuron and synapse. Rehearsal traces use the composer's actual states."""
 
 import base64
 
@@ -11,11 +11,11 @@ class Recorder:
     def __init__(
         self, learner, drive, *, row=0, modulators=None, origin="actual rehearsal"
     ):
-        self.engine = learner.engine
+        self.brain = learner.brain
         self.drive = drive[row]
         self.row = row
-        self.graph = topology(self.engine)
-        self.selected = np.asarray(self.graph["owner_ids"])
+        self.graph = topology(self.brain)
+        self.selected = np.asarray(self.graph["neuron_ids"])
         self.frames = []
         self.populations = []
         self.errors = []
@@ -25,14 +25,16 @@ class Recorder:
         self.origin = origin
 
     def observe(self, iteration, state):
-        engine = self.engine
-        w = engine.wiring
+        brain = self.brain
+        w = brain.connectome
         s = state.activation[self.row]
         v = state.v[self.row]
-        inbox = np.bincount(w.post, weights=engine.weights * s[w.pre], minlength=w.n)
-        error = inbox + self.drive + engine.bias - v
-        if engine.rule.adaptation:
-            error -= engine.rule.adaptation.strength * state.adaptation[self.row]
+        synaptic_input = np.bincount(
+            w.post, weights=brain.weights * s[w.pre], minlength=w.n
+        )
+        error = synaptic_input + self.drive + brain.bias - v
+        if brain.neuron_model.adaptation:
+            error -= brain.neuron_model.adaptation.strength * state.adaptation[self.row]
         repair = np.zeros(w.n) if self.previous is None else s - self.previous
         self.frames.append(
             {
@@ -49,7 +51,7 @@ class Recorder:
                     "mismatch": float(np.sqrt(np.mean(error[list(ids)] ** 2))),
                     "repair": float(np.sqrt(np.mean(repair[list(ids)] ** 2))),
                 }
-                for name, ids in w.sets.items()
+                for name, ids in w.populations.items()
             }
         )
         self.errors.append(float(np.max(np.abs(error))))
@@ -60,19 +62,19 @@ class Recorder:
         g = self.graph
         result = {
             "frames": self.frames,
-            "owner_ids": g["owner_ids"],
+            "neuron_ids": g["neuron_ids"],
             "populations": self.populations,
             "equation_error": self.errors,
             "regions": g["regions"],
             "edges": [],
             "topology": g,
-            "total_owners": g["owners"],
-            "total_seams": g["seams"],
+            "total_neurons": g["neurons"],
+            "total_synapses": g["synapses"],
             "modulators": self.modulators,
             "steps": self.iterations[-1],
             "iterations": self.iterations,
             "origin": self.origin,
-            "display": "All owners and all seams. Changes are between recorded iterations; model units, not EEG.",
+            "display": "All neurons and all synapses. Changes are between recorded iterations; model units, not EEG.",
         }
         if packed:
             array = np.asarray(
@@ -104,12 +106,12 @@ def capture(
     recorder = Recorder(
         learner, drive, modulators=modulators, origin="isolated diagnostic replay"
     )
-    engine = learner.engine
-    current = engine.settle_batch(drive, steps=0) if state is None else state
+    brain = learner.brain
+    current = brain.settle_batch(drive, steps=0) if state is None else state
     for tick in range(steps + 1):
         if tick:
-            current = engine.settle_batch(drive, steps=1, state=current)
-        error = engine.residual(drive, current)
+            current = brain.settle_batch(drive, steps=1, state=current)
+        error = brain.residual(drive, current)
         done = tick == steps or tick >= 32 and np.all(error < 1e-5)
         if tick <= 16 or tick % 16 == 0 or done:
             recorder.observe(tick, current)

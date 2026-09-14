@@ -1,14 +1,14 @@
-"""Graft one-trial motif recall onto the trained brain, in the SAME settlement.
+"""Graft one-trial motif recall onto the trained brain, in the SAME brain.
 
-Six explicit position cues write a 6x61 delta-rule memory. Recall owners and note
-intention owners send messages both ways. The addressing schedule is supplied;
+Six explicit position cues write a 6x61 delta-rule memory. Recall neurons and note
+intention neurons send messages both ways. The addressing schedule is supplied;
 the remembered content comes only from a committed phrase.
 """
 
 import cadence as cd
 import numpy as np
-from cadence.brains import couple
-from cadence.stream import FastSeams
+from cadence.circuits import assemble
+from cadence.stream import FastSynapses
 
 from .encoding import OFFSETS
 from .intuition import Intuition
@@ -16,23 +16,25 @@ from .intuition import Intuition
 
 class MotifBrain:
     def __init__(self, learner, intuition=None):
-        base = learner.engine
-        w = base.wiring
+        base = learner.brain
+        w = base.connectome
         n = w.n
         self.base = learner
         self.output_index = learner.output_index
         self.config = learner.config
-        self.memory = FastSeams(np.arange(6), np.arange(6, 67), rule="delta")
+        self.memory = FastSynapses(np.arange(6), np.arange(6, 67), rule="delta")
         self.memory.reset(1)
         self.intuition = intuition or Intuition()
-        trained = cd.Wiring.from_edges(n, pre=w.pre, post=w.post, sign=base.weights)
-        recall = cd.Wiring.from_edges(
+        trained = cd.Connectome.from_synapses(
+            n, pre=w.pre, post=w.post, sign=base.weights
+        )
+        recall = cd.Connectome.from_synapses(
             67,
             pre=np.repeat(np.arange(6), 61),
             post=np.tile(np.arange(6, 67), 6),
             sign=np.zeros(366),
         )
-        bridges = [
+        synapses = [
             item
             for k in range(61)
             for item in [
@@ -42,10 +44,10 @@ class MotifBrain:
         ]
         components = {"music": trained, "motif": recall}
         self.expectation_parameters = 0
-        extra_sets = {}
+        extra_populations = {}
         self.expectation_cues = None
         if self.intuition.tables is not None:
-            # Learned association strengths are actual seams in the joint settlement.
+            # Learned association strengths are actual synapses in the joint brain.
             chord_prob = self.intuition.probability(
                 self.intuition.tables["chords"]
             ).reshape(48, 24)
@@ -64,47 +66,49 @@ class MotifBrain:
                         (logp - logp.mean(1, keepdims=True)) * 0.25, -1.2, 1.2
                     ).ravel()
                 )
-            components["expectation"] = cd.Wiring.from_edges(
+            components["expectation"] = cd.Connectome.from_synapses(
                 228, pre=pre, post=post, sign=weights
             )
             for slot, width, start in [(2, 24, 192), (1, 12, 216)]:
                 for k in range(width):
                     output = int(self.output_index[OFFSETS[slot] + k])
-                    bridges += [
+                    synapses += [
                         ("expectation", start + k, "music", output, 0.35),
                         ("music", output, "expectation", start + k, 0.04),
                     ]
             offset = n + 67
-            extra_sets = {
+            extra_populations = {
                 "expectation_cue": tuple(range(offset, offset + 192)),
                 "harmonic_expectation": tuple(range(offset + 192, offset + 216)),
                 "rhythmic_expectation": tuple(range(offset + 216, offset + 228)),
             }
             self.expectation_cues = np.arange(offset, offset + 192)
             self.expectation_parameters = len(weights)
-        joint = couple(components, bridges)
+        joint = assemble(components, synapses)
         # Flat, disjoint region labels preserve the trained components and add memory ports.
-        wiring = cd.Wiring(
+        connectome = cd.Connectome(
             joint.n,
             joint.pre,
             joint.post,
             joint.count,
             joint.sign,
             {
-                **w.sets,
+                **w.populations,
                 "motif_cue": tuple(range(n, n + 6)),
                 "motif_recall": tuple(range(n + 6, n + 67)),
-                **extra_sets,
+                **extra_populations,
             },
             "composer-with-motif",
         )
-        self.engine = cd.Settlement(
-            wiring, base.rule, bias=np.r_[base.bias, np.zeros(joint.n - n)]
+        self.brain = cd.Brain(
+            connectome, base.neuron_model, bias=np.r_[base.bias, np.zeros(joint.n - n)]
         )
         self.cues = np.arange(n, n + 6)
         self.recall = np.arange(n + 6, n + 67)
-        self.memory_edges = np.flatnonzero(
-            (wiring.pre >= n) & (wiring.pre < n + 6) & (wiring.post >= n + 6)
+        self.memory_synapses = np.flatnonzero(
+            (connectome.pre >= n)
+            & (connectome.pre < n + 6)
+            & (connectome.post >= n + 6)
         )
         self.count = 0
 
@@ -116,16 +120,16 @@ class MotifBrain:
             target[0, int(pitch) - 36] = 1
             self.memory.observe(key, target)
         self.count = min(6, len(pitches))
-        w = self.engine.wiring
-        scales = self.engine.edge_scale.copy()
-        for edge in self.memory_edges:
-            scales[edge] = (
+        w = self.brain.connectome
+        scales = self.brain.efficacy.copy()
+        for synapse in self.memory_synapses:
+            scales[synapse] = (
                 3.5
                 * self.memory.strength[
-                    0, w.pre[edge] - self.cues[0], w.post[edge] - self.recall[0]
+                    0, w.pre[synapse] - self.cues[0], w.post[synapse] - self.recall[0]
                 ]
             )
-        self.engine = self.engine.with_parameters(edge_scale=scales)
+        self.brain = self.brain.with_parameters(efficacy=scales)
 
     def cue(self, drive, position):
         # Recall a recognizable opening, then release it so the phrase can develop.
