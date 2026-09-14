@@ -167,7 +167,7 @@ export function mountEmbodied(mode, api) {
         "Condition",
         "Cadence field + body",
         "Frozen original route still valid",
-        "BFS replanner",
+        "BFS finds a route",
       ],
       ["new_maze", "changed_corridor", "moved_goal"].map((c) => {
         const rows = evidence.mouse.filter((r) => r.condition === c);

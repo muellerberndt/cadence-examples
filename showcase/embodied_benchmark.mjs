@@ -69,7 +69,7 @@ for (const seed of [13, 23, 33, 43, 53, 63, 73, 83, 93, 103, 113, 123]) {
       frozen_route_valid:
         original.at(-1) === m.world.goal &&
         original.every((i) => !m.world.grid[i]),
-      bfs_replanner_success: !!bfs(m.world, m.cell).length,
+      bfs_replanner_success: !!bfs(m.world, 1 + m.world.cols).length,
     });
   }
 }
