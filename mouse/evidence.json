@@ -7,16 +7,16 @@
     "fly": 4000
   },
   "sources": {
-    "eye-arm/brain.js": "672f4a28cecabc7126086f1e97f2dcbdd7315f0a1dcfb97151e9c7b6c0770062",
+    "eye-arm/brain.js": "c6d9ae3d360d595bb6cf65c6ac6eefc9f62f80b18622fbe2ae5176bc873861bd",
     "eye-arm/fixtures.js": "23a7f78d540e202c075d55c58f17cce8bf324fe4b9fde01b739db490d0d9bfd7",
-    "mouse/brain.js": "4f340f8c4e19a81e39d0c0fcf103770232958bef4c15955d33874b48ebb4d779",
-    "fly/brain.js": "cbc17aa7348707eb92bf8f4d7e0f1aef0dbc4058248a31791d3639af0a6a189e",
-    "worm/brain.js": "7e319c96f3118a318406792cae566f1c8851b9943bff94b97b4e824525c12719",
-    "showcase/nervous_system.js": "75e76844d838b41a5d992a7a93c290709f20ec4ecf5f977935de2555b9184601",
+    "mouse/brain.js": "dfddd0beda895edb057f2f62152a9b1ecfc13f534ad6fde6e34b62ad7494210f",
+    "fly/brain.js": "3b5cbf694909d8d47e47657474e86084949ba9b25b8392c7a471acf14f8f8f23",
+    "worm/brain.js": "12b22cf988298edea97b5247a21d8353139f8a5b1afdb99cd1df544f063c2d55",
+    "showcase/nervous_system.js": "5cf69d94c6f2143b1355c01da614819321f78edba40fe039102d1008402dd0a3",
     "showcase/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
     "showcase/embodied.js": "e551c3a3f53d0c9d4de18015a0dfec3e77ec80ada402ed3265d6edb53e5b2887",
     "showcase/worm_arena.js": "11ddb137681fc9742a410d25d28e7cc70e850804ffc86f40f05347d8a242d3d5",
-    "showcase/telemetry.js": "0e635e442e773a6be26283d904cd22358520024813818532517acddf152cd8c3",
+    "showcase/telemetry.js": "a41a9c55015bacd0a8b17bcae53264db8d2f95afcfb40e4dcbd1be17499c6339",
     "tools/nervous_system_benchmark.mjs": "2803615a000524a9beae58c32432c4fb914d2967934ad8ed214ab0c99f7b3038"
   },
   "arm": [
@@ -24,42 +24,42 @@
       "image": "square",
       "condition": "intact",
       "coverage": 1,
-      "ink": 629,
-      "raised": 5371,
-      "contact": 629,
+      "ink": 681,
+      "raised": 5319,
+      "contact": 681,
       "targets": 60,
       "completed": true,
-      "displacement": 0.102284323
+      "displacement": 0.103947056
     },
     {
       "image": "square",
       "condition": "disturbed",
       "coverage": 1,
-      "ink": 630,
-      "raised": 5370,
-      "contact": 630,
+      "ink": 695,
+      "raised": 5305,
+      "contact": 695,
       "targets": 60,
       "completed": true,
-      "displacement": 0.102284323
+      "displacement": 0.103947056
     },
     {
       "image": "square",
       "condition": "feedback_off",
-      "coverage": 0.316666667,
-      "ink": 629,
-      "raised": 5371,
-      "contact": 629,
+      "coverage": 0.283333333,
+      "ink": 681,
+      "raised": 5319,
+      "contact": 681,
       "targets": 60,
       "completed": true,
-      "displacement": 0.288457068
+      "displacement": 0.286549222
     },
     {
       "image": "square",
       "condition": "joint_motors_off",
       "coverage": 0.033333333,
-      "ink": 5996,
-      "raised": 4,
-      "contact": 5996,
+      "ink": 5994,
+      "raised": 6,
+      "contact": 5994,
       "targets": 60,
       "completed": false,
       "displacement": 0
@@ -90,42 +90,42 @@
       "image": "flower",
       "condition": "intact",
       "coverage": 1,
-      "ink": 485,
-      "raised": 5515,
-      "contact": 485,
+      "ink": 534,
+      "raised": 5466,
+      "contact": 534,
       "targets": 52,
       "completed": true,
-      "displacement": 0.202191544
+      "displacement": 0.203975101
     },
     {
       "image": "flower",
       "condition": "disturbed",
       "coverage": 1,
-      "ink": 500,
-      "raised": 5500,
-      "contact": 500,
+      "ink": 547,
+      "raised": 5453,
+      "contact": 547,
       "targets": 52,
       "completed": true,
-      "displacement": 0.202191544
+      "displacement": 0.203975101
     },
     {
       "image": "flower",
       "condition": "feedback_off",
-      "coverage": 0.423076923,
-      "ink": 485,
-      "raised": 5515,
-      "contact": 485,
+      "coverage": 0.326923077,
+      "ink": 534,
+      "raised": 5466,
+      "contact": 534,
       "targets": 52,
       "completed": true,
-      "displacement": 0.214238497
+      "displacement": 0.213066767
     },
     {
       "image": "flower",
       "condition": "joint_motors_off",
       "coverage": 0.038461538,
-      "ink": 5996,
-      "raised": 4,
-      "contact": 5996,
+      "ink": 5994,
+      "raised": 6,
+      "contact": 5994,
       "targets": 52,
       "completed": false,
       "displacement": 0
@@ -156,34 +156,34 @@
       "image": "two_marks",
       "condition": "intact",
       "coverage": 1,
-      "ink": 312,
-      "raised": 5688,
-      "contact": 312,
+      "ink": 337,
+      "raised": 5663,
+      "contact": 337,
       "targets": 24,
       "completed": true,
-      "displacement": 0.359373975
+      "displacement": 0.359375008
     },
     {
       "image": "two_marks",
       "condition": "disturbed",
       "coverage": 1,
-      "ink": 313,
-      "raised": 5687,
-      "contact": 313,
+      "ink": 341,
+      "raised": 5659,
+      "contact": 341,
       "targets": 24,
       "completed": true,
-      "displacement": 0.359373975
+      "displacement": 0.359375008
     },
     {
       "image": "two_marks",
       "condition": "feedback_off",
-      "coverage": 0.416666667,
-      "ink": 312,
-      "raised": 5688,
-      "contact": 312,
+      "coverage": 0.333333333,
+      "ink": 337,
+      "raised": 5663,
+      "contact": 337,
       "targets": 24,
       "completed": true,
-      "displacement": 0.029694306
+      "displacement": 0.029693518
     },
     {
       "image": "two_marks",
@@ -508,9 +508,9 @@
   "fly": [
     {
       "condition": "intact",
-      "encounters": 25,
-      "nectar": 61,
-      "displacement": 0.195751571
+      "encounters": 23,
+      "nectar": 55,
+      "displacement": 0.1710176
     },
     {
       "condition": "motors_off",

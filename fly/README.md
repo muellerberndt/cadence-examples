@@ -9,11 +9,20 @@ Move flowers and change nectar. Each contact updates memory. Live agents collect
 
 Flower cues query learned nectar memory. A supplied target-selection rule chooses a flower; bearing and approach signals drive turn and propulsion motor units. Nectar becomes available only on contact.
 
-18 owners, 36 seams and 32 learned memory entries. A simplified planar body, not a reconstructed fly connectome.
+18 owners, up to 44 seams and 32 learned memory entries. A simplified planar body, not a reconstructed fly connectome.
 
 The circuit at the top shows actual state, repairs and retained information.
 Supplied readout and body rules are documented rather than shown as extra neurons.
 See the [shared viewer guide](../showcase/README.md#read-the-brain-view).
+
+## A shared equilibrium
+
+The labeled regions participate in one connected solve for the current input.
+Local readback and repair change the same joint state; the action readout uses
+that state. The top circuit panel shows the global equation error and can replay
+the actual cross-region cascade. Lessons change records between phases.
+[Task wiring, boundaries and tests](../showcase/COUPLED_BRAINS.md) explain the
+connections. Self-consistency is not a guarantee of the globally best behavior.
 
 ## Reproduce
 

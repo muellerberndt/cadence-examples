@@ -15,6 +15,15 @@ The circuit at the top shows actual state, repairs and retained information.
 Supplied readout and body rules are documented rather than shown as extra neurons.
 See the [shared viewer guide](../showcase/README.md#read-the-brain-view).
 
+## A shared equilibrium
+
+The labeled regions participate in one connected solve for the current input.
+Local readback and repair change the same joint state; the action readout uses
+that state. The top circuit panel shows the global equation error and can replay
+the actual cross-region cascade. Lessons change records between phases.
+[Task wiring, boundaries and tests](../showcase/COUPLED_BRAINS.md) explain the
+connections. Self-consistency is not a guarantee of the globally best behavior.
+
 ## Reproduce
 
 The matched learning comparison is in [shared evidence](../showcase/evidence.json).
@@ -22,8 +31,8 @@ Run `python showcase/verify.py` to check the pinned producer and arithmetic.
 
 For measured local processing time, run `node memory/benchmark.mjs`. The bundled
 [runtime receipt](evidence.json) reports 100% accuracy on a distinct-key overwrite
-stream at 0.435 ms median per 128-write/996-query stream, versus 1.338, 3.170 and
-22.430 ms for the MLP's 1/10/100-update settings. That is about 3×/7×/52× lower
+stream at 0.447 ms median per 128-write/996-query stream, versus 1.372, 3.192 and
+22.463 ms for the MLP's 1/10/100-update settings. That is about 3×/7×/50× lower
 time on the recorded Apple M4/Node runtime. It is not a general speed or energy
 claim; see the [full comparison contract](../ADVANTAGES.md#measured-processing-time).
 
@@ -41,3 +50,8 @@ This boundary assumes no retained activations, weight updates, history/context
 tokens, clock or external store. A transformer with lesson history can use that
 information too. The [derivation and controls](../ADVANTAGES.md#a-precise-limit-of-frozen-inference-without-history)
 explain exactly what is impossible under the restriction.
+
+The runtime receipt measures the underlying linear residual-memory operation.
+It excludes the newer graded readout, the coupled body controllers and the web
+visualization. Their additional computation is not covered by the recorded speed
+ratios. See [the joint-brain design](../showcase/COUPLED_BRAINS.md).

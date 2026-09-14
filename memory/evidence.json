@@ -13,9 +13,9 @@
       "accuracy": 1,
       "correct": 996,
       "queries": 996,
-      "median_ms": 0.4352919999999969,
-      "min_ms": 0.4050420000000017,
-      "max_ms": 0.7185839999999999,
+      "median_ms": 0.44666600000000045,
+      "min_ms": 0.41475000000000506,
+      "max_ms": 0.7158749999999969,
       "updates_per_observation": 1
     },
     {
@@ -23,9 +23,9 @@
       "accuracy": 0.5672690763052208,
       "correct": 565,
       "queries": 996,
-      "median_ms": 1.3384580000000028,
-      "min_ms": 1.2801670000000058,
-      "max_ms": 2.548917000000003,
+      "median_ms": 1.3716670000000022,
+      "min_ms": 1.2843330000000037,
+      "max_ms": 2.3969160000000045,
       "updates_per_observation": 1
     },
     {
@@ -33,9 +33,9 @@
       "accuracy": 0.9668674698795181,
       "correct": 963,
       "queries": 996,
-      "median_ms": 3.1695840000000004,
-      "min_ms": 3.1537500000000023,
-      "max_ms": 3.7379999999999995,
+      "median_ms": 3.1916669999999954,
+      "min_ms": 3.146084000000002,
+      "max_ms": 3.274124999999998,
       "updates_per_observation": 10
     },
     {
@@ -43,16 +43,16 @@
       "accuracy": 0.9427710843373494,
       "correct": 939,
       "queries": 996,
-      "median_ms": 22.430084000000022,
-      "min_ms": 22.409374999999983,
-      "max_ms": 22.47745900000001,
+      "median_ms": 22.46312499999999,
+      "min_ms": 22.408416999999986,
+      "max_ms": 22.780584000000033,
       "updates_per_observation": 100
     }
   ],
   "sources": {
     "memory/benchmark.mjs": "7802515572eec20200a14b891ecf74cf77c8f2386a1ac62f8ae721805d422a71",
     "showcase/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
-    "showcase/evidence.json": "feed5063f42f56e2ffd866a223ce3bb0e5bd78483f1c7d8a7c39b805b046317f"
+    "showcase/evidence.json": "15e4f0a7e1dbc5be41fca02d7a4f1b6b2d89e66acf8c68d9041c3b298ad1110c"
   },
   "boundary": "Local JavaScript training plus queries on a distinct-key overwrite stream. Supplied explicit keys; no general language or energy-efficiency claim. Timings include memory allocation and differ across machines."
 }

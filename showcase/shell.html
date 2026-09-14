@@ -88,7 +88,7 @@
           <div class="brain-heading">
             <div>
               <div class="eyebrow">INSIDE THE PATCH NET</div>
-              <h2 id="brain-title">Watch repairs propagate</h2>
+              <h2 id="brain-title">Different regions. One equilibrium.</h2>
             </div>
             <span id="brain-count">Reading owners…</span>
           </div>
@@ -104,6 +104,7 @@
             ><span data-tone="correcting">● Correction</span>
             <span data-tone="neutral">● Idle / paused</span>
           </div>
+          <p id="brain-equilibrium" aria-live="off">Measuring joint repair…</p>
           <div class="brain-layout">
             <canvas
               id="brain-scene"
@@ -162,6 +163,13 @@
                 <option value="200">200 iterations / second</option>
               </select>
               <p id="brain-memory"></p>
+              <p>
+                Each connected region repairs the same joint state under the
+                current input. The body acts, the boundary changes, and repair
+                begins again. A small equation error means self-consistency; it
+                does not guarantee the best possible action.
+              </p>
+              <p id="brain-region-errors"></p>
             </div>
             <p id="brain-scale"></p>
           </details>

@@ -168,7 +168,7 @@ export function mountArm(api) {
   $("evidence-title").textContent =
     "Test the nervous system by interrupting it";
   $("evidence-note").textContent =
-    "Three raster fixtures, six conditions, 6,000 steps each: intact and disturbed-feedback runs cover 100% of visible targets; disabling pose feedback after disturbance gives 32–42%. Joint-motor ablation gives zero joint displacement; raised-pencil motor ablation gives zero ink. Coverage measures proximity to targets, not artistic quality.";
+    "Three raster fixtures, six conditions, 6,000 steps each: intact and disturbed-feedback runs cover 100% of visible targets; disabling pose feedback after disturbance gives 28–33%. Joint-motor ablation gives zero joint displacement; raised-pencil motor ablation gives zero ink. Coverage measures proximity to targets, not artistic quality.";
   $("evidence-table").innerHTML = table(
     ["Intervention", "Expected causal effect"],
     [

@@ -164,8 +164,8 @@ def test_motor_controller_matches_cadence_from_retained_state_and_lesions():
 import {DrawingArm} from './eye-arm/brain.js';
 import {imageFixture} from './eye-arm/fixtures.js';
 const a=new DrawingArm(imageFixture('square')),out=[];
-for(let i=0;i<8;i++)a.step();out.push(a.brain.motor.last);
-a.brain.motor.mask[11]=0;a.step();out.push(a.brain.motor.last);
+for(let i=0;i<8;i++)a.step();out.push(a.brain.snapshot());
+a.brain.motor.mask[11]=0;a.step();out.push(a.brain.snapshot());
 console.log(JSON.stringify(out));
 """)
     for s in samples:
@@ -199,7 +199,7 @@ import {imageFixture} from './eye-arm/fixtures.js';
 import {repairTrace} from './showcase/telemetry.js';
 const a=new DrawingArm(imageFixture('square'));for(let i=0;i<50;i++)a.step();
 const s=a.brain.snapshot(),trace=repairTrace(s),release=repairTrace(s,true);
-console.log(JSON.stringify({initial:s.blocks[1].initialState.some(v=>v!==0),error:Math.max(...trace.frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))),start:Math.max(...release.frames[0].map(Math.abs)),end:Math.max(...release.frames.at(-1).map(Math.abs))}));
+console.log(JSON.stringify({initial:s.initialState.some(v=>v!==0),error:Math.max(...trace.frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))),start:Math.max(...release.frames[0].map(Math.abs)),end:Math.max(...release.frames.at(-1).map(Math.abs))}));
 """)
     assert result["initial"] and result["error"] < 1e-12
     assert result["end"] < result["start"] * 1e-3

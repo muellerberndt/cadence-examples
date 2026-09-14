@@ -1,4 +1,4 @@
-import { Circuit, compose, zeros } from "../showcase/nervous_system.js";
+import { Circuit, settleTogether, zeros } from "../showcase/nervous_system.js";
 import { forward, jacobian } from "../showcase/embodied.js";
 export const RETINA = 24;
 export class DrawingBrain {
@@ -68,10 +68,6 @@ export class DrawingBrain {
     );
   }
   command(q, z, target, requestedHeight) {
-    this.eye.settle(
-      this.pixels.map((v) => v * 2),
-      1,
-    );
     const tip = forward(q),
       j = jacobian(q);
     const edges = [
@@ -105,7 +101,43 @@ export class DrawingBrain {
       ...observed.map((v) => Math.atanh(Math.max(-0.99, Math.min(0.99, v)))),
       ...zeros(11),
     ];
-    this.motor.settle(drive, 48);
+    // The attended pixel publishes the coordinate drive into the motor region.
+    // Geometry/attention selects these ports; their signal still travels as a seam.
+    const col = Math.round(((target[0] - 0.26) / 0.48) * RETINA - 0.5),
+      row = Math.round(((target[1] - 0.2) / 0.48) * RETINA - 0.5),
+      pixel = row * RETINA + col,
+      visible =
+        col >= 0 &&
+        col < RETINA &&
+        row >= 0 &&
+        row < RETINA &&
+        this.pixels[pixel] > 0.117;
+    const bridges = [];
+    if (visible)
+      for (let axis = 0; axis < 2; axis++) {
+        bridges.push([
+          0,
+          pixel,
+          1,
+          axis,
+          drive[axis] / Math.tanh(2 * this.pixels[pixel]),
+        ]);
+        drive[axis] = 0;
+      }
+    for (const [positive, negative, receiver] of [
+      [11, 12, 9],
+      [13, 14, 10],
+      [15, 16, 8],
+    ])
+      bridges.push(
+        [1, positive, 1, receiver, -0.1],
+        [1, negative, 1, receiver, 0.1],
+      );
+    this.joint = settleTogether(
+      [this.eye, this.motor],
+      [this.pixels.map((v) => v * 2), drive],
+      bridges,
+    );
     const s = this.motor.state;
     return [
       [11, 12],
@@ -114,7 +146,7 @@ export class DrawingBrain {
     ].map(([a, b]) => Math.max(0, s[a]) - Math.max(0, s[b]));
   }
   snapshot() {
-    return compose([this.eye.last, this.motor.last], {
+    return Object.assign(this.joint, {
       regionLabels: {
         retina: "Retina · pixel intensity",
         readback: "Target & proprioception",
@@ -123,7 +155,7 @@ export class DrawingBrain {
         actuator: "Motor neurons",
       },
       adapters:
-        "Raster sensor → attention readout → coupled motor circuit → joint / pencil physics",
+        "Retina → target ↔ visual error ↔ joint coordination ↔ motors · one shared settlement",
       memory:
         "Retained graded potentials carry transient state between control ticks. Visited targets are explicit attention records; weights and geometry are supplied, not learned.",
     });
@@ -146,6 +178,12 @@ export class DrawingArm {
     this.closed = true;
     this.penWasDown = false;
     this.select();
+    this.brain.command(
+      this.q,
+      this.z,
+      this.targets[this.target] ?? forward(this.q),
+      1,
+    );
   }
   select() {
     const tip = forward(this.closed ? this.q : this.estimate);

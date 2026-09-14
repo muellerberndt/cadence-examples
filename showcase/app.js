@@ -1,7 +1,7 @@
+import { MemoryBrain } from "../memory/brain.js";
 import { mountGame } from "../connect-four/view.js";
 import { Forager } from "../fly/brain.js";
 import { BrainView } from "./brain_view.js";
-import { memoryCircuit } from "./telemetry.js";
 import { mountWorm } from "../worm/view.js";
 import { showGuide } from "./guides.js";
 import { mountArm } from "../eye-arm/view.js";
@@ -130,7 +130,7 @@ function table(head, rows) {
   );
 }
 function resetMemory() {
-  memory = new FastMemory();
+  memory = new MemoryBrain();
   mlp = new MLP(evidence.browser.online_mlp);
   truth = zeros(8);
   seen = new Set();
@@ -740,7 +740,7 @@ function brainSource() {
         : { label: "Seeking nectar", tone: "seeking" };
     return circuit;
   }
-  return memoryCircuit(memory, keys(correlation)[selected]);
+  return memory.brain(keys(correlation)[selected]);
 }
 let previous = 0;
 function animate(t) {

@@ -1,4 +1,4 @@
-import { Circuit, compose, zeros } from "../showcase/nervous_system.js";
+import { Circuit, settleTogether, zeros } from "../showcase/nervous_system.js";
 export const COLS = 7,
   ROWS = 6,
   order = [3, 2, 4, 1, 5, 0, 6];
@@ -113,26 +113,95 @@ export class Monitor extends Circuit {
     );
     this.previous = null;
   }
-  read(activity, scores, pressure = 0) {
+  prepare(activity, scores, pressure = 0) {
     const repair = this.previous
       ? Math.max(...activity.map((v, i) => Math.abs(v - this.previous[i]))) /
         Math.max(1, ...activity.map(Math.abs))
       : 0;
     const ranked = scores.slice().sort((a, b) => b - a),
       ambiguity = ranked.length > 1 ? 1 / (1 + ranked[0] - ranked[1]) : 0;
-    this.settle(
-      [Math.min(1, repair), ambiguity, pressure, +(scores.length > 1), 0, 0],
-      40,
-    );
     this.previous = activity.slice();
     return {
       repair,
       ambiguity,
       pressure,
+      drive: [
+        Math.min(1, repair),
+        ambiguity,
+        pressure,
+        +(scores.length > 1),
+        0,
+        0,
+      ],
+    };
+  }
+  read(activity, scores, pressure = 0) {
+    const { drive, ...review } = this.prepare(activity, scores, pressure);
+    this.settle(drive, 40);
+    return {
+      ...review,
       uncertainty: this.state[4],
       request_more: this.state[5] > 0.35 && pressure < 1,
     };
   }
+}
+export function decisionCircuit(
+  board,
+  player,
+  candidates,
+  monitor = new Monitor(),
+  pressure = 0,
+) {
+  const activity = Array.from({ length: 7 }, (_, i) =>
+      Math.tanh((candidates.find((c) => c.column === i)?.score ?? 0) / 100),
+    ),
+    signal = monitor.prepare(
+      activity,
+      candidates.map((c) => c.score / 100),
+      pressure,
+    ),
+    value = valueCircuit(board, player),
+    choices = new Circuit(
+      Array.from({ length: 7 }, (_, i) => `Column ${i + 1} commitment`),
+      Array(7).fill("futures"),
+      [],
+    );
+  choices.mask = activity.map(
+    (_, i) => +candidates.some((c) => c.column === i),
+  );
+  // Candidate records, current value and own-activity monitor exchange messages.
+  // Equal shared offsets preserve candidate ordering while the work gate adapts.
+  const bridges = Array.from({ length: 7 }, (_, i) => [
+    [0, 5, 1, i, 0.02],
+    [1, i, 0, 5, 0.02 / 7],
+    [1, i, 2, 3, 0.02 / 7],
+    [2, 5, 1, i, -0.015],
+  ]).flat();
+  const joint = settleTogether(
+    [value, choices, monitor],
+    [
+      value.drive,
+      activity.map((v) =>
+        Math.atanh(Math.max(-0.999999999, Math.min(0.999999999, v))),
+      ),
+      signal.drive,
+    ],
+    bridges,
+  );
+  const ordered = candidates
+    .slice()
+    .sort((a, b) => choices.state[b.column] - choices.state[a.column]);
+  return {
+    joint,
+    column: ordered[0]?.column,
+    review: {
+      repair: signal.repair,
+      ambiguity: signal.ambiguity,
+      pressure,
+      uncertainty: monitor.state[4],
+      request_more: monitor.state[5] > 0.35 && pressure < 1,
+    },
+  };
 }
 export function reason(
   board,
@@ -214,22 +283,22 @@ export function reason(
         })
         .sort((a, b) => b.score - a.score);
       if (!candidates.length) break;
-      const activity = Array.from({ length: 7 }, (_, i) =>
-        Math.tanh((candidates.find((c) => c.column === i)?.score ?? 0) / 100),
-      );
-      const review = monitor.read(
-        activity,
-        candidates.map((c) => c.score / 100),
-        nodes / maxNodes,
-      );
+      const decision = decisionCircuit(
+          board,
+          player,
+          candidates,
+          monitor,
+          nodes / maxNodes,
+        ),
+        review = decision.review;
       best = {
-        column: candidates[0].column,
+        column: decision.column,
         candidates,
-        sequence: candidates[0].sequence,
+        sequence: candidates.find((c) => c.column === decision.column).sequence,
         depth: d,
         nodes,
         review,
-        monitor: monitor.last,
+        decision: decision.joint,
       };
       onProgress(best);
       if (candidates[0].score > 90000) break;
@@ -250,7 +319,6 @@ export function reason(
       depth: 0,
       nodes,
       review: { request_more: false },
-      monitor: monitor.last,
     };
   }
   if (board.some((v, i) => v !== original[i]))
@@ -258,30 +326,9 @@ export function reason(
   return { ...best, nodes, budgetExhausted };
 }
 export function brainSnapshot(board, player, thinking) {
-  const boardPart = {
-    state: board.map((v) => v * 0.95),
-    input: board.map((v) => v * 0.95),
-    names: board.map((_, i) => `Cell ${(i % 7) + 1},${Math.floor(i / 7) + 1}`),
-    groups: board.map(() => "board"),
-    edges: [],
-    recurrent: false,
-  };
-  const candidates = zeros(7);
-  thinking?.candidates.forEach(
-    (c) => (candidates[c.column] = Math.tanh(c.score / 100)),
-  );
-  const choices = {
-    state: candidates,
-    input: candidates,
-    names: candidates.map((_, i) => `Column ${i + 1} imagined value`),
-    groups: candidates.map(() => "futures"),
-    edges: [],
-    recurrent: false,
-  };
-  const monitor = thinking?.monitor ?? new Monitor().settle(zeros(6), 40);
-  return compose([boardPart, valueCircuit(board, player), choices, monitor], {
+  const joint = thinking?.decision ?? decisionCircuit(board, player, []).joint;
+  return Object.assign(joint, {
     regionLabels: {
-      board: "Observed board",
       features: "Threat features",
       value: "Value evaluator",
       futures: "Compared futures",
@@ -289,8 +336,8 @@ export function brainSnapshot(board, player, thinking) {
       self_state: "Self-monitor / budget",
     },
     adapters:
-      "Board → threat readout → patch evaluator → isolated game branches → comparison → move",
+      "Branch scores ↔ current value ↔ commitment ↔ self-monitor · one shared settlement",
     memory:
-      "Supplied rules and evaluator weights. The search records hypothetical futures; its monitor reads ambiguity and activity to gate deeper search. No imagined outcome is treated as training evidence.",
+      "The board, legal-move rules and isolated search branches supply the decision boundary. Value, candidate and monitor owners settle jointly; their state selects the action and extra-search request. No weight training or consciousness claim.",
   });
 }

@@ -835,3 +835,9 @@ canvas:focus-visible {
     padding: 8px 11px;
   }
 }
+
+#brain-equilibrium {
+  margin: 7px 0 0;
+  font-size: 11px;
+  color: var(--green);
+}

@@ -127,7 +127,7 @@ def main():
             page.locator("#teach").click()
             page.locator("#value").select_option("1")
             page.locator("#teach").click()
-            assert page.evaluate("showcase.snapshot().fast[0][1]") == 1
+            assert abs(page.evaluate("showcase.snapshot().fast[0][1]") - 1) < 1e-10
             page.locator("#correlation").select_option("0.9")
             assert page.evaluate("showcase.snapshot().writeCount") == 0
             choose(page, "fly")
@@ -226,11 +226,16 @@ def main():
                         "fly": 18,
                         "worm": 309,
                         "memory": 12,
-                        "game": 61,
+                        "game": 19,
                     }[mode]
                 )
                 assert page.locator("#brain-replay").is_enabled() == (
-                    mode in ["mouse", "arm", "worm", "fly", "game"]
+                    mode in ["mouse", "arm", "worm", "fly", "memory", "game"]
+                )
+                assert brain["equilibrium"]["converged"], (mode, brain["equilibrium"])
+                assert (
+                    brain["equilibrium"]["residual"]
+                    <= brain["equilibrium"]["tolerance"]
                 )
                 if mode == "memory":
                     page.locator("#value").select_option("2")
@@ -306,7 +311,6 @@ def main():
                         ],
                         "memory": ["Cue input", "Value memory"],
                         "game": [
-                            "Observed board",
                             "Threat features",
                             "Value evaluator",
                             "Compared futures",
@@ -321,7 +325,7 @@ def main():
                 scene = page.locator("#scene").bounding_box()
                 circuit = page.locator("#brain-scene").bounding_box()
                 assert scene["x"] + scene["width"] < circuit["x"]
-                for bounds in [scene, circuit]:
+                for bounds in [scene, circuit, page.locator("#brain-equilibrium").bounding_box()]:
                     assert bounds["y"] >= 0 and bounds["y"] + bounds["height"] <= 768, (
                         mode,
                         bounds,

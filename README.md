@@ -4,7 +4,10 @@
 
 [Cadence](https://github.com/muellerberndt/cadence) builds observer-like software
 patches: bounded local state, declared ports, readback, retained records and local
-feedback. These demos make the loop visible and let you change its world.
+feedback. Each task connects labeled regions into **one shared equilibrium**:
+local repairs propagate through the same joint state. Change its world and watch
+the next repair cascade. The brain panel reports the equation error.
+[How the six brains are coupled](showcase/COUPLED_BRAINS.md).
 
 ## Launch any demo
 
@@ -29,7 +32,7 @@ and title; the navigation links open the individual pages. Assets and computatio
 
 The [advantage contracts](ADVANTAGES.md) state what each example measures and
 which conventional controls also work. On the recorded distinct-key stream,
-Cadence memory gives 100% retention and about **52× lower processing time** than
+The underlying record operation gives 100% retention and about **50× lower processing time** than
 the MLP with 100 updates per observation (about **3×** versus one update).
 The strategy agent wins **8/8** scheduled games against one-ply evaluation and
 **5/8** against four-ply search. These are small, reproducible task comparisons,
@@ -79,6 +82,7 @@ python -m pip install -r requirements-reproduce.txt pytest playwright
 python showcase/verify.py
 node showcase/habitat_benchmark.mjs
 node tools/nervous_system_benchmark.mjs
+node tools/coupled_brain_benchmark.mjs
 node connect-four/benchmark.mjs
 python -m pytest -q tests
 python -m playwright install chromium

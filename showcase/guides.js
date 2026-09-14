@@ -11,7 +11,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Separate state copies, local evaluators and a self-reading monitor compose into an inspectable planner. The monitor can request more depth. Conventional search can do this too; no exclusive planning advantage is claimed.",
+      "Value, candidate and self-monitor owners settle jointly; search branches stay isolated. The monitor can request more depth. Conventional search can do this too; no exclusive planning advantage is claimed.",
     ],
   ],
   mouse: [
@@ -25,7 +25,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Task records and the current spatial field have separate jobs: one local write revises a goal, while recurrent settlement finds a route through the supplied map. A frozen route cannot adapt; BFS and dictionary lookup can. This is a compositional control demo, not a trained-MLP win.",
+      "Task recall, spatial field and motors share one equilibrium: one local write revises a goal, while recurrent settlement finds a route through the supplied map. A frozen route cannot adapt; BFS and dictionary lookup can. This is a compositional control demo, not a trained-MLP win.",
     ],
   ],
   arm: [
@@ -39,7 +39,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Retinal input, visual/proprioceptive error and joint coordination drive six motor neurons. Motor ablations stop the corresponding actuator; pose feedback repairs disturbances. Classical feedback controllers can also correct motion; no MLP comparison is claimed.",
+      "Retina, visual/proprioceptive error, coordination and six motor neurons settle in one connected graph. Motor ablations stop the corresponding actuator; pose feedback repairs disturbances. Classical feedback controllers can also correct motion; no MLP comparison is claimed.",
     ],
   ],
   fly: [
@@ -53,7 +53,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "A bounded memory can replace an observed value in one residual write and immediately inform the next target choice. The MLP learns online too, with a selectable update budget. Live nectar totals reflect different experiences; the changing-memory demo supplies the matched-stream comparison.",
+      "A contact revises memory in one residual write. Cue, recall and motor regions then settle together before motion. The MLP learns online too, with a selectable update budget. Live nectar totals reflect different experiences; the changing-memory demo supplies the matched-stream comparison.",
     ],
   ],
   worm: [
@@ -67,7 +67,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Local state and readback reuse known interactions after an intervention, avoiding refitting an input/output surrogate. Cadence agrees with the converged reference; the trained MLP is faster per query but less accurate, especially after lesions. Conventional recurrence also reuses the mechanism.",
+      "Chemical and directional motor regions share one equilibrium under the current odor cue; local repairs propagate across their seams. Cadence agrees with the converged reference; the trained MLP is faster per query but less accurate, especially after lesions. Conventional recurrence also reuses the mechanism.",
     ],
   ],
   memory: [
@@ -81,7 +81,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "One residual write replaces a record and preserves orthogonal-key records. Matched distinct-key trials give exact recall with 32 mutable entries, exceeding the tested MLP update budgets. Dictionary lookup is exact too; strongly overlapping keys can favor the MLP. This measures explicit record storage, not general intelligence.",
+      "One residual write replaces a record; cue and recall owners then share a graded equilibrium. Orthogonal-key records are retained. Matched distinct-key trials give exact recall with 32 mutable entries, exceeding the tested MLP update budgets. Dictionary lookup is exact too; strongly overlapping keys can favor the MLP. This measures explicit record storage, not general intelligence.",
     ],
   ],
 };

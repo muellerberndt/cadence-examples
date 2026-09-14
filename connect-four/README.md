@@ -11,7 +11,7 @@ on desktop and stacks below on mobile.
 
 ## Its task brain
 
-1. The 42 board ports record observed cells. A supplied readout counts threats,
+1. The 42 board cells record the observed environment. A supplied readout counts threats,
    pairs and center occupancy.
 2. Five feature owners feed one graded value owner. The browser evaluates its
    exact two-step formula inside search; tests compare it with Python Cadence.
@@ -23,8 +23,9 @@ on desktop and stacks below on mobile.
    six plies, subject to an 80,000-node budget. Toggle **Self-monitor** to test
    its causal role. More thought uses more computation.
 
-There are **61 displayed ports and 11 weighted seams**. Supplied board records
-and candidate scores are ports, not hidden biological neurons. Search, feature
+There are **19 circuit owners and 39 weighted seams**. The six evaluator,
+seven candidate and six monitor owners settle jointly; their state selects the
+move and further-work request. The board remains an external observation. Search, feature
 extraction and rules are explicit application operations. No weights train during
 this game; imagined outcomes are not presented as observed rewards. The search
 runs in a browser worker so interaction and circuit inspection remain responsive.
@@ -34,6 +35,15 @@ provides generic isolated-future comparison, sensor/motor wiring and the same
 activity-monitor design. This page specializes the generic branching pattern to
 game search with pruning and iterative deepening. It is deliberately wired
 deliberation; recurrence alone does not guarantee planning.
+
+## One shared decision state
+
+The value, candidate and monitor regions exchange repairs in one graph. Their
+joint endpoint supplies the move and extra-search request. The display labels
+these functions and reports their common equation residual. Each imagined board
+remains an isolated world; only candidate scores enter the shared decision.
+[Wiring and tests](../showcase/COUPLED_BRAINS.md) explain the separation. A fixed
+point certifies self-consistency, not a globally optimal strategy.
 
 ## What has been tested
 

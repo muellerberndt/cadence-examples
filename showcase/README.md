@@ -61,6 +61,15 @@ complete biological brains, learned perception or learned anatomy.
 | Connect Four | Isolated futures and activity readback control search depth. The same evaluator wins more scheduled games with lookahead; ordinary minimax can also do this. |
 | Memory | Distinct-key records can be replaced locally with exact retention. Dictionary storage is exact too; overlapping keys interfere and can favor the tested MLP. |
 
+## One joint state per task
+
+Different functions share a common equilibrium through their seams. The six
+controllers assemble their regions **before** settling, then read the resulting
+motor or decision state. The circuit panel reports global and regional equation
+errors. [Task wiring and reproducible tests](COUPLED_BRAINS.md) describe every
+connection, boundary adapter and causal control. Self-consistency under current
+input is distinct from globally optimal task performance.
+
 ## What the brain actually contains
 
 - **Arm:** 24 × 24 retinal units read pixel darkness. An explicit attention rule
@@ -85,16 +94,17 @@ bounds. Motor ablations test whether the neural output really causes movement.
 
 | Demo | Allocated owners | Declared seams | Learned entries |
 |---|---|---|---|
-| Eye & arm | 593: 576 retina + 17 controller | 20 | 0 |
-| Mouse, seed 13 | 265; 132 unmasked initially | 278 | 32 |
-| Worm habitat | 309: 297 chemical + 12 directional | 3,612 | 0 |
+| Eye & arm | 593: 576 retina + 17 controller | up to 28 | 0 |
+| Mouse, seed 13 | 265; 132 unmasked initially | 285 | 32 |
+| Worm habitat | 309: 297 chemical + 12 directional | up to 4,108 | 0 |
 | Worm circuit probe | 297 | 3,604 | 0 |
-| Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | 36 | 32 |
+| Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | up to 44 | 32 |
 | Changing memory | 12 | 32 | 32 |
+| Connect Four | 19: 6 evaluator + 7 candidates + 6 monitor | 39 | 0 |
 
 The mouse allocates 247 spatial slots (133 initially masked walls), 12 memory
 ports and six sensor/motor owners. Its initial seams are 242 spatial, 32 memory
-and four motor. Maze edits change the counts. Retina owners have independent
+four motor and seven task/field/feedback bridges. Maze edits change the counts. Retina owners have independent
 sensory drives; they do not add a dense all-to-all matrix. These counts exclude
 body/environment variables, attention records and comparison MLPs.
 
@@ -114,11 +124,13 @@ the body at the top of each page. Hover or tap an owner to see its numerical val
   dimensionless and scaled within a region; replay scales remain fixed.
 - **Violet repair trails:** one second of display history. They are not neural
   memory. **Plasticity** separately highlights learned weight changes.
-- **Following repairs:** reconstructs sampled component trajectories from captured
-  inputs, weights and initial state. It expands early iterations and compresses
-  later ones into 1.6 seconds. Rapid updates are coalesced. Components can have
-  different iteration counts; shorter trajectories hold their final state.
-  This view is not a synchronous recording of every body tick.
+- **Following repairs:** reconstructs one captured joint trajectory from its
+  actual input, weights and initial state. It expands early iterations and
+  compresses later ones into 1.6 seconds. Rapid updates are coalesced; this is
+  a sampled diagnostic replay, not a recording of every body tick.
+- **Joint equilibrium:** reports the maximum potential-equation error over all
+  regions, plus active cross-region links. Expand controls for regional errors.
+  A small residual does not guarantee the best possible action.
 - **Replay repair:** inspect a captured update at a selected iteration rate.
   Stateful motor circuits start from their retained potentials, not from zero.
 - **Release input:** removes drives in an isolated copy and shows recurrent decay.
@@ -131,7 +143,7 @@ transient neural state really is carried during behavior. Associative weights
 and visited-target records provide different forms of retained information.
 Neither transient motor state nor the isolated release probe demonstrates a
 learned working-memory task. The mouse's spatial field is recalculated after map
-or goal changes. Memory-only circuits have no recurrent-decay probe.
+or goal changes. The memory page also exposes the graded recall trajectory and its isolated decay.
 
 ## Brain colors and neurotransmitters
 
@@ -193,7 +205,7 @@ by hashes, all scheduled conditions are retained, and CI reruns the producer.
 - **Arm:** square, flower and two separated marks, six conditions each, 6,000
   control steps. Intact and disturbed-feedback cases cover all retinal targets.
   With pose feedback disabled after the same disturbance, coverage is about
-  32–42%. Silencing joint motors gives zero joint displacement. Silencing pencil
+  28–33%. Silencing joint motors gives zero joint displacement. Silencing pencil
   motors while raised gives zero ink, as does removing visual input. Coverage
   means target distance under 0.024 normalized units; it does not measure artistic
   fidelity. User drawings can be harder than these fixtures.
@@ -201,10 +213,10 @@ by hashes, all scheduled conditions are retained, and CI reruns the producer.
   navigation trials finish without collision; motor ablations produce no moves.
 - **Worm:** intact habitat consumes two patches in 41 moves. Smell, either motor
   population, and sealed-wall controls acquire no food.
-- **Forager:** a fixed 4,000-step run produces 25 contacts; motor ablation prevents
+- **Forager:** a fixed 4,000-step run produces 23 contacts; motor ablation prevents
   displacement and contact. This is an actuator test, not a learner comparison.
 
-The shared [evidence.json](evidence.json) retains the unchanged matched memory
+The shared [evidence.json](evidence.json) retains the matched memory
 and chemical-circuit benchmarks: seeds 7–9, 128 memory writes per stream with all
 seen-key queries, and three held-out chemical-circuit conditions. The memory MLP
 gets 1/10/100 updates on the same sample; correlated keys can favor it. The worm
@@ -226,6 +238,7 @@ dependencies:
 python -m pip install -r requirements-reproduce.txt pytest playwright
 python showcase/verify.py
 node tools/nervous_system_benchmark.mjs
+node tools/coupled_brain_benchmark.mjs
 node connect-four/benchmark.mjs
 node memory/history_benchmark.mjs
 python -m pytest -q tests

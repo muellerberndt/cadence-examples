@@ -1,7 +1,4 @@
 import { Mouse } from "./brain.js";
-import { compose } from "../showcase/nervous_system.js";
-import { memoryCircuit } from "../showcase/telemetry.js";
-import { keys } from "../showcase/engine.js";
 import { TaskLessons, stations } from "../showcase/embodied.js";
 export function mountEmbodied(mode, api) {
   const {
@@ -22,7 +19,8 @@ export function mountEmbodied(mode, api) {
   let mouse,
     seed = 13,
     paused = false,
-    heat = true;
+    heat = true,
+    refreshCells = () => {};
   const title =
     mode === "mouse"
       ? "Teach a new task.<br>Watch it find a way."
@@ -83,7 +81,7 @@ export function mountEmbodied(mode, api) {
         return;
       }
       mouse.world.goal = stations(mouse.world)[destination];
-      mouse.repair();
+      mouse.bindTask(lessons.memory, cue, destination);
       $("lesson-status").textContent =
         `Task ${cue + 1}: recalling ${["cheese", "home", "water", "flag"][destination]}. Lessons carry into new mazes.`;
     }
@@ -119,8 +117,15 @@ export function mountEmbodied(mode, api) {
       mouse.world.goal = floors[(seed * 17 + mouse.moves * 3) % floors.length];
       mouse.repair();
     };
+    // Rebuild the cell list after any edit, keeping the selected cell, so each
+    // option names the cell's current state (wall or corridor).
+    refreshCells = () => {
+      const selected = $("edit-cell").value;
+      choices();
+      $("edit-cell").value = selected;
+    };
     $("toggle-wall").onclick = () => {
-      mouse.toggle(+$("edit-cell").value);
+      if (mouse.toggle(+$("edit-cell").value)) refreshCells();
     };
     $("pause").onclick = () => {
       paused = !paused;
@@ -296,22 +301,12 @@ export function mountEmbodied(mode, api) {
       const { cell, ox, oy } = worldXY(w, h),
         a = Math.floor((x - ox) / cell),
         b = Math.floor((y - oy) / cell);
-      if (a >= 0 && a < 19 && b >= 0 && b < 13) mouse.toggle(b * 19 + a);
+      if (a >= 0 && a < 19 && b >= 0 && b < 13 && mouse.toggle(b * 19 + a))
+        refreshCells();
     },
     brain() {
       if (mode === "mouse") {
-        const m = memoryCircuit(lessons.memory, keys()[cue]);
-        const c = mouse.circuit,
-          n = c.state.length,
-          offset = c.engine.data.edges.length;
-        const field = {
-          adapters:
-            "Visual map → task memory + spatial field → motor circuit → body",
-          regionLabels: {
-            place: "Spatial planning",
-            key: "Task cue",
-            record: "Task memory",
-          },
+        return Object.assign(mouse.joint, {
           behavior: paused
             ? { label: "Paused", tone: "neutral" }
             : mouse.cell === mouse.world.goal
@@ -319,33 +314,6 @@ export function mountEmbodied(mode, api) {
               : mouse.next() < 0
                 ? { label: "Route blocked", tone: "correcting" }
                 : { label: "Navigating", tone: "seeking" },
-          state: [...c.state, ...m.state],
-          drive: [...c.drive, ...m.state],
-          input: [...c.drive, ...m.input],
-          mask: [...c.mask, ...m.state.map(() => 1)],
-          names: [...c.state.map((_, i) => `Place ${i}`), ...m.names],
-          groups: [...c.state.map(() => "place"), ...m.groups],
-          edges: [
-            ...c.engine.data.edges,
-            ...m.edges.map(([a, b, w]) => [a + n, b + n, w]),
-          ],
-          learned: m.learned.map(([i, id, v]) => [i + offset, id, v]),
-          recurrent: true,
-          recurrentCount: n,
-          steps: c.steps,
-          memory:
-            "Task associations persist in plastic seams. The place field is recalculated from the map; no behavioral Afterglow trace is used here.",
-        };
-        return compose([field, mouse.nerves.last], {
-          adapters: field.adapters,
-          behavior: field.behavior,
-          regionLabels: {
-            ...field.regionLabels,
-            sensor: "Position error",
-            actuator: "Directional motor neurons",
-          },
-          memory:
-            "Task associations persist in plastic seams. Spatial patches find the route; retained graded motor potentials drive motion. Map encoding and target readout are supplied.",
         });
       }
       return null;

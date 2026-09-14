@@ -4,18 +4,27 @@ import {
   zeros,
   argmax,
 } from "../showcase/engine.js";
-import { MotorSystem, compose } from "../showcase/nervous_system.js";
-import { memoryCircuit } from "../showcase/telemetry.js";
+import {
+  MotorSystem,
+  MemoryReadout,
+  settleTogether,
+  motorFeedback,
+} from "../showcase/nervous_system.js";
 export class Forager extends MemoryForager {
   constructor(...args) {
     super(...args);
     this.nerves = new MotorSystem(["Turn", "Forward"]);
+    this.recall = new MemoryReadout();
   }
   step(field, dt = 0.025) {
     this.time += dt;
     if (this.target < 0) this.choose(field);
     if (this.target < 0) {
-      this.nerves.command([0, 0]);
+      this.joint = settleTogether(
+        [this.recall, this.nerves],
+        [this.recall.configure(this.memory, zeros(8)), zeros(6)],
+        motorFeedback(1, 2),
+      );
       return;
     }
     const f = field[this.target],
@@ -26,10 +35,25 @@ export class Forager extends MemoryForager {
         Math.sin(desired - this.angle),
         Math.cos(desired - this.angle),
       );
-    const motor = this.nerves.command([
-      turn,
-      0.3 * Math.max(0.2, 1 - Math.abs(turn) / Math.PI),
-    ]);
+    const recallDrive = this.recall.configure(this.memory, keys()[f.kind]);
+    const bridges = [
+      ...motorFeedback(1, 2),
+      ...Array.from({ length: 4 }, (_, i) => [0, 8 + i, 1, 1, 0.04 * i]),
+    ];
+    this.joint = settleTogether(
+      [this.recall, this.nerves],
+      [
+        recallDrive,
+        [turn, 0.3 * Math.max(0.2, 1 - Math.abs(turn) / Math.PI), 0, 0, 0, 0],
+      ],
+      bridges,
+    );
+    const motor = [0, 1].map(
+      (i) =>
+        (Math.max(0, this.nerves.state[2 + 2 * i]) -
+          Math.max(0, this.nerves.state[3 + 2 * i])) /
+        2,
+    );
     this.angle += Math.max(-3.5 * dt, Math.min(3.5 * dt, motor[0] * 12 * dt));
     const speed = Math.max(0, motor[1]) * 0.5;
     this.x = Math.max(
@@ -56,8 +80,13 @@ export class Forager extends MemoryForager {
     }
   }
   brain(field) {
-    const key = this.target >= 0 ? keys()[field[this.target].kind] : zeros(8);
-    return compose([memoryCircuit(this.memory, key), this.nerves.last], {
+    if (!this.joint)
+      this.joint = settleTogether(
+        [this.recall, this.nerves],
+        [this.recall.configure(this.memory, zeros(8)), zeros(6)],
+        motorFeedback(1, 2),
+      );
+    return Object.assign(this.joint, {
       regionLabels: {
         key: "Flower cue",
         record: "Nectar memory",
@@ -65,7 +94,7 @@ export class Forager extends MemoryForager {
         actuator: "Turn / propulsion motors",
       },
       adapters:
-        "Flower sensor → memory + target selection → directional motor circuit → body",
+        "Cue → nectar recall → approach ↔ motor feedback · one shared settlement",
       memory:
         "Nectar contact writes associative weights. Motor potentials persist between ticks and decay; target selection and collision bounds are supplied.",
     });

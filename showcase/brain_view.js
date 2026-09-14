@@ -11,7 +11,6 @@ const labels = {
 };
 const copy = (source) => ({
   ...source,
-  blocks: source.blocks?.map(copy),
   state: source.state.slice(),
   edges: source.edges.map((e) => e.slice()),
   drive: source.drive?.slice(),
@@ -514,8 +513,22 @@ export class BrainView {
     });
     c.stroke();
     this.$("brain-status").textContent = trace
-      ? `${trace.release ? "Input released in an isolated copy" : this.trace ? "Repair replay" : "Sampled settlement"} · iteration ${frame}/${trace.frames.length - 1}${frame === trace.frames.length - 1 ? " · settled" : ""}`
+      ? `${trace.release ? "Input released in an isolated copy" : this.trace ? "Repair replay" : "Sampled settlement"} · iteration ${frame}/${trace.frames.length - 1}${frame === trace.frames.length - 1 ? " · replay complete" : ""}`
       : `Live ${source.recurrent ? "settled state" : "associative read/write"} · ${this.writes} observed weight changes`;
+    const equilibrium = source.equilibrium;
+    this.$("brain-equilibrium").textContent = equilibrium
+      ? `${equilibrium.converged ? "Joint equilibrium within tolerance" : "Repair budget reached"} · endpoint error ${equilibrium.residual.toExponential(1)} · ${equilibrium.links} active links between regions`
+      : "Reference circuit · independently inspected";
+    this.$("brain-equilibrium").title = equilibrium
+      ? Object.entries(equilibrium.regions)
+          .map(([g, e]) => `${regionLabel(g)}: ${e.toExponential(2)}`)
+          .join(" · ")
+      : "";
+    this.$("brain-region-errors").textContent = equilibrium
+      ? Object.entries(equilibrium.regions)
+          .map(([g, e]) => `${regionLabel(g)}: ${e.toExponential(2)}`)
+          .join(" · ")
+      : "";
     this.$("brain-legend").hidden = !this.heat || plastic;
     this.$("brain-legend-label").textContent =
       `${this.signal === "input" ? "Input drive" : this.signal === "repair" ? "State change" : "Activity"} · relative region scale${trace ? " · fixed during replay" : ""}`;
@@ -534,6 +547,7 @@ export class BrainView {
       owners: this.source?.state.length ?? 0,
       seams: this.source?.edges.length ?? 0,
       recurrent: this.source?.recurrent ?? false,
+      equilibrium: this.source?.equilibrium,
       writes: this.writes,
       signal: this.signal,
       heatmap: this.heat,
