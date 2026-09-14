@@ -46,6 +46,14 @@ def main():
             page.wait_for_function("window.showcase !== undefined")
             assert page.evaluate("showcase.snapshot().mode") == "mouse"
             page.wait_for_function("showcase.snapshot().brain.owners > 0")
+            # Inspecting a thought holds the actual actuator, then releases it.
+            page.locator("#brain-think").click()
+            expect(page.locator("#brain-behavior")).to_contain_text("motor output held")
+            held_position = page.evaluate("[showcase.snapshot().body.x,showcase.snapshot().body.y]")
+            page.wait_for_timeout(180)
+            assert held_position == page.evaluate("[showcase.snapshot().body.x,showcase.snapshot().body.y]")
+            page.wait_for_function("p => JSON.stringify(p) !== JSON.stringify([showcase.snapshot().body.x,showcase.snapshot().body.y])", arg=held_position, timeout=10000)
+            page.locator("#brain-think").click()
             # Motor activity, not a direct position update, drives the body.
             page.locator("#mouse-motors").click()
             page.wait_for_timeout(300)
@@ -325,7 +333,7 @@ def main():
                 scene = page.locator("#scene").bounding_box()
                 circuit = page.locator("#brain-scene").bounding_box()
                 assert scene["x"] + scene["width"] < circuit["x"]
-                for bounds in [scene, circuit, page.locator("#brain-equilibrium").bounding_box()]:
+                for bounds in [scene, circuit, page.locator("#brain-waves").bounding_box(), page.locator("#brain-equilibrium").bounding_box()]:
                     assert bounds["y"] >= 0 and bounds["y"] + bounds["height"] <= 768, (
                         mode,
                         bounds,

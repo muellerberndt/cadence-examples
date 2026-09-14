@@ -201,7 +201,7 @@ export function mountEmbodied(mode, api) {
   return {
     draw(w, h, dt) {
       if (mode === "mouse") {
-        if (!paused) mouse.step(dt);
+        if (!paused) api.act(() => mouse.step(dt, true));
         const { cell, ox, oy } = worldXY(w, h),
           world = mouse.world,
           state = mouse.circuit.state,

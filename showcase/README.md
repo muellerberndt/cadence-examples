@@ -120,7 +120,7 @@ the body at the top of each page. Hover or tap an owner to see its numerical val
 
 - **Behavior badge:** green = positive outcome; blue = seeking/moving; amber =
   correction; gray = idle/paused. These name observed events, not measured feelings.
-- **Activity / input / repair:** amber = positive, blue = negative. Values are
+- **Activity / input / repair / equation mismatch:** amber = positive, blue = negative. Values are
   dimensionless and scaled within a region; replay scales remain fixed.
 - **Violet repair trails:** one second of display history. They are not neural
   memory. **Plasticity** separately highlights learned weight changes.
@@ -135,8 +135,21 @@ the body at the top of each page. Hover or tap an owner to see its numerical val
   Stateful motor circuits start from their retained potentials, not from zero.
 - **Release input:** removes drives in an isolated copy and shows recurrent decay.
   It does not change the body or its actual memory.
+- **Population waves:** green is signed mean activation; violet is RMS owner-equation
+  mismatch. Every unmasked owner contributes. These are measured simulation-step
+  traces, not biological EEG. Oscillations appear only when the circuit produces
+  them; a settled circuit is allowed to become quiet.
+- **Moving seam signals:** a packet marks a changed outgoing message on an actual
+  seam. Time-expanded motion illustrates transport, not physical propagation speed.
+- **Slow thought:** in the four body demos, hold the actuator command while its
+  captured repair sequence is inspected. Movement follows the last iteration.
+  The selected replay rate controls presentation time; solver iteration counts
+  do not measure human thought or prove that harder semantic tasks take longer.
+  Editing the world cancels a pending command. Connect Four already provides its
+  own search/preview phase, and the memory demo has no motor output.
 - **Live:** returns to current samples; **Pause view** freezes only the viewer.
-  Body controls are independent. Reduced-motion preferences disable autoplay.
+  Body controls are independent, except **Pause view** also holds a pending slow-thought
+  command. Reduced-motion preferences disable autoplay.
 
 The current motor circuits retain graded potentials between control ticks, so
 transient neural state really is carried during behavior. Associative weights

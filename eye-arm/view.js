@@ -196,7 +196,7 @@ export function mountArm(api) {
     draw(w, h, dt) {
       credit += dt * 100;
       while (credit >= 1) {
-        if (!paused && !painting) arm.step();
+        if (!paused && !painting) api.act(() => arm.step(true));
         credit--;
       }
       const a = layout(w, h),

@@ -1,6 +1,7 @@
 import { MemoryBrain } from "../memory/brain.js";
 import { mountGame } from "../connect-four/view.js";
 import { Forager } from "../fly/brain.js";
+import { MotorGate } from "./motor_gate.js";
 import { BrainView } from "./brain_view.js";
 import { mountWorm } from "../worm/view.js";
 import { showGuide } from "./guides.js";
@@ -61,6 +62,37 @@ let memory,
   points = [],
   drag = -1;
 const brainView = new BrainView();
+const motorGate = new MotorGate();
+function act(make) {
+  if (motorGate.prepare(make, () => brainSource().steps ?? 24)) {
+    brainView.trace = null;
+    brainView.update(brainSource());
+    brainView.replay(false);
+  }
+}
+$("brain-think").onclick = () => {
+  motorGate.enabled = !motorGate.enabled;
+  motorGate.cancel();
+  brainView.trace = null;
+  $("brain-think").setAttribute("aria-pressed", String(motorGate.enabled));
+  $("brain-think").textContent = motorGate.enabled
+    ? "Inspect before moving"
+    : "Slow thought";
+};
+// An edited world invalidates its pending action.
+for (const event of ["pointerdown", "click", "change", "keydown"]) {
+  document.addEventListener(
+    event,
+    (e) => {
+      if (!e.target.closest(".brain-panel")) {
+        motorGate.cancel();
+        brainView.trace = null;
+      }
+    },
+    true,
+  );
+}
+
 const canvas = $("scene"),
   ctx = canvas.getContext("2d");
 let width = 900,
@@ -227,6 +259,8 @@ function renderEvidence() {
 function setMode(next) {
   mode = next;
   brainView.reset();
+  motorGate.cancel();
+  $("brain-think").disabled = ["memory", "game"].includes(mode);
   showGuide($("demo-guide"), mode);
   $("worm-views").hidden = mode !== "worm";
   document
@@ -245,7 +279,7 @@ function setMode(next) {
       b.setAttribute("aria-pressed", String(b.dataset.tab === next)),
     );
   if (mode === "worm" && wormView === "habitat") {
-    bodyView = mountWorm({ data, $, ctx, metrics, explain });
+    bodyView = mountWorm({ data, $, ctx, metrics, explain, act });
     document.querySelector(".evidence details a").href =
       "showcase/evidence.json";
     renderEvidence();
@@ -278,6 +312,7 @@ function setMode(next) {
         circle,
         line,
         text,
+        act,
         evidence: composite,
       },
     );
@@ -747,12 +782,20 @@ function animate(t) {
   const dt = Math.min(0.05, (t - previous) / 1000 || 0.016);
   previous = t;
   frame++;
+  if (!brainView.frozen && motorGate.advance(dt * brainView.rate)) {
+    brainView.trace = null;
+    brainView.auto = null;
+  }
   ctx.clearRect(0, 0, width, height);
   if (bodyView) bodyView.draw(width, height, dt);
   else if (mode === "worm") drawWorm();
   else if (mode === "fly") {
     if (!paused) {
-      agents.forEach((a) => a.step(field, dt));
+      if (!motorGate.busy)
+        act(() => {
+          const moves = agents.map((a) => a.step(field, dt, true));
+          return () => moves.forEach((move) => move?.());
+        });
     }
     drawFly();
   } else {
@@ -765,6 +808,11 @@ function animate(t) {
   }
   if (frame % 6 === 0) brainView.update(brainSource());
   brainView.draw(dt);
+  if (motorGate.busy) {
+    $("brain-behavior").textContent = "Thinking · motor output held";
+    $("brain-status").textContent =
+      `Time-expanded settlement · ${Math.ceil(motorGate.remaining)} iterations before movement`;
+  }
   requestAnimationFrame(animate);
 }
 canvas.addEventListener("pointerdown", (e) => {

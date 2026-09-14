@@ -841,3 +841,48 @@ canvas:focus-visible {
   font-size: 11px;
   color: var(--green);
 }
+
+#brain-waves {
+  width: 100%;
+  height: 84px;
+  display: block;
+}
+.brain-modulators {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 3px 0;
+}
+@media (min-width: 1001px) {
+  header {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+  main {
+    padding-top: 10px;
+  }
+  .intro {
+    margin-bottom: 12px;
+  }
+  .intro h1 {
+    font-size: 27px;
+    margin-top: 6px;
+  }
+  .intro > div > .eyebrow {
+    font-size: 9px;
+  }
+  .tabs {
+    margin-bottom: 12px;
+  }
+  .tabs a {
+    padding: 6px 12px;
+  }
+  #brain-scene {
+    height: 282px;
+  }
+  .brain-panel {
+    padding: 12px;
+  }
+  .brain-behavior {
+    margin-bottom: 5px;
+  }
+}

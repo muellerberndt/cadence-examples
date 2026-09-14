@@ -201,7 +201,7 @@ export class DrawingArm {
     this.q[0] += 0.32;
     this.q[1] -= 0.22;
   }
-  step() {
+  step(defer = false) {
     this.ticks++;
     const observed = this.closed ? this.q : this.estimate,
       tip = forward(observed),
@@ -209,29 +209,33 @@ export class DrawingArm {
     const distance = Math.hypot(goal[0] - tip[0], goal[1] - tip[1]);
     const requestedHeight = this.target < 0 || distance > 0.026 ? 1 : 0;
     const command = this.brain.command(observed, this.z, goal, requestedHeight);
-    this.velocity = this.velocity.map(
-      (v, i) =>
-        0.25 * v + 0.75 * Math.max(-0.075, Math.min(0.075, command[i] * 1.0)),
-    );
-    // Only motor population outputs move the joints. Contact alone creates ink.
-    this.q = this.q.map((v, i) => v + this.velocity[i]);
-    this.estimate = this.estimate.map((v, i) => v + this.velocity[i]);
-    if (this.closed) this.estimate = this.q.slice();
-    this.z = Math.max(0, Math.min(1, this.z + command[2] * 0.35));
-    const actual = forward(this.q),
-      down = this.z < 0.12;
-    if (down) {
-      this.ink.push([...actual, this.penWasDown]);
-      this.targets.forEach((p, i) => {
-        if (Math.hypot(p[0] - actual[0], p[1] - actual[1]) < 0.024)
-          this.covered.add(i);
-      });
-    }
-    this.penWasDown = down;
-    if (this.target >= 0 && distance < 0.01 && down) {
-      this.attempted.add(this.target);
-      this.select();
-    }
+    const commit = () => {
+      this.velocity = this.velocity.map(
+        (v, i) =>
+          0.25 * v + 0.75 * Math.max(-0.075, Math.min(0.075, command[i] * 1.0)),
+      );
+      // Only motor population outputs move the joints. Contact alone creates ink.
+      this.q = this.q.map((v, i) => v + this.velocity[i]);
+      this.estimate = this.estimate.map((v, i) => v + this.velocity[i]);
+      if (this.closed) this.estimate = this.q.slice();
+      this.z = Math.max(0, Math.min(1, this.z + command[2] * 0.35));
+      const actual = forward(this.q),
+        down = this.z < 0.12;
+      if (down) {
+        this.ink.push([...actual, this.penWasDown]);
+        this.targets.forEach((p, i) => {
+          if (Math.hypot(p[0] - actual[0], p[1] - actual[1]) < 0.024)
+            this.covered.add(i);
+        });
+      }
+      this.penWasDown = down;
+      if (this.target >= 0 && distance < 0.01 && down) {
+        this.attempted.add(this.target);
+        this.select();
+      }
+    };
+    if (defer) return commit;
+    commit();
   }
   get lifted() {
     return this.z >= 0.12;

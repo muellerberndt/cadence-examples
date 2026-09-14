@@ -109,7 +109,16 @@
               aria-label="Actual owners and seams arranged by function. Activity, repair cascades and learned weight changes are shown with a labeled legend."
             ></canvas>
           </div>
+          <canvas
+            id="brain-waves"
+            role="img"
+            aria-label="Actual population activity and mismatch by simulation iteration, not clinical EEG"
+          ></canvas>
+          <div class="brain-modulators" id="brain-modulators">
+            Learning modulators: not modeled in this controller
+          </div>
           <div class="buttons brain-actions">
+            <button id="brain-think" aria-pressed="false">Slow thought</button>
             <button id="brain-follow" aria-pressed="true">
               Follow repairs
             </button>
@@ -141,6 +150,7 @@
               <label for="brain-signal">Show</label>
               <select id="brain-signal">
                 <option value="activity">Activity · local state</option>
+                <option value="mismatch">Equation mismatch</option>
                 <option value="repair">Repair · state change</option>
                 <option value="input">Input · supplied drive</option>
                 <option value="plasticity">Plasticity · memory writes</option>

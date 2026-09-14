@@ -2,7 +2,7 @@ import { WormArena } from "./brain.js";
 
 let retainedHabitat;
 
-export function mountWorm({ data, $, ctx, metrics, explain }) {
+export function mountWorm({ data, $, ctx, metrics, explain, act }) {
   const arena = (retainedHabitat ??= new WormArena(data));
   let tool = "food",
     paused = false,
@@ -160,7 +160,7 @@ export function mountWorm({ data, $, ctx, metrics, explain }) {
     if (!paused && !painting) {
       accumulator += dt * speed;
       if (accumulator >= 0.3) {
-        arena.step();
+        act(() => arena.step(true));
         accumulator %= 0.3;
       }
     }

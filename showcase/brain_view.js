@@ -25,6 +25,8 @@ export class BrainView {
   constructor() {
     this.canvas = document.getElementById("brain-scene");
     this.ctx = this.canvas.getContext("2d");
+    this.waveCanvas = document.getElementById("brain-waves");
+    this.waveCtx = this.waveCanvas.getContext("2d");
     this.$ = (id) => document.getElementById(id);
     this.heat = true;
     this.follow = !matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -77,6 +79,7 @@ export class BrainView {
   }
   reset() {
     this.source = this.old = this.trace = this.auto = this.pending = null;
+    this.diagnostic = null;
     this.frozen = false;
     this.signal = "activity";
     this.rate = 40;
@@ -108,7 +111,7 @@ export class BrainView {
       ),
     );
     // Fixed scales over the captured trajectory make amplitude and fading comparable.
-    trace.scales = { activity: {}, repair: {}, input: {} };
+    trace.scales = { activity: {}, repair: {}, input: {}, mismatch: {} };
     const add = (kind, values) =>
       values.forEach((v, i) => {
         const g = source.groups?.[i] ?? "patch";
@@ -119,6 +122,7 @@ export class BrainView {
       });
     trace.frames.forEach((a, t) => {
       add("activity", a);
+      add("mismatch", trace.mismatches?.[t] ?? a.map(() => 0));
       add(
         "repair",
         a.map((v, i) => (t ? v - trace.frames[t - 1][i] : 0)),
@@ -181,6 +185,8 @@ export class BrainView {
       different(this.source?.mask ?? [], source.mask ?? []);
     this.old = { state: source.state.slice(), learned };
     this.source = copy(source);
+    if (changed || !this.diagnostic)
+      this.diagnostic = this.prepareTrace(this.source, false);
     if (changed && this.follow && source.recurrent) {
       if (!this.auto || this.auto.elapsed >= 1.6) this.startCascade(source);
       else this.pending = this.source;
@@ -260,7 +266,15 @@ export class BrainView {
         : v,
     );
     const values =
-      this.signal === "input" ? input : this.signal === "repair" ? diff : s;
+      this.signal === "input"
+        ? input
+        : this.signal === "repair"
+          ? diff
+          : this.signal === "mismatch"
+            ? (trace?.mismatches?.[frame] ??
+              this.diagnostic?.mismatches?.at(-1) ??
+              s.map(() => 0))
+            : s;
     const groups = source.groups ?? s.map(() => "patch");
     const groupNames = [...new Set(groups)].sort((a, b) => {
       const order = { sensory: 0, interneuron: 1, motor: 2 };
@@ -354,12 +368,23 @@ export class BrainView {
       }
       const members = groups.flatMap((v, i) => (v === g ? [i] : []));
       regions[g] = { x, y, rw, rh, members };
-      c.fillStyle = "#122129";
-      c.strokeStyle = "#2b424b";
+      const halo = c.createRadialGradient(
+        x + rw * 0.5,
+        y + rh * 0.5,
+        0,
+        x + rw * 0.5,
+        y + rh * 0.5,
+        Math.max(rw, rh) * 0.7,
+      );
+      halo.addColorStop(0, "#183239aa");
+      halo.addColorStop(1, "#0c161c00");
+      c.fillStyle = halo;
+      c.fillRect(x - 5, y - 5, rw + 10, rh + 10);
+      c.strokeStyle = "#7ba89d55";
       c.lineWidth = 1;
       c.beginPath();
-      c.roundRect(x, y, rw, rh, 8);
-      c.fill();
+      c.moveTo(x + 9, y + 22);
+      c.lineTo(x + Math.min(rw - 8, 100), y + 22);
       c.stroke();
       c.fillStyle = "#d8e6e9";
       c.font = "11px system-ui, sans-serif";
@@ -411,8 +436,39 @@ export class BrainView {
         : 0.5 + pulse * 1.3;
       c.beginPath();
       c.moveTo(...positions[a]);
-      c.lineTo(...positions[b]);
+      const [ax, ay] = positions[a],
+        [bx, by] = positions[b];
+      const bend = groups[a] !== groups[b] ? (bx - ax) * 0.18 : 0;
+      c.quadraticCurveTo((ax + bx) / 2 - bend, (ay + by) / 2 + bend, bx, by);
       c.stroke();
+      // A packet represents a changed outgoing message at this captured iteration.
+      // No change means no moving packet, including at a fixed point.
+      const message = diff[a] * weight;
+      if (
+        !plastic &&
+        trace &&
+        frame < trace.frames.length - 1 &&
+        Math.abs(message) > 1e-15 &&
+        pulse > 0.03
+      ) {
+        const progress = (this.age * 2.2) % 1,
+          inv = 1 - progress;
+        const px =
+          inv * inv * ax +
+          2 * inv * progress * ((ax + bx) / 2 - bend) +
+          progress * progress * bx;
+        const py =
+          inv * inv * ay +
+          2 * inv * progress * ((ay + by) / 2 + bend) +
+          progress * progress * by;
+        c.fillStyle = message < 0 ? "#79b8ff" : "#ffc471";
+        c.shadowColor = c.fillStyle;
+        c.shadowBlur = 8;
+        c.beginPath();
+        c.arc(px, py, 1.2 + Math.min(2, pulse * 2), 0, Math.PI * 2);
+        c.fill();
+        c.shadowBlur = 0;
+      }
     });
     let hovered = -1,
       nearest = 18;
@@ -531,16 +587,84 @@ export class BrainView {
       : "";
     this.$("brain-legend").hidden = !this.heat || plastic;
     this.$("brain-legend-label").textContent =
-      `${this.signal === "input" ? "Input drive" : this.signal === "repair" ? "State change" : "Activity"} · relative region scale${trace ? " · fixed during replay" : ""}`;
+      `${this.signal === "input" ? "Input drive" : this.signal === "repair" ? "State change" : this.signal === "mismatch" ? "Equation mismatch" : "Activity"} · relative region scale${trace ? " · fixed during replay" : ""}`;
     this.$("brain-scale").textContent =
       `Max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. ${trace ? "Captured trajectory scales" : "Current region scales"}; hover or tap for signed values. No neurotransmitter concentrations are modeled.`;
+    this.drawWaves(
+      source,
+      trace ?? this.diagnostic,
+      trace ? frame : (this.diagnostic?.frames.length ?? 1) - 1,
+      regionLabel,
+    );
+    this.$("brain-modulators").textContent = source.modulators
+      ? Object.entries(source.modulators)
+          .map(
+            ([name, m]) =>
+              `${name}: ${Number(m.value).toFixed(2)} · ${m.effect}`,
+          )
+          .join(" | ")
+      : "Modulators: no neurotransmitter model · activity and mismatch are measured model signals";
     this.displayed = {
       state: s.slice(),
       repairs: diff.slice(),
+      mismatch: (
+        trace?.mismatches?.[frame] ??
+        this.diagnostic?.mismatches?.at(-1) ??
+        []
+      ).slice(),
       frame,
       regions: groupNames.map(regionLabel),
       trail: this.trail.slice(),
     };
+  }
+  drawWaves(source, trace, frame, label) {
+    const canvas = this.waveCanvas,
+      c = this.waveCtx,
+      { width: w, height: h } = canvas.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio, 2);
+    if (
+      canvas.width !== Math.round(w * dpr) ||
+      canvas.height !== Math.round(h * dpr)
+    ) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+    }
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, w, h);
+    c.fillStyle = "#96aaa9";
+    c.font = "9px ui-monospace, monospace";
+    c.fillText(
+      "POPULATION WAVES · signed activity / mismatch · simulation steps, not EEG",
+      4,
+      10,
+      w - 8,
+    );
+    const entries = Object.entries(trace.populations ?? {}),
+      rows = Math.max(1, entries.length),
+      rh = (h - 17) / rows;
+    entries.forEach(([g, series], r) => {
+      const y = 18 + r * rh;
+      c.fillStyle = "#a3b4b9";
+      c.fillText(label(g), 4, y + rh * 0.65, 120);
+      const peak = Math.max(
+        1e-12,
+        ...series.flatMap((v) => [Math.abs(v.mean), v.mismatch]),
+      );
+      for (const [key, color] of [
+        ["mean", "#87ecc2"],
+        ["mismatch", "#bfa8ff"],
+      ]) {
+        c.strokeStyle = color;
+        c.lineWidth = 1;
+        c.beginPath();
+        series.slice(0, frame + 1).forEach((v, i) => {
+          const x = 132 + ((w - 138) * i) / Math.max(1, series.length - 1),
+            py = y + rh * 0.55 - ((rh - 2) * 0.45 * v[key]) / peak;
+          i ? c.lineTo(x, py) : c.moveTo(x, py);
+        });
+        c.stroke();
+      }
+    });
   }
   snapshot() {
     return {

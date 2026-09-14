@@ -7,16 +7,16 @@
     "fly": 4000
   },
   "sources": {
-    "eye-arm/brain.js": "c6d9ae3d360d595bb6cf65c6ac6eefc9f62f80b18622fbe2ae5176bc873861bd",
+    "eye-arm/brain.js": "87972777b4fffb693fa28fb1b55bd4f900039cda09c19917645762d0b1262830",
     "eye-arm/fixtures.js": "23a7f78d540e202c075d55c58f17cce8bf324fe4b9fde01b739db490d0d9bfd7",
-    "mouse/brain.js": "dfddd0beda895edb057f2f62152a9b1ecfc13f534ad6fde6e34b62ad7494210f",
-    "fly/brain.js": "3b5cbf694909d8d47e47657474e86084949ba9b25b8392c7a471acf14f8f8f23",
-    "worm/brain.js": "12b22cf988298edea97b5247a21d8353139f8a5b1afdb99cd1df544f063c2d55",
+    "mouse/brain.js": "0067e2dda39c2fb965b4aa026d8cd5e69c8866a8338b5cdf85f608c2c5977167",
+    "fly/brain.js": "72b1093cd063bd93ae1768f915c3b0dcd3f4ba4299a08bd544ea5520554e964a",
+    "worm/brain.js": "92e97429fc2d73bbe8b7291b6906d7d3f9a41e08378f83bcd259a7be82a75b69",
     "showcase/nervous_system.js": "5cf69d94c6f2143b1355c01da614819321f78edba40fe039102d1008402dd0a3",
     "showcase/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
     "showcase/embodied.js": "e551c3a3f53d0c9d4de18015a0dfec3e77ec80ada402ed3265d6edb53e5b2887",
     "showcase/worm_arena.js": "11ddb137681fc9742a410d25d28e7cc70e850804ffc86f40f05347d8a242d3d5",
-    "showcase/telemetry.js": "a41a9c55015bacd0a8b17bcae53264db8d2f95afcfb40e4dcbd1be17499c6339",
+    "showcase/telemetry.js": "9b242cf43b6ff6f59494368357d9b669da9a26c11da5d5cb336e675176773030",
     "tools/nervous_system_benchmark.mjs": "179186f1e0c8a4468de692515d15b4a5291cba337f06587d9ba50d820e4284e3"
   },
   "arm": [

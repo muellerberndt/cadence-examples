@@ -79,7 +79,7 @@ export class Mouse extends SpatialMouse {
         2,
     );
   }
-  step(dt = 0.025) {
+  step(dt = 0.025, defer = false) {
     if (this.target < 0) this.target = this.next();
     const tx = this.target < 0 ? this.x : (this.target % this.world.cols) + 0.5,
       ty =
@@ -91,23 +91,27 @@ export class Mouse extends SpatialMouse {
       d = Math.hypot(dx, dy),
       command = this.updateBrain([dx, dy]),
       speed = Math.hypot(...command);
-    if (this.target < 0 || speed < 1e-10) return;
-    const step = Math.min(dt * 3.2, d);
-    const nx = this.x + (command[0] / speed) * step,
-      ny = this.y + (command[1] / speed) * step;
-    if (this.world.grid[Math.floor(ny) * this.world.cols + Math.floor(nx)])
-      return;
-    this.heading = Math.atan2(command[1], command[0]);
-    this.x = nx;
-    this.y = ny;
-    if (Math.hypot(tx - this.x, ty - this.y) < 0.04) {
-      this.x = tx;
-      this.y = ty;
-      this.cell = this.target;
-      this.moves++;
-      this.path.push(this.cell);
-      this.target = -1;
-      if (this.cell === this.world.goal) this.arrivals++;
-    }
+    const commit = () => {
+      if (this.target < 0 || speed < 1e-10) return;
+      const step = Math.min(dt * 3.2, d);
+      const nx = this.x + (command[0] / speed) * step,
+        ny = this.y + (command[1] / speed) * step;
+      if (this.world.grid[Math.floor(ny) * this.world.cols + Math.floor(nx)])
+        return;
+      this.heading = Math.atan2(command[1], command[0]);
+      this.x = nx;
+      this.y = ny;
+      if (Math.hypot(tx - this.x, ty - this.y) < 0.04) {
+        this.x = tx;
+        this.y = ty;
+        this.cell = this.target;
+        this.moves++;
+        this.path.push(this.cell);
+        this.target = -1;
+        if (this.cell === this.world.goal) this.arrivals++;
+      }
+    };
+    if (defer) return commit;
+    commit();
   }
 }

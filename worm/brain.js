@@ -16,7 +16,7 @@ export class WormArena extends ChemicalHabitat {
       [this.drive, Array(12).fill(0)],
     );
   }
-  step() {
+  step(defer = false) {
     if (this.food.has(this.cell)) {
       this.food.delete(this.cell);
       this.eaten++;
@@ -96,11 +96,15 @@ export class WormArena extends ChemicalHabitat {
           : "All food eaten · place another patch";
       return;
     }
-    this.cell = adjacent[selected];
-    this.path.push(this.cell);
-    if (this.path.length > 200) this.path.shift();
-    this.moves++;
-    this.status = "Following local food cues";
+    const commit = () => {
+      this.cell = adjacent[selected];
+      this.path.push(this.cell);
+      if (this.path.length > 200) this.path.shift();
+      this.moves++;
+      this.status = "Following local food cues";
+    };
+    if (defer) return commit;
+    commit();
   }
   brain() {
     return Object.assign(this.joint, {

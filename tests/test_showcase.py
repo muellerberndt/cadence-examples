@@ -301,3 +301,32 @@ console.log(JSON.stringify(runHistoryBenchmark()));
     assert all(len(answers) == 1 for answers in predictions.values())
     for filename, digest in receipt["sources"].items():
         assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest
+
+
+def test_motor_gate_holds_real_action_and_cancels_stale_world():
+    result = node("""
+import {DrawingArm} from './eye-arm/brain.js';
+import {imageFixture} from './eye-arm/fixtures.js';
+import {MotorGate} from './showcase/motor_gate.js';
+const arm=new DrawingArm(imageFixture('square')),gate=new MotorGate();
+gate.enabled=true;const before=arm.q.slice();
+gate.prepare(()=>arm.step(true),()=>24);
+const held=JSON.stringify(before)===JSON.stringify(arm.q);
+gate.advance(23);const still=JSON.stringify(before)===JSON.stringify(arm.q);
+gate.advance(1);const moved=JSON.stringify(before)!==JSON.stringify(arm.q);
+const next=arm.q.slice();gate.prepare(()=>arm.step(true),()=>24);gate.cancel();gate.advance(100);
+console.log(JSON.stringify({held,still,moved,cancelled:JSON.stringify(next)===JSON.stringify(arm.q)}));
+""")
+    assert all(result.values())
+
+
+def test_population_traces_measure_signed_oscillation_and_equation_error():
+    result = node("""
+import {repairTrace} from './showcase/telemetry.js';
+const source={state:[0,0],initialState:[.3,0],initialPotential:[Math.atanh(.3),0],drive:[0,0],edges:[[0,1,.8],[1,0,-.8]],steps:40,groups:['a','b']};
+const trace=repairTrace(source);
+const independently=trace.frames.map((s,t)=>[ -.8*s[1]-trace.potentials[t][0], .8*s[0]-trace.potentials[t][1]]);
+console.log(JSON.stringify({error:Math.max(...trace.mismatches.flatMap((r,t)=>r.map((v,i)=>Math.abs(v-independently[t][i])))),positive:trace.populations.a.some(v=>v.mean>0),negative:trace.populations.a.some(v=>v.mean<0),decay:trace.populations.a.at(-1).rms<trace.populations.a[0].rms}));
+""")
+    assert result['error'] < 1e-12
+    assert result['positive'] and result['negative'] and result['decay']
