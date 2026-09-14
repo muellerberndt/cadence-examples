@@ -1,4 +1,4 @@
-// Reproducible joint-equation and cross-region ablations for the six live brains.
+// Reproducible joint-equation and cross-region ablations for the five live brains.
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -8,7 +8,6 @@ import { imageFixture } from "../eye-arm/fixtures.js";
 import { Mouse } from "../mouse/brain.js";
 import { WormArena } from "../worm/brain.js";
 import { Forager } from "../fly/brain.js";
-import { MemoryBrain } from "../memory/brain.js";
 import { SynapticMemory, flowers, keys } from "../shared/engine.js";
 import { reason, drop, brainSnapshot } from "../connect-four/brain.js";
 import { Circuit } from "../shared/nervous_system.js";
@@ -27,8 +26,6 @@ export function samples() {
     field = flowers();
   fly.memory.observe(keys()[field[0].kind], [0, 0, 0, 1]);
   fly.step(field);
-  const memory = new MemoryBrain();
-  memory.observe(keys()[0], [0, 0, 1, 0]);
   let board = Array(42).fill(0);
   [3, 2, 3, 4].forEach((c, i) => (board = drop(board, c, i % 2 ? -1 : 1)));
   return {
@@ -36,7 +33,6 @@ export function samples() {
     mouse: mouse.joint,
     worm: worm.brain(),
     fly: fly.brain(field),
-    memory: memory.brain(keys()[0]),
     game: brainSnapshot(
       board,
       1,
@@ -110,7 +106,6 @@ export function benchmark() {
     "mouse/brain.js",
     "worm/brain.js",
     "fly/brain.js",
-    "memory/brain.js",
     "connect-four/brain.js",
     "tools/coupled_brain_benchmark.mjs",
   ];

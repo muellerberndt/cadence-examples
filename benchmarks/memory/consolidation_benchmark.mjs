@@ -1,5 +1,5 @@
 // Retention is a response magnitude after removing transient weights, not a label score.
-import { SynapticMemory, keys } from '../shared/engine.js';
+import { SynapticMemory, keys } from '../../shared/engine.js';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
@@ -29,8 +29,8 @@ export function run() {
 export function report() {
   return { schema:'cadence.consolidation/v1',
     description:'Unit-cue response after clearing all transient residual weights. Single stream; orthogonal distractors; salience is supplied, not a neurotransmitter concentration.',
-    sources:Object.fromEntries(['shared/engine.js','memory/consolidation_benchmark.mjs'].map(name=>
-      [name,createHash('sha256').update(readFileSync(new URL('../'+name,import.meta.url))).digest('hex')])),
+    sources:Object.fromEntries(['shared/engine.js','benchmarks/memory/consolidation_benchmark.mjs'].map(name=>
+      [name,createHash('sha256').update(readFileSync(new URL('../../'+name,import.meta.url))).digest('hex')])),
     rates:{decay:.9,consolidation:.05}, exposures:{ordinary:1,repeated:40,salient:1,salience:19,distractors:200,corrections:60},
     responses:run() };
 }

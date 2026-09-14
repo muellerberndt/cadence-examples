@@ -1,6 +1,6 @@
 # Cadence live systems
 
-Six separate browser examples expose Cadence brains: graded neurons with bounded
+Five separate browser examples expose Cadence brains: graded neurons with bounded
 local state, ports, readback, retained records and feedback. Each page puts the
 actual circuit beside the task at the top on desktop; mobile stacks the panels.
 
@@ -63,7 +63,7 @@ complete biological brains, learned perception or learned anatomy.
 
 ## One joint state per task
 
-Different functions share a common equilibrium through their synapses. The six
+Different functions share a common equilibrium through their synapses. The five
 controllers assemble their regions **before** settling, then read the resulting
 motor or decision state. The circuit panel reports global and regional equation
 errors. [Task connectomes and reproducible tests](COUPLED_BRAINS.md) describe every
@@ -102,7 +102,6 @@ bounds. Motor ablations test whether the neural output really causes movement.
 | Worm habitat | 309: 297 chemical + 12 directional | up to 4,108 | 0 |
 | Worm circuit probe | 297 | 3,604 | 0 |
 | Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | up to 44 | 32 persistent + 32 transient |
-| Changing memory | 12 | 32 | 32 persistent + 32 transient |
 | Connect Four | 19: 6 evaluator + 7 candidates + 6 monitor | 39 | 0 |
 
 The mouse allocates 247 spatial slots (133 initially masked walls), 12 memory
@@ -161,7 +160,7 @@ time are excluded from numerical efficiency comparisons.
   The selected replay rate controls presentation time; solver iteration counts
   do not measure human thought or prove that harder semantic tasks take longer.
   Editing the world cancels a pending command. Connect Four already provides its
-  own search/preview phase, and the memory demo has no motor output.
+  own search/preview phase.
 - **Live:** returns to current samples; **Pause view** freezes only the viewer.
   Body controls are independent, except **Pause view** also holds a pending slow-thought
   command. Reduced-motion preferences disable autoplay.
@@ -243,8 +242,13 @@ by hashes, all scheduled conditions are retained, and CI reruns the producer.
   navigation trials finish without collision; motor ablations produce no moves.
 - **Worm:** intact habitat consumes two patches in 41 moves. Smell, either motor
   population, and sealed-wall controls acquire no food.
-- **Forager:** a fixed 4,000-step run produces 23 contacts; motor ablation prevents
+- **Forager:** a fixed 4,000-step run produces 26 contacts; motor ablation prevents
   displacement and contact. This is an actuator test, not a learner comparison.
+  An additional [adaptation suite](evidence/adaptation_evidence.json) uses six new
+  layouts and an unannounced nectar reversal. Aging-observation revisits improve
+  recall from 40/48 to 47/48, with lower nectar collection before the reversal.
+  The same suite checks drawing coverage on a diagonal, cross and circle.
+  Run `node tools/adaptation_benchmark.mjs` to reproduce every row.
 
 The shared [evidence.json](evidence/evidence.json) retains the matched memory
 and chemical-circuit benchmarks: seeds 7–9, 128 memory writes per stream with all
@@ -270,7 +274,7 @@ python tools/verify.py
 node tools/nervous_system_benchmark.mjs
 node tools/coupled_brain_benchmark.mjs
 node connect-four/benchmark.mjs
-node memory/history_benchmark.mjs
+node benchmarks/memory/history_benchmark.mjs
 python -m pytest -q tests
 python tools/showcase_pages.py
 python tools/build_showcase.py
@@ -279,7 +283,7 @@ python tools/build_showcase.py
 The test suite independently checks motor dynamics against Python Cadence from
 retained state and under lesions, replay endpoints, motor/visual ablations,
 freehand drawing, image upload, task persistence, separate URLs and responsive
-layout. `build_showcase.py` generates six pages plus the gallery from authored
+layout. `build_showcase.py` generates five pages plus the gallery from authored
 shells. Models and views remain in their example folders; shared browser code is in
 `shared/`, cross-example receipts in `evidence/` and producers in `tools/`.
 

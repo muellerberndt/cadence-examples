@@ -1,0 +1,214 @@
+{
+  "schema": "cadence.adaptation-probes/v1",
+  "schedule": {
+    "development_seeds": [
+      17,
+      29,
+      41
+    ],
+    "evaluation_seeds": [
+      107,
+      131,
+      157,
+      181,
+      211,
+      239
+    ],
+    "selection": "Amplitude 1.5 and time constant 15 seconds chosen on development seeds; evaluation layouts were unused during selection.",
+    "fly_ticks": 8000,
+    "nectar_reversal_tick": 4000,
+    "dt": 0.025,
+    "arm_tick_budget": 6000
+  },
+  "limits": "Same memory and motor circuit, different supplied exploration rule; trajectories differ. This is an adaptation tradeoff, not an MLP comparison. Arm coverage measures marks at reference samples, not exact image similarity.",
+  "sources": {
+    "tools/adaptation_benchmark.mjs": "aa6d0bf1b781b72fb62b3db0f93387baad61f94c6a5c133f6e58f86a8ca319ac",
+    "fly/brain.js": "07c601d51d44ecebaf0cda47004b995750fc9a122d00f3159ff229b86d84644e",
+    "eye-arm/brain.js": "3d7afa134b7b4894a12e3eae038858ac7e850d8fd8c09d15a5b8563c2e8a205e",
+    "eye-arm/paper.js": "f33344e4e543b8fe3c2955ac83562cd86c4458e04be63694906032ebc09edaff",
+    "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",
+    "shared/embodied.js": "299c40a3e65b9b3e92cb394aaac9900ff660892b2dabcac2ad9475321ebc55ca",
+    "shared/nervous_system.js": "13a4d24662bcb2fc397f9005ef8e5887fb2dbee184dd75d07263a86bf9b592e7"
+  },
+  "fly": [
+    {
+      "seed": 107,
+      "condition": "previous_selection",
+      "before": {
+        "nectar": 98,
+        "encounters": 42
+      },
+      "after": {
+        "nectar": 39,
+        "encounters": 27,
+        "correct": 6
+      }
+    },
+    {
+      "seed": 107,
+      "condition": "aging_observations",
+      "before": {
+        "nectar": 87,
+        "encounters": 40
+      },
+      "after": {
+        "nectar": 39,
+        "encounters": 24,
+        "correct": 7
+      }
+    },
+    {
+      "seed": 131,
+      "condition": "previous_selection",
+      "before": {
+        "nectar": 107,
+        "encounters": 56
+      },
+      "after": {
+        "nectar": 97,
+        "encounters": 49,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 131,
+      "condition": "aging_observations",
+      "before": {
+        "nectar": 91,
+        "encounters": 43
+      },
+      "after": {
+        "nectar": 72,
+        "encounters": 38,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 157,
+      "condition": "previous_selection",
+      "before": {
+        "nectar": 53,
+        "encounters": 22
+      },
+      "after": {
+        "nectar": 46,
+        "encounters": 32,
+        "correct": 5
+      }
+    },
+    {
+      "seed": 157,
+      "condition": "aging_observations",
+      "before": {
+        "nectar": 49,
+        "encounters": 28
+      },
+      "after": {
+        "nectar": 80,
+        "encounters": 39,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 181,
+      "condition": "previous_selection",
+      "before": {
+        "nectar": 76,
+        "encounters": 32
+      },
+      "after": {
+        "nectar": 55,
+        "encounters": 30,
+        "correct": 5
+      }
+    },
+    {
+      "seed": 181,
+      "condition": "aging_observations",
+      "before": {
+        "nectar": 64,
+        "encounters": 29
+      },
+      "after": {
+        "nectar": 56,
+        "encounters": 29,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 211,
+      "condition": "previous_selection",
+      "before": {
+        "nectar": 90,
+        "encounters": 37
+      },
+      "after": {
+        "nectar": 73,
+        "encounters": 39,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 211,
+      "condition": "aging_observations",
+      "before": {
+        "nectar": 75,
+        "encounters": 36
+      },
+      "after": {
+        "nectar": 68,
+        "encounters": 34,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 239,
+      "condition": "previous_selection",
+      "before": {
+        "nectar": 84,
+        "encounters": 35
+      },
+      "after": {
+        "nectar": 63,
+        "encounters": 33,
+        "correct": 8
+      }
+    },
+    {
+      "seed": 239,
+      "condition": "aging_observations",
+      "before": {
+        "nectar": 79,
+        "encounters": 38
+      },
+      "after": {
+        "nectar": 67,
+        "encounters": 34,
+        "correct": 8
+      }
+    }
+  ],
+  "arm": [
+    {
+      "shape": "diagonal",
+      "targets": 36,
+      "ticks": 630,
+      "coverage": 1,
+      "strokes": 1
+    },
+    {
+      "shape": "cross",
+      "targets": 207,
+      "ticks": 2249,
+      "coverage": 1,
+      "strokes": 1
+    },
+    {
+      "shape": "circle",
+      "targets": 180,
+      "ticks": 1740,
+      "coverage": 1,
+      "strokes": 1
+    }
+  ]
+}

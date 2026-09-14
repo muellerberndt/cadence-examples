@@ -390,7 +390,8 @@ export class Reasoner {
 
 export function brainSnapshot(board, player, thinking) {
   const joint = thinking?.decision ?? decisionCircuit(board, player, []).joint;
-  return Object.assign(joint, {
+  return {
+    ...joint,
     regionLabels: {
       features: "Threat features",
       value: "Value evaluator",
@@ -402,5 +403,5 @@ export function brainSnapshot(board, player, thinking) {
       "Branch scores ↔ current value ↔ commitment ↔ self-monitor · one shared equilibrium",
     memory:
       "The board, legal-move rules and isolated search branches supply the decision boundary. Value, candidate and monitor neurons settle jointly; their state selects the action and extra-search request. No weight training or consciousness claim.",
-  });
+  };
 }

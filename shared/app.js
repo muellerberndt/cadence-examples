@@ -1,4 +1,3 @@
-import { MemoryBrain } from "../memory/brain.js";
 import { mountGame } from "../connect-four/view.js";
 import { Forager } from "../fly/brain.js";
 import { MotorGate } from "./motor_gate.js";
@@ -12,9 +11,7 @@ import {
   MLP,
   SynapticMemory,
   flowers,
-  keys,
   zeros,
-  argmax,
 } from "./engine.js";
 const $ = (id) => document.getElementById(id),
   colors = [
@@ -36,24 +33,14 @@ let composite,
 let data,
   evidence,
   memoryRuntime,
-  historyEvidence,
   strategyEvidence,
   worm,
   net,
   mode = "worm",
   frame = 0,
   paused = false,
-  selected = 0,
-  value = 3,
-  correlation = 0,
-  updates = 1,
-  auto = false;
-let memory,
-  mlp,
-  truth,
-  seen,
-  writeCount = 0,
-  field,
+  updates = 1;
+let field,
   agents,
   mask,
   drive,
@@ -161,13 +148,6 @@ function table(head, rows) {
     "</tbody></table>"
   );
 }
-function resetMemory() {
-  memory = new MemoryBrain();
-  mlp = new MLP(evidence.browser.online_mlp);
-  truth = zeros(8);
-  seen = new Set();
-  writeCount = 0;
-}
 function resetFly() {
   motorGate.cancel();
   field = flowers();
@@ -255,14 +235,14 @@ function renderEvidence() {
       }),
     );
     $("boundary").textContent =
-      "The reference kernel uses 32 fast-memory values and a residual write. The live memory, mouse and fly add 32 persistent weights, for 64 stored values across the same 32 memory contacts. The MLP uses 420 parameters and 1, 10 or 100 SGD updates on the identical new sample. More MLP work is not a guarantee of retaining old associations. Explicit keys also admit exact dictionary storage, which succeeds. Correlated keys interfere with residual memory. The fly is a simplified 2D body with supplied visual ports, steering and exploration; it is not a FlyWire reconstruction. Each live agent collects its own encounters, so live nectar totals are illustrative, not a matched benchmark.";
+      "The reference kernel uses 32 fast-memory values and a residual write. The mouse and fly add 32 persistent weights, for 64 stored values across the same 32 memory contacts. The MLP uses 420 parameters and 1, 10 or 100 SGD updates on the identical new sample. More MLP work is not a guarantee of retaining old associations. Explicit keys also admit exact dictionary storage, which succeeds. Correlated keys interfere with residual memory. The fly is a simplified 2D body with supplied visual ports, steering and exploration; it is not a FlyWire reconstruction. Each live agent collects its own encounters, so live nectar totals are illustrative, not a matched benchmark.";
   }
 }
 function setMode(next) {
   mode = next;
   brainView.reset();
   motorGate.cancel();
-  $("brain-think").disabled = ["memory", "game"].includes(mode);
+  $("brain-think").disabled = mode === "game";
   showGuide($("demo-guide"), mode);
   $("worm-views").hidden = mode !== "worm";
   document
@@ -270,9 +250,8 @@ function setMode(next) {
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.wormView === wormView)),
     );
-  document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", memory: "Changing memory", game: "Connect Four reasoner" }[mode]}`;
+  document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", game: "Connect Four reasoner" }[mode]}`;
   bodyView = null;
-  auto = false;
   paused = false;
   if (!document.body.dataset.demo) location.hash = next;
   document
@@ -456,137 +435,12 @@ function setMode(next) {
       ],
       [
         "Close the loop",
-        "Movement changes the next observation. Changed nectar can revise the next preference. A small exploration schedule revisits alternatives.",
-      ],
-    ]);
-  } else {
-    $("headline").innerHTML = "Teach it once.<br>Change your mind later.";
-    $("intro").textContent =
-      "An old association should not require an entire network to be retrained. Write, query and revise a compact memory while watching every connection change.";
-    $("stage-label").textContent = "LIVE LEARNING · SYNAPTIC CONSOLIDATION";
-    $("stage-detail").textContent = "8 keys · 4 values · 32 persistent + 32 transient weights";
-    $("stage-hint").textContent =
-      "Select a key, choose a value, then teach both systems the same sample.";
-    canvas.setAttribute(
-      "aria-label",
-      "Eight keys connected to four values. Link thickness shows mutable Cadence association strength.",
-    );
-    $("controls").innerHTML =
-      `<div><h2>A correction is a local write.</h2><p>Green: Cadence. Orange: online MLP. Both receive exactly the sample you teach.</p></div><div><label>Key</label><div class="memory-picks">${Array.from({ length: 8 }, (_, i) => `<button data-key="${i}" aria-pressed="${i === selected}">${i + 1}</button>`).join("")}</div></div><div><label for="value">Teach this value</label><select id="value">${Array.from({ length: 4 }, (_, i) => `<option value="${i}">${["Nectar 0", "Nectar 1", "Nectar 2", "Nectar 3"][i]}</option>`).join("")}</select></div><div><label for="correlation">Key similarity</label><select id="correlation"><option value="0">Distinct keys</option><option value="0.5">Overlapping · cosine 0.5</option><option value="0.9">Very similar · cosine 0.9</option></select><p>Changing key geometry resets both memories.</p></div><div class="buttons"><button class="primary" id="teach">Teach once</button><button id="repeat-lesson">Repeat 40×</button><button id="salient-lesson">Salient lesson</button><button id="clear-transient">Clear short-term memory</button><button id="stream">Run stream</button><button id="clear-memory">Clear all</button></div>${metrics(
-        [
-          ["Writes", "0", "writes"],
-          ["Cadence · seen-key accuracy", "—", "fast-score"],
-          ["MLP · seen-key accuracy", "—", "slow-score"],
-        ],
-      )}<div id="memory-status" class="status" aria-live="polite"></div>`;
-    const historyProof = document.createElement("p");
-    historyProof.id = "history-proof";
-    historyProof.className = "note";
-    historyProof.style.gridColumn = "1 / -1";
-    historyProof.textContent = `Recorded history test: ${pct(historyEvidence.scores.cadence)} Cadence recall versus a ${pct(historyEvidence.scores.best_fixed_query_only)} ceiling for any fixed current-cue-only predictor. Conventional history lookup also reaches ${pct(historyEvidence.scores.history_lookup)}. Networks given lesson history are outside this restriction. `;
-    const proofLink = document.createElement("a");
-    proofLink.href = "memory/README.md#same-cue-a-newly-taught-meaning";
-    proofLink.textContent = "Why the same cue needs memory";
-    historyProof.append(proofLink);
-    $("controls").append(historyProof);
-    historyProof.append(" Repeat gives both systems 40 observations. Salience 19 changes Cadence consolidation; the MLP has no separate salience input. Clearing short-term memory removes only Cadence’s transient residuals.");
-    $("value").value = value;
-    $("value").onchange = () => (value = +$("value").value);
-    $("correlation").value = correlation;
-    $("correlation").onchange = () => {
-      correlation = +$("correlation").value;
-      auto = false;
-      $("stream").textContent = "Run stream";
-      resetMemory();
-      memoryMetrics();
-    };
-    document.querySelectorAll("[data-key]").forEach(
-      (b) =>
-        (b.onclick = () => {
-          selected = +b.dataset.key;
-          document
-            .querySelectorAll("[data-key]")
-            .forEach((x) =>
-              x.setAttribute(
-                "aria-pressed",
-                String(+x.dataset.key === selected),
-              ),
-            );
-          memoryMetrics();
-        }),
-    );
-    $("teach").onclick = () => teach(selected, value);
-    $("repeat-lesson").onclick = () => {
-      for (let i = 0; i < 40; i++) teach(selected, value);
-    };
-    $("salient-lesson").onclick = () => teach(selected, value, 19);
-    $("clear-transient").onclick = () => {
-      auto = false;
-      $("stream").textContent = "Run stream";
-      memory.records.reset();
-      memoryMetrics();
-    };
-    $("stream").onclick = () => {
-      auto = !auto;
-      $("stream").textContent = auto ? "Stop stream" : "Run stream";
-    };
-    $("clear-memory").onclick = () => {
-      auto = false;
-      $("stream").textContent = "Run stream";
-      resetMemory();
-      memoryMetrics();
-    };
-    resetMemory();
-    memoryMetrics();
-    explain([
-      [
-        "Read before writing",
-        "The current key reads an expected value from the retained association matrix. No gradient tape or history replay is needed.",
-      ],
-      [
-        "Write the discrepancy",
-        "The observed error updates total synaptic strength immediately. Repetition and salience strengthen persistent weights; clear short-term memory to measure what lasts. Similar cues can interfere.",
-      ],
-      [
-        "Keep the limits visible",
-        "Similar keys interfere. A dictionary can store explicit symbolic keys exactly. Try overlap and inspect the larger-update MLP controls below.",
+        "Movement changes the next observation. Changed nectar can revise the next preference. As observations age, a supplied exploration rule revisits neglected flowers—even ones that used to have little nectar.",
       ],
     ]);
   }
   renderEvidence();
   fit();
-}
-function teach(k, v, salience = 0) {
-  const key = keys(correlation)[k],
-    target = zeros(4);
-  target[v] = 1;
-  memory.observe(key, target, { salience });
-  mlp.observe(key, target);
-  truth[k] = v;
-  seen.add(k);
-  writeCount++;
-  memoryMetrics();
-}
-function memoryMetrics() {
-  let a = 0,
-    b = 0;
-  for (const k of seen) {
-    a += argmax(memory.predict(keys(correlation)[k])) === truth[k];
-    b += argmax(mlp.predict(keys(correlation)[k])) === truth[k];
-  }
-  $("writes").textContent = writeCount;
-  $("fast-score").textContent = seen.size ? pct(a / seen.size) : "—";
-  $("slow-score").textContent = seen.size ? pct(b / seen.size) : "—";
-  $("memory-status").textContent = seen.has(selected)
-    ? `Key ${selected + 1}: observed ${truth[selected]} · Cadence ${argmax(memory.predict(keys(correlation)[selected]))} · MLP ${argmax(mlp.predict(keys(correlation)[selected]))}`
-    : "This key has not been taught yet.";
-  if (seen.has(selected)) {
-    const key = keys(correlation)[selected];
-    const persistent = key.reduce((sum, v, i) => sum + v * memory.records.consolidated[i][truth[selected]], 0);
-    const response = memory.predict(key)[truth[selected]];
-    $("memory-status").textContent += ` · Taught-value response: ${response.toFixed(3)} · persistent: ${persistent.toFixed(3)}. Salient = salience 19; clear short-term memory to test retention.`;
-  }
-  $("stage-readout").textContent = "Exact lookup retains every explicit key";
 }
 function line(a, b, color, weight = 1) {
   ctx.strokeStyle = color;
@@ -712,53 +566,6 @@ function drawFly() {
   $("stage-readout").textContent =
     `${agents[0].time.toFixed(1)} simulated seconds · ${paused ? "paused" : "closed loop"}`;
 }
-function drawMemory() {
-  const bank = keys(correlation),
-    p1 = bank.map((_, i) => [width * 0.22, 45 + (i * (height - 95)) / 7]),
-    p2 = Array.from({ length: 4 }, (_, i) => [
-      width * 0.76,
-      65 + (i * (height - 125)) / 3,
-    ]);
-  for (let k = 0; k < 8; k++) {
-    const prediction = memory.predict(bank[k]);
-    for (let v = 0; v < 4; v++) {
-      const a = Math.min(1, Math.abs(prediction[v]));
-      line(
-        p1[k],
-        p2[v],
-        prediction[v] < 0
-          ? `rgba(255,115,152,${0.04 + a * 0.5})`
-          : `rgba(135,236,194,${0.04 + a * 0.7})`,
-        0.6 + a * 3,
-      );
-    }
-  }
-  p1.forEach(([x, y], i) => {
-    circle(x, y, i === selected ? 13 : 9, colors[i]);
-    if (i === selected) {
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(x, y, 18, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-    text(`KEY ${i + 1}`, x - 25, y + 4, "#c7d6d0", 10, "right");
-    if (seen.has(i)) text(`→ ${truth[i]}`, x + 28, y + 4, "#87ecc2", 11);
-  });
-  p2.forEach(([x, y], i) => {
-    circle(x, y, 18, "#20372e");
-    text(i, x, y + 5, colors[0], 16, "center");
-    text("VALUE", x + 30, y + 4, "#a3b4b9", 10);
-  });
-  text(
-    "retained associations",
-    width * 0.5,
-    height - 15,
-    "#81979b",
-    11,
-    "center",
-  );
-}
 function brainSource() {
   if (bodyView) return bodyView.brain?.();
   if (mode === "worm")
@@ -795,7 +602,7 @@ function brainSource() {
         : { label: "Seeking nectar", tone: "seeking" };
     return circuit;
   }
-  return memory.brain(keys(correlation)[selected]);
+  return null;
 }
 let previous = 0;
 function animate(t) {
@@ -818,13 +625,6 @@ function animate(t) {
         });
     }
     drawFly();
-  } else {
-    if (auto && frame % 18 === 0)
-      teach(
-        (writeCount * 5 + 3) % 8,
-        (Math.floor(writeCount / 8) + writeCount) % 4,
-      );
-    drawMemory();
   }
   if (frame % 6 === 0) brainView.update(brainSource());
   brainView.draw(dt);
@@ -909,7 +709,7 @@ document.querySelectorAll("[data-tab]").forEach((b) => {
 });
 window.addEventListener("hashchange", () => {
   const next = location.hash.slice(1);
-  if (["worm", "fly", "memory", "mouse", "arm"].includes(next) && mode !== next)
+  if (["worm", "fly", "mouse", "arm", "game"].includes(next) && mode !== next)
     setMode(next);
 });
 try {
@@ -919,15 +719,13 @@ try {
     composite,
     memoryRuntime,
     strategyEvidence,
-    historyEvidence,
-  ] = await Promise.all(
+    ] = await Promise.all(
     [
       "worm/worm.json",
       "evidence/evidence.json",
       "evidence/composite_evidence.json",
-      "memory/evidence.json",
+      "benchmarks/memory/evidence.json",
       "connect-four/evidence.json",
-      "memory/history_evidence.json",
     ].map(async (url) => {
       const r = await fetch(url);
       if (!r.ok) throw Error(url);
@@ -938,7 +736,7 @@ try {
   net = new MLP(evidence.browser.worm_mlp);
   setMode(
     document.body.dataset.demo ||
-      (["worm", "fly", "memory", "mouse", "arm"].includes(
+      (["worm", "fly", "mouse", "arm", "game"].includes(
         location.hash.slice(1),
       )
         ? location.hash.slice(1)
@@ -956,9 +754,6 @@ try {
       drive: drive?.slice(),
       result,
       mlpState,
-      writeCount,
-      truth: truth?.slice(),
-      fast: memory?.w,
       agents: agents?.map((a) => ({
         x: a.x,
         y: a.y,

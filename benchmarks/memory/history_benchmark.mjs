@@ -4,14 +4,14 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { FastMemory, MLP, argmax, keys, zeros } from "../shared/engine.js";
+import { FastMemory, MLP, argmax, keys, zeros } from "../../shared/engine.js";
 
 export function runHistoryBenchmark() {
   const cues = keys(),
     memory = new FastMemory(),
     lookup = new Map(),
     initial = JSON.parse(
-      readFileSync(new URL("../evidence/evidence.json", import.meta.url)),
+      readFileSync(new URL("../../evidence/evidence.json", import.meta.url)),
     ).browser.online_mlp,
     frozen = new MLP(initial),
     rows = [];
@@ -58,13 +58,13 @@ export function runHistoryBenchmark() {
   assert.ok(scores.frozen_mlp <= scores.best_fixed_query_only);
   const sources = Object.fromEntries(
     [
-      "memory/history_benchmark.mjs",
+      "benchmarks/memory/history_benchmark.mjs",
       "shared/engine.js",
       "evidence/evidence.json",
     ].map((path) => [
       path,
       createHash("sha256")
-        .update(readFileSync(new URL("../" + path, import.meta.url)))
+        .update(readFileSync(new URL("../../" + path, import.meta.url)))
         .digest("hex"),
     ]),
   );

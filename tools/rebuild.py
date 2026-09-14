@@ -16,8 +16,9 @@ commands = [
     ["node", "tools/habitat_benchmark.mjs", "--write"],
     *[["node", path] for path in [
         "tools/nervous_system_benchmark.mjs", "tools/coupled_brain_benchmark.mjs",
-        "connect-four/benchmark.mjs", "memory/benchmark.mjs",
-        "memory/history_benchmark.mjs", "memory/consolidation_benchmark.mjs"]],
+        "tools/adaptation_benchmark.mjs",
+        "connect-four/benchmark.mjs", "benchmarks/memory/benchmark.mjs",
+        "benchmarks/memory/history_benchmark.mjs", "benchmarks/memory/consolidation_benchmark.mjs"]],
     [sys.executable, "tools/update_results.py"],
     [sys.executable, "tools/build_showcase.py"],
     [sys.executable, "tools/verify.py"],

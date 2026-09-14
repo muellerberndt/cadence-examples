@@ -12,7 +12,9 @@ export function mountWorm({ data, $, ctx, metrics, explain, act }) {
     painting = false,
     last = null,
     cursor = arena.cell,
-    clock = 0;
+    clock = 0,
+    drawnMoves = arena.moves,
+    movement = 1;
   let box = { x: 0, y: 0, size: 1 },
     dirty = false;
   $("headline").innerHTML = "Build its world.<br>Follow the food cue.";
@@ -27,7 +29,7 @@ export function mountWorm({ data, $, ctx, metrics, explain, act }) {
     "Worm habitat. Select food, wall or eraser, then draw. Focus this canvas and use arrow keys and Space to edit with the keyboard.",
   );
   $("controls").innerHTML =
-    `<div><h2>Make a world to explore.</h2><p>Food emits a local cue. Walls block diffusion and movement. The body consumes a food patch on contact.</p></div><div><label>Paint the habitat</label><div class="buttons" role="group" aria-label="Habitat tools"><button data-worm-tool="food" aria-pressed="true">＋ Food</button><button data-worm-tool="wall" aria-pressed="false">▥ Wall</button><button data-worm-tool="erase" aria-pressed="false">Eraser</button></div></div><div class="buttons"><button id="worm-pause">Pause</button><button id="worm-smell" aria-pressed="true">Smell on</button><button id="worm-odor" aria-pressed="true">Food cue on</button></div><div><label for="worm-speed">Playback speed</label><select id="worm-speed"><option value="1">1× · observe</option><option value="2" selected>2× · explore</option><option value="4">4× · fast</option></select></div><div class="buttons"><button id="worm-reset">Reset maze</button><button id="worm-empty">Open field</button><button id="worm-clear-food">Clear food</button></div>${metrics(
+    `<div><h2>Make a world to explore.</h2><p>Food emits a local cue. Walls block diffusion and movement. The body consumes food on contact and rests when there is no usable cue.</p></div><div><label>Paint the habitat</label><div class="buttons" role="group" aria-label="Habitat tools"><button data-worm-tool="food" aria-pressed="true">＋ Food</button><button data-worm-tool="wall" aria-pressed="false">▥ Wall</button><button data-worm-tool="erase" aria-pressed="false">Eraser</button></div></div><div class="buttons"><button id="worm-pause">Pause</button><button id="worm-smell" aria-pressed="true">Smell on</button><button id="worm-odor" aria-pressed="true">Food cue on</button></div><div><label for="worm-speed">Playback speed</label><select id="worm-speed"><option value="1">1× · observe</option><option value="2" selected>2× · explore</option><option value="4">4× · fast</option></select></div><div class="buttons"><button id="worm-reset">Reset maze</button><button id="worm-empty">Open field</button><button id="worm-clear-food">Clear food</button></div>${metrics(
       [
         ["Food patches eaten", "0", "worm-eaten"],
         ["Food remaining", "2", "worm-remaining"],
@@ -62,6 +64,8 @@ export function mountWorm({ data, $, ctx, metrics, explain, act }) {
   $("worm-speed").onchange = () => (speed = +$("worm-speed").value);
   const reset = (layout) => {
     arena.reset(layout);
+    drawnMoves = arena.moves;
+    movement = 1;
     accumulator = 0;
     last = null;
     dirty = false;
@@ -212,7 +216,14 @@ export function mountWorm({ data, $, ctx, metrics, explain, act }) {
       k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
     });
     ctx.stroke();
-    const t = Math.min(1, accumulator / 0.3),
+    // Interpolation follows actual committed movement, not the controller tick.
+    // A tick without a new step must never replay the previous displacement.
+    if (arena.moves !== drawnMoves) {
+      drawnMoves = arena.moves;
+      movement = 0;
+    }
+    if (!paused && !painting) movement = Math.min(1, movement + dt * speed / 0.3);
+    const t = movement,
       tail = path.slice(-7);
     // Interpolate along the traversed centers: the displayed body stays within open cells.
     const centers = tail.map((i, k) => {

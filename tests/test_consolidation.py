@@ -54,7 +54,7 @@ console.log(JSON.stringify({same:JSON.stringify(a)===JSON.stringify(b),
 
 def test_repeat_salience_and_distraction_have_measured_persistent_effects():
     result = node('''
-import {run} from './memory/consolidation_benchmark.mjs';
+import {run} from './benchmarks/memory/consolidation_benchmark.mjs';
 console.log(JSON.stringify(run()));
 ''')
     assert result['ordinary'] < .1
@@ -65,6 +65,6 @@ console.log(JSON.stringify(run()));
 
 
 def test_retention_receipt_replays_exactly_and_binds_sources():
-    receipt = json.loads((ROOT / 'memory/consolidation_evidence.json').read_text())
-    actual = node("import {report} from './memory/consolidation_benchmark.mjs'; console.log(JSON.stringify(report()));")
+    receipt = json.loads((ROOT / 'benchmarks/memory/consolidation_evidence.json').read_text())
+    actual = node("import {report} from './benchmarks/memory/consolidation_benchmark.mjs'; console.log(JSON.stringify(report()));")
     assert actual == receipt

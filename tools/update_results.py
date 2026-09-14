@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
-r = json.loads((ROOT / "memory/evidence.json").read_text())
+r = json.loads((ROOT / "benchmarks/memory/evidence.json").read_text())
 base = r["rows"][0]["median_ms"]
 labels = {"cadence":"Cadence fast reference", "consolidating":"Cadence consolidating memory",
           "1":"MLP, 1 update", "10":"MLP, 10 updates", "100":"MLP, 100 updates"}

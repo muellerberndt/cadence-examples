@@ -1,4 +1,4 @@
-"""Real-browser interactions for all six demos, including taught tasks and image input."""
+"""Real-browser interactions for all five demos, including taught tasks and image input."""
 
 import functools
 import http.server
@@ -119,6 +119,14 @@ def main():
             assert page.evaluate("showcase.snapshot().body.moves") == before
             page.locator("#worm-smell").click()
             page.wait_for_function("showcase.snapshot().body.eaten > 0")
+            # No cue: the controller rests, and the canvas must not replay the last step.
+            page.locator("#worm-clear-food").click()
+            page.wait_for_timeout(700)
+            idle_moves = page.evaluate("showcase.snapshot().body.moves")
+            idle_image = page.locator("#scene").screenshot()
+            page.wait_for_timeout(450)
+            assert page.evaluate("showcase.snapshot().body.moves") == idle_moves
+            assert page.locator("#scene").screenshot() == idle_image
             page.locator("#worm-pause").click()
             # Draw a continuous wall across multiple input events, then erase it.
             bounds = page.locator("#scene").bounding_box()
@@ -139,33 +147,6 @@ def main():
             page.locator('[data-worm-view="habitat"]').click()
             assert page.evaluate("showcase.snapshot().body.walls[3*31+8]")
             assert not page.evaluate("showcase.snapshot().body.walls[3*31+9]")
-            choose(page, "memory")
-            expect(page.locator("#history-proof")).to_contain_text(
-                "100.0% Cadence recall"
-            )
-            expect(page.locator("#history-proof")).to_contain_text("25.0% ceiling")
-            page.locator("#value").select_option("3")
-            page.locator("#teach").click()
-            page.locator("#value").select_option("1")
-            page.locator("#teach").click()
-            assert abs(page.evaluate("showcase.snapshot().fast[0][1]") - 1) < 1e-10
-            page.locator("#clear-memory").click()
-            page.locator("#value").select_option("1")
-            page.locator("#teach").click()
-            page.locator("#clear-transient").click()
-            assert abs(page.evaluate("showcase.snapshot().fast[0][1]") - .05) < 1e-12
-            page.locator("#repeat-lesson").click()
-            page.locator("#clear-transient").click()
-            assert page.evaluate("showcase.snapshot().fast[0][1]") > .87
-            page.locator("#value").select_option("2")
-            page.locator("#salient-lesson").click()
-            page.locator("#clear-transient").click()
-            assert abs(page.evaluate("showcase.snapshot().fast[0][2]") - 1) < 1e-12
-            page.locator("#brain-options").evaluate("el => el.open = true")
-            page.locator("#brain-signal").select_option("consolidation")
-            expect(page.locator("#brain-legend-label")).to_contain_text("Persistent synaptic strength")
-            page.locator("#correlation").select_option("0.9")
-            assert page.evaluate("showcase.snapshot().writeCount") == 0
             choose(page, "fly")
             page.wait_for_function(
                 "showcase.snapshot().agents[0].encounters > 0", timeout=20000
@@ -281,7 +262,7 @@ def main():
                 sum(v != 0 for v in page.evaluate("showcase.snapshot().body.board"))
                 == 1
             )
-            for mode in ["mouse", "arm", "fly", "worm", "memory", "game"]:
+            for mode in ["mouse", "arm", "fly", "worm", "game"]:
                 choose(page, mode)
                 page.wait_for_function("showcase.snapshot().brain.neurons > 0")
                 page.locator("#brain-options").evaluate("el => el.open = true")
@@ -296,23 +277,18 @@ def main():
                         ),
                         "fly": 18,
                         "worm": 309,
-                        "memory": 12,
                         "game": 19,
                     }[mode]
                 )
                 assert page.locator("#brain-replay").is_enabled() == (
-                    mode in ["mouse", "arm", "worm", "fly", "memory", "game"]
+                    mode in ["mouse", "arm", "worm", "fly", "game"]
                 )
                 assert brain["equilibrium"]["converged"], (mode, brain["equilibrium"])
                 assert (
                     brain["equilibrium"]["residual"]
                     <= brain["equilibrium"]["tolerance"]
                 )
-                if mode == "memory":
-                    page.locator("#value").select_option("2")
-                    page.locator("#teach").click()
-                    page.wait_for_function("showcase.snapshot().brain.writes > 0")
-                elif mode == "worm":
+                if mode == "worm":
                     page.locator("#brain-replay").click()
                     snapshot = page.evaluate("showcase.snapshot().brain")
                     assert (
@@ -332,7 +308,7 @@ def main():
                     len(page.evaluate("showcase.snapshot().brain.input"))
                     == brain["neurons"]
                 )
-                if mode in ["memory", "fly"]:
+                if mode == "fly":
                     assert page.evaluate(
                         "showcase.snapshot().brain.input.slice(8,12)"
                     ) == [0, 0, 0, 0]
@@ -385,7 +361,6 @@ def main():
                             "Visual bearing / approach",
                             "Turn / propulsion motors",
                         ],
-                        "memory": ["Cue input", "Value memory"],
                         "game": [
                             "Threat features",
                             "Value evaluator",
@@ -470,7 +445,7 @@ def main():
             print(
                 json.dumps(
                     {
-                        "demos": 6,
+                        "demos": 5,
                         "task_teaching_and_persistence": True,
                         "image_upload": True,
                         "mobile_layout": True,
@@ -478,6 +453,7 @@ def main():
                         "motor_ablation_and_pixel_drawing": True,
                         "isolated_futures_and_monitor_budget": True,
                         "default_pondering_pause_and_cache_reuse": True,
+                        "worm_idle_canvas_is_stationary": True,
                         "browser_errors": errors,
                     }
                 )

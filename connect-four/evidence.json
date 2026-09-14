@@ -324,7 +324,7 @@
     "boundary": "Pondering reduces new response work here but uses more total work; the fixed game cache is not learned synaptic memory."
   },
   "sources": {
-    "connect-four/brain.js": "1ce8784a78eacf2ce700727d760be0b1a541c755e7d53d1361b6113ecc7e08bd",
+    "connect-four/brain.js": "567f973688e04ec7d0f1a962c150494c107432777be022928b60a137151392cd",
     "connect-four/benchmark.mjs": "b71a83cd134be0429424063ef472c6967050d5a3626d72d486be88ebde836f24",
     "connect-four/worker.js": "d12bc9012bf2e386e0418850c01718e551a4e0c20e52bcebf7a81d3b747e6bc2",
     "shared/nervous_system.js": "13a4d24662bcb2fc397f9005ef8e5887fb2dbee184dd75d07263a86bf9b592e7"

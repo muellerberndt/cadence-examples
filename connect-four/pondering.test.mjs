@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { Worker } from "node:worker_threads";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
-import { Reasoner, reason, drop } from "./brain.js";
+import { Reasoner, reason, drop, brainSnapshot } from "./brain.js";
 
 function finish(planner, chunk = 17) {
   while (planner.active) {
@@ -140,4 +140,12 @@ test("new input cancels scheduled work and rejects a stale worker callback", () 
   assert.equal(messages.at(-1).result.depth, 4);
   self.onmessage({data: {kind: "cancel", id: 3, reset: true}});
   assert.equal(scheduled.size, 0);
+});
+
+
+test("rendering brain readback never mutates the stored decision", () => {
+  const board = Array(42).fill(0), result = reason(board, 1, {depth: 2});
+  const before = JSON.stringify(result);
+  brainSnapshot(board, 1, result);
+  assert.equal(JSON.stringify(result), before);
 });

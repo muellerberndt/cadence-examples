@@ -13,9 +13,9 @@
       "accuracy": 1,
       "correct": 996,
       "queries": 996,
-      "median_ms": 0.46895900000000523,
-      "min_ms": 0.46050000000000324,
-      "max_ms": 0.7140419999999992,
+      "median_ms": 0.4666660000000036,
+      "min_ms": 0.4427090000000007,
+      "max_ms": 0.7143340000000009,
       "updates_per_observation": 1
     },
     {
@@ -23,9 +23,9 @@
       "accuracy": 1,
       "correct": 996,
       "queries": 996,
-      "median_ms": 0.9025409999999994,
-      "min_ms": 0.8155840000000012,
-      "max_ms": 1.213708000000004,
+      "median_ms": 0.8757500000000036,
+      "min_ms": 0.8072079999999957,
+      "max_ms": 1.1347909999999999,
       "updates_per_observation": 1
     },
     {
@@ -33,9 +33,9 @@
       "accuracy": 0.5672690763052208,
       "correct": 565,
       "queries": 996,
-      "median_ms": 1.4302909999999969,
-      "min_ms": 1.3504999999999967,
-      "max_ms": 4.124375000000001,
+      "median_ms": 1.3746670000000023,
+      "min_ms": 1.3140829999999966,
+      "max_ms": 2.882041000000001,
       "updates_per_observation": 1
     },
     {
@@ -43,9 +43,9 @@
       "accuracy": 0.9668674698795181,
       "correct": 963,
       "queries": 996,
-      "median_ms": 3.2949590000000057,
-      "min_ms": 3.2159169999999904,
-      "max_ms": 3.5180830000000043,
+      "median_ms": 3.2063750000000084,
+      "min_ms": 3.157541999999978,
+      "max_ms": 3.310666999999995,
       "updates_per_observation": 10
     },
     {
@@ -53,16 +53,16 @@
       "accuracy": 0.9427710843373494,
       "correct": 939,
       "queries": 996,
-      "median_ms": 22.921334,
-      "min_ms": 22.843500000000006,
-      "max_ms": 23.02491600000002,
+      "median_ms": 22.901999999999987,
+      "min_ms": 22.617124999999987,
+      "max_ms": 23.459750000000042,
       "updates_per_observation": 100
     }
   ],
   "sources": {
-    "memory/benchmark.mjs": "e97781121eb61234cfe8174e9b08922ed36f4419eb7da954c54b0136f6e2bfe3",
+    "benchmarks/memory/benchmark.mjs": "3c688efc8886664a3d0b247b91cc6d0589bd935761c9015ca17399db8381125e",
     "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",
-    "evidence/evidence.json": "6b49dae17005c8268f5307f5cedeb48cc90e1c7b114b1fede02c8853d35bdb1f"
+    "evidence/evidence.json": "7a029235fbc3fb1fff57f904e3749da02b05b7670f50d7145813c0bff48dd8fa"
   },
   "boundary": "Local JavaScript training plus queries on a distinct-key overwrite stream. Supplied explicit keys; no general language or energy-efficiency claim. Timings include memory allocation and differ across machines."
 }

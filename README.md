@@ -1,13 +1,12 @@
 # Cadence examples
 
-**Six interactive websites for state, embodiment and learning.**
+**Five interactive websites for state, embodiment and learning.**
 
 **[Open the websites →](https://floatingpragma.io/cadence-examples/)**
 [Eye & arm](https://floatingpragma.io/cadence-examples/eye-arm/) ·
 [Teachable mouse](https://floatingpragma.io/cadence-examples/mouse/) ·
 [C. elegans habitat](https://floatingpragma.io/cadence-examples/worm/) ·
 [Fly-inspired forager](https://floatingpragma.io/cadence-examples/fly/) ·
-[Changing memory](https://floatingpragma.io/cadence-examples/memory/) ·
 [Connect Four](https://floatingpragma.io/cadence-examples/connect-four/)
 
 [Cadence](https://github.com/muellerberndt/cadence) builds brains from graded
@@ -15,7 +14,7 @@ neurons with bounded local state, declared synapses, readback, retained records 
 feedback. Each task connects labeled regions into **one shared equilibrium**:
 local activity changes propagate through the same joint state. Change its world and watch
 the next settling cascade. The brain panel reports the equation error.
-[How the six brains are coupled](COUPLED_BRAINS.md).
+[How the five brains are coupled](COUPLED_BRAINS.md).
 
 ## Launch any demo
 
@@ -30,7 +29,6 @@ server picks an available local port. Ctrl-C stops it.
 | **Fly-inspired forager** | `python serve.py fly` | Move flowers and change nectar while each encounter updates memory |
 | **C. elegans habitat** | `python serve.py worm` | Place food, draw walls, erase a passage; switch to Circuit to inspect neurons |
 | **Connect Four** | `python serve.py connect-four` | Play against the reasoner, inspect future replies, and toggle its self-monitor |
-| **Changing memory** | `python serve.py memory` | Teach, repeat or mark a lesson salient; clear short-term memory to test what lasts |
 
 `python serve.py` opens the mouse. Use `--no-browser` to print the address, or
 `--port 8765` to select a fixed port. Each demo has its own folder and website URL
@@ -47,7 +45,7 @@ The strategy agent wins **8/8** scheduled games against one-ply evaluation and
 **5/8** against four-ply search. These are small, reproducible task comparisons,
 not evidence that transformers cannot reason or that every demo is faster.
 
-A separate [history-required test](memory/README.md#same-cue-a-newly-taught-meaning)
+A separate [history-required test](benchmarks/memory/README.md#history-required-recall)
 shows 100% recall after changed lessons versus a provable 25% ceiling for any
 fixed predictor receiving only the current cue. A conventional history store
 also reaches 100%; giving a transformer the lesson history removes this restriction.
@@ -57,7 +55,7 @@ also reaches 100%; giving a transformer the lesson history removes this restrict
 ![The teachable mouse: task memory, a spatial field and a moving body](mouse/preview.png)
 
 The mouse comes with three supplied demonstrations and saves additional lessons
-in this browser. The forager and memory demo learn live from a fresh state. The
+in this browser. The forager learns live from a fresh state. The
 arm uses a supplied feedback controller. C. elegans includes its public chemical
 graph, an engineered habitat/body adapter and a trained MLP circuit comparator.
 
@@ -106,7 +104,7 @@ with `.venv\Scripts\Activate.ps1`. To rebuild every model, receipt and website, 
 `python tools/rebuild.py`. Full model training needs PyTorch;
 see [reproduction commands](METHODS.md#reproduce). The evidence retains
 sources, budgets, controls and comparison limits. `python tools/build_showcase.py`
-regenerates the six websites and gallery from the authored shells.
+regenerates the five websites and gallery from the authored shells.
 
 MIT licensed. Public worm data attribution is in [the methods](METHODS.md#biological-sources-and-data-attribution).
 
@@ -118,12 +116,11 @@ MIT licensed. Public worm data attribution is in [the methods](METHODS.md#biolog
 | [mouse](mouse/) | Spatial controller with motor neurons, mouse view and evidence |
 | [worm](worm/) | Chemical-circuit/body controller, habitat view and evidence |
 | [fly](fly/) | Nectar-memory controller with turn/propulsion neurons and evidence |
-| [memory](memory/) | Associative-memory subsystem and measured runtime comparison |
 | [connect-four](connect-four/) | Game rules, value circuit, bounded search, self-monitor and playable view |
 
 Each folder has its own `index.html` and entry point. `shared/` holds the common
 rendering and numerical code, `evidence/` the cross-example receipts and
 `tools/` their producers. The gallery links
-the six pages. The full control path is documented in each example; supplied
+the five pages. The full control path is documented in each example; supplied
 encoding, attention and body physics remain explicit. These are complete
 controllers for the simplified tasks, not whole biological nervous systems.

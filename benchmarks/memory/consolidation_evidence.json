@@ -3,7 +3,7 @@
   "description": "Unit-cue response after clearing all transient residual weights. Single stream; orthogonal distractors; salience is supplied, not a neurotransmitter concentration.",
   "sources": {
     "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",
-    "memory/consolidation_benchmark.mjs": "96625526a566d90ad0d2de4af814230ade9505b877dae1445fe1315bfc8f4dbc"
+    "benchmarks/memory/consolidation_benchmark.mjs": "fc492fe7ce864bcc3b162052cbb25837ea1a1a35d6f575779fc125ef90d475c1"
   },
   "rates": {
     "decay": 0.9,

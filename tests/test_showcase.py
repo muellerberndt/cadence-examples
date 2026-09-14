@@ -261,7 +261,7 @@ console.log(JSON.stringify({block:block.column,depth:completed.depth}));
 
 
 def test_strategy_and_runtime_receipts_bind_their_producers():
-    for folder in ["connect-four", "memory"]:
+    for folder in ["connect-four", "benchmarks/memory"]:
         body = json.loads((ROOT / folder / "evidence.json").read_text())
         for filename, digest in body["sources"].items():
             assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest
@@ -270,9 +270,9 @@ def test_strategy_and_runtime_receipts_bind_their_producers():
 def test_history_required_comparison_replays_and_has_a_tight_stateless_bound():
     from collections import Counter, defaultdict
 
-    receipt = json.loads((ROOT / "memory/history_evidence.json").read_text())
+    receipt = json.loads((ROOT / "benchmarks/memory/history_evidence.json").read_text())
     actual = node("""
-import {runHistoryBenchmark} from './memory/history_benchmark.mjs';
+import {runHistoryBenchmark} from './benchmarks/memory/history_benchmark.mjs';
 console.log(JSON.stringify(runHistoryBenchmark()));
 """)
     assert actual == receipt

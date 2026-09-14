@@ -53,7 +53,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "A contact revises memory in one residual write. Cue, recall and motor regions then settle together before motion. The MLP learns online too, with a selectable update budget. Live nectar totals reflect different experiences; the changing-memory demo supplies the matched-stream comparison.",
+      "A contact revises memory in one residual write. Cue, recall and motor regions then settle together before motion. The MLP learns online too, with a selectable update budget. Live nectar totals reflect different experiences; the matched-stream benchmark below measures learning on identical experiences.",
     ],
   ],
   worm: [
@@ -70,20 +70,7 @@ const guides = {
       "Chemical and directional motor regions share one equilibrium under the current odor cue; local activity changes propagate across their synapses. Cadence agrees with the converged reference; the trained MLP is faster per query but less accurate, especially after lesions. Conventional recurrence also reuses the mechanism.",
     ],
   ],
-  memory: [
-    [
-      "Ready to learn from scratch",
-      "The store starts blank and the MLP starts randomly initialized. Eight explicit keys select four possible values. No pretrained checkpoint is needed, and Clear restarts the live experiment.",
-    ],
-    [
-      "Watch each write",
-      "Choose a key and value, then Teach once. Replace the value and inspect recall of other keys. Run stream automates observations while accuracy updates. Increase key similarity to see interference; it starts a fresh stream.",
-    ],
-    [
-      "Why Cadence fits",
-      "Observed lessons change total and persistent synaptic strength; cue and recall neurons then share a graded equilibrium. Orthogonal-key records are retained. Matched distinct-key trials give exact recall with 32 fast entries in the reference kernel, exceeding the tested MLP update budgets. Dictionary lookup is exact too; strongly overlapping keys can favor the MLP. This measures explicit record storage, not general intelligence.",
-    ],
-  ],
+
 };
 
 export function showGuide(element, mode) {

@@ -11,7 +11,7 @@ import cadence as cd
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_all_six_joint_equations_and_trajectories_match_cadence():
+def test_all_five_joint_equations_and_trajectories_match_cadence():
     samples = json.loads(
         subprocess.check_output(
             [
@@ -24,7 +24,7 @@ def test_all_six_joint_equations_and_trajectories_match_cadence():
             text=True,
         )
     )
-    assert set(samples) == {"arm", "mouse", "worm", "fly", "memory", "game"}
+    assert set(samples) == {"arm", "mouse", "worm", "fly", "game"}
     for name, s in samples.items():
         assert "blocks" not in s, name
         pre, post, weights = zip(*s["edges"])
@@ -60,7 +60,7 @@ def test_joint_receipt_binds_every_controller_and_records_causal_links():
     receipt = json.loads((ROOT / "evidence/coupled_evidence.json").read_text())
     for name, digest in receipt["sources"].items():
         assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest
-    assert len(receipt["results"]) == 6
+    assert len(receipt["results"]) == 5
     for row in receipt["results"]:
         assert row["active_region_links"] > 0
         assert row["changed_regions_when_links_cut"]

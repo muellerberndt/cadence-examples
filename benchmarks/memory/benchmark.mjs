@@ -1,10 +1,10 @@
-import { FastMemory, SynapticMemory, MLP, keys, argmax, zeros } from "../shared/engine.js";
+import { FastMemory, SynapticMemory, MLP, keys, argmax, zeros } from "../../shared/engine.js";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { cpus } from "node:os";
 const bank = keys(),
   initial = JSON.parse(
-    readFileSync(new URL("../evidence/evidence.json", import.meta.url)),
+    readFileSync(new URL("../../evidence/evidence.json", import.meta.url)),
   ).browser.online_mlp;
 function stream(kind) {
   const model = kind === "cadence" ? new FastMemory() : kind === "consolidating" ? new SynapticMemory() : new MLP(initial),
@@ -49,11 +49,11 @@ for (const kind of ["cadence", "consolidating", "1", "10", "100"]) {
   });
 }
 const sources = Object.fromEntries(
-  ["memory/benchmark.mjs", "shared/engine.js", "evidence/evidence.json"].map(
+  ["benchmarks/memory/benchmark.mjs", "shared/engine.js", "evidence/evidence.json"].map(
     (path) => [
       path,
       createHash("sha256")
-        .update(readFileSync(new URL("../" + path, import.meta.url)))
+        .update(readFileSync(new URL("../../" + path, import.meta.url)))
         .digest("hex"),
     ],
   ),

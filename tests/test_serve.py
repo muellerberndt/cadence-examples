@@ -57,6 +57,7 @@ def test_server_bind_error_has_actionable_message(monkeypatch, capsys):
         (["--port", "-1"], 2),
         (["--port", "65536"], 2),
         (["missing"], 2),
+        (["memory"], 2),
     ],
 )
 def test_invalid_or_help_arguments_do_not_start_a_server(args, code, monkeypatch):

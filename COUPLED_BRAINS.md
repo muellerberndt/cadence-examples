@@ -9,7 +9,7 @@ The public Cadence library provides
 [`assemble(regions, synapses)`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#several-regions-one-equilibrium).
 The browser's small `settleTogether` implementation assembles the same sparse
 neuron graph and applies Cadence's graded neuron model. It does not concatenate
-separately solved circuits. The tests independently replay all six controllers
+separately solved circuits. The tests independently replay all five controllers
 with Python Cadence.
 
 | Brain | Labeled regions sharing the current phase | Boundary supplied by the application |
@@ -17,8 +17,7 @@ with Python Cadence.
 | Eye & arm | Reference retina + actual ink → missing marks; target/proprioception ↔ position error ↔ joint coordination ↔ opposing motor units | Sparse dark samples, raster-connectivity attention, current pose and Jacobian geometry; motor output moves joints and raises/lowers the pencil. Missing-mark activity selects repair targets between settling runs. The displayed ink raster supplies physical readback; the attended reference sample enters target ports through explicit synapses. |
 | Mouse | Task cue → retained association → spatial field → position error ↔ directional motors | Occupancy map and goal-port routing. Neighbor selection reads the field; motor output determines motion. A taught destination drives the selected goal through its recalled association. |
 | Worm habitat | Chemical sensory input ↔ interneurons / chemical motor output → directional odor readback ↔ body motors | Local odor diffusion and directional gradients. Chemical output arrives through explicit synapses at directional neurons; no remote food coordinates or path enter the body controller. |
-| Forager | Flower cue → nectar memory → approach error ↔ turn/propulsion motors | Visible bearing, target selection and body bounds. Recalled nectar also contributes to approach drive. Contact updates transient and persistent weights; reward surprise supplies consolidation salience. |
-| Changing memory | Cue neurons → associative synapses → recall neurons | Observed cue/value lessons. A normalized local delta write changes transient and persistent weights; fixed weights then publish recall through graded neurons. No motor system is needed. |
+| Forager | Flower cue → nectar memory → approach error ↔ turn/propulsion motors | Visible bearing, target selection and body bounds. Eight contact timestamps supply an aging-observation exploration bonus. Recalled nectar also contributes to approach drive. Contact updates transient and persistent weights; reward surprise supplies consolidation salience. |
 | Connect Four | Threat features → value ↔ candidates ↔ own-activity readback → self-monitor | Exact game rules, feature extraction and bounded search in isolated board copies. Candidate activity selects a legal action; monitor output decides whether to deepen search. |
 
 Arrows summarize connectivity, not separate evaluation stages. Some synapses are
@@ -76,7 +75,7 @@ node tools/nervous_system_benchmark.mjs
 node connect-four/benchmark.mjs
 ```
 
-The [joint receipt](evidence/coupled_evidence.json) binds all six sources and records
+The [joint receipt](evidence/coupled_evidence.json) binds all five sources and records
 whole-circuit residual bounds, replay accuracy and affected regions when links
 between functions are cut. Python checks the joint trajectories independently.
 The body tests measure navigation, contact, drawing and actuator ablations;
@@ -89,7 +88,7 @@ the expanded coupled controllers or the browser visualization.
 
 ## Continuous experience and lasting memory
 
-Mouse, fly and memory controllers use the single-stream translation of Cadence's
+Mouse and fly controllers use the single-stream translation of Cadence's
 `SynapticMemory`: total efficacy is persistent C plus transient F. Each **observed**
 lesson updates these weights; reads do not rehearse predictions. The brain then
 settles with the updated weights in the same interaction loop. There is no
@@ -97,7 +96,7 @@ training/inference mode switch. Plasticity does not require changing the graph's
 number of neurons or contacts.
 
 The browser rule is independently compared with Python under overlapping cues,
-partial feedback and resets. [Retention controls](memory/consolidation_evidence.json)
+partial feedback and resets. [Retention controls](benchmarks/memory/consolidation_evidence.json)
 remove F to isolate C. Mouse saves the complete strengths, not just a reconstructed
 last-label table. Fixed worm, arm and game circuits remain explicit supplied
 controllers: their motion or imagination does not itself invent an outcome lesson.

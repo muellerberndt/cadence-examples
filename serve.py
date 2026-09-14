@@ -1,4 +1,4 @@
-"""Open a Cadence demo: python serve.py [mouse|eye-arm|fly|worm|memory|connect-four].
+"""Open a Cadence demo: python serve.py [mouse|eye-arm|fly|worm|connect-four].
 
 Only Python's standard library is needed. Every demo ships its browser assets.
 The server binds to this computer only. Ctrl-C stops it.
@@ -21,7 +21,6 @@ PAGES = {
     "arm": "eye-arm",
     "fly": "fly",
     "worm": "worm",
-    "memory": "memory",
     "connect-four": "connect-four",
     "game": "connect-four",
 }

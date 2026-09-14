@@ -3,7 +3,9 @@
 From the repository root: `python serve.py worm`. The launcher opens
 `/worm/`; use `/` to browse the other examples.
 
-Paint food or walls, erase a passage, disable smell, or inspect and lesion the chemical circuit. Keyboard: focus the habitat, arrows move the cursor, Space paints.
+Paint food or walls, erase a passage, disable smell, or inspect and lesion the chemical circuit.
+The worm rests when there is no usable food cue, and resumes when a reachable food
+patch is supplied. Its body animation advances only with actual motor-driven steps. Keyboard: focus the habitat, arrows move the cursor, Space paints.
 
 ## Control path
 

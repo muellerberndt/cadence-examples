@@ -11,10 +11,34 @@ import {
   motorFeedback,
 } from "../shared/nervous_system.js";
 export class Forager extends MemoryForager {
-  constructor(...args) {
-    super(...args);
+  constructor(memory, offset = 0, updates = 1, { revisit = true } = {}) {
+    super(memory, offset, updates);
     this.nerves = new MotorSystem(["Turn", "Forward"]);
     this.recall = new MemoryReadout();
+    this.revisit = revisit;
+    this.lastVisit = Array(8).fill(-Infinity);
+  }
+  choose(field) {
+    if (!this.revisit) return super.choose(field);
+    let best = -Infinity;
+    this.target = -1;
+    field.forEach((f, i) => {
+      if (this.cooldown[i] > this.time) return;
+      // A supplied exploration rule: old observations become worth checking again.
+      // Only elapsed time, position and learned expectations enter selection.
+      // The field's current nectar value is revealed exclusively on contact.
+      const age = this.time - this.lastVisit[i];
+      const uncertainty = 1 - Math.exp(-age / 15);
+      const value = this.visits[i]
+        ? argmax(this.memory.predict(keys()[f.kind])) / 3
+        : 0;
+      const score = value + 1.5 * uncertainty
+        - 0.25 * Math.hypot(f.x - this.x, f.y - this.y);
+      if (score > best) {
+        best = score;
+        this.target = i;
+      }
+    });
   }
   step(field, dt = 0.025, defer = false) {
     this.time += dt;
@@ -76,6 +100,7 @@ export class Forager extends MemoryForager {
           salience: Math.abs(f.value - predicted),
         });
         this.visits[this.target]++;
+        this.lastVisit[this.target] = this.time;
         this.encounters++;
         this.nectar += f.value;
         this.cooldown[this.target] = this.time + 4;
@@ -108,7 +133,7 @@ export class Forager extends MemoryForager {
       adapters:
         "Cue → nectar recall → approach ↔ motor feedback · one shared equilibrium",
       memory:
-        "Nectar contact writes associative weights. Motor potentials persist between ticks and decay; target selection and collision bounds are supplied.",
+        "Nectar contact writes associative weights. Motor potentials persist between ticks and decay. A supplied exploration rule revisits aging observations using eight contact timestamps; collision bounds and target selection are supplied.",
     });
   }
 }

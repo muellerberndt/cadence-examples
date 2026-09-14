@@ -13,10 +13,9 @@
     "eye-arm/fixtures.js": "23a7f78d540e202c075d55c58f17cce8bf324fe4b9fde01b739db490d0d9bfd7",
     "mouse/brain.js": "40389891ae8b53c290c0803e8179f718f8d260d0a5ec0c2e14b425d745e33278",
     "worm/brain.js": "bc4d5a8ad1b212d8adc019a4da2b4246c3576af954d3012427ce687151f5c3e8",
-    "fly/brain.js": "b368f7aded10a73f4b28108daf89804027df9b4268fd34779bf093d41fd22e3e",
-    "memory/brain.js": "6be7606cc86a75a565668a7a555316f4addd1c0193c69ac1eaf10ec8e793645b",
-    "connect-four/brain.js": "1ce8784a78eacf2ce700727d760be0b1a541c755e7d53d1361b6113ecc7e08bd",
-    "tools/coupled_brain_benchmark.mjs": "9ab240f34bd85dcfe13a61200f2be8229f339349a48fd642bbec1ab21efc6501"
+    "fly/brain.js": "07c601d51d44ecebaf0cda47004b995750fc9a122d00f3159ff229b86d84644e",
+    "connect-four/brain.js": "567f973688e04ec7d0f1a962c150494c107432777be022928b60a137151392cd",
+    "tools/coupled_brain_benchmark.mjs": "efb0230803f157fbe4a32d7551264fbe53187bc9532f304c38a2de1d0fceb420"
   },
   "results": [
     {
@@ -110,23 +109,6 @@
       "changed_regions_when_links_cut": [
         "sensor",
         "actuator"
-      ]
-    },
-    {
-      "name": "memory",
-      "neurons": 12,
-      "synapses": 32,
-      "steps": 2,
-      "tolerance": 1e-10,
-      "residual": 0,
-      "regions": {
-        "key": 0,
-        "record": 0
-      },
-      "active_region_links": 1,
-      "replay_error": 0,
-      "changed_regions_when_links_cut": [
-        "record"
       ]
     },
     {
