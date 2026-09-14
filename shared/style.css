@@ -565,13 +565,33 @@ canvas:focus-visible {
     monospace;
 }
 .brain-layout {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 24px;
 }
 #brain-scene {
+  position: relative;
   width: 100%;
   height: 320px;
+}
+.brain-network {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.brain-panel:fullscreen {
+  overflow: auto;
+  background: #0c161c;
+  padding: 18px;
+}
+.brain-panel:fullscreen #brain-scene {
+  height: 65vh;
+}
+.brain-panel:fullscreen #brain-waves {
+  height: 15vh;
 }
 .brain-controls {
   display: flex;

@@ -46,6 +46,15 @@ def main():
             page.wait_for_function("window.showcase !== undefined")
             assert page.evaluate("showcase.snapshot().mode") == "mouse"
             page.wait_for_function("showcase.snapshot().brain.owners > 0")
+            topology=page.evaluate("showcase.snapshot().brain.topology")
+            assert topology["owners"]==page.evaluate("showcase.snapshot().brain.owners")
+            assert topology["allEdgesSubmitted"]
+            brain_bounds=page.locator("#brain-scene").bounding_box()
+            page.mouse.move(brain_bounds["x"]+brain_bounds["width"]*.5,brain_bounds["y"]+brain_bounds["height"]*.5)
+            page.mouse.wheel(0,-400)
+            page.wait_for_function("showcase.snapshot().brain.topology.zoom > 1")
+            page.locator("#brain-fit").click()
+            assert page.evaluate("showcase.snapshot().brain.topology.zoom")==1
             # Inspecting a thought holds the actual actuator, then releases it.
             page.locator("#brain-think").click()
             expect(page.locator("#brain-behavior")).to_contain_text("motor output held")
@@ -162,8 +171,9 @@ def main():
             page.wait_for_function("showcase.snapshot().body.targets > 3")
             page.wait_for_function("showcase.snapshot().body.ink > 0", timeout=20000)
             assert page.evaluate("showcase.snapshot().body.retina.some(v=>v>.23)")
-            page.locator("#restart-arm").click()
-            page.locator("#pencil-motors").click()
+            # Install the lesion atomically with reset: two browser round trips
+            # can otherwise allow a real motor step before the lesion is applied.
+            page.evaluate("document.querySelector('#restart-arm').click(); document.querySelector('#pencil-motors').click()")
             page.wait_for_timeout(600)
             assert page.evaluate("showcase.snapshot().body.ink") == 0
             assert page.evaluate("showcase.snapshot().body.z") == 1

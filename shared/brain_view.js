@@ -1,4 +1,5 @@
 import { repairTrace } from "./telemetry.js";
+import { CircuitMap, regionColor } from "./circuit_map.js";
 
 const labels = {
   sensory: "Sensory input",
@@ -25,6 +26,11 @@ export class BrainView {
   constructor() {
     this.canvas = document.getElementById("brain-scene");
     this.ctx = this.canvas.getContext("2d");
+    this.networkCanvas = document.createElement("canvas");
+    this.networkCanvas.className = "brain-network";
+    this.networkCanvas.setAttribute("aria-hidden", "true");
+    this.canvas.before(this.networkCanvas);
+    this.map = new CircuitMap(this.networkCanvas, this.canvas);
     this.waveCanvas = document.getElementById("brain-waves");
     this.waveCtx = this.waveCanvas.getContext("2d");
     this.$ = (id) => document.getElementById(id);
@@ -65,6 +71,12 @@ export class BrainView {
       (this.signal = this.$("brain-signal").value);
     this.$("brain-speed").onchange = () =>
       (this.rate = +this.$("brain-speed").value);
+    this.$("brain-fit").onclick = () => this.map.fit();
+    this.$("brain-expand").onclick = () => {
+      const panel = this.canvas.closest(".brain-panel");
+      if (document.fullscreenElement) document.exitFullscreen();
+      else panel.requestFullscreen?.();
+    };
     this.canvas.onpointermove = this.canvas.onpointerdown = (e) => {
       const r = this.canvas.getBoundingClientRect();
       this.hover = [e.clientX - r.left, e.clientY - r.top];
@@ -185,6 +197,16 @@ export class BrainView {
       different(this.source?.mask ?? [], source.mask ?? []);
     this.old = { state: source.state.slice(), learned };
     this.source = copy(source);
+    const topology = this.map.topology;
+    if (
+      !topology ||
+      this.map.n !== source.state.length ||
+      topology.length !== source.edges.length * 3 ||
+      source.edges.some((e, i) =>
+        e.some((v, k) => Math.fround(v) !== topology[i * 3 + k]),
+      )
+    )
+      this.map.graph(source.state.length, source.edges);
     if (changed || !this.diagnostic)
       this.diagnostic = this.prepareTrace(this.source, false);
     if (changed && this.follow && source.recurrent) {
@@ -320,6 +342,8 @@ export class BrainView {
       bottom = h - 38,
       gap = 12,
       usable = bottom - top;
+    c.save();
+    this.map.transformContext(c, w, h);
     groupNames.forEach((g, gi) => {
       let x = 8,
         y = top,
@@ -376,11 +400,12 @@ export class BrainView {
         y + rh * 0.5,
         Math.max(rw, rh) * 0.7,
       );
-      halo.addColorStop(0, "#183239aa");
+      const role = regionColor(g);
+      halo.addColorStop(0, `rgba(${role.join(",")},.17)`);
       halo.addColorStop(1, "#0c161c00");
       c.fillStyle = halo;
       c.fillRect(x - 5, y - 5, rw + 10, rh + 10);
-      c.strokeStyle = "#7ba89d55";
+      c.strokeStyle = `rgba(${role.join(",")},.75)`;
       c.lineWidth = 1;
       c.beginPath();
       c.moveTo(x + 9, y + 22);
@@ -421,55 +446,73 @@ export class BrainView {
     });
     const plastic = this.signal === "plasticity",
       max = Math.max(1e-12, ...s.map(Math.abs));
-    source.edges.forEach(([a, b, weight], i) => {
-      if (source.mask?.[a] === 0 || source.mask?.[b] === 0) return;
-      const delta =
-        (this.changes[i] ?? 0) *
-        Math.max(0, 1 - (this.age - (this.flashAt ?? -10)) / 1.5);
-      const strength = Math.min(1, Math.abs(s[a] * weight) / max);
-      const pulse = repairs[a] * Math.min(1, Math.abs(weight));
-      c.strokeStyle = plastic
-        ? `rgba(${delta < 0 ? "121,184,255" : "255,196,113"},${0.04 + Math.min(1, Math.abs(weight)) * 0.3 + Math.min(1, Math.abs(delta)) * 0.6})`
-        : `rgba(${pulse > 0.08 ? "191,168,255" : "130,182,200"},${0.035 + strength * 0.18 + pulse * 0.55})`;
-      c.lineWidth = plastic
-        ? 0.6 + Math.min(2, Math.abs(weight)) + Math.min(2, Math.abs(delta))
-        : 0.5 + pulse * 1.3;
-      c.beginPath();
-      c.moveTo(...positions[a]);
-      const [ax, ay] = positions[a],
-        [bx, by] = positions[b];
-      const bend = groups[a] !== groups[b] ? (bx - ax) * 0.18 : 0;
-      c.quadraticCurveTo((ax + bx) / 2 - bend, (ay + by) / 2 + bend, bx, by);
-      c.stroke();
-      // A packet represents a changed outgoing message at this captured iteration.
-      // No change means no moving packet, including at a fixed point.
-      const message = diff[a] * weight;
-      if (
-        !plastic &&
-        trace &&
-        frame < trace.frames.length - 1 &&
-        Math.abs(message) > 1e-15 &&
-        pulse > 0.03
-      ) {
-        const progress = (this.age * 2.2) % 1,
-          inv = 1 - progress;
-        const px =
-          inv * inv * ax +
-          2 * inv * progress * ((ax + bx) / 2 - bend) +
-          progress * progress * bx;
-        const py =
-          inv * inv * ay +
-          2 * inv * progress * ((ay + by) / 2 + bend) +
-          progress * progress * by;
-        c.fillStyle = message < 0 ? "#79b8ff" : "#ffc471";
-        c.shadowColor = c.fillStyle;
-        c.shadowBlur = 8;
-        c.beginPath();
-        c.arc(px, py, 1.2 + Math.min(2, pulse * 2), 0, Math.PI * 2);
-        c.fill();
-        c.shadowBlur = 0;
-      }
+    const scaleFor = (kind) =>
+      groups.map((g) => trace?.scales[kind]?.[g] ?? maxima[g] ?? 1);
+    this.map.draw({
+      positions,
+      groups,
+      activation: s,
+      repair: diff,
+      mismatch:
+        trace?.mismatches?.[frame] ?? this.diagnostic?.mismatches?.at(-1),
+      scales: [scaleFor("activity"), scaleFor("repair"), scaleFor("mismatch")],
+      mask: source.mask,
+      channel:
+        this.signal === "repair" ? 1 : this.signal === "mismatch" ? 2 : 0,
+      time: this.age,
+      moving: !this.frozen && !!trace && frame < trace.frames.length - 1,
+      nodes: false,
     });
+    if (!this.map.enabled || plastic)
+      source.edges.forEach(([a, b, weight], i) => {
+        if (source.mask?.[a] === 0 || source.mask?.[b] === 0) return;
+        const delta =
+          (this.changes[i] ?? 0) *
+          Math.max(0, 1 - (this.age - (this.flashAt ?? -10)) / 1.5);
+        const strength = Math.min(1, Math.abs(s[a] * weight) / max);
+        const pulse = repairs[a] * Math.min(1, Math.abs(weight));
+        c.strokeStyle = plastic
+          ? `rgba(${delta < 0 ? "121,184,255" : "255,196,113"},${0.04 + Math.min(1, Math.abs(weight)) * 0.3 + Math.min(1, Math.abs(delta)) * 0.6})`
+          : `rgba(${pulse > 0.08 ? "191,168,255" : "130,182,200"},${0.035 + strength * 0.18 + pulse * 0.55})`;
+        c.lineWidth = plastic
+          ? 0.6 + Math.min(2, Math.abs(weight)) + Math.min(2, Math.abs(delta))
+          : 0.5 + pulse * 1.3;
+        c.beginPath();
+        c.moveTo(...positions[a]);
+        const [ax, ay] = positions[a],
+          [bx, by] = positions[b];
+        const bend = groups[a] !== groups[b] ? (bx - ax) * 0.18 : 0;
+        c.quadraticCurveTo((ax + bx) / 2 - bend, (ay + by) / 2 + bend, bx, by);
+        c.stroke();
+        // A packet represents a changed outgoing message at this captured iteration.
+        // No change means no moving packet, including at a fixed point.
+        const message = diff[a] * weight;
+        if (
+          !plastic &&
+          trace &&
+          frame < trace.frames.length - 1 &&
+          Math.abs(message) > 1e-15 &&
+          pulse > 0.03
+        ) {
+          const progress = (this.age * 2.2) % 1,
+            inv = 1 - progress;
+          const px =
+            inv * inv * ax +
+            2 * inv * progress * ((ax + bx) / 2 - bend) +
+            progress * progress * bx;
+          const py =
+            inv * inv * ay +
+            2 * inv * progress * ((ay + by) / 2 + bend) +
+            progress * progress * by;
+          c.fillStyle = message < 0 ? "#79b8ff" : "#ffc471";
+          c.shadowColor = c.fillStyle;
+          c.shadowBlur = 8;
+          c.beginPath();
+          c.arc(px, py, 1.2 + Math.min(2, pulse * 2), 0, Math.PI * 2);
+          c.fill();
+          c.shadowBlur = 0;
+        }
+      });
     let hovered = -1,
       nearest = 18;
     positions.forEach(([x, y], i) => {
@@ -517,13 +560,15 @@ export class BrainView {
         c.fillText(values[i].toExponential(2), x, y + 35);
       }
       if (this.hover) {
-        const d = Math.hypot(x - this.hover[0], y - this.hover[1]);
+        const [hx, hy] = this.map.worldPoint(...this.hover, w, h);
+        const d = Math.hypot(x - hx, y - hy);
         if (d < nearest) {
           nearest = d;
           hovered = i;
         }
       }
     });
+    c.restore();
     c.textAlign = "left";
     c.font = "10px ui-monospace, monospace";
     c.fillStyle = "#91a6b1";
@@ -687,6 +732,7 @@ export class BrainView {
       automatic: !!this.auto,
       behavior: this.source?.behavior,
       displayed: this.displayed,
+      topology: this.map.snapshot(),
     };
   }
 }

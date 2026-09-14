@@ -116,7 +116,19 @@ of animal intelligence. No whole-animal equivalence is claimed.
 ## Read the brain view
 
 Regions group the actual task components by function. The circuit appears beside
-the body at the top of each page. Hover or tap an owner to see its numerical value.
+the body at the top of each page. Every declared owner and directed seam is mapped;
+there is no representative-owner or strongest-edge subset. Dense edges overlap
+when zoomed out. Wheel/pinch zooms, dragging pans, **Fit whole brain** resets the
+camera and **Expand** opens the map full screen. Hover or tap an owner to inspect
+its value. Violet marks visual and memory assemblies, cyan motor assemblies,
+green sensory/cue assemblies, blue spatial/timing assemblies and rose planning
+assemblies. Labels identify the exact component; color expresses wiring intent,
+not independently established neural specialization.
+
+WebGL2 retains the full graph on the GPU and caches its static connection image.
+Actual changes supply the activity overlay. Small public graphs also retain a
+Canvas fallback when WebGL2 is unavailable. Rendering work and artificial replay
+time are excluded from numerical efficiency comparisons.
 
 - **Behavior badge:** green = positive outcome; blue = seeking/moving; amber =
   correction; gray = idle/paused. These name observed events, not measured feelings.

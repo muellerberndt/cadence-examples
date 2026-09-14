@@ -15,8 +15,7 @@
     <header>
       <a class="brand" href="index.html">C<span>·</span>ADENCE</a>
       <nav>
-        <a href="METHODS.md">How it works</a
-        ><a href="index.html">Demos</a
+        <a href="METHODS.md">How it works</a><a href="index.html">Demos</a
         ><a href="https://github.com/muellerberndt/cadence">GitHub ↗</a>
       </nav>
     </header>
@@ -121,6 +120,8 @@
             Learning modulators: not modeled in this controller
           </div>
           <div class="buttons brain-actions">
+            <button id="brain-fit">Fit whole brain</button>
+            <button id="brain-expand">Expand</button>
             <button id="brain-think" aria-pressed="false">Slow thought</button>
             <button id="brain-follow" aria-pressed="true">
               Follow repairs
@@ -188,7 +189,11 @@
             <p>
               Each region groups actual owners by function; lines are their real
               seams. Supplied sensing, steering and body adapters are labeled
-              above the graph. Hover or tap an owner for its value. Colors use
+              above the graph. Every owner and seam is mapped; dense seams
+              overlap when zoomed out. Wheel or pinch to zoom, drag to pan, and
+              use Fit whole brain to return. Region tints identify function:
+              visual purple, motor cyan, memory violet, sensory green, planning
+              rose. Hover or tap an owner for its value. Colors use
               dimensionless model units. The heatmap shows positive values in
               amber and negative values in blue; its smooth halos are a display
               overlay around actual owners. Turning it off restores the node

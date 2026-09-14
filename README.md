@@ -61,7 +61,10 @@ arm uses a supplied feedback controller. C. elegans includes its public chemical
 graph, an engineered habitat/body adapter and a trained MLP circuit comparator.
 
 Each website places its actual circuit beside the body on desktop, grouped by
-function. Watch sampled repair cascades, inspect local state and memory writes,
+function. The map includes **every owner and directed seam**. Wheel or pinch to
+zoom, drag to pan, and use **Fit whole brain** or **Expand**. Region colors mark
+functions; activation, mismatch and plasticity provide separate overlays.
+Watch sampled repair cascades, inspect local state and memory writes,
 or release input in an isolated copy to see recurrent decay. Labeled behavior
 colors identify seeking, correction and positive outcomes. The layout stacks on
 mobile. [Read the circuit view](METHODS.md#read-the-brain-view).
