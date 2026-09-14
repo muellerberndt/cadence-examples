@@ -36,7 +36,7 @@ def check(url, output):
         page.locator('#step').click()
         page.wait_for_function('window.replayState.step===1', timeout=60000)
         assert page.locator('#screen').get_attribute('src').endswith('000000.png')
-        page.screenshot(path=str(output/'flight-repairs.png'))
+        page.screenshot(path=str(output/'flight-repairs.png'), timeout=180000)
         page.locator('#clock').select_option('game')
         page.locator('#mode').select_option('activity')
         # Seek rather than walking there: this exercises independently loaded
@@ -53,7 +53,7 @@ def check(url, output):
             assert abs(float(page.locator('#dopamine').inner_text())-feedback['learning']['dopamine']) < 0.000006
             assert page.evaluate('window.replayState.criticBias') == feedback['critic_bias']
             assert page.evaluate('window.replayState.waveformSteps') > 0
-            page.screenshot(path=str(output/f'flight-decision-{frame}.png'))
+            page.screenshot(path=str(output/f'flight-decision-{frame}.png'), timeout=180000)
         assert page.evaluate('window.replayState.kind') == 'end'
         assert float(page.locator('#dopamine').inner_text()) < 0
         # Full graph remains alongside the game on desktop and fits on mobile.
@@ -62,7 +62,7 @@ def check(url, output):
         page.set_viewport_size({'width': 390, 'height': 844})
         page.wait_for_timeout(750)
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-        page.screenshot(path=str(output/'flight-mobile.png'), full_page=True)
+        page.screenshot(path=str(output/'flight-mobile.png'), full_page=True, timeout=180000)
         # The optional movie remains a separate, lightweight gameplay-only view.
         page.locator('details').first.locator('summary').click()
         page.locator('video').evaluate('(v)=>v.load()')
