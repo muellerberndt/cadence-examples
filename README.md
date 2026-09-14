@@ -2,6 +2,14 @@
 
 **Six interactive websites for state, embodiment and learning.**
 
+**[Open the websites →](https://floatingpragma.io/cadence-examples/)**
+[Eye & arm](https://floatingpragma.io/cadence-examples/eye-arm/) ·
+[Teachable mouse](https://floatingpragma.io/cadence-examples/mouse/) ·
+[C. elegans habitat](https://floatingpragma.io/cadence-examples/worm/) ·
+[Fly-inspired forager](https://floatingpragma.io/cadence-examples/fly/) ·
+[Changing memory](https://floatingpragma.io/cadence-examples/memory/) ·
+[Connect Four](https://floatingpragma.io/cadence-examples/connect-four/)
+
 [Cadence](https://github.com/muellerberndt/cadence) builds observer-like software
 patches: bounded local state, declared ports, readback, retained records and local
 feedback. Each task connects labeled regions into **one shared equilibrium**:
