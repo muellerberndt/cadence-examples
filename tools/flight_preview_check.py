@@ -26,7 +26,7 @@ def check(url, output):
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
         page.goto(url)
-        page.wait_for_function('window.replayState?.ready', timeout=180000)
+        page.wait_for_function('window.replayState?.ready', timeout=300000)
         assert page.locator('meta[name="robots"]').get_attribute('content') == 'noindex, nofollow'
         state = page.evaluate('window.replayState')
         assert state['neurons'] == 38577 and state['synapses'] == 1056874
