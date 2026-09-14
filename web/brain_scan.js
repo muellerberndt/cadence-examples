@@ -461,7 +461,7 @@ export class BrainScan {
     if (this.boundaries.length > 64) this.boundaries.shift();
   }
 
-  /** One settling step: the new activations of every neuron (and optionally potentials). */
+  /** One settling step: the new activations of every neuron (and optionally potentials); `{draw: false}` defers the frame. */
   step(activation, extra = {}) {
     const previous = this.previous || Float32Array.from(this.activation);
     let peak = 1e-9, total = 0;
@@ -483,7 +483,7 @@ export class BrainScan {
     this._record(total / this.n, peak);
     this._uploadState();
     this.pending = true;
-    this.draw();
+    if (extra.draw !== false) this.draw(); // a page applying several steps per frame draws once
     return { peak, mean: total / this.n };
   }
 
@@ -496,7 +496,7 @@ export class BrainScan {
     if (extra.potential) this.potential = Float32Array.from(extra.potential);
     this._uploadState();
     this.pending = true;
-    this.draw();
+    if (extra.draw !== false) this.draw();
   }
 
   /** Show a page's own signals: `activation` drives the messages, `heat` the glow (0..1 per
@@ -510,7 +510,7 @@ export class BrainScan {
     if (extra.potential) this.potential = Float32Array.from(extra.potential);
     this._uploadState();
     this.pending = true;
-    this.draw();
+    if (extra.draw !== false) this.draw();
   }
 
   _record(meanChange, peak) {
