@@ -660,7 +660,7 @@ export class BrainView {
     this.$("brain-legend-label").textContent =
       `${plastic ? (lasting ? "Persistent synaptic strength · gold strengthens, blue weakens" : "Total synaptic strength · gold strengthens, blue weakens") : this.signal === "input" ? "Input drive" : this.signal === "repair" ? "Activity change" : this.signal === "mismatch" ? "Equation mismatch" : "Activity"}${plastic ? "" : " · relative region scale"}${trace ? " · fixed during replay" : ""}`;
     this.$("brain-scale").textContent = plastic
-      ? `Max |synaptic strength| ${Math.max(0, ...(lasting ? source.consolidated ?? [] : source.learned ?? []).map(([, , v]) => Math.abs(v))).toExponential(2)} · connections show ${lasting ? "persistent" : "total learned"} weights; flashes show their signed changes. Neuron colors still show activity.`
+      ? `Max |synaptic strength| ${Math.max(0, ...(lasting ? source.consolidated ?? [] : source.edges).map(([, , v]) => Math.abs(v))).toExponential(2)} · connections show ${lasting ? "persistent" : "total"} weights; flashes show their signed changes. Neuron colors still show activity.`
       : `Max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. ${trace ? "Captured trajectory scales" : "Current region scales"}; hover or tap for signed values. No neurotransmitter concentrations are modeled.`;
     this.drawWaves(
       source,

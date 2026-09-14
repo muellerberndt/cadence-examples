@@ -328,7 +328,10 @@ def main():
                 page.wait_for_function("document.querySelector('#brain-legend').hidden")
                 page.locator("#brain-heat").click()
                 page.locator("#brain-signal").select_option("plasticity")
-                page.wait_for_function("document.querySelector('#brain-legend').hidden")
+                expect(page.locator("#brain-legend")).to_be_visible()
+                expect(page.locator("#brain-legend-label")).to_contain_text(
+                    "Total synaptic strength · gold strengthens, blue weakens"
+                )
                 page.locator("#brain-signal").select_option("activity")
                 assert (
                     brain["displayed"]["regions"]
