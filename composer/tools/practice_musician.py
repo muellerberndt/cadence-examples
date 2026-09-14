@@ -159,10 +159,10 @@ def main():
             own_updates += 1
         musician.learner.config = replace(musician.learner.config, eta=base_eta, eta_bias=base_eta / 10)
         for _ in range(a.rehearse):
-            context, sense, mood, labels, fresh = real.batch_rows()
+            context, sense, mood, labels, fresh, conditioning = real.batch_rows()
             fresh = fresh | real.is_focus & real.focus.fresh | ~real.is_focus & real.general.fresh
             real_state.reset_rows(np.flatnonzero(fresh))
-            musician.learn(context, sense, mood, labels, real_state)
+            musician.learn(context, sense, mood, labels, real_state, conditioning=conditioning)
             real.advance()
         general = evaluate(musician, Streams(ROOT / "data" / a.dataset, "validation", 64, np.random.default_rng(7), cap=256))
         focus = evaluate(musician, Streams(ROOT / "data" / a.focus, "validation", 28, np.random.default_rng(7), cap=512), updates=256)

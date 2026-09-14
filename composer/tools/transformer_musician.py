@@ -74,7 +74,7 @@ def evaluate(model, streams, device, updates=192):
     count = 0
     with torch.no_grad():
         for _ in range(updates):
-            context, sense, mood, labels, _fresh = streams.batch_rows()
+            context, sense, mood, labels, _fresh, _conditioning = streams.batch_rows()
             logits, _ = model(*inputs(context, sense, mood, device))
             total += losses(logits, labels).sum(0).cpu().numpy()
             offset = 0
@@ -140,7 +140,7 @@ def main():
     started = time.monotonic()
     best = float("inf")
     for update in range(a.updates):
-        context, sense, mood, labels, _fresh = training.batch_rows()
+        context, sense, mood, labels, _fresh, _conditioning = training.batch_rows()
         logits, _ = model(*inputs(context, sense, mood, device))
         loss = losses(logits, labels).mean()
         optimizer.zero_grad()

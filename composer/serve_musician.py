@@ -1,6 +1,6 @@
 """The musician's studio: compose live in the browser and watch the whole brain.
 
-    ../cadence/.venv/bin/python serve_musician.py --checkpoint runs/large/brain.npz [--backend torch --device mps]
+    python serve_musician.py --checkpoint checkpoints/maestro-1/brain.npz [--backend torch --device mps]
 
 Open http://127.0.0.1:8079. Every neuron and synapse is mapped; every settling
 iteration of every committed event is recorded and replayed in sync with the music.
@@ -29,7 +29,7 @@ COMPOSITIONS = ROOT / "runs/musician-compositions"
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--port", type=int, default=8079)
-    p.add_argument("--checkpoint", default=str(ROOT / "checkpoints/musician/brain.npz"))
+    p.add_argument("--checkpoint", default=str(ROOT / "checkpoints/maestro-1/brain.npz"))
     p.add_argument("--backend", default="cpu")
     p.add_argument("--device", default=None)
     p.add_argument("--settle", type=int, default=48, help="settling iterations per event when playing (96 is nearer the equilibrium, twice as slow)")
@@ -40,6 +40,7 @@ def main():
     receipt_path = Path(a.checkpoint).with_name("receipt.json")
     training = json.loads(receipt_path.read_text()) if receipt_path.exists() else {}
     target = training.get("best_validation_nll", 1.0)
+    target_plan = training.get("best_plan_nll")
     graph = topology(musician.brain, a.edge_limit)
     brain_info = describe(musician)  # counting parameters over tens of millions of synapses takes seconds
     lock = threading.Lock()
@@ -62,7 +63,7 @@ def main():
             folder = COMPOSITIONS / f"{time.time_ns()}-{seed}"
             result = perform(
                 musician, mood, folder=folder, key=key, render=render, checkpoint=a.checkpoint,
-                target_surprise=target, progress=emit, bars=bars, futures=futures, edits=edits, seed=seed, tempo=tempo,
+                target_surprise=target, target_plan_surprise=target_plan, progress=emit, bars=bars, futures=futures, edits=edits, seed=seed, tempo=tempo,
                 temperature=temperature, top=top,
             )
             with lock:

@@ -11,19 +11,35 @@ Regions (in neuron order)
     ear         the last WINDOW heard events, one-hot                  (clamped input)
     sense       chroma, sounding notes by family, beat, bar, progress  (clamped input)
     mood        seven mood classes of the piece                        (clamped input)
+    interval    relative pitch of the last eight steps (version 2)     (clamped input)
+    plan        the profile of the bar being written (version 3)       (clamped input)
+    bars        the profiles of the eight bars before (version 3)      (clamped input)
     belt        one shared embedding of each heard event (auditory belt; synapses tied
                 across the window positions, so one ear hears every position)
     melody      contour cortex (belt <-> melody)
     harmony     tonal cortex (belt, chroma, sounding notes <-> harmony)
     rhythm      timing cortex (belt, beat, bar, progress <-> rhythm)
     timbre      orchestration cortex (belt, sounding notes by family <-> timbre)
+    form        coherence of the piece as a whole (version 2): reads the clock, the mood,
+                the slow trace, the record and, in version 3, the plan and the bars before
     phrase      association cortex integrating the four cortices, the working memory,
                 the form record and the mood
     prefrontal  working memory: a Trace of the phrase cortex from the events before
-    recall      form memory: what the phrase cortex held at this bar of the previous
-                sixteen-bar cycle, a per-piece delta-rule record keyed by the bar clock
+    recall      form memory: version 2, what the phrase cortex held at this bar of the
+                previous sixteen-bar cycle; version 3, the theme record: what it held at
+                the bar this bar returns to, addressed by the plan's lag
+    piece       the piece so far: a slow Trace of the phrase cortex (version 2)
     intention   motor intention: pitch, sounding duration, time to next attack,
-                instrument family and velocity, read as five softmax choices
+                instrument family and velocity, read as five softmax choices; version 3
+                adds the plan head: the eight profile classes of the bar being written
+
+Version 3 is the form of the piece as a learned quantity. The plan head is trained by
+teacher forcing on the measured profile of the bar being written; the plan input is
+present for half the training rows and absent for the other half, so the head learns to
+predict the bar from the mood, the progress, the bars before and the brain's own state,
+and the note intention learns to realise a given plan. When composing, the plan of the
+whole piece is imagined first at bar resolution (``composer/perform.py``), then clamped
+bar by bar while the notes are written.
 """
 
 from __future__ import annotations
@@ -36,18 +52,17 @@ import cadence as cd
 import numpy as np
 from cadence.stream import FastSynapses, Trace, columns
 
-ROOT = Path(__file__).resolve().parents[1]
+from .form import HISTORY, PLAN, PLAN_WIDTHS, RECORD, bar_profiles, encode_bars, encode_plan, history_of, record_keys
+from .vocabulary import BAR, CYCLE, DELTAS, DURATIONS, EVENT, FAMILIES, OFFSETS, PROGRAMS, SIZES, WINDOW
 
-WINDOW = 16
-DURATIONS = np.array([1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64])
-DELTAS = np.array([0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64])
-SIZES = (73, 12, 13, 8, 8)  # pitch 24..96 key-relative, duration, delta, family, velocity
-OFFSETS = np.cumsum((0,) + SIZES[:-1])
-EVENT = int(sum(SIZES))
-FAMILIES = ("keys", "strings", "brass", "woodwind", "bass", "plucked", "other", "percussion")
-PROGRAMS = (0, 48, 60, 73, 32, 24, 80, 0)
-BAR = 16  # sixteenth steps per bar
-CYCLE = 16  # bars in the form record's cycle
+__all__ = [
+    "BAR", "CYCLE", "DELTAS", "DURATIONS", "EVENT", "FAMILIES", "OFFSETS", "PROGRAMS", "SIZES", "WINDOW",
+    "Design", "Musician", "Senses", "StreamState", "build", "connectome", "describe", "encode_events",
+    "encode_intervals", "encode_mood", "encode_sense", "events_from_tokens", "family", "learner_config",
+    "mood_classes", "primed", "regions", "write_score",
+]
+
+ROOT = Path(__file__).resolve().parents[1]
 
 # sense: beat 16, bar-in-cycle 16, progress 4, chroma 12, sounding 8 families x 12 classes
 SENSE_RAW = 3 + 12 + 96
@@ -163,7 +178,8 @@ class Senses:
     """The causal heard-state of one stream: chroma, sounding notes, clock and progress.
 
     ``observe(token)`` advances the state by the event just heard; ``raw()`` reads the
-    sense row that describes the moment before the next event.
+    sense row that describes the moment before the next event. ``bar`` is the absolute
+    bar of that moment.
     """
 
     def __init__(self, total_steps=None):
@@ -171,6 +187,10 @@ class Senses:
         self.held = []  # (end_step, pitch_class, family)
         self.step = 0
         self.total = total_steps
+
+    @property
+    def bar(self):
+        return self.step // BAR
 
     def raw(self):
         out = np.zeros(SENSE_RAW, np.uint8)
@@ -216,9 +236,10 @@ class Design:
     nudged_steps: int = 16
     decay: float = 1e-6  # every update shrinks each plastic synapse and bias by this fraction
     normalize: float = 0.98  # RMS normalisation of the step (0: plain momentum steps)
-    version: int = 1  # 2: interval sense, a slow piece trace and a form cortex for coherence
+    version: int = 1  # 2: interval sense, a slow piece trace and a form cortex; 3: the plan and the theme record
     form: int = 0  # neurons of the form cortex (version 2); 0 picks cortex // 2
-    piece_decay: float = 0.98  # the slow trace: the piece so far
+    piece_decay: float = 0.98  # the slow trace: the piece so far (0.995 in version 3: about seven bars)
+    plan_dropout: float = 0.5  # version 3: share of training rows that learn without the plan input
 
     @property
     def label(self):
@@ -227,6 +248,15 @@ class Design:
     @property
     def form_size(self):
         return self.form or self.cortex // 2
+
+    @property
+    def slots(self):
+        """Output slots: the five event choices and, in version 3, the eight plan classes."""
+        return tuple(SIZES) + (tuple(PLAN_WIDTHS) if self.version >= 3 else ())
+
+    @property
+    def record_keys(self):
+        return RECORD if self.version >= 3 else CYCLE
 
 
 def regions(design):
@@ -238,6 +268,9 @@ def regions(design):
     ]
     if d.version >= 2:
         sizes.append(("interval", INTERVALS * INTERVAL_BINS))
+    if d.version >= 3:
+        sizes.append(("plan", PLAN))
+        sizes.append(("bars", HISTORY * PLAN))
     if d.belt:
         sizes.append(("belt", WINDOW * d.embedding))
     sizes += [
@@ -255,7 +288,7 @@ def regions(design):
     ]
     if d.version >= 2:
         sizes.append(("piece", d.phrase))
-    sizes.append(("intention", EVENT))
+    sizes.append(("intention", int(sum(d.slots))))
     out, start = {}, 0
     for name, size in sizes:
         out[name] = range(start, start + size)
@@ -338,6 +371,16 @@ def connectome(design=None):
         for cortex in ("melody", "harmony", "rhythm", "timbre"):
             project("form", cortex, scale=0.3, reciprocal=False)
         project("form", "intention", scale=0.3)
+    if d.version >= 3:
+        # the plan of the bar being written conditions the form, the phrase, every
+        # specialised cortex and the intention from above; the bars before enter the form
+        project("plan", "form", scale=0.5, reciprocal=False)
+        project("plan", "phrase", scale=0.4, reciprocal=False)
+        for cortex in ("melody", "harmony", "rhythm", "timbre"):
+            project("plan", cortex, scale=0.3, reciprocal=False)
+        project("plan", "intention", scale=0.3, reciprocal=False)
+        project("bars", "form", scale=0.5, reciprocal=False)
+        project("bars", "phrase", scale=0.2, reciprocal=False)
     project("phrase", "intention", scale=0.6)
     n = sum(len(v) for v in pops.values())
     all_pre, all_post, all_tie = np.concatenate(pre), np.concatenate(post), np.concatenate(tie)
@@ -380,11 +423,14 @@ def learner_config(eta=0.005, free_steps=32, nudged_steps=16, decay=1e-6, normal
     )
 
 
+CLAMPED = ("ear", "sense", "mood", "prefrontal", "recall", "interval", "piece", "plan", "bars")
+
+
 def build(design=None, *, backend="cpu", device=None):
     d = design or Design()
     graph, tie = connectome(d)
     plastic = np.ones(graph.n, bool)
-    for name in ("ear", "sense", "mood", "prefrontal", "recall", "interval", "piece"):
+    for name in CLAMPED:
         if name in graph.populations:
             plastic[list(graph.populations[name])] = False
     # Clamped ports rest at zero; every free neuron starts with a tonic bias so it sits on
@@ -405,26 +451,34 @@ def build(design=None, *, backend="cpu", device=None):
         learner_config(d.eta, d.free_steps, d.nudged_steps, d.decay, d.normalize),
         plastic_neurons=plastic,
         tie_groups=tie,
-        slots=SIZES,
+        slots=d.slots,
     )
     return Musician(learner, d)
 
 
 def describe(musician):
     w = musician.learner.brain.connectome
+    d = musician.design
+    stream_state = {
+        "prefrontal": "Trace of the phrase cortex, decay %.2f" % d.trace_decay,
+        "recall": (
+            "theme record: delta-rule record keyed by absolute bar (32 keys), written at each new bar, read at the bar the plan's lag returns to"
+            if d.version >= 3
+            else "delta-rule record keyed by the bar of a sixteen-bar cycle, written at each new bar"
+        ),
+    }
+    if d.version >= 2:
+        stream_state["piece"] = "slow Trace of the phrase cortex, decay %.3f: the piece so far" % d.piece_decay
     return {
         "neurons": int(w.n),
         "directed_synapses": int(w.synapses),
         "trainable_parameters": int(musician.learner.parameters()),
         "regions": {k: len(v) for k, v in w.populations.items()},
-        "design": asdict(musician.design),
+        "design": asdict(d),
         "learning": "Cadence centered free/nudged local contrast on one joint equilibrium; no backpropagation graph",
-        "stream_state": {
-            "prefrontal": "Trace of the phrase cortex, decay %.2f" % musician.design.trace_decay,
-            "recall": "delta-rule record keyed by the bar of a sixteen-bar cycle, written at each new bar",
-            **({"piece": "slow Trace of the phrase cortex, decay %.2f: the piece so far" % musician.design.piece_decay} if musician.design.version >= 2 else {}),
-        },
-        "output_slots": list(SIZES),
+        "stream_state": stream_state,
+        "output_slots": list(d.slots),
+        **({"plan_head": "the eight profile classes of the bar being written (composer/form.py)"} if d.version >= 3 else {}),
     }
 
 
@@ -433,7 +487,8 @@ def describe(musician):
 
 @dataclass
 class StreamState:
-    """Per-row state carried between events: working memory, form record, warm equilibrium."""
+    """Per-row state carried between events: working memory, form record, warm equilibrium.
+    ``bar`` is the bar of the last real event (absolute in version 3, in-cycle before)."""
 
     trace: Trace | None
     memory: FastSynapses | None
@@ -510,6 +565,52 @@ def _zero_rows(state, rows):
             array[rows] = 0.0
 
 
+@dataclass
+class Conditioning:
+    """What version 3 clamps beside the heard events, one row per stream:
+
+    ``plan``: the ``(batch, 8)`` profile classes of the bar being written (-1 in a row: the
+    plan input is absent for that row); ``bars``: ``(batch, HISTORY, 8)`` profiles of the
+    bars before (-1 rows: no bar yet); ``bar``: the absolute bar of each row; ``lag``: the
+    lag class the theme record reads at (from the plan when composing, from the measured
+    profile when learning or listening).
+    """
+
+    plan: np.ndarray
+    bars: np.ndarray
+    bar: np.ndarray
+    lag: np.ndarray
+
+    @classmethod
+    def absent(cls, batch):
+        return cls(
+            np.full((batch, len(PLAN_WIDTHS)), -1, int),
+            np.full((batch, HISTORY, len(PLAN_WIDTHS)), -1, int),
+            np.zeros(batch, int),
+            np.zeros(batch, int),
+        )
+
+    def rows(self, rows):
+        rows = np.asarray(rows)
+        return Conditioning(self.plan[rows], self.bars[rows], self.bar[rows], self.lag[rows])
+
+
+def conditioning_of(piece_tokens, bar, *, plan_row=None, mode=0):
+    """One row's conditioning while composing or listening: the measured profiles of the
+    bars before ``bar`` from the piece so far, and the plan of the current bar (the planned
+    profile when given, else absent, with the lag read from the plan when given and from
+    the measured piece otherwise)."""
+    profiles = bar_profiles(piece_tokens, mode=mode, bars=bar + 1) if len(piece_tokens) else np.zeros((bar + 1, len(PLAN_WIDTHS)), int)
+    history = history_of(profiles, bar)
+    if plan_row is not None:
+        plan = np.asarray(plan_row, dtype=int)
+        lag = int(plan[7])
+    else:
+        plan = np.full(len(PLAN_WIDTHS), -1, int)
+        lag = int(profiles[bar, 7]) if bar < len(profiles) else 0
+    return plan, history, lag
+
+
 class Musician:
     """A trained (or untrained) musician: the learner plus what a stream owns."""
 
@@ -525,9 +626,18 @@ class Musician:
         self.phrase = columns(np.asarray(w.populations["phrase"]))
         self.recall = columns(np.asarray(w.populations["recall"]))
         self.interval = columns(np.asarray(w.populations["interval"])) if "interval" in w.populations else None
+        self.plan = columns(np.asarray(w.populations["plan"])) if "plan" in w.populations else None
+        self.bars = columns(np.asarray(w.populations["bars"])) if "bars" in w.populations else None
         self.output_index = learner.output_index
+        self.slots = tuple(self.design.slots)
+        self.slot_offsets = np.cumsum((0,) + self.slots[:-1])
         # settling budget when playing (predict, imagine, review, replay); learning keeps the config's
         self.settle_steps = int(learner.config.free_steps)
+
+    @property
+    def planned(self):
+        """Whether this brain has the plan input and head (design version 3)."""
+        return self.plan is not None
 
     def free(self, drive, warm=None):
         return self.brain.settle_batch(drive, steps=self.settle_steps, state=warm, tolerance=0)
@@ -572,18 +682,20 @@ class Musician:
             piece.reset(batch)
         memory = None
         if self.design.form_memory:
+            keys = self.design.record_keys
             memory = FastSynapses(
-                np.arange(CYCLE),
-                np.arange(CYCLE, CYCLE + len(w.populations["phrase"])),
+                np.arange(keys),
+                np.arange(keys, keys + len(w.populations["phrase"])),
                 rule="delta",
                 amplitude=self.design.recall_amplitude,
             )
             memory.reset(batch)
         return StreamState(trace, memory, None, np.full(batch, -1), piece)
 
-    def drive(self, context, sense, mood, state=None):
+    def drive(self, context, sense, mood, state=None, conditioning=None):
         """The stimulus of one event: the heard window, the senses, the mood, and the
-        working memory and form record written into their ports."""
+        working memory and form record written into their ports; in version 3 also the
+        plan of the bar and the bars before, with the theme record read at the plan's lag."""
         context = np.asarray(context)
         out = np.zeros((len(context), self.n), np.float64)
         out[:, self.ear] = 2.5 * encode_events(context)
@@ -591,53 +703,71 @@ class Musician:
         out[:, self.mood] = 2.5 * encode_mood(mood)
         if self.interval is not None:
             out[:, self.interval] = 2.5 * encode_intervals(context)
+        if self.planned:
+            if conditioning is None:
+                conditioning = Conditioning.absent(len(context))
+            out[:, self.plan] = 2.5 * encode_plan(conditioning.plan)
+            out[:, self.bars] = 2.5 * encode_bars(conditioning.bars)
         if state is not None:
             if state.trace is not None:
                 out = state.trace.stimulate(out)
             if state.piece is not None:
                 out = state.piece.stimulate(out)
             if state.memory is not None:
-                out[:, self.recall] = state.memory.recall(_bar_key(sense))
+                if self.planned:
+                    _, read = record_keys(conditioning.bar, conditioning.lag)
+                    out[:, self.recall] = state.memory.recall(read)
+                else:
+                    out[:, self.recall] = state.memory.recall(_bar_key(sense))
         return out
 
-    def advance(self, state, free, sense):
+    def advance(self, state, free, sense, conditioning=None):
         """After a real event's free phase: the trace follows the phrase cortex; a new bar
         writes the phrase activity into the form record at the bar's key."""
         if state.trace is not None:
             state.trace.update(free)
         if state.piece is not None:
             state.piece.update(free)
-        bar = np.asarray(sense)[:, 1].astype(int)
-        if state.memory is not None:
-            phrase = np.atleast_2d(free.activation)[:, self.phrase]
-            state.memory.observe(_bar_key(sense), phrase, write=bar != state.bar)
+        if self.planned:
+            bar = np.asarray(conditioning.bar if conditioning is not None else np.zeros(len(state.bar), int), dtype=int)
+            if state.memory is not None:
+                phrase = np.atleast_2d(free.activation)[:, self.phrase]
+                write, _ = record_keys(bar, np.zeros(len(bar), int))
+                state.memory.observe(write, phrase, write=bar != state.bar)
+        else:
+            bar = np.asarray(sense)[:, 1].astype(int)
+            if state.memory is not None:
+                phrase = np.atleast_2d(free.activation)[:, self.phrase]
+                state.memory.observe(_bar_key(sense), phrase, write=bar != state.bar)
         state.bar = bar
         state.warm = free
 
     # -- prediction
 
     def probabilities(self, activation):
-        """Five softmax distributions from an intention activation ``(batch, EVENT)``."""
+        """One softmax distribution per output slot from an intention activation: the five
+        event choices, then (version 3) the eight plan classes."""
         out = []
-        for offset, width in zip(OFFSETS, SIZES):
+        for offset, width in zip(self.slot_offsets, self.slots):
             z = activation[:, offset : offset + width] / self.learner.config.temperature
             z = z - z.max(1, keepdims=True)
             p = np.exp(z)
             out.append(p / p.sum(1, keepdims=True))
         return out
 
-    def predict(self, context, sense, mood, state=None):
-        drive = self.drive(context, sense, mood, state)
+    def predict(self, context, sense, mood, state=None, conditioning=None):
+        drive = self.drive(context, sense, mood, state, conditioning)
         free = self.free(drive, None if state is None else state.warm)
         activation = np.atleast_2d(free.activation)[:, self.output_index]
         return self.probabilities(activation), free
 
-    def learn(self, context, sense, mood, labels, state, *, warm=True, weight=None):
+    def learn(self, context, sense, mood, labels, state, *, warm=True, weight=None, conditioning=None):
         """One imitation update on a batch of streams; ``weight`` (one number per row) scales
-        and signs each row's pull toward its label, the valence of a practised piece."""
-        drive = self.drive(context, sense, mood, state)
+        and signs each row's pull toward its label, the valence of a practised piece. In
+        version 3 ``labels`` carries the eight plan classes after the five event choices."""
+        drive = self.drive(context, sense, mood, state, conditioning)
         learned, report = self.learner.step(drive, labels, warm=state.warm if warm else None, weight=weight)
-        self.advance(state, learned.free, sense)
+        self.advance(state, learned.free, sense, conditioning)
         return learned, report
 
     # -- imagination: futures rolled forward through the brain's own predictions
@@ -656,14 +786,19 @@ class Musician:
         detune=0.0,
         stop_at=None,
         top=0,
+        plan_table=None,
+        prime=WINDOW,
     ):
         """Roll ``futures`` continuations of one stream forward, each in its own batch row
         with its own copy of the working memory, form record and warm state.
 
-        ``history`` is the list of committed tokens, ``senses`` the stream's ``Senses``
-        after those tokens, ``state`` the one-row stream state after them. Returns the
-        futures (tokens, surprise per event, per-event probabilities) and their end
-        states. Nothing here writes the live state.
+        ``history`` is the list of committed tokens (the first ``prime`` are the heard
+        opening, not part of the piece), ``senses`` the stream's ``Senses`` after those
+        tokens, ``state`` the one-row stream state after them. In version 3
+        ``plan_table`` is the ``(bars, 8)`` plan of the piece: each row hears the plan of
+        the bar it is writing and the measured profiles of the bars it has written.
+        Returns the futures (tokens, surprise per event, per-event probabilities) and their
+        end states. Nothing here writes the live state.
         """
         rng = rng or np.random.default_rng(0)
         branch = state.copy_rows([0] * futures) if state is not None else self.fresh(futures)
@@ -672,6 +807,7 @@ class Musician:
         tokens = [[] for _ in range(futures)]
         surprise = [[] for _ in range(futures)]
         moods = np.repeat(np.asarray(mood, dtype=int)[None, :], futures, axis=0)
+        mode = int(np.asarray(mood)[0])
         hidden = np.concatenate(
             [np.asarray(self.populations[k]) for k in ("melody", "harmony", "rhythm", "timbre")]
         )
@@ -681,13 +817,14 @@ class Musician:
                 break
             context = np.array([h[-WINDOW:] for h in histories])
             raw = np.array([s.raw() for s in sensed])
-            drive = self.drive(context, raw, moods, branch)
+            conditioning = self._conditioning(histories, sensed, plan_table, prime, mode) if self.planned else None
+            drive = self.drive(context, raw, moods, branch, conditioning)
             if detune:
                 drive[:, hidden] += rng.normal(0, detune, (futures, len(hidden)))
             free = self.free(drive, branch.warm)
             probabilities = self.probabilities(
                 np.atleast_2d(free.activation)[:, self.output_index]
-            )
+            )[: len(SIZES)]
             for j in range(futures):
                 if not active[j]:
                     continue
@@ -710,7 +847,7 @@ class Musician:
                 surprise[j].append(nll / len(SIZES))
                 histories[j].append(token)
                 sensed[j].observe(token)
-            self.advance(branch, free, raw)
+            self.advance(branch, free, raw, conditioning)
         return {
             "tokens": tokens,
             "surprise": surprise,
@@ -719,36 +856,107 @@ class Musician:
             "histories": histories,
         }
 
+    def _conditioning(self, histories, sensed, plan_table, prime, mode):
+        """Version 3 conditioning of every row from its own piece so far and the plan."""
+        plans, bars, bar_of, lags = [], [], [], []
+        for h, s in zip(histories, sensed):
+            bar = int(s.bar)
+            row = None
+            if plan_table is not None and len(plan_table):
+                row = np.asarray(plan_table)[min(bar, len(plan_table) - 1)]
+            plan, history, lag = conditioning_of(h[prime:], bar, plan_row=row, mode=mode)
+            plans.append(plan)
+            bars.append(history)
+            bar_of.append(bar)
+            lags.append(lag)
+        return Conditioning(np.array(plans), np.array(bars), np.array(bar_of), np.array(lags))
+
+    # -- imagining the plan of a whole piece at bar resolution (version 3)
+
+    def imagine_plan(self, prime, mood, bars, *, futures=8, rng=None, temperature=0.9, total_steps=None):
+        """Roll ``futures`` plans of ``bars`` bars forward through the plan head alone: at
+        each bar the brain hears the opening, the mood, the clock at that bar and the plan
+        so far (the bars before), with the plan input absent, and the eight classes of the
+        bar are sampled from the plan head. Nothing is written; the stream state is fresh.
+        Returns the plans ``(futures, bars, 8)`` and the plan surprise per bar."""
+        if not self.planned:
+            raise ValueError("this design has no plan head")
+        rng = rng or np.random.default_rng(0)
+        moods = np.repeat(np.asarray(mood, dtype=int)[None, :], futures, axis=0)
+        context = np.repeat(np.asarray(prime)[None, -WINDOW:], futures, axis=0)
+        plans = np.full((futures, bars, len(PLAN_WIDTHS)), -1, int)
+        surprise = np.zeros((futures, bars))
+        state = self.fresh(futures)
+        total = total_steps or bars * BAR
+        for b in range(bars):
+            senses = Senses(total)
+            senses.step = b * BAR
+            raw = np.repeat(senses.raw()[None, :], futures, axis=0)
+            conditioning = Conditioning(
+                np.full((futures, len(PLAN_WIDTHS)), -1, int),
+                np.array([history_of(plans[j], b) for j in range(futures)]),
+                np.full(futures, b, int),
+                np.zeros(futures, int),
+            )
+            probabilities, free = self.predict(context, raw, moods, state, conditioning)
+            for j in range(futures):
+                nll = 0.0
+                for k, p in enumerate(probabilities[len(SIZES) :]):
+                    q = p[j] ** (1 / temperature)
+                    q /= q.sum()
+                    choice = int(rng.choice(len(q), p=q))
+                    plans[j, b, k] = choice
+                    nll -= float(np.log(max(p[j][choice], 1e-12)))
+                surprise[j, b] = nll / len(PLAN_WIDTHS)
+            state.warm = free
+        return plans, surprise
+
     # -- listening back: the whole score through a fresh stream
 
     def review(self, tokens, mood, *, prime=WINDOW, total_steps=None, rewind=True):
         """Hear the score from the start in one fresh stream and measure the surprise of every
         event under the brain's own expectation. Returns per-event surprise, the bar of every
         event, and the stream state snapshots at the start of every bar. The first ``prime``
-        events are heard before the clock starts when ``rewind`` is set, as when composing."""
+        events are heard before the clock starts when ``rewind`` is set, as when composing.
+        In version 3 the plan input is absent, the bars before are the measured profiles of
+        the piece, and ``plan_surprise`` is the plan head's surprise at each event's bar."""
         state = self.fresh(1)
         senses = primed(tokens[:prime], total_steps, rewind=rewind)
         history = [list(t) for t in tokens[:prime]]
-        surprise, bars, snapshots = [], [], {}
+        surprise, bars, snapshots, plan_surprise = [], [], {}, []
         moods = np.asarray(mood, dtype=int)[None, :]
+        mode = int(np.asarray(mood)[0])
+        piece = [list(t) for t in tokens[prime:]]
+        profiles = bar_profiles(piece, mode=mode) if self.planned and piece else None
         for token in tokens[prime:]:
             raw = senses.raw()[None, :]
-            bar = int(raw[0, 1]) + CYCLE * (senses.step // (BAR * CYCLE))
+            bar = int(senses.bar)
             if bar not in snapshots:
                 snapshots[bar] = (
                     state.copy_rows([0]),
                     _copy_senses(senses),
                     len(history),
                 )
-            probabilities, free = self.predict(
-                np.array([history[-WINDOW:]]), raw, moods, state
-            )
+            conditioning = None
+            if self.planned:
+                current = profiles[bar] if bar < len(profiles) else np.zeros(len(PLAN_WIDTHS), int)
+                conditioning = Conditioning(
+                    np.full((1, len(PLAN_WIDTHS)), -1, int),
+                    history_of(profiles, bar)[None, :],
+                    np.array([bar]),
+                    np.array([int(current[7])]),
+                )
+            probabilities, free = self.predict(np.array([history[-WINDOW:]]), raw, moods, state, conditioning)
             nll = -np.mean(
-                [np.log(max(p[0][int(c)], 1e-12)) for p, c in zip(probabilities, token)]
+                [np.log(max(p[0][int(c)], 1e-12)) for p, c in zip(probabilities[: len(SIZES)], token)]
             )
             surprise.append(float(nll))
             bars.append(bar)
-            self.advance(state, free, raw)
+            if self.planned:
+                plan_surprise.append(
+                    -float(np.mean([np.log(max(p[0][int(c)], 1e-12)) for p, c in zip(probabilities[len(SIZES) :], current)]))
+                )
+            self.advance(state, free, raw, conditioning)
             history.append(list(token))
             senses.observe(token)
         return {
@@ -756,12 +964,13 @@ class Musician:
             "bars": np.asarray(bars),
             "snapshots": snapshots,
             "steps": senses.step,
+            "plan_surprise": np.asarray(plan_surprise),
+            "profiles": profiles,
         }
-
 
     # -- exact replay: every settling iteration of one row, for the live view
 
-    def replay(self, history, senses, state, tokens, mood, observer, *, total_steps=None):
+    def replay(self, history, senses, state, tokens, mood, observer, *, total_steps=None, plan_table=None, prime=WINDOW):
         """Hear ``tokens`` one by one from ``state`` (one row) exactly as ``imagine`` or
         ``review`` settles them, but one iteration at a time, calling
         ``observer(event_index, iteration, activation, repair, mismatch, drive)`` at every
@@ -776,12 +985,14 @@ class Musician:
             senses.total = total_steps
         state = state.copy_rows([0]) if state is not None else self.fresh(1)
         moods = np.asarray(mood, dtype=int)[None, :]
+        mode = int(np.asarray(mood)[0])
         brain = self.learner.brain
         steps = self.settle_steps
         surprise = []
         for k, token in enumerate(tokens):
             raw = senses.raw()[None, :]
-            drive = self.drive(np.array([history[-WINDOW:]]), raw, moods, state)
+            conditioning = self._conditioning([history], [senses], plan_table, prime, mode) if self.planned else None
+            drive = self.drive(np.array([history[-WINDOW:]]), raw, moods, state, conditioning)
             current = state.warm
             previous = None if current is None else np.array(current.activation[0])
             for iteration in range(1, steps + 1):
@@ -791,10 +1002,10 @@ class Musician:
                 repair = activation if previous is None else activation - previous
                 observer(k, iteration, activation, repair, mismatch, drive[0])
                 previous = activation
-            probabilities = self.probabilities(np.atleast_2d(current.activation)[:, self.output_index])
+            probabilities = self.probabilities(np.atleast_2d(current.activation)[:, self.output_index])[: len(SIZES)]
             nll = -np.mean([np.log(max(p[0][int(c)], 1e-12)) for p, c in zip(probabilities, token)])
             surprise.append(float(nll))
-            self.advance(state, current, raw)
+            self.advance(state, current, raw, conditioning)
             history.append(list(token))
             senses.observe(token)
         return state, senses, surprise

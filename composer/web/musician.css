@@ -1,7 +1,9 @@
 .status { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin: 10px 0 4px; }
 .thought { display: flex; gap: 12px; align-items: baseline; margin-bottom: 8px; }
 .thought span { color: var(--muted); font-size: 12px; }
-#roll { width: 100%; height: 220px; background: #0d1a20; border: 1px solid var(--line); border-radius: 6px; display: block; }
+#form { width: 100%; height: 54px; background: #0d1a20; border: 1px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; display: block; }
+#roll { width: 100%; height: 220px; background: #0d1a20; border: 1px solid var(--line); border-radius: 0; display: block; }
+.legend .blue { color: #6ba6ff; }
 #timeline { width: 100%; height: 90px; background: #0d1a20; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 6px 6px; display: block; }
 .legend .gold { color: #f4c86a; }
 .legend .grey { color: #7f9497; }

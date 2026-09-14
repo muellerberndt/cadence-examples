@@ -27,7 +27,7 @@ const SHORT = Object.fromEntries(Object.entries(LABELS).map(([name, label]) => [
 
 let info = null; // /api/state brain + topology
 let composition = null; // the loaded composition record
-let liveRoll = { events: [], starts: [], total: 0, candidates: [], phraseStart: 0, valences: [], surprise: [] };
+let liveRoll = { events: [], starts: [], total: 0, candidates: [], phraseStart: 0, valences: [], surprise: [], plan: null };
 let mode = "idle"; // idle | composing | playing | scrub
 const frameCache = new Map(); // "live/3" -> {data: Float32Array, peaks}
 const pending = new Map();
@@ -259,11 +259,28 @@ function handle(event) {
   const s = event.stage;
   if (s === "priming") {
     mode = "composing";
-    liveRoll = { events: [], starts: [], total: event.bars * 16, candidates: [], phraseStart: 0, valences: [], surprise: [], id: null, bpm: event.tempo };
+    liveRoll = { events: [], starts: [], total: event.bars * 16, candidates: [], phraseStart: 0, valences: [], surprise: [], id: null, bpm: event.tempo, plan: null, profiles: null };
     liveQueue.length = 0;
     $("thought").textContent = "Hearing the opening";
     $("thought-detail").textContent = `mood ${Object.entries(event.brief).map(([k, v]) => `${k} ${v}`).join(", ")}`;
     $("alternatives").replaceChildren();
+  } else if (s === "planning") {
+    $("thought").textContent = `Planning ${event.bars} bars before the first note`;
+    $("thought-detail").textContent = "the plan head imagines the profile of every bar; the listener keeps the best-formed plan";
+  } else if (s === "planned") {
+    liveRoll.plan = event.plan;
+    const best = event.plan.candidates[event.plan.winner];
+    $("thought").textContent = `Planned ${event.plan.plan.length} bars: chose plan ${event.plan.winner + 1} of ${event.plan.candidates.length}`;
+    $("thought-detail").textContent = `contrast ${best.contrast.toFixed(2)} · climax ${best.climax.toFixed(1)} · ending ${best.ending.toFixed(2)} · return ${best.return.toFixed(0)} · plan surprise ${best.mean_plan_surprise.toFixed(2)}`;
+    const el = text($("alternatives"), "div", "The plan of the whole piece", "candidate");
+    event.plan.candidates.forEach((c, j) => {
+      const m = document.createElement("meter");
+      m.min = -3;
+      m.max = 5;
+      m.value = c.score;
+      m.title = `Plan ${j + 1}: ${c.score.toFixed(3)}${j === event.plan.winner ? " · chosen" : ""} · contrast ${c.contrast.toFixed(2)} climax ${c.climax} ending ${c.ending.toFixed(2)} return ${c.return}`;
+      el.append(m);
+    });
   } else if (s === "imagined") {
     const p = event.phrase;
     liveRoll.candidates = p.candidates.map((c, j) => ({ tokens: c.tokens, score: c.score, winner: j === p.winner }));
@@ -290,10 +307,12 @@ function handle(event) {
     $("thought").textContent = "Listening to the whole draft";
     $("thought-detail").textContent = `${event.events} events, one stream from the start`;
   } else if (s === "editing") {
-    $("thought").textContent = `Re-imagining bars ${event.bar + 1}–${event.bar + 4}`;
-    $("thought-detail").textContent = "the weakest passage by its own surprise, mood fit and health";
+    const width = event.width ?? 4;
+    $("thought").textContent = `Re-imagining bars ${event.bar + 1}–${event.bar + width}`;
+    $("thought-detail").textContent = event.per_bar ? "the bars that disagree most with the plan and with the brain's own expectation" : "the weakest passage by its own surprise, mood fit and health";
   } else if (s === "edited") {
-    $("thought").textContent = event.accepted ? `Edit of bars ${event.bar + 1}–${event.bar + 4} kept` : `Edit of bars ${event.bar + 1}–${event.bar + 4} rejected`;
+    const width = event.width ?? 4;
+    $("thought").textContent = event.accepted ? `Edit of bars ${event.bar + 1}–${event.bar + width} kept` : `Edit of bars ${event.bar + 1}–${event.bar + width} rejected`;
     $("thought-detail").textContent = `whole-piece score ${event.before.toFixed(3)} → ${event.after.toFixed(3)}`;
     if (event.accepted && event.events) {
       liveRoll.events = event.events;
@@ -361,6 +380,10 @@ function useComposition(r) {
   $("bars").value = r.bars;
   const kept = r.edits.filter((e) => e.accepted).length;
   $("review").textContent = `${r.events.length} events over ${r.bars} bars at ${r.tempo_bpm} BPM · ${r.phrases.length} phrases of ${r.phrases[0]?.candidates.length ?? 0} imagined futures · ${kept}/${r.edits.length} edits kept · whole-piece score ${r.draft_score.score.toFixed(3)} → ${r.final_score.score.toFixed(3)} (surprise ${r.final_score.mean_surprise.toFixed(2)} vs target ${r.target_surprise.toFixed(2)}, mood fit ${r.final_score.mood_fit.toFixed(2)}) · ${r.seconds.toFixed(1)} s`;
+  if (r.final_score && r.final_score.form !== undefined) {
+    const f = r.final_score;
+    $("review").textContent += ` · form: plan fit ${(f.plan_fit ?? 0).toFixed(2)}, contrast ${f.contrast.toFixed(2)}, climax ${f.climax.toFixed(1)}, ending ${f.ending.toFixed(2)}, return ${f.return.toFixed(0)} (fidelity ${f.return_fidelity.toFixed(2)})`;
+  }
   if (mode !== "composing") mode = "scrub";
 }
 function secondsToStep(t) {
@@ -447,6 +470,53 @@ function drawRoll() {
     c.fillStyle = "#f4c86a";
     c.fillRect(x(p), 0, 1.5, h);
   }
+}
+const LAG_BARS = [0, 1, 2, 3, 4, 6, 8, 12, 16, 32];
+// The plan of the piece bar by bar: a block per bar whose height is the planned density and
+// whose brightness is the planned loudness, an arc from every bar that returns to the bar it
+// returns to, and, once the piece is heard back, a mark on every bar whose realised density,
+// loudness, register or texture differs from the plan.
+function drawForm() {
+  const [c, w, h] = fit($("form"));
+  const plan = mode === "composing" ? liveRoll.plan : composition?.plan;
+  const profiles = mode === "composing" ? null : composition?.profiles;
+  const bars = mode === "composing" ? liveRoll.total / 16 : composition?.bars ?? 16;
+  c.fillStyle = "#657f80";
+  c.font = "9px ui-monospace, monospace";
+  if (!plan) {
+    c.fillText(composition || mode === "composing" ? "no plan: this brain writes bar by bar" : "the plan of the piece appears here", 6, 11);
+    return;
+  }
+  const rows = plan.plan,
+    bw = w / bars;
+  rows.forEach((row, b) => {
+    const density = row[0] / 5,
+      loud = 0.35 + 0.65 * (row[3] / 3);
+    c.fillStyle = `rgba(107,166,255,${loud.toFixed(2)})`;
+    const bh = 6 + density * (h - 22);
+    c.fillRect(b * bw + 1, h - bh, Math.max(1, bw - 2), bh);
+    if (profiles && profiles[b]) {
+      const real = profiles[b];
+      const off = [0, 3, 1, 4].filter((k) => real[k] !== row[k]).length;
+      if (off) {
+        c.fillStyle = off >= 3 ? "#ff7b7b" : "#ffb17a";
+        c.fillRect(b * bw + 1, h - 3, Math.max(1, bw - 2), 3);
+      }
+    }
+    const lag = LAG_BARS[row[7]];
+    if (lag && b - lag >= 0) {
+      const x0 = (b - lag + 0.5) * bw,
+        x1 = (b + 0.5) * bw;
+      c.strokeStyle = "#89e6bfaa";
+      c.lineWidth = 1;
+      c.beginPath();
+      c.moveTo(x0, 14);
+      c.quadraticCurveTo((x0 + x1) / 2, 14 - Math.min(12, lag * 3), x1, 14);
+      c.stroke();
+    }
+  });
+  c.fillStyle = "#657f80";
+  c.fillText("plan · density, loudness, returns", 6, 11);
 }
 function drawTimeline() {
   const [c, w, h] = fit($("timeline"));
@@ -584,6 +654,7 @@ function drawWaves(frame) {
 function animate(t) {
   const dt = Math.min(0.05, (t - lastTick) / 1000 || 0.016);
   lastTick = t;
+  drawForm();
   drawRoll();
   drawTimeline();
   drawBrain(dt, t);

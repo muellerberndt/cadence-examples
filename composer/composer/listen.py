@@ -1,6 +1,6 @@
-"""Listening: how the musician judges an imagined future or a finished draft.
+"""Listening: how the musician judges an imagined future, a plan or a finished draft.
 
-Three measured quantities, all supplied and reported separately:
+Measured quantities, all supplied and reported separately:
 
 * **coherence**: the brain's own surprise along the passage, compared with the surprise
   it feels on real music (its held-out validation surprise). Far below is rote
@@ -10,6 +10,11 @@ Three measured quantities, all supplied and reported separately:
 * **health**: explicit anti-collapse checks that no listener would forgive: the same
   pitch over and over, long silence, one note per event with no chords in a texture
   that asks for them, or a register far outside the requested one.
+* **plan fit** (version 3): how far the bars a passage realises match their plan.
+* **form** (version 3, whole piece): the plan head's own surprise at the realised bars
+  against its held-out target; the shape of the realised profiles (contrast, a climax in
+  the second half, an ending that falls away, a return to earlier material); and the
+  fidelity of every claimed return to the bar it returns to.
 
 A valence for the next rehearsal is the winner's advantage over its rivals.
 None of this is a proof of beauty; it is what the musician can measure about itself.
@@ -19,6 +24,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from .form import bar_profiles, plan_fit, plan_shape, return_fidelity
 from .musician import DELTAS, DURATIONS, MOOD_NAMES, mood_classes
 
 MOOD_WEIGHTS = np.array([1.0, 0.4, 0.8, 0.3, 0.6, 0.8, 0.4])  # mode, tempo, energy, dynamics, register, texture, tension
@@ -67,26 +73,48 @@ def health(tokens):
 
 
 class Listener:
-    """Scores futures and drafts. ``target_surprise`` is the brain's held-out surprise."""
+    """Scores futures, plans and drafts. ``target_surprise`` is the brain's held-out
+    surprise on real music; ``target_plan_surprise`` the plan head's (version 3)."""
 
-    def __init__(self, target_surprise, brief, tempo_bpm=100, *, weights=(1.0, 2.0, 1.0)):
+    def __init__(
+        self,
+        target_surprise,
+        brief,
+        tempo_bpm=100,
+        *,
+        weights=(1.0, 2.0, 1.0),
+        plan_weight=1.5,
+        target_plan_surprise=None,
+        form_weights=(1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+    ):
         self.target = float(target_surprise)
         self.brief = np.asarray(brief, dtype=int)
         self.tempo = tempo_bpm
         self.weights = weights
+        self.plan_weight = plan_weight
+        self.target_plan = None if target_plan_surprise is None else float(target_plan_surprise)
+        self.form_weights = form_weights  # plan coherence, contrast, climax, ending, return, return fidelity
 
-    def coherence(self, surprise):
+    @property
+    def mode(self):
+        return int(self.brief[0])
+
+    def coherence(self, surprise, target=None):
         surprise = np.asarray(surprise, float)
         if not len(surprise):
             return 0.0
-        return -abs(float(surprise.mean()) - self.target)
+        target = self.target if target is None else target
+        return -abs(float(surprise.mean()) - target)
 
-    def score(self, tokens, surprise):
+    def score(self, tokens, surprise, *, plan=None, prefix=(), bars_from=0):
+        """The local score of a passage. With ``plan`` (a ``(bars, 8)`` table) the passage
+        is heard after ``prefix`` (the piece before it) and its realised bars from
+        ``bars_from`` are compared with the plan."""
         coherence = self.coherence(surprise)
         fit, measured = mood_fit(tokens, self.brief, self.tempo)
         healthy, issues = health(tokens)
         wc, wf, wh = self.weights
-        return {
+        out = {
             "score": wc * coherence + wf * fit + wh * healthy,
             "coherence": coherence,
             "mean_surprise": float(np.mean(surprise)) if len(surprise) else 0.0,
@@ -95,8 +123,56 @@ class Listener:
             "health": healthy,
             "issues": issues,
         }
+        if plan is not None and len(tokens):
+            whole = [list(t) for t in prefix] + [list(t) for t in tokens]
+            realised = bar_profiles(whole, mode=self.mode)
+            window = slice(bars_from, len(realised))
+            out["plan_fit"] = plan_fit(realised[window], np.asarray(plan)[window])
+            out["score"] += self.plan_weight * out["plan_fit"]
+        return out
 
-    def rank(self, futures):
+    def rank(self, futures, **kwargs):
         """Scores of every future of an ``imagine`` result and the index of the best."""
-        scores = [self.score(t, s) for t, s in zip(futures["tokens"], futures["surprise"])]
+        scores = [self.score(t, s, **kwargs) for t, s in zip(futures["tokens"], futures["surprise"])]
         return scores, int(np.argmax([s["score"] for s in scores]))
+
+    # -- whole plans and whole pieces (version 3)
+
+    def score_plan(self, plan, plan_surprise):
+        """A plan before any note: the plan head's surprise near its target, and the
+        shape measures of the planned profiles."""
+        shape = plan_shape(plan)
+        wc, wk, wm, we, wr, _ = self.form_weights
+        coherence = self.coherence(plan_surprise, self.target_plan) if self.target_plan is not None else 0.0
+        return {
+            "score": wc * coherence + wk * shape["contrast"] + wm * shape["climax"] + we * shape["ending"] + wr * shape["return"],
+            "plan_coherence": coherence,
+            "mean_plan_surprise": float(np.mean(plan_surprise)) if len(plan_surprise) else 0.0,
+            **shape,
+        }
+
+    def score_piece(self, tokens, review, *, plan=None):
+        """A whole draft after listening back: the local score of the whole, plus (version 3)
+        the form measures on the realised bars and the fit to the plan."""
+        out = self.score(tokens, review["surprise"])
+        profiles = review.get("profiles")
+        if profiles is None or not len(tokens):
+            return out
+        shape = plan_shape(profiles)
+        wc, wk, wm, we, wr, wf = self.form_weights
+        plan_surprise = review.get("plan_surprise", np.zeros(0))
+        coherence = self.coherence(plan_surprise, self.target_plan) if self.target_plan is not None and len(plan_surprise) else 0.0
+        fidelity = return_fidelity(tokens, profiles)
+        form = wc * coherence + wk * shape["contrast"] + wm * shape["climax"] + we * shape["ending"] + wr * shape["return"] + wf * fidelity
+        out.update(
+            form=form,
+            plan_coherence=coherence,
+            mean_plan_surprise=float(np.mean(plan_surprise)) if len(plan_surprise) else 0.0,
+            return_fidelity=fidelity,
+            **shape,
+        )
+        if plan is not None:
+            out["plan_fit"] = plan_fit(profiles, plan)
+            form += self.plan_weight * out["plan_fit"]
+        out["score"] += form
+        return out

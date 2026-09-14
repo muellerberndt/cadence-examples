@@ -1,51 +1,52 @@
 # Cadence Composer
 
-A private music studio built around a trained Cadence brain. Describe a mood,
-rehearse alternative phrases, listen to a one-minute piano or orchestral sketch,
-and compare the draft with its revision. Teach a preference with **More like this**
-or **Less like this**. The live interface shows the actual brain's equation
-mismatch, population activity, motif writes and retained learning changes.
+A music studio built around a trained cadence brain, with a pretrained model. Describe a
+mood and the musician imagines continuations through its own predictions, listens to the
+whole draft, edits its weakest passage, and shows every neuron and every settling iteration
+in sync with playback. This folder is the example's full source: the brain, the trainers,
+the studio, the tests and the model data sheet.
 
-From this checkout, launch the trained studio with one command:
+## Run the studio
 
 ```sh
-../cadence/.venv/bin/python serve.py
+cd composer
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python tools/fetch_model.py                     # maestro-1, 4.46 GB, verified by SHA-256
+python serve_musician.py --checkpoint checkpoints/maestro-1/brain.npz
 ```
 
-Open **http://127.0.0.1:8078**. In a fresh environment, install
-`requirements.txt` in a virtual environment first. The checkpoint, MIDI corpus,
-SoundFont and generated recordings stay under ignored local directories; this
-repository has no public remote. Read [the brain design](BRAIN.md) and
-[the evidence](EVIDENCE.md) for what is learned and what remains supplied.
+Open **http://127.0.0.1:8079**. On Apple silicon add `--backend torch --device mps`; on a
+CUDA machine `--backend torch --device cuda`. Loading the checkpoint and laying out the
+brain takes a few minutes. The model, the MIDI corpus, the SoundFont and generated
+recordings stay under ignored local directories (`checkpoints/`, `data/`, `runs/`).
+What the model is, what it was trained on and how it measures: [MODEL_CARD.md](MODEL_CARD.md).
+
+The older phrase-planning studio (`serve.py`, port **8078**) runs on
+the small `phrase-composer` model (`python tools/fetch_model.py --model phrase-composer`,
+then `python serve.py`). Its design and evidence: [BRAIN.md](BRAIN.md), [EVIDENCE.md](EVIDENCE.md).
 
 The browser's language input is a bounded keyword parser: piano/orchestral/baroque,
 sad/minor/dark, calm/gentle/slow, bright/heroic/energetic. “Cinematic orchestral”
 selects broad instrumentation and mood. It is not an unrestricted language model
 or a model of a particular composer's style.
 
-## The musician (2026-09-14)
+## The musician: maestro-1
 
-A second brain, built from scratch as wired cortices (ear, belt, melody, harmony, rhythm,
-timbre, form, phrase, working memory, form record, intention) that learns by imitation of
-whole pieces as streams, takes a mood input, imagines continuations through its own
-predictions, listens back to the whole draft and edits its weakest passages. Design and
-measurements: [MUSICIAN.md](MUSICIAN.md). Its own studio shows it composing live with
-every neuron and synapse mapped and every settling iteration replayed in sync with playback:
-
-```sh
-../cadence/.venv/bin/python serve_musician.py --checkpoint runs/large-v2/brain.npz --backend torch --device mps
-```
-
-Open **http://127.0.0.1:8079**. Reproduce its training on a GPU machine:
+The musician is one brain built from scratch as wired cortices (ear, interval sense,
+melody, harmony, rhythm, timbre, form, phrase, working memory, form record, piece trace,
+intention) that learns by imitation of whole pieces as streams, takes a mood input,
+imagines continuations through its own predictions, listens back to the whole draft and
+edits its weakest passages. Design and measurements: [MUSICIAN.md](MUSICIAN.md); the
+pretrained model's data sheet: [MODEL_CARD.md](MODEL_CARD.md). Reproduce its training on
+a GPU machine (the corpus is prepared from PDMX by `tools/acquire.py`):
 
 ```sh
 python tools/prepare_musician.py --workers 44 --name musician
-python tools/prepare_musician.py --composers all --name musician-focus
-python tools/train_musician.py --name large-v2-nobelt --version 2 --no-belt --batch 256 --updates 50000 --eta 0.001 --eta-final 0.0002 --decay 0.00001 --rollback 1.15 --device cuda:0
-python tools/train_musician.py --name large-focus --version 2 --no-belt --resume runs/large-v2-nobelt/brain.npz --focus musician-focus --focus-share 0.4 --eta 0.0004 --eta-final 0.0001 --updates 12000 --evaluate-every 1000 --rollback 1.15 --device cuda:1
-python tools/practice_musician.py --checkpoint runs/large-focus/brain.npz --name large-practice --rounds 40 --pieces 6 --bars 12 --own-scale 0.25 --guard 1.03 --device cuda:2
-python tools/baseline_musician.py --name gru-control --hidden 1024 --batch 256 --updates 60000 --device cuda:3
-python tools/compose_musician.py --checkpoint runs/large-practice/brain.npz --mood "a bright, heroic, loud orchestral theme" --bars 32 --record --render --settle 48
+python tools/train_musician.py --name large-v2-nobelt --version 2 --no-belt --batch 256 --updates 50000 --evaluate-every 2000 --tonic 1.0 --eta 0.001 --eta-final 0.0002 --decay 0.00001 --rollback 1.15 --device cuda:0
+python tools/baseline_musician.py --name gru-control --hidden 1024 --batch 256 --updates 60000 --device cuda:1
+python tools/practice_musician.py --checkpoint runs/large-v2-nobelt/brain.npz --name large-practice --rounds 40 --pieces 6 --bars 12 --own-scale 0.25 --guard 1.03 --device cuda:2
+python tools/compose_musician.py --checkpoint checkpoints/maestro-1/brain.npz --mood "a bright, heroic, loud orchestral theme" --bars 32 --record --render --settle 48
 ```
 
 ## Use the studio

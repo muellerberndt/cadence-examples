@@ -1,4 +1,4 @@
-"""Private local composer studio. Launch: ../cadence/.venv/bin/python serve.py"""
+"""The phrase-planning composer studio (port 8078). Launch: python serve.py"""
 
 import argparse
 import gzip

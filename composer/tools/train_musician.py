@@ -5,6 +5,12 @@ One GPU per run. Every update advances every stream by one event: one free phase
 the previous equilibrium, two nudged phases, one local update. No autograd graph or
 backpropagation is constructed. A stream whose piece ended starts the next piece from
 a reset working memory, form record and warm state.
+
+Design version 3 (``--version 3``) adds the plan: every row also hears the profile of
+the bar it is in (absent for a ``--plan-dropout`` share of the rows) and the profiles of
+the eight bars before, the theme record is read at the bar's measured return lag, and the
+labels carry the eight profile classes for the plan head. The prepared dataset must have
+``bars.npy``, ``bar_offsets.npy`` and ``event_bar.npy`` (``tools/prepare_musician.py``).
 """
 
 import argparse
@@ -18,7 +24,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from composer.musician import SIZES, WINDOW, Design, build, describe
+from composer.form import PLAN_WIDTHS, history_of
+from composer.musician import SIZES, WINDOW, Conditioning, Design, build, describe
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,12 +33,18 @@ ROOT = Path(__file__).resolve().parents[1]
 class Streams:
     """Pieces of one split, walked in parallel: each row owns one piece and one position."""
 
-    def __init__(self, path, split, batch, rng, *, cap=1024):
+    def __init__(self, path, split, batch, rng, *, cap=1024, plan_dropout=0.0):
         folder = Path(path) / split
         self.tokens = np.load(folder / "tokens.npy", mmap_mode="r")
         self.sense = np.load(folder / "sense.npy", mmap_mode="r")
         self.mood = np.load(folder / "mood.npy")
         self.offsets = np.load(folder / "offsets.npy")
+        self.planned = (folder / "bars.npy").exists()
+        if self.planned:
+            self.bars = np.load(folder / "bars.npy", mmap_mode="r")
+            self.bar_offsets = np.load(folder / "bar_offsets.npy")
+            self.event_bar = np.load(folder / "event_bar.npy", mmap_mode="r")
+        self.plan_dropout = plan_dropout
         self.pieces = len(self.offsets) - 1
         self.rng = rng
         self.cap = cap
@@ -79,8 +92,9 @@ class Streams:
         return self.batch_rows()
 
     def batch_rows(self):
-        """The current event of every row: context, sense, mood, label, and which rows
-        just started a new piece (their stream state must be reset before this event)."""
+        """The current event of every row: context, sense, mood, label, which rows just
+        started a new piece (their stream state must be reset before this event), and the
+        version-3 conditioning (``None`` for a dataset without bar profiles)."""
         fresh = self.fresh.copy()
         # a row a mixer has handed to another pool keeps a stale position here; clamp it
         at = np.minimum(self.position, len(self.tokens) - 1)
@@ -88,7 +102,24 @@ class Streams:
         sense = self.sense[at]
         mood = self.mood[self.piece]
         labels = self.tokens[at].astype(np.int64)
-        return context, np.asarray(sense), mood, labels, fresh
+        conditioning = None
+        if self.planned:
+            bar = self.event_bar[at].astype(int)
+            plans, histories, lags = [], [], []
+            for row, (piece, b) in enumerate(zip(self.piece, bar)):
+                table = self.bars[self.bar_offsets[piece] : self.bar_offsets[piece + 1]]
+                b = min(int(b), len(table) - 1)
+                bar[row] = b
+                plans.append(table[b])
+                histories.append(history_of(table, b))
+                lags.append(int(table[b, 7]))
+            plans = np.array(plans, dtype=int)
+            labels = np.concatenate([labels, plans], axis=1)
+            shown = plans.copy()
+            if self.plan_dropout:
+                shown[self.rng.random(self.batch) < self.plan_dropout] = -1
+            conditioning = Conditioning(shown, np.array(histories), bar, np.array(lags))
+        return context, np.asarray(sense), mood, labels, fresh, conditioning
 
     def advance(self):
         self.fresh[:] = False
@@ -112,6 +143,7 @@ class Mixed:
     def __init__(self, general, focus, share, rng):
         self.general, self.focus, self.share, self.rng = general, focus, share, rng
         self.batch = general.batch
+        self.planned = general.planned and focus.planned
         self.is_focus = np.zeros(self.batch, bool)
         self.events_seen = 0
         self.pieces_seen = 0
@@ -129,11 +161,18 @@ class Mixed:
         f = self.focus.batch_rows()
         m = self.is_focus
         out = []
-        for a, b in zip(g, f):
+        for a, b in zip(g[:5], f[:5]):
             c = np.array(a)
             c[m] = np.asarray(b)[m]
             out.append(c)
-        return tuple(out)
+        conditioning = None
+        if g[5] is not None and f[5] is not None:
+            rows = np.flatnonzero(m)
+            conditioning = g[5]
+            for name in ("plan", "bars", "bar", "lag"):
+                mine = getattr(conditioning, name)
+                mine[rows] = getattr(f[5], name)[rows]
+        return (*out, conditioning)
 
     def advance(self):
         for pool, mine in ((self.general, ~self.is_focus), (self.focus, self.is_focus)):
@@ -148,27 +187,37 @@ class Mixed:
 
 def evaluate(musician, streams, *, updates=192):
     """Held-out streams heard from their start without learning: mean surprise per slot
-    over every event after the first ``WINDOW`` of each piece."""
+    over every event after the first ``WINDOW`` of each piece. ``mean_nll`` covers the five
+    event slots (comparable across designs); ``plan_nll`` the eight plan classes (version
+    3, with the plan input absent, as when composing)."""
     state = musician.fresh(streams.batch)
-    losses = np.zeros(len(SIZES))
-    correct = np.zeros(len(SIZES))
+    slots = len(musician.slots)
+    losses = np.zeros(slots)
+    correct = np.zeros(slots)
     count = 0
     for _ in range(updates):
-        context, sense, mood, labels, fresh = streams.batch_rows()
+        context, sense, mood, labels, fresh, conditioning = streams.batch_rows()
+        if conditioning is not None:
+            conditioning.plan[:] = -1
         state.reset_rows(np.flatnonzero(fresh))
-        probabilities, free = musician.predict(context, sense, mood, state)
+        probabilities, free = musician.predict(context, sense, mood, state, conditioning)
         for k, p in enumerate(probabilities):
+            if k >= labels.shape[1]:
+                break
             losses[k] -= np.log(p[np.arange(len(labels)), labels[:, k]].clip(1e-12)).sum()
             correct[k] += (p.argmax(1) == labels[:, k]).sum()
         count += len(labels)
-        musician.advance(state, free, sense)
+        musician.advance(state, free, sense, conditioning)
         streams.advance()
-    return {
+    out = {
         "nll": (losses / count).tolist(),
-        "mean_nll": float(losses.sum() / count / len(SIZES)),
+        "mean_nll": float(losses[: len(SIZES)].sum() / count / len(SIZES)),
         "accuracy": (correct / count).tolist(),
         "events": int(count),
     }
+    if slots > len(SIZES):
+        out["plan_nll"] = float(losses[len(SIZES) :].sum() / count / len(PLAN_WIDTHS))
+    return out
 
 
 def main():
@@ -193,7 +242,9 @@ def main():
     p.add_argument("--decay", type=float, default=1e-6, help="per-update shrink of every plastic synapse and bias")
     p.add_argument("--normalize", type=float, default=0.98, help="RMS normalisation of the step; 0 for plain momentum steps")
     p.add_argument("--rollback", type=float, default=1.15, help="restore the best checkpoint and halve the step when held-out surprise exceeds best × this (0: off)")
-    p.add_argument("--version", type=int, default=1, help="2: interval sense, slow piece trace, form cortex")
+    p.add_argument("--version", type=int, default=1, help="2: interval sense, slow piece trace, form cortex; 3: the plan and the theme record")
+    p.add_argument("--piece-decay", type=float, default=None, help="decay of the slow piece trace (default 0.98; 0.995 for version 3)")
+    p.add_argument("--plan-dropout", type=float, default=0.5, help="version 3: share of rows that learn without the plan input")
     p.add_argument("--updates", type=int, default=30000)
     p.add_argument("--batch", type=int, default=128)
     p.add_argument("--evaluate-every", type=int, default=1000)
@@ -209,6 +260,7 @@ def main():
         import torch
 
         torch.set_num_threads(4)
+    piece_decay = a.piece_decay if a.piece_decay is not None else (0.995 if a.version >= 3 else 0.98)
     design = Design(
         a.cortex,
         a.phrase,
@@ -225,6 +277,8 @@ def main():
         nudged_steps=a.nudged_steps,
         decay=a.decay,
         normalize=a.normalize,
+        piece_decay=piece_decay,
+        plan_dropout=a.plan_dropout,
     )
     from composer.musician import Musician
 
@@ -235,15 +289,19 @@ def main():
         musician = build(design, backend=a.backend, device=a.device)
     if a.settle:
         musician.settle_steps = a.settle
+    dropout = musician.design.plan_dropout if musician.planned else 0.0
     folder = ROOT / "runs" / a.name
     folder.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(a.seed)
-    training = Streams(ROOT / "data" / a.dataset, "train", a.batch, rng)
+    training = Streams(ROOT / "data" / a.dataset, "train", a.batch, rng, plan_dropout=dropout)
+    if musician.planned and not training.planned:
+        raise SystemExit("design version 3 needs a dataset prepared with bar profiles (tools/prepare_musician.py)")
     if a.focus:
-        training = Mixed(training, Streams(ROOT / "data" / a.focus, "train", a.batch, np.random.default_rng(a.seed + 1)), a.focus_share, rng)
-    validation = Streams(
-        ROOT / "data" / a.dataset, "validation", 64, np.random.default_rng(7), cap=256
-    )
+        training = Mixed(training, Streams(ROOT / "data" / a.focus, "train", a.batch, np.random.default_rng(a.seed + 1), plan_dropout=dropout), a.focus_share, rng)
+
+    def held_out(dataset, batch, cap, seed=7):
+        return Streams(ROOT / "data" / dataset, "validation", batch, np.random.default_rng(seed), cap=cap)
+
     receipt = {
         "design": asdict(musician.design),
         "brain": describe(musician),
@@ -259,11 +317,13 @@ def main():
         "device": a.device,
         "sources": {
             str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in [Path(__file__), ROOT / "composer/musician.py", ROOT / "tools/prepare_musician.py"]
+            for path in [Path(__file__), ROOT / "composer/musician.py", ROOT / "composer/form.py", ROOT / "tools/prepare_musician.py"]
         },
         "objective": (
             "Next-event imitation of whole pieces as streams: pitch, duration, time to next "
-            "attack, instrument family and velocity. Held-out surprise is not a musical-quality score."
+            "attack, instrument family and velocity"
+            + ("; and the eight profile classes of the bar being written (the plan head)" if musician.planned else "")
+            + ". Held-out surprise is not a musical-quality score."
         ),
         "history": [],
     }
@@ -282,11 +342,11 @@ def main():
         if a.eta_final is not None:
             eta = (a.eta + (a.eta_final - a.eta) * update / max(1, a.updates - 1)) * scale
             musician.learner.config = _replace(musician.learner.config, eta=eta, eta_bias=eta / 10)
-        context, sense, mood, labels, fresh = training.random_rows() if a.iid else training.batch_rows()
+        context, sense, mood, labels, fresh, conditioning = training.random_rows() if a.iid else training.batch_rows()
         if a.focus:
             fresh = np.where(training.is_focus, training.focus.fresh, training.general.fresh)
         state.reset_rows(np.flatnonzero(fresh))
-        learned, report = musician.learn(context, sense, mood, labels, state, warm=not a.no_warm)
+        learned, report = musician.learn(context, sense, mood, labels, state, warm=not a.no_warm, conditioning=conditioning)
         if update % 50 == 0:
             act = np.atleast_2d(learned.free.activation)
             cortex = act[:, list(musician.populations["phrase"])]
@@ -299,9 +359,9 @@ def main():
         training_seconds += time.monotonic() - tick
         window.append(report.get("free_steps", 0))
         if (update + 1) % a.evaluate_every == 0 or update == a.updates - 1:
-            measured = evaluate(musician, Streams(ROOT / "data" / a.dataset, "validation", 64, np.random.default_rng(7), cap=256))
+            measured = evaluate(musician, held_out(a.dataset, 64, 256))
             if a.focus:
-                measured["focus"] = evaluate(musician, Streams(ROOT / "data" / a.focus, "validation", 28, np.random.default_rng(7), cap=512), updates=256)
+                measured["focus"] = evaluate(musician, held_out(a.focus, 28, 512), updates=256)
             row = {
                 "update": update + 1,
                 "seconds": time.monotonic() - started,
@@ -333,6 +393,8 @@ def main():
             if selected < best:
                 best = selected
                 musician.save(folder / "brain.npz")
+                if "plan_nll" in row:
+                    receipt["best_plan_nll"] = row["plan_nll"]
             musician.save(folder / "latest.npz")
             receipt.update(
                 best_validation_nll=best,
@@ -345,7 +407,6 @@ def main():
                 break
     receipt["complete"] = True
     (folder / "receipt.json").write_text(json.dumps(receipt, indent=2))
-    _ = validation
 
 
 if __name__ == "__main__":

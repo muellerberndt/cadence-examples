@@ -94,8 +94,8 @@ Every arrow is a block of actual synapses. The two memory regions receive no syn
 the working memory is written by a `Trace` after each real event, the form record by a
 `FastSynapses` delta rule at the start of each bar; both enter the next equilibrium as
 stimulus and the phrase cortex reads them through learned synapses. This is the
-[fading context](../cadence/docs/patterns.md#fading-context) and
-[records addressed by time](../cadence/docs/patterns.md#records-addressed-by-time)
+[fading context](https://github.com/muellerberndt/cadence/blob/main/docs/notes/patterns.md#fading-context) and
+[records addressed by time](https://github.com/muellerberndt/cadence/blob/main/docs/notes/patterns.md#records-addressed-by-time)
 patterns inside one joint solve.
 
 ## What the mood input is

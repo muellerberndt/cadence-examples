@@ -6,3 +6,4 @@ data/
 *_receipt.json
 train.log
 runs/
+checkpoints/

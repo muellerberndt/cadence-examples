@@ -1,10 +1,16 @@
-"""Prepare whole pieces as event streams for the musician: tokens, causal senses, mood.
+"""Prepare whole pieces as event streams for the musician: tokens, causal senses, mood,
+and (for design version 3) the bar profiles of every piece.
 
 Each accepted PDMX score becomes one stream: its events in fixed order, the sense row
 that describes the moment before each event (computed by the same ``Senses`` the
-composer uses when it plays), and seven measured mood classes of the whole piece.
-PDMX uploader license metadata is retained verbatim; it does not independently
-establish underlying composition rights. Private research corpus.
+composer uses when it plays), seven measured mood classes of the whole piece, the
+absolute bar of every event and the eight-class profile of every bar
+(``composer/form.py``). PDMX uploader license metadata is retained verbatim; it does not
+independently establish underlying composition rights. Private research corpus.
+
+    python tools/prepare_musician.py --workers 44 --name musician              # deduplicated PD/CC0 pool
+    python tools/prepare_musician.py --workers 44 --name musician-full --pool full   # every PD/CC0 file without a license conflict
+    python tools/prepare_musician.py --composers all --name musician-focus     # a named-composer subset
 """
 
 import argparse
@@ -20,6 +26,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from composer.encoding import tonal_center
+from composer.form import PLAN_WIDTHS, bar_profiles
 from composer.musician import (
     DELTAS,
     DURATIONS,
@@ -97,21 +104,27 @@ def parse(item):
                 ]
             )
             previous = start
-        tokens = np.asarray(tokens, np.uint8)
+        tokens = np.asarray(tokens, np.uint8)[:cap]
         total = int(DELTAS[tokens[:, 2]].sum() + DURATIONS[tokens[-1, 1]])
         senses = Senses(total)
         raw = np.empty((len(tokens), SENSE_RAW), np.uint8)
+        event_bar = np.empty(len(tokens), np.uint16)
         for i, token in enumerate(tokens):
             raw[i] = senses.raw()
+            event_bar[i] = min(senses.bar, 65535)
             senses.observe(token)
+        profiles = bar_profiles(tokens, mode=int(mode), bars=int(event_bar.max()) + 1)
         return (
-            tokens[:cap],
-            raw[:cap],
+            tokens,
+            raw,
             mood,
+            event_bar,
+            profiles,
             {
                 **meta,
                 "notes": len(notes),
-                "events": int(min(cap, len(tokens))),
+                "events": int(len(tokens)),
+                "bars": int(len(profiles)),
                 "key": int(key),
                 "mode": int(mode),
                 "tempo_bpm": float(tempo or 120.0),
@@ -134,10 +147,12 @@ FOCUS = {
 }
 
 
-def selection(limit, composers=None):
-    """The public-domain pool, or with ``composers`` every deduplicated score whose composer,
-    artist or title matches one of the FOCUS patterns (a private research subset: uploader
-    license labels of arrangements are not a rights clearance)."""
+def selection(limit, composers=None, pool="deduplicated"):
+    """The public-domain pool (``deduplicated``: one file per composition family; ``full``:
+    every file without a license conflict, arrangements included), or with ``composers``
+    every deduplicated score whose composer, artist or title matches one of the FOCUS
+    patterns (a private research subset: uploader license labels of arrangements are not a
+    rights clearance)."""
     import re
 
     selected = []
@@ -148,13 +163,14 @@ def selection(limit, composers=None):
             if not match or row.get("subset:deduplicated", "").lower() != "true":
                 continue
             row = {**row, "focus": match[0]}
-        elif not (
-            row.get("license") in ("publicdomain", "cc-zero")
-            and row.get("license_conflict", "").lower() == "false"
-            and row.get("subset:no_license_conflict", "").lower() == "true"
-            and row.get("subset:deduplicated", "").lower() == "true"
-        ):
-            continue
+        else:
+            clean = (
+                row.get("license") in ("publicdomain", "cc-zero")
+                and row.get("license_conflict", "").lower() == "false"
+                and row.get("subset:no_license_conflict", "").lower() == "true"
+            )
+            if not clean or (pool == "deduplicated" and row.get("subset:deduplicated", "").lower() != "true"):
+                continue
         family_key = row.get("best_path") or row.get("song_name") or row["path"]
         split_id = int(hashlib.sha256(family_key.encode()).hexdigest()[:8], 16) % 20
         meta = {
@@ -184,55 +200,64 @@ def selection(limit, composers=None):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--limit", type=int, default=100000)
+    p.add_argument("--limit", type=int, default=300000)
     p.add_argument("--per-piece", type=int, default=4096)
     p.add_argument("--workers", type=int, default=6)
     p.add_argument("--name", default="musician")
+    p.add_argument("--pool", choices=("deduplicated", "full"), default="deduplicated")
     p.add_argument("--composers", nargs="*", help="focus subset: names from FOCUS, or 'all'")
     a = p.parse_args()
     composers = list(FOCUS) if a.composers == ["all"] else a.composers
-    selected = selection(a.limit, composers)
+    selected = selection(a.limit, composers, a.pool)
     out = ROOT / "data" / a.name
     out.mkdir(parents=True, exist_ok=True)
-    parts = {s: {"tokens": [], "sense": [], "mood": [], "pieces": []} for s in ["train", "validation", "test"]}
+    parts = {s: {"tokens": [], "sense": [], "mood": [], "event_bar": [], "bars": [], "pieces": []} for s in ["train", "validation", "test"]}
     errors = []
     with ProcessPoolExecutor(max_workers=a.workers) as pool:
         for i, r in enumerate(pool.map(parse, ((m, a.per_piece) for m in selected), chunksize=8)):
             if isinstance(r, dict):
                 errors.append(r)
             elif r is not None:
-                tokens, raw, mood, meta = r
+                tokens, raw, mood, event_bar, profiles, meta = r
                 part = parts[meta["split"]]
                 part["tokens"].append(tokens)
                 part["sense"].append(raw)
                 part["mood"].append(mood)
+                part["event_bar"].append(event_bar)
+                part["bars"].append(profiles)
                 part["pieces"].append(meta)
             if (i + 1) % 2000 == 0:
                 print(
                     json.dumps({"parsed": i + 1, "accepted": sum(len(v["pieces"]) for v in parts.values())}),
                     flush=True,
                 )
-    report = {"splits": {}, "errors": errors, "selected": len(selected), "window": WINDOW, "composers": composers}
+    report = {"splits": {}, "errors": errors, "selected": len(selected), "window": WINDOW, "composers": composers, "pool": a.pool, "plan_widths": list(PLAN_WIDTHS)}
     for split, part in parts.items():
         if not part["pieces"]:
             continue
         folder = out / split
         folder.mkdir(exist_ok=True)
         offsets = np.concatenate([[0], np.cumsum([len(t) for t in part["tokens"]])]).astype(np.int64)
+        bar_offsets = np.concatenate([[0], np.cumsum([len(b) for b in part["bars"]])]).astype(np.int64)
         np.save(folder / "tokens.npy", np.concatenate(part["tokens"]))
         np.save(folder / "sense.npy", np.concatenate(part["sense"]))
         np.save(folder / "mood.npy", np.stack(part["mood"]))
         np.save(folder / "offsets.npy", offsets)
+        np.save(folder / "event_bar.npy", np.concatenate(part["event_bar"]))
+        np.save(folder / "bars.npy", np.concatenate(part["bars"]))
+        np.save(folder / "bar_offsets.npy", bar_offsets)
         (folder / "pieces.json").write_text(json.dumps(part["pieces"], separators=(",", ":")))
-        report["splits"][split] = {"pieces": len(part["pieces"]), "events": int(offsets[-1])}
+        returns = np.concatenate(part["bars"])[:, 7] > 0
+        report["splits"][split] = {"pieces": len(part["pieces"]), "events": int(offsets[-1]), "bars": int(bar_offsets[-1]), "return_share": float(returns.mean())}
     report["rights_status"] = (
         "PDMX uploader metadata retained; underlying composition rights are not independently "
         "verified. Private research corpus; no public checkpoint release clearance implied."
     )
     report["source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     report["musician_sha256"] = hashlib.sha256((ROOT / "composer/musician.py").read_bytes()).hexdigest()
+    report["form_sha256"] = hashlib.sha256((ROOT / "composer/form.py").read_bytes()).hexdigest()
     (out / "manifest.json").write_text(json.dumps(report, separators=(",", ":")))
-    print(json.dumps({k: report[k] for k in ["splits", "selected"]}), flush=True)
+    print(json.dumps({k: report[k] for k in ["splits", "selected", "pool"]}), flush=True)
 
 
 if __name__ == "__main__":

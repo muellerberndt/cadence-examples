@@ -65,7 +65,7 @@ def evaluate(model, streams, device, updates=192):
     count = 0
     with torch.no_grad():
         for _ in range(updates):
-            context, sense, mood, labels, fresh = streams.batch_rows()
+            context, sense, mood, labels, fresh, _conditioning = streams.batch_rows()
             h[torch.as_tensor(fresh, device=device)] = 0
             logits, h = model(*inputs(context, sense, mood, device), h)
             total += losses(logits, labels).sum(0).cpu().numpy()
@@ -122,7 +122,7 @@ def main():
     best = float("inf")
     accumulated, seen = 0.0, 0
     for update in range(a.updates):
-        context, sense, mood, labels, fresh = training.batch_rows()
+        context, sense, mood, labels, fresh, _conditioning = training.batch_rows()
         h = h.detach() if update % a.span == 0 else h
         h = h * (~torch.as_tensor(fresh, device=device)).float()[:, None]
         logits, h = model(*inputs(context, sense, mood, device), h)
