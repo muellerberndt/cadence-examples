@@ -547,6 +547,39 @@ def _copy_trace(trace, rows):
     return out
 
 
+def _carry_rows(state, source, rows):
+    """Write the rows of ``source`` (a state copied by ``copy_rows`` from ``rows``) back
+    into ``rows`` of ``state``: the traces, the record, the bar and the warm equilibrium."""
+    rows = np.asarray(rows)
+    for mine, theirs in ((state.trace, source.trace), (state.piece, source.piece)):
+        if mine is not None and theirs is not None:
+            mine.trace[rows] = theirs.trace
+            mine.last[rows] = theirs.last
+            mine.cold[rows] = theirs.cold
+    if state.memory is not None and source.memory is not None:
+        state.memory.strength[rows] = source.memory.strength
+        state.memory.mass[rows] = source.memory.mass
+    state.bar[rows] = source.bar
+    if state.warm is not None and source.warm is not None:
+        handle = getattr(state.warm, "device", None)
+        if isinstance(handle, dict) and "s" in handle:
+            import torch
+
+            index = torch.as_tensor(rows, device=handle["s"].device)
+            for key, name in (("s", "activation"), ("v", "v"), ("a", "adaptation")):
+                if key in handle and handle[key] is not None:
+                    value = getattr(source.warm, name)
+                    if value is not None:
+                        handle[key][index] = torch.as_tensor(np.asarray(value), device=handle[key].device, dtype=handle[key].dtype)
+            for name in ("v", "activation", "adaptation"):
+                state.warm.__dict__[name] = None
+        else:
+            for name in ("v", "activation", "adaptation"):
+                mine, theirs = state.warm.__dict__.get(name), getattr(source.warm, name)
+                if mine is not None and theirs is not None:
+                    mine[rows] = theirs
+
+
 def _zero_rows(state, rows):
     handle = getattr(state, "device", None)
     if isinstance(handle, dict) and "s" in handle:
@@ -847,7 +880,13 @@ class Musician:
                 surprise[j].append(nll / len(SIZES))
                 histories[j].append(token)
                 sensed[j].observe(token)
+            # a row whose future has ended hears nothing more: its working memory, record and
+            # warm state stay where its last event left them, exactly as a replay leaves them
+            idle = np.flatnonzero(~active)
+            kept = branch.copy_rows(idle) if len(idle) else None
             self.advance(branch, free, raw, conditioning)
+            if kept is not None:
+                _carry_rows(branch, kept, idle)
         return {
             "tokens": tokens,
             "surprise": surprise,

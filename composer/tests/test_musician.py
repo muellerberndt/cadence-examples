@@ -230,3 +230,24 @@ def test_version_two_design_round_trips_and_carries_two_memories(tmp_path):
     path = m.save(tmp_path / "v2.npz")
     back = Musician.load(path)
     assert back.design == design and "form" in back.populations
+
+
+def test_a_future_that_ended_carries_exactly_the_state_its_replay_leaves():
+    """Rows whose future reached ``stop_at`` early must not keep updating their working
+    memory, record or warm state while the other rows continue (audit 2026-09-15)."""
+    from composer.musician import Design, build, primed
+    from composer.perform import prime_tokens
+
+    musician = build(Design(cortex=32, phrase=24, embedding=8, seed=5, belt=False, version=2))
+    musician.settle_steps = 4
+    brief = np.array([0, 1, 1, 3, 1, 2, 0])
+    prime = prime_tokens(brief)
+    senses = primed(prime, 64)
+    rng = np.random.default_rng(2)
+    out = musician.imagine(prime, senses, brief, futures=3, horizon=12, rng=rng, state=musician.fresh(1), stop_at=16)
+    lengths = [len(t) for t in out["tokens"]]
+    for j, tokens in enumerate(out["tokens"]):
+        replayed, _, _ = musician.replay(prime, senses, musician.fresh(1), tokens, brief, lambda *a: None, total_steps=64)
+        assert np.allclose(out["state"].trace.trace[j], replayed.trace.trace[0], atol=1e-6), (j, lengths)
+        assert np.allclose(out["state"].memory.strength[j], replayed.memory.strength[0], atol=1e-6)
+        assert np.allclose(np.asarray(out["state"].warm.activation)[j], np.asarray(replayed.warm.activation)[0], atol=1e-5)
