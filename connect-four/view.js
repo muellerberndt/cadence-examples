@@ -257,7 +257,6 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     "connect-four/evidence.json";
   update();
   ponder();
-  window.addEventListener("pagehide", () => worker.terminate(), { once: true });
   return {
     draw(w, h) {
       const a = bounds(w, h);
