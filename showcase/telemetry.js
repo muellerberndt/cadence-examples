@@ -1,20 +1,40 @@
 // Read-only diagnostic replay. Never feeds rendered values back into a controller.
 export function repairTrace(source, release = false) {
+  if (source.blocks) {
+    const traces = source.blocks.map((p) =>
+      p.recurrent ? repairTrace(p, release) : { frames: [p.state] },
+    );
+    const count = Math.max(...traces.map((t) => t.frames.length));
+    const frames = Array.from({ length: count }, (_, i) =>
+      traces.flatMap((t) => t.frames[Math.min(i, t.frames.length - 1)]),
+    );
+    return {
+      frames,
+      residuals: frames.map((a, t) =>
+        t ? Math.max(...a.map((v, i) => Math.abs(v - frames[t - 1][i]))) : 0,
+      ),
+      release,
+    };
+  }
   const n = source.state.length,
     mask = source.mask ?? Array(n).fill(1),
     dt = source.dt ?? 1;
-  let state = release ? source.state.slice() : Array(n).fill(0);
+  let state = release
+    ? source.state.slice()
+    : (source.initialState?.slice() ?? Array(n).fill(0));
   let potential = release
     ? state.map((x) =>
         Math.atanh(Math.max(-0.999999999, Math.min(0.999999999, x))),
       )
-    : Array(n).fill(0);
+    : (source.initialPotential?.slice() ?? Array(n).fill(0));
   const drive = release ? Array(n).fill(0) : source.drive;
   for (let i = source.recurrentCount ?? n; i < n; i++)
     state[i] = source.state[i];
   const frames = [state.slice()],
     residuals = [0];
-  const steps = release ? Math.min(source.steps ?? 200, 400) : source.steps;
+  const steps = release
+    ? Math.max(80, Math.min(source.steps ?? 200, 400))
+    : source.steps;
   for (let t = 0; t < steps; t++) {
     const inbox = Array(n).fill(0);
     for (const [a, b, w] of source.edges) inbox[b] += w * state[a];

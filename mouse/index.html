@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <base href="../" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="showcase/style.css" />
     <link rel="icon" href="data:," />
   </head>
-  <body>
+  <body data-demo="mouse">
     <header>
       <a class="brand" href="index.html">C<span>·</span>ADENCE</a>
       <nav>
@@ -34,19 +35,15 @@
         </p>
       </div>
       <nav class="tabs" aria-label="Choose a demonstration">
-        <button data-tab="mouse" aria-pressed="true">
-          <b>01</b> Teachable mouse</button
-        ><button data-tab="arm" aria-pressed="false"><b>02</b> Eye & arm</button
-        ><button data-tab="fly" aria-pressed="false">
-          <b>03</b> Embodied forager</button
-        ><button data-tab="worm" aria-pressed="false">
-          <b>04</b> C. elegans habitat</button
-        ><button data-tab="memory" aria-pressed="false">
+        <a href="mouse/" data-tab="mouse" aria-current="page">
+          <b>01</b> Teachable mouse</a><a href="eye-arm/" data-tab="arm"><b>02</b> Eye & arm</a><a href="fly/" data-tab="fly">
+          <b>03</b> Embodied forager</a><a href="worm/" data-tab="worm">
+          <b>04</b> C. elegans habitat</a><a href="memory/" data-tab="memory">
           <b>05</b> Changing memory
-        </button>
-        <button data-tab="game" aria-pressed="false">
+        </a>
+        <a href="connect-four/" data-tab="game">
           <b>06</b> Connect Four reasoner
-        </button>
+        </a>
       </nav>
       <div class="workspace">
         <section class="lab" aria-label="Interactive demonstration">
@@ -260,6 +257,6 @@
         </nav>
       </footer>
     </main>
-    <script type="module" src="showcase/app.js"></script>
+    <script type="module" src="mouse/page.js"></script>
   </body>
 </html>

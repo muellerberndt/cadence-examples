@@ -1,0 +1,321 @@
+{
+  "schema": "cadence.connect-four/v1",
+  "conformance": [
+    {
+      "seed": 11,
+      "column": 4,
+      "optimal": [
+        4
+      ]
+    },
+    {
+      "seed": 12,
+      "column": 0,
+      "optimal": [
+        0
+      ]
+    },
+    {
+      "seed": 13,
+      "column": 3,
+      "optimal": [
+        3
+      ]
+    },
+    {
+      "seed": 14,
+      "column": 2,
+      "optimal": [
+        2
+      ]
+    },
+    {
+      "seed": 15,
+      "column": 3,
+      "optimal": [
+        3
+      ]
+    },
+    {
+      "seed": 16,
+      "column": 5,
+      "optimal": [
+        5
+      ]
+    },
+    {
+      "seed": 17,
+      "column": 5,
+      "optimal": [
+        5
+      ]
+    },
+    {
+      "seed": 18,
+      "column": 4,
+      "optimal": [
+        4
+      ]
+    },
+    {
+      "seed": 19,
+      "column": 6,
+      "optimal": [
+        6
+      ]
+    },
+    {
+      "seed": 20,
+      "column": 3,
+      "optimal": [
+        3
+      ]
+    },
+    {
+      "seed": 21,
+      "column": 3,
+      "optimal": [
+        3
+      ]
+    },
+    {
+      "seed": 22,
+      "column": 4,
+      "optimal": [
+        4
+      ]
+    },
+    {
+      "seed": 23,
+      "column": 2,
+      "optimal": [
+        2
+      ]
+    },
+    {
+      "seed": 24,
+      "column": 3,
+      "optimal": [
+        3
+      ]
+    },
+    {
+      "seed": 25,
+      "column": 2,
+      "optimal": [
+        2,
+        4
+      ]
+    },
+    {
+      "seed": 26,
+      "column": 2,
+      "optimal": [
+        2
+      ]
+    },
+    {
+      "seed": 27,
+      "column": 2,
+      "optimal": [
+        2
+      ]
+    },
+    {
+      "seed": 28,
+      "column": 4,
+      "optimal": [
+        4,
+        5
+      ]
+    },
+    {
+      "seed": 29,
+      "column": 0,
+      "optimal": [
+        0
+      ]
+    },
+    {
+      "seed": 30,
+      "column": 3,
+      "optimal": [
+        3
+      ]
+    }
+  ],
+  "games": [
+    {
+      "seed": 11,
+      "side": 1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 15,
+      "nodes": 76821,
+      "controlNodes": 48,
+      "extensions": 7
+    },
+    {
+      "seed": 11,
+      "side": 1,
+      "control": "four_ply",
+      "outcome": -1,
+      "moves": 28,
+      "nodes": 76354,
+      "controlNodes": 7642,
+      "extensions": 13
+    },
+    {
+      "seed": 11,
+      "side": -1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 12,
+      "nodes": 37409,
+      "controlNodes": 42,
+      "extensions": 4
+    },
+    {
+      "seed": 11,
+      "side": -1,
+      "control": "four_ply",
+      "outcome": 1,
+      "moves": 34,
+      "nodes": 95581,
+      "controlNodes": 9927,
+      "extensions": 15
+    },
+    {
+      "seed": 23,
+      "side": 1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 19,
+      "nodes": 117521,
+      "controlNodes": 63,
+      "extensions": 7
+    },
+    {
+      "seed": 23,
+      "side": 1,
+      "control": "four_ply",
+      "outcome": 1,
+      "moves": 31,
+      "nodes": 118073,
+      "controlNodes": 12627,
+      "extensions": 13
+    },
+    {
+      "seed": 23,
+      "side": -1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 10,
+      "nodes": 28122,
+      "controlNodes": 35,
+      "extensions": 3
+    },
+    {
+      "seed": 23,
+      "side": -1,
+      "control": "four_ply",
+      "outcome": -1,
+      "moves": 37,
+      "nodes": 106570,
+      "controlNodes": 11276,
+      "extensions": 15
+    },
+    {
+      "seed": 37,
+      "side": 1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 15,
+      "nodes": 74565,
+      "controlNodes": 49,
+      "extensions": 5
+    },
+    {
+      "seed": 37,
+      "side": 1,
+      "control": "four_ply",
+      "outcome": -1,
+      "moves": 30,
+      "nodes": 159641,
+      "controlNodes": 11803,
+      "extensions": 15
+    },
+    {
+      "seed": 37,
+      "side": -1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 6,
+      "nodes": 21355,
+      "controlNodes": 21,
+      "extensions": 2
+    },
+    {
+      "seed": 37,
+      "side": -1,
+      "control": "four_ply",
+      "outcome": 1,
+      "moves": 38,
+      "nodes": 99271,
+      "controlNodes": 9754,
+      "extensions": 16
+    },
+    {
+      "seed": 51,
+      "side": 1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 17,
+      "nodes": 83562,
+      "controlNodes": 56,
+      "extensions": 6
+    },
+    {
+      "seed": 51,
+      "side": 1,
+      "control": "four_ply",
+      "outcome": 1,
+      "moves": 23,
+      "nodes": 158393,
+      "controlNodes": 13470,
+      "extensions": 10
+    },
+    {
+      "seed": 51,
+      "side": -1,
+      "control": "one_ply",
+      "outcome": 1,
+      "moves": 16,
+      "nodes": 70175,
+      "controlNodes": 56,
+      "extensions": 5
+    },
+    {
+      "seed": 51,
+      "side": -1,
+      "control": "four_ply",
+      "outcome": 1,
+      "moves": 30,
+      "nodes": 120458,
+      "controlNodes": 12060,
+      "extensions": 12
+    }
+  ],
+  "monitor_control": {
+    "on_depth": 6,
+    "off_depth": 4,
+    "on_nodes": 9192,
+    "off_nodes": 800
+  },
+  "sources": {
+    "connect-four/brain.js": "6dae98e09ccf2de1ffaafa2fdb8c30c1d48d9478ba8ade94fdc90ea900284d74",
+    "connect-four/benchmark.mjs": "512272f3eb956cd7ec8e33937ea70d5955b7a94b7b3568958ad72cb4c8292b93",
+    "showcase/nervous_system.js": "75e76844d838b41a5d992a7a93c290709f20ec4ecf5f977935de2555b9184601"
+  },
+  "boundary": "Supplied game rules and threat evaluator. Adversarial search is explicit; conventional minimax with the same evaluator can match it. Finite-depth play, not a solved or learned world model."
+}

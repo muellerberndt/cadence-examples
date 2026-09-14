@@ -1,4 +1,4 @@
-import { WormArena } from "./worm_arena.js";
+import { WormArena } from "./brain.js";
 
 let retainedHabitat;
 
@@ -278,16 +278,7 @@ export function mountWorm({ data, $, ctx, metrics, explain }) {
           : arena.status.includes("Following")
             ? { label: "Seeking food", tone: "seeking" }
             : { label: "No usable food cue", tone: "neutral" },
-      state: arena.state,
-      drive: arena.drive,
-      mask: arena.mask,
-      edges: arena.data.edges,
-      names: arena.data.names,
-      groups: arena.data.groups,
-      recurrent: true,
-      steps: 200,
-      memory:
-        "Live odor-driven circuit. Release input probes reverberation in an isolated copy. The habitat does not use a trained memory or change synaptic weights.",
+      ...arena.brain(),
     }),
     snapshot: () => ({ ...arena.snapshot(), paused }),
   };

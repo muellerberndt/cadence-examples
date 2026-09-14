@@ -1,197 +1,137 @@
 # Cadence live systems
 
-Five interactive experiments make state, feedback and learning visible. Run
-`python serve.py` from the repository root, then open the printed address. The
-browser needs no Python packages, account, GPU or remote model service. Open the
-HTML through the local server so the browser can load the model files.
+Six separate browser examples expose observer-like software patches: bounded
+local state, ports, readback, retained records and feedback. Each page puts the
+actual circuit beside the task at the top on desktop; mobile stacks the panels.
 
 ## Launch any demo
 
-From the repository root:
-
-```bash
-python serve.py mouse
-python serve.py eye-arm
-python serve.py fly
-python serve.py worm
-python serve.py memory
-```
-
-Each command starts its website on an available local port and opens the browser.
-Use `--no-browser` to print the URL instead. `python serve.py` defaults to mouse.
+From the repository root, run `python serve.py eye-arm`, `python serve.py mouse`,
+`python serve.py worm`, `python serve.py fly`, `python serve.py memory`, or `python serve.py connect-four`.
+Python 3.11+ is enough to serve them. No account, packages or GPU are required.
+The launcher opens the example's own directory URL on an available local port.
+Use `--no-browser` to print the address. Open `/` for the gallery.
 
 ## A two-minute demonstration
 
-1. **Teachable mouse:** select **New task**, demonstrate **Flag**, then choose
-   **Perform task**. The mouse recalls its new goal and navigates there. Choose
-   **New maze** to transfer the same task to a different layout. Revise its
-   destination, then perform an earlier task to check retention.
-2. **Eye & arm:** watch a flower outline emerge, then **Disturb a joint**. Visual
-   error and motor correction settle together and repair the next movement.
-   Repeat with **Feedback off**. Upload an image to supply your own outline.
-3. **Embodied forager:** let the agents encounter flowers, then **Change nectar**.
-   New encounters revise their preferences. Drag flowers to change the body loop.
-4. **C. elegans habitat:** choose **Food** and click to place a patch. Choose
-   **Wall** and drag a barrier; use **Eraser** to open a passage. Turn **Smell off**
-   to interrupt cue-driven movement. Switch to **Circuit** to stimulate sensory
-   groups, remove neurons and compare against the trained MLP.
-5. **Changing memory:** teach a key, replace its value, and query other keys.
-   Increase key similarity to expose interference rather than hiding it.
+1. **Eye & arm:** clear the left pad and draw a simple mark. The eye reads its
+   pixels; the arm raises the pencil, moves its joints and lowers it to draw.
+   Disable **Pencil motors** after **Copy again**: no ink appears. Restore them,
+   then disturb a joint to watch feedback correct the pose.
+2. **Mouse:** teach the fourth task, perform it, then change a corridor. Task
+   memory retains the lesson while spatial and motor state update. Disable
+   **Motor neurons** to stop the body. New maze retains the task lessons.
+3. **Worm:** place food and draw a wall. Odor, chemical-circuit activity and
+   directional motor neurons determine the next body step. Open a passage to
+   restore access to sealed-off food. Switch to Circuit to inspect the supplied
+   chemical network and its MLP comparator.
+4. **Forager:** watch nectar contact update memory, then change the nectar.
+   Motor populations turn and propel the body toward selected flowers.
+5. **Memory:** replace an observed value and compare retention against online
+   MLP updates on the same observations.
 
-Task demonstrations persist in this browser's local storage. The mouse's first
-three cue/destination pairs are supplied demonstrations; the fourth starts
-untaught. A named cue is an explicit key, not natural-language understanding.
-The worm habitat retains edits while you switch views or tabs; a page reload
-starts it fresh. The arm, forager and memory demos reset when reopened. No experience is
-uploaded. The five websites above are the current public examples.
+6. **Connect Four:** select **Watch before moving**, play a column, and inspect
+   the predicted replies before executing the preferred move. Disable the
+   self-monitor to cap the normal search at four plies.
 
 ## Ready to run and watch learning
 
-All five demos ship with the assets needed to run immediately in the browser.
-They do not all use trained checkpoints: some learn from your observations,
-while others execute a supplied mechanism. No installation of Cadence or model
-training is needed for the browser experience.
-
-| Demo | Starting state | What you can observe |
+| Example | Initial state | What changes |
 |---|---|---|
-| Teachable mouse | Three supplied task demonstrations and a working navigation rule; additional lessons reload from this browser | **Teach task** performs a residual memory write. **Perform task** uses the recalled goal; **New maze** tests transfer. Revise a cue and check earlier tasks. |
-| Eye & arm | Working visual/motor controller, supplied arm geometry and built-in outlines | **Disturb a joint** and toggle **Feedback** to watch correction. This changes activity and movement, not learned weights. Image upload supplies new edge targets. |
-| Fly-inspired forager | Working body and steering; fresh nectar memory and a randomly initialized MLP | Encounters reveal nectar and update each learner live. **Change nectar** tests revision; **Pause** freezes the scene. |
-| C. elegans habitat and circuit | Public chemical topology, supplied body/sensory rules and trained MLP circuit comparator | Paint food and walls, watch contact consumption, disable smell, then inspect circuit stimulation and lesions. No weight training occurs in this view. |
-| Changing memory | Blank fast memory and a randomly initialized MLP | **Teach once** exposes individual updates; **Run stream** automates observations and updates accuracy. **Clear** restarts. |
+| Eye & arm | Supplied geometry and pixel/motor circuit; a sample drawing | Retinal, error, motor and proprioceptive activity; no weight training |
+| Mouse | Three cue/destination demonstrations | New task associations persist in browser storage; field and motor state follow the body |
+| Worm | Public chemical graph plus an engineered directional motor circuit | Odor and body/circuit state; fixed weights |
+| Forager | Working sensor/motor loop, blank nectar memory | Contact reveals nectar and changes associative weights |
+| Connect Four | Supplied game rules, threat evaluator and monitor | Hypothetical boards, option values and budget readback; no weight training |
+| Memory | Blank record store and randomly initialized MLP | Both update on each demonstrated key/value pair |
 
-Open `python serve.py worm` to go directly to C. elegans. Its graph contains
-297 participating annotated neurons and 3,604 chemical edges. Its habitat wraps
-the circuit in an engineered body; it is not a validated whole-animal model. The forager is fly-inspired,
-with supplied planar sensors and movement.
+The memory example isolates a subsystem; it has no invented body. The embodied
+examples implement the complete **task controller**, with supplied encodings,
+attention/readout rules, wiring and physical bodies. They do not reconstruct
+complete biological brains, learned perception or learned anatomy.
 
 ## Why Cadence fits each task
 
-| Demo | Useful Cadence property | Advantage and relevant alternatives |
-|---|---|---|
-| Mouse | Task records remain separate from the current spatial settlement | One residual write changes a destination without erasing other distinct cues; the map field adapts without fitting a new policy. A frozen route fails changed routes, while BFS and dictionary lookup also handle their respective parts. This does not establish a trained-MLP advantage. |
-| Eye & arm | Visual-error and motor-correction owners settle jointly using current pose readback | Continuous error correction repairs disturbed movement. The measured comparison enables or disables readback in the same controller. Classical feedback and recurrent neural controllers can also do this; the experiment does not compare trained MLPs. |
-| Fly-inspired forager | An encounter can revise a bounded record immediately inside the body loop | Residual writes make new nectar observations available for the next choice. The MLP also learns online with a selectable update budget. Live agents see different streams, so their nectar totals are illustrative, not a matched performance claim. |
-| C. elegans circuit | Known local interactions are reused under changed drives or lesions | Settlement remains accurate against the reference without surrogate refitting. The bundled MLP has larger intervention errors but faster per-query inference. Conventional graph recurrence also reuses the supplied mechanism. |
-| Changing memory | A residual write directly repairs an incorrect stored value | Exact distinct-key recall with 32 mutable entries exceeds the tested MLP update budgets on identical streams. Dictionary lookup is also exact. Strongly overlapping keys can favor the MLP; this is explicit record storage, not a general learning benchmark. |
+| Example | Mechanism and supported advantage |
+|---|---|
+| Eye & arm | Visual error and joint coordination exchange local feedback; motor outputs actuate the body. Readback repairs disturbances. This is a feedback/ablation comparison, not a trained-MLP comparison. |
+| Mouse | A learned task record selects a destination; a spatial equilibrium updates routes and motor state follows positional error. BFS and dictionary lookup are strong conventional controls and also work. |
+| Worm | The chemical graph is reused after stimulation or lesions. Its equilibrium agrees with the numerical reference; a trained MLP is faster but approximate. The habitat adds engineered motor control and is separately tested. |
+| Forager | One residual write revises a contacted flower's value. Both learners share the same motor design; live trajectories contain different experiences, so nectar totals are illustrative. |
+| Connect Four | Isolated futures and activity readback control search depth. The same evaluator wins more scheduled games with lookahead; ordinary minimax can also do this. |
+| Memory | Distinct-key records can be replaced locally with exact retention. Dictionary storage is exact too; overlapping keys interfere and can favor the tested MLP. |
 
-Every browser tab includes its own starting-state, observation and advantage
-explanation. Expand **Inside the feedback loop** for the component breakdown,
-then inspect the measured comparison and its methods below it.
+## What the brain actually contains
 
-## What each brain contains
+- **Arm:** 24 × 24 retinal units read pixel darkness. An explicit attention rule
+  chooses an unvisited visible target. Six sensory/readback units carry target,
+  pen position and height; three error units, two joint-coordination units and
+  six antagonistic motor units complete the controller. Motor output moves
+  shoulder, elbow and pencil height. Paper contact creates ink. The controller
+  receives pixels, never the user's stroke coordinates.
+- **Mouse:** task memory → destination lookup → supplied occupancy map/spatial
+  field → positional readout → antagonistic directional motors → body position.
+- **Worm:** adjacent odor → public chemical network and directional odor readback
+  → motor population → body step → contact consumption.
+- **Forager:** visible flower cue/bearing → nectar memory and target selection →
+  turn/propulsion motor units → body → contact reward and memory write.
 
-| Demonstration | Regions and feedback | Learned, supplied, and measured |
-|---|---|---|
-| Mouse | Task memory → visual/map ports → recurrent place field → motor/body → position readback | Task associations are learned by residual writes. The complete maze, local movement rules and spatial-field construction are supplied. Tests cover new tasks, revision, retention, new layouts and changed goals/corridors. |
-| Eye & arm | Visual-error owners ↔ motor-correction owners → joints → visual/proprioceptive readback | Four owners settle jointly through the arm Jacobian. Image edge extraction and arm geometry are supplied. A disturbed-body comparison isolates feedback. This controller does not learn anatomy or artistic style. |
-| Fly-inspired forager | Visual flower ports → learned nectar memory → target selection → steering/body → contact reward | Nectar is revealed only on contact. Residual memory and online MLP collect their own live experiences. The planar body, sensor encoding, steering and exploration schedule are supplied. |
-| Worm | Local food cue → sensory drive → recurrent chemical graph → motor-gated body step → contact | Public anatomical topology; imposed weights, tanh transfer, gradient heading, diffusion and body rules. The separate circuit view compares a trained MLP and 32-step recurrence. |
-| Memory | Key → readback → observed value → residual write | Eight explicit keys and four values; 32 mutable fast-memory entries. Same-stream MLP controls receive 1, 10 or 100 SGD updates per observation. A dictionary also solves exact-key storage. |
-
-These are bounded observer-like software patches with local state, declared
-ports, readback, records and feedback. Composing them creates inspectable systems:
-we can distinguish a remembered goal from a spatial state, motor correction, and
-body observation. The two-way visual/motor circuit is a joint settlement; the
-mouse and forager connect mechanisms through repeated environmental feedback.
+Circuit seams are weighted local connections. An explicit application readout
+(such as selecting a visual target) is documented as a readout, not drawn as an
+invented synapse. Physics includes joint kinematics, inertia/contact and collision
+bounds. Motor ablations test whether the neural output really causes movement.
 
 ## Circuit sizes and biological references
 
-Counts describe the Cadence circuit, excluding supplied bodies, environmental
-fields and comparison MLPs. A patch/port is a state coordinate, a seam is a
-weighted connection or memory-matrix entry, and an adaptive entry changes with
-learning. These quantities should not be conflated as a single parameter count.
-
-| Demo | Patches / ports | Declared seams | Adaptive entries |
+| Demo | Allocated owners | Declared seams | Learned entries |
 |---|---|---|---|
-| C. elegans | 297 | 3,604 | 0; supplied circuit weights |
-| Mouse, initial seed 13 | 126 active out of 259 allocated | 274 | 32 task-memory entries |
-| Eye & arm | 4 | 8 directed couplings | 0; couplings come from geometry |
-| Fly-inspired forager, Cadence agent | 12 | 32 | 32 nectar-memory entries |
-| Changing memory | 12 | 32 | 32 associative entries |
+| Eye & arm | 593: 576 retina + 17 controller | 20 | 0 |
+| Mouse, seed 13 | 265; 132 unmasked initially | 278 | 32 |
+| Worm habitat | 309: 297 chemical + 12 directional | 3,612 | 0 |
+| Worm circuit probe | 297 | 3,604 | 0 |
+| Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | 36 | 32 |
+| Changing memory | 12 | 32 | 32 |
 
-The starting mouse has 247 spatial slots, of which 114 are open, plus 12 memory
-ports. Its 242 spatial seams and 32 memory seams total 274. Wall edits and new
-maze layouts change active ports and spatial seams. All 32 memory slots count,
-including entries currently equal to zero.
+The mouse allocates 247 spatial slots (133 initially masked walls), 12 memory
+ports and six sensor/motor owners. Its initial seams are 242 spatial, 32 memory
+and four motor. Maze edits change the counts. Retina owners have independent
+sensory drives; they do not add a dense all-to-all matrix. These counts exclude
+body/environment variables, attention records and comparison MLPs.
 
-For orientation, the adult C. elegans hermaphrodite has **302 neurons**, including
-**20 pharyngeal neurons** in the feeding nervous system
-([WormAtlas](https://www.wormatlas.org/hermaphrodite/nervous/mainframe.htm)). The
-worm and mouse examples allocate hundreds of software coordinates. The four- and
-twelve-port examples are subcircuit-sized, below even that 20-neuron feeding
-network. These are count references, not claims of equivalent computing power,
-biological fidelity or animal intelligence. No whole-animal brain equivalent is
-assigned to the smallest examples.
+For orientation, adult hermaphrodite C. elegans has 302 neurons, including 20
+pharyngeal neurons ([WormAtlas](https://www.wormatlas.org/hermaphrodite/nervous/mainframe.htm)).
+Software state coordinates are not biologically equivalent neurons or measures
+of animal intelligence. No whole-animal equivalence is claimed.
 
 ## Read the brain view
 
-Every website places the body and circuit side by side on desktop and stacks them
-on mobile. Actual owners are grouped by function: sensory/interneuron/motor in
-the worm, spatial planning and task memory in the mouse, visual error and motor
-correction in the arm. Supplied perception, steering and body adapters are
-labeled separately. No decorative neurons or oscillations are added.
+Regions group the actual task components by function. The circuit appears beside
+the body at the top of each page. Hover or tap an owner to see its numerical value.
 
-The behavior badge has its own legend: **green** for food or a goal reached,
-**blue** for seeking or moving, **amber** for correction or a blocked route, and
-**gray** for paused or idle. These are observations from the running demo.
-“Happy” could be an informal label for a positive outcome; the model does not
-measure feelings. Badge colors and signed circuit colors describe different
-quantities.
+- **Behavior badge:** green = positive outcome; blue = seeking/moving; amber =
+  correction; gray = idle/paused. These name observed events, not measured feelings.
+- **Activity / input / repair:** amber = positive, blue = negative. Values are
+  dimensionless and scaled within a region; replay scales remain fixed.
+- **Violet repair trails:** one second of display history. They are not neural
+  memory. **Plasticity** separately highlights learned weight changes.
+- **Following repairs:** reconstructs sampled component trajectories from captured
+  inputs, weights and initial state. It expands early iterations and compresses
+  later ones into 1.6 seconds. Rapid updates are coalesced. Components can have
+  different iteration counts; shorter trajectories hold their final state.
+  This view is not a synchronous recording of every body tick.
+- **Replay repair:** inspect a captured update at a selected iteration rate.
+  Stateful motor circuits start from their retained potentials, not from zero.
+- **Release input:** removes drives in an isolated copy and shows recurrent decay.
+  It does not change the body or its actual memory.
+- **Live:** returns to current samples; **Pause view** freezes only the viewer.
+  Body controls are independent. Reduced-motion preferences disable autoplay.
 
-| Demo | Owners shown | State and plasticity |
-|---|---|---|
-| Mouse | 247 spatial slots, including masked walls, plus 12 task-memory ports | Spatial activity and 32 plastic associative entries; the current task cue and recalled destination are visible separately |
-| Eye & arm | 2 visual-error and 2 motor-correction owners | Reciprocal repair; Jacobian-dependent coupling changes are geometry, not learned plasticity |
-| C. elegans | 297 participating annotated neurons | Actual chemical edges, sensory drive and motor activity; fixed supplied weights |
-| Forager | 8 key ports and 4 value ports | The Cadence agent's actual 32 memory entries, updated on nectar contact |
-| Changing memory | 8 key ports and 4 value ports | Current key/value readout and observed residual writes |
-
-- **Following repairs** automatically reconstructs a sampled settlement when its
-  inputs, state or couplings change. It uses captured values and plays early
-  iterations slowly, compressing the long convergence tail into a 1.6-second
-  view. Rapid updates are coalesced; the body keeps running. An unchanged field
-  does not trigger another cascade just because the body moves through it.
-  This is a time-expanded reconstruction, not a recording of every body tick.
-  Reduced-motion preferences disable automatic playback initially.
-- **Violet rings** retain a one-second display trail of actual displayed repairs;
-  brighter connecting seams show where a source repair can affect its neighbors.
-  The trail is visual history, not neural short-term memory in the controller.
-- Open **Inspect signals & replay** for the signal selector and manual controls.
-- **Heatmap on/off** switches between soft colored overlays and the node view.
-  Amber is positive and blue is negative; the legend spans −1 to +1 relative to
-  each region’s scale. Halos are display smoothing, not extra model elements.
-- **Input** shows the supplied drive. For memory circuits this lights key ports,
-  not recalled value ports. It is not a neurotransmitter signal.
-- **Activity** shows local model values, live or from the labeled captured
-  settlement. Brightness is normalized within each region; all replay modes
-  keep scales fixed over the captured trajectory so fading remains visible.
-  The numerical scale is printed; hovering or tapping reveals owner values.
-  The trace plots peak recurrent activity, excluding the mouse’s separate
-  associative ports; memory-only views plot peak port activity.
-- **Repair** shows changes between live observations, or between iterations
-  during replay. Amber increases; blue decreases. A model may converge smoothly,
-  ring, or remain quiet. The renderer adds no oscillation.
-- **Plasticity** shows learned weight strength and highlights recent changes
-  for 1.5 seconds. The counter counts observed weight-change events, not training
-  steps. Fixed circuit and geometry weights are never counted as learning.
-- **Replay repair** recomputes the captured settlement from its original zero
-  state with the same weights, drive, mask, integration step and iteration count.
-  It displays those numerical iterations slowly. Tests compare the final replay
-  against the actual mouse, arm and worm states.
-- **Release input** starts an isolated copy from the captured recurrent state
-  and removes its drive. The resulting decay is a probe of transient
-  reverberation. It does not feed back into the body, and these demos do not use
-  that diagnostic copy as behavioral short-term memory. A stable attracting
-  equilibrium does not provide durable memory by itself.
-- **Live** returns to the current model, following future changes if enabled; **Pause view** freezes only the circuit
-  display. Body controls remain independent. Memory-only circuits disable
-  recurrent replay, because retained associative weights are a different kind
-  of memory from fading neural activity.
-
-The existing capacity is exposed faithfully. Drawing needs four coupled error
-owners in this supplied controller; adding untrained nodes would not make that
-controller more capable. GPU training is not required for these diagnostics.
+The current motor circuits retain graded potentials between control ticks, so
+transient neural state really is carried during behavior. Associative weights
+and visited-target records provide different forms of retained information.
+Neither transient motor state nor the isolated release probe demonstrates a
+learned working-memory task. The mouse's spatial field is recalculated after map
+or goal changes. Memory-only circuits have no recurrent-decay probe.
 
 ## Brain colors and neurotransmitters
 
@@ -223,103 +163,90 @@ showcase plots only quantities its controllers actually compute.
 
 ## Food and walls in the worm habitat
 
-Real C. elegans feeds on bacteria using its pharynx
-([WormBook: feeding](https://www.ncbi.nlm.nih.gov/books/NBK116080/)). The browser
-implements contact consumption of a food patch, not pharyngeal pumping or
-metabolism. There is no learned locomotion policy.
+Food drives leaky diffusion in a 31 × 21 grid. Walls block odor flux and movement.
+The worm reads adjacent odor values; their maximum drives the public AWA/AWC
+sensory ports. Chemical motor activity enables four directional error channels.
+Eight antagonistic motor units encode their response, and a readout selects a
+positive direction. No path or remote food coordinates enter this controller.
 
-- Food clamps a leaky diffusion field on a 31 × 21 habitat. Walls block movement
-  and flux. The field is recomputed when food or walls change.
-- The sensory adapter reads only adjacent open-cell food-cue values. Their
-  maximum drives the AWA/AWC ports in the public circuit; the same recurrent
-  kernel as the circuit view settles those inputs.
-- A supplied heading rule follows the neighboring gradient. Mean motor-owner
-  activity gates each body step. Removing all motor owners or disabling smell
-  stops movement. The controller receives no path or remote food coordinates.
-- Contact removes a patch and updates the field. Sealed-off food has no usable
-  cue in the worm's region. Open a passage to restore access. This diffusion
-  environment makes navigation tractable; it is not evidence of learned planning.
-- Mouse and touch dragging paint continuous strokes. Pause while editing if you
-  want time to build a maze. Walls cannot be painted through the displayed body.
-  For keyboard editing, focus the habitat, move with arrow keys, and press Space
-  or Enter to apply the selected tool.
+Contact removes food and recomputes the field. Smell ablation, chemical-motor
+ablation, directional-motor ablation and a sealed wall all stop food acquisition
+in the scheduled tests. Paint with mouse/touch; focus the habitat and use arrows
+plus Space/Enter for keyboard editing. Body cells cannot be painted into walls.
 
-[Habitat evidence](habitat_evidence.json) is reproduced by
-`node showcase/habitat_benchmark.mjs`. It covers food consumption, barriers,
-opening a passage, cue and motor ablations, additional food after completion,
-and protected body cells. These are behavior checks of supplied rules. The MLP
-comparison underneath is the separate circuit-response experiment.
+Real C. elegans feeds using its pharynx ([WormBook](https://www.ncbi.nlm.nih.gov/books/NBK116080/)).
+Contact consumption here does not simulate pharyngeal pumping or digestion.
+The 297-cell fixture is not the full 302-neuron nervous system; gap junctions are
+excluded and chemical weights/dynamics are imposed.
 
 ## Results and comparison contract
 
-The page computes its tables from [evidence.json](evidence.json) and
-[composite_evidence.json](composite_evidence.json). They retain all scheduled
-conditions, source hashes, parameters and model/control boundaries. Local browser
-latency is labeled separately from recorded experiment timings.
+See the [per-example advantage contracts](../ADVANTAGES.md), including measured
+memory runtime and all scheduled Connect Four outcomes. Each page separates
+learned records, supplied rules, feedback effects and conventional controls.
 
-- **Memory:** 128 writes per stream, 8 keys, 4 values, seeds 7–9. Query every seen
-  key after every write. Compare distinct keys and pairwise cosines 0.5 and 0.9.
-  Cadence performs one residual write; the 420-parameter MLP uses 1/10/100 SGD
-  updates on the identical sample, at a declared fixed learning rate. These are
-  bounded online-learning budgets, not exhaustive optimization of MLP training.
-  Distinct-key recall is exact for both Cadence and dictionary lookup. Similar
-  keys interfere; at cosine 0.9 the one-step MLP outperforms this fast memory.
-- **Worm:** seeds 7–9; 2,048 training and 256 validation samples; 64/128 hidden-owner
-  MLP candidates, 1,200 Adam steps each, selected only on validation error. Test
-  128 queries per condition: intact, new mixtures and up to 64 lesions. Both
-  methods know the fixed graph; the MLP receives drive, mask and an exact first
-  propagation. The supplied local dynamical prior is explicit. Cadence and the
-  independent converged sparse solver agree near numerical precision. A tied
-  recurrence also solves the task and is itself an unrolled feedforward graph.
-  The MLP is approximate but faster per query; costs include separate training
-  and label-generation timings. No energy-efficiency or universal speedup claim.
-- **Mouse:** 12 seeds × 3 conditions. Navigation uses a complete supplied maze,
-  not hidden-maze exploration. A frozen route and BFS replanner are controls.
-  Edited-corridor cases choose a route cell whose removal preserves reachability;
-  the receipt records the cell, including `-1` if no such edit is possible.
-  Collision checks apply to every simulated body step. Task memory is additionally
-  tested for first teaching, replacement, retention and transfer to three mazes.
-- **Arm:** flower, leaf and spiral; joint disturbance at step 60/120/240; 4,000
-  control steps. Compare the same controller with actual pose feedback enabled
-  or disabled. Coverage counts target points within 0.022 normalized workspace
-  units of deposited ink. It is not a perceptual/artistic quality score or an
-  MLP comparison. Uploaded images are reduced to up to 320 edge targets and may
-  be harder or take longer than these built-in outlines.
 
-The full-data worm fixture contains 297 participating annotated neurons and
-3,604 chemical edges after canonicalizing zero-padded names, intersecting with
-the pinned c302 neuron list, removing self-edges and excluding non-neural targets.
-It is not the complete 302-neuron nervous system. Gap junctions are excluded.
-The fly and mouse bodies are engineered visual simulations, not validated
-whole-animal reconstructions. This public implementation contains no private
-whole-fly fixtures, research models, or training assets.
+Current task-controller evidence is in each embodied example's `evidence.json`,
+produced by `tools/nervous_system_benchmark.mjs`. All controller sources are bound
+by hashes, all scheduled conditions are retained, and CI reruns the producer.
+
+- **Arm:** square, flower and two separated marks, six conditions each, 6,000
+  control steps. Intact and disturbed-feedback cases cover all retinal targets.
+  With pose feedback disabled after the same disturbance, coverage is about
+  32–42%. Silencing joint motors gives zero joint displacement. Silencing pencil
+  motors while raised gives zero ink, as does removing visual input. Coverage
+  means target distance under 0.024 normalized units; it does not measure artistic
+  fidelity. User drawings can be harder than these fixtures.
+- **Mouse:** 12 seeds × intact, moved goal and motor ablation. The 24 reachable
+  navigation trials finish without collision; motor ablations produce no moves.
+- **Worm:** intact habitat consumes two patches in 41 moves. Smell, either motor
+  population, and sealed-wall controls acquire no food.
+- **Forager:** a fixed 4,000-step run produces 25 contacts; motor ablation prevents
+  displacement and contact. This is an actuator test, not a learner comparison.
+
+The shared [evidence.json](evidence.json) retains the unchanged matched memory
+and chemical-circuit benchmarks: seeds 7–9, 128 memory writes per stream with all
+seen-key queries, and three held-out chemical-circuit conditions. The memory MLP
+gets 1/10/100 updates on the same sample; correlated keys can favor it. The worm
+MLP gets 2,048 labels and 1,200 training steps per candidate; it is faster per
+query but approximate under interventions. These are bounded comparisons, not
+universal speed or energy claims.
+
+[composite_evidence.json](composite_evidence.json) and
+[habitat_evidence.json](habitat_evidence.json) retain the original spatial,
+four-owner arm and habitat reference experiments. They validate those reference
+kernels; the expanded browser controllers are measured in the new task receipts.
 
 ## Reproduce
 
-Use Python 3.11+, Node 20+ and the dependencies documented in the repository root.
-The browser kernels are small ES modules; Node is needed only for reproduction
-and tests, not to serve the demos.
+Serving requires only Python. Reproduction also uses Node and the pinned Cadence
+dependencies:
 
 ```bash
-python -m pip install -r requirements-reproduce.txt
-python -m pip install torch pytest
+python -m pip install -r requirements-reproduce.txt pytest playwright
+python showcase/verify.py
+node tools/nervous_system_benchmark.mjs
+node connect-four/benchmark.mjs
+python -m pytest -q tests
+python tools/showcase_pages.py
+python tools/build_showcase.py
+```
+
+The test suite independently checks motor dynamics against Python Cadence from
+retained state and under lesions, replay endpoints, motor/visual ablations,
+freehand drawing, image upload, task persistence, separate URLs and responsive
+layout. `build_showcase.py` generates six pages plus the gallery from authored
+shells. Models and views remain in their example folders; shared code is in
+`showcase/`.
+
+To rerun the older comparison training and reference body trials:
+
+```bash
 python showcase/fetch_worm.py
 python showcase/benchmark.py --seeds 3 --steps 1200 --trials 128
 python showcase/build_composites.py
-python showcase/verify.py
 node showcase/habitat_benchmark.mjs
-python -m pytest -q tests/test_showcase.py
-python tools/showcase_pages.py
 ```
-
-`fetch_worm.py` downloads pinned public files and checks their SHA-256 digests.
-`benchmark.py` writes the measured comparisons and exports the model from the
-first scheduled seed, not the best test seed. `build_composites.py` executes the
-body trials and checks the spatial and motor kernels against Python Cadence.
-`verify.py` checks source binding, body-trial arithmetic and benchmark contracts;
-it does not rerun the full training process. Browser tests check live interactions,
-persistence, upload, mobile layout and numerical parity. Rebuilding the two hub
-copies uses `python tools/build_showcase.py`.
 
 ## Biological sources and data attribution
 

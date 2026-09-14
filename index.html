@@ -3,257 +3,104 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta
-      name="description"
-      content="Explore Cadence: a teachable mouse, a drawing arm, a fly-inspired forager, a C. elegans circuit, and changing memory. Browser demos with reproducible comparisons."
-    />
-    <title>Cadence — intelligence that keeps its state</title>
+    <title>Cadence · embodied examples</title>
     <link rel="stylesheet" href="showcase/style.css" />
     <link rel="icon" href="data:," />
   </head>
   <body>
     <header>
-      <a class="brand" href="#mouse">C<span>·</span>ADENCE</a>
+      <a class="brand" href="index.html">C<span>·</span>ADENCE</a>
       <nav>
-        <a href="showcase/README.md">How it works</a><a href="#mouse">Demos</a
+        <a href="showcase/README.md">How it works</a
         ><a href="https://github.com/muellerberndt/cadence">GitHub ↗</a>
       </nav>
     </header>
     <main>
       <div class="intro">
         <div>
-          <div class="eyebrow">
-            Local state. Living feedback. Measured results.
-          </div>
-          <h1 id="headline">Teach a new task.<br />Watch it find a way.</h1>
+          <div class="eyebrow">Local state. Feedback. Retained records.</div>
+          <h1>Change its world.<br />Watch its nervous system respond.</h1>
         </div>
-        <p id="intro">
-          Demonstrate a destination. A small memory retains the task, a spatial
-          network finds a route, and a moving body closes the loop.
+        <p>
+          Six separate experiments. Each opens with its live circuit beside the
+          task, so you can see the state that drives behavior.
         </p>
       </div>
-      <nav class="tabs" aria-label="Choose a demonstration">
-        <button data-tab="mouse" aria-pressed="true">
-          <b>01</b> Teachable mouse</button
-        ><button data-tab="arm" aria-pressed="false"><b>02</b> Eye & arm</button
-        ><button data-tab="fly" aria-pressed="false">
-          <b>03</b> Embodied forager</button
-        ><button data-tab="worm" aria-pressed="false">
-          <b>04</b> C. elegans habitat</button
-        ><button data-tab="memory" aria-pressed="false">
-          <b>05</b> Changing memory
-        </button>
-      </nav>
-      <div class="workspace">
-        <section class="lab" aria-label="Interactive demonstration">
-          <div class="stage">
-            <div class="stage-top">
-              <span class="live" id="stage-label"
-                >LIVE CIRCUIT · C. ELEGANS CHEMICAL TOPOLOGY</span
-              ><span id="stage-detail">Preparing model…</span>
-            </div>
-            <canvas
-              id="scene"
-              tabindex="0"
-              role="img"
-              aria-label="Live network activity. Use the adjacent controls to stimulate or remove neurons."
-            ></canvas>
-            <div
-              id="worm-views"
-              class="buttons view-switch"
-              role="group"
-              aria-label="Worm view"
-              hidden
-            >
-              <button data-worm-view="habitat" aria-pressed="true">
-                Habitat · food & walls
-              </button>
-              <button data-worm-view="circuit" aria-pressed="false">
-                Circuit · inspect neurons
-              </button>
-            </div>
-            <div class="stage-bottom">
-              <span id="stage-hint"
-                >Click a neuron to remove it. Click again to restore it.</span
-              ><span id="stage-readout"></span>
-            </div>
-          </div>
-          <aside class="controls" id="controls"></aside>
-        </section>
-        <section class="brain-panel" aria-labelledby="brain-title">
-          <div class="brain-heading">
-            <div>
-              <div class="eyebrow">INSIDE THE PATCH NET</div>
-              <h2 id="brain-title">Watch repairs propagate</h2>
-            </div>
-            <span id="brain-count">Reading owners…</span>
-          </div>
-          <div class="brain-behavior">
-            <span id="brain-behavior" data-tone="neutral"
-              >Reading behavior…</span
-            ><span id="brain-adapters"></span>
-          </div>
-          <div class="behavior-legend" aria-label="Behavior color legend">
-            <span>Behavior:</span
-            ><span data-tone="positive">● Goal / food</span>
-            <span data-tone="seeking">● Seeking</span
-            ><span data-tone="correcting">● Correction</span>
-            <span data-tone="neutral">● Idle / paused</span>
-          </div>
-          <div class="brain-layout">
-            <canvas
-              id="brain-scene"
-              role="img"
-              aria-label="Actual owners and seams arranged by function. Activity, repair cascades and learned weight changes are shown with a labeled legend."
-            ></canvas>
-          </div>
-          <div class="buttons brain-actions">
-            <button id="brain-follow" aria-pressed="true">
-              Follow repairs
-            </button>
-            <button id="brain-release">Release input · watch decay</button>
-          </div>
-          <p id="brain-status">Reading circuit…</p>
-          <div id="brain-regions" class="sr-only"></div>
-          <div
-            id="brain-legend"
-            class="brain-legend"
-            aria-label="Signed heatmap legend"
-          >
-            <span id="brain-legend-label"
-              >Activity · relative region scale</span
-            >
-            <div class="brain-colorbar"></div>
-            <div class="brain-color-ticks">
-              <span>−1 · negative</span><span>0</span><span>+1 · positive</span>
-            </div>
-          </div>
-          <div class="signal-key">
-            <span class="repair-key">Recent repair · 1 s display trail</span
-            ><span class="plastic-key">Plasticity view · weight strength</span
-            ><span class="muted-key">Dim rose · masked owner</span>
-          </div>
-          <details id="brain-options">
-            <summary>Inspect signals &amp; replay</summary>
-            <div class="brain-controls">
-              <label for="brain-signal">Show</label>
-              <select id="brain-signal">
-                <option value="activity">Activity · local state</option>
-                <option value="repair">Repair · state change</option>
-                <option value="input">Input · supplied drive</option>
-                <option value="plasticity">Plasticity · memory writes</option>
-              </select>
-              <div class="buttons">
-                <button id="brain-live">Live</button
-                ><button id="brain-freeze">Pause view</button>
-                <button id="brain-heat" aria-pressed="true">Heatmap on</button>
-              </div>
-              <div class="buttons">
-                <button id="brain-replay">Replay repair</button>
-              </div>
-              <label for="brain-speed">Replay speed</label>
-              <select id="brain-speed">
-                <option value="10">10 iterations / second</option>
-                <option value="40" selected>40 iterations / second</option>
-                <option value="200">200 iterations / second</option>
-              </select>
-              <p id="brain-memory"></p>
-            </div>
-            <p id="brain-scale"></p>
-          </details>
-          <details>
-            <summary>How to read this view</summary>
-            <p>
-              Each region groups actual owners by function; lines are their real
-              seams. Supplied sensing, steering and body adapters are labeled
-              above the graph. Hover or tap an owner for its value. Colors use
-              dimensionless model units. The heatmap shows positive values in
-              amber and negative values in blue; its smooth halos are a display
-              overlay around actual owners. Turning it off restores the node
-              view. Plasticity highlights recent learned weight changes
-              separately. The trace plots peak activity. Couplings that change
-              with arm geometry are not counted as plasticity.
-            </p>
-            <p>
-              Follow repairs automatically reconstructs sampled settlements from
-              their captured inputs and couplings. It slows the early repair
-              steps and compresses the later ones; the live body continues.
-              Rapid updates are coalesced, so this is not a recording of every
-              body tick. Violet rings fade for one second after a displayed
-              repair: this is display history, not short-term memory in the
-              controller. Replay lets you inspect one captured settlement at a
-              fixed rate. Release input sets the drive to zero in an isolated
-              copy, exposing recurrent decay or ringing; it does not control the
-              body or imply a learned short-term memory. No oscillation is added
-              for appearance. Memory-only circuits have no recurrent replay.
-              Live body operation continues while you inspect a copy.
-            </p>
-            <p class="behavior-key">
-              Behavior colors: green = food or goal reached; blue = seeking or
-              moving; amber = correction, changed expectation or blocked route;
-              gray = paused or idle. “Happy” would be an informal name for a
-              positive outcome, not a measured feeling. These status colors are
-              separate from signed circuit values. Text labels always identify
-              the observed event.
-            </p>
-            <p>
-              These models do not simulate neurotransmitter concentrations.
-              Activity, input drive and weight changes are different signals.
-              Clinical fMRI measures a blood-oxygen-related signal; PET uses
-              specific tracers to study molecular targets. Neither is a generic
-              live map of all neurotransmitters. See the
-              <a href="showcase/README.md#brain-colors-and-neurotransmitters"
-                >imaging explanation and sources</a
-              >.
-            </p>
-          </details>
-        </section>
-      </div>
-      <section
-        class="demo-guide"
-        aria-label="Starting state, learning and advantages"
-      >
-        <div class="explain" id="demo-guide"></div>
-      </section>
-      <details class="mechanism">
-        <summary>Inside the feedback loop</summary>
-        <div class="explain" id="explain"></div>
-      </details>
-      <section class="evidence" aria-label="Measured comparison">
-        <div class="evidence-top">
-          <h2 id="evidence-title">A mechanism that survives change</h2>
-          <a href="showcase/README.md#reproduce">Reproduce the comparison ↗</a>
-        </div>
-        <p id="evidence-note"></p>
-        <div class="table-wrap" id="evidence-table"></div>
-        <details>
-          <summary>What this comparison establishes</summary>
-          <p id="boundary"></p>
+      <div class="gallery">
+        <a href="eye-arm/"
+          ><span>01 / VISION & MOTOR CONTROL</span>
+          <h2>Your drawing. Its pencil.</h2>
           <p>
-            Every result links to an executable producer and source hashes.
-            Accuracy and runtime answer different questions. These tasks do not
-            establish general superiority over all feedforward networks.
+            Draw on a pad. An eye reads the pixels. Motor neurons move two
+            joints and raise or lower the pencil to copy what it sees.
           </p>
-          <a href="showcase/evidence.json">Full evidence and model weights</a> ·
-          <a href="showcase/README.md">Methods, sources and limits</a>
-        </details>
-      </section>
-      <footer class="support">
-        <span
-          >CADENCE / bounded patches · local readback · feedback · retained
-          records</span
+          <b>Open eye & arm →</b></a
         >
-        <nav>
-          <a href="showcase/README.md#launch-any-demo">Launch a demo</a
-          ><a
-            href="https://github.com/muellerberndt/cadence/blob/main/docs/biology.md"
-            >Biology map</a
-          ><a href="https://github.com/muellerberndt/cadence-examples"
-            >Source</a
-          >
-        </nav>
-      </footer>
+        <a href="mouse/"
+          ><span>02 / MEMORY & NAVIGATION</span>
+          <h2>Teach a mouse a new destination.</h2>
+          <p>
+            Task memory recalls the goal, a spatial field finds a route, and
+            directional motor neurons move the body. Change a corridor or teach
+            another task.
+          </p>
+          <b>Open teachable mouse →</b></a
+        >
+        <a href="worm/"
+          ><span>03 / CHEMICAL SENSING</span>
+          <h2>Feed a worm. Build its world.</h2>
+          <p>
+            Place food and draw barriers. Follow a public C. elegans chemical
+            circuit and its engineered directional motor system.
+          </p>
+          <b>Open worm habitat →</b></a
+        >
+        <a href="fly/"
+          ><span>04 / LEARNING THROUGH CONTACT</span>
+          <h2>Find nectar. Remember the encounter.</h2>
+          <p>
+            A forager learns nectar values after contact, recalls useful flowers
+            and steers with motor activity. Change the rewards while it
+            explores.
+          </p>
+          <b>Open forager →</b></a
+        >
+        <a href="memory/"
+          ><span>05 / ASSOCIATIVE MEMORY</span>
+          <h2>A new observation changes a record.</h2>
+          <p>
+            Inspect the memory mechanism used by the embodied examples. Compare
+            one residual write with online MLP updates on the same observations.
+          </p>
+          <b>Open changing memory →</b></a
+        >
+        <a href="connect-four/"
+          ><span>06 / IMAGINATION & SELF-MONITORING</span>
+          <h2>Play against a reasoner.</h2>
+          <p>
+            Connect four while the agent explores replies, compares futures and
+            reads its own uncertainty to decide whether to think deeper.
+          </p>
+          <b>Open Connect Four →</b></a
+        >
+      </div>
+      <p class="gallery-note">
+        These are simplified computational nervous systems, with supplied
+        bodies, sensory encodings and circuit designs. The memory example
+        isolates one subsystem. Each page documents its mechanisms and measured
+        limits.
+      </p>
     </main>
-    <script type="module" src="showcase/app.js"></script>
+    <script>
+      const old = {
+        arm: "eye-arm",
+        mouse: "mouse",
+        fly: "fly",
+        worm: "worm",
+        memory: "memory",
+        game: "connect-four",
+      }[location.hash.slice(1)];
+      if (old) location.replace(old + "/");
+    </script>
   </body>
 </html>

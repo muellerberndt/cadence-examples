@@ -1,5 +1,19 @@
 // Reader-facing descriptions. Keep learning distinct from running a supplied controller.
 const guides = {
+  game: [
+    [
+      "Ready to reason",
+      "Play a column. The agent uses supplied rules, a graded patch evaluator and bounded search; no pretrained game policy is needed.",
+    ],
+    [
+      "Inspect an imagined future",
+      "Enable Watch before moving, play, then select a candidate column and scrub its predicted continuation. The live board changes only when you execute the chosen move.",
+    ],
+    [
+      "Why Cadence fits",
+      "Separate state copies, local evaluators and a self-reading monitor compose into an inspectable planner. The monitor can request more depth. Conventional search can do this too; no exclusive planning advantage is claimed.",
+    ],
+  ],
   mouse: [
     [
       "Ready with three lessons",
@@ -17,7 +31,7 @@ const guides = {
   arm: [
     [
       "Ready to draw",
-      "The arm starts with a working controller and built-in outlines. You can upload an image for local edge extraction. Geometry and visual/motor couplings are supplied; this is not a pretrained drawing skill.",
+      "Draw on the left pad or upload a line drawing. The eye reads 24 × 24 pixels. Joint and pencil-lift motors start with supplied weights and geometry; this is not a pretrained drawing skill.",
     ],
     [
       "Watch feedback, not training",
@@ -25,13 +39,13 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Two visual and two motor owners exchange local errors in one joint settlement, repairing movement after a disturbance. The measured advantage is coverage with feedback versus the same controller without readback. Classical feedback and recurrent neural controllers can also correct motion; no MLP comparison is claimed.",
+      "Retinal input, visual/proprioceptive error and joint coordination drive six motor neurons. Motor ablations stop the corresponding actuator; pose feedback repairs disturbances. Classical feedback controllers can also correct motion; no MLP comparison is claimed.",
     ],
   ],
   fly: [
     [
       "Ready body, fresh memory",
-      "Both foragers start with supplied sensors, steering and exploration. Nectar memory starts fresh; the MLP starts randomly initialized. This is a fly-inspired planar body, not a reconstructed fly nervous system.",
+      "Both foragers start with supplied sensors, directional motor circuits and exploration. Nectar memory starts fresh; the MLP starts randomly initialized. This is a fly-inspired planar body, not a reconstructed fly nervous system.",
     ],
     [
       "Watch learning on contact",
@@ -49,7 +63,7 @@ const guides = {
     ],
     [
       "Build, feed and inspect",
-      "Paint food and walls, or erase a passage. Contact consumes a patch; turning smell off stops cue-driven movement. Habitat uses supplied diffusion, gradient heading and a motor-gated body. Switch to Circuit for stimulation and lesions. Neither view trains weights.",
+      "Paint food and walls, or erase a passage. Contact consumes a patch; turning smell off stops cue-driven movement. Habitat uses supplied diffusion and a directional sensory/motor circuit that drives the body. Switch to Circuit for stimulation and lesions. Neither view trains weights.",
     ],
     [
       "Why Cadence fits",

@@ -1,4 +1,4 @@
-"""Open a Cadence demo: python serve.py [mouse|eye-arm|fly|worm|memory].
+"""Open a Cadence demo: python serve.py [mouse|eye-arm|fly|worm|memory|connect-four].
 
 Only Python's standard library is needed. Every demo ships its browser assets.
 The server binds to this computer only. Ctrl-C stops it.
@@ -17,11 +17,13 @@ from typing import ClassVar
 HERE = Path(__file__).resolve().parent
 PAGES = {
     "mouse": "mouse",
-    "eye-arm": "arm",
-    "arm": "arm",
+    "eye-arm": "eye-arm",
+    "arm": "eye-arm",
     "fly": "fly",
     "worm": "worm",
     "memory": "memory",
+    "connect-four": "connect-four",
+    "game": "connect-four",
 }
 
 
@@ -82,7 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     except OSError as error:
         parser.exit(1, f"Cannot start the local server: {error}. Try --port 0.\n")
     with server:
-        url = f"http://127.0.0.1:{server.server_address[1]}/#{PAGES[args.page]}"
+        url = f"http://127.0.0.1:{server.server_address[1]}/{PAGES[args.page]}/"
         print(f"Cadence · {args.page}\n{url}\nCtrl-C to stop.", flush=True)
         opener = None
         if not args.no_browser:

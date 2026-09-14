@@ -206,6 +206,9 @@ canvas {
   line-height: 1.3;
   letter-spacing: -0.02em;
 }
+.controls > * {
+  min-width: 0;
+}
 .controls p {
   color: var(--muted);
   font-size: 12px;
@@ -434,7 +437,7 @@ summary {
     border-left: 0;
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 18px;
   }
   .controls > div:first-child {
@@ -472,6 +475,7 @@ summary {
   }
   .stage-top {
     font-size: 10px;
+    flex-wrap: wrap;
   }
   main {
     padding: 25px 16px;
@@ -773,4 +777,61 @@ canvas:focus-visible {
   color: var(--muted);
   font-size: 10px;
   margin-bottom: 6px;
+}
+.tabs a {
+  padding: 9px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  text-decoration: none;
+  border: 1px solid #3d525c;
+  background: #16262e;
+}
+.tabs a[aria-current="page"] {
+  border-color: var(--green);
+  color: var(--green);
+  background: #213a35;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+.gallery a {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  text-decoration: none;
+}
+.gallery a:hover {
+  border-color: var(--green);
+}
+.gallery span {
+  color: var(--green);
+  font:
+    11px ui-monospace,
+    monospace;
+}
+.gallery h2 {
+  font-size: 26px;
+  line-height: 1.25;
+  margin: 18px 0;
+}
+.gallery p,
+.gallery-note {
+  color: var(--muted);
+  font-size: 14px;
+}
+.gallery b {
+  font-size: 13px;
+  color: var(--green);
+}
+@media (max-width: 680px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+  .tabs a {
+    padding: 8px 11px;
+  }
 }

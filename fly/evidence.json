@@ -1,0 +1,525 @@
+{
+  "schema": "cadence.task-nervous-systems/v1",
+  "steps": {
+    "arm": 6000,
+    "mouse": 12000,
+    "worm": 250,
+    "fly": 4000
+  },
+  "sources": {
+    "eye-arm/brain.js": "672f4a28cecabc7126086f1e97f2dcbdd7315f0a1dcfb97151e9c7b6c0770062",
+    "eye-arm/fixtures.js": "23a7f78d540e202c075d55c58f17cce8bf324fe4b9fde01b739db490d0d9bfd7",
+    "mouse/brain.js": "4f340f8c4e19a81e39d0c0fcf103770232958bef4c15955d33874b48ebb4d779",
+    "fly/brain.js": "cbc17aa7348707eb92bf8f4d7e0f1aef0dbc4058248a31791d3639af0a6a189e",
+    "worm/brain.js": "7e319c96f3118a318406792cae566f1c8851b9943bff94b97b4e824525c12719",
+    "showcase/nervous_system.js": "75e76844d838b41a5d992a7a93c290709f20ec4ecf5f977935de2555b9184601",
+    "showcase/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
+    "showcase/embodied.js": "e551c3a3f53d0c9d4de18015a0dfec3e77ec80ada402ed3265d6edb53e5b2887",
+    "showcase/worm_arena.js": "11ddb137681fc9742a410d25d28e7cc70e850804ffc86f40f05347d8a242d3d5",
+    "showcase/telemetry.js": "0e635e442e773a6be26283d904cd22358520024813818532517acddf152cd8c3",
+    "tools/nervous_system_benchmark.mjs": "2803615a000524a9beae58c32432c4fb914d2967934ad8ed214ab0c99f7b3038"
+  },
+  "arm": [
+    {
+      "image": "square",
+      "condition": "intact",
+      "coverage": 1,
+      "ink": 629,
+      "raised": 5371,
+      "contact": 629,
+      "targets": 60,
+      "completed": true,
+      "displacement": 0.102284323
+    },
+    {
+      "image": "square",
+      "condition": "disturbed",
+      "coverage": 1,
+      "ink": 630,
+      "raised": 5370,
+      "contact": 630,
+      "targets": 60,
+      "completed": true,
+      "displacement": 0.102284323
+    },
+    {
+      "image": "square",
+      "condition": "feedback_off",
+      "coverage": 0.316666667,
+      "ink": 629,
+      "raised": 5371,
+      "contact": 629,
+      "targets": 60,
+      "completed": true,
+      "displacement": 0.288457068
+    },
+    {
+      "image": "square",
+      "condition": "joint_motors_off",
+      "coverage": 0.033333333,
+      "ink": 5996,
+      "raised": 4,
+      "contact": 5996,
+      "targets": 60,
+      "completed": false,
+      "displacement": 0
+    },
+    {
+      "image": "square",
+      "condition": "pencil_motors_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 60,
+      "completed": false,
+      "displacement": 0.054841649
+    },
+    {
+      "image": "square",
+      "condition": "eye_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 0,
+      "completed": true,
+      "displacement": 0
+    },
+    {
+      "image": "flower",
+      "condition": "intact",
+      "coverage": 1,
+      "ink": 485,
+      "raised": 5515,
+      "contact": 485,
+      "targets": 52,
+      "completed": true,
+      "displacement": 0.202191544
+    },
+    {
+      "image": "flower",
+      "condition": "disturbed",
+      "coverage": 1,
+      "ink": 500,
+      "raised": 5500,
+      "contact": 500,
+      "targets": 52,
+      "completed": true,
+      "displacement": 0.202191544
+    },
+    {
+      "image": "flower",
+      "condition": "feedback_off",
+      "coverage": 0.423076923,
+      "ink": 485,
+      "raised": 5515,
+      "contact": 485,
+      "targets": 52,
+      "completed": true,
+      "displacement": 0.214238497
+    },
+    {
+      "image": "flower",
+      "condition": "joint_motors_off",
+      "coverage": 0.038461538,
+      "ink": 5996,
+      "raised": 4,
+      "contact": 5996,
+      "targets": 52,
+      "completed": false,
+      "displacement": 0
+    },
+    {
+      "image": "flower",
+      "condition": "pencil_motors_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 52,
+      "completed": false,
+      "displacement": 0.054841649
+    },
+    {
+      "image": "flower",
+      "condition": "eye_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 0,
+      "completed": true,
+      "displacement": 0
+    },
+    {
+      "image": "two_marks",
+      "condition": "intact",
+      "coverage": 1,
+      "ink": 312,
+      "raised": 5688,
+      "contact": 312,
+      "targets": 24,
+      "completed": true,
+      "displacement": 0.359373975
+    },
+    {
+      "image": "two_marks",
+      "condition": "disturbed",
+      "coverage": 1,
+      "ink": 313,
+      "raised": 5687,
+      "contact": 313,
+      "targets": 24,
+      "completed": true,
+      "displacement": 0.359373975
+    },
+    {
+      "image": "two_marks",
+      "condition": "feedback_off",
+      "coverage": 0.416666667,
+      "ink": 312,
+      "raised": 5688,
+      "contact": 312,
+      "targets": 24,
+      "completed": true,
+      "displacement": 0.029694306
+    },
+    {
+      "image": "two_marks",
+      "condition": "joint_motors_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 24,
+      "completed": false,
+      "displacement": 0
+    },
+    {
+      "image": "two_marks",
+      "condition": "pencil_motors_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 24,
+      "completed": false,
+      "displacement": 0.191959265
+    },
+    {
+      "image": "two_marks",
+      "condition": "eye_off",
+      "coverage": 0,
+      "ink": 0,
+      "raised": 6000,
+      "contact": 0,
+      "targets": 0,
+      "completed": true,
+      "displacement": 0
+    }
+  ],
+  "mouse": [
+    {
+      "seed": 13,
+      "condition": "intact",
+      "reached": true,
+      "moves": 30,
+      "collision": false
+    },
+    {
+      "seed": 13,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 30,
+      "collision": false
+    },
+    {
+      "seed": 13,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 23,
+      "condition": "intact",
+      "reached": true,
+      "moves": 58,
+      "collision": false
+    },
+    {
+      "seed": 23,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 42,
+      "collision": false
+    },
+    {
+      "seed": 23,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 33,
+      "condition": "intact",
+      "reached": true,
+      "moves": 36,
+      "collision": false
+    },
+    {
+      "seed": 33,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 24,
+      "collision": false
+    },
+    {
+      "seed": 33,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 43,
+      "condition": "intact",
+      "reached": true,
+      "moves": 26,
+      "collision": false
+    },
+    {
+      "seed": 43,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 15,
+      "collision": false
+    },
+    {
+      "seed": 43,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 53,
+      "condition": "intact",
+      "reached": true,
+      "moves": 28,
+      "collision": false
+    },
+    {
+      "seed": 53,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 24,
+      "collision": false
+    },
+    {
+      "seed": 53,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 63,
+      "condition": "intact",
+      "reached": true,
+      "moves": 40,
+      "collision": false
+    },
+    {
+      "seed": 63,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 36,
+      "collision": false
+    },
+    {
+      "seed": 63,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 73,
+      "condition": "intact",
+      "reached": true,
+      "moves": 30,
+      "collision": false
+    },
+    {
+      "seed": 73,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 18,
+      "collision": false
+    },
+    {
+      "seed": 73,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 83,
+      "condition": "intact",
+      "reached": true,
+      "moves": 38,
+      "collision": false
+    },
+    {
+      "seed": 83,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 36,
+      "collision": false
+    },
+    {
+      "seed": 83,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 93,
+      "condition": "intact",
+      "reached": true,
+      "moves": 34,
+      "collision": false
+    },
+    {
+      "seed": 93,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 34,
+      "collision": false
+    },
+    {
+      "seed": 93,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 103,
+      "condition": "intact",
+      "reached": true,
+      "moves": 30,
+      "collision": false
+    },
+    {
+      "seed": 103,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 32,
+      "collision": false
+    },
+    {
+      "seed": 103,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 113,
+      "condition": "intact",
+      "reached": true,
+      "moves": 26,
+      "collision": false
+    },
+    {
+      "seed": 113,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 14,
+      "collision": false
+    },
+    {
+      "seed": 113,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "seed": 123,
+      "condition": "intact",
+      "reached": true,
+      "moves": 34,
+      "collision": false
+    },
+    {
+      "seed": 123,
+      "condition": "moved_goal",
+      "reached": true,
+      "moves": 27,
+      "collision": false
+    },
+    {
+      "seed": 123,
+      "condition": "motors_off",
+      "reached": false,
+      "moves": 0,
+      "collision": false
+    }
+  ],
+  "worm": [
+    {
+      "condition": "intact",
+      "eaten": 2,
+      "moves": 41,
+      "collision": false
+    },
+    {
+      "condition": "smell_off",
+      "eaten": 0,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "condition": "chemical_motors_off",
+      "eaten": 0,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "condition": "direction_motors_off",
+      "eaten": 0,
+      "moves": 0,
+      "collision": false
+    },
+    {
+      "condition": "sealed_wall",
+      "eaten": 0,
+      "moves": 0,
+      "collision": false
+    }
+  ],
+  "fly": [
+    {
+      "condition": "intact",
+      "encounters": 25,
+      "nectar": 61,
+      "displacement": 0.195751571
+    },
+    {
+      "condition": "motors_off",
+      "encounters": 0,
+      "nectar": 0,
+      "displacement": 0
+    }
+  ],
+  "parity": {
+    "trace_error": 0
+  }
+}

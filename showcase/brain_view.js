@@ -11,6 +11,7 @@ const labels = {
 };
 const copy = (source) => ({
   ...source,
+  blocks: source.blocks?.map(copy),
   state: source.state.slice(),
   edges: source.edges.map((e) => e.slice()),
   drive: source.drive?.slice(),
@@ -98,7 +99,13 @@ export class BrainView {
     trace.peaks = trace.frames.map((a) =>
       Math.max(
         0,
-        ...a.slice(0, source.recurrentCount ?? a.length).map(Math.abs),
+        ...a
+          .filter(
+            (_, i) =>
+              source.recurrentMask?.[i] ??
+              i < (source.recurrentCount ?? a.length),
+          )
+          .map(Math.abs),
       ),
     );
     // Fixed scales over the captured trajectory make amplitude and fading comparable.
@@ -248,14 +255,17 @@ export class BrainView {
       ? s.map((v, i) => v - trace.frames[Math.max(0, frame - 1)][i])
       : this.repairs;
     const input = (source.input ?? s.map(() => 0)).map((v, i) =>
-      trace?.release && i < (source.recurrentCount ?? s.length) ? 0 : v,
+      trace?.release &&
+      (source.recurrentMask?.[i] ?? i < (source.recurrentCount ?? s.length))
+        ? 0
+        : v,
     );
     const values =
       this.signal === "input" ? input : this.signal === "repair" ? diff : s;
     const groups = source.groups ?? s.map(() => "patch");
     const groupNames = [...new Set(groups)].sort((a, b) => {
       const order = { sensory: 0, interneuron: 1, motor: 2 };
-      return (order[a] ?? 0) - (order[b] ?? 0);
+      return (order[a] ?? 3) - (order[b] ?? 3);
     });
     const regionLabel = (g) => source.regionLabels?.[g] ?? labels[g] ?? g;
     this.$("brain-regions").textContent = groupNames
@@ -302,14 +312,40 @@ export class BrainView {
         y = top,
         rw = w - 16,
         rh = usable;
-      if (groupNames.includes("place")) {
+      if (groupNames.includes("retina")) {
+        if (g === "retina") rw = (w - 28) * 0.45;
+        else {
+          x = 20 + (w - 28) * 0.45;
+          rw = w - x - 8;
+          rh = (usable - gap * 3) / 4;
+          y += (gi - 1) * (rh + gap);
+        }
+      } else if (groupNames.includes("place")) {
         if (g === "place") rw = (w - 28) * 0.64;
         else {
           x = 20 + (w - 28) * 0.64;
           rw = w - x - 8;
-          rh = (usable - gap) / 2;
+          rh =
+            (usable - gap * (groupNames.length - 2)) / (groupNames.length - 1);
           y += (gi - 1) * (rh + gap);
         }
+      } else if (groupNames.includes("sensory") && groupNames.length > 3) {
+        if (gi < 3) {
+          rw = (w - 28) * 0.68;
+          rh = (usable - gap * 2) / 3;
+          y += gi * (rh + gap);
+        } else {
+          x = 20 + (w - 28) * 0.68;
+          rw = w - x - 8;
+          rh = (usable - gap) / 2;
+          y += (gi - 3) * (rh + gap);
+        }
+      } else if (groupNames.length > 3) {
+        rw = (w - 16 - gap) / 2;
+        const rows = Math.ceil(groupNames.length / 2);
+        rh = (usable - gap * (rows - 1)) / rows;
+        x += (gi % 2) * (rw + gap);
+        y += Math.floor(gi / 2) * (rh + gap);
       } else if (groupNames.length === 2) {
         rw = (w - 16 - gap) / 2;
         x += gi * (rw + gap);
@@ -335,6 +371,11 @@ export class BrainView {
           positions[i] = [
             x + 14 + ((i % 19) / 18) * (rw - 28),
             y + 36 + (Math.floor(i / 19) / 12) * (rh - 54),
+          ];
+        } else if (g === "retina") {
+          positions[i] = [
+            x + 10 + (((k % 24) + 0.5) / 24) * (rw - 20),
+            y + 29 + ((Math.floor(k / 24) + 0.5) / 24) * (rh - 44),
           ];
         } else {
           const cols =

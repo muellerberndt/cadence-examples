@@ -1,13 +1,15 @@
+import { mountGame } from "../connect-four/view.js";
+import { Forager } from "../fly/brain.js";
 import { BrainView } from "./brain_view.js";
 import { memoryCircuit } from "./telemetry.js";
-import { mountWorm } from "./worm_view.js";
+import { mountWorm } from "../worm/view.js";
 import { showGuide } from "./guides.js";
-import { mountEmbodied } from "./embodied_view.js";
+import { mountArm } from "../eye-arm/view.js";
+import { mountEmbodied } from "../mouse/view.js";
 import {
   Worm,
   MLP,
   FastMemory,
-  Forager,
   flowers,
   keys,
   zeros,
@@ -32,6 +34,8 @@ let composite,
   wormView = "habitat";
 let data,
   evidence,
+  memoryRuntime,
+  strategyEvidence,
   worm,
   net,
   mode = "worm",
@@ -190,6 +194,12 @@ function renderEvidence() {
         : "One write can replace an old answer";
     $("evidence-note").textContent =
       "Same revealed samples: 128 writes, eight keys, four values, three seeds. Query every seen key after each write. Online MLP: 8 → 32 → 4, SGD; no test-based tuning. This is a controlled memory comparison, separate from the live foraging trajectories.";
+    const timing = memoryRuntime.rows,
+      local = timing.find((r) => r.kind === "cadence"),
+      one = timing.find((r) => r.kind === "1"),
+      hundred = timing.find((r) => r.kind === "100");
+    $("evidence-note").textContent +=
+      ` Separate local runtime trial: ${local.median_ms.toFixed(3)} ms per distinct-key stream; ${(hundred.median_ms / local.median_ms).toFixed(1)}× lower time than MLP/100 updates and ${(one.median_ms / local.median_ms).toFixed(1)}× than MLP/1 update. Recorded on ${memoryRuntime.cpu}, Node ${memoryRuntime.runtime}; 11 repetitions, one stream. See Comparison contracts for the receipt and limits.`;
     $("evidence-table").innerHTML = table(
       [
         "Key similarity",
@@ -223,11 +233,11 @@ function setMode(next) {
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.wormView === wormView)),
     );
-  document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", memory: "Changing memory" }[mode]}`;
+  document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", memory: "Changing memory", game: "Connect Four reasoner" }[mode]}`;
   bodyView = null;
   auto = false;
   paused = false;
-  location.hash = next;
+  if (!document.body.dataset.demo) location.hash = next;
   document
     .querySelectorAll("[data-tab]")
     .forEach((b) =>
@@ -241,20 +251,35 @@ function setMode(next) {
     fit();
     return;
   }
-  if (mode === "mouse" || mode === "arm") {
-    bodyView = mountEmbodied(mode, {
+  if (mode === "game") {
+    bodyView = mountGame({
       $,
+      ctx,
       metrics,
       explain,
       table,
-      pct,
-      mean,
-      ctx,
-      circle,
-      line,
-      text,
-      evidence: composite,
+      evidence: strategyEvidence,
     });
+    fit();
+    return;
+  }
+  if (mode === "mouse" || mode === "arm") {
+    bodyView = (mode === "arm" ? (_, api) => mountArm(api) : mountEmbodied)(
+      mode,
+      {
+        $,
+        metrics,
+        explain,
+        table,
+        pct,
+        mean,
+        ctx,
+        circle,
+        line,
+        text,
+        evidence: composite,
+      },
+    );
     fit();
     return;
   }
@@ -691,11 +716,8 @@ function brainSource() {
         "Supplied chemical circuit: no trained plasticity. Release input shows transient recurrent decay, not durable task memory.",
     };
   if (mode === "fly") {
-    const agent = agents[0],
-      key = agent.target >= 0 ? keys()[field[agent.target].kind] : zeros(8);
-    const circuit = memoryCircuit(agent.memory, key);
-    circuit.adapters = "Supplied: flower sensing · target choice · steering";
-    circuit.regionLabels = { key: "Flower cue", record: "Nectar memory" };
+    const agent = agents[0];
+    const circuit = agent.brain(field);
     const recent = agent.last && agent.time - agent.last.time < 1.5;
     circuit.behavior = paused
       ? { label: "Paused", tone: "neutral" }
@@ -772,7 +794,7 @@ canvas.addEventListener("pointerdown", (e) => {
 canvas.addEventListener("pointermove", (e) => {
   if (bodyView?.pointerMove) {
     const r = canvas.getBoundingClientRect();
-    bodyView.pointerMove(e.clientX - r.left, e.clientY - r.top);
+    bodyView.pointerMove(e.clientX - r.left, e.clientY - r.top, width, height);
     return;
   }
   if (drag < 0 || mode !== "fly") return;
@@ -803,32 +825,38 @@ document.querySelectorAll("[data-worm-view]").forEach(
     }),
 );
 window.addEventListener("resize", fit);
-document
-  .querySelectorAll("[data-tab]")
-  .forEach((b) => (b.onclick = () => setMode(b.dataset.tab)));
+document.querySelectorAll("[data-tab]").forEach((b) => {
+  if (b.tagName === "BUTTON") b.onclick = () => setMode(b.dataset.tab);
+});
 window.addEventListener("hashchange", () => {
   const next = location.hash.slice(1);
   if (["worm", "fly", "memory", "mouse", "arm"].includes(next) && mode !== next)
     setMode(next);
 });
 try {
-  [data, evidence, composite] = await Promise.all(
-    [
-      "showcase/worm.json",
-      "showcase/evidence.json",
-      "showcase/composite_evidence.json",
-    ].map(async (url) => {
-      const r = await fetch(url);
-      if (!r.ok) throw Error(url);
-      return r.json();
-    }),
-  );
+  [data, evidence, composite, memoryRuntime, strategyEvidence] =
+    await Promise.all(
+      [
+        "showcase/worm.json",
+        "showcase/evidence.json",
+        "showcase/composite_evidence.json",
+        "memory/evidence.json",
+        "connect-four/evidence.json",
+      ].map(async (url) => {
+        const r = await fetch(url);
+        if (!r.ok) throw Error(url);
+        return r.json();
+      }),
+    );
   worm = new Worm(data);
   net = new MLP(evidence.browser.worm_mlp);
   setMode(
-    ["worm", "fly", "memory", "mouse", "arm"].includes(location.hash.slice(1))
-      ? location.hash.slice(1)
-      : "mouse",
+    document.body.dataset.demo ||
+      (["worm", "fly", "memory", "mouse", "arm"].includes(
+        location.hash.slice(1),
+      )
+        ? location.hash.slice(1)
+        : "mouse"),
   );
   requestAnimationFrame(animate);
   // Read-only snapshots support reproducible engine/UI checks.

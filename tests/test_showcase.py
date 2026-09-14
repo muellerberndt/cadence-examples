@@ -155,3 +155,113 @@ console.log(JSON.stringify({errors,initial:Math.max(...release.frames[0]),releas
     assert max(result["errors"]) < 1e-12
     assert result["initial"] > 0
     assert result["released"] < result["initial"] * 1e-6
+
+
+def test_motor_controller_matches_cadence_from_retained_state_and_lesions():
+    import cadence as cd
+
+    samples = node("""
+import {DrawingArm} from './eye-arm/brain.js';
+import {imageFixture} from './eye-arm/fixtures.js';
+const a=new DrawingArm(imageFixture('square')),out=[];
+for(let i=0;i<8;i++)a.step();out.push(a.brain.motor.last);
+a.brain.motor.mask[11]=0;a.step();out.push(a.brain.motor.last);
+console.log(JSON.stringify(out));
+""")
+    for s in samples:
+        pre, post, weights = zip(*s["edges"])
+        engine = cd.Settlement(
+            cd.Wiring.from_edges(len(s["state"]), pre=pre, post=post, sign=weights),
+            cd.GradedRule(
+                gain=1, slope=2, threshold=0, leak=1, dt=s["dt"], clamp_amplitude=1
+            ),
+        )
+        state = cd.SettledState(
+            v=np.asarray(s["initialPotential"]),
+            activation=np.asarray(s["initialState"]),
+            adaptation=np.zeros(len(s["state"])),
+            steps=0,
+        )
+        actual = engine.settle(
+            s["drive"],
+            state=state,
+            mask=np.asarray(s["mask"]),
+            steps=s["steps"],
+            tolerance=0,
+        ).activation
+        np.testing.assert_allclose(actual, s["state"], atol=1e-12, rtol=0)
+
+
+def test_composite_replay_respects_retained_state_and_motor_decay():
+    result = node("""
+import {DrawingArm} from './eye-arm/brain.js';
+import {imageFixture} from './eye-arm/fixtures.js';
+import {repairTrace} from './showcase/telemetry.js';
+const a=new DrawingArm(imageFixture('square'));for(let i=0;i<50;i++)a.step();
+const s=a.brain.snapshot(),trace=repairTrace(s),release=repairTrace(s,true);
+console.log(JSON.stringify({initial:s.blocks[1].initialState.some(v=>v!==0),error:Math.max(...trace.frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))),start:Math.max(...release.frames[0].map(Math.abs)),end:Math.max(...release.frames.at(-1).map(Math.abs))}));
+""")
+    assert result["initial"] and result["error"] < 1e-12
+    assert result["end"] < result["start"] * 1e-3
+
+
+def test_current_nervous_system_receipts_bind_all_controller_sources():
+    for folder in ["eye-arm", "mouse", "worm", "fly"]:
+        body = json.loads((ROOT / folder / "evidence.json").read_text())
+        for filename, digest in body["sources"].items():
+            assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest
+        assert len(body["arm"]) == 18 and len(body["mouse"]) == 36
+        assert len(body["worm"]) == 5 and len(body["fly"]) == 2
+
+
+def test_game_value_and_self_monitor_match_python_cadence():
+    import cadence as cd
+    from cadence.brains import ActivityMonitor
+
+    result = node("""
+import {drop,valueCircuit,Monitor} from './connect-four/brain.js';
+let b=Array(42).fill(0);[3,2,3,4,2].forEach((c,i)=>b=drop(b,c,i%2?-1:1));
+const monitor=new Monitor(),reads=[];
+for(const [activity,scores,pressure] of [[[0,0],[.1,.1],0],[[.8,-.4],[-1,1],.2],[[0,0],[.1,.1],1]]) {
+  reads.push({...monitor.read(activity,scores,pressure),state:monitor.state.slice(),activity,scores});
+}
+console.log(JSON.stringify({value:valueCircuit(b,-1),reads}));
+""")
+    value = result["value"]
+    pre, post, weights = zip(*value["edges"])
+    engine = cd.Settlement(
+        cd.Wiring.from_edges(6, pre=pre, post=post, sign=weights),
+        cd.GradedRule(gain=1, slope=2, threshold=0, leak=1, dt=1, clamp_amplitude=1),
+    )
+    actual = engine.settle(value["drive"], steps=2, tolerance=0)
+    np.testing.assert_allclose(actual.activation, value["state"], atol=1e-12, rtol=0)
+    monitor = ActivityMonitor()
+    for row in result["reads"]:
+        read = monitor.read(row["activity"], row["scores"], pressure=row["pressure"])
+        np.testing.assert_allclose(
+            read.state.activation, row["state"], atol=1e-12, rtol=0
+        )
+        assert read.request_more == row["request_more"]
+
+
+def test_game_search_preserves_board_blocks_threats_and_respects_limits():
+    result = node("""
+import assert from 'node:assert/strict';
+import {drop,reason,legal,winner} from './connect-four/brain.js';
+let b=Array(42).fill(0);[0,6,1,6,2].forEach((c,i)=>b=drop(b,c,i%2?-1:1));
+const before=b.slice(),block=reason(b,-1,{depth:3});assert.deepEqual(b,before);
+assert.equal(block.column,3);
+const victory=drop(b,3,1);assert.equal(winner(victory),1);assert.equal(reason(victory,-1).column,null);
+const low=reason(b,-1,{maxNodes:1});assert.equal(low.depth,0);assert.ok(low.budgetExhausted);assert.equal(low.nodes,1);assert.ok(legal(b).includes(low.column));
+const completed=reason(Array(42).fill(0),1,{maxNodes:20});assert.equal(completed.depth,1);assert.ok(completed.budgetExhausted);assert.equal(completed.nodes,20);
+assert.throws(()=>drop(b,7,1));assert.throws(()=>reason(b,-1,{depth:0}));
+console.log(JSON.stringify({block:block.column,depth:completed.depth}));
+""")
+    assert result == {"block": 3, "depth": 1}
+
+
+def test_strategy_and_runtime_receipts_bind_their_producers():
+    for folder in ["connect-four", "memory"]:
+        body = json.loads((ROOT / folder / "evidence.json").read_text())
+        for filename, digest in body["sources"].items():
+            assert hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() == digest

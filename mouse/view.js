@@ -1,13 +1,8 @@
-import { memoryCircuit } from "./telemetry.js";
-import { keys } from "./engine.js";
-import {
-  Mouse,
-  Arm,
-  drawingTargets,
-  forward,
-  TaskLessons,
-  stations,
-} from "./embodied.js";
+import { Mouse } from "./brain.js";
+import { compose } from "../showcase/nervous_system.js";
+import { memoryCircuit } from "../showcase/telemetry.js";
+import { keys } from "../showcase/engine.js";
+import { TaskLessons, stations } from "../showcase/embodied.js";
 export function mountEmbodied(mode, api) {
   const {
     $,
@@ -25,12 +20,9 @@ export function mountEmbodied(mode, api) {
   let lessons,
     cue = 0;
   let mouse,
-    arm,
     seed = 13,
     paused = false,
-    heat = true,
-    image = "flower",
-    tickCredit = 0;
+    heat = true;
   const title =
     mode === "mouse"
       ? "Teach a new task.<br>Watch it find a way."
@@ -43,10 +35,6 @@ export function mountEmbodied(mode, api) {
   const worldXY = (w, h) => {
     const cell = Math.min((w - 42) / 19, (h - 35) / 13);
     return { cell, ox: (w - cell * 19) / 2, oy: (h - cell * 13) / 2 };
-  };
-  const armXY = (w, h) => {
-    const size = Math.min(w - 30, h - 10);
-    return { size, ox: (w - size) / 2, oy: 0 };
   };
   if (mode === "mouse") {
     try {
@@ -119,6 +107,8 @@ export function mountEmbodied(mode, api) {
     $("new-maze").onclick = () => {
       seed += 10;
       mouse = new Mouse(seed);
+      motorButton.textContent = "Motor neurons on";
+      motorButton.setAttribute("aria-pressed", "true");
       perform();
       choices();
     };
@@ -140,6 +130,19 @@ export function mountEmbodied(mode, api) {
       heat = !heat;
       $("heat").setAttribute("aria-pressed", String(heat));
     };
+    const motorButton = document.createElement("button");
+    motorButton.id = "mouse-motors";
+    motorButton.textContent = "Motor neurons on";
+    motorButton.setAttribute("aria-pressed", "true");
+    motorButton.onclick = () => {
+      const enabled = !mouse.nerves.mask[2];
+      mouse.nerves.mask.fill(+enabled, 2);
+      motorButton.setAttribute("aria-pressed", String(enabled));
+      motorButton.textContent = enabled
+        ? "Motor neurons on"
+        : "Motor neurons off";
+    };
+    $("controls").append(motorButton);
     choices();
     perform();
     if (lessons.known.has(3)) {
@@ -163,7 +166,7 @@ export function mountEmbodied(mode, api) {
     ]);
     $("evidence-title").textContent = "A changed world gets a fresh route";
     $("evidence-note").textContent =
-      "Twelve generated mazes, three conditions each: initial navigation, a changed corridor where an alternate path exists, and a moved goal. Every body position is checked against walls.";
+      "Reference spatial-field/body benchmark (before the expanded motor circuit): twelve generated mazes, three conditions each: initial navigation, a changed corridor where an alternate path exists, and a moved goal. Every body position is checked against walls.";
     $("evidence-table").innerHTML = table(
       [
         "Condition",
@@ -187,137 +190,6 @@ export function mountEmbodied(mode, api) {
     );
     $("boundary").textContent =
       "Task cues are explicit symbolic keys, not natural-language instructions. Lessons persist only in this browser; a dictionary can also retain these mappings. The graph and full occupancy map are supplied; the mouse is a simplified planar body. Cadence solves a tanh spatial field, and a local readout chooses an ascending neighbor. BFS is a strong conventional control and also succeeds. The frozen-route control demonstrates why stale plans need feedback; it is not an MLP trained to navigate. Changing a corridor may be impossible without disconnecting a perfect maze; each scheduled edit is recorded in the evidence.";
-  } else {
-    arm = new Arm();
-    $("stage-label").textContent =
-      "LIVE COMPOSITE · VISUAL ERROR ↔ MOTOR CORRECTION";
-    $("stage-detail").textContent =
-      "Two joints · four coupled error/correction owners";
-    $("stage-hint").textContent =
-      "White: target outline. Green: deposited ink. Disturb a joint to test correction.";
-    $("scene").setAttribute(
-      "aria-label",
-      "A two-joint arm sketches a target outline. A small circuit shows reciprocal visual-error and motor-correction activity.",
-    );
-    $("controls").innerHTML =
-      `<div><h2>Drawing is repeated correction.</h2><p>Visual error and motor correction settle jointly. The body moves, and its new pose becomes the next observation.</p></div><div><label for="target-image">Target outline</label><select id="target-image"><option value="flower">Flower</option><option value="leaf">Leaf</option><option value="spiral">Spiral</option></select></div><div><label for="image-upload">Or present your own image</label><input id="image-upload" type="file" accept="image/png,image/jpeg,image/webp" style="width:100%;font-size:11px"><p>Local only. The visual adapter extracts up to 320 edge points; the arm sketches the outline.</p></div><div class="buttons"><button id="disturb">Disturb a joint</button><button id="feedback" aria-pressed="true">Feedback on</button><button id="restart-arm">Start again</button><button id="pause">Pause</button></div>${metrics(
-        [
-          ["Target coverage", "0%", "coverage"],
-          ["Visual error", "—", "visual-error"],
-          ["Deposited ink samples", "0", "ink-count"],
-        ],
-      )}<p id="image-status" aria-live="polite">Supplied arm geometry and visual adapter; no pretrained image model.</p>`;
-    $("target-image").onchange = () => {
-      image = $("target-image").value;
-      arm = new Arm(drawingTargets(image));
-      $("feedback").textContent = "Feedback on";
-      $("feedback").setAttribute("aria-pressed", "true");
-    };
-    $("disturb").onclick = () => arm.disturb();
-    $("feedback").onclick = () => {
-      arm.closed = !arm.closed;
-      $("feedback").textContent = arm.closed ? "Feedback on" : "Feedback off";
-      $("feedback").setAttribute("aria-pressed", String(arm.closed));
-    };
-    $("restart-arm").onclick = () => {
-      arm = new Arm(arm.targets);
-      $("feedback").textContent = "Feedback on";
-      $("feedback").setAttribute("aria-pressed", "true");
-    };
-    $("pause").onclick = () => {
-      paused = !paused;
-      $("pause").textContent = paused ? "Resume" : "Pause";
-    };
-    $("image-upload").onchange = async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      if (file.size > 5e6) {
-        $("image-status").textContent =
-          "Please choose an image smaller than 5 MB.";
-        return;
-      }
-      try {
-        const bitmap = await createImageBitmap(file),
-          c = document.createElement("canvas");
-        c.width = c.height = 48;
-        const cx = c.getContext("2d");
-        cx.fillStyle = "white";
-        cx.fillRect(0, 0, 48, 48);
-        const scale = Math.min(46 / bitmap.width, 46 / bitmap.height);
-        cx.drawImage(
-          bitmap,
-          (48 - bitmap.width * scale) / 2,
-          (48 - bitmap.height * scale) / 2,
-          bitmap.width * scale,
-          bitmap.height * scale,
-        );
-        bitmap.close();
-        const pixels = cx.getImageData(0, 0, 48, 48).data,
-          gray = (i) =>
-            (pixels[i * 4] + pixels[i * 4 + 1] + pixels[i * 4 + 2]) / 765,
-          targets = [];
-        for (let y = 1; y < 47; y++)
-          for (let x = 1; x < 47; x++) {
-            const i = y * 48 + x;
-            if (
-              Math.abs(gray(i + 1) - gray(i - 1)) +
-                Math.abs(gray(i + 48) - gray(i - 48)) >
-              0.28
-            )
-              targets.push([0.29 + (x / 48) * 0.42, 0.23 + (y / 48) * 0.42]);
-          }
-        if (targets.length < 4) {
-          $("image-status").textContent =
-            "Few edges detected. Try a high-contrast drawing or photograph.";
-          return;
-        }
-        const selected = targets.filter(
-          (_, i) => i % Math.max(1, Math.ceil(targets.length / 320)) === 0,
-        );
-        arm = new Arm(selected);
-        $("feedback").textContent = "Feedback on";
-        $("feedback").setAttribute("aria-pressed", "true");
-        $("image-status").textContent =
-          `Image received: ${selected.length} edge targets. Drawing from visual readback.`;
-      } catch (error) {
-        $("image-status").textContent =
-          "Could not decode that image. Try PNG, JPEG or WebP.";
-      }
-    };
-    explain([
-      [
-        "Eye / visual error region",
-        "The image adapter supplies edge targets. The system compares a target with observed pen position and deposited ink. It draws an outline rather than generating an illustration.",
-      ],
-      [
-        "Joint equilibrium with motor regions",
-        "Visual-error owners receive negative feedback from predicted joint movement. Motor owners receive the visual residual through the arm Jacobian. Four owners settle together.",
-      ],
-      [
-        "Body / proprioceptive return",
-        "The joints move, then their actual pose is read back. A disturbance tests whether the next correction follows the real arm or a stale internal estimate.",
-      ],
-    ]);
-    $("evidence-title").textContent = "Feedback repairs a disturbed drawing";
-    $("evidence-note").textContent =
-      "Three outlines × three disturbance times. Same controller and joint disturbance; only visual/proprioceptive readback changes. Coverage counts target points close to deposited ink after 4,000 control steps.";
-    $("evidence-table").innerHTML = table(
-      ["Target", "Coupled feedback", "Feedback disabled"],
-      ["flower", "leaf", "spiral"].map((name) => [
-        name,
-        ...[true, false].map((mode) =>
-          pct(
-            mean(
-              evidence.arm
-                .filter((r) => r.image === name && r.feedback === mode)
-                .map((r) => r.coverage),
-            ),
-          ),
-        ),
-      ]),
-    );
-    $("boundary").textContent =
-      "The visual edge adapter, arm geometry and Jacobian are supplied. The example demonstrates coupled error correction and embodied readback, not learned vision, learned anatomy, or a general advantage over backpropagation. Coverage uses a 0.022-distance tolerance in normalized workspace units; it does not score artistic quality. The same four-owner numerical update agrees with the Python Cadence engine.";
   }
   const evidenceLink = document.querySelector(".evidence details a");
   evidenceLink.href = "showcase/composite_evidence.json";
@@ -417,85 +289,6 @@ export function mountEmbodied(mode, api) {
               : "Navigating";
         $("stage-readout").textContent =
           `${world.grid.filter((v) => !v).length} place owners · ${mouse.circuit.steps} settling steps`;
-      } else {
-        tickCredit += dt * 65;
-        while (tickCredit >= 1) {
-          if (!paused) arm.step();
-          tickCredit--;
-        }
-        const { size, ox, oy } = armXY(w, h),
-          xy = (p) => [ox + p[0] * size, oy + p[1] * size];
-        // Camera inset shows the actual supplied edge image, not a stock illustration.
-        ctx.fillStyle = "#182d2a";
-        ctx.fillRect(20, 24, 100, 100);
-        arm.targets.forEach((p) =>
-          circle(
-            28 + (p[0] - 0.25) * 170,
-            30 + (p[1] - 0.2) * 170,
-            1,
-            "#e2ece3",
-          ),
-        );
-        text("VISUAL TARGET", 70, 142, "#a3b4b9", 9, "center");
-        arm.targets.forEach((p) => circle(...xy(p), 1.5, "#eff7ef55"));
-        for (let i = 0; i < arm.ink.length; i++) {
-          const p = arm.ink[i];
-          if (
-            i &&
-            Math.hypot(p[0] - arm.ink[i - 1][0], p[1] - arm.ink[i - 1][1]) <
-              0.04
-          )
-            line(xy(arm.ink[i - 1]), xy(p), "#87ecc2", 2);
-          else circle(...xy(p), 1.5, "#87ecc2");
-        }
-        const base = [0.5, 0.94],
-          elbow = [
-            0.5 + 0.43 * Math.cos(arm.q[0]),
-            0.94 + 0.43 * Math.sin(arm.q[0]),
-          ],
-          tip = forward(arm.q);
-        line(xy(base), xy(elbow), "#30434d", 17);
-        line(xy(elbow), xy(tip), "#415963", 13);
-        line(xy(base), xy(elbow), "#6c8790", 2);
-        line(xy(elbow), xy(tip), "#8aa7ac", 2);
-        for (const p of [base, elbow]) {
-          circle(...xy(p), 11, "#1b2e33");
-          circle(...xy(p), 5, "#aac3bb");
-        }
-        circle(...xy(tip), 4, arm.lifted ? "#ffb17a" : "#87ecc2");
-        if (arm.target >= 0) {
-          const goal = arm.targets[arm.target];
-          ctx.setLineDash([3, 5]);
-          line(xy(tip), xy(goal), "#ffb17a80");
-          ctx.setLineDash([]);
-          circle(...xy(goal), 4, "#ffb17a");
-        }
-        // The four displayed nodes are the actual coupled visual/motor settlement.
-        const nodes = [
-            [35, h - 105],
-            [35, h - 60],
-            [105, h - 105],
-            [105, h - 60],
-          ],
-          s = arm.settlement?.state ?? [0, 0, 0, 0];
-        for (let i = 0; i < 2; i++)
-          for (let j = 2; j < 4; j++) line(nodes[i], nodes[j], "#3e675b");
-        nodes.forEach((p, i) => {
-          circle(...p, 5 + Math.abs(s[i]) * 35, i < 2 ? "#ffb17a" : "#87ecc2");
-        });
-        text("VISUAL", 35, h - 27, "#ffb17a", 9, "center");
-        text("MOTOR", 105, h - 27, "#87ecc2", 9, "center");
-        $("coverage").textContent = pct(arm.coverage);
-        $("ink-count").textContent = arm.ink.length;
-        $("visual-error").textContent =
-          arm.target < 0
-            ? "Done"
-            : Math.hypot(
-                ...(arm.settlement?.drive ?? [0, 0]).slice(0, 2),
-              ).toFixed(3);
-        $("stage-readout").textContent = arm.closed
-          ? "Visual + proprioceptive readback active"
-          : "Readback disabled · internal pose estimate";
       }
     },
     pointer(x, y, w, h) {
@@ -511,8 +304,9 @@ export function mountEmbodied(mode, api) {
         const c = mouse.circuit,
           n = c.state.length,
           offset = c.engine.data.edges.length;
-        return {
-          adapters: "Supplied: visual map · destination lookup · steering",
+        const field = {
+          adapters:
+            "Visual map → task memory + spatial field → motor circuit → body",
           regionLabels: {
             place: "Spatial planning",
             key: "Task cue",
@@ -542,55 +336,31 @@ export function mountEmbodied(mode, api) {
           memory:
             "Task associations persist in plastic seams. The place field is recalculated from the map; no behavioral Afterglow trace is used here.",
         };
+        return compose([field, mouse.nerves.last], {
+          adapters: field.adapters,
+          behavior: field.behavior,
+          regionLabels: {
+            ...field.regionLabels,
+            sensor: "Position error",
+            actuator: "Directional motor neurons",
+          },
+          memory:
+            "Task associations persist in plastic seams. Spatial patches find the route; retained graded motor potentials drive motion. Map encoding and target readout are supplied.",
+        });
       }
-      const c = arm.settlement;
-      return c
-        ? {
-            ...c,
-            names: [
-              "Visual error X",
-              "Visual error Y",
-              "Motor correction 1",
-              "Motor correction 2",
-            ],
-            groups: ["visual", "visual", "motor", "motor"],
-            adapters:
-              "Supplied: image edges · target selection · joint geometry",
-            behavior: paused
-              ? { label: "Paused", tone: "neutral" }
-              : arm.target < 0
-                ? {
-                    label: "Pass complete",
-                    tone: arm.coverage > 0.95 ? "positive" : "neutral",
-                  }
-                : {
-                    label: arm.closed ? "Correcting pose" : "Estimated pose",
-                    tone: "correcting",
-                  },
-            recurrent: true,
-            steps: 80,
-            dt: 0.25,
-            memory:
-              "Four coupled owners. Joint geometry changes the couplings; these are supplied weights, not learned plasticity. Release input probes transient recurrent decay.",
-          }
-        : null;
+      return null;
     },
     snapshot() {
-      return mode === "mouse"
-        ? {
-            cell: mouse.cell,
-            goal: mouse.world.goal,
-            lessons: lessons.records,
-            moves: mouse.moves,
-            residual: mouse.circuit.residual,
-          }
-        : {
-            coverage: arm.coverage,
-            ink: arm.ink.length,
-            feedback: arm.closed,
-            q: arm.q.slice(),
-            target: arm.target,
-          };
+      return {
+        cell: mouse.cell,
+        x: mouse.x,
+        y: mouse.y,
+        motors: mouse.nerves.state.slice(),
+        goal: mouse.world.goal,
+        lessons: lessons.records,
+        moves: mouse.moves,
+        residual: mouse.circuit.residual,
+      };
     },
   };
 }

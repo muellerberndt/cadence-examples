@@ -20,13 +20,16 @@ jobs:
         run: |
           python showcase/verify.py
           node showcase/habitat_benchmark.mjs
+          node tools/nervous_system_benchmark.mjs
+          node connect-four/benchmark.mjs
+          git diff --exit-code -- eye-arm/evidence.json mouse/evidence.json worm/evidence.json fly/evidence.json connect-four/evidence.json
       - name: generated websites agree with the authored shell
         run: |
           python tools/build_showcase.py
-          git diff --exit-code -- index.html hub_published.html
+          git diff --exit-code -- index.html hub_published.html eye-arm/index.html mouse/index.html worm/index.html fly/index.html memory/index.html connect-four/index.html
       - name: launcher, numerical parity and evidence integrity
         run: python -m pytest -q tests
-      - name: all five websites work in a real browser
+      - name: all six websites work in a real browser
         run: |
           python -m playwright install --with-deps chromium
           python tools/showcase_pages.py

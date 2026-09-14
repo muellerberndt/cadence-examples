@@ -36,7 +36,7 @@ def test_headless_server_uses_selected_port_and_loopback(
     monkeypatch.setattr(module.http.server, "ThreadingHTTPServer", Server)
     monkeypatch.setattr(module.webbrowser, "open", unexpected_browser)
     assert module.main([page, "--port", "0", "--no-browser"]) == 0
-    assert f"http://127.0.0.1:41234/#{fragment}" in capsys.readouterr().out
+    assert f"http://127.0.0.1:41234/{fragment}/" in capsys.readouterr().out
 
 
 def test_server_bind_error_has_actionable_message(monkeypatch, capsys):

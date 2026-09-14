@@ -1,4 +1,4 @@
-"""Real-browser interactions for all five demos, including taught tasks and image input."""
+"""Real-browser interactions for all six demos, including taught tasks and image input."""
 
 import functools
 import http.server
@@ -15,6 +15,14 @@ ROOT = Path(__file__).resolve().parents[1]
 class Quiet(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
+
+
+def choose(page, mode):
+    page.locator(f'[data-tab="{mode}"]').click()
+    page.wait_for_function(
+        "mode => window.showcase?.snapshot().mode === mode && window.showcase.snapshot().brain.owners > 0",
+        arg=mode,
+    )
 
 
 def main():
@@ -34,33 +42,21 @@ def main():
             page = b.new_page(viewport={"width": 1440, "height": 1050})
             errors = []
             page.on("pageerror", lambda e: errors.append(str(e)))
-            page.goto(f"http://127.0.0.1:{server.server_address[1]}/")
+            page.goto(f"http://127.0.0.1:{server.server_address[1]}/mouse/")
             page.wait_for_function("window.showcase !== undefined")
             assert page.evaluate("showcase.snapshot().mode") == "mouse"
             page.wait_for_function("showcase.snapshot().brain.owners > 0")
-            # The spatial field settles once; body motion alone must not invent cascades.
-            page.wait_for_function("showcase.snapshot().brain.cascades === 1")
-            page.wait_for_function(
-                "showcase.snapshot().brain.displayed.repairs.some(v => Math.abs(v)>1e-12)"
+            # Motor activity, not a direct position update, drives the body.
+            page.locator("#mouse-motors").click()
+            page.wait_for_timeout(300)
+            position = page.evaluate(
+                "[showcase.snapshot().body.x,showcase.snapshot().body.y]"
             )
-            page.locator("#pause").click()
-            page.wait_for_timeout(2100)
-            assert page.evaluate("showcase.snapshot().brain.cascades") == 1
-            page.locator("#move-goal").click()
-            page.wait_for_function("showcase.snapshot().brain.cascades > 1")
-            page.wait_for_function("showcase.snapshot().brain.displayed.frame > 0")
-            page.wait_for_timeout(3000)
-            settled = page.evaluate("showcase.snapshot().brain")
-            assert (
-                max(
-                    abs(a - b)
-                    for a, b in zip(settled["displayed"]["state"], settled["state"])
-                )
-                < 1e-8
+            page.wait_for_timeout(300)
+            assert position == page.evaluate(
+                "[showcase.snapshot().body.x,showcase.snapshot().body.y]"
             )
-            assert max(settled["displayed"]["trail"]) < 0.01
-            assert settled["behavior"]["label"] == "Paused"
-            page.locator("#pause").click()
+            page.locator("#mouse-motors").click()
             page.locator("#task-cue").select_option("3")
             page.locator("#perform-task").click()
             assert "unfamiliar" in page.locator("#lesson-status").inner_text()
@@ -78,7 +74,7 @@ def main():
             page.locator("#teach-task").click()
             lessons = page.evaluate("showcase.snapshot().body.lessons")
             assert all(r in lessons for r in [[0, 0], [1, 1], [2, 2], [3, 2]])
-            page.locator('[data-tab="worm"]').click()
+            choose(page, "worm")
             page.locator('[data-worm-view="circuit"]').click()
             before = page.evaluate("showcase.snapshot().result.state")
             page.locator("#cut-many").click()
@@ -122,7 +118,7 @@ def main():
             page.locator('[data-worm-view="habitat"]').click()
             assert page.evaluate("showcase.snapshot().body.walls[3*31+8]")
             assert not page.evaluate("showcase.snapshot().body.walls[3*31+9]")
-            page.locator('[data-tab="memory"]').click()
+            choose(page, "memory")
             page.locator("#value").select_option("3")
             page.locator("#teach").click()
             page.locator("#value").select_option("1")
@@ -130,7 +126,7 @@ def main():
             assert page.evaluate("showcase.snapshot().fast[0][1]") == 1
             page.locator("#correlation").select_option("0.9")
             assert page.evaluate("showcase.snapshot().writeCount") == 0
-            page.locator('[data-tab="fly"]').click()
+            choose(page, "fly")
             page.wait_for_function(
                 "showcase.snapshot().agents[0].encounters > 0", timeout=20000
             )
@@ -139,8 +135,28 @@ def main():
             before = page.evaluate("showcase.snapshot().agents")
             page.wait_for_timeout(150)
             assert before == page.evaluate("showcase.snapshot().agents")
-            page.locator('[data-tab="arm"]').click()
-            page.wait_for_function("showcase.snapshot().body.ink > 0")
+            choose(page, "arm")
+            page.wait_for_function("showcase.snapshot().body.ink > 0", timeout=20000)
+            # A freehand mark is read back through the retina, including pencil lift.
+            page.locator("#clear-pad").click()
+            bounds = page.locator("#scene").bounding_box()
+            size = min(bounds["width"] * 0.40 - 18, bounds["height"] - 88)
+            x, y = bounds["x"] + 18, bounds["y"] + 58
+            page.mouse.move(x + size * 0.3, y + size * 0.3)
+            page.mouse.down()
+            page.mouse.move(x + size * 0.7, y + size * 0.3, steps=12)
+            page.mouse.move(x + size * 0.7, y + size * 0.7, steps=12)
+            page.mouse.up()
+            page.wait_for_function("showcase.snapshot().body.targets > 3")
+            page.wait_for_function("showcase.snapshot().body.ink > 0", timeout=20000)
+            assert page.evaluate("showcase.snapshot().body.retina.some(v=>v>.23)")
+            page.locator("#restart-arm").click()
+            page.locator("#pencil-motors").click()
+            page.wait_for_timeout(600)
+            assert page.evaluate("showcase.snapshot().body.ink") == 0
+            assert page.evaluate("showcase.snapshot().body.z") == 1
+            page.locator("#pencil-motors").click()
+            page.wait_for_function("showcase.snapshot().body.ink > 0", timeout=20000)
             page.locator("#disturb").click()
             page.locator("#feedback").click()
             assert not page.evaluate("showcase.snapshot().body.feedback")
@@ -162,19 +178,55 @@ def main():
             page.wait_for_function(
                 "document.querySelector('#image-status').textContent.includes('Image received')"
             )
-            for mode in ["mouse", "arm", "fly", "worm", "memory"]:
-                page.locator(f'[data-tab="{mode}"]').click()
+            choose(page, "game")
+            page.locator("#watch-thought").click()
+            page.locator('[data-column="3"]').click()
+            page.wait_for_function("showcase.snapshot().body.result?.depth >= 4")
+            page.wait_for_function(
+                "document.querySelector('#game-status').textContent.startsWith('Considering')"
+            )
+            before = page.evaluate("showcase.snapshot().body.board")
+            assert sum(v != 0 for v in before) == 1
+            page.locator("#game-futures button").last.click()
+            page.locator("#future-step").fill("0")
+            assert page.evaluate("showcase.snapshot().body.board") == before
+            page.locator("#play-thought").click()
+            assert (
+                sum(v != 0 for v in page.evaluate("showcase.snapshot().body.board"))
+                == 2
+            )
+            page.locator("#new-game").click()
+            assert page.evaluate("showcase.snapshot().body.board") == [0] * 42
+            page.locator("#self-monitor").click()
+            page.locator("#cadence-first").click()
+            page.wait_for_function(
+                "document.querySelector('#game-status').textContent.startsWith('Considering')"
+            )
+            assert page.evaluate("showcase.snapshot().body.result.depth") == 4
+            assert page.evaluate("showcase.snapshot().body.board") == [0] * 42
+            page.locator("#play-thought").click()
+            assert (
+                sum(v != 0 for v in page.evaluate("showcase.snapshot().body.board"))
+                == 1
+            )
+            for mode in ["mouse", "arm", "fly", "worm", "memory", "game"]:
+                choose(page, mode)
                 page.wait_for_function("showcase.snapshot().brain.owners > 0")
                 page.locator("#brain-options").evaluate("el => el.open = true")
                 brain = page.evaluate("showcase.snapshot().brain")
                 assert (
                     brain["owners"]
-                    == {"mouse": 259, "arm": 4, "fly": 12, "worm": 297, "memory": 12}[
-                        mode
-                    ]
+                    == {
+                        "mouse": 265,
+                        "arm": 593,
+                        "fly": 18,
+                        "worm": 309,
+                        "memory": 12,
+                        "game": 61,
+                    }[mode]
                 )
                 assert page.locator("#brain-replay").is_enabled() == (
-                    mode in ["mouse", "arm", "worm"]
+                    mode in ["mouse", "arm", "worm", "fly", "game"]
                 )
                 if mode == "memory":
                     page.locator("#value").select_option("2")
@@ -202,7 +254,7 @@ def main():
                 )
                 if mode in ["memory", "fly"]:
                     assert page.evaluate(
-                        "showcase.snapshot().brain.input.slice(8)"
+                        "showcase.snapshot().brain.input.slice(8,12)"
                     ) == [0, 0, 0, 0]
                 if not page.evaluate("showcase.snapshot().brain.heatmap"):
                     page.locator("#brain-heat").click()
@@ -221,11 +273,42 @@ def main():
                 assert (
                     brain["displayed"]["regions"]
                     == {
-                        "mouse": ["Spatial planning", "Task cue", "Task memory"],
-                        "arm": ["Visual error", "Motor correction"],
-                        "worm": ["Sensory input", "Interneurons", "Motor output"],
-                        "fly": ["Flower cue", "Nectar memory"],
+                        "mouse": [
+                            "Spatial planning",
+                            "Task cue",
+                            "Task memory",
+                            "Position error",
+                            "Directional motor neurons",
+                        ],
+                        "arm": [
+                            "Retina · pixel intensity",
+                            "Target & proprioception",
+                            "Visual / height error",
+                            "Joint coordination",
+                            "Motor neurons",
+                        ],
+                        "worm": [
+                            "Chemical sensory input",
+                            "Interneurons",
+                            "Chemical motor output",
+                            "Directional odor readback",
+                            "Body direction motors",
+                        ],
+                        "fly": [
+                            "Flower cue",
+                            "Nectar memory",
+                            "Visual bearing / approach",
+                            "Turn / propulsion motors",
+                        ],
                         "memory": ["Cue input", "Value memory"],
+                        "game": [
+                            "Observed board",
+                            "Threat features",
+                            "Value evaluator",
+                            "Compared futures",
+                            "Own activity readback",
+                            "Self-monitor / budget",
+                        ],
                     }[mode]
                 )
                 page.locator("#brain-options").evaluate("el => el.open = false")
@@ -253,17 +336,61 @@ def main():
                     "document.documentElement.scrollWidth > innerWidth"
                 ), mode
                 assert page.locator("#scene").bounding_box()["height"] >= 300
+                for control in page.locator(
+                    "#controls button, #controls select, #controls input"
+                ).all():
+                    if control.is_visible():
+                        bounds = control.bounding_box()
+                        assert (
+                            bounds["x"] >= 0 and bounds["x"] + bounds["width"] <= 390
+                        ), (mode, control.get_attribute("id"), bounds)
                 page.set_viewport_size({"width": 1440, "height": 1050})
+            # Real touch events follow the same retinal input path on a phone.
+            mobile = b.new_context(
+                viewport={"width": 390, "height": 844}, has_touch=True
+            )
+            touch_page = mobile.new_page()
+            touch_page.goto(f"http://127.0.0.1:{server.server_address[1]}/eye-arm/")
+            touch_page.wait_for_function("window.showcase?.snapshot().brain.owners > 0")
+            touch_page.locator("#clear-pad").click()
+            touch_page.locator("#scene").scroll_into_view_if_needed()
+            bounds = touch_page.locator("#scene").bounding_box()
+            size = min(bounds["width"] * 0.40 - 18, bounds["height"] - 88)
+            x, y = bounds["x"] + 18, bounds["y"] + 58
+            cdp = mobile.new_cdp_session(touch_page)
+            cdp.send(
+                "Input.dispatchTouchEvent",
+                {
+                    "type": "touchStart",
+                    "touchPoints": [{"x": x + 0.25 * size, "y": y + 0.3 * size}],
+                },
+            )
+            for step in range(1, 11):
+                cdp.send(
+                    "Input.dispatchTouchEvent",
+                    {
+                        "type": "touchMove",
+                        "touchPoints": [
+                            {"x": x + (0.25 + 0.05 * step) * size, "y": y + 0.3 * size}
+                        ],
+                    },
+                )
+            cdp.send(
+                "Input.dispatchTouchEvent", {"type": "touchEnd", "touchPoints": []}
+            )
+            touch_page.wait_for_function("showcase.snapshot().body.targets > 3")
+            mobile.close()
             assert not errors, errors
             print(
                 json.dumps(
                     {
-                        "demos": 5,
+                        "demos": 6,
                         "task_teaching_and_persistence": True,
                         "image_upload": True,
                         "mobile_layout": True,
                         "desktop_body_and_circuit_visible": True,
-                        "causal_repair_replay_and_trail_decay": True,
+                        "motor_ablation_and_pixel_drawing": True,
+                        "isolated_futures_and_monitor_budget": True,
                         "browser_errors": errors,
                     }
                 )
