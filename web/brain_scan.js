@@ -152,7 +152,7 @@ const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 export class BrainScan {
   constructor(canvas, atlas, options = {}) {
     this.canvas = canvas;
-    this.options = { particles: true, edges: true, field: true, glow: 2.2, heatDecay: 0.86, background: [0.03, 0.055, 0.085], mode: "activity", montageRows: 16, particleBudget: 300000, lineBudget: 400000, ...options };
+    this.options = { particles: true, edges: true, field: true, glow: 2.2, heatDecay: 0.86, background: [0.03, 0.055, 0.085], mode: "activity", montageRows: 16, particleBudget: 300000, lineBudget: 400000, labelTop: 9, ...options };
     this.camera = { x: 0, y: 0, zoom: 1 };
     this.frame = { x: 0, y: 0, scale: 1 }; // the layout's centre and the scale that fills the canvas at zoom 1
     this.fitted = true;
@@ -657,7 +657,7 @@ export class BrainScan {
       const [cx, cy] = this.toScreen(region.center[0], region.center[1]);
       const inside = cx > -40 && cx < r.width + 40 && cy > -40 && cy < r.height + 40;
       x = Math.max(w / 2 + 4, Math.min(r.width - w / 2 - 4, x));
-      y = Math.max(9, Math.min(r.height - 9, y));
+      y = Math.max(this.options.labelTop, Math.min(r.height - 9, y));
       // larger regions label first; a colliding label steps down until it is clear
       for (let tries = 0; tries < 12; tries++) {
         const hit = placed.some((p) => Math.abs(p.x - x) < (p.w + w) / 2 + 6 && Math.abs(p.y - y) < h);
