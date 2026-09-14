@@ -2,16 +2,27 @@
 
 from __future__ import annotations
 
+import argparse
 import json
+import os
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 
 if __name__ == "__main__":
-    net = json.loads((HERE / "net.json").read_text())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--model-dir", type=Path, default=HERE)
+    parser.add_argument("--output", type=Path, default=HERE / "index.html")
+    args = parser.parse_args()
+    net = json.loads((args.model_dir / "net.json").read_text())
     html = (HERE / "page_template.html").read_text().replace("/*NET*/null", json.dumps(net, separators=(",", ":")))
-    imitation = HERE / "net_imitation.json"
+    imitation = args.model_dir / "net_imitation.json"
     if imitation.exists():
         html = html.replace("/*NET_IMITATION*/null", imitation.read_text())
-    (HERE / "index.html").write_text(html)
-    print(f"index.html: {len(html) / 1e3:.0f} kB, {net['n']} owners")
+    else:
+        html = html.replace("/*NET_IMITATION*/null", "null")
+    hub = os.path.relpath(HERE.parent / "index.html", args.output.resolve().parent)
+    html = html.replace('href="../index.html"', f'href="{Path(hub).as_posix()}"')
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(html)
+    print(f"{args.output}: {len(html) / 1e3:.0f} kB, {net['n']} owners")

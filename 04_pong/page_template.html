@@ -47,7 +47,7 @@
   <header>
     <a class="hub" href="../index.html" data-published="https://claude.ai/code/artifact/14644daf-1a2f-47b3-8c2c-f896c5ca3c60">← All examples</a>
     <h1>Cadence Pong</h1>
-    <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. It learned from reward alone.</p>
+    <p>You are the coral paddle on the left; a patch net is the gold paddle on the right. It sees the pixels you see, this frame and the last, settles, and moves. The default paddle learned from a scripted player; uncheck the box below to play the reward-trained version.</p>
   </header>
   <section class="field-wrap">
     <canvas id="field" width="512" height="384" aria-label="Pong field"></canvas>
@@ -72,7 +72,7 @@
     <div class="card">
       <h2>What this is</h2>
       <p>Each step the current frame and the previous one are clamped onto 384 input owners. The net settles from rest; the most active of three output owners (up, stay, down) moves its paddle one pixel. No search, no memory beyond that one earlier frame.</p>
-      <p>Two paddles are embedded. The reward-trained one learned by playing: after each rollout, the actions that paid were nudged toward and the actions that cost were nudged away. The imitation-trained one learned the same way but from a scripted tracker's moves as targets; it plays much better, and the tutorial says why the difference is credit assignment, not the rule.</p>
+      <p>Two paddles are embedded. The reward-trained one learned by playing: after each rollout, the actions that paid were nudged toward and the actions that cost were nudged away. The imitation-trained one learned the same way but from a scripted tracker's moves as targets; it has the higher measured return rate. The two runs also use different training settings, so this comparison does not isolate the cause.</p>
       <dl id="facts"></dl>
     </div>
   </aside>

@@ -62,19 +62,17 @@ def returns_from(rewards: np.ndarray, dones: np.ndarray) -> np.ndarray:
 class PatchPolicy:
     """The patch-net policy and its reward-nudged learner."""
 
-    def __init__(self, hidden: int, seed: int) -> None:
+    def __init__(self, hidden: int, seed: int, *, device: str = "cpu") -> None:
         self.wiring = cd.layered(INPUTS, hidden, ACTIONS, density=1.0, seed=seed)
         self.learner = cd.Learner(
-            cd.Settlement(self.wiring, cd.learning_rule(dt=1.0)), self.wiring.sets["output"], CONFIG
+            cd.Settlement(
+                self.wiring, cd.learning_rule(dt=1.0),
+                backend="cpu" if device == "cpu" else "torch", device=device,
+                precision=None if device == "cpu" else "float32",
+            ), self.wiring.sets["output"], CONFIG
         )
         self.rng = np.random.default_rng(seed)
         self.steps: list[float] = []
-        # per-seam and per-owner running average and RMS of the contrast, and the update count
-        self.velocity = np.zeros(self.wiring.edges)
-        self.second = np.zeros(self.wiring.edges)
-        self.velocity_bias = np.zeros(self.wiring.n)
-        self.second_bias = np.zeros(self.wiring.n)
-        self.updates = 0
 
     def drive(self, frames: np.ndarray) -> np.ndarray:
         return self.learner.engine.clamp_levels(np.pad(frames, ((0, 0), (0, self.wiring.n - INPUTS))))
@@ -96,6 +94,10 @@ class PatchPolicy:
         """Free phase, the two nudged phases toward and away from the action taken (weighted by its
         advantage), the contrast every seam reads, then the adaptive local step."""
         learner = self.learner
+        learner.config = dataclasses.replace(
+            learner.config, eta=eta, eta_bias=eta, momentum=MOMENTUM,
+            normalize=RMS, normalize_floor=FLOOR,
+        )
         order = self.rng.permutation(len(actions))
         for start in range(0, len(order), BATCH):
             idx = order[start : start + BATCH]
@@ -104,17 +106,7 @@ class PatchPolicy:
             free = learner.free(drive)
             toward = learner.nudged(drive, free, target, weight=advantages[idx])
             away = learner.nudged(drive, free, target, sign=-1.0, weight=advantages[idx])
-            contrast, contrast_bias = learner.contrast(free, toward, away)
-            self.updates += 1
-            self.velocity = MOMENTUM * self.velocity + (1 - MOMENTUM) * contrast
-            self.second = RMS * self.second + (1 - RMS) * contrast**2
-            self.velocity_bias = MOMENTUM * self.velocity_bias + (1 - MOMENTUM) * contrast_bias
-            self.second_bias = RMS * self.second_bias + (1 - RMS) * contrast_bias**2
-            c1, c2 = 1 - MOMENTUM**self.updates, 1 - RMS**self.updates
-            learner.apply(
-                eta * (self.velocity / c1) / (np.sqrt(self.second / c2) + FLOOR),
-                eta * (self.velocity_bias / c1) / (np.sqrt(self.second_bias / c2) + FLOOR),
-            )
+            learner.update(free, toward, away)
             self.steps.append(free.steps)
 
     def parameters(self) -> int:
@@ -124,18 +116,19 @@ class PatchPolicy:
 class TorchPolicy:
     """The same shape as a plain MLP trained by backprop REINFORCE with Adam: the baseline."""
 
-    def __init__(self, hidden: int, seed: int, lr: float = 1e-3) -> None:
+    def __init__(self, hidden: int, seed: int, lr: float = 1e-3, *, device: str = "cpu") -> None:
         import torch
 
         torch.manual_seed(seed)
         self.torch = torch
-        self.net = torch.nn.Sequential(torch.nn.Linear(INPUTS, hidden), torch.nn.Tanh(), torch.nn.Linear(hidden, ACTIONS))
+        self.device = torch.device(device)
+        self.net = torch.nn.Sequential(torch.nn.Linear(INPUTS, hidden), torch.nn.Tanh(), torch.nn.Linear(hidden, ACTIONS)).to(self.device)
         self.opt = torch.optim.Adam(self.net.parameters(), lr=lr)
         self.rng = np.random.default_rng(seed)
 
     def probabilities(self, frames: np.ndarray) -> np.ndarray:
         with self.torch.no_grad():
-            return self.torch.softmax(self.net(self.torch.tensor(frames, dtype=self.torch.float32)), dim=1).numpy()
+            return self.torch.softmax(self.net(self.torch.tensor(frames, dtype=self.torch.float32, device=self.device)), dim=1).cpu().numpy()
 
     def act(self, frames: np.ndarray, greedy: bool = False) -> np.ndarray:
         p = self.probabilities(frames)
@@ -148,9 +141,9 @@ class TorchPolicy:
         order = self.rng.permutation(len(actions))
         for start in range(0, len(order), BATCH):
             idx = order[start : start + BATCH]
-            logp = torch.log_softmax(self.net(torch.tensor(frames[idx], dtype=torch.float32)), dim=1)
-            chosen = logp[torch.arange(len(idx)), torch.tensor(actions[idx])]
-            loss = -(chosen * torch.tensor(advantages[idx], dtype=torch.float32)).mean()
+            logp = torch.log_softmax(self.net(torch.tensor(frames[idx], dtype=torch.float32, device=self.device)), dim=1)
+            chosen = logp[torch.arange(len(idx), device=self.device), torch.tensor(actions[idx], device=self.device)]
+            loss = -(chosen * torch.tensor(advantages[idx], dtype=torch.float32, device=self.device)).mean()
             self.opt.zero_grad()
             loss.backward()
             self.opt.step()
@@ -195,24 +188,25 @@ def train(policy: Any, seed: int, iterations: int, log: str) -> tuple[list[dict[
     return history, time.perf_counter() - t0
 
 
-def evaluate(policy: Any, seed: int, points: int) -> dict[str, float]:
+def evaluate(policy: Any, seed: int, points: int, *, opponent_skill: float = 0.7) -> dict[str, float]:
     """Greedy play until ``points`` points have ended: hits per point and rally length."""
-    env = Pong(ENVS, seed=seed)
-    hits = misses = ended = 0
+    env = Pong(ENVS, seed=seed, opponent_skill=opponent_skill)
+    hits = misses = ended = wins = 0
     steps = 0
     while ended < points:
         r, d, info = env.step(policy.act(env.observation(), greedy=True))
         hits += int(info["hit"].sum())
         misses += int(info["miss"].sum())
+        wins += int(info["opponent_miss"].sum())
         ended += int(d.sum())
         steps += ENVS
-    return {"points": ended, "hits": hits, "misses": misses, "hits_per_point": hits / ended, "return_rate": hits / max(hits + misses, 1)}
+    return {"points": ended, "wins": wins, "losses": misses, "draws": ended - wins - misses, "win_rate": wins / ended, "opponent_skill": opponent_skill, "hits": hits, "misses": misses, "hits_per_point": hits / ended, "return_rate": hits / max(hits + misses, 1)}
 
 
 IMITATION_STEPS, IMITATION_EPOCHS = 400, 8
 
 
-def imitation(seed: int) -> tuple[PatchPolicy, dict[str, Any]]:
+def imitation(seed: int, *, device: str = "cpu") -> tuple[PatchPolicy, dict[str, Any]]:
     """The same net taught by the scripted tracker: rollouts of the tracker with random slips, labels from the tracker."""
     from pong import track_policy
 
@@ -226,7 +220,7 @@ def imitation(seed: int) -> tuple[PatchPolicy, dict[str, Any]]:
         labels.append(want)
         env.step(np.where(rng.random(ENVS) < 0.3, rng.integers(0, ACTIONS, ENVS), want))
     x, y = np.concatenate(frames), np.concatenate(labels)
-    policy = PatchPolicy(HIDDEN, seed)
+    policy = PatchPolicy(HIDDEN, seed, device=device)
     learner = policy.learner
     learner.config = dataclasses.replace(learner.config, temperature=0.1)
     t0 = time.perf_counter()
@@ -249,34 +243,37 @@ def export(policy: PatchPolicy, path: Path, meta: dict) -> None:
         "W": [round(float(w), 5) for w in engine.dense().ravel()],
         "bias": [round(float(b), 5) for b in engine.bias],
         "rule": {"slope": rule.slope, "threshold": rule.threshold, "leak": rule.leak, "dt": rule.dt, "clamp": rule.clamp_amplitude, "rest": rule.rest_emission},
-        "temperature": CONFIG.temperature,
+        "temperature": policy.learner.config.temperature,
         "field": {"H": H, "W": W, "frames": 2},
         "meta": meta,
     }
     path.write_text(json.dumps(payload, separators=(",", ":")))
 
 
-def run(seed: int, out: Path, iterations: int) -> dict[str, Any]:
-    patch = PatchPolicy(HIDDEN, seed)
+def run(seed: int, out: Path, iterations: int, *, device: str = "cpu") -> dict[str, Any]:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    patch = PatchPolicy(HIDDEN, seed, device=device)
     untrained = evaluate(patch, seed + 100, 200)
     print(f"untrained: {untrained['hits_per_point']:.2f} hits per point")
     history, seconds = train(patch, seed, iterations, "patch net")
     final = evaluate(patch, seed + 100, EVAL_POINTS)
     print(f"patch net: {final['hits_per_point']:.2f} hits per point, return rate {final['return_rate']:.2f} ({patch.parameters()} parameters, {seconds:.0f}s)")
 
-    baseline = TorchPolicy(HIDDEN, seed)
+    baseline = TorchPolicy(HIDDEN, seed, device=device)
     base_history, base_seconds = train(baseline, seed, iterations, "backprop")
     base_final = evaluate(baseline, seed + 100, EVAL_POINTS)
     print(f"backprop: {base_final['hits_per_point']:.2f} hits per point, return rate {base_final['return_rate']:.2f} ({baseline.parameters()} parameters, {base_seconds:.0f}s)")
 
     conformance = cd.conformance(patch.learner.engine, patch.drive(Pong(1, seed=1).observation())[0], steps=100)
-    export(patch, HERE / "net.json", {"hits_per_point": final["hits_per_point"], "return_rate": final["return_rate"], "parameters": patch.parameters(), "learned_from": "reward"})
+    export(patch, out.parent / "net.json", {"hits_per_point": final["hits_per_point"], "return_rate": final["return_rate"], "parameters": patch.parameters(), "learned_from": "reward"})
 
-    imitator, imitation_meta = imitation(seed)
+    imitator, imitation_meta = imitation(seed, device=device)
     imitation_final = evaluate(imitator, seed + 100, EVAL_POINTS)
     print(f"imitation of the tracker: {imitation_final['hits_per_point']:.2f} hits per point, return rate {imitation_final['return_rate']:.2f} ({imitation_meta['seconds']:.0f}s)", flush=True)
-    export(imitator, HERE / "net_imitation.json", {"hits_per_point": imitation_final["hits_per_point"], "return_rate": imitation_final["return_rate"], "parameters": imitator.parameters(), "learned_from": "the scripted tracker's actions"})
+    export(imitator, out.parent / "net_imitation.json", {"hits_per_point": imitation_final["hits_per_point"], "return_rate": imitation_final["return_rate"], "parameters": imitator.parameters(), "learned_from": "the scripted tracker's actions"})
     body = {
+        "execution": {"device": device, "backend": patch.learner.engine.backend,
+                      "precision": patch.learner.engine.precision, "environment_device": "cpu"},
         "environment": {"H": H, "W": W, "max_rally": MAX_RALLY, "envs": ENVS, "horizon": HORIZON, "gamma": GAMMA, "iterations": iterations, "batch": BATCH, "eta": ETA, "decay": DECAY},
         "local_step": {"momentum": MOMENTUM, "rms": RMS, "floor": FLOOR, "bias_corrected": True},
         "config": CONFIG.to_dict(),
@@ -325,12 +322,16 @@ def main() -> int:
     parser.add_argument("--iterations", type=int, default=ITERATIONS)
     parser.add_argument("--output", type=Path, default=HERE / "receipt.json")
     parser.add_argument("--verify", type=Path)
+    parser.add_argument("--device", choices=("cpu", "cuda", "mps"), default="cpu",
+                        help="training device for both learners (GPU uses float32; game simulation stays on CPU)")
     args = parser.parse_args()
     if args.verify:
         ok, message = cd.Receipt.verify(args.verify, sources=SOURCES, check=check)
         print(message)
         return 0 if ok else 1
-    run(args.seed, args.output, args.iterations)
+    if args.iterations < 1:
+        parser.error("--iterations must be positive")
+    run(args.seed, args.output, args.iterations, device=args.device)
     return 0
 
 

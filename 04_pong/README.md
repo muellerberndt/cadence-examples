@@ -19,10 +19,40 @@ From the repository root, after activating your Python environment:
 ```bash
 python -m pip install -r requirements.txt torch  # torch supplies the backprop baseline
 cd 04_pong
-python train.py                             # about ten minutes: the patch net, the baseline, the imitation net, the receipt
-python build_page.py                        # embeds net.json into index.html; open it and play
-python train.py --verify receipt.json
+python train.py --output ../runs/pong/receipt.json
+python train.py --verify ../runs/pong/receipt.json
+python build_page.py --model-dir ../runs/pong --output ../runs/pong/index.html
 ```
+
+Open `runs/pong/index.html` to play your newly trained opponent. This trains the
+reward policy, the MLP baseline and the imitation policy, and keeps the shipped
+models intact. To play the shipped models immediately, run `python serve.py pong`
+from the repository root. The checkbox selects the imitation policy by default.
+
+For an NVIDIA GPU, add `--device cuda` to the training command, with a CUDA-enabled
+PyTorch installation. On an Apple Silicon Mac, use `--device mps`. Both learners
+use the selected device; GPU settlement uses float32 and the game simulation
+remains on the CPU. The patch learner keeps its contrast and adaptive update on
+the GPU. CPU is the default: this small network can run faster there, because
+each game step requires a new policy decision and a transfer back to the CPU.
+Use a different output directory for each run. CUDA and MPS can produce different
+training outcomes from the CPU because their numerical precision differs.
+
+Measure the actual exported weights, with the browser's settlement tolerance:
+
+```bash
+python evaluate.py --net ../runs/pong/net_imitation.json --points 1000 --seed 100
+python evaluate.py --net ../runs/pong/net_imitation.json --points 1000 --seed 101 --opponent-skill 1
+```
+
+The evaluator reports wins, losses, draws and ball returns. Skill `1` makes the
+scripted opponent track on every step; it is a stronger test than the training
+opponent's `0.7`. A draw is a rally that reaches the simulator's 400-step limit.
+Vectorized evaluation finishes a batch, so the reported point count can exceed
+the requested count. Return rate is the fraction of incoming balls returned,
+**not the fraction of games won against a human**. Winning points also requires
+making the other paddle miss; neither the return reward nor imitation of the
+tracker directly teaches that strategy.
 
 ## 1. The game
 
@@ -40,6 +70,12 @@ paddles at 0.6, clamped onto 384 input owners. Two frames because one frame does
 which way the ball is going; with a single frame both learners in this example returned
 fewer than 40% of diagonal balls. Three output owners: up, stay, down. Hidden layer: 32
 owners. `cadence.layered(384, 32, 3, density=1.0)`, 12,806 numbers to learn.
+
+This example starts each decision from rest. It does **not** use Cadence's
+`Trace`/`Afterglow` memory, which can carry fading neural activity between
+single-frame inputs. Such a policy needs training with that state and a browser
+runtime that carries it identically; the shipped two-frame weights are not a
+single-frame memory model.
 
 ## 3. Acting
 
