@@ -44,126 +44,171 @@
           <b>05</b> Changing memory
         </button>
       </nav>
-      <div
-        id="worm-views"
-        class="buttons view-switch"
-        role="group"
-        aria-label="Worm view"
-        hidden
-      >
-        <button data-worm-view="habitat" aria-pressed="true">
-          Habitat · food & walls
-        </button>
-        <button data-worm-view="circuit" aria-pressed="false">
-          Circuit · inspect neurons
-        </button>
+      <div class="workspace">
+        <section class="lab" aria-label="Interactive demonstration">
+          <div class="stage">
+            <div class="stage-top">
+              <span class="live" id="stage-label"
+                >LIVE CIRCUIT · C. ELEGANS CHEMICAL TOPOLOGY</span
+              ><span id="stage-detail">Preparing model…</span>
+            </div>
+            <canvas
+              id="scene"
+              tabindex="0"
+              role="img"
+              aria-label="Live network activity. Use the adjacent controls to stimulate or remove neurons."
+            ></canvas>
+            <div
+              id="worm-views"
+              class="buttons view-switch"
+              role="group"
+              aria-label="Worm view"
+              hidden
+            >
+              <button data-worm-view="habitat" aria-pressed="true">
+                Habitat · food & walls
+              </button>
+              <button data-worm-view="circuit" aria-pressed="false">
+                Circuit · inspect neurons
+              </button>
+            </div>
+            <div class="stage-bottom">
+              <span id="stage-hint"
+                >Click a neuron to remove it. Click again to restore it.</span
+              ><span id="stage-readout"></span>
+            </div>
+          </div>
+          <aside class="controls" id="controls"></aside>
+        </section>
+        <section class="brain-panel" aria-labelledby="brain-title">
+          <div class="brain-heading">
+            <div>
+              <div class="eyebrow">INSIDE THE PATCH NET</div>
+              <h2 id="brain-title">Watch repairs propagate</h2>
+            </div>
+            <span id="brain-count">Reading owners…</span>
+          </div>
+          <div class="brain-behavior">
+            <span id="brain-behavior" data-tone="neutral"
+              >Reading behavior…</span
+            ><span id="brain-adapters"></span>
+          </div>
+          <div class="behavior-legend" aria-label="Behavior color legend">
+            <span>Behavior:</span
+            ><span data-tone="positive">● Goal / food</span>
+            <span data-tone="seeking">● Seeking</span
+            ><span data-tone="correcting">● Correction</span>
+            <span data-tone="neutral">● Idle / paused</span>
+          </div>
+          <div class="brain-layout">
+            <canvas
+              id="brain-scene"
+              role="img"
+              aria-label="Actual owners and seams arranged by function. Activity, repair cascades and learned weight changes are shown with a labeled legend."
+            ></canvas>
+          </div>
+          <div class="buttons brain-actions">
+            <button id="brain-follow" aria-pressed="true">
+              Follow repairs
+            </button>
+            <button id="brain-release">Release input · watch decay</button>
+          </div>
+          <p id="brain-status">Reading circuit…</p>
+          <div id="brain-regions" class="sr-only"></div>
+          <div
+            id="brain-legend"
+            class="brain-legend"
+            aria-label="Signed heatmap legend"
+          >
+            <span id="brain-legend-label"
+              >Activity · relative region scale</span
+            >
+            <div class="brain-colorbar"></div>
+            <div class="brain-color-ticks">
+              <span>−1 · negative</span><span>0</span><span>+1 · positive</span>
+            </div>
+          </div>
+          <div class="signal-key">
+            <span class="repair-key">Recent repair · 1 s display trail</span
+            ><span class="plastic-key">Plasticity view · weight strength</span
+            ><span class="muted-key">Dim rose · masked owner</span>
+          </div>
+          <details id="brain-options">
+            <summary>Inspect signals &amp; replay</summary>
+            <div class="brain-controls">
+              <label for="brain-signal">Show</label>
+              <select id="brain-signal">
+                <option value="activity">Activity · local state</option>
+                <option value="repair">Repair · state change</option>
+                <option value="input">Input · supplied drive</option>
+                <option value="plasticity">Plasticity · memory writes</option>
+              </select>
+              <div class="buttons">
+                <button id="brain-live">Live</button
+                ><button id="brain-freeze">Pause view</button>
+                <button id="brain-heat" aria-pressed="true">Heatmap on</button>
+              </div>
+              <div class="buttons">
+                <button id="brain-replay">Replay repair</button>
+              </div>
+              <label for="brain-speed">Replay speed</label>
+              <select id="brain-speed">
+                <option value="10">10 iterations / second</option>
+                <option value="40" selected>40 iterations / second</option>
+                <option value="200">200 iterations / second</option>
+              </select>
+              <p id="brain-memory"></p>
+            </div>
+            <p id="brain-scale"></p>
+          </details>
+          <details>
+            <summary>How to read this view</summary>
+            <p>
+              Each region groups actual owners by function; lines are their real
+              seams. Supplied sensing, steering and body adapters are labeled
+              above the graph. Hover or tap an owner for its value. Colors use
+              dimensionless model units. The heatmap shows positive values in
+              amber and negative values in blue; its smooth halos are a display
+              overlay around actual owners. Turning it off restores the node
+              view. Plasticity highlights recent learned weight changes
+              separately. The trace plots peak activity. Couplings that change
+              with arm geometry are not counted as plasticity.
+            </p>
+            <p>
+              Follow repairs automatically reconstructs sampled settlements from
+              their captured inputs and couplings. It slows the early repair
+              steps and compresses the later ones; the live body continues.
+              Rapid updates are coalesced, so this is not a recording of every
+              body tick. Violet rings fade for one second after a displayed
+              repair: this is display history, not short-term memory in the
+              controller. Replay lets you inspect one captured settlement at a
+              fixed rate. Release input sets the drive to zero in an isolated
+              copy, exposing recurrent decay or ringing; it does not control the
+              body or imply a learned short-term memory. No oscillation is added
+              for appearance. Memory-only circuits have no recurrent replay.
+              Live body operation continues while you inspect a copy.
+            </p>
+            <p class="behavior-key">
+              Behavior colors: green = food or goal reached; blue = seeking or
+              moving; amber = correction, changed expectation or blocked route;
+              gray = paused or idle. “Happy” would be an informal name for a
+              positive outcome, not a measured feeling. These status colors are
+              separate from signed circuit values. Text labels always identify
+              the observed event.
+            </p>
+            <p>
+              These models do not simulate neurotransmitter concentrations.
+              Activity, input drive and weight changes are different signals.
+              Clinical fMRI measures a blood-oxygen-related signal; PET uses
+              specific tracers to study molecular targets. Neither is a generic
+              live map of all neurotransmitters. See the
+              <a href="showcase/README.md#brain-colors-and-neurotransmitters"
+                >imaging explanation and sources</a
+              >.
+            </p>
+          </details>
+        </section>
       </div>
-      <section class="lab" aria-label="Interactive demonstration">
-        <div class="stage">
-          <div class="stage-top">
-            <span class="live" id="stage-label"
-              >LIVE CIRCUIT · C. ELEGANS CHEMICAL TOPOLOGY</span
-            ><span id="stage-detail">Preparing model…</span>
-          </div>
-          <canvas
-            id="scene"
-            tabindex="0"
-            role="img"
-            aria-label="Live network activity. Use the adjacent controls to stimulate or remove neurons."
-          ></canvas>
-          <div class="stage-bottom">
-            <span id="stage-hint"
-              >Click a neuron to remove it. Click again to restore it.</span
-            ><span id="stage-readout"></span>
-          </div>
-        </div>
-        <aside class="controls" id="controls"></aside>
-      </section>
-      <section class="brain-panel" aria-labelledby="brain-title">
-        <div class="brain-heading">
-          <div>
-            <div class="eyebrow">INSIDE THE PATCH NET</div>
-            <h2 id="brain-title">Watch the circuit respond.</h2>
-          </div>
-          <span id="brain-count">Reading owners…</span>
-        </div>
-        <div class="brain-layout">
-          <canvas
-            id="brain-scene"
-            role="img"
-            aria-label="MRI-inspired schematic of actual software owners and seams. Brightness shows activity or repair; amber and blue edges mark recent learned weight changes."
-          ></canvas>
-          <div class="brain-controls">
-            <label for="brain-signal">Show</label>
-            <select id="brain-signal">
-              <option value="activity">Activity · local state</option>
-              <option value="repair">Repair · state change</option>
-              <option value="input">Input · supplied drive</option>
-              <option value="plasticity">Plasticity · memory writes</option>
-            </select>
-            <div class="buttons">
-              <button id="brain-live">Live</button
-              ><button id="brain-freeze">Pause view</button>
-              <button id="brain-heat" aria-pressed="true">Heatmap on</button>
-            </div>
-            <div class="buttons">
-              <button id="brain-replay">Replay repair</button
-              ><button id="brain-release">Release input</button>
-            </div>
-            <label for="brain-speed">Replay speed</label>
-            <select id="brain-speed">
-              <option value="10">10 iterations / second</option>
-              <option value="40" selected>40 iterations / second</option>
-              <option value="200">200 iterations / second</option>
-            </select>
-            <p id="brain-memory"></p>
-          </div>
-        </div>
-        <div
-          id="brain-legend"
-          class="brain-legend"
-          aria-label="Signed heatmap legend"
-        >
-          <span id="brain-legend-label">Activity · relative region scale</span>
-          <div class="brain-colorbar"></div>
-          <div class="brain-color-ticks">
-            <span>−1 · negative</span><span>0</span><span>+1 · positive</span>
-          </div>
-        </div>
-        <p id="brain-status">Live activity</p>
-        <p id="brain-scale"></p>
-        <details>
-          <summary>How to read this view</summary>
-          <p>
-            The medical-style silhouette is a layout metaphor, not an anatomical
-            scan. Dots and seams are actual model elements; hover for owner
-            values in dimensionless model units. The heatmap shows positive
-            values in amber and negative values in blue; its smooth halos are a
-            display overlay around actual owners. Turning it off restores the
-            node view. Plasticity highlights recent learned weight changes
-            separately. The trace plots peak activity. Couplings that change
-            with arm geometry are not counted as plasticity.
-          </p>
-          <p>
-            Replay recomputes the captured numerical settlement and slows it
-            down. Release input sets the drive to zero in an isolated copy,
-            exposing recurrent decay or ringing; it does not control the body or
-            imply a learned short-term memory. No oscillation is added for
-            appearance. Memory-only circuits have no recurrent replay. Live body
-            operation continues while you inspect a copy.
-          </p>
-          <p>
-            These models do not simulate neurotransmitter concentrations.
-            Activity, input drive and weight changes are different signals.
-            Clinical fMRI measures a blood-oxygen-related signal; PET uses
-            specific tracers to study molecular targets. Neither is a generic
-            live map of all neurotransmitters. See the
-            <a href="showcase/README.md#brain-colors-and-neurotransmitters"
-              >imaging explanation and sources</a
-            >.
-          </p>
-        </details>
-      </section>
       <section
         class="demo-guide"
         aria-label="Starting state, learning and advantages"

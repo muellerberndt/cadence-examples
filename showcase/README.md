@@ -126,10 +126,18 @@ assigned to the smallest examples.
 
 ## Read the brain view
 
-Every website has the same MRI-inspired circuit viewer. The two-hemisphere
-silhouette is a visual metaphor; the nodes and connections come from the actual
-software circuit. No additional neurons or oscillations are drawn to imply
-capacity the model does not have.
+Every website places the body and circuit side by side on desktop and stacks them
+on mobile. Actual owners are grouped by function: sensory/interneuron/motor in
+the worm, spatial planning and task memory in the mouse, visual error and motor
+correction in the arm. Supplied perception, steering and body adapters are
+labeled separately. No decorative neurons or oscillations are added.
+
+The behavior badge has its own legend: **green** for food or a goal reached,
+**blue** for seeking or moving, **amber** for correction or a blocked route, and
+**gray** for paused or idle. These are observations from the running demo.
+“Happy” could be an informal label for a positive outcome; the model does not
+measure feelings. Badge colors and signed circuit colors describe different
+quantities.
 
 | Demo | Owners shown | State and plasticity |
 |---|---|---|
@@ -139,14 +147,26 @@ capacity the model does not have.
 | Forager | 8 key ports and 4 value ports | The Cadence agent's actual 32 memory entries, updated on nectar contact |
 | Changing memory | 8 key ports and 4 value ports | Current key/value readout and observed residual writes |
 
+- **Following repairs** automatically reconstructs a sampled settlement when its
+  inputs, state or couplings change. It uses captured values and plays early
+  iterations slowly, compressing the long convergence tail into a 1.6-second
+  view. Rapid updates are coalesced; the body keeps running. An unchanged field
+  does not trigger another cascade just because the body moves through it.
+  This is a time-expanded reconstruction, not a recording of every body tick.
+  Reduced-motion preferences disable automatic playback initially.
+- **Violet rings** retain a one-second display trail of actual displayed repairs;
+  brighter connecting seams show where a source repair can affect its neighbors.
+  The trail is visual history, not neural short-term memory in the controller.
+- Open **Inspect signals & replay** for the signal selector and manual controls.
 - **Heatmap on/off** switches between soft colored overlays and the node view.
   Amber is positive and blue is negative; the legend spans −1 to +1 relative to
   each region’s scale. Halos are display smoothing, not extra model elements.
 - **Input** shows the supplied drive. For memory circuits this lights key ports,
   not recalled value ports. It is not a neurotransmitter signal.
-- **Activity** shows live model values. Brightness is normalized within each
-  region; input-release probes keep the captured scales fixed so fading remains
-  visible. The numerical scale is printed and hovering reveals owner values.
+- **Activity** shows local model values, live or from the labeled captured
+  settlement. Brightness is normalized within each region; all replay modes
+  keep scales fixed over the captured trajectory so fading remains visible.
+  The numerical scale is printed; hovering or tapping reveals owner values.
   The trace plots peak recurrent activity, excluding the mouse’s separate
   associative ports; memory-only views plot peak port activity.
 - **Repair** shows changes between live observations, or between iterations
@@ -164,7 +184,7 @@ capacity the model does not have.
   reverberation. It does not feed back into the body, and these demos do not use
   that diagnostic copy as behavioral short-term memory. A stable attracting
   equilibrium does not provide durable memory by itself.
-- **Live** returns to the current model; **Pause view** freezes only the circuit
+- **Live** returns to the current model, following future changes if enabled; **Pause view** freezes only the circuit
   display. Body controls remain independent. Memory-only circuits disable
   recurrent replay, because retained associative weights are a different kind
   of memory from fading neural activity.

@@ -38,6 +38,29 @@ def main():
             page.wait_for_function("window.showcase !== undefined")
             assert page.evaluate("showcase.snapshot().mode") == "mouse"
             page.wait_for_function("showcase.snapshot().brain.owners > 0")
+            # The spatial field settles once; body motion alone must not invent cascades.
+            page.wait_for_function("showcase.snapshot().brain.cascades === 1")
+            page.wait_for_function(
+                "showcase.snapshot().brain.displayed.repairs.some(v => Math.abs(v)>1e-12)"
+            )
+            page.locator("#pause").click()
+            page.wait_for_timeout(2100)
+            assert page.evaluate("showcase.snapshot().brain.cascades") == 1
+            page.locator("#move-goal").click()
+            page.wait_for_function("showcase.snapshot().brain.cascades > 1")
+            page.wait_for_function("showcase.snapshot().brain.displayed.frame > 0")
+            page.wait_for_timeout(3000)
+            settled = page.evaluate("showcase.snapshot().brain")
+            assert (
+                max(
+                    abs(a - b)
+                    for a, b in zip(settled["displayed"]["state"], settled["state"])
+                )
+                < 1e-8
+            )
+            assert max(settled["displayed"]["trail"]) < 0.01
+            assert settled["behavior"]["label"] == "Paused"
+            page.locator("#pause").click()
             page.locator("#task-cue").select_option("3")
             page.locator("#perform-task").click()
             assert "unfamiliar" in page.locator("#lesson-status").inner_text()
@@ -142,6 +165,7 @@ def main():
             for mode in ["mouse", "arm", "fly", "worm", "memory"]:
                 page.locator(f'[data-tab="{mode}"]').click()
                 page.wait_for_function("showcase.snapshot().brain.owners > 0")
+                page.locator("#brain-options").evaluate("el => el.open = true")
                 brain = page.evaluate("showcase.snapshot().brain")
                 assert (
                     brain["owners"]
@@ -194,6 +218,27 @@ def main():
                 page.locator("#brain-signal").select_option("plasticity")
                 page.wait_for_function("document.querySelector('#brain-legend').hidden")
                 page.locator("#brain-signal").select_option("activity")
+                assert (
+                    brain["displayed"]["regions"]
+                    == {
+                        "mouse": ["Spatial planning", "Task cue", "Task memory"],
+                        "arm": ["Visual error", "Motor correction"],
+                        "worm": ["Sensory input", "Interneurons", "Motor output"],
+                        "fly": ["Flower cue", "Nectar memory"],
+                        "memory": ["Cue input", "Value memory"],
+                    }[mode]
+                )
+                page.locator("#brain-options").evaluate("el => el.open = false")
+                page.set_viewport_size({"width": 1366, "height": 768})
+                page.evaluate("scrollTo(0,0)")
+                scene = page.locator("#scene").bounding_box()
+                circuit = page.locator("#brain-scene").bounding_box()
+                assert scene["x"] + scene["width"] < circuit["x"]
+                for bounds in [scene, circuit]:
+                    assert bounds["y"] >= 0 and bounds["y"] + bounds["height"] <= 768, (
+                        mode,
+                        bounds,
+                    )
                 guide = page.locator("#demo-guide")
                 assert guide.get_attribute("data-demo") == mode
                 assert guide.locator("h3").count() == 3
@@ -217,6 +262,8 @@ def main():
                         "task_teaching_and_persistence": True,
                         "image_upload": True,
                         "mobile_layout": True,
+                        "desktop_body_and_circuit_visible": True,
+                        "causal_repair_replay_and_trail_decay": True,
                         "browser_errors": errors,
                     }
                 )

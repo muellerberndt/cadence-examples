@@ -512,6 +512,19 @@ export function mountEmbodied(mode, api) {
           n = c.state.length,
           offset = c.engine.data.edges.length;
         return {
+          adapters: "Supplied: visual map · destination lookup · steering",
+          regionLabels: {
+            place: "Spatial planning",
+            key: "Task cue",
+            record: "Task memory",
+          },
+          behavior: paused
+            ? { label: "Paused", tone: "neutral" }
+            : mouse.cell === mouse.world.goal
+              ? { label: "Goal reached", tone: "positive" }
+              : mouse.next() < 0
+                ? { label: "Route blocked", tone: "correcting" }
+                : { label: "Navigating", tone: "seeking" },
           state: [...c.state, ...m.state],
           drive: [...c.drive, ...m.state],
           input: [...c.drive, ...m.input],
@@ -541,6 +554,19 @@ export function mountEmbodied(mode, api) {
               "Motor correction 2",
             ],
             groups: ["visual", "visual", "motor", "motor"],
+            adapters:
+              "Supplied: image edges · target selection · joint geometry",
+            behavior: paused
+              ? { label: "Paused", tone: "neutral" }
+              : arm.target < 0
+                ? {
+                    label: "Pass complete",
+                    tone: arm.coverage > 0.95 ? "positive" : "neutral",
+                  }
+                : {
+                    label: arm.closed ? "Correcting pose" : "Estimated pose",
+                    tone: "correcting",
+                  },
             recurrent: true,
             steps: 80,
             dt: 0.25,

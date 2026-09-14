@@ -33,10 +33,11 @@ in this browser. The forager and memory demo learn live from a fresh state. The
 arm uses a supplied feedback controller. C. elegans includes its public chemical
 graph, an engineered habitat/body adapter and a trained MLP circuit comparator.
 
-Each website includes an MRI-inspired view of its actual patch circuit: live
-activity, slow repair replay, transient input-release probes where recurrence
-exists, and recent associative-weight changes. This is a software visualization,
-not an anatomical scan. [Read the circuit view](showcase/README.md#read-the-brain-view).
+Each website places its actual circuit beside the body on desktop, grouped by
+function. Watch sampled repair cascades, inspect local state and memory writes,
+or release input in an isolated copy to see recurrent decay. Labeled behavior
+colors identify seeking, correction and positive outcomes. The layout stacks on
+mobile. [Read the circuit view](showcase/README.md#read-the-brain-view).
 
 Every website explains its starting state, how to observe learning or feedback,
 and **why Cadence fits the task**, including the relevant conventional controls.

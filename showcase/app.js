@@ -672,6 +672,13 @@ function brainSource() {
   if (bodyView) return bodyView.brain?.();
   if (mode === "worm")
     return {
+      adapters: "Supplied: stimulus ports · normalized chemical weights",
+      regionLabels: {
+        sensory: "Sensory input",
+        interneuron: "Interneurons",
+        motor: "Motor output",
+      },
+      behavior: { label: "Circuit probe", tone: "neutral" },
       state: result.state,
       drive,
       mask,
@@ -686,7 +693,19 @@ function brainSource() {
   if (mode === "fly") {
     const agent = agents[0],
       key = agent.target >= 0 ? keys()[field[agent.target].kind] : zeros(8);
-    return memoryCircuit(agent.memory, key);
+    const circuit = memoryCircuit(agent.memory, key);
+    circuit.adapters = "Supplied: flower sensing · target choice · steering";
+    circuit.regionLabels = { key: "Flower cue", record: "Nectar memory" };
+    const recent = agent.last && agent.time - agent.last.time < 1.5;
+    circuit.behavior = paused
+      ? { label: "Paused", tone: "neutral" }
+      : recent
+        ? {
+            label: agent.last.value > 0 ? "Nectar received" : "Empty flower",
+            tone: agent.last.value > 0 ? "positive" : "correcting",
+          }
+        : { label: "Seeking nectar", tone: "seeking" };
+    return circuit;
   }
   return memoryCircuit(memory, keys(correlation)[selected]);
 }

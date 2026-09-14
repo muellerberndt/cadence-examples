@@ -265,6 +265,19 @@ export function mountWorm({ data, $, ctx, metrics, explain }) {
     pointerEnd,
     key,
     brain: () => ({
+      adapters: "Supplied: odor field · heading · body mechanics",
+      regionLabels: {
+        sensory: "Sensory input",
+        interneuron: "Interneurons",
+        motor: "Motor output",
+      },
+      behavior: paused
+        ? { label: "Paused", tone: "neutral" }
+        : arena.status.includes("consumed")
+          ? { label: "Food consumed", tone: "positive" }
+          : arena.status.includes("Following")
+            ? { label: "Seeking food", tone: "seeking" }
+            : { label: "No usable food cue", tone: "neutral" },
       state: arena.state,
       drive: arena.drive,
       mask: arena.mask,

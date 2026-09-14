@@ -55,6 +55,9 @@ export function memoryCircuit(memory, key) {
     learned: memory.w.flatMap((row, i) =>
       row.map((w, j) => [i * 4 + j, `key-${i}-value-${j}`, w]),
     ),
+    regionLabels: { key: "Cue input", record: "Value memory" },
+    behavior: { label: "Recalling", tone: "seeking" },
+    adapters: "Supplied: cue encoding · value readout",
     recurrent: false,
     memory:
       "Associative seams retain observations; no reverberating activity in this circuit.",
