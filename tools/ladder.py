@@ -176,7 +176,7 @@ def main() -> None:
     text = readme.read_text()
     text = re.sub(r"<!-- ladder -->.*?<!-- /ladder -->", "<!-- ladder -->\n" + table + "\n<!-- /ladder -->", text, flags=re.S)
     readme.write_text(text)
-    for page_file, local in (("index.html", True), ("hub_published.html", False)):
+    for page_file, local in (("tutorials.html", True),):
         html = "\n".join(cards)
         for rung, _, _, _ in RUNGS:
             html = html.replace(f"{{README_{rung}}}", f"{rung}/README.md" if local else f"https://github.com/muellerberndt/cadence-examples/tree/main/{rung}")

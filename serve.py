@@ -22,6 +22,11 @@ from typing import ClassVar
 HERE = Path(__file__).resolve().parent
 PORT = 8765
 PAGES = {
+    "worm": "#worm",
+    "fly": "#fly",
+    "memory": "#memory",
+    "mouse": "#mouse",
+    "eye-arm": "#arm",
     "digits": "01_digits",
     "recall": "02_recall",
     "connect-four": "03_connect_four",
@@ -159,7 +164,7 @@ def main(argv: list[str] | None = None) -> int:
                     server.lessons[game] = Lessons(game)
         port = server.server_address[1]
         url = f"http://127.0.0.1:{port}/" + (
-            f"{PAGES[args.page]}/index.html" if args.page else ""
+            (PAGES[args.page] if PAGES[args.page].startswith("#") else f"{PAGES[args.page]}/index.html") if args.page else ""
         )
         print(f"serving {HERE} at {url}  (Ctrl-C to stop)", flush=True)
         opener = None

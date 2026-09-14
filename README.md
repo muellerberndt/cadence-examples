@@ -5,16 +5,37 @@ Patch nets are observer-like self-reading systems: local owners hold state, decl
 seams carry information across their boundaries, queries cause readback, and local
 feedback repairs state or memory. Scripts produce evidence receipts.
 
-Start with [updating memory](05_memory/): a few lines add fast residual writes to a
-fixed-size memory. The benchmark compares changing associations with additive writes,
-exact retrieval and a trained transformer. The exact algorithm is included because
-explicit symbolic keys make this a lookup task; beating one trained model does not
-establish a general advantage over transformers.
+## Live composite brains
 
-[Circuit interventions](06_interventions/) shows the complementary idea: retain
-a known local mechanism, then change drives, wiring or ablations without training
-an input/output surrogate. Its comparison includes a trained MLP, direct solver
-and an explicitly unrolled recurrence with the same complete circuit information.
+![The teachable mouse: task memory, a spatial field and a moving body](showcase/preview.png)
+
+Run `python serve.py` and open the printed address. The new default experience
+puts embodiment, continual task learning and visible feedback first:
+
+| Demo | Try this | What it makes visible |
+|---|---|---|
+| [Teachable mouse](showcase/README.md) | Teach a new destination, run the task, then generate another maze | Task memory, a recurrent spatial field and a moving body; new lessons retain earlier cue mappings |
+| [Eye & arm](showcase/README.md) | Present an outline or upload an image; disturb a joint while it draws | Visual-error and motor-correction regions settle together and correct actual body readback |
+| [Fly-inspired forager](showcase/README.md) | Change nectar or move flowers during flight | Each encounter updates memory and influences later choices |
+| [Worm circuit](showcase/README.md) | Stimulate or remove neurons | A supplied model on public chemical wiring answers interventions without another training run |
+| [Changing memory](showcase/README.md) | Teach a key, replace its value, increase key overlap | Residual writes, online MLP update budgets, retention and interference |
+
+The [two-minute demonstration guide](showcase/README.md#a-two-minute-demonstration)
+explains the interactions. The browser displays measured comparisons beside the
+live systems. The mouse and fly use simplified bodies; the arm has supplied
+geometry and an edge-extraction adapter. These examples distinguish learned
+records from supplied mechanisms and include strong conventional controls.
+
+```bash
+python serve.py              # the teachable mouse and all five live demos
+python serve.py eye-arm      # start with the drawing arm
+python serve.py fly          # start with the forager
+```
+
+### Supporting tutorials
+
+The original six examples remain runnable, with their receipts and history.
+The [tutorial hub](tutorials.html) provides the previous learning ladder.
 
 <!-- ladder -->
 | # | example | what it shows |
@@ -45,8 +66,9 @@ history; static images and fully visible boards do not need an extra frame buffe
 
 ## Run
 
-Clone this repository and run these commands from its root. The four browser pages
-already contain their trained nets and need only Python, with no packages installed:
+Clone this repository and run these commands from its root. The live showcase
+and original browser pages include their model data and need only Python to serve,
+with no packages installed:
 
 ```bash
 python serve.py
@@ -91,7 +113,11 @@ In your ordinary development environment:
   `05_memory` to run one example. Install PyTorch first to run all six.
 - `python -m pip install pytest`, then `python -m pytest -q tests`, checks reflection
   isolation and benchmark controls.
-- `python tools/ladder.py` regenerates the table and hub cards from receipts.
+- `python tools/ladder.py` regenerates supporting tutorial tables and cards.
+- `python tools/build_showcase.py` rebuilds the default and publication hubs.
+- `python showcase/verify.py` checks the new source-bound evidence packages.
+- `python tools/showcase_pages.py` checks all five new demos in a real browser.
+  See [showcase reproduction](showcase/README.md#reproduce) for the experiment commands.
 - For browser checks, run `python -m pip install playwright` and
   `python -m playwright install chromium`, then `python tools/pages.py`.
   This checks the playable pages and their Python/JavaScript parity.

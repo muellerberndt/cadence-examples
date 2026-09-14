@@ -1,112 +1,106 @@
-<meta charset="utf-8">
-<title>Cadence Examples</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
-<style>
-  :root {
-    --bg: #eef1f5; --panel: #ffffff; --ink: #1c2430; --muted: #5d6877; --line: #d5dbe4;
-    --accent: #1f8a70; --accent-soft: #d5efe7; --you: #e4572e; --net: #f4b400; --board: #243b6e;
-    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --accent: #3fbf9c; --accent-soft: #1d3a34; --board: #1b2d57; }
-  }
-  :root[data-theme="dark"] { --bg: #12171f; --panel: #1a2130; --ink: #e8ecf2; --muted: #98a3b3; --line: #2c3547; --accent: #3fbf9c; --accent-soft: #1d3a34; --board: #1b2d57; }
-  * { box-sizing: border-box; }
-  body { background: var(--bg); color: var(--ink); font-family: var(--sans); margin: 0; }
-  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
-  header { display: grid; gap: 10px; margin-bottom: 26px; }
-  h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
-  header p { margin: 0; color: var(--muted); max-width: 66ch; line-height: 1.5; }
-  .links { display: flex; flex-wrap: wrap; gap: 8px 16px; font-weight: 600; }
-  a { color: var(--accent); }
-  .rungs { display: grid; gap: 14px; }
-  .rung { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 16px; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
-  .rung.next { opacity: .7; }
-  .num { font: 800 26px var(--mono); color: var(--accent); line-height: 1; padding-top: 2px; }
-  .rung h2 { margin: 0 0 4px; font-size: 19px; }
-  .rung p { margin: 4px 0 8px; line-height: 1.45; color: var(--muted); max-width: 62ch; }
-  .facts { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 13px var(--mono); font-variant-numeric: tabular-nums; }
-  .facts span b { color: var(--ink); font-weight: 600; }
-  .actions { display: grid; gap: 8px; min-width: 150px; }
-  .btn { display: inline-block; text-align: center; font: 600 14px var(--sans); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; text-decoration: none; }
-  .btn.play { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn:hover { border-color: var(--accent); } .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .tag { display: inline-block; font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
-  .board { display: inline-grid; grid-template-columns: repeat(4, 10px); gap: 3px; background: var(--board); padding: 5px; border-radius: 5px; vertical-align: middle; margin-right: 8px; }
-  .board i { width: 10px; height: 10px; border-radius: 50%; background: var(--bg); } .board i.a { background: var(--you); } .board i.b { background: var(--net); }
-  .paddle { display: inline-block; width: 4px; height: 14px; background: var(--net); vertical-align: middle; margin-right: 8px; border-radius: 1px; }
-  footer { margin-top: 30px; color: var(--muted); font-size: 14px; line-height: 1.5; max-width: 66ch; }
-  @media (max-width: 700px) { .rung { grid-template-columns: 44px minmax(0, 1fr); } .actions { grid-column: 2; grid-auto-flow: column; } }
-</style>
-<main>
-  <header>
-    <h1>Cadence Examples</h1>
-    <p>Small patch-net examples with explicit memory, local feedback and evidence receipts. All six examples use the current core, with source-bound receipts. Updating memory compares residual writes with additive memory, exact retrieval and a trained transformer; each tutorial states its assumptions and limits. Serve this checkout to play the current models.</p>
-    <div class="links">
-      <a href="HOW_IT_LEARNS.md">How a patch net learns</a>
-      <a href="https://github.com/muellerberndt/cadence-examples">cadence-examples on GitHub</a>
-      <a href="https://github.com/muellerberndt/cadence">the cadence library</a>
-      <a href="https://pypi.org/project/cadence-net/">cadence-net on PyPI</a>
-    </div>
-  </header>
-  <section class="rungs">
-<!-- rungs -->
-    <article class="rung">
-      <div class="num">01</div>
-      <div>
-        <h2>Digits <span class="tag">the tutorial, draw one</span></h2>
-        <p>8×8 scikit-learn digits; 64 input owners, a hidden layer, 10 output owners. Classification: selection on validation data and three patch-net seeds, with fixed MLP baselines. Draw a digit in the page and watch the ten output owners settle.</p>
-        <div class="facts"><span>held-out <b>0.962 ± 0.003</b></span><span>parameters <b>4,919</b></span><span>epochs <b>20</b></span><span>smaller MLP <b>0.967</b></span></div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore Cadence: a live worm circuit, an embodied forager, and memory that learns from each encounter. Interactive demos with reproducible comparisons."
+    />
+    <title>Cadence — intelligence that keeps its state</title>
+    <link rel="stylesheet" href="showcase/style.css" />
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#mouse">C<span>·</span>ADENCE</a>
+      <nav>
+        <a href="showcase/README.md">How it works</a
+        ><a href="tutorials.html">Tutorials</a
+        ><a href="https://github.com/muellerberndt/cadence">GitHub ↗</a>
+      </nav>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <div class="eyebrow">
+            Local state. Living feedback. Measured results.
+          </div>
+          <h1 id="headline">Teach a new task.<br />Watch it find a way.</h1>
+        </div>
+        <p id="intro">
+          Demonstrate a destination. A small memory retains the task, a spatial
+          network finds a route, and a moving body closes the loop.
+        </p>
       </div>
-      <div class="actions"><a class="btn play" href="01_digits/index.html">Play</a><a class="btn" href="01_digits/README.md">Read the receipt</a></div>
-    </article>
-    <article class="rung">
-      <div class="num">02</div>
-      <div>
-        <h2>Recall <span class="tag">memory as seams, play it</span></h2>
-        <p>Residual fast seams learn on each write and correct old associations. A dictionary solves the same explicitly addressed task. Write a context, then replace a value.</p>
-        <div class="facts"><span>corrected associations <b>100.0%</b></span><span>capacity <b>128 keys</b></span><span>offline training <b>none</b></span><span>memory <b>residual fast seams</b></span></div>
-      </div>
-      <div class="actions"><a class="btn play" href="02_recall/index.html">Play</a><a class="btn" href="02_recall/README.md">Read the receipt</a></div>
-    </article>
-    <article class="rung">
-      <div class="num">03</div>
-      <div>
-        <h2>Connect Four <span class="tag">imitation, play it</span></h2>
-        <p>Imitate a teacher, play, and revisit mistakes. Optional four-ply deliberation uses the game rules; raw-policy and search-only controls distinguish learned skill from planning. Local learning mode preserves lessons.</p>
-        <div class="facts"><span>lookahead vs depth 2 <b>56.0%</b></span><span>search alone vs depth 2 <b>51.0%</b></span><span>raw policy vs depth 2 <b>1.0%</b></span><span>held-out teacher agreement <b>0.512</b></span></div>
-      </div>
-      <div class="actions"><a class="btn play" href="03_connect_four/index.html">Play</a><a class="btn" href="03_connect_four/README.md">Read the receipt</a></div>
-    </article>
-    <article class="rung">
-      <div class="num">04</div>
-      <div>
-        <h2>Pong <span class="tag">reward, play it</span></h2>
-        <p>A paddle sees one frame and keeps a fading trace of its activity. It imitates diagonal returns, practises, and revisits teacher examples. Local learning mode saves every completed game as a reusable lesson.</p>
-        <div class="facts"><span>points won, skill 0.7 <b>94.5%</b></span><span>balls returned <b>94.9%</b></span><span>incoming frames <b>1</b></span><span>parameters <b>50,054</b></span></div>
-      </div>
-      <div class="actions"><a class="btn play" href="04_pong/index.html">Play</a><a class="btn" href="04_pong/README.md">Read the receipt</a></div>
-    </article>
-    <article class="rung">
-      <div class="num">05</div>
-      <div>
-        <h2>Updating memory <span class="tag">residual writes</span></h2>
-        <p>A fixed-size memory corrects its own readback when an association changes. Additive memory, exact lookup, and a trained transformer receive identical explicit key/value episodes.</p>
-        <div class="facts"><span>residual memory <b>1.000</b></span><span>additive memory <b>0.260</b></span><span>exact dictionary <b>1.000</b></span><span>trained transformer <b>0.145</b></span></div>
-      </div>
-      <div class="actions"><a class="btn" href="05_memory/README.md">Read the receipt</a></div>
-    </article>
-    <article class="rung">
-      <div class="num">06</div>
-      <div>
-        <h2>Circuit interventions <span class="tag">known local rules</span></h2>
-        <p>Owners read incoming messages and repair their local state as drives, wiring and ablations change. A supplied feedback rule reaches checked equilibrium without training. A trained MLP, direct solver and tied recurrence receive the same complete circuit.</p>
-        <div class="facts"><span>owners <b>16</b></span><span>Cadence training examples <b>0</b></span><span>maximum residual <b>7.4e-12</b></span><span>trained MLP mean MSE <b>0.0052</b></span></div>
-      </div>
-      <div class="actions"><a class="btn" href="06_interventions/README.md">Read the receipt</a></div>
-    </article>
-<!-- /rungs -->
-  </section>
-  <footer>Where the patch net and the backprop model differ, the receipt says so, including wall-clock: a settlement is tens of steps where a forward pass is one, so on a laptop core the rule costs ten to a hundred times the time for the same accuracy and fewer epochs.</footer>
-</main>
+      <nav class="tabs" aria-label="Choose a demonstration">
+        <button data-tab="mouse" aria-pressed="true">
+          <b>01</b> Teachable mouse</button
+        ><button data-tab="arm" aria-pressed="false"><b>02</b> Eye & arm</button
+        ><button data-tab="fly" aria-pressed="false">
+          <b>03</b> Embodied forager</button
+        ><button data-tab="worm" aria-pressed="false">
+          <b>04</b> Worm circuit</button
+        ><button data-tab="memory" aria-pressed="false">
+          <b>05</b> Changing memory
+        </button>
+      </nav>
+      <section class="lab" aria-label="Interactive demonstration">
+        <div class="stage">
+          <div class="stage-top">
+            <span class="live" id="stage-label"
+              >LIVE CIRCUIT · C. ELEGANS CHEMICAL TOPOLOGY</span
+            ><span id="stage-detail">Preparing model…</span>
+          </div>
+          <canvas
+            id="scene"
+            role="img"
+            aria-label="Live network activity. Use the adjacent controls to stimulate or remove neurons."
+          ></canvas>
+          <div class="stage-bottom">
+            <span id="stage-hint"
+              >Click a neuron to remove it. Click again to restore it.</span
+            ><span id="stage-readout"></span>
+          </div>
+        </div>
+        <aside class="controls" id="controls"></aside>
+      </section>
+      <div class="explain" id="explain"></div>
+      <section class="evidence" aria-label="Measured comparison">
+        <div class="evidence-top">
+          <h2 id="evidence-title">A mechanism that survives change</h2>
+          <a href="showcase/README.md#reproduce">Reproduce the comparison ↗</a>
+        </div>
+        <p id="evidence-note"></p>
+        <div class="table-wrap" id="evidence-table"></div>
+        <details>
+          <summary>What this comparison establishes</summary>
+          <p id="boundary"></p>
+          <p>
+            Every result links to an executable producer and source hashes.
+            Accuracy and runtime answer different questions. These tasks do not
+            establish general superiority over all feedforward networks.
+          </p>
+          <a href="showcase/evidence.json">Full evidence and model weights</a> ·
+          <a href="showcase/README.md">Methods, sources and limits</a>
+        </details>
+      </section>
+      <footer class="support">
+        <span
+          >CADENCE / bounded patches · local readback · feedback · retained
+          records</span
+        >
+        <nav>
+          <a href="tutorials.html">Original tutorials</a
+          ><a
+            href="https://github.com/muellerberndt/cadence/blob/main/docs/biology.md"
+            >Biology map</a
+          ><a href="https://github.com/muellerberndt/cadence-examples"
+            >Source</a
+          >
+        </nav>
+      </footer>
+    </main>
+    <script type="module" src="showcase/app.js"></script>
+  </body>
+</html>
