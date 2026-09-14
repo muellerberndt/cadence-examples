@@ -35,6 +35,15 @@ with limited dynamic contrast. This does **not** establish success on the heroic
 brief. The evaluator also grouped flutes with brass and inferred counterpoint not
 verified by the score; those details were not treated as reliable evidence.
 
+The latest established-studio recording, `1789368733610028000-23/final.wav`
+(SHA256 `af1e1fd9ba21a6b7af4640e1824c0f07ea39b251e022425c2cd52be8f3dbbe0d`),
+was judged ceremonial, with prominent brass and transitions to woodwinds/strings.
+The reviewer still requested greater dynamic contrast, melodic development and
+instrumental balance. Its praise also conflicted with some of its own criticism.
+This is encouraging qualitative feedback, not a controlled preference result or
+proof that any one architectural change caused the improvement. The complete
+response is `runs/ensemble-audio-review/audio-input-006.json`.
+
 ## Weaknesses fixed in the composition loop
 
 - Phrase density had depended on absolute position in the score. Moving the same
@@ -105,10 +114,15 @@ Use `checkpoints/intuition/receipt.json` for exact counts and source hashes.
 These tables contain aggregate relationships, not complete pieces. The musical
 critic remains supplied and incomplete; conditional likelihood is not beauty.
 
+Parameter totals here exclude frozen biases. Older receipts used a counter that
+included them: subtract 636 frozen input biases for the established model and
+1,060 for the ensemble model. The public counter is corrected with mask regressions;
+original training receipts and learned weights remain unchanged.
+
 ## Full circuit display
 
 The established H=768 performer has **2,614 owners, 1,702,938 directed seams and
-1,390,508 trainable parameters**, including motif and expectation wiring.
+1,389,872 trainable parameters**, including motif and expectation wiring.
 The browser receives every owner and every seam. A static full-graph raster is
 composited with actual activation/repair/mismatch overlays. Density coloring,
 zoom and replay speed affect presentation, not the simulated values.
@@ -150,10 +164,61 @@ instrument families were weak or absent in the validation sample.
 The larger experiment uses four A10Gs. Each GPU measures local free/nudged seam
 contrasts; corresponding contrasts are averaged before the adaptive update. The
 preflight compares that result with a complete batch on one device. Full data,
-training and distributed-check receipts live under `data/ensemble/` and
-`runs/ensemble-2048-four-gpu/` when the run completes. `tools/sample_ensemble.py`
-produces separate raw multitrack rollouts; they are not silently substituted for
-the established phrase-planning studio.
+training and distributed-check receipts live under `data/ensemble/`,
+`runs/distributed-check/` and `runs/ensemble-2048-four-gpu/`.
+The run completed 30,000 updates at global batch 512: 15,360,000 sampled events,
+with replacement, rather than a complete pass over every corpus event. Its
+maximum distributed-contrast discrepancy was 3.79e-8 against tolerance 3e-5.
+
+| Polyphonic predictor | Parameters | GPUs | Training seconds | Validation NLL | Test NLL |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Cadence H=2048 | 5,562,501 | 4 A10G | 3,965.85 | 0.85524 | 0.82808 |
+| MLP, two hidden layers of 1,024 | 2,252,914 | 1 A10G | 146.17 | 0.77528 | **0.73841** |
+
+Both use 30,000 × 512 sampled training events, identical encoded information and
+five targets, and the same fixed 2,048 validation / 8,192 test rows. Best checkpoints
+are selected on validation only. Seeds, parameter counts and hardware parallelism
+differ; there is no hyperparameter sweep or matched hardware efficiency claim.
+The MLP control remains stronger on this prediction task. Cadence's test head
+accuracies are 32.71% pitch, 70.34% duration, 86.77% onset interval, 91.96%
+instrument family and 89.25% velocity. The test subset is 58.2% keys; bass-family
+accuracy is only 33.8% across 77 examples. Aggregate accuracy hides this weakness.
+
+`tools/sample_ensemble.py` produces separate raw multitrack rollouts, without the
+studio's supplied phrase critic or arrangement. Each uses the same final checkpoint
+`8f740fa9b5647696f6cc7fa6f84e8aacfb249bc45a54d796f96ed294bcc6406d`.
+
+| One-minute rollout | Events | Generation seconds | Duplicate-note guard corrections |
+| --- | ---: | ---: | ---: |
+| Heroic orchestra, seed 41, retained state | 496 | 14.68 | 83 |
+| Same brief/seed, state reset each event | 445 | 13.27 | 100 |
+| Same brief/seed, retained state plus attribute repair | 259 | 27.50 | 39 |
+| Sad piano, seed 43, retained state | 55 | 1.77 | 0 |
+
+These are single-seed observations, not aesthetic rankings. The conditional
+readout uses 64 extra local repair steps per event; its lower event count is not
+a compute-efficiency gain. All rollouts retain explicit density/duplicate guards,
+a generic eight-note prime, coarse keyword controls and a 60-second boundary.
+Warm orchestral output uses all eight families; the piano brief stays entirely
+in the keys family. This demonstrates learned local instrument choice, not a
+learned symphonic arrangement or long-form dramatic structure.
+
+The audio evaluator described the warm orchestral rollout as several disparate
+musical excerpts and the piano as melancholic but repetitive. Its cold-rollout
+review invented tempo changes and a 3/4 meter, and its conditional-rollout review
+degenerated into a repeated list of instruments not present in the rendered GM
+programs. Those details and the conditional verdict are rejected as unreliable;
+there is no established perceptual winner between decoders. Complete WAVs,
+MIDI, note events, render measurements and verbatim reviews are preserved in
+`runs/ensemble-samples/`, `runs/ensemble-audio-review/` and
+`runs/ensemble-conditioned-audio-review/`. These rollouts do not replace the studio.
+
+The post-training source snapshot is under `runs/four-gpu-source/`. The training
+receipt pins an earlier rendering-program tuple; the exact earlier source was
+recovered by reversing that tuple change and verifying the complete file SHA256
+against the original receipt. See `runs/four-gpu-training-source/custody.json`.
+That constant is not consumed by the encoding, graph or training update. Original
+receipts remain unchanged; the custody verifier checks both source versions.
 
 Metadata identifies 37 eligible John Williams-tagged records before parsing,
 after excluding Thomas John Williams. Of the 34 usable records, 27 are training
@@ -161,6 +226,15 @@ pieces (12,780 sampled events), two are validation and five are test. Uploader l
 verification of underlying composition rights or attribution. These records,
 trained weights and music remain private. They do not establish a dedicated
 John Williams style model or a public release clearance.
+
+An additional search inspected the official [Lakh dataset](https://colinraffel.com/projects/lmd/)
+clean archive (17,259 files) and full filename index. The clean archive contained
+no explicitly John Williams-labeled entries; the full index yielded five
+unverified artist-name candidates, whose MIDI files were not fetched or trained.
+A separate fan archive's database listing was broken. These searches did not
+increase the training count. URLs, hashes and candidate metadata are preserved
+in `data/lakh/acquisition.json`; the completed run should not be advertised as
+trained on a large John Williams collection.
 
 A 16-example validation damping probe found that the existing `dt=1` was fastest:
 239 steps / 1.43s versus 279–756 steps / 1.73–4.77s for smaller allowed steps.
@@ -191,6 +265,18 @@ More capacity can improve a prediction task; it cannot recover information an
 encoder discarded or make an inadequate critic judge form. The new model has
 eight-event context, aggregated held-note/tonal state and supplied global controls;
 its training examples do not teach a recurrent minute-long composition trajectory.
+The latent region names describe intended roles; their overlapping input wiring
+does not establish exclusive harmonic, rhythmic or instrumental specialization.
+The coarse instrument-family vocabulary also merges distinct instruments, and
+the three supplied style labels are not a learned emotional or artist-style model.
+
+The independent five-head decoder can discard cross-attribute relationships. An
+optional masked-Nudge decoder now selects an instrument and lets the same graph
+repair the remaining note attributes before reading them. A cut-link regression
+confirms a real instrument-to-pitch effect with no weight writes. Its paired
+audio comparison did not yield a reliable quality verdict; this is not exact
+joint sampling. Keep it optional until a broader listening comparison supports it.
+
 A future phrase-level learner should predict and compare tonal destinations,
 motif transformations, instrumentation, tension and release over whole sections,
 then be tested on unseen composition families. Merely extending the current

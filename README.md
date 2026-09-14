@@ -90,7 +90,7 @@ checks do not establish sophisticated acoustic musical judgment.
 This is an executable research prototype, not the finished crown jewel. Current
 MLP controls learn next-event prediction faster and more accurately than the
 initial Cadence models. The experiment does not establish an efficiency advantage,
-human-composer quality, autonomous musical taste, learned orchestration or general
+human-composer quality, autonomous musical taste, learned long-form orchestration or general
 language understanding. The useful result is an inspectable, trainable composition
 loop with real memory, coupled repair, counterfactual candidates and reversible
 revision; its next improvements must survive the same measured comparisons.
@@ -107,7 +107,13 @@ python tools/prepare_ensemble.py --name ensemble --workers 24
 torchrun --standalone --nproc_per_node=4 tools/train_ensemble.py --dataset ensemble --name ensemble-2048-four-gpu --size 2048 --updates 30000 --batch 128 --max-seconds 3600
 python tools/sample_ensemble.py --evaluate --prompt "heroic orchestral theme"
 python tools/baseline_ensemble.py --size 1024 --updates 30000 --batch 512
+python tools/sample_ensemble.py --seed 41 --conditional --prompt "heroic orchestral theme"
 ```
+
+The completed four-A10G run used 5,270 owners and 6,653,982 directed seams, with
+5,562,501 trainable parameters, drawing from 65,188 training pieces. It generates
+multitrack MIDI; the same-input MLP control still predicts held-out events better.
+See [the measured comparison and audio review](EVIDENCE.md#polyphonic-scaling-experiment).
 
 Run the distributed preflight on a small prepared dataset with
 `--check-distributed` before scaling. The current studio uses the established

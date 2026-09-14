@@ -31,6 +31,44 @@ from tools.train_ensemble import evaluate
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def draw_event(brain, state, drive, rng, *, conditional=False):
+    """Repair remaining attributes after a choice, without changing any weights.
+
+    This uses the existing Nudge; it is not an exact joint probability sampler.
+    Each call draws one uniform per head before any repair. Matching RNG states
+    therefore share those draws; later rendering guards may consume extra draws.
+    """
+    uniforms = rng.random(len(SIZES))
+    token, probabilities = [0] * len(SIZES), [None] * len(SIZES)
+    offsets = np.cumsum((0,) + SIZES[:-1])
+    mask = np.zeros(brain.engine.wiring.n)
+    target = np.zeros_like(drive)
+    for k in (3, 0, 2, 1, 4):
+        owners = brain.output_index[offsets[k] : offsets[k] + SIZES[k]]
+        z = state.activation[0, owners] / brain.config.temperature
+        q = np.exp((z - z.max()) / 0.85)
+        q /= q.sum()
+        probabilities[k] = q
+        token[k] = min(SIZES[k] - 1, int(np.searchsorted(q.cumsum(), uniforms[k])))
+        if conditional and k != 4:
+            mask[owners] = 1
+            target[0, owners[token[k]]] = 1
+            state = brain.engine.settle_batch(
+                drive,
+                steps=16,
+                state=state,
+                tolerance=0,
+                nudge=cd.Nudge(
+                    mask=mask.copy(),
+                    target=target.copy(),
+                    beta=brain.config.beta / brain.slot_count,
+                    softmax_temperature=brain.config.temperature,
+                    groups=brain.output_groups,
+                ),
+            )
+    return token, probabilities, state
+
+
 def extra(events, previous, brief):
     x = np.zeros(EXTRA_RAW, np.uint8)
     x[:5] = [
@@ -62,6 +100,11 @@ def main():
     p.add_argument("--seed", type=int, default=41)
     p.add_argument("--evaluate", action="store_true")
     p.add_argument(
+        "--conditional",
+        action="store_true",
+        help="Repair remaining attributes after each choice",
+    )
+    p.add_argument(
         "--cold",
         action="store_true",
         help="Ablate retained state between generated events",
@@ -69,7 +112,12 @@ def main():
     a = p.parse_args()
     torch.set_num_threads(2)
     brain = cd.Learner.load(ROOT / a.checkpoint, backend="torch", device=a.device)
-    out = ROOT / "runs/ensemble-samples" / f"{a.seed}-{'cold' if a.cold else 'warm'}"
+    suffix = "-conditioned" if a.conditional else ""
+    out = (
+        ROOT
+        / "runs/ensemble-samples"
+        / f"{a.seed}-{'cold' if a.cold else 'warm'}{suffix}"
+    )
     out.mkdir(parents=True, exist_ok=True)
     evaluation = {}
     if a.evaluate:
@@ -106,21 +154,11 @@ def main():
     state = None
     for _ in range(2400):
         x = extra(seed_events + events, position, brief)
-        state = brain.free(
-            drives(brain, np.asarray([history[-HISTORY:]], np.uint8), x[None, :]),
-            warm=None if a.cold else state,
+        drive = drives(brain, np.asarray([history[-HISTORY:]], np.uint8), x[None, :])
+        state = brain.free(drive, warm=None if a.cold else state)
+        token, probabilities, state = draw_event(
+            brain, state, drive, rng, conditional=a.conditional
         )
-        activation = state.activation[0, brain.output_index] / brain.config.temperature
-        probabilities = []
-        offset = 0
-        for size in SIZES:
-            z = activation[offset : offset + size].copy()
-            z -= z.max()
-            q = np.exp(z / 0.85)
-            q /= q.sum()
-            probabilities.append(q)
-            offset += size
-        token = [int(rng.choice(size, p=q)) for size, q in zip(SIZES, probabilities)]
         delta = int(DELTAS[token[2]])
         if sum(e["step"] == position for e in events[-20:]) >= 16 and delta == 0:
             delta = 1
@@ -216,6 +254,8 @@ def main():
         "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "guards": guards,
         "retained_state": not a.cold,
+        "conditional_attribute_repairs": a.conditional,
+        "attribute_repair_steps": 64 if a.conditional else 0,
         "settlement": f"{brain.config.free_steps} local steps per generated event; finite budget, no claim of equation convergence",
         "supplied": [
             "eight-note generic tonal context",

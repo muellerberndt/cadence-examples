@@ -123,7 +123,7 @@ measured, rather than forced into a fading animation.
 
 The separate H=2048 graph has 1,060 heard-event and conditioning owners,
 2,048 harmonic owners, 1,024 instrument owners, 1,024 rhythm owners and 114
-intention owners: **5,270 owners, 6,653,982 directed seams and 5,563,561
+intention owners: **5,270 owners, 6,653,982 directed seams and 5,562,501
 trainable parameters** in one settlement. Its five output groups
 predict pitch, sounding duration, time to the next attack, instrument family and
 velocity. Eight prior events, held-note pitch classes by family and accumulated
@@ -137,3 +137,12 @@ compares their update signal with the complete batch on one device.
 This model learns local ensemble relationships. Its training does not yet teach
 minute-long recurrent form, and it has not replaced the established studio.
 Full seam/parameter counts and results are in its training receipt and EVIDENCE.md.
+
+The optional `sample_ensemble.py --conditional` decoder addresses a separate
+readout weakness: independently drawing five marginal heads can break their
+associations. It samples an instrument, then uses an ordinary masked Cadence
+`Nudge` to let that intention affect pitch, timing and duration before they are
+read. Chosen attributes stay in the nudge while the remaining populations repair.
+Weights remain fixed. A cut-link test verifies that instrument-to-pitch effects
+come from the actual seams. This is an inference experiment, not exact joint
+probability sampling or an established musical-quality improvement.

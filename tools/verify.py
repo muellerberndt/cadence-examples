@@ -16,6 +16,7 @@ for p in sorted((ROOT / "runs").glob("*/receipt.json")):
             ROOT / name,
             ROOT / "runs/training_source" / name,
             ROOT / "runs/four-gpu-source" / name,
+            ROOT / "runs/four-gpu-training-source" / name,
             ROOT / "runs/ensemble-pilot-source" / name,
         ]
         if not any(
