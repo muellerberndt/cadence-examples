@@ -3,7 +3,10 @@
 From the repository root: `python serve.py eye-arm`. The launcher opens
 `/eye-arm/`; use `/` to browse the other examples.
 
-Clear pad → draw a mark → watch the copy. Erase a patch of the copy to watch the arm repair it. Use Joint motors, Pencil motors and Eye on to interrupt the control path. Disturb a joint to test pose feedback.
+Press **Clear** directly below the drawing area to empty both your picture and
+the arm’s copy. Draw a mark, then release to let the arm copy it. Releasing keeps
+your strokes; **Clear** starts again, including while paused or inspecting a thought.
+Erase a patch of the copy to watch the arm repair it. Use Joint motors, Pencil motors and Eye on to interrupt the control path. Disturb a joint to test pose feedback.
 
 ## Control path
 

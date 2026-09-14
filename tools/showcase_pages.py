@@ -195,7 +195,18 @@ def main():
                 timeout=30000,
             )
             # A freehand mark is read back through the retina, including pencil lift.
-            page.locator("#clear-pad").click()
+            page.locator("#pause").click()
+            page.locator("#brain-think").click()
+            expect(page.locator(".primary-controls #clear-pad")).to_have_text("Clear")
+            page.get_by_role("button", name="Clear", exact=True).click()
+            page.wait_for_function("showcase.snapshot().body.targets === 0 && showcase.snapshot().body.ink === 0 && showcase.snapshot().brain.neurons === 17")
+            assert not page.evaluate("showcase.snapshot().body.paused")
+            assert page.locator("#target-image").input_value() == ""
+            assert page.locator("#image-upload").input_value() == ""
+            expect(page.locator("#brain-think")).to_have_attribute("aria-pressed", "false")
+            page.wait_for_timeout(250)
+            assert page.evaluate("showcase.snapshot().body.targets") == 0
+            page.screenshot(path=str(screenshots / "arm-cleared.png"))
             page.locator("#scene").scroll_into_view_if_needed()
             bounds = page.locator("#scene").bounding_box()
             size = min(bounds["width"] * 0.40 - 18, bounds["height"] - 88)

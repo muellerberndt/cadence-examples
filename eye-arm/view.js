@@ -85,14 +85,14 @@ export function mountArm(api) {
   $("stage-label").textContent = "LIVE SENSOR → BRAIN → MOTOR → BODY";
   $("stage-detail").textContent = "Two joints + pencil lift";
   $("stage-hint").textContent =
-    "Draw with a mouse or finger on the left pad. Lift your finger to let the arm copy it.";
+    "Draw on the left. Release to copy your strokes; Clear starts an empty drawing.";
   $("scene").setAttribute(
     "aria-label",
     "Reference drawing pad on the left, an eye following its visual target, and a motor-driven arm drawing on the right. Use the outline selector or upload as keyboard alternatives.",
   );
   $("controls").innerHTML =
     `<div><h2>Your drawing is the instruction.</h2><p>Motor activity drives both joints and raises or lowers the pencil. Ink appears only when the pencil touches the paper.</p></div>
-  <div><label for="target-image">Try an outline</label><select id="target-image"><option value="flower">Flower</option><option value="leaf">Leaf</option><option value="spiral">Spiral</option></select><div class="buttons" style="margin-top:8px"><button id="clear-pad">Clear pad</button><button id="restart-arm">Copy again</button><button id="erase-copy">Erase a patch</button></div></div>
+  <div><label for="target-image">Try an outline</label><select id="target-image"><option value="">Empty drawing</option><option value="flower" selected>Flower</option><option value="leaf">Leaf</option><option value="spiral">Spiral</option></select><div class="buttons" style="margin-top:8px"><button id="clear-pad" class="primary" title="Clear your drawing and the arm’s copy">Clear</button><button id="restart-arm">Copy again</button><button id="erase-copy">Erase a patch</button></div></div>
   <div><label for="image-upload">Or show an image</label><input id="image-upload" type="file" accept="image/png,image/jpeg,image/webp"><p>Use a dark line drawing on a light background. The eye samples 48 × 48 pixels.</p></div>
   <div class="buttons"><button id="disturb">Disturb a joint</button><button id="pause">Pause</button><button id="feedback" aria-pressed="true">Feedback on</button></div>
   <div class="buttons"><button id="joint-motors" aria-pressed="true">Joint motors</button><button id="pencil-motors" aria-pressed="true">Pencil motors</button><button id="eye-on" aria-pressed="true">Eye on</button></div>
@@ -101,11 +101,21 @@ export function mountArm(api) {
     ["Pencil height", "Raised", "pencil-height"],
     ["Ink samples", "0", "ink-count"],
   ])}<p id="image-status" aria-live="polite"></p>`;
-  $("target-image").onchange = () => example($("target-image").value);
-  $("clear-pad").onclick = () => {
+  const clear = () => {
+    painting = false;
+    last = null;
+    paused = false;
+    credit = 0;
+    $("pause").textContent = "Pause";
+    $("target-image").value = "";
+    $("image-upload").value = "";
+    api.resume?.();
     blank();
     observe();
+    api.observe?.(arm.brain.snapshot());
   };
+  $("clear-pad").onclick = clear;
+  $("target-image").onchange = () => $("target-image").value ? example($("target-image").value) : clear();
   $("restart-arm").onclick = observe;
   $("erase-copy").onclick = () => arm.erasePatch();
   $("disturb").onclick = () => arm.disturb();
@@ -141,7 +151,13 @@ export function mountArm(api) {
       return;
     }
     try {
+      const startedAtRevision = revision;
       const bitmap = await createImageBitmap(file);
+      // A clear, new outline or finished stroke supersedes a pending image decode.
+      if (startedAtRevision !== revision) {
+        bitmap.close();
+        return;
+      }
       blank();
       const s = Math.min(184 / bitmap.width, 184 / bitmap.height);
       pen.drawImage(
@@ -386,6 +402,7 @@ export function mountArm(api) {
         feedback: arm.closed,
         target: arm.target,
         targets: arm.targets.length,
+        paused,
         revision,
         motor: arm.brain.motor.state.slice(),
         motorMask: arm.brain.motor.mask.slice(),
