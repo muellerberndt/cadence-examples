@@ -1,4 +1,5 @@
 import { DrawingArm, RETINA } from "./brain.js";
+import { PAPER_SIZE } from "./paper.js";
 import { forward } from "../shared/embodied.js";
 
 export function mountArm(api) {
@@ -6,6 +7,11 @@ export function mountArm(api) {
   const pad = document.createElement("canvas");
   pad.width = pad.height = 192;
   const pen = pad.getContext("2d", { willReadFrequently: true });
+  const copy = document.createElement("canvas");
+  copy.width = copy.height = PAPER_SIZE;
+  const copyContext = copy.getContext("2d"),
+    copyImage = copyContext.createImageData(PAPER_SIZE, PAPER_SIZE);
+  let paperRevision = -1;
   let arm,
     paused = false,
     painting = false,
@@ -38,9 +44,12 @@ export function mountArm(api) {
       eyeOn ? 1 - (p[i * 4] + p[i * 4 + 1] + p[i * 4 + 2]) / 765 : 0,
     );
     arm = new DrawingArm(darkness);
+    paperRevision = -1;
+    $("stage-detail").textContent =
+      `${arm.targets.length * 3 + 17} neurons · two joints + pencil lift`;
     revision++;
     $("image-status").textContent = arm.targets.length
-      ? `${arm.targets.length} visible retinal targets. Copying the pixels on the left.`
+      ? `${arm.targets.length} visible retinal targets. Following connected strokes and checking the ink.`
       : "Draw on the left pad to give the eye something to see.";
     $("feedback").textContent = "Feedback on";
     $("feedback").setAttribute("aria-pressed", "true");
@@ -72,9 +81,9 @@ export function mountArm(api) {
   };
   $("headline").innerHTML = "Draw something.<br>Let the eye and arm copy it.";
   $("intro").textContent =
-    "Draw on the left. Retinal patches read the pixels, visual and joint regions coordinate, and motor neurons move the shoulder, elbow and pencil lift.";
+    "Draw on the left. The eye compares your marks with the actual ink. Motor neurons move the shoulder, elbow and pencil, following connected strokes and repairing missing marks.";
   $("stage-label").textContent = "LIVE SENSOR → BRAIN → MOTOR → BODY";
-  $("stage-detail").textContent = "593 owners · two joints + pencil lift";
+  $("stage-detail").textContent = "Two joints + pencil lift";
   $("stage-hint").textContent =
     "Draw with a mouse or finger on the left pad. Lift your finger to let the arm copy it.";
   $("scene").setAttribute(
@@ -83,12 +92,12 @@ export function mountArm(api) {
   );
   $("controls").innerHTML =
     `<div><h2>Your drawing is the instruction.</h2><p>Motor activity drives both joints and raises or lowers the pencil. Ink appears only when the pencil touches the paper.</p></div>
-  <div><label for="target-image">Try an outline</label><select id="target-image"><option value="flower">Flower</option><option value="leaf">Leaf</option><option value="spiral">Spiral</option></select><div class="buttons" style="margin-top:8px"><button id="clear-pad">Clear pad</button><button id="restart-arm">Copy again</button></div></div>
-  <div><label for="image-upload">Or show an image</label><input id="image-upload" type="file" accept="image/png,image/jpeg,image/webp"><p>Use a dark line drawing on a light background. The eye samples 24 × 24 pixels.</p></div>
+  <div><label for="target-image">Try an outline</label><select id="target-image"><option value="flower">Flower</option><option value="leaf">Leaf</option><option value="spiral">Spiral</option></select><div class="buttons" style="margin-top:8px"><button id="clear-pad">Clear pad</button><button id="restart-arm">Copy again</button><button id="erase-copy">Erase a patch</button></div></div>
+  <div><label for="image-upload">Or show an image</label><input id="image-upload" type="file" accept="image/png,image/jpeg,image/webp"><p>Use a dark line drawing on a light background. The eye samples 48 × 48 pixels.</p></div>
   <div class="buttons"><button id="disturb">Disturb a joint</button><button id="pause">Pause</button><button id="feedback" aria-pressed="true">Feedback on</button></div>
   <div class="buttons"><button id="joint-motors" aria-pressed="true">Joint motors</button><button id="pencil-motors" aria-pressed="true">Pencil motors</button><button id="eye-on" aria-pressed="true">Eye on</button></div>
   ${metrics([
-    ["Target coverage", "0%", "coverage"],
+    ["Marks inked", "0%", "coverage"],
     ["Pencil height", "Raised", "pencil-height"],
     ["Ink samples", "0", "ink-count"],
   ])}<p id="image-status" aria-live="polite"></p>`;
@@ -98,6 +107,7 @@ export function mountArm(api) {
     observe();
   };
   $("restart-arm").onclick = observe;
+  $("erase-copy").onclick = () => arm.erasePatch();
   $("disturb").onclick = () => arm.disturb();
   $("pause").onclick = () => {
     paused = !paused;
@@ -154,21 +164,21 @@ export function mountArm(api) {
   explain([
     [
       "Retina and attention",
-      "The eye reads pixel darkness. A supplied attention rule selects an unvisited retinal target; visited targets are explicit records. No stroke coordinates enter the controller.",
+      "Reference and actual-ink neurons feed missing-mark neurons. A supplied attention rule follows connected dark pixels toward missing ink. Erase a patch to see the arm return and repair it. No stroke coordinates enter the controller.",
     ],
     [
       "Coupled visual and motor regions",
-      "Target, pen position and height feed error owners. Reciprocal visual/premotor seams coordinate the shoulder and elbow; six antagonistic motor units drive joints and pencil lift.",
+      "Target, pen position and height feed error neurons. Reciprocal visual/premotor synapses coordinate the shoulder and elbow; six antagonistic motor units drive joints and pencil lift.",
     ],
     [
       "Physical readback",
-      "Joint angles and pencil height return from the body. Disturb a joint, disable feedback, or silence motor populations to see their causal roles. Geometry and circuit weights are supplied; this is not trained visual recognition.",
+      "The displayed ink raster, joint angles and pencil height return from the body. The pencil stays down on connected strokes and lifts before crossing blank space. Disturb a joint or silence motor populations to test the loop. Geometry and circuit weights are supplied; this is not trained visual recognition.",
     ],
   ]);
   $("evidence-title").textContent =
     "Test the nervous system by interrupting it";
   $("evidence-note").textContent =
-    "Three raster fixtures, six conditions, 6,000 steps each: intact and disturbed-feedback runs cover 100% of visible targets; disabling pose feedback after disturbance gives 28–33%. Joint-motor ablation gives zero joint displacement; raised-pencil motor ablation gives zero ink. Coverage measures proximity to targets, not artistic quality.";
+    "Tests check connected strokes, separate marks, erased-ink repair, disturbances and motor ablations. Marks inked measures actual ink at reference samples; it does not certify an exact image match. Sampling can lose fine detail, and the pencil cannot erase unwanted ink.";
   $("evidence-table").innerHTML = table(
     ["Intervention", "Expected causal effect"],
     [
@@ -178,6 +188,10 @@ export function mountArm(api) {
       ],
       ["Pencil motor neurons off while raised", "No contact and no ink"],
       ["Eye off before copying", "No visual targets"],
+      [
+        "Erase a patch of the copy",
+        "Missing-mark activity returns; the arm repairs the gap",
+      ],
       [
         "Readback on after a disturbance",
         "New motor corrections follow the actual pose",
@@ -236,22 +250,19 @@ export function mountArm(api) {
       const paper = xy([0.23, 0.17]);
       ctx.fillStyle = "#e5eadd";
       ctx.fillRect(...paper, a.bodySize * 0.54, a.bodySize * 0.54);
-      ctx.strokeStyle = "#244e43";
-      ctx.fillStyle = "#244e43";
-      ctx.lineWidth = 1.4;
-      arm.ink.forEach((p, i) => {
-        const [x, y] = xy(p);
-        if (p[2] && i) {
-          ctx.beginPath();
-          ctx.moveTo(...xy(arm.ink[i - 1]));
-          ctx.lineTo(x, y);
-          ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.arc(x, y, 1.2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      });
+      if (paperRevision !== arm.paper.revision) {
+        arm.paper.pixels.forEach((v, i) => {
+          copyImage.data.set([36, 78, 67, v ? 255 : 0], i * 4);
+        });
+        copyContext.putImageData(copyImage, 0, 0);
+        paperRevision = arm.paper.revision;
+      }
+      ctx.drawImage(
+        copy,
+        ...xy([0.26, 0.2]),
+        a.bodySize * 0.48,
+        a.bodySize * 0.48,
+      );
       const base = [0.5, 0.94],
         elbow = [
           0.5 + 0.43 * Math.cos(arm.q[0]),
@@ -354,9 +365,11 @@ export function mountArm(api) {
                   tone: arm.targets.length ? "positive" : "neutral",
                 }
               : {
-                  label: arm.lifted
-                    ? "Reaching / pencil up"
-                    : "Drawing / pencil down",
+                  label: arm.finishedOnce
+                    ? "Repairing missing ink"
+                    : arm.lifted
+                      ? "Reaching / pencil up"
+                      : "Following a stroke",
                   tone: "seeking",
                 },
       };
@@ -364,6 +377,9 @@ export function mountArm(api) {
     snapshot() {
       return {
         coverage: arm.coverage,
+        phase: arm.phase,
+        strokes: arm.strokes,
+        missing: arm.brain.missing.state.filter((v) => v > 0.1).length,
         ink: arm.ink.length,
         q: arm.q.slice(),
         z: arm.z,

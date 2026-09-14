@@ -1,5 +1,5 @@
 import { Mouse as SpatialMouse } from "../shared/embodied.js";
-import { FastMemory, keys, zeros } from "../shared/engine.js";
+import { SynapticMemory, keys, zeros } from "../shared/engine.js";
 import {
   MotorSystem,
   MemoryReadout,
@@ -11,7 +11,7 @@ export class Mouse extends SpatialMouse {
     super(seed);
     this.nerves = new MotorSystem(["Horizontal", "Vertical"]);
     this.recall = new MemoryReadout();
-    this.taskMemory = new FastMemory();
+    this.taskMemory = new SynapticMemory();
     this.taskMemory.observe(keys()[0], [1, 0, 0, 0]);
     this.cue = 0;
     this.destination = 0;
@@ -30,7 +30,7 @@ export class Mouse extends SpatialMouse {
     this.place = {
       state: c.state.slice(),
       mask: c.mask,
-      edges: c.engine.data.edges,
+      edges: c.brain.data.edges,
       names: c.state.map((_, i) => `Place ${i}`),
       groups: c.state.map(() => "place"),
     };
@@ -38,7 +38,7 @@ export class Mouse extends SpatialMouse {
   }
   updateBrain(error) {
     const n = this.place.state.length,
-      bridges = [
+      synapses = [
         [1, 8 + this.destination, 0, this.world.goal, 0.03 / Math.tanh(1)],
         ...error.map((v, i) => [0, this.world.goal, 2, i, v]),
         ...motorFeedback(2, 2),
@@ -50,7 +50,7 @@ export class Mouse extends SpatialMouse {
         this.recall.configure(this.taskMemory, keys()[this.cue]),
         zeros(6),
       ],
-      bridges,
+      synapses,
       {
         steps: 3000,
         tolerance: 1e-13,
@@ -63,9 +63,9 @@ export class Mouse extends SpatialMouse {
             actuator: "Directional motor neurons",
           },
           adapters:
-            "Task recall → spatial goal field → position error ↔ motors · one shared settlement",
+            "Task recall → spatial goal field → position error ↔ motors · one shared equilibrium",
           memory:
-            "Lessons change FastSeams between settlements. The fixed map, active task cue and body pose define the current boundary; task, field and motor owners settle together before motion. Neighbor selection is an explicit readout.",
+            "Lessons change FastSynapses between settling runs. The fixed map, active task cue and body pose define the current boundary; task, field and motor neurons settle together before motion. Neighbor selection is an explicit readout.",
         },
       },
     );

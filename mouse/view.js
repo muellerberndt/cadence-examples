@@ -56,7 +56,7 @@ export function mountEmbodied(mode, api) {
       "A mouse navigates a labyrinth toward cheese. Brightness shows the spatial goal field. Controls can alter the maze and goal.",
     );
     $("controls").innerHTML =
-      `<div><h2>Several parts. One closed loop.</h2><p>Vision updates the map. Neighboring place patches settle. Motor output moves the body; position readback selects the next action.</p></div><div><label for="task-cue">Task · the mouse reacts at once</label><select id="task-cue"><option value="0">Find cheese</option><option value="1">Go home</option><option value="2">Get water</option><option value="3">New task · untaught</option></select><label for="teach-goal" style="margin-top:9px">Teach this task to go to</label><select id="teach-goal"><option value="0">Cheese</option><option value="1">Home</option><option value="2">Water</option><option value="3">Flag</option></select><div class="buttons" style="margin-top:8px"><button id="teach-task">Teach</button><button id="perform-task">Go again</button></div><p id="lesson-status" aria-live="polite">Three tasks are taught. Choose New task, pick a destination and press Teach.</p></div><div class="buttons"><button id="new-maze">New maze</button><button id="move-goal">Move goal</button><button id="pause">Pause</button></div><details><summary>Edit the maze with the keyboard</summary><label for="edit-cell">Edit corridor / wall</label><select id="edit-cell"></select><button id="toggle-wall" style="margin-top:8px">Toggle selected cell</button><p>Unreachable goals stop the mouse; it does not walk through walls.</p></details><div class="buttons"><button id="heat" aria-pressed="true">Show goal field</button></div>${metrics(
+      `<div><h2>Several parts. One closed loop.</h2><p>Vision updates the map. Neighboring place neurons settle. Motor output moves the body; position readback selects the next action.</p></div><div><label for="task-cue">Task · the mouse reacts at once</label><select id="task-cue"><option value="0">Find cheese</option><option value="1">Go home</option><option value="2">Get water</option><option value="3">New task · untaught</option></select><label for="teach-goal" style="margin-top:9px">Teach this task to go to</label><select id="teach-goal"><option value="0">Cheese</option><option value="1">Home</option><option value="2">Water</option><option value="3">Flag</option></select><div class="buttons" style="margin-top:8px"><button id="teach-task">Teach</button><button id="perform-task">Go again</button></div><p id="lesson-status" aria-live="polite">Three tasks are taught. Choose New task, pick a destination and press Teach.</p></div><div class="buttons"><button id="new-maze">New maze</button><button id="move-goal">Move goal</button><button id="pause">Pause</button></div><details><summary>Edit the maze with the keyboard</summary><label for="edit-cell">Edit corridor / wall</label><select id="edit-cell"></select><button id="toggle-wall" style="margin-top:8px">Toggle selected cell</button><p>Unreachable goals stop the mouse; it does not walk through walls.</p></details><div class="buttons"><button id="heat" aria-pressed="true">Show goal field</button></div>${metrics(
         [
           ["Body moves", "0", "mouse-moves"],
           ["Spatial residual", "0", "spatial-residual"],
@@ -98,7 +98,7 @@ export function mountEmbodied(mode, api) {
       try {
         localStorage.setItem(
           "cadence.mouse.lessons.v1",
-          JSON.stringify(lessons.records),
+          JSON.stringify(lessons),
         );
       } catch {}
       if (cue === 3)
@@ -167,11 +167,11 @@ export function mountEmbodied(mode, api) {
       ],
       [
         "Spatial equilibrium",
-        "A goal drive spreads through a contractive network of place patches. Each patch reads neighboring values; a local gradient guides the next step.",
+        "A goal drive spreads through a contractive network of place neurons. Each neuron reads neighboring values; a local gradient guides the next step.",
       ],
       [
         "Motor / body feedback",
-        "A moving body reports its actual cell. Editing the map or moving the cheese causes a new spatial settlement and new motor choices.",
+        "A moving body reports its actual cell. Editing the map or moving the cheese makes the spatial field settle again and changes the motor choices.",
       ],
     ]);
     $("evidence-title").textContent = "A changed world gets a fresh route";
@@ -299,7 +299,7 @@ export function mountEmbodied(mode, api) {
               ? "No route"
               : "Navigating";
         $("stage-readout").textContent =
-          `${world.grid.filter((v) => !v).length} place owners · ${mouse.circuit.steps} settling steps`;
+          `${world.grid.filter((v) => !v).length} place neurons · ${mouse.circuit.steps} settling steps`;
       }
     },
     pointer(x, y, w, h) {

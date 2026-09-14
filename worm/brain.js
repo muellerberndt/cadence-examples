@@ -56,7 +56,7 @@ export class WormArena extends ChemicalHabitat {
         : 0,
     );
     this.chemical.mask = this.mask;
-    const bridges = [
+    const synapses = [
       ...motorFeedback(1, 4),
       ...errors.flatMap((error, direction) =>
         this.motor.map((i) => [0, i, 1, direction, error / this.motor.length]),
@@ -65,7 +65,7 @@ export class WormArena extends ChemicalHabitat {
     this.joint = settleTogether(
       [this.chemical, this.nerves],
       [this.drive, Array(12).fill(0)],
-      bridges,
+      synapses,
       { steps: 400, tolerance: 1e-14 },
     );
     this.state = this.chemical.state;
@@ -116,9 +116,9 @@ export class WormArena extends ChemicalHabitat {
         actuator: "Body direction motors",
       },
       adapters:
-        "Odor → chemical circuit → directional readback ↔ motors · one shared settlement",
+        "Odor → chemical circuit → directional readback ↔ motors · one shared equilibrium",
       memory:
-        "Public chemical graph plus 12 engineered sensor/motor owners. Directional potentials persist between body steps. No trained synapses, biological gait or digestion model.",
+        "Public chemical graph plus 12 engineered sensor/motor neurons. Directional potentials persist between body steps. No trained synapses, biological gait or digestion model.",
     });
   }
 }

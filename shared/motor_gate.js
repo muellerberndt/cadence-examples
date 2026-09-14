@@ -1,4 +1,4 @@
-// A presentation gate for an already computed settlement. Never changes its mathematics.
+// A presentation gate for an already settled state. Never changes its mathematics.
 // The actuator closure is held until all captured iterations have been inspected.
 export class MotorGate {
   constructor() {

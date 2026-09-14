@@ -9,10 +9,10 @@ import { Mouse } from "../mouse/brain.js";
 import { WormArena } from "../worm/brain.js";
 import { Forager } from "../fly/brain.js";
 import { MemoryBrain } from "../memory/brain.js";
-import { FastMemory, flowers, keys } from "../shared/engine.js";
+import { SynapticMemory, flowers, keys } from "../shared/engine.js";
 import { reason, drop, brainSnapshot } from "../connect-four/brain.js";
 import { Circuit } from "../shared/nervous_system.js";
-import { repairTrace } from "../shared/telemetry.js";
+import { settlingTrace } from "../shared/telemetry.js";
 const root = new URL("../", import.meta.url);
 export function samples() {
   const arm = new DrawingArm(imageFixture("square"));
@@ -23,7 +23,7 @@ export function samples() {
     JSON.parse(readFileSync(new URL("worm/worm.json", root))),
   );
   worm.step();
-  const fly = new Forager(new FastMemory()),
+  const fly = new Forager(new SynapticMemory()),
     field = flowers();
   fly.memory.observe(keys()[field[0].kind], [0, 0, 0, 1]);
   fly.step(field);
@@ -59,7 +59,7 @@ export function benchmark() {
       `${name}: equation residual ${residual}`,
     );
     const replayError = Math.max(
-      ...repairTrace(s)
+      ...settlingTrace(s)
         .frames.at(-1)
         .map((v, i) => Math.abs(v - s.state[i])),
     );
@@ -86,8 +86,8 @@ export function benchmark() {
     );
     return {
       name,
-      owners: s.state.length,
-      seams: s.edges.length,
+      neurons: s.state.length,
+      synapses: s.edges.length,
       steps: s.steps,
       tolerance: s.equilibrium.tolerance,
       residual,
@@ -105,6 +105,7 @@ export function benchmark() {
     "worm/worm_arena.js",
     "worm/worm.json",
     "eye-arm/brain.js",
+    "eye-arm/paper.js",
     "eye-arm/fixtures.js",
     "mouse/brain.js",
     "worm/brain.js",

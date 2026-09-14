@@ -1,4 +1,4 @@
-import { FastMemory, MLP, keys, argmax, zeros } from "../shared/engine.js";
+import { FastMemory, SynapticMemory, MLP, keys, argmax, zeros } from "../shared/engine.js";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { cpus } from "node:os";
@@ -7,7 +7,7 @@ const bank = keys(),
     readFileSync(new URL("../evidence/evidence.json", import.meta.url)),
   ).browser.online_mlp;
 function stream(kind) {
-  const model = kind === "cadence" ? new FastMemory() : new MLP(initial),
+  const model = kind === "cadence" ? new FastMemory() : kind === "consolidating" ? new SynapticMemory() : new MLP(initial),
     truth = Array(8).fill(-1);
   let correct = 0,
     queries = 0;
@@ -17,7 +17,7 @@ function stream(kind) {
       value = (Math.floor(k / 8) + k) % 4,
       target = zeros(4);
     target[value] = 1;
-    model.observe(bank[key], target, kind === "cadence" ? 1 : +kind);
+    model.observe(bank[key], target, Number.isFinite(+kind) ? +kind : 1);
     truth[key] = value;
     for (let i = 0; i < 8; i++)
       if (truth[i] >= 0) {
@@ -33,7 +33,7 @@ function stream(kind) {
   };
 }
 const rows = [];
-for (const kind of ["cadence", "1", "10", "100"]) {
+for (const kind of ["cadence", "consolidating", "1", "10", "100"]) {
   for (let i = 0; i < 3; i++) stream(kind);
   const runs = Array.from({ length: 11 }, () => stream(kind));
   const sorted = runs.map((r) => r.ms).sort((a, b) => a - b);
@@ -45,7 +45,7 @@ for (const kind of ["cadence", "1", "10", "100"]) {
     median_ms: sorted[5],
     min_ms: sorted[0],
     max_ms: sorted.at(-1),
-    updates_per_observation: kind === "cadence" ? 1 : +kind,
+    updates_per_observation: Number.isFinite(+kind) ? +kind : 1,
   });
 }
 const sources = Object.fromEntries(

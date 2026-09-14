@@ -1,5 +1,5 @@
-// Full topology rendering. Every supplied owner and seam reaches the GPU.
-// Dense edges overlap on screen; zoom resolves them. No simulated activity is invented here.
+// Full topology rendering. Every supplied neuron and synapse reaches the GPU.
+// Dense synapses overlap on screen; zoom resolves them. No simulated activity is invented here.
 export function regionColor(name) {
   const key = name.toLowerCase();
   if (/retina|visual|vision|eye/.test(key)) return [218, 146, 246];
@@ -268,7 +268,7 @@ export class CircuitMap {
   }
   plasticity(changes) {
     if (changes.length !== this.edges)
-      throw Error("Plasticity must cover every seam");
+      throw Error("Plasticity must cover every synapse");
     this.changes = changes;
     this.changeScale = 1e-9;
     for (const x of changes)
@@ -424,8 +424,8 @@ export class CircuitMap {
   snapshot() {
     return {
       renderer: this.enabled ? "WebGL2" : "canvas fallback",
-      owners: this.n,
-      seams: this.edges,
+      neurons: this.n,
+      synapses: this.edges,
       zoom: this.camera.zoom,
       allEdgesSubmitted: this.enabled,
     };

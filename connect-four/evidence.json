@@ -313,9 +313,9 @@
     "off_nodes": 800
   },
   "sources": {
-    "connect-four/brain.js": "67c5062495d454ae9dca5c20d0627ceeb852d33745ae6ff06fca7c74056f2cf7",
+    "connect-four/brain.js": "3d7bc692fe7cd61ba8044ade03d6409db1f067fd569387ed9cfb317f722d1a7c",
     "connect-four/benchmark.mjs": "4e0da966e01926989c6ff0c3b014ba6a9673bc8ad9d98c1de9183e95636900e8",
-    "shared/nervous_system.js": "5cf69d94c6f2143b1355c01da614819321f78edba40fe039102d1008402dd0a3"
+    "shared/nervous_system.js": "13a4d24662bcb2fc397f9005ef8e5887fb2dbee184dd75d07263a86bf9b592e7"
   },
   "boundary": "Supplied game rules and threat evaluator. Adversarial search is explicit; conventional minimax with the same evaluator can match it. Finite-depth play, not a solved or learned world model."
 }

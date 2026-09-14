@@ -20,7 +20,7 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
 def choose(page, mode):
     page.locator(f'[data-tab="{mode}"]').click()
     page.wait_for_function(
-        "mode => window.showcase?.snapshot().mode === mode && window.showcase.snapshot().brain.owners > 0",
+        "mode => window.showcase?.snapshot().mode === mode && window.showcase.snapshot().brain.neurons > 0",
         arg=mode,
     )
 
@@ -31,6 +31,8 @@ def main():
     )
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
+    screenshots = ROOT / "runs" / "browser"
+    screenshots.mkdir(parents=True, exist_ok=True)
     try:
         with sync_playwright() as p:
             try:
@@ -45,9 +47,9 @@ def main():
             page.goto(f"http://127.0.0.1:{server.server_address[1]}/mouse/")
             page.wait_for_function("window.showcase !== undefined")
             assert page.evaluate("showcase.snapshot().mode") == "mouse"
-            page.wait_for_function("showcase.snapshot().brain.owners > 0")
+            page.wait_for_function("showcase.snapshot().brain.neurons > 0")
             topology=page.evaluate("showcase.snapshot().brain.topology")
-            assert topology["owners"]==page.evaluate("showcase.snapshot().brain.owners")
+            assert topology["neurons"]==page.evaluate("showcase.snapshot().brain.neurons")
             assert topology["allEdgesSubmitted"]
             brain_bounds=page.locator("#brain-scene").bounding_box()
             page.mouse.move(brain_bounds["x"]+brain_bounds["width"]*.5,brain_bounds["y"]+brain_bounds["height"]*.5)
@@ -147,6 +149,21 @@ def main():
             page.locator("#value").select_option("1")
             page.locator("#teach").click()
             assert abs(page.evaluate("showcase.snapshot().fast[0][1]") - 1) < 1e-10
+            page.locator("#clear-memory").click()
+            page.locator("#value").select_option("1")
+            page.locator("#teach").click()
+            page.locator("#clear-transient").click()
+            assert abs(page.evaluate("showcase.snapshot().fast[0][1]") - .05) < 1e-12
+            page.locator("#repeat-lesson").click()
+            page.locator("#clear-transient").click()
+            assert page.evaluate("showcase.snapshot().fast[0][1]") > .87
+            page.locator("#value").select_option("2")
+            page.locator("#salient-lesson").click()
+            page.locator("#clear-transient").click()
+            assert abs(page.evaluate("showcase.snapshot().fast[0][2]") - 1) < 1e-12
+            page.locator("#brain-options").evaluate("el => el.open = true")
+            page.locator("#brain-signal").select_option("consolidation")
+            expect(page.locator("#brain-legend-label")).to_contain_text("Persistent synaptic strength")
             page.locator("#correlation").select_option("0.9")
             assert page.evaluate("showcase.snapshot().writeCount") == 0
             choose(page, "fly")
@@ -160,6 +177,17 @@ def main():
             assert before == page.evaluate("showcase.snapshot().agents")
             choose(page, "arm")
             page.wait_for_function("showcase.snapshot().body.ink > 0", timeout=20000)
+            page.wait_for_function(
+                "showcase.snapshot().body.phase === 'done'", timeout=60000
+            )
+            assert page.evaluate("showcase.snapshot().body.coverage") == 1
+            assert page.evaluate("showcase.snapshot().body.strokes") == 1
+            page.locator("#erase-copy").click()
+            page.wait_for_function("showcase.snapshot().body.missing > 0")
+            page.wait_for_function(
+                "showcase.snapshot().body.phase === 'done' && showcase.snapshot().body.coverage === 1",
+                timeout=30000,
+            )
             # A freehand mark is read back through the retina, including pencil lift.
             page.locator("#clear-pad").click()
             bounds = page.locator("#scene").bounding_box()
@@ -235,14 +263,17 @@ def main():
             )
             for mode in ["mouse", "arm", "fly", "worm", "memory", "game"]:
                 choose(page, mode)
-                page.wait_for_function("showcase.snapshot().brain.owners > 0")
+                page.wait_for_function("showcase.snapshot().brain.neurons > 0")
                 page.locator("#brain-options").evaluate("el => el.open = true")
                 brain = page.evaluate("showcase.snapshot().brain")
                 assert (
-                    brain["owners"]
+                    brain["neurons"]
                     == {
                         "mouse": 265,
-                        "arm": 593,
+                        "arm": (
+                            page.evaluate("showcase.snapshot().body.targets * 3 + 17")
+                            if mode == "arm" else None
+                        ),
                         "fly": 18,
                         "worm": 309,
                         "memory": 12,
@@ -279,7 +310,7 @@ def main():
                 page.wait_for_function("showcase.snapshot().brain.signal === 'input'")
                 assert (
                     len(page.evaluate("showcase.snapshot().brain.input"))
-                    == brain["owners"]
+                    == brain["neurons"]
                 )
                 if mode in ["memory", "fly"]:
                     assert page.evaluate(
@@ -310,11 +341,13 @@ def main():
                             "Directional motor neurons",
                         ],
                         "arm": [
-                            "Retina · pixel intensity",
+                            "Retina · reference marks",
                             "Target & proprioception",
                             "Visual / height error",
                             "Joint coordination",
                             "Motor neurons",
+                            "Retina · actual ink",
+                            "Missing ink",
                         ],
                         "worm": [
                             "Chemical sensory input",
@@ -358,6 +391,7 @@ def main():
                     "Inside the feedback loop"
                     in page.locator(".mechanism summary").inner_text()
                 )
+                page.screenshot(path=str(screenshots / f"{mode}-desktop.png"))
                 page.set_viewport_size({"width": 390, "height": 844})
                 page.wait_for_timeout(80)
                 assert not page.evaluate(
@@ -372,6 +406,7 @@ def main():
                         assert (
                             bounds["x"] >= 0 and bounds["x"] + bounds["width"] <= 390
                         ), (mode, control.get_attribute("id"), bounds)
+                page.screenshot(path=str(screenshots / f"{mode}-mobile.png"), full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1050})
             # Real touch events follow the same retinal input path on a phone.
             mobile = b.new_context(
@@ -379,7 +414,7 @@ def main():
             )
             touch_page = mobile.new_page()
             touch_page.goto(f"http://127.0.0.1:{server.server_address[1]}/eye-arm/")
-            touch_page.wait_for_function("window.showcase?.snapshot().brain.owners > 0")
+            touch_page.wait_for_function("window.showcase?.snapshot().brain.neurons > 0")
             touch_page.locator("#clear-pad").click()
             touch_page.locator("#scene").scroll_into_view_if_needed()
             bounds = touch_page.locator("#scene").bounding_box()

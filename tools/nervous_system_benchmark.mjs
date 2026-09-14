@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import { writeFileSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { DrawingArm } from "../eye-arm/brain.js";
+import { DrawingArm, RETINA } from "../eye-arm/brain.js";
 import { imageFixture } from "../eye-arm/fixtures.js";
 import { Mouse } from "../mouse/brain.js";
 import { neighbors } from "../shared/embodied.js";
 import { Forager } from "../fly/brain.js";
 import { WormArena } from "../worm/brain.js";
-import { FastMemory, flowers } from "../shared/engine.js";
-import { repairTrace } from "../shared/telemetry.js";
+import { SynapticMemory, flowers } from "../shared/engine.js";
+import { settlingTrace } from "../shared/telemetry.js";
 const root = new URL("../", import.meta.url),
   arm = [];
 for (const image of ["square", "flower", "two_marks"])
@@ -21,7 +21,9 @@ for (const image of ["square", "flower", "two_marks"])
     "eye_off",
   ]) {
     const a = new DrawingArm(
-      condition === "eye_off" ? Array(24 ** 2).fill(0) : imageFixture(image),
+      condition === "eye_off"
+        ? Array(RETINA ** 2).fill(0)
+        : imageFixture(image),
     );
     if (condition === "joint_motors_off") a.brain.motor.mask.fill(0, 11, 15);
     if (condition === "pencil_motors_off") a.brain.motor.mask.fill(0, 15, 17);
@@ -44,6 +46,7 @@ for (const image of ["square", "flower", "two_marks"])
       raised,
       contact,
       targets: a.targets.length,
+      strokes: a.strokes,
       completed: a.target < 0,
       displacement: Math.hypot(...a.q.map((v, i) => v - initial[i])),
     };
@@ -117,7 +120,7 @@ for (const condition of [
 }
 const fly = [];
 for (const condition of ["intact", "motors_off"]) {
-  const f = new Forager(new FastMemory()),
+  const f = new Forager(new SynapticMemory()),
     field = flowers();
   if (condition === "motors_off") f.nerves.mask.fill(0, 2);
   for (let t = 0; t < 4000; t++) f.step(field);
@@ -135,7 +138,7 @@ for (const condition of ["intact", "motors_off"]) {
 const a = new DrawingArm(imageFixture("square"));
 for (let t = 0; t < 100; t++) a.step();
 const composite = a.brain.snapshot(),
-  last = repairTrace(composite).frames.at(-1),
+  last = settlingTrace(composite).frames.at(-1),
   parity = {
     trace_error: Math.max(
       ...last.map((v, i) => Math.abs(v - composite.state[i])),
@@ -144,6 +147,7 @@ const composite = a.brain.snapshot(),
 assert.ok(parity.trace_error < 1e-12);
 const files = [
   "eye-arm/brain.js",
+  "eye-arm/paper.js",
   "eye-arm/fixtures.js",
   "mouse/brain.js",
   "fly/brain.js",
@@ -178,7 +182,7 @@ for (const folder of ["eye-arm", "mouse", "worm", "fly"])
     new URL(`${folder}/evidence.json`, root),
     // Evidence precision exceeds the spatial success tolerance while avoiding
     // platform-specific last-bit differences accumulated over 6,000 control steps.
-    // Seven decimal places remain far below the 0.024 spatial success threshold.
+    // Seven decimal places remain well below one paper pixel.
     JSON.stringify(
       result,
       (_, v) => (typeof v === "number" ? Math.round(v * 1e7) / 1e7 : v),

@@ -28,19 +28,19 @@ def test_all_six_joint_equations_and_trajectories_match_cadence():
     for name, s in samples.items():
         assert "blocks" not in s, name
         pre, post, weights = zip(*s["edges"])
-        engine = cd.Settlement(
-            cd.Wiring.from_edges(len(s["state"]), pre=pre, post=post, sign=weights),
-            cd.GradedRule(
-                gain=1, slope=2, threshold=0, leak=1, dt=s["dt"], clamp_amplitude=1
+        brain = cd.Brain(
+            cd.Connectome.from_synapses(len(s["state"]), pre=pre, post=post, sign=weights),
+            cd.NeuronModel(
+                gain=1, slope=2, threshold=0, leak=1, dt=s["dt"], stimulus_amplitude=1
             ),
         )
-        state = cd.SettledState(
+        state = cd.BrainState(
             v=np.array(s["initialPotential"]),
             activation=np.array(s["initialState"]),
             adaptation=np.zeros(len(s["state"])),
             steps=0,
         )
-        final = engine.settle(
+        final = brain.settle(
             s["drive"],
             state=state,
             mask=np.array(s["mask"]),
@@ -51,7 +51,7 @@ def test_all_six_joint_equations_and_trajectories_match_cadence():
             final.activation, s["state"], atol=1e-12, rtol=0, err_msg=name
         )
         residual = float(
-            engine.residual(np.array(s["drive"]), final, mask=np.array(s["mask"]))[0]
+            brain.residual(np.array(s["drive"]), final, mask=np.array(s["mask"]))[0]
         )
         assert residual <= s["equilibrium"]["tolerance"] + 1e-14, (name, residual)
 

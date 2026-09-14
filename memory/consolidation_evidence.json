@@ -1,0 +1,28 @@
+{
+  "schema": "cadence.consolidation/v1",
+  "description": "Unit-cue response after clearing all transient residual weights. Single stream; orthogonal distractors; salience is supplied, not a neurotransmitter concentration.",
+  "sources": {
+    "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",
+    "memory/consolidation_benchmark.mjs": "96625526a566d90ad0d2de4af814230ade9505b877dae1445fe1315bfc8f4dbc"
+  },
+  "rates": {
+    "decay": 0.9,
+    "consolidation": 0.05
+  },
+  "exposures": {
+    "ordinary": 1,
+    "repeated": 40,
+    "salient": 1,
+    "salience": 19,
+    "distractors": 200,
+    "corrections": 60
+  },
+  "responses": {
+    "ordinary": 0.05,
+    "repeated": 0.8714878434,
+    "salient": 1,
+    "consolidation_disabled": 0,
+    "after_distraction": 1,
+    "revised": 0.953930201
+  }
+}

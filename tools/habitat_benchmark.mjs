@@ -42,7 +42,7 @@ run(
   1,
 );
 run("smell_disabled", (w) => (w.smell = false), 0);
-run("motor_owners_removed", (w) => w.motor.forEach((i) => (w.mask[i] = 0)), 0);
+run("motor_neurons_removed", (w) => w.motor.forEach((i) => (w.mask[i] = 0)), 0);
 run("no_food", (w) => w.food.clear(), 0);
 for (let row = 2; row <= 18; row += 4) {
   run(

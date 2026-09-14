@@ -16,14 +16,16 @@ EDGES = np.asarray(WORM["edges"])
 MATRIX = csr_matrix(
     (EDGES[:, 2], (EDGES[:, 1].astype(int), EDGES[:, 0].astype(int))), shape=(N, N)
 )
-RULE = cd.GradedRule(gain=1, slope=2, threshold=0, leak=1, dt=1, clamp_amplitude=1)
+NEURON_MODEL = cd.NeuronModel(
+    gain=1, slope=2, threshold=0, leak=1, dt=1, stimulus_amplitude=1
+)
 
 
-def worm_engine():
-    wiring = cd.Wiring.from_edges(
+def worm_brain():
+    connectome = cd.Connectome.from_synapses(
         N, pre=EDGES[:, 0].astype(int), post=EDGES[:, 1].astype(int), sign=EDGES[:, 2]
     )
-    return cd.Settlement(wiring, RULE)
+    return cd.Brain(connectome, NEURON_MODEL)
 
 
 def reference(drive, mask, steps=200):
@@ -46,14 +48,14 @@ def samples(seed, count, lesions=2, mixed=True):
         strengths = rng.uniform(0, 2, 4)
         if not mixed:
             strengths[np.arange(4) != rng.integers(4)] = 0
-        for strength, owners in zip(strengths, WORM["stimuli"].values(), strict=True):
-            drive[i, owners] = strength
+        for strength, neurons in zip(strengths, WORM["stimuli"].values(), strict=True):
+            drive[i, neurons] = strength
         mask[i, rng.choice(N, rng.integers(lesions + 1), replace=False)] = 0
     return drive, mask
 
 
 def fast_memory(keys=8, values=4, rule="delta"):
-    return cd.FastSeams(np.arange(keys), np.arange(keys, keys + values), rule=rule)
+    return cd.FastSynapses(np.arange(keys), np.arange(keys, keys + values), rule=rule)
 
 
 class OnlineMLP:

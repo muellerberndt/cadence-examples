@@ -1,16 +1,16 @@
-import { FastMemory } from "../shared/engine.js";
+import { SynapticMemory } from "../shared/engine.js";
 import { MemoryReadout, settleTogether } from "../shared/nervous_system.js";
 
 export class MemoryBrain {
   constructor() {
-    this.records = new FastMemory();
+    this.records = new SynapticMemory();
     this.readout = new MemoryReadout();
   }
   get w() {
     return this.records.w;
   }
-  observe(key, value) {
-    this.records.observe(key, value);
+  observe(key, value, options = {}) {
+    this.records.observe(key, value, 1, options);
   }
   predict(key) {
     this.last = settleTogether(
@@ -20,9 +20,9 @@ export class MemoryBrain {
       {
         metadata: {
           regionLabels: { key: "Cue input", record: "Value memory" },
-          adapters: "Cue → associative seams → recall · one shared settlement",
+          adapters: "Cue → associative synapses → recall · one shared equilibrium",
           memory:
-            "Observed lessons change FastSeams between settlements. The current cue and recall settle together with fixed weights; the published recall is tanh of the linear memory value, preserving argmax.",
+            "Observed lessons change transient and persistent synaptic weights in the ongoing interaction loop. Repeated or salient lessons strengthen the persistent component. The current cue and recall settle together with fixed weights; the published recall is tanh of the linear memory value, preserving argmax.",
           behavior: { label: "Recalling", tone: "seeking" },
         },
       },

@@ -36,7 +36,7 @@ export class Forager extends MemoryForager {
         Math.cos(desired - this.angle),
       );
     const recallDrive = this.recall.configure(this.memory, keys()[f.kind]);
-    const bridges = [
+    const synapses = [
       ...motorFeedback(1, 2),
       ...Array.from({ length: 4 }, (_, i) => [0, 8 + i, 1, 1, 0.04 * i]),
     ];
@@ -46,7 +46,8 @@ export class Forager extends MemoryForager {
         recallDrive,
         [turn, 0.3 * Math.max(0.2, 1 - Math.abs(turn) / Math.PI), 0, 0, 0, 0],
       ],
-      bridges,
+      synapses,
+      { dt: 0.65 },
     );
     const motor = [0, 1].map(
       (i) =>
@@ -71,7 +72,9 @@ export class Forager extends MemoryForager {
         const target = zeros(4);
         target[f.value] = 1;
         const predicted = argmax(this.memory.predict(keys()[f.kind]));
-        this.memory.observe(keys()[f.kind], target, this.updates);
+        this.memory.observe(keys()[f.kind], target, this.updates, {
+          salience: Math.abs(f.value - predicted),
+        });
         this.visits[this.target]++;
         this.encounters++;
         this.nectar += f.value;
@@ -103,7 +106,7 @@ export class Forager extends MemoryForager {
         actuator: "Turn / propulsion motors",
       },
       adapters:
-        "Cue → nectar recall → approach ↔ motor feedback · one shared settlement",
+        "Cue → nectar recall → approach ↔ motor feedback · one shared equilibrium",
       memory:
         "Nectar contact writes associative weights. Motor potentials persist between ticks and decay; target selection and collision bounds are supplied.",
     });

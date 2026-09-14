@@ -9,19 +9,19 @@ Teach a key/value, replace the value, query earlier keys and compare the online 
 
 This page isolates the associative-memory mechanism used by the embodied examples. It has no body and no motor neurons.
 
-12 ports, 32 memory entries. One residual write replaces a distinct-key record. Similar keys can interfere.
+12 ports, 32 persistent weights and 32 transient residuals. One residual write replaces a distinct-key record. Similar keys can interfere.
 
-The circuit at the top shows actual state, repairs and retained information.
+The circuit at the top shows actual state, activity changes and retained information.
 Supplied readout and body rules are documented rather than shown as extra neurons.
 See the [shared viewer guide](../METHODS.md#read-the-brain-view).
 
 ## A shared equilibrium
 
 The labeled regions participate in one connected solve for the current input.
-Local readback and repair change the same joint state; the action readout uses
+Local readback and settling change the same joint state; the action readout uses
 that state. The top circuit panel shows the global equation error and can replay
-the actual cross-region cascade. Lessons change records between phases.
-[Task wiring, boundaries and tests](../COUPLED_BRAINS.md) explain the
+the actual cross-region cascade. Observed lessons update synaptic strengths within the ongoing interaction loop. Repetition strengthens their persistent component. Neuronal settling and plasticity have different timescales.
+[Task connectomes, boundaries and tests](../COUPLED_BRAINS.md) explain the
 connections. Self-consistency is not a guarantee of the globally best behavior.
 
 ## Reproduce
@@ -29,12 +29,30 @@ connections. Self-consistency is not a guarantee of the globally best behavior.
 The matched learning comparison is in [shared evidence](../evidence/evidence.json).
 Run `python tools/verify.py` to check the pinned producer and arithmetic.
 
-For measured local processing time, run `node memory/benchmark.mjs`. The bundled
-[runtime receipt](evidence.json) reports 100% accuracy on a distinct-key overwrite
-stream at 0.447 ms median per 128-write/996-query stream, versus 1.360, 3.179 and
-22.635 ms for the MLP's 1/10/100-update settings. That is about 3×/7×/50× lower
-time on the recorded Apple M4/Node runtime. It is not a general speed or energy
-claim; see the [full comparison contract](../ADVANTAGES.md#measured-processing-time).
+Try **Teach once**, **Repeat 40×**, **Salient lesson** and **Clear short-term memory**.
+The displayed response to the taught value separates persistent strength from
+current recall. Under **Signal → Persistent memory**, brighter connections show
+larger consolidated weights. These are real weight changes, not simulated chemicals.
+
+The [retention receipt](consolidation_evidence.json) removes all transient residuals:
+
+| Experience | Remaining unit-cue response |
+|---|---:|
+| One ordinary lesson | 0.0500 |
+| 40 repeated lessons | 0.8715 |
+| One salience-19 lesson | 1.0000 |
+| 40 lessons with consolidation disabled | 0.0000 |
+
+The same memory retains a salient association through 200 orthogonal distractors
+and revises it after 60 corrective observations (response 0.9539). Similar cues
+can interfere. These response magnitudes follow the bounded local delta rule;
+they are not human memory measurements. Salience is supplied by the lesson button.
+The MLP receives the same examples but has no separate salience mechanism here.
+
+`node memory/consolidation_benchmark.mjs` reproduces retention;
+`node memory/benchmark.mjs` measures both the fast reference kernel and the live
+consolidating kernel against the same MLP update budgets. Full timings and costs
+are in the [comparison contract](../ADVANTAGES.md#measured-processing-time).
 
 ## Same cue, a newly taught meaning
 

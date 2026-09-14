@@ -1,5 +1,5 @@
 // Read-only diagnostic replay. Never feeds rendered values back into a controller.
-export function repairTrace(source, release = false) {
+export function settlingTrace(source, release = false) {
   if (source.recordedTrace && !release) return source.recordedTrace;
   const n = source.state.length,
     mask = source.mask ?? Array(n).fill(1),
@@ -23,8 +23,8 @@ export function repairTrace(source, release = false) {
     ? Math.max(80, Math.min(source.steps ?? 200, 400))
     : source.steps;
   for (let t = 0; t < steps; t++) {
-    const inbox = Array(n).fill(0);
-    for (const [a, b, w] of source.edges) inbox[b] += w * state[a];
+    const synapticInput = Array(n).fill(0);
+    for (const [a, b, w] of source.edges) synapticInput[b] += w * state[a];
     potential = potential.map((v, i) =>
       !mask[i]
         ? 0
@@ -33,8 +33,8 @@ export function repairTrace(source, release = false) {
               Math.max(-0.999999999, Math.min(0.999999999, source.state[i])),
             )
           : dt === 1
-            ? inbox[i] + drive[i]
-            : v + dt * (inbox[i] + drive[i] - v),
+            ? synapticInput[i] + drive[i]
+            : v + dt * (synapticInput[i] + drive[i] - v),
     );
     const next = potential.map((v, i) =>
       i >= (source.recurrentCount ?? n)
@@ -47,17 +47,17 @@ export function repairTrace(source, release = false) {
     potentials.push(potential.slice());
   }
   const mismatches = frames.map((activity, t) => {
-    const inbox = Array(n).fill(0);
-    for (const [a, b, w] of source.edges) inbox[b] += w * activity[a];
+    const synapticInput = Array(n).fill(0);
+    for (const [a, b, w] of source.edges) synapticInput[b] += w * activity[a];
     return potentials[t].map((v, i) =>
-      mask[i] ? inbox[i] + drive[i] - v : -v,
+      mask[i] ? synapticInput[i] + drive[i] - v : -v,
     );
   });
-  const groups = [...new Set(source.groups ?? Array(n).fill("patch"))];
+  const groups = [...new Set(source.groups ?? Array(n).fill("population"))];
   const populations = Object.fromEntries(
     groups.map((g) => {
       const ids = Array.from({ length: n }, (_, i) => i).filter(
-        (i) => (source.groups?.[i] ?? "patch") === g && mask[i],
+        (i) => (source.groups?.[i] ?? "population") === g && mask[i],
       );
       const average = (a) =>
         a.reduce((sum, v) => sum + v, 0) / Math.max(1, a.length);

@@ -13,36 +13,36 @@ on desktop and stacks below on mobile.
 
 1. The 42 board cells record the observed environment. A supplied readout counts threats,
    pairs and center occupancy.
-2. Five feature owners feed one graded value owner. The browser evaluates its
+2. Five feature neurons feed one graded value neuron. The browser evaluates its
    exact two-step formula inside search; tests compare it with Python Cadence.
 3. A bounded alpha-beta search copies legal boards, alternates players, checks
    terminal outcomes exactly and retains only completed search depths. Candidate
    records show seven predicted action values.
-4. Six monitor owners read changes in those candidate values, score ambiguity
+4. Six monitor neurons read changes in those candidate values, score ambiguity
    and budget pressure. Their output can extend the normal four-ply search to
    six plies, subject to an 80,000-node budget. Toggle **Self-monitor** to test
    its causal role. More thought uses more computation.
 
-There are **19 circuit owners and 39 weighted seams**. The six evaluator,
-seven candidate and six monitor owners settle jointly; their state selects the
+There are **19 circuit neurons and 39 weighted synapses**. The six evaluator,
+seven candidate and six monitor neurons settle jointly; their state selects the
 move and further-work request. The board remains an external observation. Search, feature
 extraction and rules are explicit application operations. No weights train during
 this game; imagined outcomes are not presented as observed rewards. The search
 runs in a browser worker so interaction and circuit inspection remain responsive.
 
-The optional core [`cadence.brains`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#with-a-supplied-world-model)
-provides generic isolated-future comparison, sensor/motor wiring and the same
+The optional core [`cadence.circuits`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#with-a-supplied-world-model)
+provides generic isolated-future comparison, sensor/motor reflex arcs and the same
 activity-monitor design. This page specializes the generic branching pattern to
 game search with pruning and iterative deepening. It is deliberately wired
 deliberation; recurrence alone does not guarantee planning.
 
 ## One shared decision state
 
-The value, candidate and monitor regions exchange repairs in one graph. Their
+The value, candidate and monitor regions exchange activity changes in one graph. Their
 joint endpoint supplies the move and extra-search request. The display labels
 these functions and reports their common equation residual. Each imagined board
 remains an isolated world; only candidate scores enter the shared decision.
-[Wiring and tests](../COUPLED_BRAINS.md) explain the separation. A fixed
+[Connectomes and tests](../COUPLED_BRAINS.md) explain the separation. A fixed
 point certifies self-consistency, not a globally optimal strategy.
 
 ## What has been tested

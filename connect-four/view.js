@@ -189,11 +189,11 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     ],
     [
       "Local value evaluator",
-      "Threat counts drive a six-owner graded value circuit. Bounded adversarial search compares its predicted outcomes; it does not learn from imagined events. A shallow evaluator-only control locates the value of lookahead.",
+      "Threat counts drive a six-neuron graded value circuit. Bounded adversarial search compares its predicted outcomes; it does not learn from imagined events. A shallow evaluator-only control locates the value of lookahead.",
     ],
     [
       "Self-reading control",
-      "Six monitor owners read changes in predicted option values, ambiguity and budget pressure. Their output permits search beyond four plies. This is metacognitive control, not a claim of consciousness or a uniquely biological mechanism.",
+      "Six monitor neurons read changes in predicted option values, ambiguity and budget pressure. Their output permits search beyond four plies. This is metacognitive control, not a claim of consciousness or a uniquely biological mechanism.",
     ],
   ]);
   $("evidence-title").textContent = "What looking ahead changes";

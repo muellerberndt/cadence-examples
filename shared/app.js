@@ -10,7 +10,7 @@ import { mountEmbodied } from "../mouse/view.js";
 import {
   Worm,
   MLP,
-  FastMemory,
+  SynapticMemory,
   flowers,
   keys,
   zeros,
@@ -171,7 +171,7 @@ function resetMemory() {
 function resetFly() {
   field = flowers();
   agents = [
-    new Forager(new FastMemory(), -0.02),
+    new Forager(new SynapticMemory(), -0.02),
     new Forager(new MLP(evidence.browser.online_mlp), 0.02, updates),
   ];
   paused = false;
@@ -232,7 +232,7 @@ function renderEvidence() {
       one = timing.find((r) => r.kind === "1"),
       hundred = timing.find((r) => r.kind === "100");
     $("evidence-note").textContent +=
-      ` Separate local runtime trial: ${local.median_ms.toFixed(3)} ms per distinct-key stream; ${(hundred.median_ms / local.median_ms).toFixed(1)}× lower time than MLP/100 updates and ${(one.median_ms / local.median_ms).toFixed(1)}× than MLP/1 update. Recorded on ${memoryRuntime.cpu}, Node ${memoryRuntime.runtime}; 11 repetitions, one stream. See Comparison contracts for the receipt and limits.`;
+      ` Separate local runtime trial: ${local.median_ms.toFixed(3)} ms per distinct-key stream; ${(hundred.median_ms / local.median_ms).toFixed(1)}× lower time than MLP/100 updates and ${(one.median_ms / local.median_ms).toFixed(1)}× than MLP/1 update. Recorded on ${memoryRuntime.cpu}, Node ${memoryRuntime.runtime}; 11 repetitions, one stream. See Comparison contracts for the receipt and limits. The live consolidating kernel is measured separately at ${timing.find(r => r.kind === "consolidating").median_ms.toFixed(3)} ms; both kernel timings exclude graded readout, bodies and visualization.`;
     $("evidence-table").innerHTML = table(
       [
         "Key similarity",
@@ -253,7 +253,7 @@ function renderEvidence() {
       }),
     );
     $("boundary").textContent =
-      "Cadence uses 32 mutable fast-memory values and a residual write. The MLP uses 420 parameters and 1, 10 or 100 SGD updates on the identical new sample. More MLP work is not a guarantee of retaining old associations. Explicit keys also admit exact dictionary storage, which succeeds. Correlated keys interfere with residual memory. The fly is a simplified 2D body with supplied visual ports, steering and exploration; it is not a FlyWire reconstruction. Each live agent collects its own encounters, so live nectar totals are illustrative, not a matched benchmark.";
+      "The reference kernel uses 32 fast-memory values and a residual write. The live memory, mouse and fly add 32 persistent weights, for 64 stored values across the same 32 memory contacts. The MLP uses 420 parameters and 1, 10 or 100 SGD updates on the identical new sample. More MLP work is not a guarantee of retaining old associations. Explicit keys also admit exact dictionary storage, which succeeds. Correlated keys interfere with residual memory. The fly is a simplified 2D body with supplied visual ports, steering and exploration; it is not a FlyWire reconstruction. Each live agent collects its own encounters, so live nectar totals are illustrative, not a matched benchmark.";
   }
 }
 function setMode(next) {
@@ -323,16 +323,16 @@ function setMode(next) {
   if (mode === "worm") {
     $("headline").innerHTML = "Change the circuit.<br>Keep the mechanism.";
     $("intro").textContent =
-      "Stimulate a real chemical wiring diagram. Remove neurons. Watch local feedback produce a new answer, without another training run.";
+      "Stimulate a real chemical connectome. Remove neurons. Watch local feedback produce a new answer, without another training run.";
     $("stage-label").textContent =
       "LIVE CIRCUIT · C. ELEGANS CHEMICAL TOPOLOGY";
     $("stage-detail").textContent =
-      `${data.names.length} owners · ${data.edges.length.toLocaleString()} edges`;
+      `${data.names.length} neurons · ${data.edges.length.toLocaleString()} synapses`;
     $("stage-hint").textContent =
       "Click a neuron to remove it. Use the selector for keyboard access.";
     canvas.setAttribute(
       "aria-label",
-      "Worm chemical network. Green sensory owners, orange interneurons, pale motor owners. Activity brightness changes with stimulation.",
+      "Worm chemical network. Green sensory neurons, orange interneurons, pale motor neurons. Activity brightness changes with stimulation.",
     );
     $("controls").innerHTML =
       `<div><h2>Ask the circuit a new question.</h2><p>Local activity settles through measured connections and a supplied rule.</p></div><div><label>Stimulate</label><div class="buttons">${Object.keys(
@@ -397,8 +397,8 @@ function setMode(next) {
         "Public worm connections define who can influence whom. The transfer rule and effective weights are explicit modeling choices.",
       ],
       [
-        "A local repair process",
-        "Owners combine incoming activity and update their own state. Remove a relay and the surviving network settles again.",
+        "A local settling process",
+        "Neurons combine synaptic input and update their own state. Remove a relay and the surviving network settles again.",
       ],
       [
         "An inspectable answer",
@@ -416,7 +416,7 @@ function setMode(next) {
       "Drag a flower. Change the nectar. The next encounter teaches the agent.";
     canvas.setAttribute(
       "aria-label",
-      "Two fly-inspired agents move between flowers: green uses Cadence fast memory, orange uses an online MLP.",
+      "Two fly-inspired agents move between flowers: green uses Cadence consolidating synapses, orange uses an online MLP.",
     );
     $("controls").innerHTML =
       `<div><h2>Learning stays inside the loop.</h2><p>Flower type and position are visual ports. Nectar is revealed only on contact. Body and steering are supplied.</p></div><div><label for="update-budget">Orange MLP: updates per encounter</label><select id="update-budget"><option value="1">1 SGD update</option><option value="10">10 SGD updates</option><option value="100">100 SGD updates</option></select></div><div class="buttons"><button id="change-nectar">Change nectar</button><button id="pause">Pause</button><button id="reset-fly">Reset</button></div>${metrics(
@@ -449,7 +449,7 @@ function setMode(next) {
       ],
       [
         "Remember the encounter",
-        "Contact reveals nectar. Fast seams compare prediction with observation and write only the residual. No offline fitting is required.",
+        "Contact reveals nectar. Fast synapses compare prediction with observation and write only the residual. No offline fitting is required.",
       ],
       [
         "Close the loop",
@@ -460,8 +460,8 @@ function setMode(next) {
     $("headline").innerHTML = "Teach it once.<br>Change your mind later.";
     $("intro").textContent =
       "An old association should not require an entire network to be retrained. Write, query and revise a compact memory while watching every connection change.";
-    $("stage-label").textContent = "LIVE LEARNING · RESIDUAL FAST MEMORY";
-    $("stage-detail").textContent = "8 keys · 4 values · 32 memory entries";
+    $("stage-label").textContent = "LIVE LEARNING · SYNAPTIC CONSOLIDATION";
+    $("stage-detail").textContent = "8 keys · 4 values · 32 persistent + 32 transient weights";
     $("stage-hint").textContent =
       "Select a key, choose a value, then teach both systems the same sample.";
     canvas.setAttribute(
@@ -469,7 +469,7 @@ function setMode(next) {
       "Eight keys connected to four values. Link thickness shows mutable Cadence association strength.",
     );
     $("controls").innerHTML =
-      `<div><h2>A correction is a local write.</h2><p>Green: Cadence. Orange: online MLP. Both receive exactly the sample you teach.</p></div><div><label>Key</label><div class="memory-picks">${Array.from({ length: 8 }, (_, i) => `<button data-key="${i}" aria-pressed="${i === selected}">${i + 1}</button>`).join("")}</div></div><div><label for="value">Teach this value</label><select id="value">${Array.from({ length: 4 }, (_, i) => `<option value="${i}">${["Nectar 0", "Nectar 1", "Nectar 2", "Nectar 3"][i]}</option>`).join("")}</select></div><div><label for="correlation">Key similarity</label><select id="correlation"><option value="0">Distinct keys</option><option value="0.5">Overlapping · cosine 0.5</option><option value="0.9">Very similar · cosine 0.9</option></select><p>Changing key geometry resets both memories.</p></div><div class="buttons"><button class="primary" id="teach">Teach once</button><button id="stream">Run stream</button><button id="clear-memory">Clear</button></div>${metrics(
+      `<div><h2>A correction is a local write.</h2><p>Green: Cadence. Orange: online MLP. Both receive exactly the sample you teach.</p></div><div><label>Key</label><div class="memory-picks">${Array.from({ length: 8 }, (_, i) => `<button data-key="${i}" aria-pressed="${i === selected}">${i + 1}</button>`).join("")}</div></div><div><label for="value">Teach this value</label><select id="value">${Array.from({ length: 4 }, (_, i) => `<option value="${i}">${["Nectar 0", "Nectar 1", "Nectar 2", "Nectar 3"][i]}</option>`).join("")}</select></div><div><label for="correlation">Key similarity</label><select id="correlation"><option value="0">Distinct keys</option><option value="0.5">Overlapping · cosine 0.5</option><option value="0.9">Very similar · cosine 0.9</option></select><p>Changing key geometry resets both memories.</p></div><div class="buttons"><button class="primary" id="teach">Teach once</button><button id="repeat-lesson">Repeat 40×</button><button id="salient-lesson">Salient lesson</button><button id="clear-transient">Clear short-term memory</button><button id="stream">Run stream</button><button id="clear-memory">Clear all</button></div>${metrics(
         [
           ["Writes", "0", "writes"],
           ["Cadence · seen-key accuracy", "—", "fast-score"],
@@ -486,6 +486,7 @@ function setMode(next) {
     proofLink.textContent = "Why the same cue needs memory";
     historyProof.append(proofLink);
     $("controls").append(historyProof);
+    historyProof.append(" Repeat gives both systems 40 observations. Salience 19 changes Cadence consolidation; the MLP has no separate salience input. Clearing short-term memory removes only Cadence’s transient residuals.");
     $("value").value = value;
     $("value").onchange = () => (value = +$("value").value);
     $("correlation").value = correlation;
@@ -512,6 +513,16 @@ function setMode(next) {
         }),
     );
     $("teach").onclick = () => teach(selected, value);
+    $("repeat-lesson").onclick = () => {
+      for (let i = 0; i < 40; i++) teach(selected, value);
+    };
+    $("salient-lesson").onclick = () => teach(selected, value, 19);
+    $("clear-transient").onclick = () => {
+      auto = false;
+      $("stream").textContent = "Run stream";
+      memory.records.reset();
+      memoryMetrics();
+    };
     $("stream").onclick = () => {
       auto = !auto;
       $("stream").textContent = auto ? "Stop stream" : "Run stream";
@@ -531,7 +542,7 @@ function setMode(next) {
       ],
       [
         "Write the discrepancy",
-        "The new observation minus the prediction changes the key’s connections. With distinct keys, one write replaces its previous answer.",
+        "The observed error updates total synaptic strength immediately. Repetition and salience strengthen persistent weights; clear short-term memory to measure what lasts. Similar cues can interfere.",
       ],
       [
         "Keep the limits visible",
@@ -542,11 +553,11 @@ function setMode(next) {
   renderEvidence();
   fit();
 }
-function teach(k, v) {
+function teach(k, v, salience = 0) {
   const key = keys(correlation)[k],
     target = zeros(4);
   target[v] = 1;
-  memory.observe(key, target);
+  memory.observe(key, target, { salience });
   mlp.observe(key, target);
   truth[k] = v;
   seen.add(k);
@@ -566,6 +577,12 @@ function memoryMetrics() {
   $("memory-status").textContent = seen.has(selected)
     ? `Key ${selected + 1}: observed ${truth[selected]} · Cadence ${argmax(memory.predict(keys(correlation)[selected]))} · MLP ${argmax(mlp.predict(keys(correlation)[selected]))}`
     : "This key has not been taught yet.";
+  if (seen.has(selected)) {
+    const key = keys(correlation)[selected];
+    const persistent = key.reduce((sum, v, i) => sum + v * memory.records.consolidated[i][truth[selected]], 0);
+    const response = memory.predict(key)[truth[selected]];
+    $("memory-status").textContent += ` · Taught-value response: ${response.toFixed(3)} · persistent: ${persistent.toFixed(3)}. Salient = salience 19; clear short-term memory to test retention.`;
+  }
   $("stage-readout").textContent = "Exact lookup retains every explicit key";
 }
 function line(a, b, color, weight = 1) {
@@ -811,7 +828,7 @@ function animate(t) {
   if (motorGate.busy) {
     $("brain-behavior").textContent = "Thinking · motor output held";
     $("brain-status").textContent =
-      `Time-expanded settlement · ${Math.ceil(motorGate.remaining)} iterations before movement`;
+      `Time-expanded settling · ${Math.ceil(motorGate.remaining)} iterations before movement`;
   }
   requestAnimationFrame(animate);
 }

@@ -57,7 +57,7 @@ export function features(b, p) {
   );
 }
 const weights = [1, 4, -1, -4, 0.3];
-// Exact two-step graded circuit: input owners settle first, then the value owner.
+// Exact two-step graded circuit: input neurons settle first, then the value neuron.
 export function evaluate(b, p) {
   const f = features(b, p);
   return Math.tanh(f.reduce((s, v, i) => s + v * weights[i], 0)) * 100;
@@ -171,7 +171,7 @@ export function decisionCircuit(
   );
   // Candidate records, current value and own-activity monitor exchange messages.
   // Equal shared offsets preserve candidate ordering while the work gate adapts.
-  const bridges = Array.from({ length: 7 }, (_, i) => [
+  const synapses = Array.from({ length: 7 }, (_, i) => [
     [0, 5, 1, i, 0.02],
     [1, i, 0, 5, 0.02 / 7],
     [1, i, 2, 3, 0.02 / 7],
@@ -186,7 +186,7 @@ export function decisionCircuit(
       ),
       signal.drive,
     ],
-    bridges,
+    synapses,
   );
   const ordered = candidates
     .slice()
@@ -336,8 +336,8 @@ export function brainSnapshot(board, player, thinking) {
       self_state: "Self-monitor / budget",
     },
     adapters:
-      "Branch scores ↔ current value ↔ commitment ↔ self-monitor · one shared settlement",
+      "Branch scores ↔ current value ↔ commitment ↔ self-monitor · one shared equilibrium",
     memory:
-      "The board, legal-move rules and isolated search branches supply the decision boundary. Value, candidate and monitor owners settle jointly; their state selects the action and extra-search request. No weight training or consciousness claim.",
+      "The board, legal-move rules and isolated search branches supply the decision boundary. Value, candidate and monitor neurons settle jointly; their state selects the action and extra-search request. No weight training or consciousness claim.",
   });
 }

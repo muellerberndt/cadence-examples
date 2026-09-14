@@ -48,7 +48,7 @@ export class WormArena {
     this.repairOdor();
   }
   repairOdor() {
-    // Leaky diffusion to equilibrium. Walls have no-flux boundaries; food cells are clamped.
+    // Leaky diffusion to equilibrium. Walls have no-flux boundaries; food cells are held fixed.
     let field = zeros(this.walls.length);
     this.food.forEach((i) => (field[i] = 1));
     const adjacent = field.map((_, i) =>

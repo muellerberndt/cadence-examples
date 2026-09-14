@@ -76,7 +76,7 @@ export function mountWorm({ data, $, ctx, metrics, explain, act }) {
   explain([
     [
       "A supplied environment",
-      "Food sources clamp a leaky diffusion field. Walls prevent flux and body movement. Only adjacent food-cue samples enter the movement adapter.",
+      "Food sources hold a leaky diffusion field fixed at their cells. Walls prevent flux and body movement. Only adjacent food-cue samples enter the movement adapter.",
     ],
     [
       "A circuit in the loop",

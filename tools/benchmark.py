@@ -24,7 +24,7 @@ from model import (
     reference,
     residual,
     samples,
-    worm_engine,
+    worm_brain,
 )
 
 
@@ -43,8 +43,8 @@ def hashes():
         str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in files
     } | {
-        "cadence/" + p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-        for p in sorted(Path(cd.__file__).parent.glob("*.py"))
+        "cadence/" + p.relative_to(Path(cd.__file__).parent).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted(Path(cd.__file__).parent.rglob("*.py"))
     }
 
 
@@ -150,7 +150,7 @@ def worm_trial(seed, steps, trials):
             best = score, net, width
     training_seconds = time.perf_counter() - start
     _, net, width = best
-    engine = worm_engine()
+    brain = worm_brain()
     rows = []
     for condition, lesions, mixed in [
         ("intact", 0, False),
@@ -160,7 +160,7 @@ def worm_trial(seed, steps, trials):
         d, m = samples(seed + 1000 + lesions, trials, lesions, mixed)
         truth = reference(d, m)
         start = time.perf_counter()
-        state = engine.settle_batch(d, mask=m, steps=200, tolerance=1e-10).activation
+        state = brain.settle_batch(d, mask=m, steps=200, tolerance=1e-10).activation
         sec = time.perf_counter() - start
         start = time.perf_counter()
         unrolled = reference(d, m, 32)

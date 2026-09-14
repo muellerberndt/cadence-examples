@@ -1,42 +1,42 @@
 # Different regions, one equilibrium
 
-Every task brain contains bounded owners with local state, readback and repair.
-Regions label their function; their seams make them part of one joint state.
+Every task brain contains graded neurons with bounded local state, readback and settling.
+Regions label their function; their synapses make them part of one joint state.
 For each fixed observation, all connected regions settle together before the
 body acts or the strategy controller requests another search depth.
 
 The public Cadence library provides
-[`couple(regions, bridges)`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#several-regions-one-equilibrium).
+[`assemble(regions, synapses)`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#several-regions-one-equilibrium).
 The browser's small `settleTogether` implementation assembles the same sparse
-owner graph and applies Cadence's existing graded rule. It does not concatenate
+neuron graph and applies Cadence's graded neuron model. It does not concatenate
 separately solved circuits. The tests independently replay all six controllers
 with Python Cadence.
 
 | Brain | Labeled regions sharing the current phase | Boundary supplied by the application |
 |---|---|---|
-| Eye & arm | Retina → target/proprioception ↔ visual error ↔ joint coordination ↔ opposing motor units | Pixels, target attention, current pose and Jacobian geometry; motor output moves joints and raises/lowers the pencil. The attended retinal sample enters the target ports through explicit seams. |
+| Eye & arm | Reference retina + actual ink → missing marks; target/proprioception ↔ position error ↔ joint coordination ↔ opposing motor units | Sparse dark samples, raster-connectivity attention, current pose and Jacobian geometry; motor output moves joints and raises/lowers the pencil. Missing-mark activity selects repair targets between settling runs. The displayed ink raster supplies physical readback; the attended reference sample enters target ports through explicit synapses. |
 | Mouse | Task cue → retained association → spatial field → position error ↔ directional motors | Occupancy map and goal-port routing. Neighbor selection reads the field; motor output determines motion. A taught destination drives the selected goal through its recalled association. |
-| Worm habitat | Chemical sensory input ↔ interneurons / chemical motor output → directional odor readback ↔ body motors | Local odor diffusion and directional gradients. Chemical output arrives through explicit seams at directional owners; no remote food coordinates or path enter the body controller. |
-| Forager | Flower cue → nectar memory → approach error ↔ turn/propulsion motors | Visible bearing, target selection and body bounds. Recalled nectar also contributes to approach drive. Contact writes memory for the next phase. |
-| Changing memory | Cue owners → associative seams → recall owners | Observed cue/value lessons. A local residual write changes the stored weights; fixed weights then publish recall through graded owners. No motor system is needed. |
+| Worm habitat | Chemical sensory input ↔ interneurons / chemical motor output → directional odor readback ↔ body motors | Local odor diffusion and directional gradients. Chemical output arrives through explicit synapses at directional neurons; no remote food coordinates or path enter the body controller. |
+| Forager | Flower cue → nectar memory → approach error ↔ turn/propulsion motors | Visible bearing, target selection and body bounds. Recalled nectar also contributes to approach drive. Contact updates transient and persistent weights; reward surprise supplies consolidation salience. |
+| Changing memory | Cue neurons → associative synapses → recall neurons | Observed cue/value lessons. A normalized local delta write changes transient and persistent weights; fixed weights then publish recall through graded neurons. No motor system is needed. |
 | Connect Four | Threat features → value ↔ candidates ↔ own-activity readback → self-monitor | Exact game rules, feature extraction and bounded search in isolated board copies. Candidate activity selects a legal action; monitor output decides whether to deepen search. |
 
-Arrows summarize connectivity, not separate evaluation stages. Some seams are
+Arrows summarize connectivity, not separate evaluation stages. Some synapses are
 one-way; feedback exists where the task uses it. A directed readout can share a
 fixed point without requiring an invented reverse connection.
 
 ## What settles
 
-With the displayed gains, each unmasked owner uses:
+With the displayed gains, each unmasked neuron uses:
 
 ```text
 activation = tanh(potential)
-error = incoming weighted activity + fixed drive - potential
+error = synaptic input + fixed drive - potential
 potential += dt * error
 ```
 
 An iteration reads the previous **whole-brain** state. The equation residual is
-the largest absolute error over every owner; masked potentials must be zero.
+the largest absolute error over every neuron; masked potentials must be zero.
 The viewer shows this global error, the requested tolerance and the number of
 nonzero links crossing region boundaries. Expand the circuit controls for each
 region's error. Hover the equilibrium line for the same breakdown.
@@ -86,3 +86,18 @@ A pleasing animation alone is not an equilibrium or performance test.
 Older [comparison receipts](ADVANTAGES.md) cover their specified reference
 kernels and observation streams. Their timing figures are not measurements of
 the expanded coupled controllers or the browser visualization.
+
+## Continuous experience and lasting memory
+
+Mouse, fly and memory controllers use the single-stream translation of Cadence's
+`SynapticMemory`: total efficacy is persistent C plus transient F. Each **observed**
+lesson updates these weights; reads do not rehearse predictions. The brain then
+settles with the updated weights in the same interaction loop. There is no
+training/inference mode switch. Plasticity does not require changing the graph's
+number of neurons or contacts.
+
+The browser rule is independently compared with Python under overlapping cues,
+partial feedback and resets. [Retention controls](memory/consolidation_evidence.json)
+remove F to isolate C. Mouse saves the complete strengths, not just a reconstructed
+last-label table. Fixed worm, arm and game circuits remain explicit supplied
+controllers: their motion or imagination does not itself invent an outcome lesson.

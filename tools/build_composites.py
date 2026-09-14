@@ -7,7 +7,7 @@ from pathlib import Path
 
 import cadence as cd
 import numpy as np
-from embodied import maze_settlement, motor_settlement
+from embodied import maze_settling, motor_settling
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -28,8 +28,8 @@ def sources():
         str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in files
     } | {
-        "cadence/" + p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-        for p in sorted(Path(cd.__file__).parent.glob("*.py"))
+        "cadence/" + p.relative_to(Path(cd.__file__).parent).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted(Path(cd.__file__).parent.rglob("*.py"))
     }
 
 
@@ -42,12 +42,12 @@ def main():
     parity = body.pop("parity")
     errors = {
         "maze": float(
-            np.max(np.abs(maze_settlement(parity["world"]) - parity["maze_state"]))
+            np.max(np.abs(maze_settling(parity["world"]) - parity["maze_state"]))
         ),
         "motor": float(
             np.max(
                 np.abs(
-                    motor_settlement(parity["q"], parity["target"])
+                    motor_settling(parity["q"], parity["target"])
                     - parity["motor_state"]
                 )
             )

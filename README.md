@@ -10,11 +10,11 @@
 [Changing memory](https://floatingpragma.io/cadence-examples/memory/) ·
 [Connect Four](https://floatingpragma.io/cadence-examples/connect-four/)
 
-[Cadence](https://github.com/muellerberndt/cadence) builds observer-like software
-patches: bounded local state, declared ports, readback, retained records and local
+[Cadence](https://github.com/muellerberndt/cadence) builds brains from graded
+neurons with bounded local state, declared synapses, readback, retained records and local
 feedback. Each task connects labeled regions into **one shared equilibrium**:
-local repairs propagate through the same joint state. Change its world and watch
-the next repair cascade. The brain panel reports the equation error.
+local activity changes propagate through the same joint state. Change its world and watch
+the next settling cascade. The brain panel reports the equation error.
 [How the six brains are coupled](COUPLED_BRAINS.md).
 
 ## Launch any demo
@@ -30,7 +30,7 @@ server picks an available local port. Ctrl-C stops it.
 | **Fly-inspired forager** | `python serve.py fly` | Move flowers and change nectar while each encounter updates memory |
 | **C. elegans habitat** | `python serve.py worm` | Place food, draw walls, erase a passage; switch to Circuit to inspect neurons |
 | **Connect Four** | `python serve.py connect-four` | Play against the reasoner, inspect future replies, and toggle its self-monitor |
-| **Changing memory** | `python serve.py memory` | Teach once, replace a record, and compare online MLP updates |
+| **Changing memory** | `python serve.py memory` | Teach, repeat or mark a lesson salient; clear short-term memory to test what lasts |
 
 `python serve.py` opens the mouse. Use `--no-browser` to print the address, or
 `--port 8765` to select a fixed port. Each demo has its own folder and website URL
@@ -40,8 +40,9 @@ and title; the navigation links open the individual pages. Assets and computatio
 
 The [advantage contracts](ADVANTAGES.md) state what each example measures and
 which conventional controls also work. On the recorded distinct-key stream,
-the underlying record operation gives 100% retention and about **50× lower processing time** than
-the MLP with 100 updates per observation (about **3×** versus one update).
+both fast and consolidating synaptic memory give **100% recall**. The
+[measured runtime table](ADVANTAGES.md#measured-processing-time) compares their
+costs with MLPs at three update budgets, including all writes and queries.
 The strategy agent wins **8/8** scheduled games against one-ply evaluation and
 **5/8** against four-ply search. These are small, reproducible task comparisons,
 not evidence that transformers cannot reason or that every demo is faster.
@@ -61,10 +62,10 @@ arm uses a supplied feedback controller. C. elegans includes its public chemical
 graph, an engineered habitat/body adapter and a trained MLP circuit comparator.
 
 Each website places its actual circuit beside the body on desktop, grouped by
-function. The map includes **every owner and directed seam**. Wheel or pinch to
+function. The map includes **every neuron and directed synapse**. Wheel or pinch to
 zoom, drag to pan, and use **Fit whole brain** or **Expand**. Region colors mark
 functions; activation, mismatch and plasticity provide separate overlays.
-Watch sampled repair cascades, inspect local state and memory writes,
+Watch sampled settling cascades, inspect local state and memory writes,
 or release input in an isolated copy to see recurrent decay. Labeled behavior
 colors identify seeking, correction and positive outcomes. The layout stacks on
 mobile. [Read the circuit view](METHODS.md#read-the-brain-view).
@@ -101,7 +102,8 @@ python tools/showcase_pages.py
 ```
 
 Use Node 20+ for the browser-kernel tests. On Windows, activate the environment
-with `.venv\Scripts\Activate.ps1`. Full model training additionally needs PyTorch;
+with `.venv\Scripts\Activate.ps1`. To rebuild every model, receipt and website, install PyTorch and run
+`python tools/rebuild.py`. Full model training needs PyTorch;
 see [reproduction commands](METHODS.md#reproduce). The evidence retains
 sources, budgets, controls and comparison limits. `python tools/build_showcase.py`
 regenerates the six websites and gallery from the authored shells.

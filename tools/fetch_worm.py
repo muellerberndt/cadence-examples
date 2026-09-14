@@ -88,7 +88,7 @@ def main():
     (WORM / "worm.json").write_text(json.dumps(data, separators=(",", ":")) + "\n")
     license_text = urllib.request.urlopen(BASE + "LICENSE", timeout=30).read().decode()
     (WORM / "OPENWORM_LICENSE.txt").write_text(license_text)
-    print(f"{len(names)} annotated owners, {len(edges)} chemical edges")
+    print(f"{len(names)} annotated neurons, {len(edges)} chemical edges")
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from benchmark import hashes
 from build_composites import sources
-from embodied import motor_settlement
-from model import OnlineMLP, fast_memory, key_bank, reference, samples, worm_engine
+from embodied import motor_settling
+from model import OnlineMLP, fast_memory, key_bank, reference, samples, worm_brain
 from verify import verify
 
 
@@ -29,7 +29,7 @@ def node(code):
 def test_worm_cadence_matches_independent_dynamics_under_lesions():
     d, m = samples(911, 8, lesions=64)
     actual = (
-        worm_engine().settle_batch(d, mask=m, steps=200, tolerance=1e-10).activation
+        worm_brain().settle_batch(d, mask=m, steps=200, tolerance=1e-10).activation
     )
     np.testing.assert_allclose(actual, reference(d, m), atol=1e-9, rtol=0)
 
@@ -37,13 +37,13 @@ def test_worm_cadence_matches_independent_dynamics_under_lesions():
 def test_browser_kernels_match_current_cadence_and_online_mlp():
     result = node("""
 import {FastMemory,MLP,keys,Worm} from './shared/engine.js';
-import {motorSettlement} from './shared/embodied.js';
+import {motorSettling} from './shared/embodied.js';
 import fs from 'node:fs';
 const ev=JSON.parse(fs.readFileSync('evidence/evidence.json')),data=JSON.parse(fs.readFileSync('worm/worm.json'));
 const f=new FastMemory(),net=new MLP(ev.browser.online_mlp),bank=keys(.5);
 for(let k=0;k<20;k++){const key=bank[k%8],v=Array(4).fill(0);v[(k+2)%4]=1;f.observe(key,v);net.observe(key,v,10);}
 const w=new Worm(data),d=Array(w.n).fill(0),m=Array(w.n).fill(1);d[23]=1;d[71]=.7;m[16]=0;
-console.log(JSON.stringify({fast:f.w,mlp:bank.map(k=>net.predict(k)),worm:w.settle(d,m).state,drive:d,mask:m,motor:motorSettlement([-1.8,1.1],[.45,.35]).state}));
+console.log(JSON.stringify({fast:f.w,mlp:bank.map(k=>net.predict(k)),worm:w.settle(d,m).state,drive:d,mask:m,motor:motorSettling([-1.8,1.1],[.45,.35]).state}));
 """)
     f = fast_memory()
     net = OnlineMLP()
@@ -57,13 +57,13 @@ console.log(JSON.stringify({fast:f.w,mlp:bank.map(k=>net.predict(k)),worm:w.sett
         result["mlp"], [net.predict(k) for k in bank], atol=1e-12, rtol=0
     )
     actual = (
-        worm_engine()
+        worm_brain()
         .settle(result["drive"], mask=result["mask"], steps=200, tolerance=1e-10)
         .activation
     )
     np.testing.assert_allclose(result["worm"], actual, atol=1e-9, rtol=0)
     np.testing.assert_allclose(
-        result["motor"], motor_settlement([-1.8, 1.1], [0.45, 0.35]), atol=1e-12, rtol=0
+        result["motor"], motor_settling([-1.8, 1.1], [0.45, 0.35]), atol=1e-12, rtol=0
     )
 
 
@@ -130,7 +130,7 @@ w.step();
 console.log(JSON.stringify({state:w.state,drive:w.drive,mask:w.mask,moves:w.moves}));
 """)
     actual = (
-        worm_engine()
+        worm_brain()
         .settle(result["drive"], mask=result["mask"], steps=200, tolerance=1e-10)
         .activation
     )
@@ -138,18 +138,18 @@ console.log(JSON.stringify({state:w.state,drive:w.drive,mask:w.mask,moves:w.move
     assert result["moves"] == 1
 
 
-def test_diagnostic_replays_match_executed_settlements_and_release_decays():
+def test_diagnostic_replays_match_executed_settling_and_release_decays():
     result = node("""
 import {readFileSync} from 'node:fs';
 import {Worm,zeros} from './shared/engine.js';
-import {Mouse,motorSettlement} from './shared/embodied.js';
-import {repairTrace} from './shared/telemetry.js';
+import {Mouse,motorSettling} from './shared/embodied.js';
+import {settlingTrace} from './shared/telemetry.js';
 const data=JSON.parse(readFileSync('./worm/worm.json')),w=new Worm(data),drive=zeros(w.n),mask=Array(w.n).fill(1);
 data.stimuli.odor.forEach(i=>drive[i]=1);
-const r=w.settle(drive,mask),m=new Mouse(),a=motorSettlement([-1.8,1.1],[.45,.35]);
-const sources=[{...r,drive,mask,edges:data.edges},{...m.circuit,edges:m.circuit.engine.data.edges},{...a,steps:80,dt:.25}];
-const errors=sources.map(s=>Math.max(...repairTrace(s).frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))));
-const release=repairTrace(sources[0],true);
+const r=w.settle(drive,mask),m=new Mouse(),a=motorSettling([-1.8,1.1],[.45,.35]);
+const sources=[{...r,drive,mask,edges:data.edges},{...m.circuit,edges:m.circuit.brain.data.edges},{...a,steps:80,dt:.25}];
+const errors=sources.map(s=>Math.max(...settlingTrace(s).frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))));
+const release=settlingTrace(sources[0],true);
 console.log(JSON.stringify({errors,initial:Math.max(...release.frames[0]),released:Math.max(...release.frames.at(-1))}));
 """)
     assert max(result["errors"]) < 1e-12
@@ -170,19 +170,19 @@ console.log(JSON.stringify(out));
 """)
     for s in samples:
         pre, post, weights = zip(*s["edges"])
-        engine = cd.Settlement(
-            cd.Wiring.from_edges(len(s["state"]), pre=pre, post=post, sign=weights),
-            cd.GradedRule(
-                gain=1, slope=2, threshold=0, leak=1, dt=s["dt"], clamp_amplitude=1
+        brain = cd.Brain(
+            cd.Connectome.from_synapses(len(s["state"]), pre=pre, post=post, sign=weights),
+            cd.NeuronModel(
+                gain=1, slope=2, threshold=0, leak=1, dt=s["dt"], stimulus_amplitude=1
             ),
         )
-        state = cd.SettledState(
+        state = cd.BrainState(
             v=np.asarray(s["initialPotential"]),
             activation=np.asarray(s["initialState"]),
             adaptation=np.zeros(len(s["state"])),
             steps=0,
         )
-        actual = engine.settle(
+        actual = brain.settle(
             s["drive"],
             state=state,
             mask=np.asarray(s["mask"]),
@@ -196,9 +196,9 @@ def test_composite_replay_respects_retained_state_and_motor_decay():
     result = node("""
 import {DrawingArm} from './eye-arm/brain.js';
 import {imageFixture} from './eye-arm/fixtures.js';
-import {repairTrace} from './shared/telemetry.js';
+import {settlingTrace} from './shared/telemetry.js';
 const a=new DrawingArm(imageFixture('square'));for(let i=0;i<50;i++)a.step();
-const s=a.brain.snapshot(),trace=repairTrace(s),release=repairTrace(s,true);
+const s=a.brain.snapshot(),trace=settlingTrace(s),release=settlingTrace(s,true);
 console.log(JSON.stringify({initial:s.initialState.some(v=>v!==0),error:Math.max(...trace.frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))),start:Math.max(...release.frames[0].map(Math.abs)),end:Math.max(...release.frames.at(-1).map(Math.abs))}));
 """)
     assert result["initial"] and result["error"] < 1e-12
@@ -216,7 +216,7 @@ def test_current_nervous_system_receipts_bind_all_controller_sources():
 
 def test_game_value_and_self_monitor_match_python_cadence():
     import cadence as cd
-    from cadence.brains import ActivityMonitor
+    from cadence.circuits import ActivityMonitor
 
     result = node("""
 import {drop,valueCircuit,Monitor} from './connect-four/brain.js';
@@ -229,11 +229,11 @@ console.log(JSON.stringify({value:valueCircuit(b,-1),reads}));
 """)
     value = result["value"]
     pre, post, weights = zip(*value["edges"])
-    engine = cd.Settlement(
-        cd.Wiring.from_edges(6, pre=pre, post=post, sign=weights),
-        cd.GradedRule(gain=1, slope=2, threshold=0, leak=1, dt=1, clamp_amplitude=1),
+    brain = cd.Brain(
+        cd.Connectome.from_synapses(6, pre=pre, post=post, sign=weights),
+        cd.NeuronModel(gain=1, slope=2, threshold=0, leak=1, dt=1, stimulus_amplitude=1),
     )
-    actual = engine.settle(value["drive"], steps=2, tolerance=0)
+    actual = brain.settle(value["drive"], steps=2, tolerance=0)
     np.testing.assert_allclose(actual.activation, value["state"], atol=1e-12, rtol=0)
     monitor = ActivityMonitor()
     for row in result["reads"]:
@@ -322,9 +322,9 @@ console.log(JSON.stringify({held,still,moved,cancelled:JSON.stringify(next)===JS
 
 def test_population_traces_measure_signed_oscillation_and_equation_error():
     result = node("""
-import {repairTrace} from './shared/telemetry.js';
+import {settlingTrace} from './shared/telemetry.js';
 const source={state:[0,0],initialState:[.3,0],initialPotential:[Math.atanh(.3),0],drive:[0,0],edges:[[0,1,.8],[1,0,-.8]],steps:40,groups:['a','b']};
-const trace=repairTrace(source);
+const trace=settlingTrace(source);
 const independently=trace.frames.map((s,t)=>[ -.8*s[1]-trace.potentials[t][0], .8*s[0]-trace.potentials[t][1]]);
 console.log(JSON.stringify({error:Math.max(...trace.mismatches.flatMap((r,t)=>r.map((v,i)=>Math.abs(v-independently[t][i])))),positive:trace.populations.a.some(v=>v.mean>0),negative:trace.populations.a.some(v=>v.mean<0),decay:trace.populations.a.at(-1).rms<trace.populations.a[0].rms}));
 """)

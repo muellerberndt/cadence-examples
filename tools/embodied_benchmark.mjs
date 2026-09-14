@@ -4,7 +4,7 @@ import {
   drawingTargets,
   neighbors,
   forward,
-  motorSettlement,
+  motorSettling,
   TaskLessons,
   stations,
 } from "../shared/embodied.js";
@@ -128,7 +128,7 @@ console.log(
       maze_state: m.circuit.state,
       q,
       target,
-      motor_state: motorSettlement(q, target).state,
+      motor_state: motorSettling(q, target).state,
     },
     boundaries: [
       "Mouse receives the full maze as a visual occupancy map; it does not learn unknown walls.",

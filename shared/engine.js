@@ -31,6 +31,63 @@ export class FastMemory {
       for (let v = 0; v < 4; v++) this.w[k][v] += x[k] * (y[v] - pred[v]);
   }
 }
+// Single-stream numerical translation of cadence.SynapticMemory. The port matrix
+// is fixed size: total efficacy W = persistent C + transient residual F.
+export class SynapticMemory extends FastMemory {
+  constructor({ decay = 0.9, consolidation = 0.05 } = {}) {
+    super();
+    if (![decay, consolidation].every(v => Number.isFinite(v) && v >= 0 && v <= 1))
+      throw Error("Memory rates must be in [0, 1]");
+    Object.assign(this, { decay, consolidation });
+    this.consolidated = this.w.map(row => row.slice());
+  }
+  // The third argument is the comparator's SGD budget, not a salience signal.
+  observe(x, y, _steps = 1, { salience = 0, valueMask = [true, true, true, true] } = {}) {
+    if (x.length !== 8 || y.length !== 4 || ![...x, ...y, salience].every(Number.isFinite)
+        || salience < 0 || valueMask.length !== 4 || !valueMask.every(v => typeof v === "boolean"))
+      throw Error("Expected finite cue/value, nonnegative salience and a boolean value mask");
+    const norm = Math.sqrt(dot(x, x));
+    if (!norm || !valueMask.some(Boolean)) return;
+    x = x.map(v => v / norm);
+    const slow = Array.from({ length: 4 }, (_, j) =>
+      x.reduce((sum, v, i) => sum + v * this.consolidated[i][j], 0));
+    const alpha = Math.min(1, this.consolidation * (1 + salience));
+    const nextC = this.consolidated.map((row, i) => row.map((v, j) =>
+      v + (valueMask[j] ? alpha * x[i] * (y[j] - slow[j]) : 0)));
+    const nextW = this.w.map((row, i) => row.map((v, j) =>
+      nextC[i][j] + this.decay * (v - this.consolidated[i][j])));
+    const prediction = Array.from({ length: 4 }, (_, j) =>
+      x.reduce((sum, v, i) => sum + v * nextW[i][j], 0));
+    nextW.forEach((row, i) => row.forEach((v, j) => {
+      if (valueMask[j]) row[j] += x[i] * (y[j] - prediction[j]);
+    }));
+    if (![...nextC.flat(), ...nextW.flat()].every(Number.isFinite))
+      throw Error("Memory update overflow");
+    this.consolidated = nextC;
+    this.w = nextW;
+  }
+  reset() {
+    this.w = this.consolidated.map(row => row.slice());
+  }
+  toJSON() {
+    return { version: 1, decay: this.decay, consolidation: this.consolidation,
+      w: this.w, consolidated: this.consolidated };
+  }
+  static restore(data) {
+    const m = new SynapticMemory(data);
+    const valid = a => Array.isArray(a) && a.length === 8
+      && a.every(row => Array.isArray(row) && row.length === 4 && row.every(Number.isFinite));
+    if (data.version !== 1 || !valid(data.w) || !valid(data.consolidated))
+      throw Error("Invalid synaptic memory checkpoint");
+    m.w = data.w.map(row => row.slice());
+    m.consolidated = data.consolidated.map(row => row.slice());
+    return m;
+  }
+  clear() {
+    this.consolidated = this.w.map(row => row.map(() => 0));
+    this.reset();
+  }
+}
 export class MLP {
   constructor(data) {
     Object.assign(this, JSON.parse(JSON.stringify(data)));

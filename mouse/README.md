@@ -14,25 +14,25 @@ Try it:
    tasks keep their lessons, and **New maze** carries them into a new layout.
 
 Click walls to change the maze, **Move goal**, or switch off **Motor neurons**.
-Lessons persist in this browser.
+Actual transient and persistent synaptic strengths survive browser reloads. Repeat a lesson to strengthen its persistent trace; reloading does not rehearse it.
 
 ## Control path
 
 Task cues recall destinations from associative memory. A supplied visual map defines a recurrent spatial field. Position errors drive four directional motor units, which move the body.
 
-265 allocated owners, 132 initially unmasked, 285 seams and 32 learned entries in seed 13. Map and readout rules are supplied.
+265 allocated neurons, 132 initially unmasked, 285 synapses and 32 persistent memory weights plus 32 transient residuals in seed 13. Map and readout rules are supplied.
 
-The circuit at the top shows actual state, repairs and retained information.
+The circuit at the top shows actual state, activity changes and retained information.
 Supplied readout and body rules are documented rather than shown as extra neurons.
 See the [shared viewer guide](../METHODS.md#read-the-brain-view).
 
 ## A shared equilibrium
 
 The labeled regions participate in one connected solve for the current input.
-Local readback and repair change the same joint state; the action readout uses
+Local readback and settling change the same joint state; the action readout uses
 that state. The top circuit panel shows the global equation error and can replay
-the actual cross-region cascade. Lessons change records between phases.
-[Task wiring, boundaries and tests](../COUPLED_BRAINS.md) explain the
+the actual cross-region cascade. Observed lessons update synaptic strengths within the ongoing interaction loop. Repetition strengthens their persistent component. Neuronal settling and plasticity have different timescales.
+[Task connectomes, boundaries and tests](../COUPLED_BRAINS.md) explain the
 connections. Self-consistency is not a guarantee of the globally best behavior.
 
 ## Reproduce

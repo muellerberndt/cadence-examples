@@ -1,4 +1,4 @@
-import { repairTrace } from "./telemetry.js";
+import { settlingTrace } from "./telemetry.js";
 import { CircuitMap, regionColor } from "./circuit_map.js";
 
 const labels = {
@@ -86,8 +86,8 @@ export class BrainView {
   followLabel() {
     this.$("brain-follow").setAttribute("aria-pressed", String(this.follow));
     this.$("brain-follow").textContent = this.follow
-      ? "Following repairs"
-      : "Follow repairs";
+      ? "Following settling"
+      : "Follow settling";
   }
   reset() {
     this.source = this.old = this.trace = this.auto = this.pending = null;
@@ -109,7 +109,7 @@ export class BrainView {
     this.followLabel();
   }
   prepareTrace(source, release) {
-    const trace = repairTrace(source, release);
+    const trace = settlingTrace(source, release);
     trace.peaks = trace.frames.map((a) =>
       Math.max(
         0,
@@ -177,12 +177,24 @@ export class BrainView {
     const learned = Object.fromEntries(
       (source.learned ?? []).map(([, id, value]) => [id, value]),
     );
+    const consolidated = Object.fromEntries(
+      (source.consolidated ?? []).map(([, id, value]) => [id, value]),
+    );
+    const slowDelta = Array(weights.length).fill(0);
+    (source.consolidated ?? []).forEach(([index, id, value]) =>
+      slowDelta[index] = value - (this.old?.consolidated?.[id] ?? value));
+    if (slowDelta.some(v => Math.abs(v) > 1e-12)) {
+      this.slowChanges = slowDelta;
+      this.slowFlashAt = this.age;
+    }
+    if (this.slowChanges?.length !== weights.length)
+      this.slowChanges = Array(weights.length).fill(0);
     const delta = Array(weights.length).fill(0);
     (source.learned ?? []).forEach(
       ([index, id, value]) =>
         (delta[index] = value - (this.old?.learned?.[id] ?? value)),
     );
-    if (delta.some((v) => Math.abs(v) > 1e-12)) {
+    if ([...delta, ...slowDelta].some((v) => Math.abs(v) > 1e-12)) {
       this.writes++;
       this.changes = delta;
       this.flashAt = this.age;
@@ -195,7 +207,7 @@ export class BrainView {
       different(this.source?.weights, weights) ||
       different(this.source?.drive ?? [], source.drive ?? []) ||
       different(this.source?.mask ?? [], source.mask ?? []);
-    this.old = { state: source.state.slice(), learned };
+    this.old = { state: source.state.slice(), learned, consolidated };
     this.source = copy(source);
     const topology = this.map.topology;
     if (
@@ -228,11 +240,12 @@ export class BrainView {
     this.$("brain-follow").textContent = !source.recurrent
       ? "Direct read / write"
       : this.follow
-        ? "Following repairs"
-        : "Follow repairs";
+        ? "Following settling"
+        : "Follow settling";
     this.$("brain-memory").textContent = source.memory;
+    this.$("brain-signal").querySelector('[value="consolidation"]').disabled = !source.consolidated?.length;
     this.$("brain-count").textContent =
-      `${source.state.length} owners · ${source.edges.length} seams`;
+      `${source.state.length} neurons · ${source.edges.length} synapses`;
     const behavior = source.behavior ?? { label: "Reading", tone: "neutral" };
     this.$("brain-behavior").textContent = behavior.label;
     this.$("brain-behavior").dataset.tone = behavior.tone;
@@ -350,12 +363,19 @@ export class BrainView {
         rw = w - 16,
         rh = usable;
       if (groupNames.includes("retina")) {
-        if (g === "retina") rw = (w - 28) * 0.45;
-        else {
+        const visual = groupNames.filter(
+            (name) => source.visualSamples?.[name] || name === "retina",
+          ),
+          motor = groupNames.filter((name) => !visual.includes(name));
+        if (visual.includes(g)) {
+          rw = (w - 28) * 0.45;
+          rh = (usable - gap * (visual.length - 1)) / visual.length;
+          y += visual.indexOf(g) * (rh + gap);
+        } else {
           x = 20 + (w - 28) * 0.45;
           rw = w - x - 8;
-          rh = (usable - gap * 3) / 4;
-          y += (gi - 1) * (rh + gap);
+          rh = (usable - gap * (motor.length - 1)) / motor.length;
+          y += motor.indexOf(g) * (rh + gap);
         }
       } else if (groupNames.includes("place")) {
         if (g === "place") rw = (w - 28) * 0.64;
@@ -421,6 +441,9 @@ export class BrainView {
             x + 14 + ((i % 19) / 18) * (rw - 28),
             y + 36 + (Math.floor(i / 19) / 12) * (rh - 54),
           ];
+        } else if (source.visualSamples?.[g]) {
+          const [sx, sy] = source.visualSamples[g][k];
+          positions[i] = [x + 10 + sx * (rw - 20), y + 29 + sy * (rh - 44)];
         } else if (g === "retina") {
           positions[i] = [
             x + 10 + (((k % 24) + 0.5) / 24) * (rw - 20),
@@ -444,7 +467,8 @@ export class BrainView {
         }
       });
     });
-    const plastic = this.signal === "plasticity",
+    const lasting = this.signal === "consolidation",
+      plastic = this.signal === "plasticity" || lasting,
       max = Math.max(1e-12, ...s.map(Math.abs));
     const scaleFor = (kind) =>
       groups.map((g) => trace?.scales[kind]?.[g] ?? maxima[g] ?? 1);
@@ -463,12 +487,14 @@ export class BrainView {
       moving: !this.frozen && !!trace && frame < trace.frames.length - 1,
       nodes: false,
     });
+    const slowWeights = Object.fromEntries((source.consolidated ?? []).map(([i, , v]) => [i, v]));
     if (!this.map.enabled || plastic)
       source.edges.forEach(([a, b, weight], i) => {
         if (source.mask?.[a] === 0 || source.mask?.[b] === 0) return;
+        if (lasting) weight = slowWeights[i] ?? 0;
         const delta =
-          (this.changes[i] ?? 0) *
-          Math.max(0, 1 - (this.age - (this.flashAt ?? -10)) / 1.5);
+          ((lasting ? this.slowChanges : this.changes)[i] ?? 0) *
+          Math.max(0, 1 - (this.age - ((lasting ? this.slowFlashAt : this.flashAt) ?? -10)) / 1.5);
         const strength = Math.min(1, Math.abs(s[a] * weight) / max);
         const pulse = repairs[a] * Math.min(1, Math.abs(weight));
         c.strokeStyle = plastic
@@ -552,7 +578,7 @@ export class BrainView {
         c.font = "10px ui-monospace, monospace";
         c.textAlign = "center";
         c.fillText(
-          source.names?.[i] ?? `Owner ${i}`,
+          source.names?.[i] ?? `Neuron ${i}`,
           x,
           y + 22,
           regions[groups[i]].rw - 16,
@@ -594,7 +620,7 @@ export class BrainView {
     });
     if (hovered >= 0)
       c.fillText(
-        `${source.names?.[hovered] ?? `Owner ${hovered}`} · ${values[hovered].toExponential(3)}`,
+        `${source.names?.[hovered] ?? `Neuron ${hovered}`} · ${values[hovered].toExponential(3)}`,
         8,
         h - 22,
         w - 16,
@@ -614,11 +640,11 @@ export class BrainView {
     });
     c.stroke();
     this.$("brain-status").textContent = trace
-      ? `${trace.release ? "Input released in an isolated copy" : this.trace ? "Repair replay" : "Sampled settlement"} · iteration ${frame}/${trace.frames.length - 1}${frame === trace.frames.length - 1 ? " · replay complete" : ""}`
+      ? `${trace.release ? "Input released in an isolated copy" : this.trace ? "Settling replay" : "Sampled settling"} · iteration ${frame}/${trace.frames.length - 1}${frame === trace.frames.length - 1 ? " · replay complete" : ""}`
       : `Live ${source.recurrent ? "settled state" : "associative read/write"} · ${this.writes} observed weight changes`;
     const equilibrium = source.equilibrium;
     this.$("brain-equilibrium").textContent = equilibrium
-      ? `${equilibrium.converged ? "Joint equilibrium within tolerance" : "Repair budget reached"} · endpoint error ${equilibrium.residual.toExponential(1)} · ${equilibrium.links} active links between regions`
+      ? `${equilibrium.converged ? "Joint equilibrium within tolerance" : "Iteration budget reached"} · endpoint error ${equilibrium.residual.toExponential(1)} · ${equilibrium.links} active links between regions`
       : "Reference circuit · independently inspected";
     this.$("brain-equilibrium").title = equilibrium
       ? Object.entries(equilibrium.regions)
@@ -630,11 +656,12 @@ export class BrainView {
           .map(([g, e]) => `${regionLabel(g)}: ${e.toExponential(2)}`)
           .join(" · ")
       : "";
-    this.$("brain-legend").hidden = !this.heat || plastic;
+    this.$("brain-legend").hidden = !this.heat && !plastic;
     this.$("brain-legend-label").textContent =
-      `${this.signal === "input" ? "Input drive" : this.signal === "repair" ? "State change" : this.signal === "mismatch" ? "Equation mismatch" : "Activity"} · relative region scale${trace ? " · fixed during replay" : ""}`;
-    this.$("brain-scale").textContent =
-      `Max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. ${trace ? "Captured trajectory scales" : "Current region scales"}; hover or tap for signed values. No neurotransmitter concentrations are modeled.`;
+      `${plastic ? (lasting ? "Persistent synaptic strength · gold strengthens, blue weakens" : "Total synaptic strength · gold strengthens, blue weakens") : this.signal === "input" ? "Input drive" : this.signal === "repair" ? "Activity change" : this.signal === "mismatch" ? "Equation mismatch" : "Activity"}${plastic ? "" : " · relative region scale"}${trace ? " · fixed during replay" : ""}`;
+    this.$("brain-scale").textContent = plastic
+      ? `Max |synaptic strength| ${Math.max(0, ...(lasting ? source.consolidated ?? [] : source.learned ?? []).map(([, , v]) => Math.abs(v))).toExponential(2)} · connections show ${lasting ? "persistent" : "total learned"} weights; flashes show their signed changes. Neuron colors still show activity.`
+      : `Max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. ${trace ? "Captured trajectory scales" : "Current region scales"}; hover or tap for signed values. No neurotransmitter concentrations are modeled.`;
     this.drawWaves(
       source,
       trace ?? this.diagnostic,
@@ -713,8 +740,8 @@ export class BrainView {
   }
   snapshot() {
     return {
-      owners: this.source?.state.length ?? 0,
-      seams: this.source?.edges.length ?? 0,
+      neurons: this.source?.state.length ?? 0,
+      synapses: this.source?.edges.length ?? 0,
       recurrent: this.source?.recurrent ?? false,
       equilibrium: this.source?.equilibrium,
       writes: this.writes,

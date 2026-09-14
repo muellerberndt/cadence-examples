@@ -83,10 +83,10 @@
         <section class="brain-panel" aria-labelledby="brain-title">
           <div class="brain-heading">
             <div>
-              <div class="eyebrow">INSIDE THE PATCH NET</div>
+              <div class="eyebrow">INSIDE THE BRAIN</div>
               <h2 id="brain-title">Different regions. One equilibrium.</h2>
             </div>
-            <span id="brain-count">Reading owners…</span>
+            <span id="brain-count">Reading neurons…</span>
           </div>
           <div class="brain-behavior">
             <span id="brain-behavior" data-tone="neutral"
@@ -100,12 +100,12 @@
             ><span data-tone="correcting">● Correction</span>
             <span data-tone="neutral">● Idle / paused</span>
           </div>
-          <p id="brain-equilibrium" aria-live="off">Measuring joint repair…</p>
+          <p id="brain-equilibrium" aria-live="off">Measuring joint equilibrium…</p>
           <div class="brain-layout">
             <canvas
               id="brain-scene"
               role="img"
-              aria-label="Actual owners and seams arranged by function. Activity, repair cascades and learned weight changes are shown with a labeled legend."
+              aria-label="Actual neurons and synapses arranged by function. Activity, settling cascades and learned weight changes are shown with a labeled legend."
             ></canvas>
           </div>
           <canvas
@@ -121,7 +121,7 @@
             <button id="brain-expand">Expand</button>
             <button id="brain-think" aria-pressed="false">Slow thought</button>
             <button id="brain-follow" aria-pressed="true">
-              Follow repairs
+              Follow settling
             </button>
             <button id="brain-release">Release input · watch decay</button>
           </div>
@@ -141,9 +141,9 @@
             </div>
           </div>
           <div class="signal-key">
-            <span class="repair-key">Recent repair · 1 s display trail</span
+            <span class="repair-key">Recent activity change · 1 s display trail</span
             ><span class="plastic-key">Plasticity view · weight strength</span
-            ><span class="muted-key">Dim rose · masked owner</span>
+            ><span class="muted-key">Dim rose · masked neuron</span>
           </div>
           <details id="brain-options">
             <summary>Inspect signals &amp; replay</summary>
@@ -152,9 +152,10 @@
               <select id="brain-signal">
                 <option value="activity">Activity · local state</option>
                 <option value="mismatch">Equation mismatch</option>
-                <option value="repair">Repair · state change</option>
+                <option value="repair">Activity change</option>
                 <option value="input">Input · supplied drive</option>
-                <option value="plasticity">Plasticity · memory writes</option>
+                <option value="consolidation">Persistent memory</option>
+                  <option value="plasticity">Plasticity · memory writes</option>
               </select>
               <div class="buttons">
                 <button id="brain-live">Live</button
@@ -162,7 +163,7 @@
                 <button id="brain-heat" aria-pressed="true">Heatmap on</button>
               </div>
               <div class="buttons">
-                <button id="brain-replay">Replay repair</button>
+                <button id="brain-replay">Replay settling</button>
               </div>
               <label for="brain-speed">Replay speed</label>
               <select id="brain-speed">
@@ -172,8 +173,8 @@
               </select>
               <p id="brain-memory"></p>
               <p>
-                Each connected region repairs the same joint state under the
-                current input. The body acts, the boundary changes, and repair
+                Each connected region settles into the same joint state under the
+                current input. The body acts, the boundary changes, and settling
                 begins again. A small equation error means self-consistency; it
                 does not guarantee the best possible action.
               </p>
@@ -184,29 +185,29 @@
           <details>
             <summary>How to read this view</summary>
             <p>
-              Each region groups actual owners by function; lines are their real
-              seams. Supplied sensing, steering and body adapters are labeled
-              above the graph. Every owner and seam is mapped; dense seams
+              Each region groups actual neurons by function; lines are their real
+              synapses. Supplied sensing, steering and body adapters are labeled
+              above the graph. Every neuron and synapse is mapped; dense synapses
               overlap when zoomed out. Wheel or pinch to zoom, drag to pan, and
               use Fit whole brain to return. Region tints identify function:
               visual purple, motor cyan, memory violet, sensory green, planning
-              rose. Hover or tap an owner for its value. Colors use
+              rose. Hover or tap a neuron for its value. Colors use
               dimensionless model units. The heatmap shows positive values in
               amber and negative values in blue; its smooth halos are a display
-              overlay around actual owners. Turning it off restores the node
+              overlay around actual neurons. Turning it off restores the node
               view. Plasticity highlights recent learned weight changes
               separately. The trace plots peak activity. Couplings that change
               with arm geometry are not counted as plasticity.
             </p>
             <p>
-              Follow repairs automatically reconstructs sampled settlements from
+              Follow settling automatically reconstructs sampled settling runs from
               their captured inputs, initial states and couplings. It slows the
-              early repair steps and compresses the later ones; the live body
+              early settling steps and compresses the later ones; the live body
               continues. Components may use different iteration counts. Rapid
               updates are coalesced, so this is not a recording of every body
-              tick. Violet rings fade for one second after a displayed repair:
+              tick. Violet rings fade for one second after a displayed activity change:
               this is display history, not short-term memory in the controller.
-              Replay lets you inspect one captured settlement at a fixed rate.
+              Replay lets you inspect one captured settling run at a fixed rate.
               Release input sets the drive to zero in an isolated copy, exposing
               recurrent decay or ringing; it does not control the body or imply
               a learned short-term memory. No oscillation is added for
@@ -265,7 +266,7 @@
       </section>
       <footer class="support">
         <span
-          >CADENCE / bounded patches · local readback · feedback · retained
+          >CADENCE / graded neurons · local readback · feedback · retained
           records</span
         >
         <nav>

@@ -1,6 +1,6 @@
 # Cadence live systems
 
-Six separate browser examples expose observer-like software patches: bounded
+Six separate browser examples expose Cadence brains: graded neurons with bounded
 local state, ports, readback, retained records and feedback. Each page puts the
 actual circuit beside the task at the top on desktop; mobile stacks the panels.
 
@@ -47,7 +47,7 @@ Use `--no-browser` to print the address. Open `/` for the gallery.
 
 The memory example isolates a subsystem; it has no invented body. The embodied
 examples implement the complete **task controller**, with supplied encodings,
-attention/readout rules, wiring and physical bodies. They do not reconstruct
+attention/readout rules, connectomes and physical bodies. They do not reconstruct
 complete biological brains, learned perception or learned anatomy.
 
 ## Why Cadence fits each task
@@ -63,21 +63,24 @@ complete biological brains, learned perception or learned anatomy.
 
 ## One joint state per task
 
-Different functions share a common equilibrium through their seams. The six
+Different functions share a common equilibrium through their synapses. The six
 controllers assemble their regions **before** settling, then read the resulting
 motor or decision state. The circuit panel reports global and regional equation
-errors. [Task wiring and reproducible tests](COUPLED_BRAINS.md) describe every
+errors. [Task connectomes and reproducible tests](COUPLED_BRAINS.md) describe every
 connection, boundary adapter and causal control. Self-consistency under current
 input is distinct from globally optimal task performance.
 
 ## What the brain actually contains
 
-- **Arm:** 24 × 24 retinal units read pixel darkness. An explicit attention rule
-  chooses an unvisited visible target. Six sensory/readback units carry target,
-  pen position and height; three error units, two joint-coordination units and
-  six antagonistic motor units complete the controller. Motor output moves
-  shoulder, elbow and pencil height. Paper contact creates ink. The controller
-  receives pixels, never the user's stroke coordinates.
+- **Arm:** 48 × 48 pixels are thresholded into sparse dark-sample patches.
+  Each has reference, actual-ink readback and missing-mark neurons. An explicit
+  attention rule consumes missing-mark activity and follows connected dark
+  pixels, keeping the pencil down on strokes and lifting across blank space.
+  Six sensory/readback units carry target, pen position and height; three
+  position/height error units, two joint-coordination units and six opposing
+  motor units complete the controller. Contact writes the same 192 × 192 ink
+  raster that the eye reads and the view displays. Erased marks reactivate
+  repair. The controller receives pixels, never the user's stroke coordinates.
 - **Mouse:** task memory → destination lookup → supplied occupancy map/spatial
   field → positional readout → antagonistic directional motors → body position.
 - **Worm:** adjacent odor → public chemical network and directional odor readback
@@ -85,44 +88,44 @@ input is distinct from globally optimal task performance.
 - **Forager:** visible flower cue/bearing → nectar memory and target selection →
   turn/propulsion motor units → body → contact reward and memory write.
 
-Circuit seams are weighted local connections. An explicit application readout
+Circuit synapses are weighted local connections. An explicit application readout
 (such as selecting a visual target) is documented as a readout, not drawn as an
 invented synapse. Physics includes joint kinematics, inertia/contact and collision
 bounds. Motor ablations test whether the neural output really causes movement.
 
 ## Circuit sizes and biological references
 
-| Demo | Allocated owners | Declared seams | Learned entries |
+| Demo | Allocated neurons | Declared synapses | Mutable memory values |
 |---|---|---|---|
-| Eye & arm | 593: 576 retina + 17 controller | up to 28 | 0 |
-| Mouse, seed 13 | 265; 132 unmasked initially | 285 | 32 |
+| Eye & arm | 3N + 17 for N dark samples: reference, ink, missing marks + controller | up to 2N + 28 | 0 |
+| Mouse, seed 13 | 265; 132 unmasked initially | 285 | 32 persistent + 32 transient |
 | Worm habitat | 309: 297 chemical + 12 directional | up to 4,108 | 0 |
 | Worm circuit probe | 297 | 3,604 | 0 |
-| Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | up to 44 | 32 |
-| Changing memory | 12 | 32 | 32 |
+| Forager, Cadence agent | 18: 12 memory + 6 sensory/motor | up to 44 | 32 persistent + 32 transient |
+| Changing memory | 12 | 32 | 32 persistent + 32 transient |
 | Connect Four | 19: 6 evaluator + 7 candidates + 6 monitor | 39 | 0 |
 
 The mouse allocates 247 spatial slots (133 initially masked walls), 12 memory
-ports and six sensor/motor owners. Its initial seams are 242 spatial, 32 memory
-four motor and seven task/field/feedback bridges. Maze edits change the counts. Retina owners have independent
-sensory drives; they do not add a dense all-to-all matrix. These counts exclude
+ports and six sensor/motor neurons. Its initial synapses are 242 spatial, 32 memory,
+four motor and seven task/field/feedback synapses between regions. Maze edits change the counts. Retina neurons have independent
+sensory drives; they do not add a dense all-to-all matrix. A memory contact carries a persistent component and a transient residual; 64 stored scalars do not mean 64 anatomical synapses. These counts exclude
 body/environment variables, attention records and comparison MLPs.
 
 For orientation, adult hermaphrodite C. elegans has 302 neurons, including 20
 pharyngeal neurons ([WormAtlas](https://www.wormatlas.org/hermaphrodite/nervous/mainframe.htm)).
-Software state coordinates are not biologically equivalent neurons or measures
-of animal intelligence. No whole-animal equivalence is claimed.
+A Cadence neuron is a graded rate unit; it is not a biologically equivalent cell,
+and these counts are not measures of animal intelligence. No whole-animal equivalence is claimed.
 
 ## Read the brain view
 
 Regions group the actual task components by function. The circuit appears beside
-the body at the top of each page. Every declared owner and directed seam is mapped;
-there is no representative-owner or strongest-edge subset. Dense edges overlap
+the body at the top of each page. Every declared neuron and directed synapse is mapped;
+there is no representative-neuron or strongest-synapse subset. Dense synapses overlap
 when zoomed out. Wheel/pinch zooms, dragging pans, **Fit whole brain** resets the
-camera and **Expand** opens the map full screen. Hover or tap an owner to inspect
+camera and **Expand** opens the map full screen. Hover or tap a neuron to inspect
 its value. Violet marks visual and memory assemblies, cyan motor assemblies,
 green sensory/cue assemblies, blue spatial/timing assemblies and rose planning
-assemblies. Labels identify the exact component; color expresses wiring intent,
+assemblies. Labels identify the exact component; color expresses design intent,
 not independently established neural specialization.
 
 WebGL2 retains the full graph on the GPU and caches its static connection image.
@@ -132,29 +135,29 @@ time are excluded from numerical efficiency comparisons.
 
 - **Behavior badge:** green = positive outcome; blue = seeking/moving; amber =
   correction; gray = idle/paused. These name observed events, not measured feelings.
-- **Activity / input / repair / equation mismatch:** amber = positive, blue = negative. Values are
+- **Activity / input / activity change / equation mismatch:** amber = positive, blue = negative. Values are
   dimensionless and scaled within a region; replay scales remain fixed.
-- **Violet repair trails:** one second of display history. They are not neural
+- **Violet activity-change trails:** one second of display history. They are not neural
   memory. **Plasticity** separately highlights learned weight changes.
-- **Following repairs:** reconstructs one captured joint trajectory from its
+- **Following settling:** reconstructs one captured joint trajectory from its
   actual input, weights and initial state. It expands early iterations and
   compresses later ones into 1.6 seconds. Rapid updates are coalesced; this is
   a sampled diagnostic replay, not a recording of every body tick.
 - **Joint equilibrium:** reports the maximum potential-equation error over all
   regions, plus active cross-region links. Expand controls for regional errors.
   A small residual does not guarantee the best possible action.
-- **Replay repair:** inspect a captured update at a selected iteration rate.
+- **Replay settling:** inspect a captured update at a selected iteration rate.
   Stateful motor circuits start from their retained potentials, not from zero.
 - **Release input:** removes drives in an isolated copy and shows recurrent decay.
   It does not change the body or its actual memory.
-- **Population waves:** green is signed mean activation; violet is RMS owner-equation
-  mismatch. Every unmasked owner contributes. These are measured simulation-step
+- **Population waves:** green is signed mean activation; violet is RMS neuron-equation
+  mismatch. Every unmasked neuron contributes. These are measured simulation-step
   traces, not biological EEG. Oscillations appear only when the circuit produces
   them; a settled circuit is allowed to become quiet.
-- **Moving seam signals:** a packet marks a changed outgoing message on an actual
-  seam. Time-expanded motion illustrates transport, not physical propagation speed.
+- **Moving synapse signals:** a packet marks a changed outgoing message on an actual
+  synapse. Time-expanded motion illustrates transport, not physical propagation speed.
 - **Slow thought:** in the four body demos, hold the actuator command while its
-  captured repair sequence is inspected. Movement follows the last iteration.
+  captured settling sequence is inspected. Movement follows the last iteration.
   The selected replay rate controls presentation time; solver iteration counts
   do not measure human thought or prove that harder semantic tasks take longer.
   Editing the world cancels a pending command. Connect Four already provides its
@@ -228,12 +231,14 @@ produced by `tools/nervous_system_benchmark.mjs`. All controller sources are bou
 by hashes, all scheduled conditions are retained, and CI reruns the producer.
 
 - **Arm:** square, flower and two separated marks, six conditions each, 6,000
-  control steps. Intact and disturbed-feedback cases cover all retinal targets.
-  With pose feedback disabled after the same disturbance, coverage is about
-  28–33%. Silencing joint motors gives zero joint displacement. Silencing pencil
-  motors while raised gives zero ink, as does removing visual input. Coverage
-  means target distance under 0.024 normalized units; it does not measure artistic
-  fidelity. User drawings can be harder than these fixtures.
+  control steps. Intact and disturbed-feedback cases must ink over 95% of
+  reference samples. Silencing joint motors gives zero joint displacement;
+  silencing pencil motors while raised gives zero ink, as does removing visual
+  input. Coverage reads actual ink at reference samples.
+  Separate `eye-arm/brain.test.mjs` regressions inspect ink
+  between samples, connected components, erased-ink repair and causal
+  missing-mark ablations. Sampling can lose fine detail; unwanted ink cannot be
+  erased by the pencil, and sampled coverage does not certify image fidelity.
 - **Mouse:** 12 seeds × intact, moved goal and motor ablation. The 24 reachable
   navigation trials finish without collision; motor ablations produce no moves.
 - **Worm:** intact habitat consumes two patches in 41 moves. Smell, either motor
@@ -251,7 +256,7 @@ universal speed or energy claims.
 
 [composite_evidence.json](evidence/composite_evidence.json) and
 [habitat_evidence.json](worm/habitat_evidence.json) retain the original spatial,
-four-owner arm and habitat reference experiments. They validate those reference
+four-neuron arm and habitat reference experiments. They validate those reference
 kernels; the expanded browser controllers are measured in the new task receipts.
 
 ## Reproduce

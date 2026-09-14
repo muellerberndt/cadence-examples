@@ -11,7 +11,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Value, candidate and self-monitor owners settle jointly; search branches stay isolated. The monitor can request more depth. Conventional search can do this too; no exclusive planning advantage is claimed.",
+      "Value, candidate and self-monitor neurons settle jointly; search branches stay isolated. The monitor can request more depth. Conventional search can do this too; no exclusive planning advantage is claimed.",
     ],
   ],
   mouse: [
@@ -25,13 +25,13 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Task recall, spatial field and motors share one equilibrium: one local write revises a goal, while recurrent settlement finds a route through the supplied map. A frozen route cannot adapt; BFS and dictionary lookup can. This is a compositional control demo, not a trained-MLP win.",
+      "Task recall, spatial field and motors share one equilibrium: one local write revises a goal, while recurrent settling finds a route through the supplied map. A frozen route cannot adapt; BFS and dictionary lookup can. This is a compositional control demo, not a trained-MLP win.",
     ],
   ],
   arm: [
     [
       "Ready to draw",
-      "Draw on the left pad or upload a line drawing. The eye reads 24 × 24 pixels. Joint and pencil-lift motors start with supplied weights and geometry; this is not a pretrained drawing skill.",
+      "Draw on the left pad or upload a line drawing. The eye reads 48 × 48 pixels. Joint and pencil-lift motors start with supplied weights and geometry; this is not a pretrained drawing skill.",
     ],
     [
       "Watch feedback, not training",
@@ -67,7 +67,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "Chemical and directional motor regions share one equilibrium under the current odor cue; local repairs propagate across their seams. Cadence agrees with the converged reference; the trained MLP is faster per query but less accurate, especially after lesions. Conventional recurrence also reuses the mechanism.",
+      "Chemical and directional motor regions share one equilibrium under the current odor cue; local activity changes propagate across their synapses. Cadence agrees with the converged reference; the trained MLP is faster per query but less accurate, especially after lesions. Conventional recurrence also reuses the mechanism.",
     ],
   ],
   memory: [
@@ -81,7 +81,7 @@ const guides = {
     ],
     [
       "Why Cadence fits",
-      "One residual write replaces a record; cue and recall owners then share a graded equilibrium. Orthogonal-key records are retained. Matched distinct-key trials give exact recall with 32 mutable entries, exceeding the tested MLP update budgets. Dictionary lookup is exact too; strongly overlapping keys can favor the MLP. This measures explicit record storage, not general intelligence.",
+      "Observed lessons change total and persistent synaptic strength; cue and recall neurons then share a graded equilibrium. Orthogonal-key records are retained. Matched distinct-key trials give exact recall with 32 fast entries in the reference kernel, exceeding the tested MLP update budgets. Dictionary lookup is exact too; strongly overlapping keys can favor the MLP. This measures explicit record storage, not general intelligence.",
     ],
   ],
 };

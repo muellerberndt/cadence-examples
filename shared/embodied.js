@@ -1,4 +1,4 @@
-import { Worm, zeros, FastMemory, keys, argmax } from "./engine.js";
+import { Worm, zeros, SynapticMemory, keys, argmax } from "./engine.js";
 export function random(seed = 13) {
   let x = seed >>> 0;
   return () => {
@@ -71,12 +71,12 @@ export function mazeCircuit(world) {
     const ns = neighbors(world, i);
     for (const j of ns) edges.push([j, i, 0.985 / ns.length]);
   }
-  const engine = new Worm({ names: zeros(n), edges }),
+  const brain = new Worm({ names: zeros(n), edges }),
     drive = zeros(n),
     mask = world.grid.map((v) => 1 - v);
   drive[world.goal] = 0.03;
-  const result = engine.settle(drive, mask, 2400, 1e-13);
-  return { engine, drive, mask, ...result };
+  const result = brain.settle(drive, mask, 2400, 1e-13);
+  return { brain, drive, mask, ...result };
 }
 export class Mouse {
   constructor(seed = 13) {
@@ -163,7 +163,7 @@ export function jacobian(q) {
     [0.43 * Math.cos(a) + 0.37 * Math.cos(a + b), 0.37 * Math.cos(a + b)],
   ];
 }
-export function motorSettlement(q, target) {
+export function motorSettling(q, target) {
   const tip = forward(q),
     j = jacobian(q),
     drive = [target[0] - tip[0], target[1] - tip[1], 0, 0],
@@ -177,9 +177,9 @@ export function motorSettlement(q, target) {
   let potential = zeros(4),
     s = zeros(4);
   for (let step = 0; step < 80; step++) {
-    const inbox = zeros(4);
-    for (const [a, b, w] of edges) inbox[b] += w * s[a];
-    potential = potential.map((v, i) => v + 0.25 * (inbox[i] + drive[i] - v));
+    const synapticInput = zeros(4);
+    for (const [a, b, w] of edges) synapticInput[b] += w * s[a];
+    potential = potential.map((v, i) => v + 0.25 * (synapticInput[i] + drive[i] - v));
     s = potential.map(Math.tanh);
   }
   return { state: s, drive, edges };
@@ -218,7 +218,7 @@ export class Arm {
     this.covered = new Set();
     this.target = 0;
     this.lifted = true;
-    this.settlement = null;
+    this.settling = null;
     this.ticks = 0;
   }
   disturb() {
@@ -244,8 +244,8 @@ export class Arm {
     if (this.target < 0) return;
     const goal = this.targets[this.target],
       observed = this.closed ? this.q : this.estimate;
-    this.settlement = motorSettlement(observed, goal);
-    const change = this.settlement.state
+    this.settling = motorSettling(observed, goal);
+    const change = this.settling.state
       .slice(2)
       .map((v) => Math.max(-0.09, Math.min(0.09, v * 0.9)));
     this.q = this.q.map((v, i) => v + change[i]);
@@ -281,10 +281,18 @@ export class TaskLessons {
       [2, 2],
     ],
   ) {
-    this.memory = new FastMemory();
+    this.memory = new SynapticMemory();
     this.records = [];
     this.known = new Set();
-    for (const [cue, dest] of records) this.teach(cue, dest);
+    const saved = Array.isArray(records) ? null : records;
+    for (const [cue, dest] of saved?.records ?? records) this.teach(cue, dest);
+    if (saved) {
+      if (saved.version !== 2) throw Error("Invalid task checkpoint");
+      this.memory = SynapticMemory.restore(saved.memory);
+    }
+  }
+  toJSON() {
+    return { version: 2, records: this.records, memory: this.memory.toJSON() };
   }
   teach(cue, destination) {
     if (
