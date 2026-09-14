@@ -196,14 +196,11 @@ export class BrainScan {
     this.history = this.atlas.regions.map(() => ({ activity: [], change: [] }));
     this.global = { change: [], mean: [], activity: [] };
     this._montage = null;
-    const spacing = this.atlas.regions.map((r) => {
-      const area = (r.shape ? 4 : Math.PI) * Math.max(1e-6, r.extent[0] * r.extent[1]);
-      return Math.sqrt(area / Math.max(1, r.count));
-    });
+    const spacing = this._spacing();
     for (let i = 0; i < this.n; i++) {
       const k = this.atlas.region[i], region = this.atlas.regions[k];
       const c = region.color;
-      this.layout.set([this.atlas.positions[2 * i], this.atlas.positions[2 * i + 1], spacing[k], 1], i * 4);
+      this.layout.set([this.atlas.positions[2 * i], this.atlas.positions[2 * i + 1], spacing[i], 1], i * 4);
       this.colors.set([c[0] / 255, c[1] / 255, c[2] / 255, 1], i * 4);
     }
     if (this.enabled) this._uploadAtlas(resized);
@@ -224,6 +221,33 @@ export class BrainScan {
     const [x0, y0, x1, y1] = this.bounds, a = this.aspect();
     const w = Math.max(1e-6, x1 - x0), h = Math.max(1e-6, y1 - y0);
     this.frame = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, scale: Math.min(2 / (w * FIT * a[0]), 2 / (h * FIT * a[1])) };
+  }
+
+  /** The distance to a neuron's neighbours, from the local density on a grid over the layout:
+   *  the tissue field's sprite radius follows it, so dense sheets, sparse regions and regions
+   *  sharing one anatomical frame all read as tissue of even brightness. */
+  _spacing() {
+    const n = this.n, pos = this.atlas.positions, out = new Float32Array(n);
+    if (!n) return out;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (let i = 0; i < n; i++) { x0 = Math.min(x0, pos[2 * i]); x1 = Math.max(x1, pos[2 * i]); y0 = Math.min(y0, pos[2 * i + 1]); y1 = Math.max(y1, pos[2 * i + 1]); }
+    const G = 64, w = Math.max(1e-6, x1 - x0), h = Math.max(1e-6, y1 - y0), cell = Math.max(w, h) / G;
+    const cols = Math.max(1, Math.ceil(w / cell)), rows = Math.max(1, Math.ceil(h / cell));
+    const counts = new Float32Array(cols * rows), cx = new Int32Array(n), cy = new Int32Array(n);
+    for (let i = 0; i < n; i++) {
+      cx[i] = Math.min(cols - 1, Math.floor((pos[2 * i] - x0) / cell)); cy[i] = Math.min(rows - 1, Math.floor((pos[2 * i + 1] - y0) / cell));
+      counts[cy[i] * cols + cx[i]]++;
+    }
+    for (let i = 0; i < n; i++) {
+      let sum = 0, cells = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const X = cx[i] + dx, Y = cy[i] + dy;
+        if (X < 0 || Y < 0 || X >= cols || Y >= rows) continue;
+        sum += counts[Y * cols + X]; cells++;
+      }
+      out[i] = Math.sqrt((cells * cell * cell) / Math.max(1, sum));
+    }
+    return out;
   }
 
   _setupGL() {
