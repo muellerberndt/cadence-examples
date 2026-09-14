@@ -72,7 +72,7 @@ export class Circuit {
       labels: Object.fromEntries(names.map((name) => [name, TITLES[name] ?? name])),
     });
     this.names = groups.map((name) => TITLES[name] ?? name);
-    this.scan = new BrainScan(canvas, atlas, { labels, montageRows: 0, heatDecay: 0.8 });
+    this.scan = new BrainScan(canvas, atlas, { labels, montageRows: 0, heatDecay: 0.8, labelTop: 44 }); // below the map tools
     if (!this.scan.enabled) throw Error('This whole-circuit view needs WebGL 2. Try a browser with hardware acceleration.');
     this.weight = new Float32Array(this.totalEdges);
     this.level = new Float32Array(this.total); this.heat = new Float32Array(this.total); this.message = new Float32Array(this.total);
