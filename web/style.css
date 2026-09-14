@@ -238,7 +238,7 @@ audio {
   font-weight: 500;
   margin: 5px 0 12px;
 }
-#owners {
+#neurons {
   font: 11px ui-monospace;
   text-align: right;
   color: var(--green);
@@ -258,7 +258,17 @@ audio {
 #brain {
   display: block;
   width: 100%;
-  height: 277px;
+  height: 320px;
+}
+@media (min-width: 901px) {
+  .brain-toolbar button {
+    padding: 6px 9px;
+    min-height: 30px;
+    font-size: 11px;
+  }
+  .brain-toolbar select {
+    max-width: 150px;
+  }
 }
 #waves {
   display: block;
@@ -346,7 +356,7 @@ audio {
     padding: 13px;
   }
   #brain {
-    height: 240px;
+    height: 300px;
   }
   #score {
     height: 126px;
@@ -420,7 +430,7 @@ audio {
 .brain-title > div {
   min-width: 0;
 }
-#owners {
+#neurons {
   white-space: pre-line;
   flex-shrink: 0;
 }

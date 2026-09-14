@@ -1,4 +1,4 @@
-import { CircuitMap, regionColor } from "./circuit_map.js";
+import { BrainScan, layoutAtlas } from "./brain_scan.js";
 const $ = (id) => document.getElementById(id),
   labels = {
     auditory_history: "Auditory history",
@@ -20,23 +20,53 @@ let report = null,
   replaying = true,
   currentId = null,
   polling = false;
-let displayPeaks = {},
+// What each population is to the composing circuit: the scan colours regions by role.
+const roles = {
+  auditory_history: "sensory",
+  motif_cue: "sensory",
+  expectation_cue: "sensory",
+  harmony: "association",
+  rhythm: "association",
+  phrase_memory: "memory",
+  motif_recall: "memory",
+  harmonic_expectation: "memory",
+  rhythmic_expectation: "memory",
+  note_intention: "motor",
+};
+let displayScales = null,
   hover = null;
 $("brain").addEventListener("pointermove", (e) => {
   const r = $("brain").getBoundingClientRect();
-  hover = [e.clientX - r.left, e.clientY - r.top];
+  hover = [e.clientX - r.left, e.clientY - r.top, e.clientX, e.clientY];
 });
 $("brain").addEventListener("pointerleave", () => (hover = null));
-const network = new CircuitMap($("brain-network"), $("brain"));
+const EMPTY_ATLAS = {
+  n: 0,
+  synapses: 0,
+  regions: [],
+  region: new Uint16Array(0),
+  positions: new Float32Array(0),
+  pre: new Uint32Array(0),
+  post: new Uint32Array(0),
+  weight: new Float32Array(0),
+  palette: {},
+};
+const network = new BrainScan($("brain-network"), EMPTY_ATLAS, {
+  labels: $("brain-labels"),
+  interaction: $("brain"),
+});
 const graphCache = new Map();
-let canvasMap = null;
+let canvasMap = null,
+  loaded = null, // the graph the scan shows: {id, n, pre, post}
+  shown = {}, // the frame the scan shows: {trace, frame, signal}
+  glow = null; // the heat of the frame shown, for the afterglow of the next
 let graphLoading = null,
   pendingTrace = null,
   live = { busy: false, events: [], trials: [] },
   eventCursor = 0;
 let eventPolling = false,
   playMode = "final",
-  viewTime = 0;
+  acknowledged = 0; // when the server last accepted a composition: earlier polls are stale
 const pitchName = (p) =>
   ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"][p % 12] +
   (Math.floor(p / 12) - 1);
@@ -46,30 +76,73 @@ $("expand-brain").onclick = () =>
     ? document.exitFullscreen()
     : $("brain").closest(".brain-panel").requestFullscreen?.();
 function unpack(t) {
+  // Compositions recorded before the neuron/synapse keys carry owner/seam keys.
+  t.neuron_ids ??= t.owner_ids;
+  if (t.topology) {
+    t.topology.neurons ??= t.topology.owners;
+    t.topology.synapses ??= t.topology.seams;
+    t.topology.neuron_ids ??= t.topology.owner_ids;
+  }
+  for (const r of Object.values(t.regions || {})) r.neurons ??= r.owners;
+  for (const r of Object.values(t.topology?.regions || {})) r.neurons ??= r.owners;
   if (t.encoded_frames && !t.frames) {
     const bytes = Uint8Array.from(atob(t.encoded_frames.data), (c) =>
       c.charCodeAt(0),
     );
     const values = new Float32Array(bytes.buffer),
-      [frames, , owners] = t.encoded_frames.shape;
+      [frames, , neurons] = t.encoded_frames.shape;
     t.frames = Array.from({ length: frames }, (_, f) =>
       Object.fromEntries(
         ["activation", "repair", "mismatch"].map((name, k) => [
           name,
-          values.subarray((f * 3 + k) * owners, (f * 3 + k + 1) * owners),
+          values.subarray((f * 3 + k) * neurons, (f * 3 + k + 1) * neurons),
         ]),
       ),
     );
   }
   return t;
 }
+// Every synapse of the served topology as typed arrays: source, target, weight.
+function split(data) {
+  const count = data.length / 3,
+    pre = new Uint32Array(count),
+    post = new Uint32Array(count),
+    weight = new Float32Array(count);
+  for (let e = 0; e < count; e++) {
+    pre[e] = data[e * 3];
+    post[e] = data[e * 3 + 1];
+    weight[e] = data[e * 3 + 2];
+  }
+  return { pre, post, weight };
+}
+function sameWiring(a, b) {
+  if (!a || a.pre.length !== b.pre.length) return false;
+  for (let e = 0; e < a.pre.length; e++)
+    if (a.pre[e] !== b.pre[e] || a.post[e] !== b.post[e]) return false;
+  return true;
+}
+// The whole brain laid out for the scan: regions placed by their connections, neurons by
+// their synapses. A graph with the same wiring and new weights keeps its layout.
+function mount(g, data) {
+  const { pre, post, weight } = split(data);
+  if (loaded && loaded.n === g.neurons && sameWiring(loaded, { pre, post })) {
+    network.setWeights(weight);
+  } else {
+    const groups = new Array(g.neurons).fill("other");
+    for (const [name, r] of Object.entries(g.regions))
+      groups.fill(name, r.start, r.start + r.neurons);
+    network.setAtlas(
+      layoutAtlas({ n: g.neurons, pre, post, weight, groups, labels, roles, seed: 0 }),
+    );
+    network.fit();
+  }
+  loaded = { id: g.id, n: g.neurons, pre, post };
+  canvasMap = null;
+  shown = {};
+}
 async function loadGraph(t) {
   const g = t.topology;
-  if (!g) {
-    network.graph(t.owner_ids.length, t.edges);
-    return;
-  }
-  if ((network.id === g.id && !t.edge_changes_url) || graphLoading === g.id)
+  if (!g || (loaded?.id === g.id && !t.edge_changes_url) || graphLoading === g.id)
     return;
   graphLoading = g.id;
   try {
@@ -78,28 +151,31 @@ async function loadGraph(t) {
       const response = await fetch(g.url);
       if (!response.ok) throw Error("Topology unavailable");
       data = new Float32Array(await response.arrayBuffer());
-      if (data.length !== g.seams * 3) throw Error("Incomplete topology");
+      if (data.length !== g.synapses * 3) throw Error("Incomplete topology");
       graphCache.set(g.id, data);
       if (graphCache.size > 3)
         graphCache.delete(graphCache.keys().next().value);
     }
     if (trace?.topology?.id === g.id) {
-      network.graph(g.owners, data, g.id);
+      if (loaded?.id !== g.id) mount(g, data);
       if (t.edge_changes_url) {
         const delta = new Float32Array(
           await (await fetch(t.edge_changes_url)).arrayBuffer(),
         );
         if (trace === t) {
-          network.plasticity(delta);
-          t.plasticity = new Float32Array(g.owners);
+          // learned change per neuron: the weight changes of its synapses, scaled to the largest
+          const moved = new Float32Array(g.neurons);
+          let peak = 1e-9;
           for (let e = 0; e < delta.length; e++) {
             const a = data[e * 3],
-              b = data[e * 3 + 1];
-            t.plasticity[a] += Math.abs(delta[e]);
-            t.plasticity[b] += Math.abs(delta[e]);
+              b = data[e * 3 + 1],
+              d = Math.abs(delta[e]);
+            moved[a] += d;
+            moved[b] += d;
           }
-          const peak = Math.max(1e-9, ...t.plasticity);
-          t.plasticity = t.plasticity.map((x) => x / peak);
+          for (const x of moved) if (x > peak) peak = x;
+          t.plasticity = moved.map((x) => x / peak);
+          shown = {};
         }
       }
     }
@@ -108,6 +184,67 @@ async function loadGraph(t) {
   } finally {
     if (graphLoading === g.id) graphLoading = null;
   }
+}
+// The display scale of each recorded frame: the largest repair so far, easing by a tenth per
+// frame as the settling calms so later, smaller repairs stay visible; the mismatch and the
+// activation alike (the scan expects activations within the unit range).
+function measure(frames) {
+  const scale = new Float32Array(frames.length),
+    mismatch = new Float32Array(frames.length),
+    activation = new Float32Array(frames.length);
+  let s = 1e-6,
+    m = 1e-6,
+    a = 1e-6;
+  frames.forEach((f, t) => {
+    let peak = 0,
+      worst = 0,
+      loud = 0;
+    for (let i = 0; i < f.repair.length; i++) {
+      const r = Math.abs(f.repair[i]),
+        e = Math.abs(f.mismatch[i]),
+        v = Math.abs(f.activation[i]);
+      if (r > peak) peak = r;
+      if (e > worst) worst = e;
+      if (v > loud) loud = v;
+    }
+    s = Math.max(peak, s * 0.9);
+    m = Math.max(worst, m * 0.9);
+    a = Math.max(loud, a * 0.9);
+    scale[t] = s;
+    mismatch[t] = m;
+    activation[t] = a;
+  });
+  return { scale, mismatch, activation };
+}
+// One recorded frame into the scan: the activation, scaled to the largest so far, travels as
+// messages along the synapses; the repair is the heat (with afterglow while the replay
+// advances); the chosen signal is the brightness.
+function present(f, t, kind, plastic, advancing) {
+  const n = f.activation.length,
+    message = new Float32Array(n),
+    level = new Float32Array(n),
+    heat = new Float32Array(n);
+  const s = Math.max(1e-9, displayScales.scale[t]),
+    m = Math.max(1e-9, displayScales.mismatch[t]),
+    a = Math.max(1e-9, displayScales.activation[t]);
+  const prior = advancing && glow && glow.length === n ? glow : null,
+    learned = trace.plasticity;
+  for (let i = 0; i < n; i++) {
+    const change = Math.min(1, Math.abs(f.repair[i]) / s);
+    message[i] = f.activation[i] / a;
+    heat[i] = plastic
+      ? (learned?.[i] ?? 0)
+      : Math.max(change, prior ? prior[i] * 0.86 : 0);
+    level[i] = plastic
+      ? (learned?.[i] ?? 0)
+      : kind === "repair"
+        ? f.repair[i] / s
+        : kind === "mismatch"
+          ? f.mismatch[i] / m
+          : message[i];
+  }
+  glow = plastic ? null : heat;
+  network.show(message, heat, { level });
 }
 const fmt = (n) => Number(n).toLocaleString();
 function fit(canvas) {
@@ -136,18 +273,8 @@ function useTrace(t) {
   if (!t) return;
   trace = unpack(t);
   loadGraph(trace);
-  displayPeaks = {};
-  for (const kind of ["activation", "repair", "mismatch"]) {
-    const peaks = Array(t.frames[0][kind].length).fill(0.02);
-    for (const r of Object.values(t.regions)) {
-      let peak = 0.02;
-      for (const f of t.frames)
-        for (let i = r.start; i < r.start + r.shown; i++)
-          peak = Math.max(peak, Math.abs(f[kind][i]));
-      for (let i = r.start; i < r.start + r.shown; i++) peaks[i] = peak;
-    }
-    displayPeaks[kind] = peaks;
-  }
+  displayScales = measure(trace.frames);
+  glow = null;
   frame = credit = 0;
   replaying = true;
   $("modulators").replaceChildren();
@@ -249,6 +376,7 @@ $("brief").onsubmit = async (e) => {
       prompt: $("prompt").value,
       seed: Number($("seed").value),
     });
+    acknowledged = performance.now();
     await poll();
   } catch (err) {
     $("phase").textContent = err.message;
@@ -278,6 +406,7 @@ let lastProgress = null;
 async function poll() {
   if (polling) return;
   polling = true;
+  const started = performance.now();
   try {
     const r = await (
       await fetch(
@@ -285,10 +414,11 @@ async function poll() {
       )
     ).json();
     live.busy = r.busy;
-    $("compose").disabled = r.busy;
+    // a poll sent before the server accepted a composition cannot re-enable the button
+    $("compose").disabled = r.busy || started < acknowledged;
     $("phase").textContent = r.error || r.progress.stage;
-    $("owners").textContent =
-      `${fmt(r.brain.owners)} owners\n${fmt(r.brain.directed_seams)} seams`;
+    $("neurons").textContent =
+      `${fmt(r.brain.neurons)} neurons\n${fmt(r.brain.directed_synapses)} synapses`;
     $("regions").replaceChildren();
     for (const [name, count] of Object.entries(r.brain.regions)) {
       const el = text($("regions"), "div", labels[name] || name, "region");
@@ -411,51 +541,37 @@ function drawScore() {
     c.stroke();
   }
 }
-function drawCanvasMap(c, w, h, positions, groups) {
-  if (network.id !== trace.topology?.id || !network.topology) return;
-  const key = `${network.id}:${w}:${h}`;
-  if (canvasMap?.key !== key) {
-    const paths = new Map();
-    for (let e = 0; e < network.edges; e++) {
-      const a = network.topology[e * 3],
-        b = network.topology[e * 3 + 1];
-      const role = groups[a];
-      if (!paths.has(role)) paths.set(role, new Path2D());
-      const path = paths.get(role);
-      path.moveTo(...positions[a]);
-      path.lineTo(...positions[b]);
-    }
-    canvasMap = {
-      key,
-      paths,
-      canvas: document.createElement("canvas"),
-      seams: 0,
-    };
-  }
+function drawCanvasMap(c, w, h) {
+  // Without WebGL2 the scan draws the neurons; every synapse is rasterised here once per view.
+  if (!loaded || network.n !== loaded.n) return;
   const d = Math.min(devicePixelRatio, 2);
-  const view = `${network.camera.x}:${network.camera.y}:${network.camera.zoom}:${d}`;
-  if (canvasMap.view !== view) {
-    const bitmap = canvasMap.canvas;
+  const view = `${loaded.id}:${w}:${h}:${network.camera.x}:${network.camera.y}:${network.camera.zoom}:${d}`;
+  if (canvasMap?.view !== view) {
+    const bitmap = canvasMap?.canvas ?? document.createElement("canvas");
     bitmap.width = Math.round(w * d);
     bitmap.height = Math.round(h * d);
     const base = bitmap.getContext("2d");
     base.setTransform(d, 0, 0, d, 0, 0);
-    network.transformContext(base, w, h);
-    base.lineWidth = 0.4 / network.camera.zoom;
-    for (const [role, path] of canvasMap.paths) {
-      base.strokeStyle = `rgba(${regionColor(role).join(",")},.13)`;
+    const at = network.screenAll(),
+      paths = new Map(),
+      { pre, post } = loaded;
+    for (let e = 0; e < pre.length; e++) {
+      const k = network.atlas.region[pre[e]];
+      if (!paths.has(k)) paths.set(k, new Path2D());
+      const path = paths.get(k);
+      path.moveTo(at[pre[e] * 2], at[pre[e] * 2 + 1]);
+      path.lineTo(at[post[e] * 2], at[post[e] * 2 + 1]);
+    }
+    base.lineWidth = 0.4;
+    for (const [k, path] of paths) {
+      base.strokeStyle = `rgba(${network.atlas.regions[k].color.join(",")},.13)`;
       base.stroke(path);
     }
-    canvasMap.view = view;
-    canvasMap.seams = network.edges;
+    canvasMap = { view, canvas: bitmap, synapses: pre.length };
   }
-  c.save();
-  c.setTransform(d, 0, 0, d, 0, 0);
   c.drawImage(canvasMap.canvas, 0, 0, w, h);
-  c.restore();
 }
-function drawBrain(dt) {
-  viewTime += dt;
+function drawBrain(dt, now) {
   if (pendingTrace && !replaying) {
     const next = pendingTrace;
     pendingTrace = null;
@@ -465,8 +581,9 @@ function drawBrain(dt) {
   if (!trace) {
     c.fillStyle = "#8ea7a6";
     c.font = "12px system-ui";
-    c.fillText("Compose to inspect a recorded settlement.", 20, h / 2);
+    c.fillText("Compose to inspect a recorded settling.", 20, h / 2);
     fit($("waves"));
+    network.draw(now);
     return;
   }
   if (replaying) {
@@ -475,144 +592,45 @@ function drawBrain(dt) {
     if (frame === trace.frames.length - 1) replaying = false;
   }
   const f = trace.frames[frame],
-    plastic = $("signal").value === "plasticity",
-    kind = plastic ? "activation" : $("signal").value,
-    values = f[kind],
-    positions = [],
-    groups = [];
-  c.save();
-  network.transformContext(c, w, h);
-  const names = Object.keys(trace.regions);
-  const locations = {
-    auditory_history: [0.15, 0.18],
-    harmony: [0.48, 0.17],
-    rhythm: [0.48, 0.81],
-    phrase_memory: [0.48, 0.48],
-    note_intention: [0.82, 0.61],
-    motif_cue: [0.15, 0.52],
-    motif_recall: [0.15, 0.82],
-    expectation_cue: [0.82, 0.13],
-    harmonic_expectation: [0.82, 0.37],
-    rhythmic_expectation: [0.82, 0.85],
-  };
-  names.forEach((name) => {
-    const r = trace.regions[name],
-      [cx, cy] = locations[name] || [0.5, 0.5],
-      x = cx * w,
-      y = cy * h;
-    const radius = Math.min(w * 0.115, h * (cx > 0.7 ? 0.075 : 0.13));
-    const glow = c.createRadialGradient(x, y, 0, x, y, radius * 1.4);
-    const role = regionColor(name);
-    glow.addColorStop(0, `rgba(${role.join(",")},.09)`);
-    glow.addColorStop(1, "#10202600");
-    c.fillStyle = glow;
-    c.fillRect(x - radius * 1.4, y - radius * 1.4, radius * 2.8, radius * 2.8);
-    for (let k = 0; k < r.shown; k++) {
-      const a = k * 2.39996,
-        rad = radius * Math.sqrt((k + 0.5) / r.shown);
-      groups[r.start + k] = name;
-      positions[r.start + k] = [
-        x + Math.cos(a) * rad,
-        y + Math.sin(a) * rad * 0.7,
-      ];
-    }
-    c.fillStyle = "#b4ccc7";
-    c.textAlign = "center";
+    signal = $("signal").value,
+    plastic = signal === "plasticity",
+    kind = plastic ? "activation" : signal;
+  const mapped = network.n === f.activation.length;
+  if (mapped && (shown.trace !== trace || shown.frame !== frame || shown.signal !== signal)) {
+    present(f, frame, kind, plastic, shown.trace === trace && frame === shown.frame + 1);
+    shown = { trace, frame, signal };
+  } else network.draw(now);
+  if (mapped && !network.enabled) drawCanvasMap(c, w, h);
+  const hit = hover && mapped ? network.inspect(hover[2], hover[3]) : null;
+  if (hit) {
+    const best = hit.neuron,
+      name = hit.region,
+      offset = best - (trace.regions[name]?.start ?? 0);
+    const note =
+      (name === "note_intention" || name === "motif_recall") && offset < 61
+        ? " · " + pitchName(36 + offset)
+        : "";
+    const lines = [
+      `${labels[name] || name} · neuron ${trace.neuron_ids[best]}${note}`,
+      `Activity ${f.activation[best].toFixed(4)} · repair ${f.repair[best].toExponential(2)}`,
+      `Equation mismatch ${f.mismatch[best].toExponential(2)}`,
+    ];
     c.font = "10px system-ui";
-    c.fillText(
-      labels[name] || name,
-      x,
-      y - radius * 0.78,
-      Math.max(90, w * 0.3),
+    const tw = Math.min(
+        w - 12,
+        Math.max(...lines.map((t) => c.measureText(t).width)) + 16,
+      ),
+      x = Math.min(w - tw - 6, Math.max(6, hover[0] + 10)),
+      y = Math.min(h - 56, Math.max(4, hover[1] + 12));
+    c.fillStyle = "#081419ee";
+    c.fillRect(x, y, tw, 52);
+    c.fillStyle = "#e4efed";
+    lines.forEach((line, i) =>
+      c.fillText(line, x + 8, y + 14 + i * 15, tw - 16),
     );
-    c.fillStyle = "#657f80";
-    c.font = "9px ui-monospace, monospace";
-    c.fillText(`${r.owners} owners`, x, y + radius * 0.85);
-  });
-  c.textAlign = "left";
-  if (network.id === trace.topology?.id)
-    network.draw({
-      positions,
-      groups,
-      activation: f.activation,
-      repair: f.repair,
-      mismatch: f.mismatch,
-      plasticity: trace.plasticity,
-      scales: [
-        displayPeaks.activation,
-        displayPeaks.repair,
-        displayPeaks.mismatch,
-      ],
-      channel: plastic
-        ? 3
-        : kind === "repair"
-          ? 1
-          : kind === "mismatch"
-            ? 2
-            : 0,
-      time: viewTime,
-      moving: replaying,
-    });
-  if (!network.enabled) drawCanvasMap(c, w, h, positions, groups);
-  if (!network.enabled)
-    values.forEach((v, i) => {
-      const [x, y] = positions[i];
-      const a = plastic
-          ? (trace.plasticity?.[i] ?? 0)
-          : Math.min(1, Math.abs(v) / displayPeaks[kind][i]),
-        repair = Math.min(1, Math.abs(f.repair[i]) * 8);
-      const color = regionColor(groups[i]).map((x) =>
-        Math.round(x * (1 - a * 0.6) + 245 * a * 0.6),
-      );
-      c.fillStyle = `rgba(${color.join(",")},${0.22 + a * 0.78})`;
-      c.shadowColor = v < 0 ? "#baa7fb" : "#89e6bf";
-      c.shadowBlur = repair * 13;
-      c.beginPath();
-      c.arc(x, y, 1.2 + a * 2.6, 0, Math.PI * 2);
-      c.fill();
-      c.shadowBlur = 0;
-    });
-  c.restore();
-  if (hover) {
-    const [hx, hy] = network.worldPoint(...hover, w, h);
-    let best = -1,
-      distance = 12 / network.camera.zoom;
-    positions.forEach(([x, y], i) => {
-      const d = Math.hypot(x - hx, y - hy);
-      if (d < distance) {
-        distance = d;
-        best = i;
-      }
-    });
-    if (best >= 0) {
-      const name = groups[best],
-        offset = best - trace.regions[name].start;
-      const note =
-        (name === "note_intention" || name === "motif_recall") && offset < 61
-          ? " · " + pitchName(36 + offset)
-          : "";
-      const lines = [
-        `${labels[name] || name} · owner ${trace.owner_ids[best]}${note}`,
-        `Activity ${f.activation[best].toFixed(4)} · repair ${f.repair[best].toExponential(2)}`,
-        `Equation mismatch ${f.mismatch[best].toExponential(2)}`,
-      ];
-      c.font = "10px system-ui";
-      const tw = Math.min(
-          w - 12,
-          Math.max(...lines.map((t) => c.measureText(t).width)) + 16,
-        ),
-        x = Math.min(w - tw - 6, Math.max(6, hover[0] + 10)),
-        y = Math.min(h - 56, Math.max(4, hover[1] + 12));
-      c.fillStyle = "#081419ee";
-      c.fillRect(x, y, tw, 52);
-      c.fillStyle = "#e4efed";
-      lines.forEach((line, i) =>
-        c.fillText(line, x + 8, y + 14 + i * 15, tw - 16),
-      );
-    }
   }
   $("equilibrium").textContent =
-    `${trace.released ? "Input-release probe" : (trace.origin || "Recorded settlement") + (replaying ? " · replaying" : trace.equation_error.at(-1) <= 1e-5 ? " · settled" : " · budget reached")} · step ${trace.iterations?.[frame] ?? frame}/${trace.steps} · whole-brain equation error ${trace.equation_error[frame].toExponential(2)}`;
+    `${trace.released ? "Input-release probe" : (trace.origin || "Recorded settling") + (replaying ? " · replaying" : trace.equation_error.at(-1) <= 1e-5 ? " · settled" : " · budget reached")} · step ${trace.iterations?.[frame] ?? frame}/${trace.steps} · whole-brain equation error ${trace.equation_error[frame].toExponential(2)}`;
   drawWaves();
 }
 function drawWaves() {
@@ -649,7 +667,7 @@ function animate(t) {
   const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
   last = t;
   drawScore();
-  drawBrain(dt);
+  drawBrain(dt, t);
   requestAnimationFrame(animate);
 }
 let hearing = false;
@@ -678,10 +696,11 @@ window.__composerRenderer = network;
 window.__composerDebug = () => ({
   graph: {
     ...network.snapshot(),
-    allEdgesSubmitted: network.enabled || canvasMap?.seams === network.edges,
+    allEdgesSubmitted:
+      network.enabled || canvasMap?.synapses === network.edges,
   },
-  canvasSeams: canvasMap?.seams ?? 0,
-  traceOwners: trace?.owner_ids.length,
+  canvasSynapses: canvasMap?.synapses ?? 0,
+  traceNeurons: trace?.neuron_ids.length,
   frames: trace?.frames.length,
   origin: trace?.origin,
   frame,

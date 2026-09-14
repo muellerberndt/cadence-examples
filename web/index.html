@@ -19,7 +19,7 @@
           <h1>Imagine. Listen. Rewrite.</h1>
         </div>
         <p>
-          A learned patch net explores musical continuations.<br />One shared
+          A learned brain explores musical continuations.<br />One shared
           state. Many small, interacting repairs.
         </p>
       </div>
@@ -107,7 +107,7 @@ A sad, gentle piano piece with a returning melody</textarea>
               <div class="eyebrow">THE COMPOSING CIRCUIT</div>
               <h2>Different functions. A common state.</h2>
             </div>
-            <span id="owners"></span>
+            <span id="neurons"></span>
           </div>
           <div class="brain-toolbar">
             <button id="fit-brain">Fit whole brain</button
@@ -117,7 +117,7 @@ A sad, gentle piano piece with a returning melody</textarea>
               <option value="repair">Repair activity</option>
               <option value="mismatch">Equation mismatch</option>
               <option value="activation">Activation</option>
-              <option value="plasticity">Learned seam changes</option></select
+              <option value="plasticity">Learned synapse changes</option></select
             ><button id="replay">Replay repairs</button
             ><button id="release">Release the drive</button>
           </div>
@@ -125,8 +125,9 @@ A sad, gentle piano piece with a returning melody</textarea>
             <canvas id="brain-network" aria-hidden="true"></canvas
             ><canvas
               id="brain"
-              aria-label="Measured patch-net activity arranged into named functional populations"
+              aria-label="Measured brain activity arranged into named functional populations"
             ></canvas>
+            <div id="brain-labels" aria-hidden="true"></div>
           </div>
           <canvas
             id="waves"
@@ -134,17 +135,22 @@ A sad, gentle piano piece with a returning melody</textarea>
           ></canvas>
           <div class="legend">
             <span>Regions: function colors</span
+            ><span class="hot">Glow: change between iterations</span
             ><span class="green">Waves: mean activity</span
             ><span class="purple">Waves: mismatch</span>
           </div>
-          <div id="equilibrium">Waiting for a captured settlement</div>
+          <div id="equilibrium">Waiting for a captured settling</div>
           <div id="modulators"></div>
           <p class="small" id="sampling">
-            Every patch and seam is mapped. Dense seams overlap at this scale;
-            wheel or pinch to zoom, drag to pan. Live traces sample actual
-            candidate settlements. Traces replay sampled simulation steps. Color
-            is normalized within each population over this captured trace. These
-            are model signals, not EEG or neurotransmitter concentrations.
+            Every neuron and every synapse is drawn as one brain scan: regions
+            sit where their connections place them, tissue brightness follows the
+            chosen signal, the glow marks neurons that changed between recorded
+            iterations, and messages travel along the synapses of active neurons.
+            Wheel or pinch to zoom, drag to pan. Live traces sample the actual
+            settling of candidates. Traces replay sampled simulation steps.
+            Brightness and messages are scaled to the largest activation,
+            repair and mismatch of this captured trace. These are model
+            signals, not EEG or neurotransmitter concentrations.
           </p>
         </section>
       </div>
@@ -155,8 +161,8 @@ A sad, gentle piano piece with a returning melody</textarea>
           <p>
             The auditory history, harmony, rhythm, phrase context and note
             intention regions settle together. Changed messages alter
-            neighboring inboxes; those owners repair their state in turn. A
-            finite settlement budget does not guarantee a unique or globally
+            neighboring synaptic inputs; those neurons repair their state in turn. A
+            finite settling budget does not guarantee a unique or globally
             best equilibrium.
           </p>
         </article>
