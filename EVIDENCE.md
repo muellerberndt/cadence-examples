@@ -220,6 +220,14 @@ against the original receipt. See `runs/four-gpu-training-source/custody.json`.
 That constant is not consumed by the encoding, graph or training update. Original
 receipts remain unchanged; the custody verifier checks both source versions.
 
+All seven local training receipts pass source, manifest and checkpoint checks.
+The final run's 94 result/source files and all 702 dataset shards (3,723,468,560
+bytes) were copied back and verified against remote SHA256 inventories. Loading
+the final checkpoint with the current public core on CPU reproduces a fixed
+16-row GPU check with equal accuracies and maximum head-NLL difference 2.61e-7.
+This checks portability of the saved model, not musical generalization; receipts
+are `runs/final-load-comparison.json` and `runs/ensemble-download-verification.json`.
+
 Metadata identifies 37 eligible John Williams-tagged records before parsing,
 after excluding Thomas John Williams. Of the 34 usable records, 27 are training
 pieces (12,780 sampled events), two are validation and five are test. Uploader license labels are not independent
