@@ -31,8 +31,8 @@ Run `python tools/verify.py` to check the pinned producer and arithmetic.
 
 For measured local processing time, run `node memory/benchmark.mjs`. The bundled
 [runtime receipt](evidence.json) reports 100% accuracy on a distinct-key overwrite
-stream at 0.447 ms median per 128-write/996-query stream, versus 1.372, 3.192 and
-22.463 ms for the MLP's 1/10/100-update settings. That is about 3×/7×/50× lower
+stream at 0.447 ms median per 128-write/996-query stream, versus 1.360, 3.179 and
+22.635 ms for the MLP's 1/10/100-update settings. That is about 3×/7×/50× lower
 time on the recorded Apple M4/Node runtime. It is not a general speed or energy
 claim; see the [full comparison contract](../ADVANTAGES.md#measured-processing-time).
 

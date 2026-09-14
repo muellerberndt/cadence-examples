@@ -13,9 +13,9 @@
       "accuracy": 1,
       "correct": 996,
       "queries": 996,
-      "median_ms": 0.4515839999999969,
-      "min_ms": 0.44445900000000194,
-      "max_ms": 0.7359580000000037,
+      "median_ms": 0.44737500000000097,
+      "min_ms": 0.443125000000002,
+      "max_ms": 0.6962090000000032,
       "updates_per_observation": 1
     },
     {
@@ -23,9 +23,9 @@
       "accuracy": 0.5672690763052208,
       "correct": 565,
       "queries": 996,
-      "median_ms": 1.4287080000000003,
-      "min_ms": 1.3014170000000007,
-      "max_ms": 2.403416000000007,
+      "median_ms": 1.359958000000006,
+      "min_ms": 1.2954579999999964,
+      "max_ms": 2.5922920000000005,
       "updates_per_observation": 1
     },
     {
@@ -33,9 +33,9 @@
       "accuracy": 0.9668674698795181,
       "correct": 963,
       "queries": 996,
-      "median_ms": 3.363749999999996,
-      "min_ms": 3.241334000000009,
-      "max_ms": 3.6028340000000014,
+      "median_ms": 3.179292000000004,
+      "min_ms": 3.1467919999999907,
+      "max_ms": 3.270040999999992,
       "updates_per_observation": 10
     },
     {
@@ -43,16 +43,16 @@
       "accuracy": 0.9427710843373494,
       "correct": 939,
       "queries": 996,
-      "median_ms": 23.07012500000002,
-      "min_ms": 22.675333999999964,
-      "max_ms": 26.16191599999999,
+      "median_ms": 22.635250000000013,
+      "min_ms": 22.49166600000001,
+      "max_ms": 22.864499999999992,
       "updates_per_observation": 100
     }
   ],
   "sources": {
     "memory/benchmark.mjs": "d31ea0bbe3b7743dc7dfad9cd4e6f1fd4dc2fb199dc41cc46da621e7f0479cdd",
     "shared/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
-    "evidence/evidence.json": "118ca696bf99f3eaf6e260b81c1aa5749d2184c7bd03aa513e462697edbd9920"
+    "evidence/evidence.json": "308880614d3316c135a593de91e6f562d22eada302491f7c727da290c3e20afe"
   },
   "boundary": "Local JavaScript training plus queries on a distinct-key overwrite stream. Supplied explicit keys; no general language or energy-efficiency claim. Timings include memory allocation and differ across machines."
 }

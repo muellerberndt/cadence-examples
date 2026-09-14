@@ -40,7 +40,7 @@ and title; the navigation links open the individual pages. Assets and computatio
 
 The [advantage contracts](ADVANTAGES.md) state what each example measures and
 which conventional controls also work. On the recorded distinct-key stream,
-The underlying record operation gives 100% retention and about **50× lower processing time** than
+the underlying record operation gives 100% retention and about **50× lower processing time** than
 the MLP with 100 updates per observation (about **3×** versus one update).
 The strategy agent wins **8/8** scheduled games against one-ply evaluation and
 **5/8** against four-ply search. These are small, reproducible task comparisons,
