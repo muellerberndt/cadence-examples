@@ -274,6 +274,7 @@ export class BrainView {
         this.coalesced++;
       }
     }
+    this.syncTopology(this.auto?.source ?? this.source);
     this.readout(source);
   }
   syncTopology(source) {
@@ -561,7 +562,7 @@ export class BrainView {
       channel:
         this.signal === "repair" ? 1 : this.signal === "mismatch" ? 2 : 0,
       time: this.age,
-      moving: !this.frozen && !!trace && frame < trace.frames.length - 1,
+      moving: !!trace && frame < trace.frames.length - 1,
       nodes: false,
       activeSynapses: source.activeSynapses,
     });

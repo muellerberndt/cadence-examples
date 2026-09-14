@@ -51,6 +51,7 @@ def main():
             topology=page.evaluate("showcase.snapshot().brain.topology")
             assert topology["neurons"]==page.evaluate("showcase.snapshot().brain.neurons")
             assert topology["allEdgesSubmitted"]
+            page.screenshot(path=str(screenshots / "mouse-initial.png"))
             brain_bounds=page.locator("#brain-scene").bounding_box()
             page.mouse.move(brain_bounds["x"]+brain_bounds["width"]*.5,brain_bounds["y"]+brain_bounds["height"]*.5)
             page.mouse.wheel(0,-400)
@@ -233,6 +234,12 @@ def main():
             page.wait_for_function("showcase.snapshot().body.result?.depth >= 4")
             thought = page.evaluate("showcase.snapshot().body")
             assert thought["evaluated"] > 0
+            page.locator("#brain-future").fill("0")
+            page.locator("#brain-step-next").click()
+            page.wait_for_function("showcase.snapshot().brain.displayed.frame === 1")
+            assert page.evaluate("showcase.snapshot().brain.displayed.phase.startsWith('Recorded future')")
+            page.screenshot(path=str(screenshots / "game-future-inspection.png"))
+            page.locator("#brain-live").click()
             assert thought["background"] and not thought["busy"]
             assert thought["board"] == [0] * 42 and thought["turn"] == 1
             assert page.locator('[data-column="3"]').is_enabled()
