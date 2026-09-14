@@ -1,0 +1,50 @@
+name: Publish Pages
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/configure-pages@v5
+      - name: Build all five examples and the unlisted replay
+        run: python tools/build_pages.py --output _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Publish the verified site
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify the deployed browser experience
+        env:
+          FLIGHT_SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+          FLIGHT_HTTPS_URL="${FLIGHT_SITE_URL/#http:/https:}"
+          python tools/flight_preview_check.py --url "${FLIGHT_HTTPS_URL%/}/previews/1943/" --output runs/flight-live-browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flight-live-browser-screenshots
+          path: runs/flight-live-browser/*.png
