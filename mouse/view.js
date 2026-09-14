@@ -15,7 +15,8 @@ export function mountEmbodied(mode, api) {
     evidence,
   } = api;
   let lessons,
-    cue = 0;
+    cue = 0,
+    waiting = false;
   let mouse,
     seed = 13,
     paused = false,
@@ -28,7 +29,7 @@ export function mountEmbodied(mode, api) {
   $("headline").innerHTML = title;
   $("intro").textContent =
     mode === "mouse"
-      ? "Demonstrate a destination. Task memory retains it, a spatial network finds a route, and the moving body closes the loop. Teach a different task without erasing the old ones."
+      ? "Pick a task and the mouse recalls where to go. Teach a task by choosing its destination: one memory write, and the mouse walks there. Earlier lessons are kept."
       : "Present an outline. Watch visual and motor regions settle together, move the joints, and compare the drawing with the image again.";
   const worldXY = (w, h) => {
     const cell = Math.min((w - 42) / 19, (h - 35) / 13);
@@ -55,7 +56,7 @@ export function mountEmbodied(mode, api) {
       "A mouse navigates a labyrinth toward cheese. Brightness shows the spatial goal field. Controls can alter the maze and goal.",
     );
     $("controls").innerHTML =
-      `<div><h2>Several parts. One closed loop.</h2><p>Vision updates the map. Neighboring place patches settle. Motor output moves the body; position readback selects the next action.</p></div><div><label for="task-cue">Task cue</label><select id="task-cue"><option value="0">Find cheese</option><option value="1">Go home</option><option value="2">Get water</option><option value="3">New task · untaught</option></select><label for="teach-goal" style="margin-top:9px">Demonstrate a destination</label><select id="teach-goal"><option value="0">Cheese</option><option value="1">Home</option><option value="2">Water</option><option value="3">Flag</option></select><div class="buttons" style="margin-top:8px"><button id="teach-task">Teach task</button><button id="perform-task">Perform task</button></div><p id="lesson-status" aria-live="polite">Three initial demonstrations. Task 4 is yours to teach.</p></div><div class="buttons"><button id="new-maze">New maze</button><button id="move-goal">Move goal</button><button id="pause">Pause</button></div><details><summary>Edit the maze with the keyboard</summary><label for="edit-cell">Edit corridor / wall</label><select id="edit-cell"></select><button id="toggle-wall" style="margin-top:8px">Toggle selected cell</button><p>Unreachable goals stop the mouse; it does not walk through walls.</p></details><div class="buttons"><button id="heat" aria-pressed="true">Show goal field</button></div>${metrics(
+      `<div><h2>Several parts. One closed loop.</h2><p>Vision updates the map. Neighboring place patches settle. Motor output moves the body; position readback selects the next action.</p></div><div><label for="task-cue">Task · the mouse reacts at once</label><select id="task-cue"><option value="0">Find cheese</option><option value="1">Go home</option><option value="2">Get water</option><option value="3">New task · untaught</option></select><label for="teach-goal" style="margin-top:9px">Teach this task to go to</label><select id="teach-goal"><option value="0">Cheese</option><option value="1">Home</option><option value="2">Water</option><option value="3">Flag</option></select><div class="buttons" style="margin-top:8px"><button id="teach-task">Teach</button><button id="perform-task">Go again</button></div><p id="lesson-status" aria-live="polite">Three tasks are taught. Choose New task, pick a destination and press Teach.</p></div><div class="buttons"><button id="new-maze">New maze</button><button id="move-goal">Move goal</button><button id="pause">Pause</button></div><details><summary>Edit the maze with the keyboard</summary><label for="edit-cell">Edit corridor / wall</label><select id="edit-cell"></select><button id="toggle-wall" style="margin-top:8px">Toggle selected cell</button><p>Unreachable goals stop the mouse; it does not walk through walls.</p></details><div class="buttons"><button id="heat" aria-pressed="true">Show goal field</button></div>${metrics(
         [
           ["Body moves", "0", "mouse-moves"],
           ["Spatial residual", "0", "spatial-residual"],
@@ -76,17 +77,20 @@ export function mountEmbodied(mode, api) {
     function perform() {
       const destination = lessons.recall(cue);
       if (destination === null) {
+        waiting = true;
         $("lesson-status").textContent =
-          "This task is unfamiliar. Demonstrate its destination first.";
+          "No lesson for this task. Pick where it should go and press Teach.";
         return;
       }
+      waiting = false;
       mouse.world.goal = stations(mouse.world)[destination];
       mouse.bindTask(lessons.memory, cue, destination);
       $("lesson-status").textContent =
-        `Task ${cue + 1}: recalling ${["cheese", "home", "water", "flag"][destination]}. Lessons carry into new mazes.`;
+        `Task ${cue + 1}: memory recalls ${["cheese", "home", "water", "flag"][destination]}, and the mouse heads there.`;
     }
     $("task-cue").onchange = () => {
       cue = +$("task-cue").value;
+      perform();
     };
     $("perform-task").onclick = perform;
     $("teach-task").onclick = () => {
@@ -97,10 +101,11 @@ export function mountEmbodied(mode, api) {
           JSON.stringify(lessons.records),
         );
       } catch {}
-      $("lesson-status").textContent =
-        `Task ${cue + 1} learned in one residual write. Earlier tasks retained. Saved in this browser.`;
       if (cue === 3)
         $("task-cue").options[3].textContent = "New task · learned";
+      perform();
+      $("lesson-status").textContent =
+        `Taught in one memory write: task ${cue + 1} goes to ${["cheese", "home", "water", "flag"][lessons.recall(cue)]}. Other tasks are kept, saved in this browser.`;
     };
     $("new-maze").onclick = () => {
       seed += 10;
@@ -201,7 +206,7 @@ export function mountEmbodied(mode, api) {
   return {
     draw(w, h, dt) {
       if (mode === "mouse") {
-        if (!paused) api.act(() => mouse.step(dt, true));
+        if (!paused && !waiting) api.act(() => mouse.step(dt, true));
         const { cell, ox, oy } = worldXY(w, h),
           world = mouse.world,
           state = mouse.circuit.state,
@@ -286,8 +291,9 @@ export function mountEmbodied(mode, api) {
         $("mouse-moves").textContent = mouse.moves;
         $("spatial-residual").textContent =
           mouse.circuit.residual.toExponential(1);
-        $("mouse-state").textContent =
-          mouse.cell === world.goal
+        $("mouse-state").textContent = waiting
+          ? "Needs a lesson"
+          : mouse.cell === world.goal
             ? "Reached"
             : mouse.next() < 0
               ? "No route"
@@ -309,7 +315,9 @@ export function mountEmbodied(mode, api) {
         return Object.assign(mouse.joint, {
           behavior: paused
             ? { label: "Paused", tone: "neutral" }
-            : mouse.cell === mouse.world.goal
+            : waiting
+              ? { label: "Waiting for a lesson", tone: "neutral" }
+              : mouse.cell === mouse.world.goal
               ? { label: "Goal reached", tone: "positive" }
               : mouse.next() < 0
                 ? { label: "Route blocked", tone: "correcting" }

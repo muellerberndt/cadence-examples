@@ -74,13 +74,15 @@ def main():
                 "[showcase.snapshot().body.x,showcase.snapshot().body.y]"
             )
             page.locator("#mouse-motors").click()
+            # Choosing a task acts at once; an untaught task waits for a lesson.
+            page.locator("#task-cue").select_option("1")
+            home_goal = page.evaluate("showcase.snapshot().body.goal")
             page.locator("#task-cue").select_option("3")
-            page.locator("#perform-task").click()
-            assert "unfamiliar" in page.locator("#lesson-status").inner_text()
+            assert "No lesson" in page.locator("#lesson-status").inner_text()
             page.locator("#teach-goal").select_option("3")
             page.locator("#teach-task").click()
-            page.locator("#perform-task").click()
             assert [3, 3] in page.evaluate("showcase.snapshot().body.lessons")
+            assert page.evaluate("showcase.snapshot().body.goal") != home_goal
             page.locator("#new-maze").click()
             assert [3, 3] in page.evaluate("showcase.snapshot().body.lessons")
             page.reload()

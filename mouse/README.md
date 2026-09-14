@@ -3,7 +3,18 @@
 From the repository root: `python serve.py mouse`. The launcher opens
 `/mouse/`; use `/` to browse the other examples.
 
-Teach a fourth task, change a corridor, move the goal, or disable Motor neurons. Lessons persist in this browser.
+Try it:
+
+1. Pick a task (**Find cheese**, **Go home**, **Get water**). The mouse recalls the
+   destination from memory and walks there at once.
+2. Pick **New task**. The mouse stops, because the task has no lesson.
+3. Choose a destination under **Teach this task to go to** and press **Teach**.
+   One memory write stores the lesson and the mouse walks there.
+4. Teach the same task a different destination and it changes course. The other
+   tasks keep their lessons, and **New maze** carries them into a new layout.
+
+Click walls to change the maze, **Move goal**, or switch off **Motor neurons**.
+Lessons persist in this browser.
 
 ## Control path
 

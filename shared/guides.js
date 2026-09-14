@@ -21,7 +21,7 @@ const guides = {
     ],
     [
       "Watch a lesson take effect",
-      "Select New task, choose Flag, then Teach task and Perform task. Change its destination and teach again; earlier distinct cues retain their lessons. New maze carries the same task memory into another layout.",
+      "Choose New task: the mouse stops, because it has no lesson. Pick Flag and press Teach: one memory write, and it walks to the flag. Teach it another destination and it changes course; earlier distinct cues retain their lessons. New maze carries the same task memory into another layout.",
     ],
     [
       "Why Cadence fits",
