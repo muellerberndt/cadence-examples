@@ -111,20 +111,27 @@ and these counts are not measures of animal intelligence. No whole-animal equiva
 
 ## Read the brain view
 
-Regions group the actual task components by function. The circuit appears beside
-the body at the top of each page. Every declared neuron and directed synapse is mapped;
-there is no representative-neuron or strongest-synapse subset. Dense synapses overlap
+The circuit appears beside the body at the top of each page as one integrated brain,
+drawn by the standard Cadence brain scan (`shared/brain_scan.js`, copied from the
+cadence library by `tools/sync_brain_scan.py`). Every declared neuron and directed
+synapse is mapped; there is no representative-neuron or strongest-synapse subset.
+Regions are the task components; they are placed next to the regions they connect to,
+image-like regions keep their grid, and inside a region each neuron sits among the
+neurons it talks to. Region colour follows its role: blue vision, green sensory and
+cue, violet memory, teal association, orange motor, rose value. Labels identify the
+exact component; colour expresses design intent, not independently established
+neural specialization. The tissue's brightness is the selected signal on its region
+scale, the hot glow (violet, magenta, orange, white) is the change that just happened,
+synapses light up when their source changed, and particles travel along synapses in
+proportion to the message sent, so a settling reads as a wave. Dense synapses overlap
 when zoomed out. Wheel/pinch zooms, dragging pans, **Fit whole brain** resets the
-camera and **Expand** opens the map full screen. Hover or tap a neuron to inspect
-its value. Violet marks visual and memory assemblies, cyan motor assemblies,
-green sensory/cue assemblies, blue spatial/timing assemblies and rose planning
-assemblies. Labels identify the exact component; color expresses design intent,
-not independently established neural specialization.
+camera and **Expand** opens the map full screen. Hover or tap a neuron to inspect its
+value.
 
 WebGL2 retains the full graph on the GPU and caches its static connection image.
-Actual changes supply the activity overlay. Small public graphs also retain a
-Canvas fallback when WebGL2 is unavailable. Rendering work and artificial replay
-time are excluded from numerical efficiency comparisons.
+Actual changes supply the activity overlay. A Canvas fallback draws the neurons when
+WebGL2 is unavailable. Rendering work and artificial replay time are excluded from
+numerical efficiency comparisons.
 
 - **Behavior badge:** green = positive outcome; blue = seeking/moving; amber =
   correction; gray = idle/paused. These name observed events, not measured feelings.

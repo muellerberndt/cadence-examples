@@ -30,8 +30,9 @@ def check(url, output):
         assert page.locator('meta[name="robots"]').get_attribute('content') == 'noindex, nofollow'
         state = page.evaluate('window.replayState')
         assert state['neurons'] == 38577 and state['synapses'] == 1056874
-        assert state['totalVertices'] == 38577+6308*29+2
-        assert state['totalEdges'] == 1056874+6308*56+512
+        # one drawn vertex per stored route address, one drawn synapse per stored value
+        assert state['totalVertices'] == 38577+6308+2
+        assert state['totalEdges'] == 1056874+6308*28+512
         page.locator('#step').click()
         page.wait_for_function('window.replayState.step===1', timeout=60000)
         assert page.locator('#screen').get_attribute('src').endswith('000000.png')

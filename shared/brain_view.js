@@ -1,5 +1,5 @@
 import { settlingTrace } from "./telemetry.js";
-import { CircuitMap, regionColor } from "./circuit_map.js";
+import { BrainScan, layoutAtlas, PALETTE, roleOf } from "./brain_scan.js";
 import { thoughtSnapshot } from "./thought_trace.js";
 
 const labels = {
@@ -11,6 +11,22 @@ const labels = {
   key: "Task / cue input",
   record: "Associative memory",
 };
+// Region roles the standard palette cannot read from these demos' region keys.
+const ROLES = {
+  ink: "vision",
+  missing: "vision",
+  readback: "sensory",
+  error: "value",
+  features: "sensory",
+  futures: "association",
+  self_input: "sensory",
+  self_state: "value",
+  premotor: "motor",
+  patch: "association",
+};
+// Sheets: (rows, columns) of the regions that are images or fields.
+const SHAPES = { retina: [24, 24], place: [12, 19] };
+export const regionColor = (name) => PALETTE[roleOf(name, ROLES)] ?? PALETTE.other;
 const copy = (source) => ({
   ...source,
   state: source.state.slice(),
@@ -31,7 +47,13 @@ export class BrainView {
     this.networkCanvas.className = "brain-network";
     this.networkCanvas.setAttribute("aria-hidden", "true");
     this.canvas.before(this.networkCanvas);
-    this.map = new CircuitMap(this.networkCanvas, this.canvas);
+    // The whole brain, one integrated scan: the standard Cadence component draws every
+    // neuron and synapse; this overlay adds the demo's labels, readouts and plasticity.
+    this.scan = null;
+    this.topology = null;
+    this.atlasGroups = null;
+    this.atlasGroupsKey = "";
+    this.activeCount = null;
     this.waveCanvas = document.getElementById("brain-waves");
     this.waveCtx = this.waveCanvas.getContext("2d");
     this.$ = (id) => document.getElementById(id);
@@ -87,7 +109,7 @@ export class BrainView {
       this.frozen = true;
       this.$("brain-freeze").textContent = "Resume view";
     };
-    this.$("brain-fit").onclick = () => this.map.fit();
+    this.$("brain-fit").onclick = () => this.scan?.fit();
     this.$("brain-expand").onclick = () => {
       const panel = this.canvas.closest(".brain-panel");
       if (document.fullscreenElement) document.exitFullscreen();
@@ -106,7 +128,7 @@ export class BrainView {
       : "Follow settling";
   }
   reset() {
-    this.map.fit();
+    this.scan?.fit();
     this.source = this.old = this.trace = this.auto = this.pending = null;
     this.diagnostic = null;
     this.frozen = false;
@@ -282,17 +304,47 @@ export class BrainView {
     this.syncTopology(this.auto?.source ?? this.source);
     this.readout(source);
   }
+  regionLabel(source, g) {
+    return source.regionLabels?.[g] ?? labels[g] ?? g;
+  }
+  /** Lay the whole connectome out once per structure; follow weight changes in place. */
   syncTopology(source) {
-    const topology = this.map.topology;
-    if (
-      !topology ||
-      this.map.n !== source.state.length ||
-      topology.length !== source.edges.length * 3 ||
-      source.edges.some((e, i) =>
-        e.some((v, k) => Math.fround(v) !== topology[i * 3 + k]),
-      )
-    )
-      this.map.graph(source.state.length, source.edges);
+    const n = source.state.length, edges = source.edges, count = edges.length;
+    const groups = source.groups ?? Array(n).fill("patch");
+    const groupsKey = groups === this.atlasGroups ? this.atlasGroupsKey : groups.join("");
+    const same =
+      this.topology &&
+      this.scan &&
+      this.scan.n === n &&
+      this.topology.length === count * 3 &&
+      groupsKey === this.atlasGroupsKey &&
+      !edges.some((e, i) => e[0] !== this.topology[i * 3] || e[1] !== this.topology[i * 3 + 1]);
+    if (!same) {
+      const pre = new Uint32Array(count), post = new Uint32Array(count), weight = new Float32Array(count);
+      edges.forEach(([a, b, w], i) => { pre[i] = a; post[i] = b; weight[i] = w; });
+      const positions = {};
+      for (const [g, samples] of Object.entries(source.visualSamples ?? {}))
+        positions[g] = samples.map(([sx, sy]) => [sx, -sy]);
+      const names = [...new Set(groups)];
+      const atlas = layoutAtlas({
+        n, pre, post, weight, groups,
+        shapes: SHAPES, roles: ROLES, positions,
+        labels: Object.fromEntries(names.map((g) => [g, this.regionLabel(source, g)])),
+      });
+      if (!this.scan) this.scan = new BrainScan(this.networkCanvas, atlas, { interaction: this.canvas, montageRows: 0 });
+      else this.scan.setAtlas(atlas);
+      this.topology = new Float32Array(count * 3);
+      edges.forEach(([a, b, w], i) => this.topology.set([a, b, w], i * 3));
+      this.atlasGroups = groups;
+      this.atlasGroupsKey = groupsKey;
+      this.activeCount = null;
+    }
+    const active = source.activeSynapses ?? count;
+    if (active !== this.activeCount || edges.some((e, i) => Math.fround(e[2]) !== this.topology[i * 3 + 2])) {
+      edges.forEach((e, i) => { this.topology[i * 3 + 2] = e[2]; });
+      this.scan.setWeights(edges.map((e, i) => (i < active ? e[2] : 0)));
+      this.activeCount = active;
+    }
   }
   readout(source) {
     this.history.push(
@@ -382,6 +434,7 @@ export class BrainView {
     }
     const source = this.auto?.source ?? this.source;
     this.syncTopology(source);
+    const scan = this.scan;
     const trace = this.trace ?? this.auto?.trace;
     const frame = this.trace ? this.frame : (this.auto?.frame ?? 0);
     const s = trace ? trace.frames[frame] : source.state;
@@ -409,7 +462,7 @@ export class BrainView {
       const order = { sensory: 0, interneuron: 1, motor: 2 };
       return (order[a] ?? 3) - (order[b] ?? 3);
     });
-    const regionLabel = (g) => source.regionLabels?.[g] ?? labels[g] ?? g;
+    const regionLabel = (g) => this.regionLabel(source, g);
     this.$("brain-regions").textContent = groupNames
       .map(regionLabel)
       .join(" · ");
@@ -434,147 +487,37 @@ export class BrainView {
       ? `${this.cascades}:${!!this.trace}:${trace.release}:${frame}`
       : this.old;
     if (!this.frozen) {
+      const fresh = this.trailStamp !== stamp;
       this.trail = s.map((_, i) =>
         Math.max(
           (this.trail[i] ?? 0) * Math.exp(-dt * 4),
-          this.trailStamp !== stamp ? repairs[i] : 0,
+          fresh ? repairs[i] : 0,
+        ),
+      );
+      // The scan's glow follows the change itself (linear on the region scale), so a wave
+      // of repairs reads as a wave; the logarithmic trail above feeds the readouts.
+      this.glow = s.map((_, i) =>
+        Math.max(
+          (this.glow?.[i] ?? 0) * Math.exp(-dt * 4),
+          fresh ? Math.min(1, Math.abs(diff[i]) / (trace?.scales.repair[groups[i]] ?? repairMax[groups[i]] ?? 0.01)) : 0,
         ),
       );
       this.trailStamp = stamp;
     }
-    const regions = {},
-      positions = Array(s.length);
-    const top = 30,
-      bottom = h - 38,
-      gap = 12,
-      usable = bottom - top;
-    c.save();
-    this.map.transformContext(c, w, h);
-    groupNames.forEach((g, gi) => {
-      let x = 8,
-        y = top,
-        rw = w - 16,
-        rh = usable;
-      if (groupNames.includes("retina")) {
-        const visual = groupNames.filter(
-            (name) => source.visualSamples?.[name] || name === "retina",
-          ),
-          motor = groupNames.filter((name) => !visual.includes(name));
-        if (visual.includes(g)) {
-          rw = (w - 28) * 0.45;
-          rh = (usable - gap * (visual.length - 1)) / visual.length;
-          y += visual.indexOf(g) * (rh + gap);
-        } else {
-          x = 20 + (w - 28) * 0.45;
-          rw = w - x - 8;
-          rh = (usable - gap * (motor.length - 1)) / motor.length;
-          y += motor.indexOf(g) * (rh + gap);
-        }
-      } else if (groupNames.includes("place")) {
-        if (g === "place") rw = (w - 28) * 0.64;
-        else {
-          x = 20 + (w - 28) * 0.64;
-          rw = w - x - 8;
-          rh =
-            (usable - gap * (groupNames.length - 2)) / (groupNames.length - 1);
-          y += (gi - 1) * (rh + gap);
-        }
-      } else if (groupNames.includes("sensory") && groupNames.length > 3) {
-        if (gi < 3) {
-          rw = (w - 28) * 0.68;
-          rh = (usable - gap * 2) / 3;
-          y += gi * (rh + gap);
-        } else {
-          x = 20 + (w - 28) * 0.68;
-          rw = w - x - 8;
-          rh = (usable - gap) / 2;
-          y += (gi - 3) * (rh + gap);
-        }
-      } else if (groupNames.length > 3) {
-        rw = (w - 16 - gap) / 2;
-        const rows = Math.ceil(groupNames.length / 2);
-        rh = (usable - gap * (rows - 1)) / rows;
-        x += (gi % 2) * (rw + gap);
-        y += Math.floor(gi / 2) * (rh + gap);
-      } else if (groupNames.length === 2) {
-        rw = (w - 16 - gap) / 2;
-        x += gi * (rw + gap);
-      } else {
-        rh = (usable - gap * (groupNames.length - 1)) / groupNames.length;
-        y += gi * (rh + gap);
-      }
-      const members = groups.flatMap((v, i) => (v === g ? [i] : []));
-      regions[g] = { x, y, rw, rh, members };
-      const role = regionColor(g);
-      c.fillStyle = `rgba(${role.join(",")},.045)`;
-      c.fillRect(x, y, rw, rh);
-      c.strokeStyle = `rgba(${role.join(",")},.22)`;
-      c.strokeRect(x + 0.5, y + 0.5, rw - 1, rh - 1);
-      c.strokeStyle = `rgba(${role.join(",")},.75)`;
-      c.lineWidth = 1;
-      c.beginPath();
-      c.moveTo(x + 9, y + 22);
-      c.lineTo(x + Math.min(rw - 8, 100), y + 22);
-      c.stroke();
-      c.fillStyle = "#d8e6e9";
-      c.font = "11px system-ui, sans-serif";
-      c.textAlign = "left";
-      c.fillText(regionLabel(g), x + 9, y + 17, rw - 18);
-      members.forEach((i, k) => {
-        if (g === "place") {
-          positions[i] = [
-            x + 14 + ((i % 19) / 18) * (rw - 28),
-            y + 36 + (Math.floor(i / 19) / 12) * (rh - 54),
-          ];
-        } else if (source.visualSamples?.[g]) {
-          const [sx, sy] = source.visualSamples[g][k];
-          positions[i] = [x + 10 + sx * (rw - 20), y + 29 + sy * (rh - 44)];
-        } else if (g === "retina") {
-          positions[i] = [
-            x + 10 + (((k % 24) + 0.5) / 24) * (rw - 20),
-            y + 29 + ((Math.floor(k / 24) + 0.5) / 24) * (rh - 44),
-          ];
-        } else {
-          const cols =
-            members.length <= 2
-              ? 1
-              : Math.max(
-                  2,
-                  Math.ceil(
-                    Math.sqrt((members.length * rw) / Math.max(35, rh - 40)),
-                  ),
-                );
-          const rows = Math.ceil(members.length / cols);
-          positions[i] = [
-            x + 14 + (((k % cols) + 0.5) / cols) * (rw - 28),
-            y + 29 + ((Math.floor(k / cols) + 0.5) / rows) * (rh - 42),
-          ];
-        }
-      });
-    });
+    if (this.glow?.length !== s.length) this.glow = s.map(() => 0);
     const lasting = this.signal === "consolidation",
       plastic = this.signal === "plasticity" || lasting,
       max = Math.max(1e-12, ...s.map(Math.abs));
-    const scaleFor = (kind) =>
-      groups.map((g) => trace?.scales[kind]?.[g] ?? maxima[g] ?? 1);
-    this.map.draw({
-      positions,
-      groups,
-      activation: s,
-      repair: diff,
-      mismatch:
-        trace?.mismatches?.[frame] ?? this.diagnostic?.mismatches?.at(-1),
-      scales: [scaleFor("activity"), scaleFor("repair"), scaleFor("mismatch")],
-      mask: source.mask,
-      channel:
-        this.signal === "repair" ? 1 : this.signal === "mismatch" ? 2 : 0,
-      time: this.age,
-      moving: !!trace && frame < trace.frames.length - 1,
-      nodes: false,
-      activeSynapses: source.activeSynapses,
-    });
+    // The scan: messages are the actual activations, the glow is the change that just
+    // happened, and the brightness is the selected signal on its region scale.
+    scan.options.field = this.heat && !plastic;
+    scan.options.particles = !plastic;
+    scan.setVisible(source.mask ?? null);
+    scan.show(s.map((v) => v / max), this.glow, { level: norm });
+    const flat = scan.screenAll();
+    const positions = Array.from({ length: s.length }, (_, i) => [flat[2 * i], flat[2 * i + 1]]);
     const slowWeights = Object.fromEntries((source.consolidated ?? []).map(([i, , v]) => [i, v]));
-    if (!this.map.enabled || plastic)
+    if (!scan.enabled || plastic)
       source.edges.forEach(([a, b, weight], i) => {
         if (source.mask?.[a] === 0 || source.mask?.[b] === 0) return;
         if (lasting) weight = slowWeights[i] ?? 0;
@@ -629,51 +572,44 @@ export class BrainView {
     let hovered = -1,
       nearest = 18;
     positions.forEach(([x, y], i) => {
-      const value = Math.abs(norm[i]),
-        muted = source.mask?.[i] === 0;
-      const radius = s.length <= 32 ? 3.5 + value * 3 : 1.6 + value * 1.8;
-      const rgb = norm[i] < 0 ? "121,184,255" : "255,196,113";
-      c.fillStyle = muted
-        ? "#653647"
-        : (this.heat && !plastic) ||
-            this.signal === "repair" ||
-            this.signal === "input"
-          ? `rgb(${rgb})`
-          : `rgb(${regionColor(groups[i]).join(",")})`;
-      c.globalAlpha = muted ? 0.4 : 0.22 + 0.78 * value;
-      c.beginPath();
-      c.arc(x, y, radius, 0, Math.PI * 2);
-      c.fill();
-      c.globalAlpha = 1;
-      if (!muted && this.trail[i] > 0.015) {
-        c.strokeStyle = `rgba(191,168,255,${this.trail[i]})`;
-        c.lineWidth = 1.5;
+      if (source.mask?.[i] === 0) {
+        // A silenced or absent neuron: a dim mark where it would be.
+        c.fillStyle = "rgba(101,54,71,0.6)";
         c.beginPath();
-        c.arc(x, y, radius + 3 + this.trail[i] * 2, 0, Math.PI * 2);
-        c.stroke();
+        c.arc(x, y, 1.6, 0, Math.PI * 2);
+        c.fill();
       }
       if (s.length <= 4) {
         c.fillStyle = "#a3b4b9";
         c.font = "10px ui-monospace, monospace";
         c.textAlign = "center";
-        c.fillText(
-          source.names?.[i] ?? `Neuron ${i}`,
-          x,
-          y + 22,
-          regions[groups[i]].rw - 16,
-        );
+        c.fillText(source.names?.[i] ?? `Neuron ${i}`, x, y + 22, 120);
         c.fillText(values[i].toExponential(2), x, y + 35);
       }
       if (this.hover) {
-        const [hx, hy] = this.map.worldPoint(...this.hover, w, h);
-        const d = Math.hypot(x - hx, y - hy);
+        const d = Math.hypot(x - this.hover[0], y - this.hover[1]);
         if (d < nearest) {
           nearest = d;
           hovered = i;
         }
       }
     });
-    c.restore();
+    // Region labels ride on the scan, above each region: its name and its live neurons.
+    c.textAlign = "center";
+    scan.atlas.regions.forEach((region, k) => {
+      const members = scan.atlas.memberIndices[k];
+      const [x, above] = scan.toScreen(region.center[0], region.center[1] + region.extent[1]);
+      const [, middle] = scan.toScreen(region.center[0], region.center[1]);
+      if (x < -60 || x > w + 60 || middle < -20 || middle > h + 20) return;
+      const top = Math.max(34, Math.min(h - 4, above)); // below the caption line
+      const enabled = members.filter((i) => source.mask?.[i] !== 0).length;
+      c.font = "11px system-ui, sans-serif";
+      c.fillStyle = `rgba(${region.color.join(",")},0.92)`;
+      c.shadowColor = "#000";
+      c.shadowBlur = 4;
+      c.fillText(`${region.label ?? region.name} · ${enabled === members.length ? enabled : `${enabled}/${members.length}`}`, x, top - 6);
+      c.shadowBlur = 0;
+    });
     c.textAlign = "left";
     c.font = "10px ui-monospace, monospace";
     c.fillStyle = "#91a6b1";
@@ -688,18 +624,9 @@ export class BrainView {
       8,
       15,
     );
-    Object.values(regions).forEach(({ x, y, rw, rh, members }) => {
-      const enabled = members.filter((i) => source.mask?.[i] !== 0).length;
-      c.fillText(
-        `${members.filter(i => Math.abs(diff[i]) > 1e-8).length} repairing · ${enabled}/${members.length} neurons`,
-        x + 9,
-        y + rh - 5,
-        rw - 18,
-      );
-    });
     if (hovered >= 0)
       c.fillText(
-        `${source.names?.[hovered] ?? `Neuron ${hovered}`} · ${values[hovered].toExponential(3)}`,
+        `${source.names?.[hovered] ?? `Neuron ${hovered}`} · ${regionLabel(groups[hovered])} · ${values[hovered].toExponential(3)}`,
         8,
         h - 22,
         w - 16,
@@ -818,17 +745,18 @@ export class BrainView {
       rh = (h - 17) / rows;
     entries.forEach(([g, series], r) => {
       const y = 18 + r * rh;
-      c.fillStyle = "#a3b4b9";
+      const color = regionColor(g);
+      c.fillStyle = `rgba(${color.join(",")},0.9)`;
       c.fillText(label(g), 4, y + rh * 0.65, 120);
       const peak = Math.max(
         0.01,
         ...series.flatMap((v) => [Math.abs(v.mean), v.mismatch]),
       );
-      for (const [key, color] of [
-        ["mean", "#87ecc2"],
+      for (const [key, stroke] of [
+        ["mean", `rgba(${color.join(",")},0.95)`],
         ["mismatch", "#bfa8ff"],
       ]) {
-        c.strokeStyle = color;
+        c.strokeStyle = stroke;
         c.lineWidth = 1;
         c.beginPath();
         series.slice(0, frame + 1).forEach((v, i) => {
@@ -863,7 +791,9 @@ export class BrainView {
       automatic: !!this.auto,
       behavior: this.source?.behavior,
       displayed: this.displayed,
-      topology: this.map.snapshot(),
+      topology: this.scan
+        ? this.scan.snapshot()
+        : { renderer: "none", neurons: 0, synapses: 0, zoom: 1, allEdgesSubmitted: false },
     };
   }
 }

@@ -61,13 +61,13 @@ async function advance(direction=1){
  const i=current+direction;if(i<0||i>=manifest.events.length){playing=false;controls();return;}await show(i,direction<0?eventAt(i).steps||0:0);
 }
 async function seekFrame(i,game=false){const events=manifest.frames[i].events;const id=game?(events.findLast(id=>eventAt(id).kind==='action')??events.at(-1)):events[0];await show(id);}
-async function tick(time){if(playing&&!busy&&time-lastTick>=1000/(($('clock').value==='game'?15:30)*Number($('speed').value))){lastTick=time;await advance();}requestAnimationFrame(tick);}
+async function tick(time){if(playing&&!busy&&time-lastTick>=1000/(($('clock').value==='game'?15:30)*Number($('speed').value))){lastTick=time;await advance();}else if(circuit)circuit.animate(time);requestAnimationFrame(tick);}
 $('play').onclick=()=>{playing=!playing;controls();};$('step').onclick=()=>{playing=false;controls();advance();};$('back').onclick=()=>{playing=false;controls();advance(-1);};
 let seekTimer;$('timeline').oninput=()=>{playing=false;controls();clearTimeout(seekTimer);const target=Number($('timeline').value);seekTimer=setTimeout(()=>seekFrame(target,$('clock').value==='game'),100);};
 $('clock').onchange=()=>{if($('clock').value==='game'&&$('mode').value==='repair'){$('mode').value='activity';circuit.mode='activity';circuit.draw();}};
 $('mode').onchange=()=>{circuit.mode=$('mode').value;circuit.draw();};$('fit').onclick=()=>circuit.fit();
 document.addEventListener('keydown',e=>{if(['INPUT','SELECT','BUTTON'].includes(e.target.tagName))return;if(e.code==='Space'){e.preventDefault();$('play').click();}if(e.code==='ArrowRight')$('step').click();if(e.code==='ArrowLeft')$('back').click();});
-async function start(){const r=await fetch('./recording/manifest.json');if(!r.ok)throw Error('Recording manifest is unavailable');manifest=await r.json();if(!manifest.events.length)throw Error('This recording has no completed events');graph=await packet('graph.bin.gz');circuit=new Circuit($('map'),$('labels'),graph);
+async function start(){const r=await fetch('./recording/manifest.json');if(!r.ok)throw Error('Recording manifest is unavailable');manifest=await r.json();if(!manifest.events.length)throw Error('This recording has no completed events');graph=await packet('graph.bin.gz');circuit=new Circuit($('map'),$('labels'),graph);window.__flightCircuit=circuit;
  $('counts').textContent=`${circuit.n.toLocaleString()} neurons · ${circuit.e.toLocaleString()} synapses\n+ ${circuit.r.toLocaleString()} memory addresses + value / dopamine`;
  $('game-title').textContent=`${manifest.game} · trained pilot`;$('timeline').max=manifest.frames.length-1;
  $('provenance').textContent=`Cadence ${manifest.cadence}. Checkpoint SHA-256: ${manifest.checkpoint_sha256||'test fixture'}. Seed ${manifest.seed}. ${manifest.stop_reason}. ${manifest.parameter_versions} parameter versions. ${fmt(manifest.bytes/2**20,1)} MiB recorded.`;
