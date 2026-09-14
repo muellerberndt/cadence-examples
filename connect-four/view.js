@@ -3,6 +3,8 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
   let board = Array(42).fill(0),
     turn = 1,
     busy = false,
+    pondering = false,
+    background = true,
     result = null,
     preview = null,
     previewStep = 0,
@@ -29,11 +31,12 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     "Connect Four board on the left; an inspected hypothetical continuation on the right. Numbered buttons also play columns.",
   );
   $("controls").innerHTML =
-    `<div><h2>Think before placing a stone.</h2><p>Watch pauses before the move. Choose a candidate to inspect its predicted continuation, then let Cadence play its preferred move.</p></div><div class="buttons" id="game-columns">${Array.from({ length: 7 }, (_, i) => `<button data-column="${i}" aria-label="Play column ${i + 1}">${i + 1}</button>`).join("")}</div><div class="buttons"><button id="new-game">New game</button><button id="cadence-first">Cadence starts</button><button id="watch-thought" aria-pressed="false">Watch before moving</button><button id="play-thought" disabled>Play Cadence’s move</button></div><div><label for="game-depth">Thinking depth</label><select id="game-depth"><option value="4">4 plies · quick</option><option value="6" selected>Up to 6 · adaptive</option></select><div class="buttons" style="margin-top:8px"><button id="self-monitor" aria-pressed="true">Self-monitor on</button></div></div>${metrics(
+    `<div><h2>Think before placing a stone.</h2><p>Watch pauses before the move. Choose a candidate to inspect its predicted continuation, then let Cadence play its preferred move.</p></div><div class="buttons" id="game-columns">${Array.from({ length: 7 }, (_, i) => `<button data-column="${i}" aria-label="Play column ${i + 1}">${i + 1}</button>`).join("")}</div><div class="buttons"><button id="new-game">New game</button><button id="cadence-first">Cadence starts</button><button id="watch-thought" aria-pressed="false">Watch before moving</button><button id="play-thought" disabled>Play Cadence’s move</button></div><div><label for="game-depth">Thinking depth</label><select id="game-depth"><option value="4">4 plies · quick</option><option value="6" selected>Up to 6 · adaptive</option></select><div class="buttons" style="margin-top:8px"><button id="self-monitor" aria-pressed="true">Self-monitor on</button><button id="background-thought" aria-pressed="true">Think between turns: on</button></div></div>${metrics(
       [
         ["Imagined positions", "0", "game-nodes"],
         ["Completed depth", "0", "game-depth-readout"],
         ["Monitor request", "—", "game-review"],
+        ["Reused positions", "0", "game-reuse"],
       ],
     )}<div id="game-futures" class="buttons"></div><div><label for="future-step">Inspect future ply</label><input id="future-step" type="range" min="0" max="6" value="0"></div><p id="game-status" aria-live="polite"></p>`;
   let watch = false,
@@ -52,10 +55,17 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
       );
     $("play-thought").disabled = !(busy && result && watch);
   };
+  const stopThought = (reset = false) => {
+    worker.postMessage({ kind: "cancel", id: ++job, reset });
+    pondering = false;
+  };
+  const ponder = () => {
+    if (background && turn === 1 && !winner(board) && legal(board).length) think(true);
+  };
   const playAI = () => {
     if (!result || !legal(board).includes(result.column) || turn !== -1) return;
     board = drop(board, result.column, -1);
-    job++; // Ignore deeper worker messages if a completed partial search was played.
+    stopThought(); // Cancel obsolete branches before accepting another real move.
     busy = false;
     preview = null;
     turn = 1;
@@ -66,17 +76,19 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
         ? "Draw · board full"
         : "Your turn · choose a column";
     update();
+    ponder();
   };
-  const think = () => {
-    busy = true;
+  const think = (internal = false) => {
+    busy = !internal;
+    pondering = internal;
     result = null;
     preview = null;
-    status = "Comparing possible replies…";
+    status = internal ? "Your turn · analyzing possible moves…" : "Comparing possible replies…";
     update();
     worker.postMessage({
       id: ++job,
       board,
-      player: -1,
+      player: turn,
       depth: +$("game-depth").value,
       monitoring,
     });
@@ -84,6 +96,9 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
   const play = (c) => {
     if (turn !== 1 || busy || winner(board) || !legal(board).includes(c))
       return;
+    stopThought();
+    result = null;
+    preview = null;
     board = drop(board, c, 1);
     if (winner(board)) {
       status = "You connected four!";
@@ -102,7 +117,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     .querySelectorAll("button")
     .forEach((b) => (b.onclick = () => play(+b.dataset.column)));
   const reset = (first) => {
-    job++;
+    stopThought(true);
     board = Array(42).fill(0);
     turn = first ? -1 : 1;
     busy = false;
@@ -113,9 +128,11 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     $("game-nodes").textContent = "0";
     $("game-depth-readout").textContent = "0";
     $("game-review").textContent = "—";
+    $("game-reuse").textContent = "0";
     $("game-futures").replaceChildren();
     update();
     if (first) think();
+    else ponder();
   };
   $("new-game").onclick = () => reset(false);
   $("cadence-first").onclick = () => reset(true);
@@ -132,6 +149,23 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     $("self-monitor").textContent = monitoring
       ? "Self-monitor on"
       : "Self-monitor off";
+    if (!winner(board) && legal(board).length && (turn === -1 || background)) think(turn === 1);
+  };
+  $("game-depth").onchange = () => {
+    if (!winner(board) && legal(board).length && (turn === -1 || background)) think(turn === 1);
+  };
+  $("background-thought").onclick = () => {
+    background = !background;
+    $("background-thought").setAttribute("aria-pressed", String(background));
+    $("background-thought").textContent = `Think between turns: ${background ? "on" : "off"}`;
+    if (turn === 1 && !winner(board) && legal(board).length) {
+      if (background) ponder();
+      else {
+        stopThought();
+        status = "Your turn · background thought paused";
+        update();
+      }
+    }
   };
   $("future-step").oninput = () => (previewStep = +$("future-step").value);
   worker.onmessage = ({ data }) => {
@@ -140,6 +174,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
       error = data.message;
       status = "Thinking stopped: " + error;
       busy = false;
+      pondering = false;
       update();
       return;
     }
@@ -151,6 +186,8 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     $("future-step").value = previewStep;
     $("game-nodes").textContent = r.nodes.toLocaleString();
     $("game-depth-readout").textContent = r.depth;
+    $("game-reuse").textContent = (r.cacheHits ?? 0).toLocaleString();
+    $("game-nodes").title = `${r.totalNodes ?? r.nodes} positions this game, including background thought`;
     $("game-review").textContent = r.review.request_more
       ? "More thought"
       : "Budget sufficient";
@@ -168,24 +205,27 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
         return b;
       }),
     );
-    status =
-      data.kind === "done"
+    if (data.kind === "done") pondering = false;
+    status = turn === 1
+      ? `Your turn · ${data.kind === "done" ? "ready" : "thinking"} · ${r.depth} plies analyzed`
+      : data.kind === "done"
         ? `Considering column ${r.column + 1} · ${r.depth} plies searched${r.budgetExhausted ? " · node limit reached" : ""}`
         : `Depth ${r.depth} complete · ${r.review.request_more ? "monitor requests a deeper look" : "evaluating budget"}`;
     update();
-    if (data.kind === "done" && !watch) playAI();
+    if (data.kind === "done" && turn === -1 && !watch) playAI();
   };
   worker.onerror = () => {
     error = "Worker unavailable";
     status =
       "Reasoning worker could not start. Reload through the local launcher.";
     busy = false;
+    pondering = false;
     update();
   };
   explain([
     [
       "Counterfactual workspace",
-      "Every candidate gets a separate board. A supplied transition model predicts legal moves and replies. The live board stays unchanged while futures are explored.",
+      "Every candidate gets a separate board. Thought continues while you choose a move, then compatible results are reused. A supplied model predicts legal replies; hypothetical stones never change the live board.",
     ],
     [
       "Local value evaluator",
@@ -216,6 +256,8 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
   document.querySelector(".evidence details a").href =
     "connect-four/evidence.json";
   update();
+  ponder();
+  window.addEventListener("pagehide", () => worker.terminate(), { once: true });
   return {
     draw(w, h) {
       const a = bounds(w, h);
@@ -252,7 +294,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
       ctx.fillText("IMAGINED CONTINUATION", px, 20, w - px - 12);
       let predicted = board.slice(),
         p = turn;
-      if (preview && turn === -1)
+      if (preview)
         for (const c of preview.slice(0, previewStep)) {
           if (winner(predicted) || !legal(predicted).includes(c)) break;
           predicted = drop(predicted, c, p);
@@ -271,7 +313,7 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
         : winner(board)
           ? "Game complete"
           : turn === 1
-            ? "Your turn"
+            ? (pondering ? "Your turn · considering future replies" : "Your turn")
             : "Cadence turn";
     },
     pointer(x, y, w, h) {
@@ -281,14 +323,14 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
     },
     brain() {
       return {
-        ...brainSnapshot(board, -1, result),
+        ...brainSnapshot(board, turn, result),
         behavior: {
-          label: busy
-            ? "Imagining replies"
+          label: busy || pondering
+            ? (pondering ? "Thinking during your turn" : "Imagining replies")
             : winner(board)
               ? "Game complete"
               : "Observing board",
-          tone: busy ? "correcting" : "seeking",
+          tone: busy || pondering ? "correcting" : "seeking",
         },
       };
     },
@@ -297,6 +339,8 @@ export function mountGame({ $, ctx, metrics, explain, table, evidence }) {
         board: board.slice(),
         turn,
         busy,
+        pondering,
+        background,
         winner: winner(board),
         result,
         preview,

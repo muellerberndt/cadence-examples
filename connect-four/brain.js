@@ -203,7 +203,7 @@ export function decisionCircuit(
     },
   };
 }
-export function reason(
+export function* reasonSteps(
   board,
   player,
   {
@@ -211,6 +211,9 @@ export function reason(
     maxNodes = 80000,
     monitoring = true,
     onProgress = () => {},
+    cache = new Map(),
+    monitor = new Monitor(),
+    cacheLimit = 20000,
   } = {},
 ) {
   if (
@@ -218,7 +221,8 @@ export function reason(
     depth < 1 ||
     !Number.isInteger(maxNodes) ||
     maxNodes < 1 ||
-    ![1, -1].includes(player)
+    ![1, -1].includes(player) ||
+    !Number.isInteger(cacheLimit) || cacheLimit < 1
   )
     throw Error("Positive integer depth/budget and player ±1 required");
   if (winner(board) || !legal(board).length)
@@ -232,15 +236,17 @@ export function reason(
       monitor: null,
       budgetExhausted: false,
     };
-  const original = board.slice(),
-    monitor = new Monitor(),
-    cache = new Map();
+  while (cache.size > cacheLimit) cache.delete(cache.keys().next().value);
+  const original = board.slice();
+  board = original.slice();
   let nodes = 0,
+    cacheHits = 0,
     best = null,
     budgetExhausted = false;
-  function search(b, p, left, alpha, beta) {
+  function* search(b, p, left, alpha, beta) {
     if (nodes >= maxNodes) throw new Error("budget");
     nodes++;
+    yield null; // One admitted position; let the worker accept new observations.
     const win = winner(b);
     if (win) return { score: win * p * (100000 + left), sequence: [] };
     const moves = legal(b);
@@ -249,11 +255,11 @@ export function reason(
     const startAlpha = alpha;
     const key = b.join(",") + ":" + p + ":" + left;
     const cached = cache.get(key);
-    if (cached) return cached;
+    if (cached) { cacheHits++; return cached; }
     let result = { score: -Infinity, sequence: [] },
       cut = false;
     for (const c of moves) {
-      const child = search(drop(b, c, p), -p, left - 1, -beta, -alpha),
+      const child = yield* search(drop(b, c, p), -p, left - 1, -beta, -alpha),
         score = -child.score;
       if (score > result.score)
         result = { score, sequence: [c, ...child.sequence] };
@@ -264,24 +270,20 @@ export function reason(
       }
     }
     // Only cache fully explored exact values; cutoff bounds are not exact scores.
-    if (!cut && result.score > startAlpha && result.score < beta)
+    if (!cut && result.score > startAlpha && result.score < beta) {
+      if (cache.size >= cacheLimit) cache.delete(cache.keys().next().value);
       cache.set(key, result);
+    }
     return result;
   }
   for (let d = 1; d <= depth; d++) {
     try {
-      const candidates = legal(board)
-        .map((column) => {
-          const r = search(
-            drop(board, column, player),
-            -player,
-            d - 1,
-            -Infinity,
-            Infinity,
-          );
-          return { column, score: -r.score, sequence: [column, ...r.sequence] };
-        })
-        .sort((a, b) => b.score - a.score);
+      const candidates = [];
+      for (const column of legal(board)) {
+        const r = yield* search(drop(board, column, player), -player, d - 1, -Infinity, Infinity);
+        candidates.push({ column, score: -r.score, sequence: [column, ...r.sequence] });
+      }
+      candidates.sort((a, b) => b.score - a.score);
       if (!candidates.length) break;
       const decision = decisionCircuit(
           board,
@@ -301,6 +303,7 @@ export function reason(
         decision: decision.joint,
       };
       onProgress(best);
+      yield { ...best, cacheHits, cacheSize: cache.size };
       if (candidates[0].score > 90000) break;
       // Monitoring has a causal job: ambiguous choices extend the normal four-ply budget.
       if (d >= 4 && (monitoring ? !review.request_more : true)) break;
@@ -323,8 +326,68 @@ export function reason(
   }
   if (board.some((v, i) => v !== original[i]))
     throw Error("Imagination mutated live board");
-  return { ...best, nodes, budgetExhausted };
+  return { ...best, nodes, cacheHits, cacheSize: cache.size, budgetExhausted };
 }
+// The synchronous reference drains the same resumable search.
+export function reason(board, player, options = {}) {
+  const work = reasonSteps(board, player, options);
+  let next;
+  do { next = work.next(); } while (!next.done);
+  return next.value;
+}
+
+// A task-lifetime workspace. Cache keys include the complete board, side to move
+// and exact horizon; only exact values enter the bounded cache. Fixed evaluator.
+export class Reasoner {
+  constructor() {
+    this.cache = new Map();
+    this.monitor = new Monitor();
+    this.work = null;
+    this.result = null;
+    this.totalNodes = 0;
+    this.nodes = 0;
+  }
+  get active() { return this.work !== null; }
+  cancel() {
+    this.work?.return();
+    this.work = null;
+    this.result = null;
+  }
+  reset() {
+    this.cancel();
+    this.cache.clear();
+    this.monitor = new Monitor();
+    this.totalNodes = this.nodes = 0;
+  }
+  start(board, player, options = {}) {
+    this.cancel();
+    this.nodes = 0;
+    this.work = reasonSteps(board.slice(), player, {
+      ...options, cache: this.cache, monitor: this.monitor,
+    });
+  }
+  tick(limit = 128) {
+    if (!Number.isInteger(limit) || limit < 1) throw Error("Positive integer slice required");
+    if (!this.work) return this.result;
+    try {
+      for (let i = 0; i < limit; i++) {
+        const next = this.work.next();
+        if (!next.done && next.value === null) {
+          this.nodes++;
+          this.totalNodes++;
+        } else if (next.value) {
+          this.result = { ...next.value, totalNodes: this.totalNodes };
+        }
+        if (next.done) { this.work = null; break; }
+      }
+    } catch (error) {
+      this.cancel();
+      throw error;
+    }
+    return this.result;
+  }
+}
+
 export function brainSnapshot(board, player, thinking) {
   const joint = thinking?.decision ?? decisionCircuit(board, player, []).joint;
   return Object.assign(joint, {

@@ -15,7 +15,7 @@
     "worm/brain.js": "bc4d5a8ad1b212d8adc019a4da2b4246c3576af954d3012427ce687151f5c3e8",
     "fly/brain.js": "b368f7aded10a73f4b28108daf89804027df9b4268fd34779bf093d41fd22e3e",
     "memory/brain.js": "6be7606cc86a75a565668a7a555316f4addd1c0193c69ac1eaf10ec8e793645b",
-    "connect-four/brain.js": "3d7bc692fe7cd61ba8044ade03d6409db1f067fd569387ed9cfb317f722d1a7c",
+    "connect-four/brain.js": "1ce8784a78eacf2ce700727d760be0b1a541c755e7d53d1361b6113ecc7e08bd",
     "tools/coupled_brain_benchmark.mjs": "9ab240f34bd85dcfe13a61200f2be8229f339349a48fd642bbec1ab21efc6501"
   },
   "results": [

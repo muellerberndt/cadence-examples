@@ -237,12 +237,26 @@ def main():
                 "document.querySelector('#image-status').textContent.includes('Image received')"
             )
             choose(page, "game")
+            # Pondering is on by default, without placing stones or blocking the human.
+            page.wait_for_function("showcase.snapshot().body.result?.depth >= 4")
+            thought = page.evaluate("showcase.snapshot().body")
+            assert thought["background"] and not thought["busy"]
+            assert thought["board"] == [0] * 42 and thought["turn"] == 1
+            assert page.locator('[data-column="3"]').is_enabled()
+            page.locator("#background-thought").click()
+            paused = page.evaluate("showcase.snapshot().body")
+            assert not paused["background"] and not paused["pondering"]
+            page.wait_for_timeout(200)
+            assert page.evaluate("showcase.snapshot().body") == paused
+            page.locator("#background-thought").click()
+            page.wait_for_function("showcase.snapshot().body.result?.depth === 6 && !showcase.snapshot().body.pondering")
             page.locator("#watch-thought").click()
             page.locator('[data-column="3"]').click()
             page.wait_for_function("showcase.snapshot().body.result?.depth >= 4")
             page.wait_for_function(
                 "document.querySelector('#game-status').textContent.startsWith('Considering')"
             )
+            assert page.evaluate("showcase.snapshot().body.result.cacheHits") > 0
             before = page.evaluate("showcase.snapshot().body.board")
             assert sum(v != 0 for v in before) == 1
             page.locator("#game-futures button").last.click()
@@ -463,6 +477,7 @@ def main():
                         "desktop_body_and_circuit_visible": True,
                         "motor_ablation_and_pixel_drawing": True,
                         "isolated_futures_and_monitor_budget": True,
+                        "default_pondering_pause_and_cache_reuse": True,
                         "browser_errors": errors,
                     }
                 )

@@ -330,3 +330,7 @@ console.log(JSON.stringify({error:Math.max(...trace.mismatches.flatMap((r,t)=>r.
 """)
     assert result['error'] < 1e-12
     assert result['positive'] and result['negative'] and result['decay']
+
+
+def test_persistent_deliberation_and_cooperative_worker():
+    subprocess.run(["node", "--test", "connect-four/pondering.test.mjs"], cwd=ROOT, check=True)

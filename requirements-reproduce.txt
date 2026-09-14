@@ -1,2 +1,2 @@
-cadence-net[fast] @ git+https://github.com/muellerberndt/cadence@a987b4218d5b23df1eebd18f8a4289f0f122f18a
+cadence-net[fast] @ git+https://github.com/muellerberndt/cadence@ec32c4cec50cc8a75f3123f4bbed42f18ecc3e01
 scipy

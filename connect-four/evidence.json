@@ -312,9 +312,21 @@
     "on_nodes": 9192,
     "off_nodes": 800
   },
+  "pondering": {
+    "human_column": 3,
+    "background_nodes": 9192,
+    "response_nodes_reused": 12630,
+    "response_nodes_cold": 13955,
+    "cache_hits": 165,
+    "total_nodes_with_pondering": 21822,
+    "response_depth": 6,
+    "same_scores_and_choice": true,
+    "boundary": "Pondering reduces new response work here but uses more total work; the fixed game cache is not learned synaptic memory."
+  },
   "sources": {
-    "connect-four/brain.js": "3d7bc692fe7cd61ba8044ade03d6409db1f067fd569387ed9cfb317f722d1a7c",
-    "connect-four/benchmark.mjs": "4e0da966e01926989c6ff0c3b014ba6a9673bc8ad9d98c1de9183e95636900e8",
+    "connect-four/brain.js": "1ce8784a78eacf2ce700727d760be0b1a541c755e7d53d1361b6113ecc7e08bd",
+    "connect-four/benchmark.mjs": "b71a83cd134be0429424063ef472c6967050d5a3626d72d486be88ebde836f24",
+    "connect-four/worker.js": "d12bc9012bf2e386e0418850c01718e551a4e0c20e52bcebf7a81d3b747e6bc2",
     "shared/nervous_system.js": "13a4d24662bcb2fc397f9005ef8e5887fb2dbee184dd75d07263a86bf9b592e7"
   },
   "boundary": "Supplied game rules and threat evaluator. Adversarial search is explicit; conventional minimax with the same evaluator can match it. Finite-depth play, not a solved or learned world model."

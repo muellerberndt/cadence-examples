@@ -9,6 +9,38 @@ slider. **Play Cadence’s move** executes its preferred candidate. The real boa
 stays unchanged during inspection. The activity circuit remains beside the board
 on desktop and stacks below on mobile.
 
+## Thought continues between turns
+
+**Think between turns** is on by default. While you choose, the reasoner considers
+possible human moves and its own replies. You can play immediately; hypothetical
+stones never enter the real board. The shared value/choice/monitor circuit updates
+when a search depth completes. Once the depth or node budget is reached, its state
+remains available while computation waits for a new observation.
+
+The worker yields every 128 search events, so a human move cancels obsolete work
+at the next slice. Exact results keyed by board, side to move and remaining depth
+survive across moves in a cache capped at 20,000 entries. A new game clears that
+cache and the monitor. Turning background thought off stops between-turn work;
+Cadence still thinks when it must play. Changing depth or monitoring starts a new
+search under those controls.
+
+**Reused positions** counts exact cache hits in the current search. The position
+counter reports current-search work; hover over it for the entire game's count,
+including canceled and background thought. Background candidates are scored for
+the human side to move; during Cadence's turn they are scored for Cadence.
+
+On the empty board followed by a human center move, pondering visits **9,192**
+positions. Reuse then needs **12,630** positions versus **13,955** for a fresh
+response, with the same depth, candidate scores and choice. Total work with
+pondering is **21,822**, so this example demonstrates preparing a response earlier,
+not a reduction in total computation. The [receipt](evidence.json) records both costs.
+This cache holds computed hypotheses; it is separate from learned synaptic memory.
+
+The [runtime tests](pondering.test.mjs) cover bounded slices, board isolation,
+cancellation, cache limits, score equivalence and an actual worker receiving a
+replacement observation mid-search. Browser tests verify default pondering, usable
+human controls, pausing, cache reuse and no speculative board moves.
+
 ## Its task brain
 
 1. The 42 board cells record the observed environment. A supplied readout counts threats,
@@ -31,7 +63,7 @@ this game; imagined outcomes are not presented as observed rewards. The search
 runs in a browser worker so interaction and circuit inspection remain responsive.
 
 The optional core [`cadence.circuits`](https://github.com/muellerberndt/cadence/blob/main/docs/patterns.md#with-a-supplied-world-model)
-provides generic isolated-future comparison, sensor/motor reflex arcs and the same
+provides resumable `Deliberator` ticks as well as synchronous `imagine`, sensor/motor reflex arcs and the same
 activity-monitor design. This page specializes the generic branching pattern to
 game search with pruning and iterative deepening. It is deliberately wired
 deliberation; recurrence alone does not guarantee planning.

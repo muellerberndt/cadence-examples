@@ -71,11 +71,11 @@ is a chosen adaptation budget, not a claim that it always needs 100 steps.
 
 | Learner | Correct queries | Median stream time | Time / fast reference |
 |---|---:|---:|---:|
-| Cadence fast reference | 996/996 (100.0%) | 0.460 ms | 1.0× |
-| Cadence consolidating memory | 996/996 (100.0%) | 0.829 ms | 1.8× |
-| MLP, 1 update | 565/996 (56.7%) | 1.387 ms | 3.0× |
-| MLP, 10 updates | 963/996 (96.7%) | 3.188 ms | 6.9× |
-| MLP, 100 updates | 939/996 (94.3%) | 22.750 ms | 49.4× |
+| Cadence fast reference | 996/996 (100.0%) | 0.469 ms | 1.0× |
+| Cadence consolidating memory | 996/996 (100.0%) | 0.903 ms | 1.9× |
+| MLP, 1 update | 565/996 (56.7%) | 1.430 ms | 3.0× |
+| MLP, 10 updates | 963/996 (96.7%) | 3.295 ms | 7.0× |
+| MLP, 100 updates | 939/996 (94.3%) | 22.921 ms | 48.9× |
 
 Sub-millisecond measurements vary by machine, runtime and scheduling. This is
 neither a GPU benchmark nor an energy measurement. Run

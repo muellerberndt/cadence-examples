@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
-import { drop, winner, legal, reason, evaluate, Monitor } from "./brain.js";
+import { drop, winner, legal, reason, evaluate, Monitor, Reasoner } from "./brain.js";
 const rng = (seed) => () => {
   seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
   return seed / 2 ** 32;
@@ -85,6 +85,18 @@ const b = Array(42).fill(0),
   off = reason(b, 1, { monitoring: false });
 assert.ok(on.depth > off.depth);
 assert.equal(off.depth, 4);
+const persistent = new Reasoner();
+persistent.start(b, 1);
+while (persistent.active) persistent.tick();
+const backgroundNodes = persistent.result.nodes;
+const afterHuman = drop(b, 3, 1);
+persistent.start(afterHuman, -1);
+while (persistent.active) persistent.tick();
+const reused = persistent.result, cold = reason(afterHuman, -1);
+assert.deepEqual(reused.candidates, cold.candidates);
+assert.equal(reused.column, cold.column);
+assert.ok(reused.nodes < cold.nodes && reused.cacheHits > 0);
+assert.equal(persistent.totalNodes, backgroundNodes + reused.nodes);
 const report = {
   schema: "cadence.connect-four/v1",
   conformance,
@@ -95,6 +107,17 @@ const report = {
     on_nodes: on.nodes,
     off_nodes: off.nodes,
   },
+  pondering: {
+    human_column: 3,
+    background_nodes: backgroundNodes,
+    response_nodes_reused: reused.nodes,
+    response_nodes_cold: cold.nodes,
+    cache_hits: reused.cacheHits,
+    total_nodes_with_pondering: persistent.totalNodes,
+    response_depth: reused.depth,
+    same_scores_and_choice: true,
+    boundary: "Pondering reduces new response work here but uses more total work; the fixed game cache is not learned synaptic memory.",
+  },
   sources: {},
   boundary:
     "Supplied game rules and threat evaluator. Adversarial search is explicit; conventional minimax with the same evaluator can match it. Finite-depth play, not a solved or learned world model.",
@@ -102,6 +125,7 @@ const report = {
 for (const path of [
   "connect-four/brain.js",
   "connect-four/benchmark.mjs",
+  "connect-four/worker.js",
   "shared/nervous_system.js",
 ])
   report.sources[path] = createHash("sha256")
