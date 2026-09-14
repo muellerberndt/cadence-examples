@@ -172,9 +172,15 @@ def main():
             )
             page.locator("#change-nectar").click()
             page.locator("#pause").click()
+            expect(page.locator("#pause")).to_have_text("Resume")
+            assert page.evaluate("showcase.snapshot().paused")
             before = page.evaluate("showcase.snapshot().agents")
             page.wait_for_timeout(150)
-            assert before == page.evaluate("showcase.snapshot().agents")
+            after = page.evaluate("showcase.snapshot()")
+            page.screenshot(path=str(screenshots / "fly-paused.png"))
+            (screenshots / "fly-pause.json").write_text(json.dumps({
+                "before": before, "after": after["agents"], "paused": after["paused"]}))
+            assert before == after["agents"], {"before": before, "after": after}
             choose(page, "arm")
             page.wait_for_function("showcase.snapshot().body.ink > 0", timeout=20000)
             page.wait_for_function(

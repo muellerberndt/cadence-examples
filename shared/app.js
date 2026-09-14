@@ -169,12 +169,14 @@ function resetMemory() {
   writeCount = 0;
 }
 function resetFly() {
+  motorGate.cancel();
   field = flowers();
   agents = [
     new Forager(new SynapticMemory(), -0.02),
     new Forager(new MLP(evidence.browser.online_mlp), 0.02, updates),
   ];
   paused = false;
+  if ($("pause")) $("pause").textContent = "Pause";
 }
 function solve() {
   const t = performance.now();
@@ -438,6 +440,7 @@ function setMode(next) {
     };
     $("pause").onclick = () => {
       paused = !paused;
+      if (paused) motorGate.cancel();
       $("pause").textContent = paused ? "Resume" : "Pause";
     };
     $("reset-fly").onclick = resetFly;
@@ -799,7 +802,7 @@ function animate(t) {
   const dt = Math.min(0.05, (t - previous) / 1000 || 0.016);
   previous = t;
   frame++;
-  if (!brainView.frozen && motorGate.advance(dt * brainView.rate)) {
+  if (!paused && !brainView.frozen && motorGate.advance(dt * brainView.rate)) {
     brainView.trace = null;
     brainView.auto = null;
   }
@@ -946,6 +949,7 @@ try {
   window.showcase = {
     snapshot: () => ({
       mode,
+      paused,
       brain: brainView.snapshot(),
       body: bodyView?.snapshot(),
       mask: mask?.slice(),
