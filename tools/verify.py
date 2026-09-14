@@ -8,7 +8,7 @@ import numpy as np
 from benchmark import hashes
 from build_composites import sources
 
-HERE = Path(__file__).resolve().parent
+EVIDENCE = Path(__file__).resolve().parents[1] / "evidence"
 
 
 def require(condition, message):
@@ -149,14 +149,14 @@ def verify(body, expected_sources, composite=False):
 
 
 def main():
-    verify(json.loads((HERE / "evidence.json").read_text()), hashes())
+    verify(json.loads((EVIDENCE / "evidence.json").read_text()), hashes())
     verify(
-        json.loads((HERE / "composite_evidence.json").read_text()),
+        json.loads((EVIDENCE / "composite_evidence.json").read_text()),
         sources(),
         composite=True,
     )
     print(
-        "Both showcase evidence packages: source binding, digest, schedules and arithmetic pass."
+        "Both shared evidence packages: source binding, digest, schedules and arithmetic pass."
     )
 
 

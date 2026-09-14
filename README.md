@@ -7,7 +7,7 @@ patches: bounded local state, declared ports, readback, retained records and loc
 feedback. Each task connects labeled regions into **one shared equilibrium**:
 local repairs propagate through the same joint state. Change its world and watch
 the next repair cascade. The brain panel reports the equation error.
-[How the six brains are coupled](showcase/COUPLED_BRAINS.md).
+[How the six brains are coupled](COUPLED_BRAINS.md).
 
 ## Launch any demo
 
@@ -45,7 +45,7 @@ also reaches 100%; giving a transformer the lesson history removes this restrict
 
 ## Live composite brains
 
-![The teachable mouse: task memory, a spatial field and a moving body](showcase/preview.png)
+![The teachable mouse: task memory, a spatial field and a moving body](mouse/preview.png)
 
 The mouse comes with three supplied demonstrations and saves additional lessons
 in this browser. The forager and memory demo learn live from a fresh state. The
@@ -56,13 +56,13 @@ Each website places its actual circuit beside the body on desktop, grouped by
 function. Watch sampled repair cascades, inspect local state and memory writes,
 or release input in an isolated copy to see recurrent decay. Labeled behavior
 colors identify seeking, correction and positive outcomes. The layout stacks on
-mobile. [Read the circuit view](showcase/README.md#read-the-brain-view).
+mobile. [Read the circuit view](METHODS.md#read-the-brain-view).
 
 Every website explains its starting state, how to observe learning or feedback,
 and **why Cadence fits the task**, including the relevant conventional controls.
-See the [two-minute guide](showcase/README.md#a-two-minute-demonstration),
-[starting states](showcase/README.md#ready-to-run-and-watch-learning) and
-[comparison methods](showcase/README.md#results-and-comparison-contract).
+See the [two-minute guide](METHODS.md#a-two-minute-demonstration),
+[starting states](METHODS.md#ready-to-run-and-watch-learning) and
+[comparison methods](METHODS.md#results-and-comparison-contract).
 
 The habitat follows local food cues around walls and consumes food patches on
 contact. A directional sensory/motor circuit selects body steps. Diffusion,
@@ -79,8 +79,8 @@ Serving the websites needs no dependencies. For numerical reproduction:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-reproduce.txt pytest playwright
-python showcase/verify.py
-node showcase/habitat_benchmark.mjs
+python tools/verify.py
+node tools/habitat_benchmark.mjs
 node tools/nervous_system_benchmark.mjs
 node tools/coupled_brain_benchmark.mjs
 node connect-four/benchmark.mjs
@@ -91,11 +91,11 @@ python tools/showcase_pages.py
 
 Use Node 20+ for the browser-kernel tests. On Windows, activate the environment
 with `.venv\Scripts\Activate.ps1`. Full model training additionally needs PyTorch;
-see [reproduction commands](showcase/README.md#reproduce). The evidence retains
+see [reproduction commands](METHODS.md#reproduce). The evidence retains
 sources, budgets, controls and comparison limits. `python tools/build_showcase.py`
 regenerates the six websites and gallery from the authored shells.
 
-MIT licensed. Public worm data attribution is in [the methods](showcase/README.md#biological-sources-and-data-attribution).
+MIT licensed. Public worm data attribution is in [the methods](METHODS.md#biological-sources-and-data-attribution).
 
 ## Separate examples
 
@@ -108,8 +108,9 @@ MIT licensed. Public worm data attribution is in [the methods](showcase/README.m
 | [memory](memory/) | Associative-memory subsystem and measured runtime comparison |
 | [connect-four](connect-four/) | Game rules, value circuit, bounded search, self-monitor and playable view |
 
-Each folder has its own `index.html` and entry point. `showcase/` holds shared
-rendering, numerical utilities and reference benchmark assets. The gallery links
+Each folder has its own `index.html` and entry point. `shared/` holds the common
+rendering and numerical code, `evidence/` the cross-example receipts and
+`tools/` their producers. The gallery links
 the six pages. The full control path is documented in each example; supplied
 encoding, attention and body physics remain explicit. These are complete
 controllers for the simplified tasks, not whole biological nervous systems.

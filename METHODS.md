@@ -184,7 +184,7 @@ Brain imaging uses different measurements:
 An application that explicitly computes a reward prediction error could expose
 that scalar as a **modulatory learning signal**. Calling it a dopamine
 concentration would require a biochemical model and calibration. The current
-showcase plots only quantities its controllers actually compute.
+examples plot only quantities its controllers actually compute.
 
 ## Food and walls in the worm habitat
 
@@ -206,7 +206,7 @@ excluded and chemical weights/dynamics are imposed.
 
 ## Results and comparison contract
 
-See the [per-example advantage contracts](../ADVANTAGES.md), including measured
+See the [per-example advantage contracts](ADVANTAGES.md), including measured
 memory runtime and all scheduled Connect Four outcomes. Each page separates
 learned records, supplied rules, feedback effects and conventional controls.
 
@@ -229,7 +229,7 @@ by hashes, all scheduled conditions are retained, and CI reruns the producer.
 - **Forager:** a fixed 4,000-step run produces 23 contacts; motor ablation prevents
   displacement and contact. This is an actuator test, not a learner comparison.
 
-The shared [evidence.json](evidence.json) retains the matched memory
+The shared [evidence.json](evidence/evidence.json) retains the matched memory
 and chemical-circuit benchmarks: seeds 7–9, 128 memory writes per stream with all
 seen-key queries, and three held-out chemical-circuit conditions. The memory MLP
 gets 1/10/100 updates on the same sample; correlated keys can favor it. The worm
@@ -237,8 +237,8 @@ MLP gets 2,048 labels and 1,200 training steps per candidate; it is faster per
 query but approximate under interventions. These are bounded comparisons, not
 universal speed or energy claims.
 
-[composite_evidence.json](composite_evidence.json) and
-[habitat_evidence.json](habitat_evidence.json) retain the original spatial,
+[composite_evidence.json](evidence/composite_evidence.json) and
+[habitat_evidence.json](worm/habitat_evidence.json) retain the original spatial,
 four-owner arm and habitat reference experiments. They validate those reference
 kernels; the expanded browser controllers are measured in the new task receipts.
 
@@ -249,7 +249,7 @@ dependencies:
 
 ```bash
 python -m pip install -r requirements-reproduce.txt pytest playwright
-python showcase/verify.py
+python tools/verify.py
 node tools/nervous_system_benchmark.mjs
 node tools/coupled_brain_benchmark.mjs
 node connect-four/benchmark.mjs
@@ -263,25 +263,25 @@ The test suite independently checks motor dynamics against Python Cadence from
 retained state and under lesions, replay endpoints, motor/visual ablations,
 freehand drawing, image upload, task persistence, separate URLs and responsive
 layout. `build_showcase.py` generates six pages plus the gallery from authored
-shells. Models and views remain in their example folders; shared code is in
-`showcase/`.
+shells. Models and views remain in their example folders; shared browser code is in
+`shared/`, cross-example receipts in `evidence/` and producers in `tools/`.
 
 To rerun the older comparison training and reference body trials:
 
 ```bash
-python showcase/fetch_worm.py
-python showcase/benchmark.py --seeds 3 --steps 1200 --trials 128
-python showcase/build_composites.py
-node showcase/habitat_benchmark.mjs
+python tools/fetch_worm.py
+python tools/benchmark.py --seeds 3 --steps 1200 --trials 128
+python tools/build_composites.py
+node tools/habitat_benchmark.mjs
 ```
 
 ## Biological sources and data attribution
 
 The worm chemical edge table and cell descriptions are from
 [OpenWorm ConnectomeToolbox](https://github.com/openworm/ConnectomeToolbox), pinned
-in `fetch_worm.py`; its [MIT notice](OPENWORM_LICENSE.txt) is included. The neuron
+in `tools/fetch_worm.py`; its [MIT notice](worm/OPENWORM_LICENSE.txt) is included. The neuron
 list comes from [c302](https://github.com/openworm/c302) at the pinned revision.
-Source URLs and digests are retained in `worm.json`.
+Source URLs and digests are retained in `worm/worm.json`.
 
 Anatomical context: [Cook et al. (2019)](https://www.nature.com/articles/s41586-019-1352-7).
 Body-feedback motivation: [Wen et al. (2012)](https://pmc.ncbi.nlm.nih.gov/articles/PMC3508473/).

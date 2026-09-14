@@ -13,9 +13,9 @@
       "accuracy": 1,
       "correct": 996,
       "queries": 996,
-      "median_ms": 0.4954579999999993,
-      "min_ms": 0.4713750000000019,
-      "max_ms": 0.7438749999999956,
+      "median_ms": 0.4515839999999969,
+      "min_ms": 0.44445900000000194,
+      "max_ms": 0.7359580000000037,
       "updates_per_observation": 1
     },
     {
@@ -23,9 +23,9 @@
       "accuracy": 0.5672690763052208,
       "correct": 565,
       "queries": 996,
-      "median_ms": 1.4315420000000074,
-      "min_ms": 1.374291999999997,
-      "max_ms": 2.547792000000001,
+      "median_ms": 1.4287080000000003,
+      "min_ms": 1.3014170000000007,
+      "max_ms": 2.403416000000007,
       "updates_per_observation": 1
     },
     {
@@ -33,9 +33,9 @@
       "accuracy": 0.9668674698795181,
       "correct": 963,
       "queries": 996,
-      "median_ms": 3.375040999999996,
-      "min_ms": 3.3111249999999757,
-      "max_ms": 3.4705410000000114,
+      "median_ms": 3.363749999999996,
+      "min_ms": 3.241334000000009,
+      "max_ms": 3.6028340000000014,
       "updates_per_observation": 10
     },
     {
@@ -43,16 +43,16 @@
       "accuracy": 0.9427710843373494,
       "correct": 939,
       "queries": 996,
-      "median_ms": 23.554958,
-      "min_ms": 22.961000000000013,
-      "max_ms": 24.165415999999993,
+      "median_ms": 23.07012500000002,
+      "min_ms": 22.675333999999964,
+      "max_ms": 26.16191599999999,
       "updates_per_observation": 100
     }
   ],
   "sources": {
-    "memory/benchmark.mjs": "7802515572eec20200a14b891ecf74cf77c8f2386a1ac62f8ae721805d422a71",
-    "showcase/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
-    "showcase/evidence.json": "708aa01ed69af90b53a60f09d71c0b94e142d880ce18abc19742af448d35a2f9"
+    "memory/benchmark.mjs": "d31ea0bbe3b7743dc7dfad9cd4e6f1fd4dc2fb199dc41cc46da621e7f0479cdd",
+    "shared/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
+    "evidence/evidence.json": "118ca696bf99f3eaf6e260b81c1aa5749d2184c7bd03aa513e462697edbd9920"
   },
   "boundary": "Local JavaScript training plus queries on a distinct-key overwrite stream. Supplied explicit keys; no general language or energy-efficiency claim. Timings include memory allocation and differ across machines."
 }

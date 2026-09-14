@@ -1,5 +1,5 @@
-import { FastMemory } from "../showcase/engine.js";
-import { MemoryReadout, settleTogether } from "../showcase/nervous_system.js";
+import { FastMemory } from "../shared/engine.js";
+import { MemoryReadout, settleTogether } from "../shared/nervous_system.js";
 
 export class MemoryBrain {
   constructor() {

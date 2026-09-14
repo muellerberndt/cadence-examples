@@ -9,8 +9,8 @@ import cadence as cd
 import numpy as np
 from scipy.sparse import csr_matrix
 
-HERE = Path(__file__).resolve().parent
-WORM = json.loads((HERE / "worm.json").read_text())
+ROOT = Path(__file__).resolve().parents[1]
+WORM = json.loads((ROOT / "worm/worm.json").read_text())
 N = len(WORM["names"])
 EDGES = np.asarray(WORM["edges"])
 MATRIX = csr_matrix(

@@ -1,5 +1,5 @@
 import { DrawingArm, RETINA } from "./brain.js";
-import { forward } from "../showcase/embodied.js";
+import { forward } from "../shared/embodied.js";
 
 export function mountArm(api) {
   const { $, ctx, metrics, explain, table, pct } = api;

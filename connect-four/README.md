@@ -42,7 +42,7 @@ The value, candidate and monitor regions exchange repairs in one graph. Their
 joint endpoint supplies the move and extra-search request. The display labels
 these functions and reports their common equation residual. Each imagined board
 remains an isolated world; only candidate scores enter the shared decision.
-[Wiring and tests](../showcase/COUPLED_BRAINS.md) explain the separation. A fixed
+[Wiring and tests](../COUPLED_BRAINS.md) explain the separation. A fixed
 point certifies self-consistency, not a globally optimal strategy.
 
 ## What has been tested

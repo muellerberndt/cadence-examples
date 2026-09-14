@@ -1,4 +1,4 @@
-import { Circuit, settleTogether, zeros } from "../showcase/nervous_system.js";
+import { Circuit, settleTogether, zeros } from "../shared/nervous_system.js";
 export const COLS = 7,
   ROWS = 6,
   order = [3, 2, 4, 1, 5, 0, 6];

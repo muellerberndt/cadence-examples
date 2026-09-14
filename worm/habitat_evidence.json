@@ -1,10 +1,10 @@
 {
   "contract": "Supplied diffusion, gradient heading, motor-gated body steps and contact consumption. These trials test the adapter, not biological fidelity or an ML performance advantage.",
   "sources": {
-    "worm_arena.js": "11ddb137681fc9742a410d25d28e7cc70e850804ffc86f40f05347d8a242d3d5",
-    "engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
-    "worm.json": "c6e13345bd57329d3939d85dfe61c1a3ae49e2426e7e8a9c1cfe98a071818de1",
-    "habitat_benchmark.mjs": "0d3b173aa0c1b38e2dde35f771fba5084ce54d73938368ee4dcf4806d786291a"
+    "worm/worm_arena.js": "699a3ff7a3cd7a6cece6a143987897e0c093dbdb068de503cadd9600f8515429",
+    "shared/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
+    "worm/worm.json": "c6e13345bd57329d3939d85dfe61c1a3ae49e2426e7e8a9c1cfe98a071818de1",
+    "tools/habitat_benchmark.mjs": "90218c3f90ed551f3d3b7a248a36405a95f39341043ba7bd4b229ebd6ea28503"
   },
   "rows": [
     {

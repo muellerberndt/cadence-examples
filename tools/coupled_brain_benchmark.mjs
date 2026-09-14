@@ -9,10 +9,10 @@ import { Mouse } from "../mouse/brain.js";
 import { WormArena } from "../worm/brain.js";
 import { Forager } from "../fly/brain.js";
 import { MemoryBrain } from "../memory/brain.js";
-import { FastMemory, flowers, keys } from "../showcase/engine.js";
+import { FastMemory, flowers, keys } from "../shared/engine.js";
 import { reason, drop, brainSnapshot } from "../connect-four/brain.js";
-import { Circuit } from "../showcase/nervous_system.js";
-import { repairTrace } from "../showcase/telemetry.js";
+import { Circuit } from "../shared/nervous_system.js";
+import { repairTrace } from "../shared/telemetry.js";
 const root = new URL("../", import.meta.url);
 export function samples() {
   const arm = new DrawingArm(imageFixture("square"));
@@ -20,7 +20,7 @@ export function samples() {
   const mouse = new Mouse(13);
   mouse.step();
   const worm = new WormArena(
-    JSON.parse(readFileSync(new URL("showcase/worm.json", root))),
+    JSON.parse(readFileSync(new URL("worm/worm.json", root))),
   );
   worm.step();
   const fly = new Forager(new FastMemory()),
@@ -98,12 +98,12 @@ export function benchmark() {
     };
   });
   const files = [
-    "showcase/nervous_system.js",
-    "showcase/telemetry.js",
-    "showcase/engine.js",
-    "showcase/embodied.js",
-    "showcase/worm_arena.js",
-    "showcase/worm.json",
+    "shared/nervous_system.js",
+    "shared/telemetry.js",
+    "shared/engine.js",
+    "shared/embodied.js",
+    "worm/worm_arena.js",
+    "worm/worm.json",
     "eye-arm/brain.js",
     "eye-arm/fixtures.js",
     "mouse/brain.js",
@@ -131,7 +131,7 @@ export function benchmark() {
     );
   }
   writeFileSync(
-    new URL("showcase/coupled_evidence.json", root),
+    new URL("evidence/coupled_evidence.json", root),
     JSON.stringify(
       {
         schema: "cadence.joint-equilibrium/v1",

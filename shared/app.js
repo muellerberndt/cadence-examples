@@ -281,7 +281,7 @@ function setMode(next) {
   if (mode === "worm" && wormView === "habitat") {
     bodyView = mountWorm({ data, $, ctx, metrics, explain, act });
     document.querySelector(".evidence details a").href =
-      "showcase/evidence.json";
+      "evidence/evidence.json";
     renderEvidence();
     fit();
     return;
@@ -319,7 +319,7 @@ function setMode(next) {
     fit();
     return;
   }
-  document.querySelector(".evidence details a").href = "showcase/evidence.json";
+  document.querySelector(".evidence details a").href = "evidence/evidence.json";
   if (mode === "worm") {
     $("headline").innerHTML = "Change the circuit.<br>Keep the mechanism.";
     $("intro").textContent =
@@ -902,9 +902,9 @@ try {
     historyEvidence,
   ] = await Promise.all(
     [
-      "showcase/worm.json",
-      "showcase/evidence.json",
-      "showcase/composite_evidence.json",
+      "worm/worm.json",
+      "evidence/evidence.json",
+      "evidence/composite_evidence.json",
       "memory/evidence.json",
       "connect-four/evidence.json",
       "memory/history_evidence.json",

@@ -13,7 +13,7 @@ This page isolates the associative-memory mechanism used by the embodied example
 
 The circuit at the top shows actual state, repairs and retained information.
 Supplied readout and body rules are documented rather than shown as extra neurons.
-See the [shared viewer guide](../showcase/README.md#read-the-brain-view).
+See the [shared viewer guide](../METHODS.md#read-the-brain-view).
 
 ## A shared equilibrium
 
@@ -21,13 +21,13 @@ The labeled regions participate in one connected solve for the current input.
 Local readback and repair change the same joint state; the action readout uses
 that state. The top circuit panel shows the global equation error and can replay
 the actual cross-region cascade. Lessons change records between phases.
-[Task wiring, boundaries and tests](../showcase/COUPLED_BRAINS.md) explain the
+[Task wiring, boundaries and tests](../COUPLED_BRAINS.md) explain the
 connections. Self-consistency is not a guarantee of the globally best behavior.
 
 ## Reproduce
 
-The matched learning comparison is in [shared evidence](../showcase/evidence.json).
-Run `python showcase/verify.py` to check the pinned producer and arithmetic.
+The matched learning comparison is in [shared evidence](../evidence/evidence.json).
+Run `python tools/verify.py` to check the pinned producer and arithmetic.
 
 For measured local processing time, run `node memory/benchmark.mjs`. The bundled
 [runtime receipt](evidence.json) reports 100% accuracy on a distinct-key overwrite
@@ -54,4 +54,4 @@ explain exactly what is impossible under the restriction.
 The runtime receipt measures the underlying linear residual-memory operation.
 It excludes the newer graded readout, the coupled body controllers and the web
 visualization. Their additional computation is not covered by the recorded speed
-ratios. See [the joint-brain design](../showcase/COUPLED_BRAINS.md).
+ratios. See [the joint-brain design](../COUPLED_BRAINS.md).

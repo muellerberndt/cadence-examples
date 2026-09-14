@@ -1,6 +1,6 @@
 // A supplied habitat and sensory/motor adapter around the public worm circuit.
 // The animal reads only adjacent odor samples. No route or food coordinates enter its controller.
-import { Worm, zeros } from "./engine.js";
+import { Worm, zeros } from "../shared/engine.js";
 
 export class WormArena {
   constructor(data, layout = "maze") {

@@ -10,21 +10,22 @@ import numpy as np
 from embodied import maze_settlement, motor_settlement
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
 
 
 def sources():
     files = [
-        HERE / n
+        ROOT / n
         for n in (
-            "engine.js",
-            "embodied.js",
-            "embodied.py",
-            "embodied_benchmark.mjs",
-            "build_composites.py",
+            "shared/engine.js",
+            "shared/embodied.js",
+            "tools/embodied.py",
+            "tools/embodied_benchmark.mjs",
+            "tools/build_composites.py",
         )
     ]
     return {
-        str(p.relative_to(HERE.parent)): hashlib.sha256(p.read_bytes()).hexdigest()
+        str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in files
     } | {
         "cadence/" + p.name: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -62,7 +63,7 @@ def main():
     body["digest"] = hashlib.sha256(
         json.dumps(body, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()
-    (HERE / "composite_evidence.json").write_text(
+    (ROOT / "evidence/composite_evidence.json").write_text(
         json.dumps(body, separators=(",", ":")) + "\n"
     )
     print("Composite parity:", errors)

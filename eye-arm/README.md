@@ -13,7 +13,7 @@ Draw on the left pad or upload a dark line image. The eye samples 24 × 24 pixel
 
 The circuit at the top shows actual state, repairs and retained information.
 Supplied readout and body rules are documented rather than shown as extra neurons.
-See the [shared viewer guide](../showcase/README.md#read-the-brain-view).
+See the [shared viewer guide](../METHODS.md#read-the-brain-view).
 
 ## A shared equilibrium
 
@@ -21,7 +21,7 @@ The labeled regions participate in one connected solve for the current input.
 Local readback and repair change the same joint state; the action readout uses
 that state. The top circuit panel shows the global equation error and can replay
 the actual cross-region cascade. Lessons change records between phases.
-[Task wiring, boundaries and tests](../showcase/COUPLED_BRAINS.md) explain the
+[Task wiring, boundaries and tests](../COUPLED_BRAINS.md) explain the
 connections. Self-consistency is not a guarantee of the globally best behavior.
 
 ## Reproduce

@@ -18,13 +18,13 @@ jobs:
         run: python -m pip install -r requirements-reproduce.txt pytest playwright
       - name: verify measured evidence and execute habitat behavior trials
         run: |
-          python showcase/verify.py
-          node showcase/habitat_benchmark.mjs
+          python tools/verify.py
+          node tools/habitat_benchmark.mjs
           node tools/nervous_system_benchmark.mjs
           node tools/coupled_brain_benchmark.mjs
           node connect-four/benchmark.mjs
           node memory/history_benchmark.mjs
-          git diff --exit-code -- eye-arm/evidence.json mouse/evidence.json worm/evidence.json fly/evidence.json connect-four/evidence.json memory/history_evidence.json showcase/coupled_evidence.json
+          git diff --exit-code -- eye-arm/evidence.json mouse/evidence.json worm/evidence.json fly/evidence.json connect-four/evidence.json memory/history_evidence.json evidence/coupled_evidence.json
       - name: generated websites agree with the authored shell
         run: |
           python tools/build_showcase.py

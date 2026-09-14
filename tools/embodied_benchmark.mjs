@@ -7,7 +7,7 @@ import {
   motorSettlement,
   TaskLessons,
   stations,
-} from "./embodied.js";
+} from "../shared/embodied.js";
 function bfs(world, start) {
   const q = [start],
     prev = new Map([[start, -1]]);

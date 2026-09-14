@@ -76,13 +76,13 @@ node tools/nervous_system_benchmark.mjs
 node connect-four/benchmark.mjs
 ```
 
-The [joint receipt](coupled_evidence.json) binds all six sources and records
+The [joint receipt](evidence/coupled_evidence.json) binds all six sources and records
 whole-circuit residual bounds, replay accuracy and affected regions when links
 between functions are cut. Python checks the joint trajectories independently.
 The body tests measure navigation, contact, drawing and actuator ablations;
 strategy tests check legal play, budget control and scheduled opponents.
 A pleasing animation alone is not an equilibrium or performance test.
 
-Older [comparison receipts](../ADVANTAGES.md) cover their specified reference
+Older [comparison receipts](ADVANTAGES.md) cover their specified reference
 kernels and observation streams. Their timing figures are not measurements of
 the expanded coupled controllers or the browser visualization.

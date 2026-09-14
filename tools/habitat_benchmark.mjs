@@ -3,9 +3,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { WormArena } from "./worm_arena.js";
-const root = new URL("./", import.meta.url);
-const data = JSON.parse(readFileSync(new URL("worm.json", root)));
+import { WormArena } from "../worm/worm_arena.js";
+const root = new URL("../", import.meta.url);
+const data = JSON.parse(readFileSync(new URL("worm/worm.json", root)));
 const rows = [];
 function run(condition, setup, expected, ticks = 160) {
   const w = new WormArena(data);
@@ -67,7 +67,12 @@ const body = {
   contract:
     "Supplied diffusion, gradient heading, motor-gated body steps and contact consumption. These trials test the adapter, not biological fidelity or an ML performance advantage.",
   sources: Object.fromEntries(
-    ["worm_arena.js", "engine.js", "worm.json", "habitat_benchmark.mjs"].map(
+    [
+      "worm/worm_arena.js",
+      "shared/engine.js",
+      "worm/worm.json",
+      "tools/habitat_benchmark.mjs",
+    ].map(
       (name) => [
         name,
         createHash("sha256")
@@ -81,7 +86,7 @@ const body = {
   new_food_after_completion: true,
 };
 const serialized = JSON.stringify(body, null, 2) + "\n";
-const out = new URL("habitat_evidence.json", root);
+const out = new URL("worm/habitat_evidence.json", root);
 if (process.argv.includes("--write")) writeFileSync(out, serialized);
 else
   assert.equal(

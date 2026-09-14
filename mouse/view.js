@@ -1,5 +1,5 @@
 import { Mouse } from "./brain.js";
-import { TaskLessons, stations } from "../showcase/embodied.js";
+import { TaskLessons, stations } from "../shared/embodied.js";
 export function mountEmbodied(mode, api) {
   const {
     $,
@@ -197,7 +197,7 @@ export function mountEmbodied(mode, api) {
       "Task cues are explicit symbolic keys, not natural-language instructions. Lessons persist only in this browser; a dictionary can also retain these mappings. The graph and full occupancy map are supplied; the mouse is a simplified planar body. Cadence solves a tanh spatial field, and a local readout chooses an ascending neighbor. BFS is a strong conventional control and also succeeds. The frozen-route control demonstrates why stale plans need feedback; it is not an MLP trained to navigate. Changing a corridor may be impossible without disconnecting a perfect maze; each scheduled edit is recorded in the evidence.";
   }
   const evidenceLink = document.querySelector(".evidence details a");
-  evidenceLink.href = "showcase/composite_evidence.json";
+  evidenceLink.href = "evidence/composite_evidence.json";
   return {
     draw(w, h, dt) {
       if (mode === "mouse") {

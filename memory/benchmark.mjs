@@ -1,10 +1,10 @@
-import { FastMemory, MLP, keys, argmax, zeros } from "../showcase/engine.js";
+import { FastMemory, MLP, keys, argmax, zeros } from "../shared/engine.js";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { cpus } from "node:os";
 const bank = keys(),
   initial = JSON.parse(
-    readFileSync(new URL("../showcase/evidence.json", import.meta.url)),
+    readFileSync(new URL("../evidence/evidence.json", import.meta.url)),
   ).browser.online_mlp;
 function stream(kind) {
   const model = kind === "cadence" ? new FastMemory() : new MLP(initial),
@@ -49,7 +49,7 @@ for (const kind of ["cadence", "1", "10", "100"]) {
   });
 }
 const sources = Object.fromEntries(
-  ["memory/benchmark.mjs", "showcase/engine.js", "showcase/evidence.json"].map(
+  ["memory/benchmark.mjs", "shared/engine.js", "evidence/evidence.json"].map(
     (path) => [
       path,
       createHash("sha256")

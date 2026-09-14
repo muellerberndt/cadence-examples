@@ -2,20 +2,20 @@
   "schema": "cadence.joint-equilibrium/v1",
   "residual_reporting": "upper power-of-ten envelope",
   "sources": {
-    "showcase/nervous_system.js": "5cf69d94c6f2143b1355c01da614819321f78edba40fe039102d1008402dd0a3",
-    "showcase/telemetry.js": "9b242cf43b6ff6f59494368357d9b669da9a26c11da5d5cb336e675176773030",
-    "showcase/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
-    "showcase/embodied.js": "e551c3a3f53d0c9d4de18015a0dfec3e77ec80ada402ed3265d6edb53e5b2887",
-    "showcase/worm_arena.js": "11ddb137681fc9742a410d25d28e7cc70e850804ffc86f40f05347d8a242d3d5",
-    "showcase/worm.json": "c6e13345bd57329d3939d85dfe61c1a3ae49e2426e7e8a9c1cfe98a071818de1",
-    "eye-arm/brain.js": "87972777b4fffb693fa28fb1b55bd4f900039cda09c19917645762d0b1262830",
+    "shared/nervous_system.js": "5cf69d94c6f2143b1355c01da614819321f78edba40fe039102d1008402dd0a3",
+    "shared/telemetry.js": "9b242cf43b6ff6f59494368357d9b669da9a26c11da5d5cb336e675176773030",
+    "shared/engine.js": "7406c5be474407fed3f1f00f8432bd28bba195489c5d2594523be3d0a4a729ea",
+    "shared/embodied.js": "e551c3a3f53d0c9d4de18015a0dfec3e77ec80ada402ed3265d6edb53e5b2887",
+    "worm/worm_arena.js": "699a3ff7a3cd7a6cece6a143987897e0c093dbdb068de503cadd9600f8515429",
+    "worm/worm.json": "c6e13345bd57329d3939d85dfe61c1a3ae49e2426e7e8a9c1cfe98a071818de1",
+    "eye-arm/brain.js": "f3f4afa6ce1a76799058ddcf5465d78a9c64eedcd02ba94928beaeb10a32f18f",
     "eye-arm/fixtures.js": "23a7f78d540e202c075d55c58f17cce8bf324fe4b9fde01b739db490d0d9bfd7",
-    "mouse/brain.js": "0067e2dda39c2fb965b4aa026d8cd5e69c8866a8338b5cdf85f608c2c5977167",
-    "worm/brain.js": "92e97429fc2d73bbe8b7291b6906d7d3f9a41e08378f83bcd259a7be82a75b69",
-    "fly/brain.js": "72b1093cd063bd93ae1768f915c3b0dcd3f4ba4299a08bd544ea5520554e964a",
-    "memory/brain.js": "8c850bbc33751a40ed64d0a695d45b1ec4def9608c076dd65fc45892d4895cad",
-    "connect-four/brain.js": "585a18db405b79dbf3e8a6b5c955580e095b994aa250a569464e2ac9d055c372",
-    "tools/coupled_brain_benchmark.mjs": "71e4e86e9cbb5d84c51a92c7d82dd026b7b605c4b4f2112c8ac3a9604bc813b2"
+    "mouse/brain.js": "e40d15f8517eba8be28f073a8516ea6bdf18e7c442fc7e40f82ff7797742b30d",
+    "worm/brain.js": "36fc3c7bbb73bcb63791bbbfa1ef0ba95c14f5db5ce1d5391bcbacff8e192b1d",
+    "fly/brain.js": "b51642ef62f273a1e2e9d77553c29305549a93d030dc519304b40cb8925b8706",
+    "memory/brain.js": "7d353d60f2e9fcd1fa69a7a960cdf1cf4f72a0bfdc59e5596643c4ac87496529",
+    "connect-four/brain.js": "67c5062495d454ae9dca5c20d0627ceeb852d33745ae6ff06fca7c74056f2cf7",
+    "tools/coupled_brain_benchmark.mjs": "214e1e20adb70170f5861efa6412878075ce9616e9474bd1c74d6384ddb68ca7"
   },
   "results": [
     {

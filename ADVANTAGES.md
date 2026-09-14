@@ -81,7 +81,7 @@ Sub-millisecond measurements vary by machine, runtime and scheduling. This is
 neither a GPU benchmark nor an energy measurement. Run
 `node memory/benchmark.mjs` to record this machine's result. CI checks its source
 bindings and numerical contracts; it does not demand identical wall-clock time.
-The separate [matched multi-seed benchmark](showcase/evidence.json) includes
+The separate [matched multi-seed benchmark](evidence/evidence.json) includes
 correlated keys and preserves all scheduled outcomes.
 
 ## Evidence, not animation
@@ -94,11 +94,11 @@ movement learns or that colored activity measures happiness or neurotransmitters
 
 Current actuator trials: `node tools/nervous_system_benchmark.mjs`.
 Strategy trials: `node connect-four/benchmark.mjs`.
-Full numerical and browser checks: see the [reproduction guide](showcase/README.md#reproduce).
+Full numerical and browser checks: see the [reproduction guide](METHODS.md#reproduce).
 All scheduled trials are retained in source-bound receipts. These small suites
 establish behavior on those fixtures; they are not broad generalization estimates.
 
 The runtime receipt measures the underlying linear residual-memory operation.
 It excludes the newer graded readout, the coupled body controllers and the web
 visualization. Their additional computation is not covered by the recorded speed
-ratios. See [the joint-brain design](showcase/COUPLED_BRAINS.md).
+ratios. See [the joint-brain design](COUPLED_BRAINS.md).

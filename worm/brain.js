@@ -1,10 +1,10 @@
-import { WormArena as ChemicalHabitat } from "../showcase/worm_arena.js";
+import { WormArena as ChemicalHabitat } from "./worm_arena.js";
 import {
   Circuit,
   MotorSystem,
   settleTogether,
   motorFeedback,
-} from "../showcase/nervous_system.js";
+} from "../shared/nervous_system.js";
 export class WormArena extends ChemicalHabitat {
   constructor(data, layout = "maze") {
     super(data, layout);

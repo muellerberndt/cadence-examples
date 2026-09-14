@@ -9,7 +9,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+WORM = Path(__file__).resolve().parents[1] / "worm"
 BASE = "https://raw.githubusercontent.com/openworm/ConnectomeToolbox/b9c0b4a7bc2ccf47d3ce7aac624e1b3e2ea86254/"
 FILES = {
     "herm_full_edgelist.csv": "142693f17556148d7f962835b18ac6dd5af18b7467eef61815ebc1dd5474c0ca",
@@ -85,9 +85,9 @@ def main():
         "citation": "Cook et al. 2019, Nature 571:63–71; public OpenWorm ConnectomeToolbox tables.",
         "boundary": "Chemical topology only. Positive normalized weights and tanh dynamics are imposed. No gap junctions, validated physiology, or full animal behavior.",
     }
-    (HERE / "worm.json").write_text(json.dumps(data, separators=(",", ":")) + "\n")
+    (WORM / "worm.json").write_text(json.dumps(data, separators=(",", ":")) + "\n")
     license_text = urllib.request.urlopen(BASE + "LICENSE", timeout=30).read().decode()
-    (HERE / "OPENWORM_LICENSE.txt").write_text(license_text)
+    (WORM / "OPENWORM_LICENSE.txt").write_text(license_text)
     print(f"{len(names)} annotated owners, {len(edges)} chemical edges")
 
 

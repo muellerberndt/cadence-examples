@@ -3,13 +3,13 @@ import {
   keys,
   zeros,
   argmax,
-} from "../showcase/engine.js";
+} from "../shared/engine.js";
 import {
   MotorSystem,
   MemoryReadout,
   settleTogether,
   motorFeedback,
-} from "../showcase/nervous_system.js";
+} from "../shared/nervous_system.js";
 export class Forager extends MemoryForager {
   constructor(...args) {
     super(...args);

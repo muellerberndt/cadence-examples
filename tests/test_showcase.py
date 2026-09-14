@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "showcase"))
+sys.path.insert(0, str(ROOT / "tools"))
 from benchmark import hashes
 from build_composites import sources
 from embodied import motor_settlement
@@ -36,10 +36,10 @@ def test_worm_cadence_matches_independent_dynamics_under_lesions():
 
 def test_browser_kernels_match_current_cadence_and_online_mlp():
     result = node("""
-import {FastMemory,MLP,keys,Worm} from './showcase/engine.js';
-import {motorSettlement} from './showcase/embodied.js';
+import {FastMemory,MLP,keys,Worm} from './shared/engine.js';
+import {motorSettlement} from './shared/embodied.js';
 import fs from 'node:fs';
-const ev=JSON.parse(fs.readFileSync('showcase/evidence.json')),data=JSON.parse(fs.readFileSync('showcase/worm.json'));
+const ev=JSON.parse(fs.readFileSync('evidence/evidence.json')),data=JSON.parse(fs.readFileSync('worm/worm.json'));
 const f=new FastMemory(),net=new MLP(ev.browser.online_mlp),bank=keys(.5);
 for(let k=0;k<20;k++){const key=bank[k%8],v=Array(4).fill(0);v[(k+2)%4]=1;f.observe(key,v);net.observe(key,v,10);}
 const w=new Worm(data),d=Array(w.n).fill(0),m=Array(w.n).fill(1);d[23]=1;d[71]=.7;m[16]=0;
@@ -69,7 +69,7 @@ console.log(JSON.stringify({fast:f.w,mlp:bank.map(k=>net.predict(k)),worm:w.sett
 
 def test_forager_cannot_read_nectar_before_contact():
     result = node("""
-import {Forager,FastMemory,flowers} from './showcase/engine.js';
+import {Forager,FastMemory,flowers} from './shared/engine.js';
 const a=new Forager(new FastMemory()),b=new Forager(new FastMemory()),f=flowers(),g=flowers();g.forEach(x=>x.value=3-x.value);
 for(let k=0;k<10;k++){a.step(f);b.step(g);}
 console.log(JSON.stringify({a:[a.x,a.y,a.target,a.encounters],b:[b.x,b.y,b.target,b.encounters]}));
@@ -79,7 +79,7 @@ console.log(JSON.stringify({a:[a.x,a.y,a.target,a.encounters],b:[b.x,b.y,b.targe
 
 def test_new_task_revises_without_erasing_old_tasks_and_restores():
     result = node("""
-import {TaskLessons} from './showcase/embodied.js';
+import {TaskLessons} from './shared/embodied.js';
 const m=new TaskLessons(),before=m.recall(3);m.teach(3,3);const after=m.recall(3);m.teach(3,2);const restored=new TaskLessons(m.records);
 console.log(JSON.stringify({before,after,answers:[0,1,2,3].map(i=>restored.recall(i))}));
 """)
@@ -88,7 +88,7 @@ console.log(JSON.stringify({before,after,answers:[0,1,2,3].map(i=>restored.recal
 
 def test_mouse_stops_when_goal_is_disconnected():
     result = node("""
-import {Mouse,neighbors} from './showcase/embodied.js';
+import {Mouse,neighbors} from './shared/embodied.js';
 const m=new Mouse();neighbors(m.world,m.world.goal).forEach(i=>m.world.grid[i]=1);m.repair();for(let k=0;k<500;k++)m.step();
 console.log(JSON.stringify({moves:m.moves,next:m.next()}));
 """)
@@ -96,9 +96,9 @@ console.log(JSON.stringify({moves:m.moves,next:m.next()}));
 
 
 def test_receipts_are_complete_and_source_bound():
-    verify(json.loads((ROOT / "showcase/evidence.json").read_text()), hashes())
+    verify(json.loads((ROOT / "evidence/evidence.json").read_text()), hashes())
     verify(
-        json.loads((ROOT / "showcase/composite_evidence.json").read_text()),
+        json.loads((ROOT / "evidence/composite_evidence.json").read_text()),
         sources(),
         True,
     )
@@ -106,7 +106,7 @@ def test_receipts_are_complete_and_source_bound():
 
 @pytest.mark.parametrize("mutation", ["source", "accuracy", "control"])
 def test_receipt_gate_rejects_forged_results_even_with_recomputed_digest(mutation):
-    body = json.loads((ROOT / "showcase/evidence.json").read_text())
+    body = json.loads((ROOT / "evidence/evidence.json").read_text())
     if mutation == "source":
         body["sources"].pop(next(iter(body["sources"])))
     if mutation == "accuracy":
@@ -123,9 +123,9 @@ def test_receipt_gate_rejects_forged_results_even_with_recomputed_digest(mutatio
 
 def test_habitat_circuit_matches_cadence():
     result = node("""
-import {WormArena} from './showcase/worm_arena.js';
+import {WormArena} from './worm/worm_arena.js';
 import {readFileSync} from 'node:fs';
-const w=new WormArena(JSON.parse(readFileSync('./showcase/worm.json')));
+const w=new WormArena(JSON.parse(readFileSync('./worm/worm.json')));
 w.step();
 console.log(JSON.stringify({state:w.state,drive:w.drive,mask:w.mask,moves:w.moves}));
 """)
@@ -141,10 +141,10 @@ console.log(JSON.stringify({state:w.state,drive:w.drive,mask:w.mask,moves:w.move
 def test_diagnostic_replays_match_executed_settlements_and_release_decays():
     result = node("""
 import {readFileSync} from 'node:fs';
-import {Worm,zeros} from './showcase/engine.js';
-import {Mouse,motorSettlement} from './showcase/embodied.js';
-import {repairTrace} from './showcase/telemetry.js';
-const data=JSON.parse(readFileSync('./showcase/worm.json')),w=new Worm(data),drive=zeros(w.n),mask=Array(w.n).fill(1);
+import {Worm,zeros} from './shared/engine.js';
+import {Mouse,motorSettlement} from './shared/embodied.js';
+import {repairTrace} from './shared/telemetry.js';
+const data=JSON.parse(readFileSync('./worm/worm.json')),w=new Worm(data),drive=zeros(w.n),mask=Array(w.n).fill(1);
 data.stimuli.odor.forEach(i=>drive[i]=1);
 const r=w.settle(drive,mask),m=new Mouse(),a=motorSettlement([-1.8,1.1],[.45,.35]);
 const sources=[{...r,drive,mask,edges:data.edges},{...m.circuit,edges:m.circuit.engine.data.edges},{...a,steps:80,dt:.25}];
@@ -196,7 +196,7 @@ def test_composite_replay_respects_retained_state_and_motor_decay():
     result = node("""
 import {DrawingArm} from './eye-arm/brain.js';
 import {imageFixture} from './eye-arm/fixtures.js';
-import {repairTrace} from './showcase/telemetry.js';
+import {repairTrace} from './shared/telemetry.js';
 const a=new DrawingArm(imageFixture('square'));for(let i=0;i<50;i++)a.step();
 const s=a.brain.snapshot(),trace=repairTrace(s),release=repairTrace(s,true);
 console.log(JSON.stringify({initial:s.initialState.some(v=>v!==0),error:Math.max(...trace.frames.at(-1).map((v,i)=>Math.abs(v-s.state[i]))),start:Math.max(...release.frames[0].map(Math.abs)),end:Math.max(...release.frames.at(-1).map(Math.abs))}));
@@ -307,7 +307,7 @@ def test_motor_gate_holds_real_action_and_cancels_stale_world():
     result = node("""
 import {DrawingArm} from './eye-arm/brain.js';
 import {imageFixture} from './eye-arm/fixtures.js';
-import {MotorGate} from './showcase/motor_gate.js';
+import {MotorGate} from './shared/motor_gate.js';
 const arm=new DrawingArm(imageFixture('square')),gate=new MotorGate();
 gate.enabled=true;const before=arm.q.slice();
 gate.prepare(()=>arm.step(true),()=>24);
@@ -322,7 +322,7 @@ console.log(JSON.stringify({held,still,moved,cancelled:JSON.stringify(next)===JS
 
 def test_population_traces_measure_signed_oscillation_and_equation_error():
     result = node("""
-import {repairTrace} from './showcase/telemetry.js';
+import {repairTrace} from './shared/telemetry.js';
 const source={state:[0,0],initialState:[.3,0],initialPotential:[Math.atanh(.3),0],drive:[0,0],edges:[[0,1,.8],[1,0,-.8]],steps:40,groups:['a','b']};
 const trace=repairTrace(source);
 const independently=trace.frames.map((s,t)=>[ -.8*s[1]-trace.potentials[t][0], .8*s[0]-trace.potentials[t][1]]);

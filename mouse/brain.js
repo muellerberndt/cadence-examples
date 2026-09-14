@@ -1,11 +1,11 @@
-import { Mouse as SpatialMouse } from "../showcase/embodied.js";
-import { FastMemory, keys, zeros } from "../showcase/engine.js";
+import { Mouse as SpatialMouse } from "../shared/embodied.js";
+import { FastMemory, keys, zeros } from "../shared/engine.js";
 import {
   MotorSystem,
   MemoryReadout,
   settleTogether,
   motorFeedback,
-} from "../showcase/nervous_system.js";
+} from "../shared/nervous_system.js";
 export class Mouse extends SpatialMouse {
   constructor(seed = 13) {
     super(seed);

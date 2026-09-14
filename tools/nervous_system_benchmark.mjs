@@ -4,11 +4,11 @@ import { createHash } from "node:crypto";
 import { DrawingArm } from "../eye-arm/brain.js";
 import { imageFixture } from "../eye-arm/fixtures.js";
 import { Mouse } from "../mouse/brain.js";
-import { neighbors } from "../showcase/embodied.js";
+import { neighbors } from "../shared/embodied.js";
 import { Forager } from "../fly/brain.js";
 import { WormArena } from "../worm/brain.js";
-import { FastMemory, flowers } from "../showcase/engine.js";
-import { repairTrace } from "../showcase/telemetry.js";
+import { FastMemory, flowers } from "../shared/engine.js";
+import { repairTrace } from "../shared/telemetry.js";
 const root = new URL("../", import.meta.url),
   arm = [];
 for (const image of ["square", "flower", "two_marks"])
@@ -87,7 +87,7 @@ for (const seed of [13, 23, 33, 43, 53, 63, 73, 83, 93, 103, 113, 123])
       : assert.ok(row.reached, JSON.stringify(row));
     mouse.push(row);
   }
-const data = JSON.parse(readFileSync(new URL("showcase/worm.json", root))),
+const data = JSON.parse(readFileSync(new URL("worm/worm.json", root))),
   worm = [];
 for (const condition of [
   "intact",
@@ -148,11 +148,11 @@ const files = [
   "mouse/brain.js",
   "fly/brain.js",
   "worm/brain.js",
-  "showcase/nervous_system.js",
-  "showcase/engine.js",
-  "showcase/embodied.js",
-  "showcase/worm_arena.js",
-  "showcase/telemetry.js",
+  "shared/nervous_system.js",
+  "shared/engine.js",
+  "shared/embodied.js",
+  "worm/worm_arena.js",
+  "shared/telemetry.js",
   "tools/nervous_system_benchmark.mjs",
 ];
 const sources = Object.fromEntries(

@@ -12,7 +12,7 @@ PAGES = {
     "memory": "memory",
     "connect-four": "game",
 }
-shell = (ROOT / "showcase/shell.html").read_text()
+shell = (ROOT / "shared/shell.html").read_text()
 for folder, mode in PAGES.items():
     page = shell.replace("<head>", '<head>\n    <base href="../" />').replace(
         "<body>", f'<body data-demo="{mode}">'
@@ -30,11 +30,11 @@ for folder, mode in PAGES.items():
         page,
         flags=re.DOTALL,
     )
-    page = page.replace('src="showcase/app.js"', f'src="{folder}/page.js"')
+    page = page.replace('src="shared/app.js"', f'src="{folder}/page.js"')
     (ROOT / folder / "index.html").write_text(page)
     (ROOT / folder / "page.js").write_text(
-        '// This page owns its demo; rendering and numerical utilities are shared.\nimport "../showcase/app.js";\n'
+        '// This page owns its demo; rendering and numerical utilities are shared.\nimport "../shared/app.js";\n'
     )
 for name in ("index.html", "hub_published.html"):
-    (ROOT / name).write_bytes((ROOT / "showcase/gallery.html").read_bytes())
+    (ROOT / name).write_bytes((ROOT / "shared/gallery.html").read_bytes())
 print("Six demo pages and gallery rebuilt.")

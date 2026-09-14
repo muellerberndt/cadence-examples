@@ -1,5 +1,5 @@
-import { Circuit, settleTogether, zeros } from "../showcase/nervous_system.js";
-import { forward, jacobian } from "../showcase/embodied.js";
+import { Circuit, settleTogether, zeros } from "../shared/nervous_system.js";
+import { forward, jacobian } from "../shared/embodied.js";
 export const RETINA = 24;
 export class DrawingBrain {
   constructor() {

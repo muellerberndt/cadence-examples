@@ -1,6 +1,6 @@
 """Produce the public showcase evidence. No candidate is selected on test results.
 
-python showcase/benchmark.py --seeds 3 --steps 1200 --output showcase/evidence.json
+python tools/benchmark.py --seeds 3 --steps 1200 --output evidence/evidence.json
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from pathlib import Path
 import cadence as cd
 import numpy as np
 from model import (
-    HERE,
+    ROOT,
     MATRIX,
     N,
     OnlineMLP,
@@ -30,11 +30,17 @@ from model import (
 
 def hashes():
     files = [
-        HERE / n
-        for n in ("model.py", "benchmark.py", "worm.json", "fetch_worm.py", "engine.js")
+        ROOT / n
+        for n in (
+            "tools/model.py",
+            "tools/benchmark.py",
+            "worm/worm.json",
+            "tools/fetch_worm.py",
+            "shared/engine.js",
+        )
     ]
     return {
-        str(p.relative_to(HERE.parent)): hashlib.sha256(p.read_bytes()).hexdigest()
+        str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in files
     } | {
         "cadence/" + p.name: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -211,7 +217,7 @@ def main():
     p.add_argument("--seeds", type=int, default=3)
     p.add_argument("--steps", type=int, default=1200)
     p.add_argument("--trials", type=int, default=128)
-    p.add_argument("--output", type=Path, default=HERE / "evidence.json")
+    p.add_argument("--output", type=Path, default=ROOT / "evidence/evidence.json")
     a = p.parse_args()
     assert a.seeds > 0 and a.steps > 0 and a.trials > 0
     worms, memories, exported = [], [], None

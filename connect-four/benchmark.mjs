@@ -102,7 +102,7 @@ const report = {
 for (const path of [
   "connect-four/brain.js",
   "connect-four/benchmark.mjs",
-  "showcase/nervous_system.js",
+  "shared/nervous_system.js",
 ])
   report.sources[path] = createHash("sha256")
     .update(readFileSync(new URL("../" + path, import.meta.url)))
