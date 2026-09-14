@@ -221,7 +221,8 @@ export class BrainScan {
   _frame() {
     const [x0, y0, x1, y1] = this.bounds, a = this.aspect();
     const w = Math.max(1e-6, x1 - x0), h = Math.max(1e-6, y1 - y0);
-    this.frame = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, scale: Math.min(2 / (w * FIT * a[0]), 2 / (h * FIT * a[1])) };
+    // 0.9: room for the region labels above and beside the outermost regions
+    this.frame = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, scale: 0.9 * Math.min(2 / (w * FIT * a[0]), 2 / (h * FIT * a[1])) };
   }
 
   /** The distance to a neuron's neighbours, from the local density on a grid over the layout:
@@ -652,14 +653,17 @@ export class BrainScan {
       const el = this.labelElements[k];
       let [x, y] = at;
       const w = el.offsetWidth || 8 * (region.label ?? region.name).length, h = 14;
+      // a label stays on the canvas: clamped to the edges, and only hidden when its region is off screen
+      const [cx, cy] = this.toScreen(region.center[0], region.center[1]);
+      const inside = cx > -40 && cx < r.width + 40 && cy > -40 && cy < r.height + 40;
+      x = Math.max(w / 2 + 4, Math.min(r.width - w / 2 - 4, x));
+      y = Math.max(9, Math.min(r.height - 9, y));
       // larger regions label first; a colliding label steps down until it is clear
       for (let tries = 0; tries < 12; tries++) {
         const hit = placed.some((p) => Math.abs(p.x - x) < (p.w + w) / 2 + 6 && Math.abs(p.y - y) < h);
         if (!hit) break;
         y += h;
       }
-      const inside = x > -40 && x < r.width + 40 && y > -20 && y < r.height + 20;
-      y = Math.max(9, Math.min(r.height - 9, y));
       placed.push({ x, y, w });
       el.style.left = `${x}px`; el.style.top = `${y}px`;
       el.style.display = inside ? "" : "none";
