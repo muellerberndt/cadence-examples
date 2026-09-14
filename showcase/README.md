@@ -111,7 +111,10 @@ capacity the model does not have.
 | Changing memory | 8 key ports and 4 value ports | Current key/value readout and observed residual writes |
 
 - **Activity** shows live model values. Brightness is normalized within each
-  region; the numerical scale is printed and hovering reveals owner values.
+  region; input-release probes keep the captured scales fixed so fading remains
+  visible. The numerical scale is printed and hovering reveals owner values.
+  The trace plots peak recurrent activity, excluding the mouse’s separate
+  associative ports; memory-only views plot peak port activity.
 - **Repair** shows changes between live observations, or between iterations
   during replay. Amber increases; blue decreases. A model may converge smoothly,
   ring, or remain quiet. The renderer adds no oscillation.

@@ -52,6 +52,12 @@ export class BrainView {
   replay(release) {
     if (!this.source?.recurrent) return;
     this.trace = repairTrace(this.source, release);
+    this.trace.peaks = this.trace.frames.map((a) =>
+      Math.max(
+        0,
+        ...a.slice(0, this.source.recurrentCount ?? a.length).map(Math.abs),
+      ),
+    );
     this.signal = release ? "activity" : "repair";
     this.$("brain-signal").value = this.signal;
     this.frame = 0;
@@ -91,7 +97,14 @@ export class BrainView {
       mask: source.mask?.slice(),
       weights: weights.slice(),
     };
-    this.history.push(Math.max(0, ...source.state.map(Math.abs)));
+    this.history.push(
+      Math.max(
+        0,
+        ...source.state
+          .slice(0, source.recurrentCount ?? source.state.length)
+          .map(Math.abs),
+      ),
+    );
     if (this.history.length > 150) this.history.shift();
     this.$("brain-replay").disabled = !source.recurrent;
     this.$("brain-release").disabled = !source.recurrent;
@@ -244,17 +257,19 @@ export class BrainView {
       c.stroke();
     });
     const groupMax = {};
-    s.forEach((v, i) => {
+    (this.trace?.release ? this.source.state : s).forEach((v, i) => {
       const g = this.source.groups?.[i] ?? "patch";
       groupMax[g] = Math.max(groupMax[g] ?? 1e-12, Math.abs(v));
     });
     let hovered = -1,
       nearest = 16;
     positions.forEach(([x, y], i) => {
-      const value =
+      const value = Math.min(
+        1,
         this.signal === "repair"
           ? Math.abs(diff[i]) / dm
-          : Math.abs(s[i]) / groupMax[this.source.groups?.[i] ?? "patch"];
+          : Math.abs(s[i]) / groupMax[this.source.groups?.[i] ?? "patch"],
+      );
       const muted = this.source.mask?.[i] === 0;
       c.fillStyle = muted
         ? "#653647"
@@ -299,9 +314,7 @@ export class BrainView {
         h - 38,
       );
     const series = this.trace
-      ? this.trace.frames
-          .slice(0, this.frame + 1)
-          .map((a) => Math.max(...a.map(Math.abs)))
+      ? this.trace.peaks.slice(0, this.frame + 1)
       : this.history;
     const peak = Math.max(1e-12, ...series);
     c.strokeStyle = "#91d0d7";
@@ -317,7 +330,7 @@ export class BrainView {
       ? `${this.trace.release ? "Input released in an isolated copy" : "Repair replay"} · iteration ${this.frame}/${this.trace.frames.length - 1} · ${this.rate} iterations/s${this.frame === this.trace.frames.length - 1 ? " · complete" : ""}`
       : `Live activity · ${this.source.recurrent ? "recurrent settlement" : "direct associative read/write"} · ${this.writes} observed weight changes`;
     this.$("brain-scale").textContent =
-      `Activity max ${max.toExponential(2)} · ${this.trace ? "per-iteration repair" : "between-observation change"} max ${dm.toExponential(2)}. Activity brightness normalized within each region; hover for values.`;
+      `Activity max ${max.toExponential(2)} · ${this.trace ? "per-iteration repair" : "between-observation change"} max ${dm.toExponential(2)}. Activity brightness uses ${this.trace?.release ? "the captured region scales (fixed during decay)" : "current region scales"}; hover for values.`;
   }
   snapshot() {
     return {
