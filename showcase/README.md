@@ -95,6 +95,35 @@ we can distinguish a remembered goal from a spatial state, motor correction, and
 body observation. The two-way visual/motor circuit is a joint settlement; the
 mouse and forager connect mechanisms through repeated environmental feedback.
 
+## Circuit sizes and biological references
+
+Counts describe the Cadence circuit, excluding supplied bodies, environmental
+fields and comparison MLPs. A patch/port is a state coordinate, a seam is a
+weighted connection or memory-matrix entry, and an adaptive entry changes with
+learning. These quantities should not be conflated as a single parameter count.
+
+| Demo | Patches / ports | Declared seams | Adaptive entries |
+|---|---|---|---|
+| C. elegans | 297 | 3,604 | 0; supplied circuit weights |
+| Mouse, initial seed 13 | 126 active out of 259 allocated | 274 | 32 task-memory entries |
+| Eye & arm | 4 | 8 directed couplings | 0; couplings come from geometry |
+| Fly-inspired forager, Cadence agent | 12 | 32 | 32 nectar-memory entries |
+| Changing memory | 12 | 32 | 32 associative entries |
+
+The starting mouse has 247 spatial slots, of which 114 are open, plus 12 memory
+ports. Its 242 spatial seams and 32 memory seams total 274. Wall edits and new
+maze layouts change active ports and spatial seams. All 32 memory slots count,
+including entries currently equal to zero.
+
+For orientation, the adult C. elegans hermaphrodite has **302 neurons**, including
+**20 pharyngeal neurons** in the feeding nervous system
+([WormAtlas](https://www.wormatlas.org/hermaphrodite/nervous/mainframe.htm)). The
+worm and mouse examples allocate hundreds of software coordinates. The four- and
+twelve-port examples are subcircuit-sized, below even that 20-neuron feeding
+network. These are count references, not claims of equivalent computing power,
+biological fidelity or animal intelligence. No whole-animal brain equivalent is
+assigned to the smallest examples.
+
 ## Read the brain view
 
 Every website has the same MRI-inspired circuit viewer. The two-hemisphere
