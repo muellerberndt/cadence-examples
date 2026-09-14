@@ -692,7 +692,11 @@ export class BrainScan {
     const w = r.width, h = r.height;
     ctx.fillStyle = "#0a1119"; ctx.fillRect(0, 0, w, h);
     const rows = this.montage();
-    const gutter = Math.min(110, Math.max(64, w * 0.12)), x0 = gutter, x1 = w - 10;
+    const font0 = Math.min(11, Math.max(8, ((h - 6) / rows.length) * 0.62));
+    ctx.font = `${font0}px system-ui, sans-serif`;
+    let longest = 0;
+    for (const row of rows) longest = Math.max(longest, ctx.measureText(row.label.length > 16 ? row.label.slice(0, 15) + "…" : row.label).width);
+    const gutter = Math.min(w * 0.3, Math.max(64, longest + 14)), x0 = gutter, x1 = w - 10;
     const rowH = (h - 6) / rows.length, span = 319;
     const x = (t) => x0 + (t / span) * (x1 - x0);
     const steps = this.global.change.length;
