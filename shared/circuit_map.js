@@ -362,8 +362,11 @@ export class CircuitMap {
         i * 4,
       );
       for (let k = 0; k < 4; k++)
-        this.state[i * 4 + k] =
-          (channels[k]?.[i] ?? 0) / Math.max(0.00001, scales?.[k]?.[i] ?? 1);
+        this.state[i * 4 + k] = k === 1 || k === 2
+          ? Math.abs(channels[k]?.[i] ?? 0) <= 1e-8 ? 0
+            : Math.sign(channels[k][i]) * Math.log1p(Math.abs(channels[k][i]) / 1e-8)
+              / Math.log1p(Math.max(0.00001, scales?.[k]?.[i] ?? 1) / 1e-8)
+          : (channels[k]?.[i] ?? 0) / Math.max(0.00001, scales?.[k]?.[i] ?? 1);
     }
     gl.useProgram(this.program);
     gl.bindVertexArray(this.vao);

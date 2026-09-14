@@ -7,7 +7,7 @@ actual circuit beside the task at the top on desktop; mobile stacks the panels.
 ## Launch any demo
 
 From the repository root, run `python serve.py eye-arm`, `python serve.py mouse`,
-`python serve.py worm`, `python serve.py fly`, `python serve.py memory`, or `python serve.py connect-four`.
+`python serve.py worm`, `python serve.py fly`, or `python serve.py connect-four`.
 Python 3.11+ is enough to serve them. No account, packages or GPU are required.
 The launcher opens the example's own directory URL on an available local port.
 Use `--no-browser` to print the address. Open `/` for the gallery.
@@ -27,10 +27,7 @@ Use `--no-browser` to print the address. Open `/` for the gallery.
    chemical network and its MLP comparator.
 4. **Forager:** watch nectar contact update memory, then change the nectar.
    Motor populations turn and propel the body toward selected flowers.
-5. **Memory:** replace an observed value and compare retention against online
-   MLP updates on the same observations.
-
-6. **Connect Four:** select **Watch before moving**, play a column, and inspect
+5. **Connect Four:** select **Watch before moving**, play a column, and inspect
    the predicted replies before executing the preferred move. Disable the
    self-monitor to cap the normal search at four plies.
 
@@ -43,10 +40,8 @@ Use `--no-browser` to print the address. Open `/` for the gallery.
 | Worm | Public chemical graph plus an engineered directional motor circuit | Odor and body/circuit state; fixed weights |
 | Forager | Working sensor/motor loop, blank nectar memory | Contact reveals nectar and changes associative weights |
 | Connect Four | Supplied game rules, threat evaluator and monitor | Hypothetical boards, option values and budget readback; no weight training |
-| Memory | Blank record store and randomly initialized MLP | Both update on each demonstrated key/value pair |
 
-The memory example isolates a subsystem; it has no invented body. The embodied
-examples implement the complete **task controller**, with supplied encodings,
+The embodied examples implement the complete **task controller**, with supplied encodings,
 attention/readout rules, connectomes and physical bodies. They do not reconstruct
 complete biological brains, learned perception or learned anatomy.
 
@@ -59,7 +54,6 @@ complete biological brains, learned perception or learned anatomy.
 | Worm | The chemical graph is reused after stimulation or lesions. Its equilibrium agrees with the numerical reference; a trained MLP is faster but approximate. The habitat adds engineered motor control and is separately tested. |
 | Forager | One residual write revises a contacted flower's value. Both learners share the same motor design; live trajectories contain different experiences, so nectar totals are illustrative. |
 | Connect Four | Isolated futures and activity readback control search depth. The same evaluator wins more scheduled games with lookahead; ordinary minimax can also do this. |
-| Memory | Distinct-key records can be replaced locally with exact retention. Dictionary storage is exact too; overlapping keys interfere and can favor the tested MLP. |
 
 ## One joint state per task
 
@@ -136,10 +130,13 @@ time are excluded from numerical efficiency comparisons.
   correction; gray = idle/paused. These name observed events, not measured feelings.
 - **Activity / input / activity change / equation mismatch:** amber = positive, blue = negative. Values are
   dimensionless and scaled within a region; replay scales remain fixed.
+  Change and mismatch colors use logarithmic magnitude above a 1e-8 noise floor,
+  making small repairs visible alongside large ones. Numerical readouts are unscaled.
 - **Violet activity-change trails:** one second of display history. They are not neural
   memory. **Plasticity** separately highlights learned weight changes.
 - **Following settling:** reconstructs one captured joint trajectory from its
-  actual input, weights and initial state. Long runs play within three seconds;
+  actual input, weights and initial state. Long runs expand the early propagation
+  and compress the convergence tail within three seconds;
   rapid body updates are coalesced, retaining the largest waiting detuning.
   The timeline and arrow buttons inspect **every iteration** of the captured
   run without skipping. Live playback is sampled, not every body tick.

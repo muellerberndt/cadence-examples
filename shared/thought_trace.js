@@ -16,6 +16,9 @@ export function thoughtSnapshot(base, evaluation, index, total) {
   // The inactive decision regions are held, not claimed to be satisfying a
   // branch's value-only equation. Population readbacks still show retained state.
   trace.mismatches.forEach(row => row.fill(0, 6));
+  trace.potentials.forEach(row => {
+    for (let i = 6; i < n; i++) row[i] = base.potential[i];
+  });
   for (const [g, series] of Object.entries(trace.populations)) {
     if (!base.groups.slice(0, 6).includes(g)) series.forEach(row => { row.mismatch = 0; });
   }
@@ -28,6 +31,7 @@ export function thoughtSnapshot(base, evaluation, index, total) {
     activeSynapses: 5,
     recordedTrace: trace,
     phase: `Recorded future ${index + 1} / ${total} · other regions retained`,
-    equilibrium: { ...base.equilibrium, residual: 0, tolerance: 1e-10, converged: true },
+    equilibrium: { residual: 0, tolerance: 1e-10, converged: true,
+      regions: { features: 0, value: 0 }, links: 5 },
   };
 }

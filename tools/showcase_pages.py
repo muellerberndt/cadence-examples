@@ -82,8 +82,10 @@ def main():
             assert page.evaluate("showcase.snapshot().body.arrivals") == 1
             # A command is an explicit request to resume, including after Pause.
             page.locator("#pause").click()
+            page.locator("#brain-think").click()
             page.locator('[data-task="1"]').click()
             assert not page.evaluate("showcase.snapshot().body.paused")
+            assert page.locator("#brain-think").get_attribute("aria-pressed") == "false"
             page.wait_for_function("showcase.snapshot().body.cell === showcase.snapshot().body.goal", timeout=60000)
             assert page.evaluate("showcase.snapshot().body.arrivals") == 2
             page.locator("#task-cue").select_option("2")
@@ -141,11 +143,12 @@ def main():
             assert page.locator("#scene").screenshot() == idle_image
             page.locator("#worm-pause").click()
             # Draw a continuous wall across multiple input events, then erase it.
+            page.locator('[data-worm-tool="wall"]').click()
+            page.locator("#scene").scroll_into_view_if_needed()
             bounds = page.locator("#scene").bounding_box()
             size = min((bounds["width"] - 32) / 31, (bounds["height"] - 42) / 21)
             left = bounds["x"] + (bounds["width"] - 31 * size) / 2
             top = bounds["y"] + (bounds["height"] - 21 * size) / 2
-            page.locator('[data-worm-tool="wall"]').click()
             page.mouse.move(left + 8.5 * size, top + 3.5 * size)
             page.mouse.down()
             page.mouse.move(left + 15.5 * size, top + 3.5 * size, steps=8)
@@ -153,6 +156,10 @@ def main():
             walls = page.evaluate("showcase.snapshot().body.walls")
             assert all(walls[3 * 31 + x] for x in range(8, 16))
             page.locator('[data-worm-tool="erase"]').click()
+            page.locator("#scene").scroll_into_view_if_needed()
+            bounds = page.locator("#scene").bounding_box()
+            left = bounds["x"] + (bounds["width"] - 31 * size) / 2
+            top = bounds["y"] + (bounds["height"] - 21 * size) / 2
             page.mouse.click(left + 9.5 * size, top + 3.5 * size)
             assert not page.evaluate("showcase.snapshot().body.walls[3*31+9]")
             page.locator('[data-worm-view="circuit"]').click()
@@ -189,6 +196,7 @@ def main():
             )
             # A freehand mark is read back through the retina, including pencil lift.
             page.locator("#clear-pad").click()
+            page.locator("#scene").scroll_into_view_if_needed()
             bounds = page.locator("#scene").bounding_box()
             size = min(bounds["width"] * 0.40 - 18, bounds["height"] - 88)
             x, y = bounds["x"] + 18, bounds["y"] + 58

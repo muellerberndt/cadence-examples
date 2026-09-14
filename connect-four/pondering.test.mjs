@@ -165,6 +165,7 @@ test("all actual future value evaluations are observable without changing search
     assert.equal(snapshot.state.length, base.state.length);
     assert.equal(snapshot.edges.length, base.edges.length);
     assert.deepEqual(snapshot.state.slice(6), base.state.slice(6));
+    assert.deepEqual(snapshot.potential.slice(6), base.potential.slice(6));
     snapshot.state.slice(0, 6).forEach((v, i) => assert.ok(Math.abs(v - values[i]) < 1e-14));
     assert.equal(trace.frames.length, 3);
     assert.ok(Math.max(...trace.mismatches.at(-1).map(Math.abs)) < 1e-14);

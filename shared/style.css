@@ -918,6 +918,8 @@ canvas:focus-visible {
   gap: 20px;
 }
 .task-commands { padding: 10px 16px; border-top: 1px solid var(--line); }
+.primary-controls { padding: 10px 16px; border-top: 1px solid var(--line); }
+.primary-controls .buttons { margin: 0; }
 .brain-panel, .lab { border-radius: 8px; }
 .brain-heading h2 { font-size: 17px; }
 .brain-meters { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 9px 0; }

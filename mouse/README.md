@@ -7,7 +7,7 @@ Try it:
 
 1. Pick a task (**Find cheese**, **Go home**, **Get water**). The mouse recalls the
    destination from memory and walks there at once. The three buttons under the
-   maze issue these commands directly and resume a paused body. After arrival,
+   maze issue these commands directly, resume a paused body and end held inspection. After arrival,
    choose another task: the same mouse continues from its current position.
 2. Pick **New task**. The mouse stops, because the task has no lesson.
 3. Choose a destination under **Teach this task to go to** and press **Teach**.

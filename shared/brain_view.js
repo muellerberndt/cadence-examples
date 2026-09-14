@@ -106,6 +106,7 @@ export class BrainView {
       : "Follow settling";
   }
   reset() {
+    this.map.fit();
     this.source = this.old = this.trace = this.auto = this.pending = null;
     this.diagnostic = null;
     this.frozen = false;
@@ -205,6 +206,10 @@ export class BrainView {
   }
   replay(release) {
     if (!this.source?.recurrent) return;
+    if (release && this.source.phase) {
+      const { phase, activeSynapses, recordedTrace, ...whole } = this.source;
+      this.source = whole;
+    }
     this.auto = this.pending = null;
     this.trailStamp = null;
     this.trail = [];
@@ -348,7 +353,7 @@ export class BrainView {
           // Live playback samples the complete retained evaluation history.
           // The separate future slider can inspect every recorded evaluation.
           this.thoughtCursor = Math.min(thought.evaluations.length - 1,
-            this.thoughtCursor + Math.max(1, Math.ceil((thought.evaluations.length - this.thoughtCursor) / 16)));
+            this.thoughtCursor + Math.max(1, Math.ceil(thought.evaluations.length / 24)));
           this.$("brain-future").value = this.thoughtCursor;
           this.startCascade(thoughtSnapshot(this.source,
             thought.evaluations[this.thoughtCursor], this.thoughtCursor, thought.evaluations.length));
@@ -366,7 +371,10 @@ export class BrainView {
         const end = this.auto.trace.frames.length - 1;
         this.auto.frame = Math.min(
           end,
-          Math.floor(this.auto.elapsed * (this.auto.source.phase ? 8 : Math.max(this.rate, end / 3))),
+          Math.floor(this.auto.source.phase ? this.auto.elapsed * 8
+            : end > 120
+              ? Math.expm1(Math.min(1, this.auto.elapsed / 3) * Math.log1p(end))
+              : this.auto.elapsed * this.rate),
         );
         if (this.auto.frame === end && this.pending)
           this.startCascade(this.pending);
@@ -413,15 +421,14 @@ export class BrainView {
       repairMax[g] = Math.max(repairMax[g] ?? 0.01, Math.abs(diff[i]));
     });
     const scales = trace?.scales[this.signal] ?? maxima;
-    const norm = values.map((v, i) =>
-      Math.max(-1, Math.min(1, v / (scales[groups[i]] ?? 1e-12))),
-    );
-    const repairs = diff.map((v, i) =>
-      Math.min(
-        1,
-        Math.abs(v) / (trace?.scales.repair[groups[i]] ?? repairMax[groups[i]]),
-      ),
-    );
+    const logarithmic = this.signal === "repair" || this.signal === "mismatch";
+    const intensity = (v, scale) => Math.abs(v) <= 1e-8 ? 0
+      : Math.min(1, Math.log1p(Math.abs(v) / 1e-8) / Math.log1p(scale / 1e-8));
+    const norm = values.map((v, i) => logarithmic
+      ? Math.sign(v) * intensity(v, scales[groups[i]] ?? .01)
+      : Math.max(-1, Math.min(1, v / (scales[groups[i]] ?? .01))));
+    const repairs = diff.map((v, i) => intensity(v,
+      trace?.scales.repair[groups[i]] ?? repairMax[groups[i]]));
     // Only actual displayed changes replenish the trail; holding a replay frame must not keep it alive.
     const stamp = trace
       ? `${this.cascades}:${!!this.trace}:${trace.release}:${frame}`
@@ -741,7 +748,7 @@ export class BrainView {
       : "";
     this.$("brain-legend").hidden = !this.heat && !plastic;
     this.$("brain-legend-label").textContent =
-      `${plastic ? (lasting ? "Persistent synaptic strength · gold strengthens, blue weakens" : "Total synaptic strength · gold strengthens, blue weakens") : this.signal === "input" ? "Input drive" : this.signal === "repair" ? "Activity change" : this.signal === "mismatch" ? "Equation mismatch" : "Activity"}${plastic ? "" : " · relative region scale"}${trace ? " · fixed during replay" : ""}`;
+      `${plastic ? (lasting ? "Persistent synaptic strength · gold strengthens, blue weakens" : "Total synaptic strength · gold strengthens, blue weakens") : this.signal === "input" ? "Input drive" : this.signal === "repair" ? "Activity change" : this.signal === "mismatch" ? "Equation mismatch" : "Activity"}${plastic ? "" : logarithmic ? " · logarithmic magnitude" : " · relative region scale"}${trace ? " · fixed during replay" : ""}`;
     this.$("brain-scale").textContent = plastic
       ? `Max |synaptic strength| ${Math.max(0, ...(lasting ? source.consolidated ?? [] : source.edges).map(([, , v]) => Math.abs(v))).toExponential(2)} · connections show ${lasting ? "persistent" : "total"} weights; flashes show their signed changes. Neuron colors still show activity.`
       : `Max |value| ${Math.max(0, ...values.map(Math.abs)).toExponential(2)} · dimensionless model units. ${trace ? "Captured trajectory scales" : "Current region scales"}; hover or tap for signed values. No neurotransmitter concentrations are modeled.`;

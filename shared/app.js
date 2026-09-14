@@ -61,6 +61,16 @@ function act(make) {
     brainView.replay(false);
   }
 }
+function primaryControls(ids) {
+  const bar = document.createElement("div");
+  bar.className = "buttons primary-controls";
+  bar.setAttribute("aria-label", "Quick demo controls");
+  for (const id of ids) {
+    const control = $(id);
+    if (control) bar.append(control);
+  }
+  canvas.after(bar);
+}
 $("brain-think").onclick = () => {
   motorGate.enabled = !motorGate.enabled;
   motorGate.cancel();
@@ -257,6 +267,7 @@ function setMode(next) {
   document.title = `Cadence · ${{ mouse: "Teachable mouse", arm: "Eye & arm", fly: "Embodied forager", worm: "C. elegans", game: "Connect Four reasoner" }[mode]}`;
   bodyView = null;
   document.querySelector(".task-commands")?.remove();
+  document.querySelector(".primary-controls")?.remove();
   paused = false;
   if (!document.body.dataset.demo) location.hash = next;
   document
@@ -266,6 +277,7 @@ function setMode(next) {
     );
   if (mode === "worm" && wormView === "habitat") {
     bodyView = mountWorm({ data, $, ctx, metrics, explain, act });
+    primaryControls(["worm-tools", "worm-pause"]);
     document.querySelector(".evidence details a").href =
       "evidence/evidence.json";
     renderEvidence();
@@ -281,6 +293,7 @@ function setMode(next) {
       table,
       evidence: strategyEvidence,
     });
+    primaryControls(["game-columns", "watch-thought", "new-game"]);
     fit();
     return;
   }
@@ -302,6 +315,9 @@ function setMode(next) {
         observe: source => brainView.capture(source),
         resume: () => {
           motorGate.cancel();
+          motorGate.enabled = false;
+          $("brain-think").setAttribute("aria-pressed", "false");
+          $("brain-think").textContent = "Slow thought";
           brainView.trace = brainView.auto = brainView.pending = null;
           brainView.frozen = false;
           $("brain-freeze").textContent = "Pause view";
@@ -309,6 +325,7 @@ function setMode(next) {
         evidence: composite,
       },
     );
+    if (mode === "arm") primaryControls(["clear-pad", "restart-arm", "pause"]);
     fit();
     return;
   }
@@ -420,6 +437,7 @@ function setMode(next) {
         ],
       )}<div><label>Latest experience</label><p id="last-event" aria-live="polite">Waiting for the first encounter…</p><p class="note">Live totals reflect different trajectories. The matched memory experiment is below.</p></div>`;
     $("update-budget").value = String(updates);
+    primaryControls(["change-nectar", "pause", "reset-fly"]);
     $("update-budget").onchange = () => {
       updates = +$("update-budget").value;
       resetFly();
