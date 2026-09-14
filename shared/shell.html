@@ -123,6 +123,7 @@
             <input id="brain-timeline" type="range" min="0" max="0" value="0" aria-label="Settling iteration" />
             <button id="brain-step-next" aria-label="Next repair iteration">›</button>
             <output id="brain-step-label">0 / 0</output>
+            <button id="brain-live" title="Return to the live brain">Live</button>
           </div>
           <div id="brain-futures" class="brain-future-picker" hidden>
             <label for="brain-future" id="brain-future-count">Recorded future evaluations</label>
@@ -173,8 +174,7 @@
                   <option value="plasticity">Plasticity · memory writes</option>
               </select>
               <div class="buttons">
-                <button id="brain-live">Live</button
-                ><button id="brain-freeze">Pause view</button>
+                <button id="brain-freeze">Pause view</button>
                 <button id="brain-heat" aria-pressed="true">Heatmap on</button>
               </div>
               <div class="buttons">
