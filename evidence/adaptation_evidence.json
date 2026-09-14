@@ -23,7 +23,7 @@
   "limits": "Same memory and motor circuit, different supplied exploration rule; trajectories differ. This is an adaptation tradeoff, not an MLP comparison. Arm coverage measures marks at reference samples, not exact image similarity.",
   "sources": {
     "tools/adaptation_benchmark.mjs": "aa6d0bf1b781b72fb62b3db0f93387baad61f94c6a5c133f6e58f86a8ca319ac",
-    "fly/brain.js": "07c601d51d44ecebaf0cda47004b995750fc9a122d00f3159ff229b86d84644e",
+    "fly/brain.js": "b9e47f22380c9227e6746f4e23925f3058e5a04d7e4d19b888588ec655e598d8",
     "eye-arm/brain.js": "3d7afa134b7b4894a12e3eae038858ac7e850d8fd8c09d15a5b8563c2e8a205e",
     "eye-arm/paper.js": "f33344e4e543b8fe3c2955ac83562cd86c4458e04be63694906032ebc09edaff",
     "shared/engine.js": "efdcdb768b0eaa560090d49f97144e6cab08fb5f9ccdffaeee551c84153849c7",

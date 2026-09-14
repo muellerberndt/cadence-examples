@@ -12,7 +12,7 @@
     "eye-arm/paper.js": "f33344e4e543b8fe3c2955ac83562cd86c4458e04be63694906032ebc09edaff",
     "eye-arm/fixtures.js": "23a7f78d540e202c075d55c58f17cce8bf324fe4b9fde01b739db490d0d9bfd7",
     "worm/brain.js": "bc4d5a8ad1b212d8adc019a4da2b4246c3576af954d3012427ce687151f5c3e8",
-    "fly/brain.js": "07c601d51d44ecebaf0cda47004b995750fc9a122d00f3159ff229b86d84644e",
+    "fly/brain.js": "b9e47f22380c9227e6746f4e23925f3058e5a04d7e4d19b888588ec655e598d8",
     "connect-four/brain.js": "ef5c7447943ef692dd3dddce45bad68ecbeccc1528e0eed785a4850131ca8537",
     "tools/coupled_brain_benchmark.mjs": "4b9c94fe788d7794c188e2da9032a3223608851cc31e638408c8f9b54568b919"
   },

@@ -77,6 +77,18 @@ console.log(JSON.stringify({a:[a.x,a.y,a.target,a.encounters],b:[b.x,b.y,b.targe
     assert result["a"] == result["b"] and result["a"][-1] == 0
 
 
+def test_mlp_forager_stays_finite_after_nectar_contacts():
+    result = node("""
+import {readFileSync} from 'node:fs';
+import {Forager} from './fly/brain.js';
+import {MLP,flowers} from './shared/engine.js';
+const ev=JSON.parse(readFileSync('evidence/evidence.json')),a=new Forager(new MLP(ev.browser.online_mlp),0.02,10),f=flowers();
+for(let t=0;t<4000;t++)a.step(f);
+console.log(JSON.stringify({encounters:a.encounters,finite:[a.x,a.y,a.angle].every(Number.isFinite)}));
+""")
+    assert result["encounters"] > 0 and result["finite"]
+
+
 def test_receipts_are_complete_and_source_bound():
     verify(json.loads((ROOT / "evidence/evidence.json").read_text()), hashes())
     verify(

@@ -1,5 +1,6 @@
 import {
   Forager as MemoryForager,
+  MLP,
   keys,
   zeros,
   argmax,
@@ -96,9 +97,14 @@ export class Forager extends MemoryForager {
         const target = zeros(4);
         target[f.value] = 1;
         const predicted = argmax(this.memory.predict(keys()[f.kind]));
-        this.memory.observe(keys()[f.kind], target, this.updates, {
-          salience: Math.abs(f.value - predicted),
-        });
+        // Surprise sets consolidation salience; the online MLP comparator's
+        // fourth argument is its learning rate, so it receives no options.
+        if (this.memory instanceof MLP)
+          this.memory.observe(keys()[f.kind], target, this.updates);
+        else
+          this.memory.observe(keys()[f.kind], target, this.updates, {
+            salience: Math.abs(f.value - predicted),
+          });
         this.visits[this.target]++;
         this.lastVisit[this.target] = this.time;
         this.encounters++;
