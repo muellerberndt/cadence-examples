@@ -22,7 +22,7 @@ jobs:
       - name: Verify the receipts, their predicates and their sources
         run: python tools/verify_gallery.py
       - name: Test the agent, the arm, the world, Connect Four and the comparisons
-        run: python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests comparisons/tests
+        run: python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests artist/tests comparisons/tests
       - name: Browser engine parity with the Python agent
         run: |
           python arm/tools/parity_fixture.py --out runs/arm/parity
