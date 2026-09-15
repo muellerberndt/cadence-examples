@@ -69,4 +69,15 @@ python world/verify.py runs/world/acceptance
 and threshold, the source hashes of this directory and of the library, the sha256 of every
 event log and checkpoint, and the digest of the receipt itself. `verify.py` recomputes the
 request, correction and grounding rates from the event logs and fails closed on an
-incomplete run. The page `web/` continues a life of the acceptance brain in the browser.
+incomplete run.
+
+## The page
+
+`web/` continues a life of a saved brain in the browser: the world beside the whole brain, the
+visitor asking for objects, dragging one to another cell, teaching a word, running the cue
+task and locking the doors, and every decision computed by the ported agent while the scan
+settles. `python world/web/build_page.py --run runs/world/dev --out runs/world/web/index.html`
+inlines the run's final brain and writes the checkpoints of that seed beside the page, so the
+brain selector reaches the same life after 1,000, 5,000 and 10,000 explore steps, after the
+remembered requests, after the cue task and after the doors locked. `web/README.md` states
+what the page shows and how it is checked.

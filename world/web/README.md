@@ -1,10 +1,12 @@
 # The S02 world in the browser
 
-The remembered world of `experiments/experience/s02_world` ported to JavaScript: the world and
-its curriculum (`env.py`, `tasks.py`), the four stores and the best-first search with the
-`Brain` wrapper (`brain.py`), on the experience agent of `../../web/engine.js` with its
-records world head, and one page that shows the world, the stores and the whole brain
-(the settled regions in the scan, the records cortex beside it) while the curriculum runs.
+Ask for an object and the agent goes to the place it remembers. The remembered world of
+`world/` ported to JavaScript: the world and its curriculum (`env.py`, `tasks.py`), the four
+stores and the best-first search with the `Brain` wrapper (`brain.py`), on the experience
+agent of `../../web/engine.js` with its records world head, and one page that shows the world
+and the whole brain side by side (the settled regions in the scan, the records cortex beside
+it) while the visitor asks for objects, moves them, teaches words, runs the cue task and locks
+the doors.
 Two parity harnesses compare the port with recorded Python fixtures: the S01 harness for the
 engine itself, and `parity_s02.mjs` for the brain (every decision, the stores, the recall
 port, the planner's counters and plans, the learned parameters, the records) and for the
@@ -22,33 +24,48 @@ world (every moment and the private state after every event).
 | `parity_s02.mjs` | `node world/web/parity_s02.mjs runs/world/parity`: the S02 parity check. |
 | `../tools/parity_fixture.py` | Writes the fixture: `snapshot.json`, `records_f64.json`, `stream.jsonl`, `world.jsonl`, `final.json`. |
 | `page.js`, `index.html`, `style.css` | The page. |
-| `build_page.py` | Inlines the snapshot, the renderer, the engine, the records view, the world, the stores, the planner and the page into one `index.html`. |
-| `check_page.py` | Headless Chromium (SwiftShader): steps events through `window.__page.step()`, saves screenshots, fails on any page or console error. |
+| `build_page.py` | Inlines the snapshot, the renderer, the engine, the records view, the world, the stores, the planner and the page into one `index.html`. `--run` exports every checkpoint `run.py` saved for one seed, inlines the final brain and writes the `checkpoints.json` manifest the brain selector reads. |
+| `check_page.py` | Headless Chromium (SwiftShader): the layout at 1280 by 800 and at 390 by 844, a request the agent answers, an object dragged behind its back, a word taught and asked by, the cue task, the doors, run.py's phases, the brain selector, the time an event takes, screenshots, and no page or console error. |
 
 ## Build and run
 
 ```sh
-cd /Users/muellerberndt/Projects/oph-meta/cadence-paper
+cd /Users/muellerberndt/Projects/oph-meta/cadence-examples
 PY=/Users/muellerberndt/Projects/oph-meta/cadence/.venv/bin/python
 
-# the fixture (about 5 s): 320 explore steps at rate 1, the snapshot at the episode boundary,
-# then one explore episode, two remembered requests at delay 8, two cue episodes at delay 8
-# and one word episode through run.py's own run_explore, run_remember, run_cue and run_words;
-# writes the float64 records sidecar next to the snapshot
+# the fixtures (about 15 s each): 320 explore steps at rate 1, the snapshot at the episode
+# boundary, then one explore episode, two remembered requests at delay 8, two cue episodes at
+# delay 8 and one word episode through run.py's own run_explore, run_remember, run_cue and
+# run_words; writes the float64 records sidecar next to each snapshot
 $PY world/tools/parity_fixture.py --out runs/world/parity
+$PY world/tools/parity_fixture.py --out runs/world/parity_gains --graph-override \
+    '{"graph": {"field_gains": {"x": 1.5, "y": 1.5, "here_object": 2.0, "word": 0.5}, "action_gain": 3.0},
+      "records": {"pathways": "fields", "fan_in": 3}}'
 
-# the two parity checks (about 2 s each)
+# the parity checks (about 5 s each; the arm fixture too, because the engine is shared)
 /opt/homebrew/bin/node web/parity.mjs runs/arm/parity
 /opt/homebrew/bin/node world/web/parity_s02.mjs runs/world/parity
+/opt/homebrew/bin/node world/web/parity_s02.mjs runs/world/parity_gains
 
-# the self-contained page (10.9 MB, the snapshot inlined with float32 records tables)
-$PY world/web/build_page.py \
-    --snapshot runs/world/parity/snapshot.json --out runs/world/web/index.html
+# the page a visitor sees: the final brain of a run inlined, its checkpoints beside it
+$PY world/web/build_page.py --run runs/world/dev --out runs/world/web/index.html
 
-# the headless check: zero console errors, 40 events in the remember-8 phase, then the curriculum
+# the headless check (two to four minutes): the layout, a request, a drag, a word, the cue
+# task, the doors, run.py's phases, the brain selector, the screenshots
 /Users/muellerberndt/Projects/oph-meta/cadence-artist/.venv/bin/python \
-    world/web/check_page.py runs/world/web/index.html --events 40
+    world/web/check_page.py runs/world/web/index.html
 ```
+
+`--run` takes any run directory: the checkpoints are the `world_seed<seed>*.npz` files the
+receipt lists under `artifacts.checkpoints` (explore at a tenth, a half and all of the explore
+budget, then after the remembered requests, after the cue task, after the doors locked, and
+the final brain), in the order the run saved them, each sha256 checked against the receipt.
+`--seed` picks the seed (the first completed one by default). The world of that life comes
+back from its own seed, so every brain of the run meets the map it learned, and the numbers of
+the run's receipt travel in the snapshot and appear in the page's last paragraph. `Agent.save`
+holds the brain alone, so a brain loaded from the selector starts with empty stores and fills
+them by wandering. One exported snapshot can be inlined instead (`--snapshot`, what the parity
+fixture writes), and `--checkpoint "label=path"` names snapshots directly.
 
 For development the sources stay separate: serve the repository root over http
 (`python -m http.server 8000`) and open
@@ -79,6 +96,19 @@ cue, word and map stores in the shape the JS stores load), `recall` (the last re
 gain), `world` (the state dump), `curriculum` (the cue rule) and `steps_before`; the
 snapshot's `records` block carries the head (see the S01 README), `final.json` the head in
 float64 after the stream.
+
+`--graph-override` merges settings over the stage config, so a fixture can carry what the
+stage config leaves at its default and the port is checked on those paths too. It takes a
+mapping of section to settings (`{"graph": {...}, "records": {...}}`) or a flat mapping of
+graph settings. The second fixture, `runs/world/parity_gains`, uses
+`graph.field_gains {x: 1.5, y: 1.5, here_object: 2.0, word: 0.5}` (a factor on the input gain
+per observation field, the field's missing flag keeping the plain gain), `graph.action_gain
+3.0` (the drive of the chosen action's neurons), `records.pathways "fields"` (one input
+pathway per observation field with its flag instead of one for the whole observation port: 21
+pathways here, not 4) and `records.fan_in 3` (each cell reads three of those pathways, drawn
+at birth from the same generator after the task groups, and every input outside the pathways;
+its column of the expansion is zeroed elsewhere and rescaled by the inputs it keeps, which
+leaves 86% of the expansion at zero).
 
 ## The parity check
 
@@ -115,69 +145,95 @@ The stores agree exactly: on one-hot keys every store operation is elementwise i
 order. The stream now holds plan reuse (6 of 113 decisions): with the witnessed map supplying
 the passages of known cells, the search's imagined path is followed by the world more often.
 
+On `runs/world/parity_gains` (the same stream through the field gains, the action gain, the
+21 field pathways and fan-in 3; 125 moments, 125 world events) the check reports `PARITY OK`
+as well: 114/114 decisions, prediction 8.9e-16, records tables 2.2e-16, stores and recall 0,
+the planner counters, the generator states, the write counts and the ledger phases exact,
+125/125 moments and states identical.
+
 ## What the page shows
 
-Left, the world at 6 by 6: cells, walls (grey), doors (orange closed, green dashed open), the
-four objects with the life's colours (letters A to D), the agent (white disc) with what it
+The layout is the arm page's: one stage measure (`--stage` in `style.css`) for both views, the
+world square on the left and the whole brain beside it, both inside a 1280 by 800 screen, and
+one column with the world first below 1120 px.
+
+**The world.** Six by six cells: walls (grey), doors (orange shut, green dashed open), the
+four objects in the life's colours (letters A to D), the agent (white disc) with what it
 carries, the neighbourhood the last inspect revealed (green cells), the cue task's rooms and
-junction, the request's true target (pink ring, privileged for the viewer), the target the
+junction, the cell that was asked for (pink ring, privileged for the viewer), the cell the
 search aimed at (teal dashed ring: the remembered place or the exploration target), the
-imagined path of the last search (teal; orange for a reused plan), the executed action, the
-remembered place of every object (dashed diamonds from the PlaceStore) and, in the caption,
-the tick, the deadline left, the word shown, the cue held and the door rule. Above it the
-phase label (phase, episode, wander or teach step, close, request with its target and the
-decisions left, the two-choice decision with the paid room) and the running success per
-phase; below it the counters (episode, tick, events, decisions, episodes ended, goal, action,
-controller, expansions of the search, plan, last reward, consequences predicted correctly,
-deadline, word shown, doors, exploration rate, compute time) and the phase selector.
+imagined path of the last search (teal, orange for a reused plan), the executed action, and
+the remembered place of every object as a dashed diamond from the place store. Over the canvas
+the readout names the task and its number: the places the agent remembers while it wanders,
+the decisions left of the deadline during a request, the wander step of the cue task, the
+teaching step of a word; under it the last seven tasks with their outcome.
 
-The stores: the place records (remembered cell, known flag, the true cell with a mark, with
-the map store's known cells and writes), the cue held, the word table (word to object
-strengths with the referent the store names) and the recall port's drive (place read, cue,
-word read: what enters the recall neurons).
+**What the visitor does.** *Ask for A, B, C or D* starts a new episode of the same life from a
+cell at least four steps away, with the goal naming the object and a deadline of twice the
+shortest path plus two: the agent answers from its place store, or fails when the record is
+missing or stale. *Dragging an object* to another cell (pointer down on it, up on the cell, or
+a tap to pick up and a tap to place) changes the world while the record stays, which is the
+correction the stage tests: the agent keeps the old place until it stands there and sees the
+cell empty, which erases the record, or sees the object elsewhere, which overwrites it.
+*Wander* is free exploration at rate one, where the sightings come from; the objects stay
+where they are. *Teach a word* shows a word while its object is in view for 24 steps, then
+asks by that word alone. *Cue task* shows one of the two cue words, wanders the chosen delay
+with it hidden, and takes the two-choice decision at the junction; it clears the world of
+objects the way the stage does and puts them back in their cells afterwards. *Lock doors* makes interact
+stop opening doors, mid-life, and unlocks them again. The `run.py` selector runs one of the
+stage's own phases instead, in the order run.py runs them, with page-sized budgets
+(`PAGE_BUDGET` in `page.js`): the whole curriculum, explore, remember at delays 8, 16 and 32,
+the corrections with the move seen and unseen, cue at delays 8 and 32, the locked doors, and
+the words. A task starts at the next event; a wander closes its episode first
+(`close_episode`, as a time limit would).
 
-Right, the whole brain. The scan through `BrainScan` as on the S01 page: every neuron
-coloured by its region (sensory, goal, efference, workspace, context, recall, dynamics,
-prediction, motor) and every synapse, animated per settling step of every phase the settled
-regions run (free, the free phase after learning, the bootstrap value at a time limit).
-Beside it the records cortex (cerebellum-like / dentate-like), its own labelled and coloured
-region: the granule raster of all 16,000 cells with the 80 active cells of the executed
-reading's plain code lit in blue (the consequence records read it) and the 80 cells of its
-valued code in pink (each pathway divided by its running norm; the reward record reads it),
-the search's imagined reads as grey flickers, the writes as flashes on the active cells when
-the outcome arrives (orange on the plain code's cells at the consequence rate 0.3, pink on
-the valued code's cells for the reward record at rate 1.0); the habituated reading under it
-(the 165 reading neurons minus each unit's running mean: sensors, missing flags, goal,
-action, recall, separated by ticks and named under the strip, with the running norm of the
-four pathways observation, goal, action and recall); and the per-field record reads: the
-predicted next displacement, passages, cell contents, carried object and outcome as class
-bars with the largest class and its probability, the reward on its range, with the largest
-error of the last write per field.
-The EEG montage, the dopamine bar and the ledger (record writes, imagined reads, the searches,
-reuses and fallbacks) follow. The speed control sets settle steps per animation frame; the
-imagination control applies to settled imagination only (a snapshot without a records head),
-since imagined consequences are record reads here.
+**The stores**, under the world: the place record of each object (the cell it remembers, a
+tick when it matches the world, a mark when it does not), the cells of the witnessed map, the
+words that name an object, the cue held and the word shown now. The recall port beside the
+ledger shows what those stores drive into the recall neurons (the place read, the cue, the
+word read).
 
-The curriculum runs as run.py runs it, with page-sized budgets (`PAGE_BUDGET` in `page.js`:
-100 explore steps, 5 remembered requests per delay, 3 corrections per kind, 6 cue episodes
-per delay, 4 door trials before and after locking, 4 word episodes with 24 teaching steps):
-explore; remember at delays 8, 16, 32; visible and invisible moves; cue at delays 8 and 32
-(the decision at the life's own exploration rate); remember at delay 8, the doors locked,
-remember at delay 8; words. Every wander ends with a truncated closing moment
-(`close_episode`) and every request, name request and cue decision is a new episode of the
-same life. The sequence repeats; a new cycle sets the door rule back to toggle. The phase
-selector runs one phase repeatedly instead; a change takes effect at the next episode
-boundary. The page continues the fixture's map (`extra.world`), with the stage config's
-horizon and its own random stream from there; the snapshot is taken at an episode boundary,
-so the page starts with a fresh episode and no decision awaits its outcome.
+**The brain.** The scan through `BrainScan` as on the arm page: every neuron coloured by its
+region (sensory, goal, efference, workspace, context, recall, dynamics, prediction, motor) and
+every synapse, animated per settling step of every phase the settled regions run (free, the
+free phase after learning, the bootstrap value at a time limit), with the synapses flashing
+when an update moves them. Beside it the records cortex, its own labelled region: the raster
+of all 16,000 cells with the 80 active cells of the executed reading's plain code lit in blue
+(the consequence records read it) and the 80 cells of its valued code in pink (each pathway
+divided by its running norm; the reward record reads it), the search's imagined reads as grey
+flickers, and the writes as flashes on those cells when the outcome arrives (orange at the
+consequence rate 0.3, pink for the reward record at rate 1.0); under it the habituated reading
+(the 165 reading neurons minus each unit's running mean: sensors, missing flags, goal, action,
+recall, with the running norm of the four pathways) and the per-field record reads (the
+predicted displacement, passages, cell contents, carried object and outcome as class bars with
+the largest class and its probability, the reward on its range, with the largest error of the
+last write). The montage, the dopamine bar, the ledger and the world's own counters follow.
+`Speed` sets settling steps per animation frame, `Imagine` how many imagined settles are
+drawn, `Exploration ε` the rate of a random action during a request (a wander always explores
+at one).
 
-`window.__page` exposes `{scan, agent, brain, world, cur, records, queue, stats, step(), ready}`;
-`step()` computes one event and shows it at once, which is how `check_page.py` drives the
-page. The check of 2026-09-15 (40 events in the remember-8 phase, then the controls and six
-curriculum events) ran with zero page or console errors and wrote `page_start.png`,
-`page_mid.png`, `page_after.png`, `brain_after.png`, `world_after.png`, `stores_after.png`,
-`records_after.png` and `page_phase.png` next to the page; after 40 events the records
-cortex had shown 36 codes, 236 imagined reads and 396 field writes over 80 active cells.
+**The brain selector** appears when a `checkpoints.json` manifest sits beside the page. It
+loads another point of the same life, rebuilds the agent, the scan, the records view and the
+stores in place, and keeps the world as the visitor left it. A checkpoint carries no stores,
+so the brain that arrives remembers nothing until it wanders.
+
+`window.__page` exposes `{scan, agent, brain, world, cur, records, queue, stats, task, step(),
+run(n), runTask(n), ask(k), move(k, cell), play(), pause(), selectCheckpoint(id), toClient(cell),
+cellAt(x, y), ready}`; `run(n)` computes and shows n events, `runTask(n)` runs until the
+current task records its outcome, which is how `check_page.py` drives the page.
+
+The check of 2026-09-15 on the page built from `runs/world/page` (seed 0 of
+`S02-development-20260915T113712Z`, 38,191 decisions lived) passed with zero page and console
+errors: both canvases inside the 1280 by 800 viewport and both panels above the fold, 40
+wandering events until the agent had seen two objects, the request for C answered in 4
+decisions from the remembered cell (2,4), the drag to (0,0) leaving the record at (2,4) and
+the next request failing at its deadline, a word taught and answered in 5 decisions, the cue
+task at delay 16 answered, the doors locked and unlocked, run.py's remember-8 phase entered,
+the brain selector loading the 1,000-step brain and returning, 16 ms per event on average
+(26 ms in the slowest batch, before the browser has warmed up; the bound is 100 ms), and the
+world above the brain at 390 px. It wrote `page_start.png`, `page_wander.png`, `page_ask.png`,
+`page_after.png`, `page_full.png`, `world_after.png`, `brain_after.png`, `records_after.png`
+and `page_phone.png` next to the page.
 
 ## Notes
 
@@ -188,3 +244,17 @@ cortex had shown 36 codes, 236 imagined reads and 396 field writes over 80 activ
   own `main` only when it is the entry point.
 - A snapshot without a records head takes the settled path as before (the predict settle, the
   world repair with the replay ring, imagined settles); the records panel stays hidden.
+- `../../web/engine.js` is shared with the arm page, so a change there is checked on three
+  fixtures: `runs/arm/parity`, `runs/world/parity` and `runs/world/parity_gains`. It carries
+  `GraphSpec.field_gains` and `GraphSpec.action_gain` (both no-ops by default),
+  `RecordsConfig.pathways` (`"ports"` or `"fields"`, which decides how `Agent.__init__` builds
+  the input pathways when the snapshot lists none) and the `fan_in` mask of
+  `cadence/src/cadence/records.py`, drawn cell by cell with the same Mulberry32 stream as
+  Python, after the offsets and the task groups.
+- `World.continueFrom({event, episode})` carries the world's counters forward, never back: a
+  brain loaded from the selector has seen thousands of events, and the next moment of the
+  running world has to come after them.
+- `checkpoints.json` (`cadence-world-checkpoints/1`) lists the inlined brain and every
+  checkpoint with its label, file, size, decisions lived and source. A page opened from
+  `file://` cannot fetch its neighbours, so the selector stays hidden there and the page runs
+  on the one brain it carries.

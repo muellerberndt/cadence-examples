@@ -26,6 +26,14 @@ cue episodes at delay 8, ``--words`` word episodes (teaching then the name reque
 world's horizon is ``--horizon`` so the explore episode stays short; the map, the doors and
 the walls come from the stage config. ``--max-nodes`` bounds the search so both sides
 finish in seconds; the value travels in ``extra.planner``.
+
+``--graph-override`` merges settings over the stage config, so a fixture can carry the
+settings the stage config leaves at their defaults and the port is checked on those paths
+too:
+
+    python world/tools/parity_fixture.py --out runs/world/parity_gains \\
+        --graph-override '{"graph": {"field_gains": {"x": 1.5}, "action_gain": 3.0},
+                           "records": {"pathways": "fields", "fan_in": 3}}'
 """
 
 from __future__ import annotations
@@ -53,6 +61,28 @@ from world.env import SIZE, World, WorldConfig
 from world.tasks import Curriculum
 
 WORLD_STATE_FORMAT = "cadence-s02-world/1"
+
+
+SECTIONS = ("graph", "world", "actor", "replay", "records", "planner", "world_config")
+
+
+def apply_override(config: dict, override: dict) -> dict:
+    """The stage config with ``override`` merged into it, one level deep.
+
+    A mapping of section to settings ({"graph": {"action_gain": 3.0}}) merges into those
+    sections; a mapping of no section name is a mapping of graph settings."""
+    if not isinstance(override, dict) or any(not isinstance(k, str) for k in override):
+        raise SystemExit("--graph-override takes a JSON object")
+    if not set(override) & set(SECTIONS):
+        override = {"graph": override}
+    out = dict(config)
+    for section, settings in override.items():
+        if section not in SECTIONS:
+            raise SystemExit(f"--graph-override names the section {section!r}; the sections are {', '.join(SECTIONS)}")
+        if not isinstance(settings, dict):
+            raise SystemExit(f"--graph-override: section {section!r} takes a JSON object of settings")
+        out[section] = {**(out.get(section) or {}), **settings}
+    return out
 
 
 def moment_record(m) -> dict:
@@ -248,6 +278,7 @@ def main() -> int:
     parser.add_argument("--babble", type=int, default=300, help="explore steps before the snapshot (whole episodes, exploration rate 1)")
     parser.add_argument("--horizon", type=int, default=32, help="the fixture world's episode horizon")
     parser.add_argument("--max-nodes", type=int, default=None, help="the search budget (default: the config's)")
+    parser.add_argument("--graph-override", type=str, default=None, metavar="JSON", help='config settings merged over the stage config, to cover engine paths the default config leaves at their defaults: a mapping of section to settings ({"graph": {"action_gain": 3.0}, "records": {"fan_in": 3}}), or a flat mapping of graph settings ({"action_gain": 3.0})')
     parser.add_argument("--remember", type=int, default=2, help="remembered requests at delay 8 in the stream")
     parser.add_argument("--cue", type=int, default=2, help="cue episodes at delay 8 in the stream")
     parser.add_argument("--words", type=int, default=1, help="word episodes in the stream")
@@ -255,6 +286,9 @@ def main() -> int:
     config = json.loads(args.config.read_text())
     if args.max_nodes is not None:
         config = {**config, "planner": {**config.get("planner", {}), "max_nodes": args.max_nodes}}
+    if args.graph_override:
+        config = apply_override(config, json.loads(args.graph_override))
+        print(f"config overridden: graph {json.dumps({k: v for k, v in config['graph'].items() if k in ('field_gains', 'action_gain', 'input_gain')})}, records {json.dumps(config.get('records'))}")
     args.out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     wcfg = WorldConfig(**{**config["world_config"], "horizon": args.horizon})

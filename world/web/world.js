@@ -202,6 +202,13 @@ export class World {
   wordOf(k) { return this._wordOf[k]; }
   passage(cell, direction) { return this._passage(cell, direction); }
 
+  /** Carry the episode and event counters forward, never back: a page loading another brain of the
+   * same life into this world, whose next moment must come after everything that brain has seen. */
+  continueFrom({ event = null, episode = null } = {}) {
+    if (event !== null) this._event = Math.max(this._event, event | 0);
+    if (episode !== null) this._episode = Math.max(this._episode, episode | 0);
+  }
+
   placeObject(k, cell) { this._objects.set(k | 0, copyCell(cell)); }
   setWord(word) { this._word = word | 0; this._wordRule = null; }
   /** Joint attention: the word shown each moment is computed from what is visible. */

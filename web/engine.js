@@ -150,6 +150,7 @@ export function normalizeConfig(c) {
     goal: g.goal ?? 0, perceptual: g.perceptual ?? 0, workspace: g.workspace ?? 64, dynamics: g.dynamics ?? 32, episodic: g.episodic ?? 0, intention: g.intention ?? 0,
     missing_flags: g.missing_flags ?? true, flags_per_field: g.flags_per_field ?? false, density: g.density ?? 1.0, scale: g.scale ?? 1.0, source_scale: g.source_scale ?? 1.0,
     sensory_to_dynamics: g.sensory_to_dynamics ?? true, bias: g.bias ?? 0.25, input_gain: g.input_gain ?? 2.0, readout_init: g.readout_init ?? 0.0, dt: g.dt ?? 0.5,
+    field_gains: { ...(g.field_gains || {}) }, action_gain: g.action_gain ?? null, // per observation field, a factor on input_gain; the drive of the chosen action (null: input_gain)
   };
   const w = c.world || {};
   const world = {
@@ -168,7 +169,7 @@ export function normalizeConfig(c) {
     graph, world, actor,
     episodic: c.episodic == null ? null : { key: c.episodic.key ?? "observation", decay: c.episodic.decay ?? 1.0, rate: c.episodic.rate ?? 1.0, amplitude: c.episodic.amplitude ?? 1.0, reset_on_episode: c.episodic.reset_on_episode ?? true },
     replay: r == null ? null : { capacity: r.capacity ?? 4096, per_transition: r.per_transition ?? 1 },
-    records: rc == null ? null : { granules: rc.granules ?? 8000, active: rc.active ?? 40, rate: rc.rate ?? 0.2, reward_rate: rc.reward_rate ?? 1.0, habituation: rc.habituation ?? 1e-5, bias_scale: rc.bias_scale ?? 0.3, context: rc.context ?? false, normalize_blocks: rc.normalize_blocks ?? true, block_rate: rc.block_rate ?? 0.002, task_sets: rc.task_sets ?? false },
+    records: rc == null ? null : { granules: rc.granules ?? 8000, active: rc.active ?? 40, rate: rc.rate ?? 0.2, reward_rate: rc.reward_rate ?? 1.0, habituation: rc.habituation ?? 1e-5, bias_scale: rc.bias_scale ?? 0.3, context: rc.context ?? false, normalize_blocks: rc.normalize_blocks ?? true, block_rate: rc.block_rate ?? 0.002, task_sets: rc.task_sets ?? false, pathways: rc.pathways ?? "ports", fan_in: rc.fan_in ?? 0 },
     context_decay: c.context_decay ?? 0.8, context_amplitude: c.context_amplitude ?? 1.0, controller: c.controller ?? "actor",
     learning: c.learning ?? true, world_learning: c.world_learning ?? true, motor_learning: c.motor_learning ?? true,
   };
@@ -374,13 +375,29 @@ export class RecordsHead {
     this.taskOfCell = new Int32Array(G);
     if (this.tasks.length) {
       if (Math.floor(G / this.tasks.length) < config.active) throw Error("every task group needs at least active cells");
-      const order = new Int32Array(G); for (let g = 0; g < G; g++) order[g] = g;
-      const draws = rng.batch(Math.max(G - 1, 0));
-      for (let i = G - 1; i > 0; i--) { const j = Math.floor(draws[G - 1 - i] * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
+      const order = this._shuffleOrder(G, rng);
       // numpy array_split: the first G % T groups have one cell more
       const T = this.tasks.length, base = Math.floor(G / T), extra = G % T;
       let at = 0;
       for (let k = 0; k < T; k++) { const size = base + (k < extra ? 1 : 0); for (let j = 0; j < size; j++) this.taskOfCell[order[at + j]] = k; at += size; }
+    }
+    // restricted fan-in (records.py `fan_in`): each cell draws that many pathways from the same
+    // generator, after the task groups, and reads those and every input outside the pathways; the
+    // cell's column of the expansion is zeroed elsewhere and rescaled by the inputs it keeps
+    this.fanIn = config.fan_in | 0;
+    if (this.fanIn < 0 || (this.fanIn && !this.blocks.length)) throw Error("fan_in is nonnegative and needs pathways");
+    if (this.fanIn > this.blocks.length) throw Error("fan_in must not exceed the number of pathways");
+    if (this.fanIn) {
+      const P = this.blocks.length, keep = new Uint8Array(I);
+      for (let cell = 0; cell < G; cell++) {
+        const order = this._shuffleOrder(P, rng);
+        keep.fill(1);
+        for (let k = this.fanIn; k < P; k++) { const pathway = this.blocks[order[k]]; for (let j = 0; j < pathway.length; j++) keep[pathway[j]] = 0; }
+        let kept = 0;
+        for (let i = 0; i < I; i++) kept += keep[i];
+        const scale = Math.sqrt(I / kept);
+        for (let i = 0; i < I; i++) this.W[i * G + cell] *= keep[i] ? scale : 0.0;
+      }
     }
     this.mean = new Float64Array(I);
     this.seen = 0; // readings the mean has followed: its rate is max(habituation, 1 / seen)
@@ -388,6 +405,15 @@ export class RecordsHead {
     for (const f of fields) this.tables[f.name] = new Float64Array(G * f.width);
     this.writes = 0;
     this._acc = new Float64Array(G); this._h = new Float64Array(G); this._sq = new Float64Array(G);
+  }
+
+  /** A permutation of 0..n-1 by Fisher-Yates from n - 1 draws of the generator (records.py `_shuffle`). */
+  _shuffleOrder(n, rng) {
+    const order = new Int32Array(n);
+    for (let i = 0; i < n; i++) order[i] = i;
+    const draws = rng.batch(Math.max(n - 1, 0));
+    for (let i = n - 1; i > 0; i--) { const j = Math.floor(draws[n - 1 - i] * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
+    return order;
   }
 
   /** The shared expansion (brain.py `_winners`): the sparse winner codes of `batch` rows of a flat (batch, inputs) array. */
@@ -674,11 +700,19 @@ export class ExperienceAgent {
       const rc = snapshot.records || null;
       if (rc && rc.reading) this.reading = Int32Array.from(rc.reading);
       else if (!this.config.records.context) this.reading = Int32Array.from([...this.ports.observation, ...this.ports.goal, ...this.ports.action, ...this.ports.recall]);
-      // the input pathways: the positions of the observation, goal, action, recall and context ports that lie in the reading (Agent.__init__), from the snapshot when it lists them
-      let blocks;
+      // the input pathways: the positions of the ports that lie in the reading (Agent.__init__), from the
+      // snapshot when it lists them; RecordsConfig.pathways "ports" opens with the whole observation port,
+      // "fields" with one pathway per observation field (its values and its missing flag), then goal,
+      // action, recall and context in both
+      const position = new Map(Array.from(this.reading, (neuron, k) => [neuron, k]));
+      const at = (...ports) => Int32Array.from(ports.flatMap((port) => Array.from(port || [])).filter((n) => position.has(n)).map((n) => position.get(n)));
+      const fields = this.config.records.pathways === "fields";
+      if (!fields && this.config.records.pathways !== "ports") throw Error("records.pathways is 'ports' or 'fields'");
+      const heads = fields ? Object.keys(this.ports.observation_fields).map((name) => at(this.ports.observation_fields[name], this.ports.observation_flags[name])) : [at(this.ports.observation)];
+      const goalBlock = at(this.ports.goal);
+      let blocks = this.config.records.normalize_blocks ? [...heads, goalBlock, at(this.ports.action), at(this.ports.recall), at(this.ports.context)] : [];
       if (rc && rc.blocks) blocks = rc.blocks.map((b) => Int32Array.from(b));
-      else { const position = new Map(Array.from(this.reading, (neuron, k) => [neuron, k])); blocks = [this.ports.observation, this.ports.goal, this.ports.action, this.ports.recall, this.ports.context].map((port) => Int32Array.from(Array.from(port).filter((n) => position.has(n)).map((n) => position.get(n)))); }
-      this.records = new RecordsHead(this.reading.length, this.config.graph.prediction, this.config.records, rc && rc.seed !== undefined ? rc.seed | 0 : this.seed, blocks, this.config.records.task_sets ? (rc && rc.tasks ? rc.tasks : blocks[1] || []) : []);
+      this.records = new RecordsHead(this.reading.length, this.config.graph.prediction, this.config.records, rc && rc.seed !== undefined ? rc.seed | 0 : this.seed, blocks, this.config.records.task_sets ? (rc && rc.tasks ? rc.tasks : goalBlock) : []);
       this.recordsSource = "regenerated (no tables in the snapshot)";
       if (rc && rc.tables) { this.records.load(rc); this.recordsSource = `snapshot (${rc.precision || "float32"} tables)`; }
       if (options.records) { this.records.load(options.records); this.recordsSource = "sidecar (float64 tables)"; }
@@ -854,10 +888,11 @@ export class ExperienceAgent {
       if (value.length !== f.width) throw Error(`observation field '${f.name}' must have shape (${f.width},)`);
       const flag = observed === null || observed === undefined || !(f.name in observed) ? new Uint8Array(f.width).fill(1) : observed[f.name];
       const neurons = this.ports.observation_fields[f.name];
+      const gain = spec.input_gain * (spec.field_gains[f.name] ?? 1.0); // GraphSpec.field_gains: this field's factor on the input gain
       for (let k = 0; k < f.width; k++) {
         let x = value[k];
         if (f.kind === "continuous") x = clip((x - f.lo) / (f.hi - f.lo), 0.0, 1.0);
-        out[neurons[k]] = spec.input_gain * x * (flag[k] ? 1.0 : 0.0);
+        out[neurons[k]] = gain * x * (flag[k] ? 1.0 : 0.0);
       }
       if (spec.missing_flags) {
         const flags = this.ports.observation_flags[f.name];
@@ -895,7 +930,8 @@ export class ExperienceAgent {
   }
 
   _withAction(drive, batch, actions) {
-    const n = this.n, out = Float64Array.from(drive), gain = this.config.graph.input_gain;
+    const n = this.n, out = Float64Array.from(drive);
+    const gain = this.config.graph.action_gain === null ? this.config.graph.input_gain : this.config.graph.action_gain; // GraphSpec.action_gain
     for (let i = 0; i < batch; i++) {
       for (const j of this.ports.action) out[i * n + j] = 0.0;
       const parts = this._splitAction(actions[i] | 0);

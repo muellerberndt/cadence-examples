@@ -1,48 +1,105 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>S02 · a remembered world learns in the browser</title>
+<title>Ask for an object, it goes from memory · S02</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-snapshot="../../runs/world/parity/snapshot.json">
-<header><b>S02 · the remembered world and its whole brain, live</b><span id="counts">loading the snapshot…</span></header>
-<main>
-  <section id="body" class="panel">
-    <h2>World</h2>
-    <div class="phase-label" id="phaseLabel">—</div>
-    <canvas id="world" aria-label="The 6 by 6 world: cells, walls, doors, objects, the agent, the revealed neighbourhood, the targets and the imagined path"></canvas>
-    <div class="arm-legend"><span><i style="background:#8fa3b8"></i>wall</span><span><i style="background:#ff8c5a"></i>door closed</span><span><i style="background:#8fe19d"></i>door open</span><span><i style="background:#59e5cb"></i>imagined path · search target</span><span><i style="background:#ffbf70"></i>reused plan · executed action</span><span><i style="background:#ed81b6"></i>request target (privileged)</span><span><i style="background:#c792ea"></i>remembered place (diamond)</span></div>
-    <div class="successes" id="successes"></div>
-    <div class="counters" id="counters"></div>
-    <div class="tools">
-      <label>Phase <select id="phaseSelect"><option value="curriculum" selected>curriculum (run.py order)</option><option value="explore">explore</option><option value="remember-8">remember · delay 8</option><option value="remember-16">remember · delay 16</option><option value="remember-32">remember · delay 32</option><option value="remember-16-visible">correction · visible move</option><option value="remember-16-invisible">correction · invisible move</option><option value="cue-8">cue · delay 8</option><option value="cue-32">cue · delay 32</option><option value="door-locked">doors locked · remember 8</option><option value="words">words · teach then name</option></select></label>
+<header class="masthead">
+  <div class="headline">
+    <h1>Ask for an object and it goes there from memory</h1>
+    <p class="lede">The agent sees the cell it stands in. It wanders, writes down where it saw each object, and when you ask for one it searches through the consequences its records imagine and walks to the place it remembers. Move that object while it is away and the record is stale until it looks again.</p>
+  </div>
+  <div class="facts" id="counts">loading the snapshot…</div>
+</header>
+<main class="layout">
+  <section class="panel body-panel" id="body" aria-label="The world">
+    <div class="panel-head">
+      <h2>The world</h2>
+      <span class="state" id="taskState">loading</span>
     </div>
-    <h2>Stores</h2>
-    <div class="store"><h3>Places · object to cell with a known flag · Map · cell to passages</h3><div id="places" class="rows"></div></div>
-    <div class="store"><h3>Cue · the last word seen</h3><div id="cue" class="rows"></div></div>
-    <div class="store"><h3>Words · word to referent co-occurrence</h3><div id="wordsTable"></div></div>
-    <div class="store"><h3>Recall port · the stores' drive into the brain</h3><canvas id="recall" aria-label="The recall port's drive: place read, cue, word read"></canvas></div>
+    <div class="world-stage" id="worldStage">
+      <canvas id="world" aria-label="The 6 by 6 world: cells, walls, doors, the four objects, the agent, the neighbourhood an inspect revealed, the request target and the imagined path. Drag an object to another cell."></canvas>
+      <div class="hud" id="hud">
+        <span class="hud-label" id="hudLabel">Task</span>
+        <b class="hud-value" id="hudValue">—</b>
+        <span class="hud-unit" id="hudUnit">press Ask for an object</span>
+        <div class="progress" id="progress"><i id="progressFill"></i></div>
+        <div class="history" id="history"></div>
+      </div>
+      <div class="hint" id="hint"><b>Ask for an object</b><span>or drag one to another cell while the agent is away</span></div>
+    </div>
+    <div class="stores" id="stores">
+      <div class="store-row" id="places"></div>
+      <div class="store-row" id="wordsRow"></div>
+    </div>
+    <div class="toolbar" id="askTools">
+      <span class="toolbar-label">Ask for</span>
+      <div class="examples" role="group" aria-label="The four objects">
+        <button type="button" class="chip" data-object="0">A</button>
+        <button type="button" class="chip" data-object="1">B</button>
+        <button type="button" class="chip" data-object="2">C</button>
+        <button type="button" class="chip" data-object="3">D</button>
+      </div>
+      <span class="divider" aria-hidden="true"></span>
+      <button type="button" id="wander" class="primary">Wander</button>
+    </div>
+    <div class="toolbar">
+      <button type="button" id="word">Teach a word</button>
+      <button type="button" id="cue">Cue task</button>
+      <button type="button" id="doors">Lock doors</button>
+    </div>
+    <div class="toolbar secondary">
+      <label>delay <select id="delay"><option value="8" selected>8</option><option value="16">16</option><option value="32">32</option></select></label>
+      <label>run.py <select id="phaseSelect">
+        <option value="free" selected>this page's tasks</option>
+        <option value="curriculum">the whole curriculum</option>
+        <option value="explore">explore</option>
+        <option value="remember-8">remember · 8</option>
+        <option value="remember-16">remember · 16</option>
+        <option value="remember-32">remember · 32</option>
+        <option value="remember-16-visible">correction · seen</option>
+        <option value="remember-16-invisible">correction · unseen</option>
+        <option value="cue-8">cue · 8</option>
+        <option value="cue-32">cue · 32</option>
+        <option value="door-locked">doors locked</option>
+        <option value="words">words</option>
+      </select></label>
+    </div>
+    <div class="key" id="worldKey"></div>
   </section>
-  <section id="brain" class="panel">
-    <h2>Brain</h2>
-    <div class="brain-row">
-      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="phase">—</div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
-      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the writes flashing, and the habituated reading"></canvas><div class="reads" id="recordReads"></div></div>
+  <section class="panel brain-panel" id="brain" aria-label="The whole brain">
+    <div class="panel-head">
+      <h2>The whole brain</h2>
+      <label class="checkpoint" id="checkpointBox" hidden>Brain <select id="checkpoint"></select></label>
+      <span class="phase" id="phase">—</span>
     </div>
-    <div class="tools">
-      <button id="play" class="primary">Play</button><button id="step">Step one event</button><button id="fit">Fit brain</button>
-      <label>Speed <select id="speed"><option value="1">1 step/frame</option><option value="4">4 steps/frame</option><option value="16">16 steps/frame</option><option value="64" selected>64 steps/frame</option><option value="256">256 steps/frame</option><option value="1024">1024 steps/frame</option><option value="0">whole event/frame</option></select></label>
-      <label>Imagination <select id="imagine"><option value="1">every step</option><option value="4" selected>every 4th step</option><option value="16">every 16th step</option></select></label>
+    <div class="brain-row" id="brainRow">
+      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
+      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the imagined reads of the search flickering, the writes flashing, and the reading"></canvas><div class="reads" id="recordReads"></div></div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="toolbar">
+      <button type="button" id="play" class="primary">Pause</button><button type="button" id="step">Step one event</button><button type="button" id="fit">Fit brain</button>
       <label>Show <select id="view"><option value="activity">activation</option><option value="potential">potential</option><option value="change">change</option></select></label>
+      <label>Speed <select id="speed"><option value="1">1 step/frame</option><option value="4">4/frame</option><option value="16">16/frame</option><option value="64" selected>64/frame</option><option value="256">256/frame</option><option value="0">whole event</option></select></label>
+      <label>Imagine <select id="imagine"><option value="1">every step</option><option value="4" selected>1 in 4</option><option value="16">1 in 16</option></select></label>
+      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0"><span id="epsilonValue">0.00</span></label>
       <span id="status"></span>
     </div>
-    <canvas id="strip" aria-label="Activity and change of every region over the last steps"></canvas>
-    <div class="legend" id="legend"></div>
     <div class="readouts">
-      <div class="panel"><h2>Dopamine · critic TD error per event</h2><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
-      <div class="panel"><h2>Ledger</h2><div class="ledger" id="ledger"></div></div>
+      <canvas id="strip" aria-label="Activity and change of every region over the last settling steps"></canvas>
+      <div class="readout"><h3>Dopamine per event</h3><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
+      <div class="readout"><h3>Ledger</h3><div class="ledger" id="ledger"></div></div>
+      <div class="readout"><h3>The world now</h3><div class="ledger" id="counters"></div></div>
+      <div class="readout"><h3>Recall port</h3><canvas id="recall" aria-label="What the stores drive into the recall neurons: the place read, the cue and the word read"></canvas></div>
     </div>
   </section>
 </main>
-<p class="note" id="note">The brain on the right is the whole agent: sensory and goal neurons drive the workspace, the recall neurons carry what the stores read (the remembered place of the requested object, the cue held, the word's referent strengths), the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan (cerebellum-like, dentate-like): the reading of the sensory, goal, action and recall neurons minus each unit's running mean goes through a fixed random expansion, the most active granules of 16,000 are kept (the lit cells), and each active cell's records of the next displacement, passages, cell contents, carried object, outcome and reward are read out; when the outcome arrives it is written into exactly those records (the flash; reward writes in pink). Imagined consequences for the search are record reads (the grey flickers); a known next cell takes its passages from the witnessed map. Every settling step of every phase of the settled regions (free, the free phase after learning, the bootstrap value) is drawn as it happens; synapses flash when an update moves them. Decisions come from a best-first search through the model's imagined consequences toward a remembered or exploration target, from one-step predicted reward at the cue junction, or, during a wander, a random legal action. Nothing here is scripted: the agent reaches only what its stores and its learned model let it reach.</p>
+<footer class="notes">
+  <p><b>The world.</b> Six by six cells with walls, doors, four objects, four colours and eight words, permuted for each life. The agent reads its own cell, the four passages around it, what it carries and the outcome of its last action; the four neighbouring cells enter the reading only in the moment after an inspect. Asking for an object starts a new episode of the same life from a cell at least four steps away, with a deadline of twice the shortest path plus two. The stores cross that boundary and the context trace is cleared, so a request is reached in time only from a remembered place. Dragging an object to another cell changes the world under the agent: the place it wrote down stays until it stands there and sees the cell empty, which erases the record, or sees the object somewhere else, which overwrites it.</p>
+  <p><b>The decisions.</b> Every action comes from the agent's step. On a request the planner searches over cells through the consequences the records cortex imagines for each action, at most 128 expansions deep, toward the remembered place; a known cell takes its passages from the witnessed map, an unvisited one from the model's own prediction. At the cue junction the choice is one-step reward greed over the model's reward prediction. During a wander the exploration rate is one, so the actions are random and the sightings are the agent's own. The outcome of every decision is written into the records of the cells that read it, so the model keeps learning while you watch.</p>
+  <p><b>The brain.</b> Sensory and goal neurons drive the workspace; the recall neurons carry what the stores read (the remembered place of the requested object, the cue held, the word's referent strengths); the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan: the reading of the sensory, goal, action and recall neurons minus each unit's running mean goes through a fixed random expansion, the most active cells are kept (the lit ones), and their records of the next displacement, passages, cell contents, carried object, outcome and reward are read out; the outcome is written into exactly those cells (the flash, pink for reward). The imagined reads of the search flicker grey. Every settling step of every phase is drawn as it happens. The brain selector loads other points of this life when the page is served with its checkpoint manifest.</p>
+  <p id="receiptNote"><b>The receipt.</b> The numbers of the run this brain comes from appear here when the page is built from a run directory.</p>
+</footer>
 <script type="module" src="page.js"></script>
 </body></html>
