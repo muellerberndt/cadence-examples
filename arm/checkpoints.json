@@ -1,0 +1,74 @@
+{
+ "format": "cadence-arm-checkpoints/1",
+ "page": "index.html",
+ "inlined": {
+  "id": "inlined",
+  "label": "after the changed body and the return",
+  "decisions": 19999,
+  "bytes": 4010350,
+  "source": "runs/arm/acceptance/snapshots/arm_seed10_final.json"
+ },
+ "checkpoints": [
+  {
+   "id": "after-500-babbling-decisions",
+   "label": "after 500 babbling decisions",
+   "file": "checkpoints/after-500-babbling-decisions.json",
+   "bytes": 4010398,
+   "decisions": 499,
+   "source": "runs/arm/acceptance/snapshots/arm_seed10_babbling_00500.json",
+   "sha256": "37806a0606970ca3e0a48e77112bdcf184f3ff7f02927b0c64a7f94370dbaab8",
+   "asset": "arm-after-500-babbling-decisions.json"
+  },
+  {
+   "id": "after-2-000-babbling-decisions",
+   "label": "after 2,000 babbling decisions",
+   "file": "checkpoints/after-2-000-babbling-decisions.json",
+   "bytes": 4010374,
+   "decisions": 1999,
+   "source": "runs/arm/acceptance/snapshots/arm_seed10_babbling_02000.json",
+   "sha256": "1d6acec62b7dd0fa6d6891019560e55010ca367d0c590670849ee470c26c5389",
+   "asset": "arm-after-2-000-babbling-decisions.json"
+  },
+  {
+   "id": "after-5-000-babbling-decisions",
+   "label": "after 5,000 babbling decisions",
+   "file": "checkpoints/after-5-000-babbling-decisions.json",
+   "bytes": 4010378,
+   "decisions": 4999,
+   "source": "runs/arm/acceptance/snapshots/arm_seed10_babbling_05000.json",
+   "sha256": "e6d24abb150b76746c69a91a32929c00377d08b0f472901bd83a95cb63910690",
+   "asset": "arm-after-5-000-babbling-decisions.json"
+  },
+  {
+   "id": "after-2-500-reaching-decisions",
+   "label": "after 2,500 reaching decisions",
+   "file": "checkpoints/after-2-500-reaching-decisions.json",
+   "bytes": 4010401,
+   "decisions": 7499,
+   "source": "runs/arm/acceptance/snapshots/arm_seed10_reaching_02500.json",
+   "sha256": "3053efe2290d2a56cbd7fa6e217e0e68d5acadfa9d10783aeb14108e97d62c71",
+   "asset": "arm-after-2-500-reaching-decisions.json"
+  },
+  {
+   "id": "after-5-000-reaching-decisions",
+   "label": "after 5,000 reaching decisions",
+   "file": "checkpoints/after-5-000-reaching-decisions.json",
+   "bytes": 4010333,
+   "decisions": 9999,
+   "source": "runs/arm/acceptance/snapshots/arm_seed10_reaching_05000.json",
+   "sha256": "ef831510127692a35745418986fc553a7da89aba90ee9f5dd9fb9e383cb58f15",
+   "asset": "arm-after-5-000-reaching-decisions.json"
+  },
+  {
+   "id": "after-10-000-reaching-decisions",
+   "label": "after 10,000 reaching decisions",
+   "file": "checkpoints/after-10-000-reaching-decisions.json",
+   "bytes": 4010310,
+   "decisions": 14999,
+   "source": "runs/arm/acceptance/snapshots/arm_seed10_reaching.json",
+   "sha256": "5810c05bdd8d5e245926e32d56d827164989727018e2e0a88f3c73aceb17c3c7",
+   "asset": "arm-after-10-000-reaching-decisions.json"
+  }
+ ],
+ "release": "checkpoints-2026-09-15"
+}
