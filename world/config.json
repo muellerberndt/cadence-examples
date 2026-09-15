@@ -5,7 +5,8 @@
     "The world head predicts ten next-moment consequences (the displacement dx and dy, the four passages, the object and colour in the cell, the carried object, the outcome) and the reward. The imagined position composes from the predicted displacement, so one regularity (an open passage moves the agent by one cell) covers every cell; absolute next-position heads learned the base rate per column instead (0.45 accuracy on the rarer open edges after 10,000 steps).",
     "Four stores with supplied categorical keys: object to place with a known flag (one exposure writes, an empty visit erases), cell to its four passages with a known flag (the witnessed map, overwritten by each exposure), the last word seen (held until the next), and word to referent co-occurrence. The place, cue and word reads enter the recall port every moment; the search reads the place and map stores explicitly. A key-value store is a declared component, not a learned representation.",
     "Decisions are supplied A* search over cells through the learned model's imagined consequences toward a remembered or exploration target (at most 128 expansions): the model supplies the consequence of each action, the witnessed map supplies the passages of a known next cell, the model's own prediction those of an unvisited one. A request, a name request and the cue decision start a new episode of the same life from a distant cell (the junction for the cue): the wander is closed as truncated, the stores persist across the boundary, the context trace does not. The cue decision is the plan's two-choice diagnostic (north or west), chosen by one-step reward greed over the model's reward prediction.",
-    "The world head is a records cortex (Marr 1969, Albus 1971): the reading of the observation, goal, action and recall neurons minus each unit's running mean (habituation), a fixed random expansion regenerated from the seed, the 80 most active of 16,000 cells kept (lateral inhibition), and delta-rule records per prediction field, rate 0.3 for consequences and 1.0 for reward (one exposure writes). The reward and terminal records read a valued code in which every input pathway has an equal say and whose cells are divided into one group per goal value (task sets): a reward earned under one goal is written into cells no other goal reads, so the cue task's values survive the request episodes that follow. The running mean of the reading settles (rate one over the count, floored at 1e-5). A reading touches few records and the witnessed outcome is written into exactly those, so no replay ring is needed (replay per transition 0). The settled workspace and dynamics regions keep the context trace, the critic and the actor. The context trace is not part of the reading: it varies the code between episodes and halved the cue's separability."
+    "The world head is a records cortex (Marr 1969, Albus 1971): the reading of the observation, goal, action and recall neurons minus each unit's running mean (habituation), a fixed random expansion regenerated from the seed, the 80 most active of 16,000 cells kept (lateral inhibition), and delta-rule records per prediction field, rate 0.3 for consequences and 1.0 for reward (one exposure writes). The reward and terminal records read a valued code in which every input pathway has an equal say and whose cells are divided into one group per goal value (task sets): a reward earned under one goal is written into cells no other goal reads, so the cue task's values survive the request episodes that follow. The running mean of the reading settles (rate one over the count, floored at 1e-5). A reading touches few records and the witnessed outcome is written into exactly those, so no replay ring is needed (replay per transition 0). The settled workspace and dynamics regions keep the context trace, the critic and the actor. The context trace is not part of the reading: it varies the code between episodes and halved the cue's separability.",
+    "The action's neurons are driven at 4.0 and the here_object and carrying fields at twice the input gain: readings that differ in the action, the object here or what is carried then share fewer active cells, so the consequence records written under one goal or door rule interfere less with the others (held-out consequence accuracy of a frozen copy after the whole curriculum 0.972 and 0.978 on two development seeds against 0.945 and 0.949 without)."
   ],
   "graph": {
     "perceptual": 0,
@@ -20,7 +21,12 @@
     "input_gain": 2.0,
     "readout_init": 0.0,
     "dt": 0.5,
-    "recall_gain": 2.0
+    "recall_gain": 2.0,
+    "action_gain": 4.0,
+    "field_gains": {
+      "here_object": 2.0,
+      "carrying": 2.0
+    }
   },
   "world": {
     "beta": 0.05,
