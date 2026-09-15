@@ -1,0 +1,65 @@
+:root { color-scheme: dark; --bg: #070d13; --panel: #0a1119; --line: #16222e; --text: #dbe6f0; --muted: #8fa3b8; --accent: #59e5cb; --warn: #ff8c5a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px system-ui, -apple-system, sans-serif; }
+body { padding: 0 12px 16px; }
+header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; padding: 12px 4px; border-bottom: 1px solid var(--line); }
+header b { font-size: 16px; }
+header span { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+main { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 12px; margin-top: 12px; }
+@media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-width: 0; }
+.panel h2 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+#body { display: flex; flex-direction: column; gap: 10px; }
+canvas#arm { width: 100%; aspect-ratio: 1 / 1; max-width: 100%; display: block; border-radius: 6px; background: #05090e; }
+.counters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+.counters div { display: flex; justify-content: space-between; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.counters span { color: var(--muted); }
+.arm-legend { color: var(--muted); font-size: 11px; display: flex; gap: 12px; flex-wrap: wrap; }
+.arm-legend i { display: inline-block; width: 14px; height: 3px; margin-right: 4px; vertical-align: middle; border-radius: 2px; }
+#brain { display: flex; flex-direction: column; gap: 8px; }
+.stage { position: relative; height: min(58vh, 640px); min-height: 300px; }
+canvas#scan { width: 100%; height: 100%; display: block; border-radius: 8px; background: var(--bg); }
+#labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#phase { position: absolute; right: 10px; top: 8px; max-width: 55%; text-align: right; font: 600 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: #fff; background: rgba(7, 13, 19, 0.7); padding: 4px 8px; border-radius: 6px; pointer-events: none; }
+#phase.learn { color: var(--warn); }
+#inspector { position: absolute; left: 10px; bottom: 8px; font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: #c9d6e2; background: rgba(7, 13, 19, 0.75); padding: 6px 8px; border-radius: 6px; white-space: pre; pointer-events: none; max-width: calc(100% - 20px); overflow: hidden; }
+canvas#strip { width: 100%; height: 170px; display: block; border-radius: 8px; background: #0a1119; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tools label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+button, select { background: #132030; color: var(--text); border: 1px solid #24364a; border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }
+button.primary { background: #1e3a55; }
+button:disabled { opacity: 0.5; cursor: default; }
+input[type=range] { width: 110px; accent-color: var(--accent); }
+.readouts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+@media (max-width: 700px) { .readouts { grid-template-columns: minmax(0, 1fr); } }
+.bar { position: relative; height: 18px; background: #0f1a26; border-radius: 4px; overflow: hidden; margin: 6px 0; }
+.bar .zero { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: #3a4d63; }
+.bar .fill { position: absolute; top: 3px; bottom: 3px; background: var(--accent); border-radius: 2px; }
+.bar .fill.negative { background: #ff6b6b; }
+.ledger { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 10px; }
+.ledger span { color: var(--muted); }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+.note { color: var(--muted); font-size: 12px; max-width: 100ch; margin: 8px 4px 0; line-height: 1.45; }
+#status { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+/* the records cortex next to the scan: the granule raster, the habituated reading, the record reads */
+.brain-row { display: flex; gap: 8px; align-items: stretch; }
+.brain-row .stage { flex: 1 1 auto; min-width: 0; }
+.records { flex: 0 0 322px; display: flex; flex-direction: column; gap: 6px; height: min(58vh, 640px); min-height: 300px; min-width: 0; background: #05090e; border: 1px solid rgba(96, 165, 250, 0.35); border-radius: 8px; padding: 8px; }
+.records[hidden] { display: none; }
+.records-head { display: flex; flex-direction: column; gap: 2px; }
+.records-head b { color: rgb(96, 165, 250); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.records-head span { color: var(--muted); font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.35; }
+canvas#records { width: 100%; flex: 1 1 auto; min-height: 120px; display: block; border-radius: 6px; }
+.reads { flex: 0 1 auto; max-height: 46%; overflow: auto; display: flex; flex-direction: column; gap: 2px; font: 10px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.read { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.read .name { color: var(--muted); width: 74px; overflow: hidden; text-overflow: ellipsis; flex: 0 0 auto; }
+.read .bars { display: inline-flex; gap: 1px; align-items: flex-end; height: 18px; }
+.read .bars i { display: inline-block; width: 7px; border-radius: 1px 1px 0 0; }
+.read .track { position: relative; display: inline-block; width: 34px; height: 6px; background: #1c2a3a; border-radius: 3px; }
+.read .track i { position: absolute; top: -2px; width: 4px; height: 10px; margin-left: -2px; border-radius: 2px; }
+.read b { color: var(--text); font-weight: 500; }
+.read em { color: var(--warn); font-style: normal; }
+.read.muted { color: #4f6479; }
+@media (max-width: 900px) { .brain-row { flex-direction: column; } .records { flex-basis: auto; height: 440px; } }
+

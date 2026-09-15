@@ -1,8 +1,6 @@
-name: Publish Pages
+name: pages
 on:
-  workflow_run:
-    workflows: [ci]
-    types: [completed]
+  push:
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -11,27 +9,28 @@ permissions:
   id-token: write
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
-  publish:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
+      - run: python tools/verify_gallery.py
       - uses: actions/configure-pages@v5
-      - name: Build the gallery and the official examples
-        run: python tools/build_pages.py --output _site
+      - name: Assemble the site
+        run: |
+          mkdir -p _site/arm _site/world
+          cp index.html .nojekyll _site/
+          cp arm/index.html arm/receipt.json _site/arm/
+          cp world/index.html world/receipt.json _site/world/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-      - name: Publish the verified site
+      - uses: actions/deploy-pages@v4
         id: deployment
-        uses: actions/deploy-pages@v4

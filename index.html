@@ -1,96 +1,18 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Cadence · embodied examples</title>
-    <link rel="stylesheet" href="shared/style.css" />
-    <link rel="icon" href="data:," />
-  </head>
-  <body>
-    <header>
-      <a class="brand" href="index.html">C<span>·</span>ADENCE</a>
-      <nav>
-        <a href="METHODS.md">How it works</a
-        ><a href="https://github.com/muellerberndt/cadence">GitHub ↗</a>
-      </nav>
-    </header>
-    <main>
-      <div class="intro">
-        <div>
-          <div class="eyebrow">Local state. Feedback. Retained records.</div>
-          <h1>Change its world.<br />Watch its nervous system respond.</h1>
-        </div>
-        <p>
-          Five official examples. Each opens with its live circuit beside the
-          task, so you can see the state that drives behavior.
-        </p>
-      </div>
-      <div class="gallery">
-        <a href="eye-arm/"
-          ><span>01 / VISION & MOTOR CONTROL</span>
-          <h2>Your drawing. Its pencil.</h2>
-          <p>
-            Draw on a pad. An eye reads the pixels. Motor neurons move two
-            joints and raise or lower the pencil to copy what it sees.
-          </p>
-          <b>Open eye & arm →</b></a
-        >
-        <a href="worm/"
-          ><span>02 / CHEMICAL SENSING</span>
-          <h2>Feed a worm. Build its world.</h2>
-          <p>
-            Place food and draw barriers. Follow a public C. elegans chemical
-            circuit and its engineered directional motor system.
-          </p>
-          <b>Open worm habitat →</b></a
-        >
-        <a href="composer/"
-          ><span>03 / MUSIC & IMAGINATION</span>
-          <h2>Describe a mood. Hear it composed.</h2>
-          <p>
-            maestro-1, a pretrained musician of wired cortices, imagines
-            continuations, listens to the whole draft and edits its weakest
-            passage. Runs locally with its model.
-          </p>
-          <b>Open composer →</b></a
-        >
-        <a href="fly/"
-          ><span>04 / LEARNING THROUGH CONTACT</span>
-          <h2>Find nectar. Remember the encounter.</h2>
-          <p>
-            A forager learns nectar values after contact, recalls useful flowers
-            and steers with motor activity. Change the rewards while it
-            explores.
-          </p>
-          <b>Open forager →</b></a
-        >
-        <a href="connect-four/"
-          ><span>05 / IMAGINATION & SELF-MONITORING</span>
-          <h2>Play against a reasoner.</h2>
-          <p>
-            Connect four while the agent explores replies, compares futures and
-            reads its own uncertainty to decide whether to think deeper.
-          </p>
-          <b>Open Connect Four →</b></a
-        >
-      </div>
-      <p class="gallery-note">
-        These are simplified computational nervous systems, with supplied
-        bodies, sensory encodings and circuit designs. Each page documents its
-        mechanisms and measured limits. The
-        <a href="https://github.com/muellerberndt/cadence-examples/tree/main/cortices">cortex catalogue</a>
-        provides reusable regions for new brains.
-      </p>
-    </main>
-    <script>
-      const old = {
-        arm: "eye-arm",
-        fly: "fly",
-        worm: "worm",
-        game: "connect-four",
-      }[location.hash.slice(1)];
-      if (old) location.replace(old + "/");
-    </script>
-  </body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence examples</title>
+<style>
+  body { max-width: 38rem; margin: 15vh auto; padding: 1.5rem;
+    font: 18px/1.6 system-ui, sans-serif; color: #25302c; background: #f7f8f5; }
+  a { color: #285a47; }
+</style>
+<main>
+  <h1>Cadence examples</h1>
+  <p>No examples are available yet.</p>
+  <p>We are rebuilding each application around learning from ongoing experience.
+    Examples will appear here after they pass their learning and behavior tests.</p>
+  <p><a href="https://github.com/muellerberndt/cadence">Explore the core library</a></p>
+</main>
 </html>

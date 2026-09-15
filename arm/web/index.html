@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S01 · a reaching arm learns in the browser</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-snapshot="../../runs/arm/parity/snapshot.json">
+<header><b>S01 · the arm and its whole brain, live</b><span id="counts">loading the snapshot…</span></header>
+<main>
+  <section id="body" class="panel">
+    <h2>Body</h2>
+    <canvas id="arm" aria-label="The two-link arm, its target, the hand trail and the predicted and actual displacement"></canvas>
+    <div class="arm-legend"><span><i style="background:#59e5cb"></i>predicted next displacement</span><span><i style="background:#ffbf70"></i>actual displacement</span><span><i style="background:#ed81b6"></i>target</span></div>
+    <div class="counters" id="counters"></div>
+    <div class="tools">
+      <button id="target">New target</button>
+      <label>Target <select id="mode"><option value="static">static</option><option value="line">moving · line</option><option value="circle">moving · circle</option><option value="mixed">moving · mixed</option></select></label>
+      <button id="lengthen">Lengthen upper link +15%</button>
+      <button id="resetBody">Reset body</button>
+    </div>
+  </section>
+  <section id="brain" class="panel">
+    <h2>Brain</h2>
+    <div class="brain-row">
+      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="phase">—</div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
+      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the writes flashing, and the habituated reading"></canvas><div class="reads" id="recordReads"></div></div>
+    </div>
+    <div class="tools">
+      <button id="play" class="primary">Play</button><button id="step">Step one event</button><button id="fit">Fit brain</button>
+      <label>Speed <select id="speed"><option value="1">1 step/frame</option><option value="4">4 steps/frame</option><option value="16" selected>16 steps/frame</option><option value="64">64 steps/frame</option><option value="256">256 steps/frame</option><option value="0">whole event/frame</option></select></label>
+      <label>Show <select id="view"><option value="activity">activation</option><option value="potential">potential</option><option value="change">change</option></select></label>
+      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0.5"><span id="epsilonValue">0.50</span></label>
+      <span id="status"></span>
+    </div>
+    <canvas id="strip" aria-label="Activity and change of every region over the last steps"></canvas>
+    <div class="legend" id="legend"></div>
+    <div class="readouts">
+      <div class="panel"><h2>Dopamine · critic TD error per event</h2><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
+      <div class="panel"><h2>Ledger</h2><div class="ledger" id="ledger"></div></div>
+    </div>
+  </section>
+</main>
+<p class="note" id="note">The brain on the right is the whole agent: sensory and goal neurons drive the workspace, the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan (cerebellum-like, dentate-like): the reading of the sensory, goal, action and recall neurons goes through a fixed random expansion, the most active granules of 32,000 are kept (the lit cells), and each active cell's records of the next displacement, velocity change and angle change are read out; when the outcome arrives it is written into exactly those records (the flash), rate-scaled. Imagined consequences for the planner are record reads (the grey flickers). Every settling step of every phase of the settled regions (free, the free phase after learning, the bootstrap value) is drawn as it happens; synapses flash when an update moves them. Decisions come from a bounded search through the model's own imagined consequences, or, with probability ε, a random torque. Nothing here is scripted: the arm reaches only as well as the model it has learned lets it.</p>
+<script type="module" src="page.js"></script>
+</body></html>

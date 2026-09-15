@@ -1,9 +1,5 @@
 __pycache__/
-*.py[cod]
-.venv/
-.venv-reproduce/
-data/
-*_receipt.json
-train.log
+.pytest_cache/
 runs/
-checkpoints/
+_site/
+.DS_Store
