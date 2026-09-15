@@ -58,6 +58,8 @@ def records_export(agent: Agent, precision: str = "<f4") -> dict[str, Any] | Non
         "precision": "float64" if precision == "<f8" else "float32",
         "writes": int(r.writes),
         "seen": int(r.seen),
+        "tasks": [int(i) for i in getattr(r.cortex, "tasks", [])],
+        "task_of_cell": [int(k) for k in getattr(r.cortex, "task_of_cell", [])],
         "color": list(RECORDS_COLOR),
     }
 

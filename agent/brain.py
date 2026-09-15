@@ -209,11 +209,12 @@ class RecordsConfig:
     active: int = 40  # winners per reading (lateral inhibition)
     rate: float = 0.2  # consequence records
     reward_rate: float = 1.0  # reward and terminal records (one exposure writes)
-    habituation: float = 0.002  # the slowest rate of the input units' running mean (the plain average until 1/n reaches it); 0 subtracts nothing
+    habituation: float = 1e-5  # the slowest rate of the input units' running mean (the plain average until 1/n reaches it); 0 subtracts nothing
     bias_scale: float = 0.3
     context: bool = False  # read the context trace too (the stores carry memory; the trace varies the code)
     normalize_blocks: bool = True  # the valued code: divisive normalisation per input pathway (observation, goal, action, recall) so the goal and the recall reads have an equal say in the code the reward and terminal records read
     block_rate: float = 0.002  # running-norm rate of the pathways
+    task_sets: bool = False  # the goal port's active unit selects the group of cells the valued code draws from (one group per goal value)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -481,7 +482,7 @@ class RecordsHead:
     (the positive part, normalised) or a value in the field's bounds; ``learn`` writes a
     witnessed class as a one-hot target and a witnessed value through its observed mask."""
 
-    def __init__(self, inputs: int, fields: tuple[Field, ...], config: RecordsConfig, seed: int, blocks: Sequence[np.ndarray] | None = None) -> None:
+    def __init__(self, inputs: int, fields: tuple[Field, ...], config: RecordsConfig, seed: int, blocks: Sequence[np.ndarray] | None = None, tasks: np.ndarray | None = None) -> None:
         self.config = config
         self.fields = fields
         self.cortex = cd.Records(
@@ -489,6 +490,7 @@ class RecordsHead:
             rate=config.rate, valued=[f.name for f in fields if f.source in VALUED_SOURCES],
             valued_rate=config.reward_rate, habituation=config.habituation, bias=config.bias_scale,
             pathways=list(blocks or []) if config.normalize_blocks else (), pathway_rate=config.block_rate,
+            tasks=tasks if config.task_sets and tasks is not None else (),
             seed=(seed * 7919 + 13) & M32,
         )
 
@@ -747,7 +749,7 @@ class Agent:
                 self.reading = np.concatenate([self.ports.observation, self.ports.goal, self.ports.action, self.ports.recall]).astype(np.int64)
             position = {int(n): k for k, n in enumerate(self.reading)}
             blocks = [np.array([position[int(n)] for n in port if int(n) in position], np.int64) for port in (self.ports.observation, self.ports.goal, self.ports.action, self.ports.recall, self.ports.context)]
-            self.records = RecordsHead(len(self.reading), config.graph.prediction, config.records, seed, blocks)
+            self.records = RecordsHead(len(self.reading), config.graph.prediction, config.records, seed, blocks, tasks=blocks[1])
         self._last_recall = np.zeros((streams, len(self.ports.recall)))
 
     # -- shared parameter ownership

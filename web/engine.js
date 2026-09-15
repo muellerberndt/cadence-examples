@@ -168,7 +168,7 @@ export function normalizeConfig(c) {
     graph, world, actor,
     episodic: c.episodic == null ? null : { key: c.episodic.key ?? "observation", decay: c.episodic.decay ?? 1.0, rate: c.episodic.rate ?? 1.0, amplitude: c.episodic.amplitude ?? 1.0, reset_on_episode: c.episodic.reset_on_episode ?? true },
     replay: r == null ? null : { capacity: r.capacity ?? 4096, per_transition: r.per_transition ?? 1 },
-    records: rc == null ? null : { granules: rc.granules ?? 8000, active: rc.active ?? 40, rate: rc.rate ?? 0.2, reward_rate: rc.reward_rate ?? 1.0, habituation: rc.habituation ?? 0.002, bias_scale: rc.bias_scale ?? 0.3, context: rc.context ?? false, normalize_blocks: rc.normalize_blocks ?? true, block_rate: rc.block_rate ?? 0.002 },
+    records: rc == null ? null : { granules: rc.granules ?? 8000, active: rc.active ?? 40, rate: rc.rate ?? 0.2, reward_rate: rc.reward_rate ?? 1.0, habituation: rc.habituation ?? 1e-5, bias_scale: rc.bias_scale ?? 0.3, context: rc.context ?? false, normalize_blocks: rc.normalize_blocks ?? true, block_rate: rc.block_rate ?? 0.002, task_sets: rc.task_sets ?? false },
     context_decay: c.context_decay ?? 0.8, context_amplitude: c.context_amplitude ?? 1.0, controller: c.controller ?? "actor",
     learning: c.learning ?? true, world_learning: c.world_learning ?? true, motor_learning: c.motor_learning ?? true,
   };
@@ -354,7 +354,7 @@ export const VALUED_SOURCES = ["reward", "terminal"]; // the fields read through
  * in index order (Python's BLAS order differs at rounding level).
  */
 export class RecordsHead {
-  constructor(inputs, fields, config, seed, blocks = []) {
+  constructor(inputs, fields, config, seed, blocks = [], tasks = []) {
     this.config = config; this.fields = fields; this.inputs = inputs | 0; this.granules = config.granules | 0;
     const I = this.inputs, G = this.granules;
     this.blocks = blocks.map((b) => Int32Array.from(b)).filter((b) => b.length > 0); // the input pathways, empty ones dropped
@@ -367,6 +367,21 @@ export class RecordsHead {
     const zb = rng.normals(G);
     this.b = new Float64Array(G);
     for (let g = 0; g < G; g++) this.b[g] = zb[g] * config.bias_scale;
+    // task sets (records.py `tasks`): the cells divided into one group per task unit by a Fisher-Yates
+    // shuffle from G - 1 draws of the same generator, after the offsets; the valued code of a reading
+    // draws its winners from the group of the task unit with the largest value
+    this.tasks = Int32Array.from(tasks);
+    this.taskOfCell = new Int32Array(G);
+    if (this.tasks.length) {
+      if (Math.floor(G / this.tasks.length) < config.active) throw Error("every task group needs at least active cells");
+      const order = new Int32Array(G); for (let g = 0; g < G; g++) order[g] = g;
+      const draws = rng.batch(Math.max(G - 1, 0));
+      for (let i = G - 1; i > 0; i--) { const j = Math.floor(draws[G - 1 - i] * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
+      // numpy array_split: the first G % T groups have one cell more
+      const T = this.tasks.length, base = Math.floor(G / T), extra = G % T;
+      let at = 0;
+      for (let k = 0; k < T; k++) { const size = base + (k < extra ? 1 : 0); for (let j = 0; j < size; j++) this.taskOfCell[order[at + j]] = k; at += size; }
+    }
     this.mean = new Float64Array(I);
     this.seen = 0; // readings the mean has followed: its rate is max(habituation, 1 / seen)
     this.tables = {};
@@ -376,7 +391,19 @@ export class RecordsHead {
   }
 
   /** The shared expansion (brain.py `_winners`): the sparse winner codes of `batch` rows of a flat (batch, inputs) array. */
-  _winners(x, batch) {
+  /** The task each row's task units select (-1: every cell allowed), from the raw reading (records.py `_allowed`). */
+  _taskOf(raw, batch) {
+    const I = this.inputs, out = new Int32Array(batch).fill(-1);
+    if (!this.tasks.length) return out;
+    for (let b = 0; b < batch; b++) {
+      let best = -1, value = 0.0;
+      for (let j = 0; j < this.tasks.length; j++) { const u = raw[b * I + this.tasks[j]]; if (best < 0 || u > value) { best = j; value = u; } }
+      out[b] = value > 0.0 ? best : -1;
+    }
+    return out;
+  }
+
+  _winners(x, batch, taskOf = null) {
     const I = this.inputs, G = this.granules;
     const k = Math.min(this.config.active, G), acc = this._acc, h = this._h, sq = this._sq, W = this.W, out = [];
     for (let b = 0; b < batch; b++) {
@@ -388,6 +415,7 @@ export class RecordsHead {
         for (let g = 0; g < G; g++) acc[g] += xi * W[row + g];
       }
       for (let g = 0; g < G; g++) h[g] = acc[g] + this.b[g];
+      if (taskOf !== null && taskOf[b] >= 0) { const task = taskOf[b]; for (let g = 0; g < G; g++) if (this.taskOfCell[g] !== task) h[g] = -Infinity; }
       const index = topK(h, k), values = new Float64Array(index.length);
       for (let j = 0; j < index.length; j++) { const v = h[index[j]] > 0.0 ? h[index[j]] : 0.0; values[j] = v; sq[index[j]] = v * v; }
       const norm = Math.sqrt(npSum(sq, 0, G));
@@ -403,6 +431,7 @@ export class RecordsHead {
     const I = this.inputs, hab = this.config.habituation;
     if (readings.length !== batch * I) throw Error("readings must have one entry per reading neuron and row");
     const x = Float64Array.from(readings);
+    const taskOf = this.tasks.length ? this._taskOf(x, batch) : null; // from the raw reading, before habituation
     if (hab > 0) {
       if (adapt) {
         for (let b = 0; b < batch; b++) {
@@ -425,8 +454,8 @@ export class RecordsHead {
         const d = this.blockNorm[k] + 1e-3;
         for (let b = 0; b < batch; b++) for (let j = 0; j < block.length; j++) v[b * I + block[j]] = v[b * I + block[j]] / d;
       }
-      valued = this._winners(v, batch);
-    }
+      valued = this._winners(v, batch, taskOf);
+    } else if (taskOf !== null) valued = this._winners(x, batch, taskOf);
     return plain.map((code, b) => ({ plain: code, valued: valued[b], granules: this.granules }));
   }
 
@@ -492,9 +521,13 @@ export class RecordsHead {
     }
     if (block.writes !== undefined) this.writes = block.writes | 0;
     if (block.seen !== undefined) this.seen = block.seen | 0;
+    if (block.task_of_cell && block.task_of_cell.length) {
+      if (block.task_of_cell.length !== this.granules) throw Error("the records task groups do not match the cells");
+      for (let g = 0; g < this.granules; g++) if ((block.task_of_cell[g] | 0) !== this.taskOfCell[g]) throw Error(`the regenerated task groups differ from the snapshot at cell ${g}`);
+    }
   }
 
-  snapshot() { const tables = {}; for (const f of this.fields) tables[f.name] = Float64Array.from(this.tables[f.name]); return { seen: this.seen, mean: Float64Array.from(this.mean), block_norm: Float64Array.from(this.blockNorm), blocks: this.blocks.map((b) => Array.from(b)), tables, writes: this.writes }; }
+  snapshot() { const tables = {}; for (const f of this.fields) tables[f.name] = Float64Array.from(this.tables[f.name]); return { seen: this.seen, tasks: Array.from(this.tasks), task_of_cell: Array.from(this.taskOfCell), mean: Float64Array.from(this.mean), block_norm: Float64Array.from(this.blockNorm), blocks: this.blocks.map((b) => Array.from(b)), tables, writes: this.writes }; }
 }
 
 /** One learning head (cadence.learning.Learner): owns a plastic subset of the shared efficacy and bias. */
@@ -645,7 +678,7 @@ export class ExperienceAgent {
       let blocks;
       if (rc && rc.blocks) blocks = rc.blocks.map((b) => Int32Array.from(b));
       else { const position = new Map(Array.from(this.reading, (neuron, k) => [neuron, k])); blocks = [this.ports.observation, this.ports.goal, this.ports.action, this.ports.recall, this.ports.context].map((port) => Int32Array.from(Array.from(port).filter((n) => position.has(n)).map((n) => position.get(n)))); }
-      this.records = new RecordsHead(this.reading.length, this.config.graph.prediction, this.config.records, rc && rc.seed !== undefined ? rc.seed | 0 : this.seed, blocks);
+      this.records = new RecordsHead(this.reading.length, this.config.graph.prediction, this.config.records, rc && rc.seed !== undefined ? rc.seed | 0 : this.seed, blocks, this.config.records.task_sets ? (rc && rc.tasks ? rc.tasks : blocks[1] || []) : []);
       this.recordsSource = "regenerated (no tables in the snapshot)";
       if (rc && rc.tables) { this.records.load(rc); this.recordsSource = `snapshot (${rc.precision || "float32"} tables)`; }
       if (options.records) { this.records.load(options.records); this.recordsSource = "sidecar (float64 tables)"; }
