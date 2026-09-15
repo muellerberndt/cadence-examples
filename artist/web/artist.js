@@ -7,11 +7,13 @@
 // Mulberry32 stream where Python seeds a numpy generator (the page runs its own life, so the two
 // generators need not agree; every decision, intention, prediction and record write does).
 //
-// The body is `Arm` from ../../arm/web/arm.js and the fast level's leaf objective is
-// `ModelPlanner` from ../../arm/web/planner.js, the same two the Python stage imports from S01.
+// The fast level's leaf objective is `ModelPlanner` from ../../arm/web/planner.js, the port of
+// the planner the Python stage imports from S01. The body is `CanvasArm` here rather than `Arm`
+// from ../../arm/web/arm.js: that port wraps an angle with two moduli, which costs an ulp of 2pi
+// per body step against `(angle + pi) % (2 pi) - pi`, and 210 body steps of drift are enough to
+// move a pen pixel and part two searches that agree to 1e-13. Everything else is the same body.
 
 import { Mulberry32, npMean, npSum } from "../../web/engine.js";
-import { Arm } from "../../arm/web/arm.js";
 import { ModelPlanner, compose } from "../../arm/web/planner.js";
 
 export const CANVAS_SIZE = 32;
@@ -478,9 +480,94 @@ export class CanvasWorld {
 export const TORQUE_VECTORS = [];
 for (const a of [-1.0, 0.0, 1.0]) for (const b of [-1.0, 0.0, 1.0]) TORQUE_VECTORS.push([a, b]);
 
+/** Python's `(angle + pi) % (2 pi) - pi`: one modulus, the sign taken from the divisor. */
+export function wrapAngle(angle) {
+  const two = 2 * Math.PI;
+  let r = (angle + Math.PI) % two;
+  if (r < 0) r += two;
+  return r - Math.PI;
+}
+
+/**
+ * The S01 two-link arm as the canvas world holds it (arm/env.py Arm with its own goal switched
+ * off: no target, no success radius, no horizon, since this world supplies the reward). Links of
+ * 0.5, angles wrapped to [-pi, pi], velocities clipped to +-max_velocity, a 50 Hz body clock with
+ * semi-implicit Euler, one torque pair held for `substeps` body steps. The joint state moves by
+ * additions, multiplications and `wrapAngle` alone, so it stays bit-identical to the Python body;
+ * the sines, cosines and the hand position are read out from it. `trace` keeps the joint angles
+ * after every body step, which the page draws the pen's path from.
+ */
+export class CanvasArm {
+  constructor(config = {}) {
+    this.config = { lengths: [...(config.lengths || [0.5, 0.5])], dt: config.dt ?? 0.02, substeps: config.substeps ?? 5, max_velocity: config.max_velocity ?? 2.0, friction: config.friction ?? 0.1, gain: config.gain ?? 1.0 };
+    this.theta = new Float64Array(2); this.omega = new Float64Array(2);
+    this._flags = new Float64Array(2);
+    this._previous = { hand: new Float64Array(2), omega: new Float64Array(2), theta: new Float64Array(2), d_hand: new Float64Array(2) };
+    this.trace = null;
+  }
+
+  handOf(theta) {
+    const [l1, l2] = this.config.lengths;
+    return Float64Array.of(l1 * Math.cos(theta[0]) + l2 * Math.cos(theta[0] + theta[1]), l1 * Math.sin(theta[0]) + l2 * Math.sin(theta[0] + theta[1]));
+  }
+  elbowOf(theta) { const l1 = this.config.lengths[0]; return Float64Array.of(l1 * Math.cos(theta[0]), l1 * Math.sin(theta[0])); }
+  get hand() { return this.handOf(this.theta); }
+  get elbow() { return this.elbowOf(this.theta); }
+
+  reset({ theta = null } = {}) {
+    this.theta = theta === null ? new Float64Array(2) : Float64Array.from(theta);
+    this.omega = new Float64Array(2);
+    this._flags = new Float64Array(2);
+    this.trace = null;
+    this._previous = { hand: this.hand, omega: Float64Array.from(this.omega), theta: Float64Array.from(this.theta), d_hand: new Float64Array(2) };
+    return this;
+  }
+
+  observation() {
+    const hand = this.hand, p = this._previous, c = this.config;
+    const dHand = Float64Array.of(hand[0] - p.hand[0], hand[1] - p.hand[1]);
+    return {
+      angles: Float64Array.of(Math.sin(this.theta[0]), Math.cos(this.theta[0]), Math.sin(this.theta[1]), Math.cos(this.theta[1])),
+      velocity: Float64Array.of(this.omega[0] / c.max_velocity, this.omega[1] / c.max_velocity),
+      hand,
+      d_hand: dHand,
+      dd_hand: Float64Array.of(dHand[0] - p.d_hand[0], dHand[1] - p.d_hand[1]),
+      d_velocity: Float64Array.of(this.omega[0] - p.omega[0], this.omega[1] - p.omega[1]),
+      d_angles: Float64Array.of(wrapAngle(this.theta[0] - p.theta[0]), wrapAngle(this.theta[1] - p.theta[1])),
+      flags: Float64Array.from(this._flags),
+    };
+  }
+
+  /** Hold one torque pair for `substeps` body steps; record velocity-limit flags and every pose. */
+  integrate(action) {
+    const c = this.config, pair = TORQUE_VECTORS[action | 0];
+    const torque = [pair[0] * c.gain, pair[1] * c.gain];
+    const flags = new Float64Array(2), trace = new Float64Array(2 * c.substeps);
+    for (let k = 0; k < c.substeps; k++) {
+      for (let j = 0; j < 2; j++) {
+        this.omega[j] = this.omega[j] + c.dt * (torque[j] - c.friction * this.omega[j]);
+        if (Math.abs(this.omega[j]) >= c.max_velocity) flags[j] = Math.max(flags[j], 1.0);
+        this.omega[j] = Math.min(c.max_velocity, Math.max(-c.max_velocity, this.omega[j]));
+      }
+      for (let j = 0; j < 2; j++) this.theta[j] = wrapAngle(this.theta[j] + c.dt * this.omega[j]);
+      trace[2 * k] = this.theta[0]; trace[2 * k + 1] = this.theta[1];
+    }
+    this._flags = flags;
+    this.trace = trace;
+  }
+
+  act(decisionId, action) {
+    const a = action | 0;
+    if (!(a >= 0 && a < TORQUE_VECTORS.length)) throw Error("action outside the nine torque pairs");
+    const hand = this.hand, p = this._previous;
+    this._previous = { hand, omega: Float64Array.from(this.omega), theta: Float64Array.from(this.theta), d_hand: Float64Array.of(hand[0] - p.hand[0], hand[1] - p.hand[1]) };
+    this.integrate(a);
+  }
+}
+
 /** The S01 body with its own goal switched off: this world supplies the reward (env.py body_config). */
-export function canvasBody(body = {}, { seed = 0, gain = 1.0 } = {}) {
-  return new Arm({ lengths: [...(body.lengths || [0.5, 0.5])], substeps: body.substeps ?? 5, gain, success_radius: 0.0, success_hold: 1e9, horizon: 1e9 }, { seed, life_id: "artist" });
+export function canvasBody(body = {}, { gain = 1.0 } = {}) {
+  return new CanvasArm({ lengths: [...(body.lengths || [0.5, 0.5])], substeps: body.substeps ?? 5, gain });
 }
 
 // -- imagined canvases

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Draw a figure, the artist draws it · S04</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-snapshot="../../runs/artist/parity/snapshot.json">
+<header class="masthead">
+  <div class="headline">
+    <h1>Draw a figure and the artist draws it</h1>
+    <p class="lede">The artist learned what its pen leaves on the canvas by scribbling. It picks a stroke by imagining the marks each direction would leave, follows it with torques chosen through the same records, and looks at its own canvas again as it goes.</p>
+  </div>
+  <div class="facts" id="counts">loading the snapshot…</div>
+</header>
+<main class="layout">
+  <section class="panel body-panel" id="body" aria-label="The canvas and the arm holding the pen">
+    <div class="panel-head">
+      <h2>The canvas</h2>
+      <span class="state" id="drawState">loading</span>
+    </div>
+    <div class="artist-stage" id="artistStage">
+      <canvas id="canvas" aria-label="The 32 by 32 canvas: draw a target figure here and the artist draws it with its pen"></canvas>
+      <div class="hud" id="hud">
+        <span class="hud-label">Discrepancy</span>
+        <b class="hud-value" id="chamferValue">—</b>
+        <span class="hud-unit">symmetric Chamfer, canvas diagonals</span>
+        <span class="hud-unit ink" id="f1Value"></span>
+        <div class="progress" id="progress"><i id="progressFill"></i></div>
+        <div class="history" id="history"></div>
+      </div>
+      <div class="hint" id="hint"><b>Draw a figure on the canvas</b><span>with a mouse, a pen or a finger</span></div>
+    </div>
+    <div class="toolbar" id="drawTools">
+      <button type="button" id="again" class="primary">Draw again</button>
+      <button type="button" id="clear">Clear</button>
+      <span class="divider" aria-hidden="true"></span>
+      <div class="examples" role="group" aria-label="Target families">
+        <button type="button" class="chip" data-family="segment">Segment</button>
+        <button type="button" class="chip" data-family="two_segments">Two segments</button>
+        <button type="button" class="chip" data-family="polygon">Polygon</button>
+        <button type="button" class="chip" data-family="curve">Curve</button>
+        <button type="button" class="chip" data-family="composition">Composition</button>
+      </div>
+    </div>
+    <div class="toolbar secondary">
+      <label>Body clock <select id="pace"><option value="0.1">×0.1</option><option value="0.25">×0.25</option><option value="0.5">×0.5</option><option value="1" selected>×1</option><option value="2">×2</option></select></label>
+      <label class="switch"><input type="checkbox" id="showPlan" checked> Show what the search imagines</label>
+    </div>
+    <div class="receipt" id="receipt"></div>
+    <div class="key" id="canvasKey"></div>
+  </section>
+  <section class="panel brain-panel" id="brain" aria-label="The whole brain">
+    <div class="panel-head">
+      <h2>The whole brain</h2>
+      <label class="checkpoint" id="checkpointBox" hidden>Brain <select id="checkpoint"></select></label>
+      <span class="phase" id="phase">—</span>
+    </div>
+    <div class="brain-row" id="brainRow">
+      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
+      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the writes flashing, and the reading"></canvas><div class="reads" id="recordReads"></div></div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="toolbar">
+      <button type="button" id="play" class="primary">Pause</button><button type="button" id="step">Step one decision</button><button type="button" id="fit">Fit brain</button>
+      <label>Show <select id="view"><option value="activity">activation</option><option value="potential">potential</option><option value="change">change</option></select></label>
+      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0"><span id="epsilonValue">0.00</span></label>
+      <span id="status"></span>
+    </div>
+    <div class="readouts">
+      <canvas id="strip" aria-label="Activity and change of every region over the last settling steps"></canvas>
+      <div class="readout"><h3>Dopamine per event</h3><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
+      <div class="readout"><h3>Ledger</h3><div class="ledger" id="ledger"></div></div>
+      <div class="readout"><h3>The drawing</h3><div class="ledger" id="counters"></div></div>
+    </div>
+  </section>
+</main>
+<footer class="notes">
+  <p><b>The drawing.</b> Your strokes are clipped to the canvas and rasterised one pixel wide, which is the target the artist is given. The artist starts with an empty canvas and a pose somewhere over it. Every tenth of a second it commits one of eighteen choices, nine torque pairs by the pen up or down, and the pen leaves a one-pixel line along the path it swept with the pen down. The discrepancy is the symmetric Chamfer distance between the two foregrounds in canvas diagonals, and the F1 counts a drawn pixel as matched when a target pixel lies within one pixel of it. A drawing ends under a discrepancy of <b id="finishValue">0.010</b>, at <b id="capValue">200</b> decisions, or after 60 decisions without a better discrepancy.</p>
+  <p><b>The decisions.</b> Two levels of supplied search read one learned model. The slow level asks the records what one decision of motion leaves for each of eight directions and both pen states, repeats that stamp along a candidate stroke, scores the canvas it imagines by the capped discrepancy, and keeps the best stroke over a beam of four and a horizon of two. That stroke travels in the goal port. The fast level imagines all eighteen choices two decisions deep, scores the ink each is expected to leave and how well the imagined hand velocity follows the stroke, and the agent executes the best. The intention is renewed every second decision from the canvas the artist sees, so the plan follows what the pen actually left.</p>
+  <p><b>The brain.</b> Sensory and goal neurons drive the workspace; the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace. The world model is the records cortex beside the scan: the body senses, the pen state, the ink of the last decision, the canvas and target windows around the pen, the intention and the candidate action go through a fixed random expansion, the most active granules are kept, and each active cell's records of the next displacement change, velocity change, angle change and ink window are read out. When the outcome arrives it is written into exactly those records, so the brain keeps learning while it draws. The grey flickers on the raster are the search reading records it never writes.</p>
+  <p><b>The run.</b> <span id="receiptNote">the numbers of this page's run are filled in at build time</span></p>
+</footer>
+<script type="module" src="page.js"></script>
+</body></html>
