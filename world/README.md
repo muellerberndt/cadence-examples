@@ -25,12 +25,15 @@ expansions, and the settling schedule with its guards. The cue decision is one-s
 greed over the model's reward prediction.
 
 Learned: the records of the world head (a records cortex: the reading minus its running
-mean, a fixed sparse expansion with lateral inhibition, delta-rule records for eleven
-prediction fields: the displacement, the four passages, the object and colour in the cell,
-the carried object, the outcome, and the reward), the critic, and the contents of the four
-stores, which are witnessed evidence. There is no replay ring: a reading touches few records
-and the outcome is written into exactly those. The research memo
-`../../../research/RECORD_PRINCIPLE.md` states the principle and its receipts.
+mean, a fixed sparse expansion with winner-take-all inhibition, delta-rule records for
+eleven prediction fields: the displacement, the four passages, the object and colour in
+the cell, the carried object, the outcome, and the reward; the reward records read a
+valued code with an equal say for every input pathway and one group of cells per goal, so
+a reward earned under one goal is written into cells no other goal reads), the critic, and
+the contents of the four stores, which are witnessed evidence. There is no replay ring: a
+reading touches few records and the outcome is written into exactly those. The library
+page [records](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md#records)
+states the mechanism.
 
 Controls: erased place records, erased word associations, shuffled action pairing, a
 reward-shifted cue pairing, the identical architecture frozen from birth, random actions,
@@ -48,10 +51,19 @@ the privileged exact planner, and a tabular model behind the same stores and sea
 
 ## Commands
 
+From the repository root, with a Python that has `cadence-net` installed:
+
 ```bash
-PY=../cadence/.venv/bin/python
-$PY -m pytest world/tests -q
-$PY world/run.py --seeds 0 1 --pilot --out runs/world/pilot
-$PY world/run.py --seeds 10 11 12 13 14 --out runs/world/acceptance
-$PY world/verify.py runs/world/acceptance
+python -m pytest world/tests -q
+python world/run.py --seeds 0 1 --pilot --out runs/world/pilot
+python world/run.py --seeds 10 11 12 13 14 --out runs/world/acceptance
+python world/verify.py runs/world/acceptance
 ```
+
+## Receipt
+
+`receipt.json` is the acceptance receipt of seeds 10 to 14: every predicate with its value
+and threshold, the source hashes of this directory and of the library, the sha256 of every
+event log and checkpoint, and the digest of the receipt itself. `verify.py` recomputes the
+request, correction and grounding rates from the event logs and fails closed on an
+incomplete run. The page `web/` continues a life of the acceptance brain in the browser.

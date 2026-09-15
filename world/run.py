@@ -330,6 +330,7 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
             "correction_visible": float(np.mean(run_remember(lh, world_h, cur_h, H // 2, 16, log, m_, lat, cnt, move="visible"))),
             "cue_8": float(np.mean(run_cue(lh, world_h, cur_h, H // 2, 8, log, m_, lat, cnt))),
             "cue_32": float(np.mean(run_cue(lh, world_h, cur_h, H // 2, 32, log, m_, lat, cnt))),
+            "cue_8_shifted": float(np.mean(run_cue(lh, world_h, cur_h, H // 2, 8, log, m_, lat, cnt, shift=True))),
             "words": float(np.mean(run_words(lh, world_h, cur_h, H // 2, log, m_, lat, cnt, teach=False))),
             "consequences": run_explore(lh, world_h, cur_h, 300, log, m_, lat, cnt),
         }
@@ -510,6 +511,8 @@ def main() -> int:
         receipt.predicate("grounding", float(np.mean(words)), g["grounding"], "mean over seeds", np.mean(words) >= g["grounding"])
         receipt.predicate("erased_words_ceiling", float(np.mean(erased_w)), g["erased_words_ceiling"], "mean over seeds", np.mean(erased_w) <= g["erased_words_ceiling"])
         receipt.predicate("cue_delay8", float(np.mean(cue8)), g["cue_delay8"], "mean over seeds", np.mean(cue8) >= g["cue_delay8"])
+        shifted = [h["cue_8_shifted"] for h in H]
+        receipt.predicate("cue_shifted_ceiling", float(np.mean(shifted)), g["cue_shifted_ceiling"], "mean over seeds, the reward-shifted pairing on the same two-choice diagnostic (must be below)", np.mean(shifted) <= g["cue_shifted_ceiling"])
         receipt.predicate("steps_cap", float(np.max([r["real_steps"] for r in results])), config["budget"]["steps_cap"], "max over seeds", np.max([r["real_steps"] for r in results]) <= config["budget"]["steps_cap"])
     complete = not receipt.body["seeds"]["failed"] and set(receipt.body["seeds"]["completed"]) == set(args.seeds) and (args.pilot or split == "development" or set(args.seeds) == set(config["seeds"]["acceptance"]))
     path = receipt.finish(complete)

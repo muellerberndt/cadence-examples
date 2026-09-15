@@ -2,17 +2,36 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
 <title>Cadence examples</title>
 <style>
-  body { max-width: 38rem; margin: 15vh auto; padding: 1.5rem;
-    font: 18px/1.6 system-ui, sans-serif; color: #25302c; background: #f7f8f5; }
-  a { color: #285a47; }
+  :root { color-scheme: dark; }
+  body { max-width: 52rem; margin: 8vh auto; padding: 1.5rem; font: 17px/1.6 system-ui, sans-serif; color: #dfe6ee; background: #0b1117; }
+  a { color: #8fd3ff; }
+  h1 { font-size: 2rem; margin-bottom: .25rem; }
+  p.lead { color: #aab6c3; margin-top: 0; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1rem; margin: 2rem 0; }
+  .card { border: 1px solid #22303d; border-radius: 12px; padding: 1.1rem 1.25rem; background: #101a24; }
+  .card h2 { margin: 0 0 .4rem; font-size: 1.25rem; }
+  .card p { margin: .4rem 0; color: #c7d1db; }
+  .card .links a { margin-right: 1rem; font-weight: 600; }
+  footer { color: #8090a0; font-size: .95rem; }
 </style>
 <main>
   <h1>Cadence examples</h1>
-  <p>No examples are available yet.</p>
-  <p>We are rebuilding each application around learning from ongoing experience.
-    Examples will appear here after they pass their learning and behavior tests.</p>
-  <p><a href="https://github.com/muellerberndt/cadence">Explore the core library</a></p>
+  <p class="lead">Brains that learn through one stream of experience: observe, remember, predict, act, learn from the outcome. Each example ships its page, its acceptance receipt and the verifier that recomputes the receipt from the event logs.</p>
+  <div class="cards">
+    <section class="card">
+      <h2>Arm</h2>
+      <p>A two-link arm learns its own body from motor babbling, reaches targets through a search over the consequences it has recorded and copies what you draw, with the whole brain live beside it.</p>
+      <p class="links"><a href="arm/">Open</a><a href="arm/receipt.json">Receipt</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">Code</a></p>
+    </section>
+    <section class="card">
+      <h2>World</h2>
+      <p>In a 6 by 6 world seen one cell at a time, one life learns the consequences of its actions, remembers where it saw an object, corrects that memory, holds a cue across a delay and grounds words in objects.</p>
+      <p class="links"><a href="world/">Open</a><a href="world/receipt.json">Receipt</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">Code</a></p>
+    </section>
+  </div>
+  <footer>Built on <a href="https://github.com/muellerberndt/cadence">Cadence</a>: decentralised networks of neurons that learn from one stream, with no backpropagation, no training and inference steps and no replay ring. <a href="https://github.com/muellerberndt/cadence-examples">Gallery repository</a>.</footer>
 </main>
 </html>
