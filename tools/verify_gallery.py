@@ -47,7 +47,12 @@ def check(name: str, stage: str, pinned: str | None, *, page: bool = True) -> li
     if body.get("status") != "complete":
         problems.append(f"{name}: status {body.get('status')}")
     seeds = body.get("seeds", {})
-    if seeds.get("split") != "acceptance" or seeds.get("failed") or sorted(seeds.get("completed", [])) != sorted(seeds.get("scheduled", [])):
+    scheduled, completed, arms = seeds.get("scheduled", []), seeds.get("completed", []), seeds.get("arms")
+    if arms:  # a comparison completes every (seed, arm) pair
+        complete = len(completed) == len(scheduled) * len(arms) and {(int(s), a) for s, a in completed} == {(int(s), a) for s in scheduled for a in arms}
+    else:
+        complete = sorted(completed) == sorted(scheduled)
+    if seeds.get("split") != "acceptance" or seeds.get("failed") or not complete:
         problems.append(f"{name}: the acceptance seed schedule is incomplete")
     predicates = body.get("acceptance", {}).get("predicates", [])
     if not predicates or not all(p.get("passed") for p in predicates) or not body["acceptance"].get("passed"):
