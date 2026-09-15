@@ -28,7 +28,7 @@ sys.path.insert(0, str(HERE.parent))
 
 from agent.brain import ReplayConfig
 from agent.life import Moment, seed_for
-from agent.receipt import EventLog, Receipt, peak_rss_mb
+from agent.receipt import EventLog, Receipt, peak_rss_mb, sha256_file
 from world.baselines import (
     PrivilegedPlanner,
     RandomController,
@@ -117,9 +117,11 @@ def finish_episode(life: Life, world: World, m: Moment, log: EventLog | None, me
         m = m2
 
 
-def run_explore(life: Life, world: World, cur: Curriculum, steps: int, log, meta, latencies, counter) -> dict:
-    """Free exploration until ``steps`` real steps; returns the consequence accuracy of the last 300."""
+def run_explore(life: Life, world: World, cur: Curriculum, steps: int, log, meta, latencies, counter, save_at: dict[int, Path] | None = None) -> dict:
+    """Free exploration until ``steps`` real steps; returns the consequence accuracy of the last 300.
+    ``save_at`` maps a step count to a checkpoint path: the brain is saved at the first episode boundary past it."""
     done = 0
+    pending_saves = dict(save_at or {})
     scores = {n: [] for n in CONSEQUENCES}
     if life.is_agent and hasattr(life.controller, "set_epsilon"):
         life.controller.set_epsilon(1.0)
@@ -133,6 +135,9 @@ def run_explore(life: Life, world: World, cur: Curriculum, steps: int, log, meta
         for n in CONSEQUENCES:
             if outcome["scores"][n] == outcome["scores"][n]:
                 scores[n].append(outcome["scores"][n])
+        for at in sorted(pending_saves):
+            if done >= at and life.is_agent and hasattr(life.controller, "agent"):
+                life.controller.agent.save(pending_saves.pop(at))
     if life.is_agent and hasattr(life.controller, "set_epsilon"):
         life.controller.set_epsilon(0.0)
     if not life.is_agent and hasattr(life.controller, "epsilon"):
@@ -284,13 +289,22 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
     life = Life(brain, is_agent=True)
     meta = {"seed": seed, "split": split, "life": "candidate"}
     # 1. explore
-    result["consequences"] = run_explore(life, world, cur, B["explore_steps"], log, meta, latencies, counter)
+    checkpoints: list[Path] = []
+
+    def checkpoint(name: str) -> Path:
+        path = out / f"world_seed{seed}_{name}.npz"
+        checkpoints.append(path)
+        return path
+
+    explore_saves = {max(1, round(B["explore_steps"] * f)): checkpoint(f"explore_{max(1, round(B['explore_steps'] * f)):05d}") for f in (0.1, 0.5, 1.0)}
+    result["consequences"] = run_explore(life, world, cur, B["explore_steps"], log, meta, latencies, counter, save_at=explore_saves)
     # 2. remember at delays 8, 16, 32
     result["remember"] = {}
     for delay in (8, 16, 32):
         succ = run_remember(life, world, cur, B["remember_episodes"] // 3, delay, log, meta, latencies, counter)
         result["remember"][str(delay)] = float(np.mean(succ))
     # 3. corrections
+    brain.agent.save(checkpoint("remember"))
     result["correction_visible"] = float(np.mean(run_remember(life, world, cur, B["remember_episodes"] // 4, 16, log, meta, latencies, counter, move="visible")))
     result["correction_invisible"] = float(np.mean(run_remember(life, world, cur, B["remember_episodes"] // 4, 16, log, meta, latencies, counter, move="invisible")))
     # 4. cue at delay 8 then 32
@@ -300,10 +314,12 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
         result["cue"][str(delay)] = {"all": float(np.mean(correct)), "last_third": float(np.mean(correct[-max(1, len(correct) // 3):]))}
     # 5. locked doors mid-life: navigation success before, right after, after 100 trials
     before = run_remember(life, world, cur, B["door_trials"] // 2, 8, log, meta, latencies, counter)
+    brain.agent.save(checkpoint("cue"))
     cur.lock_doors()
     after = run_remember(life, world, cur, B["door_trials"], 8, log, meta, latencies, counter)
     result["door"] = {"before": float(np.mean(before)), "first_quarter_after": float(np.mean(after[: max(1, len(after) // 4)])), "last_quarter_after": float(np.mean(after[-max(1, len(after) // 4):]))}
     # 6. words
+    brain.agent.save(checkpoint("doors"))
     words = run_words(life, world, cur, B["word_episodes"], log, meta, latencies, counter)
     result["words_training_last_quarter"] = float(np.mean(words[-max(1, len(words) // 4):]))
     result["real_steps"] = counter[0]
@@ -311,6 +327,8 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
     result["parameters"] = brain.agent.parameters()
     result["stores"] = {"place_writes": brain.places.writes, "word_writes": brain.words.writes}
     brain.agent.save(out / f"world_seed{seed}.npz")
+    checkpoints.append(out / f"world_seed{seed}.npz")
+    result["checkpoints"] = [{"path": p.name, "sha256": sha256_file(p)} for p in checkpoints]
     # held-out suites on frozen copies, with interventions on copies
     H = max(10, B["heldout_episodes"] // div)
 
@@ -501,7 +519,7 @@ def main() -> int:
         receipt.body["counts"] = {"real_steps_per_seed": [r["real_steps"] for r in results], "events_logged": [r["events"]["events"] for r in results], "imagined_per_seed": [r["ledger"]["imagined"] for r in results], "replay_writes": [r["ledger"]["replay_writes"] for r in results]}
         receipt.body["numerics"] = {"ledger": [r["ledger"] for r in results]}
         receipt.body["resources"] = {"latency_ms": [r["latency_ms"] for r in results], "wall_seconds": [r["wall_seconds"] for r in results], "peak_rss_mb": peak_rss_mb(), "parameters": results[0]["parameters"]}
-        receipt.body["artifacts"] = {"events": [r["events"] for r in results], "checkpoints": [f"world_seed{r['seed']}.npz" for r in results]}
+        receipt.body["artifacts"] = {"events": [r["events"] for r in results], "checkpoints": [c for r in results for c in r["checkpoints"]]}
         receipt.predicate("consequence_accuracy", float(np.mean(cons)), g["consequence_accuracy"], "mean over seeds of five visible consequences", np.mean(cons) >= g["consequence_accuracy"])
         receipt.predicate("request_success_delay32", float(np.mean(req)), g["request_success"], "mean over seeds", np.mean(req) >= g["request_success"])
         receipt.predicate("erased_places_loss", float(np.mean(req) - np.mean(erased)), g["erasure_loss_points"], "mean success difference", np.mean(req) - np.mean(erased) >= g["erasure_loss_points"])

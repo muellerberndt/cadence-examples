@@ -29,7 +29,7 @@ sys.path.insert(0, str(HERE.parent))
 
 from agent.brain import Agent, ReplayConfig
 from agent.life import Moment, seed_for
-from agent.receipt import EventLog, Receipt, peak_rss_mb
+from agent.receipt import EventLog, Receipt, peak_rss_mb, sha256_file
 from arm.brain import (
     PREDICTED,
     JacobianPD,
@@ -85,8 +85,9 @@ class CadenceLife:
         return Moment(**{**m.__dict__, "executed": d.action})
 
 
-def run_life(life, env: Arm, decisions: int, log: EventLog | None, seed: int, split: str, phase: str, latencies: list[float], *, is_agent: bool, m: Moment | None = None) -> tuple[Moment, dict]:
-    """Run ``decisions`` decisions of one life on ``env`` (continuing from ``m``); returns the last moment and per-episode outcomes."""
+def run_life(life, env: Arm, decisions: int, log: EventLog | None, seed: int, split: str, phase: str, latencies: list[float], *, is_agent: bool, m: Moment | None = None, save_at: dict[int, Path] | None = None) -> tuple[Moment, dict]:
+    """Run ``decisions`` decisions of one life on ``env`` (continuing from ``m``); returns the last moment and per-episode outcomes.
+    ``save_at`` maps a decision count to a checkpoint path: the brain is saved when the count is reached."""
     outcomes = {"success": [], "final_distance": [], "decisions": [], "prediction_mse": {n: [] for n in PREDICTED}, "zero_mse": {n: [] for n in PREDICTED}}
     if m is None:
         m = env.reset()
@@ -116,6 +117,8 @@ def run_life(life, env: Arm, decisions: int, log: EventLog | None, seed: int, sp
                 outcomes["prediction_mse"][n].append(float(np.mean((np.asarray(prediction[n]) - m.observation[n]) ** 2)))
                 outcomes["zero_mse"][n].append(float(np.mean(m.observation[n] ** 2)))
         count += 1
+        if save_at and count in save_at and is_agent:
+            life.agent.save(save_at[count])
     return m, outcomes
 
 
@@ -211,15 +214,27 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
     life = CadenceLife(config, seed)
     env = Arm(arm, seed=seed_for(STAGE, split, seed, 0, 0), life_id="candidate")
     life.set_epsilon(1.0)
-    m, babble = run_life(life, env, B["babbling_decisions"], log, seed, split, "babbling", latencies, is_agent=True)
+    checkpoints: list[Path] = []
+
+    def schedule(phase: str, total: int, points: tuple[float, ...]) -> dict[int, Path]:
+        """Checkpoints at the given fractions of a phase's decisions (the intermediate states a page offers)."""
+        saves = {}
+        for fraction in points:
+            n = max(1, round(total * fraction))
+            saves[n] = out / f"arm_seed{seed}_{phase}_{n:05d}.npz"
+            checkpoints.append(saves[n])
+        return saves
+
+    m, babble = run_life(life, env, B["babbling_decisions"], log, seed, split, "babbling", latencies, is_agent=True, save_at=schedule("babbling", B["babbling_decisions"], (0.1, 0.4, 1.0)))
     result["babbling"] = {n: {"model_mse_last500": float(np.mean(babble["prediction_mse"][n][-500:])), "zero_mse_last500": float(np.mean(babble["zero_mse"][n][-500:]))} for n in PREDICTED}
     life.set_epsilon(config["actor"]["epsilon"])
-    m, reach = run_life(life, env, B["reaching_decisions"], log, seed, split, "reaching", latencies, is_agent=True, m=m)
+    m, reach = run_life(life, env, B["reaching_decisions"], log, seed, split, "reaching", latencies, is_agent=True, m=m, save_at=schedule("reaching", B["reaching_decisions"], (0.25, 0.5)))
     result["reaching_training"] = {"episodes": len(reach["success"]), "success_last20": float(np.mean(reach["success"][-20:])) if reach["success"] else float("nan")}
     targets = heldout_targets(seed, B["heldout_targets"], arm)
     result["heldout_frozen"] = evaluate_reaching(life, arm, targets, log, seed, split, latencies, is_agent=True, name="candidate", mode="frozen")
     result["heldout"] = evaluate_reaching(life, arm, targets, log, seed, split, latencies, is_agent=True, name="candidate", mode="adapting")
     life.agent.save(out / f"arm_seed{seed}_reaching.npz")
+    checkpoints.append(out / f"arm_seed{seed}_reaching.npz")
     result["copier"] = evaluate_copier(life, arm, seed, B["copier_paths"], B["copier_decisions"], log, split, latencies, is_agent=True, name="candidate")
     # -- adaptation: a longer upper link, no reset; then the original body again
     changed = arm_config(config, lengths=(arm.lengths[0] * 1.15, arm.lengths[1]))
@@ -232,6 +247,8 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
     result["ledger"] = life.agent.ledger.to_dict()
     result["parameters"] = life.agent.parameters()
     life.agent.save(out / f"arm_seed{seed}_final.npz")
+    checkpoints.append(out / f"arm_seed{seed}_final.npz")
+    result["checkpoints"] = [{"path": p.name, "sha256": sha256_file(p)} for p in checkpoints]
     # -- interventions on the reaching checkpoint
     controls: dict = {}
     frozen_birth = CadenceLife(config, seed, learning=False)
@@ -372,7 +389,7 @@ def main() -> int:
         receipt.body["counts"] = {"body_steps_per_seed": [r["body_steps"] for r in results], "events_logged": [r["events"]["events"] for r in results], "imagined_per_seed": [r["ledger"]["imagined"] for r in results], "replay_writes": [r["ledger"]["replay_writes"] for r in results]}
         receipt.body["numerics"] = {"ledger": [r["ledger"] for r in results]}
         receipt.body["resources"] = {"latency_ms": [r["latency_ms"] for r in results], "wall_seconds": [r["wall_seconds"] for r in results], "peak_rss_mb": peak_rss_mb(), "parameters": results[0]["parameters"], "mlp_parameters": results[0]["controls"]["online_mlp"]["parameters"]}
-        receipt.body["artifacts"] = {"events": [r["events"] for r in results], "checkpoints": [f"arm_seed{r['seed']}_final.npz" for r in results]}
+        receipt.body["artifacts"] = {"events": [r["events"] for r in results], "checkpoints": [c for r in results for c in r["checkpoints"]]}
         receipt.predicate("reaching_success_mean", float(np.mean(success)), g["success_mean"], "mean over seeds", np.mean(success) >= g["success_mean"])
         receipt.predicate("reaching_success_each", float(np.min(success)), g["success_each"], "min over seeds", np.min(success) >= g["success_each"])
         receipt.predicate("displacement_prediction_gain", float(np.mean(gain)), g["displacement_gain"], "mean over seeds: 1 - model/zero MSE", np.mean(gain) >= g["displacement_gain"])

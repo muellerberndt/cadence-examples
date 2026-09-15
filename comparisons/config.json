@@ -1,0 +1,82 @@
+{
+  "stage": "comparisons",
+  "assumptions": [
+    "The comparison changes the world model and nothing else. The stream, the planner, the stores, the budgets, the held-out suites and the evaluation protocol come from the stage under test and are read from its own config.json at run time; the hashes of those files sit in the receipt under sources.stage_under_test.",
+    "Four arms per stage: the perceptron and the transformer, each with the replay ring off and with the ring on. The ring holds 4096 raw transitions and replays one stored transition per witnessed one, drawn uniformly from the transitions stored before it, which is the protocol of arm.brain.ModelController. The candidate runs with the ring off, as its own config records.",
+    "A network reads what the candidate's world head reads: the observation fields scaled by their declared bounds, an unobserved value read as zero, the executed action, and on S02 one missing flag per field, the goal and the reads of the declared stores. On S01 the goal is left out, because the arm's own MLP baseline leaves it out and the arm's dynamics do not depend on the target.",
+    "The perceptron with one hidden layer, no flags, no goal and no store reads is arm.brain.OnlineMLP: the same reading, the same gradient and the same Adam step. Its hidden width and learning rate on S01 are the values in the arm's own baselines block.",
+    "The transformer carries one token per observation field, one for the goal, one for the action and one for the stores' reads. A token is a linear embedding of the field's entries plus a learned field embedding. Two pre-norm layers of width 64 with four heads follow, and each prediction field is read from the pooled token by its own linear row. The readout starts at zero, so the first predictions are uniform classes and mid-range values.",
+    "Learning rates are fixed per network and per stage and are written into the receipt. They were read once on development seed 0 and never per arm or per seed.",
+    "Each update is one transition, as the candidate writes one witnessed outcome. A replayed transition is a second update of the same shape.",
+    "The learning curve of S01 evaluates a copy with learning off on the first curve.targets held-out targets after every curve.interval real decisions. The copy is discarded afterwards, so the probe never teaches the arm it measures.",
+    "Held-out reaching and the copier of S01 run on copies taken at the reaching checkpoint, one copy each, which is the protocol the candidate's own evaluation uses. Both copies keep learning with exploration off.",
+    "One process per job runs torch on one thread, so the arms of a run do not compete for the machine."
+  ],
+  "arms": [
+    "mlp",
+    "mlp_replay",
+    "transformer",
+    "transformer_replay"
+  ],
+  "replay": {
+    "capacity": 4096
+  },
+  "torch_threads": 1,
+  "arm": {
+    "reading": {
+      "goal": false,
+      "flags": false,
+      "reads": false
+    },
+    "mlp": {
+      "hidden": [
+        64
+      ],
+      "lr": 0.003
+    },
+    "transformer": {
+      "width": 64,
+      "heads": 4,
+      "layers": 2,
+      "feedforward": 256,
+      "lr": 0.0003
+    },
+    "curve": {
+      "interval": 1000,
+      "targets": 40
+    }
+  },
+  "world": {
+    "reading": {
+      "goal": true,
+      "flags": true,
+      "reads": true
+    },
+    "mlp": {
+      "hidden": [
+        128
+      ],
+      "lr": 0.001
+    },
+    "transformer": {
+      "width": 64,
+      "heads": 4,
+      "layers": 2,
+      "feedforward": 256,
+      "lr": 0.0003
+    }
+  },
+  "seeds": {
+    "development": [
+      0,
+      1
+    ],
+    "acceptance": [
+      10,
+      11,
+      12,
+      13,
+      14
+    ]
+  }
+}
