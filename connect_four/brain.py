@@ -718,8 +718,12 @@ class Brain:
             config = {"game": meta["game"], "planning": meta["planning"], "gates": {"next_board_validity": meta["validity_gate"]}, "brain": meta["brain"]}
             brain = cls(config, int(meta["seed"]), learning=bool(meta["learning"]))
             for name, cortex in (("drop", brain.drop.records), ("lines", brain.lines.records)):
-                if not (np.array_equal(cortex.projection, data[f"{name}/projection"]) and np.array_equal(cortex.offset, data[f"{name}/offset"])):
+                # the expansion rebuilds from its seed up to the rounding of the platform's log and
+                # cos (about 2e-16); the checkpoint's own arrays are installed so the life continues exactly
+                if not (np.allclose(cortex.projection, data[f"{name}/projection"], rtol=0.0, atol=1e-12) and np.allclose(cortex.offset, data[f"{name}/offset"], rtol=0.0, atol=1e-12)):
                     raise ValueError(f"the {name} projection does not rebuild from its seed")
+                cortex.projection = data[f"{name}/projection"].copy()
+                cortex.offset = data[f"{name}/offset"].copy()
                 cortex.mean = data[f"{name}/mean"].copy()
                 cortex.pathway_norm = data[f"{name}/pathway_norm"].copy()
                 cortex.seen, cortex.writes = int(meta["cortices"][name]["seen"]), int(meta["cortices"][name]["writes"])
