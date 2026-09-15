@@ -14,20 +14,20 @@ link without a reset and returns to its original body.
 - Page: https://floatingpragma.io/cadence-examples/arm/ (draw a figure; the arm copies it while
   the whole brain runs beside it; a checkpoint selector loads intermediate states of the life).
 - Receipt: [arm/receipt.json](arm/receipt.json), five acceptance seeds. Measured: held-out
-  reaching {{ARM_REACHING}} (gate 0.9, each seed at least {{ARM_REACHING_MIN}}); copier
-  tracking error {{ARM_COPIER}} (bar {{ARM_COPIER_BAR}}); recovery after a longer link
-  {{ARM_RECOVER}} and retention on the original body {{ARM_RETAIN}}; the online MLP on the
-  same stream reaches {{ARM_MLP_NO_REPLAY}} without a replay ring and {{ARM_MLP_REPLAY}}
-  with its own ring; the Jacobian PD controller {{ARM_PD}}; random torques {{ARM_RANDOM}}.
-  Learning curve of a read-only copy on forty held-out targets: {{ARM_CURVE_3000}} after
-  3,000 decisions of the life, {{ARM_CURVE_6000}} after 6,000, {{ARM_CURVE_10000}} after 10,000.
+  reaching 99% (gate 0.9, each seed at least 98%); copier
+  tracking error 0.052 (bar 0.113); recovery after a longer link
+  99% and retention on the original body 99%; the online MLP on the
+  same stream reaches 3% without a replay ring and 99%
+  with its own ring; the Jacobian PD controller 94%; random torques 0%.
+  Learning curve of a read-only copy on forty held-out targets: 22% after
+  3,000 decisions of the life, 60% after 6,000, 87% after 10,000.
 - Compared ([comparisons/arm/receipt.json](comparisons/arm/receipt.json), the same life
   with the world model replaced, five seeds): held-out reaching with an online MLP
-  {{CMP_ARM_MLP}} without a replay ring and {{CMP_ARM_MLP_RING}} with one, with an online
-  transformer {{CMP_ARM_TRANSFORMER}} without a ring and {{CMP_ARM_TRANSFORMER_RING}} with
-  one; copier tracking error {{CMP_ARM_MLP_COPIER}} (MLP), {{CMP_ARM_MLP_RING_COPIER}} (MLP
-  with ring), {{CMP_ARM_TRANSFORMER_COPIER}} (transformer), {{CMP_ARM_TRANSFORMER_RING_COPIER}}
-  (transformer with ring). The records brain reaches {{ARM_REACHING}} and {{ARM_COPIER}} from
+  2% without a replay ring and 98% with one, with an online
+  transformer 40% without a ring and 100% with
+  one; copier tracking error 0.702 (MLP), 0.102 (MLP
+  with ring), 0.596 (transformer), 0.058
+  (transformer with ring). The records brain reaches 99% and 0.052 from
   one pass over the same stream with no ring.
 - Supplied: the arm dynamics and kinematics, the reward rule, the sensor encoding, the
   planning objective and the beam search over recorded consequences, the settling schedule.
@@ -46,17 +46,17 @@ holds a cue across a delay, adapts to doors that stop opening and grounds words 
 - Page: https://floatingpragma.io/cadence-examples/world/ (the world, the four stores, the
   records cortex and the whole brain, phase by phase).
 - Receipt: [world/receipt.json](world/receipt.json), five acceptance seeds. Measured:
-  requests fulfilled {{WORLD_REQUESTS}} with memory and {{WORLD_ERASED}} with the memory
-  erased (gate: a loss of at least 30 points); visible correction {{WORLD_CORRECTION}}; cue
-  choice {{WORLD_CUE}} at delay 8 with the reward-shifted control at {{WORLD_CUE_SHIFT}};
-  grounding {{WORLD_GROUNDING}}; door recovery {{WORLD_DOORS}}; shuffled action pairing
-  {{WORLD_SHUFFLED}}; random moves {{WORLD_RANDOM}}; the privileged planner {{WORLD_PRIVILEGED}}.
+  requests fulfilled 100% with memory and 18% with the memory
+  erased (gate: a loss of at least 30 points); visible correction 100%; cue
+  choice 100% at delay 8 with the reward-shifted control at 51%;
+  grounding 100%; door recovery 100%; shuffled action pairing
+  3%; random moves 1%; the privileged planner 100%.
 - Compared ([comparisons/world/receipt.json](comparisons/world/receipt.json), the same life
-  with the world model replaced, five seeds): consequence accuracy {{CMP_WORLD_MLP}} (MLP),
-  {{CMP_WORLD_MLP_RING}} (MLP with ring), {{CMP_WORLD_TRANSFORMER}} (transformer),
-  {{CMP_WORLD_TRANSFORMER_RING}} (transformer with ring) against {{WORLD_CONSEQUENCES}} for
-  the records brain; cue choice at delay 8: {{CMP_WORLD_MLP_CUE}}, {{CMP_WORLD_MLP_RING_CUE}},
-  {{CMP_WORLD_TRANSFORMER_CUE}}, {{CMP_WORLD_TRANSFORMER_RING_CUE}} against {{WORLD_CUE}}.
+  with the world model replaced, five seeds): consequence accuracy 95% (MLP),
+  95% (MLP with ring), 93% (transformer),
+  95% (transformer with ring) against 98% for
+  the records brain; cue choice at delay 8: 59%, 49%,
+  52%, 48% against 100%.
   The requests, corrections, doors and grounding pass with every world model, since the
   declared stores and the search carry them.
 - Supplied: the world, its tasks and reward rules, the sensor encoding with missing flags,
@@ -79,12 +79,12 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
   shown beside the whole brain; a checkpoint selector loads the brain after 100, 400 and
   1,000 games and at every phase end).
 - Receipt: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
-  Measured: exact next boards on held-out moves {{C4_VALIDITY}}; terminal prediction
-  {{C4_TERMINAL}}; tactical suite {{C4_TACTICAL}} (win in one, block in one); paired score
-  against random {{C4_RANDOM}} and against one-ply {{C4_ONE_PLY}} (each seed at least
-  {{C4_ONE_PLY_MIN}}); planning gain over the same records without search {{C4_PLANNING}};
-  loss with corrupted dynamics {{C4_CORRUPTED}}; loss on the old opponents after the
-  adaptation games {{C4_CONTINUAL}}; decision latency p95 {{C4_LATENCY}} ms.
+  Measured: exact next boards on held-out moves 100%; terminal prediction
+  100%; tactical suite 100% (win in one, block in one); paired score
+  against random 0.995 and against one-ply 0.957 (each seed at least
+  0.925); planning gain over the same records without search 0.61;
+  loss with corrupted dynamics 0.83; loss on the old opponents after the
+  adaptation games -0.003; decision latency p95 16 ms.
 - Supplied: the rules as the world, the move legality, the negamax search over imagined
   boards within a budget of imagined transitions, the settling schedule.
 - Learned: the drop records (where a stone lands), the line records (which windows are
@@ -98,7 +98,7 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
 Python 3.11 or later and the library at the commit the receipts ran against:
 
 ```bash
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@{{CADENCE_COMMIT}}"
+python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d"
 python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests
 python arm/run.py --seeds 0 --pilot --out runs/arm/pilot
 python world/run.py --seeds 0 --pilot --out runs/world/pilot
