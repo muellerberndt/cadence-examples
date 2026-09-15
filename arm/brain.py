@@ -32,7 +32,7 @@ def graph_spec(config: dict[str, Any]) -> GraphSpec:
         perceptual=g.get("perceptual", 0), workspace=g["workspace"], dynamics=g["dynamics"], episodic=g.get("episodic", 0),
         missing_flags=g.get("missing_flags", True), density=g.get("density", 1.0), scale=g.get("scale", 1.0),
         source_scale=g.get("source_scale", 2.0), sensory_to_dynamics=g.get("sensory_to_dynamics", True), bias=g.get("bias", 0.25),
-        input_gain=g.get("input_gain", 2.0), readout_init=g.get("readout_init", 0.0), dt=g.get("dt", 0.5), lateral=g.get("lateral", 0.0),
+        input_gain=g.get("input_gain", 2.0), field_gains=g.get("field_gains", {}), action_gain=g.get("action_gain"), readout_init=g.get("readout_init", 0.0), dt=g.get("dt", 0.5), lateral=g.get("lateral", 0.0),
     )
 
 

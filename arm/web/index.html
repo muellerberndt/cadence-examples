@@ -1,44 +1,89 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>S01 · a reaching arm learns in the browser</title>
+<title>Draw a figure, the arm copies it · S01</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-snapshot="../../runs/arm/parity/snapshot.json">
-<header><b>S01 · the arm and its whole brain, live</b><span id="counts">loading the snapshot…</span></header>
-<main>
-  <section id="body" class="panel">
-    <h2>Body</h2>
-    <canvas id="arm" aria-label="The two-link arm, its target, the hand trail and the predicted and actual displacement"></canvas>
-    <div class="arm-legend"><span><i style="background:#59e5cb"></i>predicted next displacement</span><span><i style="background:#ffbf70"></i>actual displacement</span><span><i style="background:#ed81b6"></i>target</span></div>
-    <div class="counters" id="counters"></div>
-    <div class="tools">
-      <button id="target">New target</button>
-      <label>Target <select id="mode"><option value="static">static</option><option value="line">moving · line</option><option value="circle">moving · circle</option><option value="mixed">moving · mixed</option></select></label>
-      <button id="lengthen">Lengthen upper link +15%</button>
-      <button id="resetBody">Reset body</button>
+<header class="masthead">
+  <div class="headline">
+    <h1>Draw a figure and the arm copies it</h1>
+    <p class="lede">The arm learned its body from babbling, and it copies your drawing by imagining the consequence of each torque through its records and choosing the torque whose imagined motion follows the target.</p>
+  </div>
+  <div class="facts" id="counts">loading the snapshot…</div>
+</header>
+<main class="layout">
+  <section class="panel body-panel" id="body" aria-label="The arm and the drawing surface">
+    <div class="panel-head">
+      <div class="tabs" role="tablist" aria-label="Task">
+        <button type="button" role="tab" class="tab" id="modeDraw" aria-selected="true">Draw</button>
+        <button type="button" role="tab" class="tab" id="modeReach" aria-selected="false">Reach</button>
+      </div>
+      <span class="state" id="copyState">loading</span>
     </div>
+    <div class="arm-stage" id="armStage">
+      <canvas id="arm" aria-label="The arm's workspace: draw a figure here and the arm copies it, leaving ink"></canvas>
+      <div class="hud" id="hud">
+        <span class="hud-label" id="hudLabel">Tracking error</span>
+        <b class="hud-value" id="errorValue">—</b>
+        <span class="hud-unit" id="errorUnit">arm lengths, hand to target</span>
+        <span class="hud-unit ink" id="errorInk"></span>
+        <div class="progress" id="progress"><i id="progressFill"></i></div>
+        <div class="history" id="history"></div>
+      </div>
+      <div class="hint" id="hint"><b>Draw a figure inside the ring</b><span>with a mouse, a pen or a finger</span></div>
+    </div>
+    <div class="toolbar" id="drawTools">
+      <button type="button" id="again" class="primary">Copy again</button>
+      <button type="button" id="clear">Clear</button>
+      <span class="divider" aria-hidden="true"></span>
+      <div class="examples" role="group" aria-label="Example figures">
+        <button type="button" class="chip" data-figure="circle">Circle</button>
+        <button type="button" class="chip" data-figure="star">Star</button>
+        <button type="button" class="chip" data-figure="spiral">Spiral</button>
+        <button type="button" class="chip" data-figure="letter">Letter S</button>
+      </div>
+    </div>
+    <div class="toolbar" id="reachTools" hidden>
+      <button type="button" id="target" class="primary">New target</button>
+      <label>Targets <select id="mode"><option value="static">static</option><option value="line">moving · line</option><option value="circle">moving · circle</option><option value="mixed">moving · mixed</option></select></label>
+      <span class="toolbar-note">click the workspace to place a target</span>
+    </div>
+    <div class="toolbar secondary">
+      <label id="speedControl">Target speed <select id="targetSpeed"><option value="0.08">slow</option><option value="0.12" selected>steady</option><option value="0.18">fast</option></select></label>
+      <label>Body clock <select id="pace"><option value="0.1">×0.1</option><option value="0.25">×0.25</option><option value="0.5">×0.5</option><option value="1" selected>×1</option><option value="2">×2</option></select></label>
+      <span class="group"><button type="button" id="lengthen">Upper link +15%</button><button type="button" id="resetBody">Restore body</button></span>
+    </div>
+    <div class="key" id="armKey"></div>
   </section>
-  <section id="brain" class="panel">
-    <h2>Brain</h2>
-    <div class="brain-row">
-      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="phase">—</div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
-      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the writes flashing, and the habituated reading"></canvas><div class="reads" id="recordReads"></div></div>
+  <section class="panel brain-panel" id="brain" aria-label="The whole brain">
+    <div class="panel-head">
+      <h2>The whole brain</h2>
+      <label class="checkpoint" id="checkpointBox" hidden>Brain <select id="checkpoint"></select></label>
+      <span class="phase" id="phase">—</span>
     </div>
-    <div class="tools">
-      <button id="play" class="primary">Play</button><button id="step">Step one event</button><button id="fit">Fit brain</button>
-      <label>Speed <select id="speed"><option value="1">1 step/frame</option><option value="4">4 steps/frame</option><option value="16" selected>16 steps/frame</option><option value="64">64 steps/frame</option><option value="256">256 steps/frame</option><option value="0">whole event/frame</option></select></label>
+    <div class="brain-row" id="brainRow">
+      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
+      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the writes flashing, and the reading"></canvas><div class="reads" id="recordReads"></div></div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="toolbar">
+      <button type="button" id="play" class="primary">Pause</button><button type="button" id="step">Step one event</button><button type="button" id="fit">Fit brain</button>
       <label>Show <select id="view"><option value="activity">activation</option><option value="potential">potential</option><option value="change">change</option></select></label>
-      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0.5"><span id="epsilonValue">0.50</span></label>
+      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0"><span id="epsilonValue">0.00</span></label>
       <span id="status"></span>
     </div>
-    <canvas id="strip" aria-label="Activity and change of every region over the last steps"></canvas>
-    <div class="legend" id="legend"></div>
     <div class="readouts">
-      <div class="panel"><h2>Dopamine · critic TD error per event</h2><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
-      <div class="panel"><h2>Ledger</h2><div class="ledger" id="ledger"></div></div>
+      <canvas id="strip" aria-label="Activity and change of every region over the last settling steps"></canvas>
+      <div class="readout"><h3>Dopamine per event</h3><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
+      <div class="readout"><h3>Ledger</h3><div class="ledger" id="ledger"></div></div>
+      <div class="readout"><h3>Body</h3><div class="ledger" id="counters"></div></div>
     </div>
   </section>
 </main>
-<p class="note" id="note">The brain on the right is the whole agent: sensory and goal neurons drive the workspace, the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan (cerebellum-like, dentate-like): the reading of the sensory, goal, action and recall neurons goes through a fixed random expansion, the most active granules of 32,000 are kept (the lit cells), and each active cell's records of the next displacement, velocity change and angle change are read out; when the outcome arrives it is written into exactly those records (the flash), rate-scaled. Imagined consequences for the planner are record reads (the grey flickers). Every settling step of every phase of the settled regions (free, the free phase after learning, the bootstrap value) is drawn as it happens; synapses flash when an update moves them. Decisions come from a bounded search through the model's own imagined consequences, or, with probability ε, a random torque. Nothing here is scripted: the arm reaches only as well as the model it has learned lets it.</p>
+<footer class="notes">
+  <p><b>The copy.</b> Your strokes are resampled to even spacing, smoothed a little, clipped to the reachable ring and played as a moving target. The target waits at the first point until the hand arrives (at most six seconds), then advances one point per decision at the chosen speed; between strokes it travels in a straight line with the pen lifted. The ink is the hand's own path at the body's 50 Hz clock. The tracking error is the mean distance between the hand and the target over the moving part of the copy, in arm lengths, and the arm's full reach is one.</p>
+  <p><b>The decisions.</b> Every torque comes from the agent's step. The planner imagines each of the nine torque pairs held for three decisions through the records cortex (the blue fan at the hand), scores the imagined hand motion against a velocity toward the target, and the agent executes the best torque. The outcome of every decision is written into the records of the cells that read it, so the brain keeps learning while it copies, and a second copy of the same figure is usually closer than the first. The exploration slider sets the probability of a random torque instead of the planner's choice; it starts at zero.</p>
+  <p><b>The brain.</b> Sensory and goal neurons drive the workspace; the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan (cerebellum-like, dentate-like): the reading of the sensory, goal and action neurons goes through a fixed random expansion, the most active granules are kept (the lit cells), and each active cell's records of the next displacement change, velocity change and angle change are read out; when the outcome arrives it is written into exactly those records (the flash). Every settling step of every phase of the settled regions is drawn as it happens. The brain selector loads other points of this arm's life when the page is served with its checkpoint manifest.</p>
+</footer>
 <script type="module" src="page.js"></script>
 </body></html>

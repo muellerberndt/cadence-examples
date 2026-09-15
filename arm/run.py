@@ -202,6 +202,7 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
     div = 10 if pilot else 1
     B = {k: max(1, v // div) for k, v in config["budget"].items()}
     B["heldout_targets"] = max(8, B["heldout_targets"])
+    B["curve_targets"] = max(8, B.get("curve_targets", 0))
     B["copier_paths"] = max(3, B["copier_paths"])
     B["copier_decisions"] = config["budget"]["copier_decisions"]
     arm = arm_config(config)
@@ -225,12 +226,35 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
             checkpoints.append(saves[n])
         return saves
 
-    m, babble = run_life(life, env, B["babbling_decisions"], log, seed, split, "babbling", latencies, is_agent=True, save_at=schedule("babbling", B["babbling_decisions"], (0.1, 0.4, 1.0)))
-    result["babbling"] = {n: {"model_mse_last500": float(np.mean(babble["prediction_mse"][n][-500:])), "zero_mse_last500": float(np.mean(babble["zero_mse"][n][-500:]))} for n in PREDICTED}
-    life.set_epsilon(config["actor"]["epsilon"])
-    m, reach = run_life(life, env, B["reaching_decisions"], log, seed, split, "reaching", latencies, is_agent=True, m=m, save_at=schedule("reaching", B["reaching_decisions"], (0.25, 0.5)))
-    result["reaching_training"] = {"episodes": len(reach["success"]), "success_last20": float(np.mean(reach["success"][-20:])) if reach["success"] else float("nan")}
     targets = heldout_targets(seed, B["heldout_targets"], arm)
+    # the learning curve: after every curve_interval decisions, a read-only copy on the first curve_targets held-out targets
+    curve: list[dict] = []
+    interval = B.get("curve_interval", 0)
+    phases: dict[str, dict] = {"babbling": {"prediction_mse": {n: [] for n in PREDICTED}, "zero_mse": {n: [] for n in PREDICTED}}, "reaching": {"success": []}}
+    m = None
+    done = 0
+    for phase, decisions, epsilon, points in (("babbling", B["babbling_decisions"], 1.0, (0.1, 0.4, 1.0)), ("reaching", B["reaching_decisions"], config["actor"]["epsilon"], (0.25, 0.5))):
+        life.set_epsilon(epsilon)
+        saves = schedule(phase, decisions, points)
+        left, at = decisions, 0
+        while left > 0:
+            chunk = min(left, interval - done % interval) if interval else left
+            m, outcomes = run_life(life, env, chunk, log, seed, split, phase, latencies, is_agent=True, m=m, save_at={k - at: path for k, path in saves.items() if at < k <= at + chunk})
+            for key, value in outcomes.items():
+                if key in phases[phase]:
+                    if isinstance(value, dict):
+                        for n in value:
+                            phases[phase][key][n] += value[n]
+                    else:
+                        phases[phase][key] += value
+            left, at, done = left - chunk, at + chunk, done + chunk
+            if interval and done % interval == 0:
+                probe = evaluate_reaching(life, arm, targets[: B["curve_targets"]], None, seed, split, [], is_agent=True, name="curve", mode="frozen")
+                curve.append({"decisions": done, "success": probe["success"]})
+    babble, reach = phases["babbling"], phases["reaching"]
+    result["babbling"] = {n: {"model_mse_last500": float(np.mean(babble["prediction_mse"][n][-500:])), "zero_mse_last500": float(np.mean(babble["zero_mse"][n][-500:]))} for n in PREDICTED}
+    result["reaching_training"] = {"episodes": len(reach["success"]), "success_last20": float(np.mean(reach["success"][-20:])) if reach["success"] else float("nan")}
+    result["curve"] = curve
     result["heldout_frozen"] = evaluate_reaching(life, arm, targets, log, seed, split, latencies, is_agent=True, name="candidate", mode="frozen")
     result["heldout"] = evaluate_reaching(life, arm, targets, log, seed, split, latencies, is_agent=True, name="candidate", mode="adapting")
     life.agent.save(out / f"arm_seed{seed}_reaching.npz")
@@ -383,7 +407,7 @@ def main() -> int:
         recover = [r["changed_body"]["success"] for r in results]
         retain = [r["returned_body"]["success"] for r in results]
         c = lambda key, field="success": [r["controls"][key][field] for r in results]
-        receipt.body["metrics"].update({"heldout_success": success, "heldout_success_frozen": [r["heldout_frozen"]["success"] for r in results], "displacement_gain": gain, "copier_rmse": copier, "changed_body_success": recover, "returned_body_success": retain})
+        receipt.body["metrics"].update({"heldout_success": success, "heldout_success_frozen": [r["heldout_frozen"]["success"] for r in results], "displacement_gain": gain, "copier_rmse": copier, "changed_body_success": recover, "returned_body_success": retain, "curve": [{"seed": r["seed"], "points": r["curve"]} for r in results]})
         receipt.body["controls"] = {k: c(k) for k in results[0]["controls"]}
         receipt.body["controls"]["copier_rmse"] = {k: c(k, "copier_rmse") for k in ("born_frozen", "jacobian_pd", "online_mlp")}
         receipt.body["counts"] = {"body_steps_per_seed": [r["body_steps"] for r in results], "events_logged": [r["events"]["events"] for r in results], "imagined_per_seed": [r["ledger"]["imagined"] for r in results], "replay_writes": [r["ledger"]["replay_writes"] for r in results]}

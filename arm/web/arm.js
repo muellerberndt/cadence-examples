@@ -1,11 +1,17 @@
-// The two-link planar arm in JavaScript: a port of arm/env.py.
+// The two-link planar arm in JavaScript: a port of arm/env.py, and the drawn paths of the page.
 // Links of 0.5 each, angles wrapped to [-pi, pi], velocities clipped to +-max_velocity, a
 // 50 Hz body clock with semi-implicit Euler, one torque pair held for `substeps` body
 // steps. Sensors are proprioception only; the goal is the visible target marker. The random
 // numbers come from a Mulberry32 stream (Python's env draws from numpy; the page runs its
 // own life, so the two need not agree). `requestTruncation` ends the episode at the next
 // decision as a time limit would, so a page can move to a new target without abandoning a
-// decision that awaits its outcome.
+// decision that awaits its outcome. `integrate` keeps the joint angles after every body step
+// in `trace` (rendering only: the page draws the hand's path at the body's own clock).
+//
+// A drawn figure becomes a moving target the way `movingPath` produces one: `figurePath`
+// clips the strokes to the reachable ring, resamples them to even spacing and joins them with
+// straight travel segments, and `CopyPath` plays the points one per decision. The agent sees
+// only the target's position on every moment.
 
 import { Mulberry32 } from "../../web/engine.js";
 
@@ -45,6 +51,7 @@ export class Arm {
     this.theta = new Float64Array(2); this.omega = new Float64Array(2); this._target = new Float64Array(2);
     this._previous = null; this._flags = new Float64Array(2); this._hold = 0; this._pending = null; this._decisionAction = null;
     this._truncateNext = false;
+    this.trace = null; // the joint angles after every body step of the last decision, [theta0, theta1] pairs
   }
 
   // -- kinematics (supplied for sensors and rendering)
@@ -73,7 +80,7 @@ export class Arm {
   }
 
   reset({ theta = null, target = null } = {}) {
-    this._episode += 1; this._tick = 0; this._hold = 0; this._pending = null; this._truncateNext = false;
+    this._episode += 1; this._tick = 0; this._hold = 0; this._pending = null; this._truncateNext = false; this.trace = null;
     this.theta = theta === null ? Float64Array.of(this.rng.uniform(-Math.PI, Math.PI), this.rng.uniform(-Math.PI, Math.PI)) : Float64Array.from(theta);
     this.omega = new Float64Array(2);
     this._flags = new Float64Array(2);
@@ -118,7 +125,7 @@ export class Arm {
    *  not observable and starts at zero. */
   restore(m) {
     const o = m.observation, c = this.config;
-    this._episode = m.episode_id | 0; this._event = (m.event_id | 0) + 1; this._tick = m.tick | 0; this._hold = 0; this._pending = null; this._truncateNext = false;
+    this._episode = m.episode_id | 0; this._event = (m.event_id | 0) + 1; this._tick = m.tick | 0; this._hold = 0; this._pending = null; this._truncateNext = false; this.trace = null;
     this.theta = Float64Array.of(Math.atan2(o.angles[0], o.angles[1]), Math.atan2(o.angles[2], o.angles[3]));
     this.omega = Float64Array.of(o.velocity[0] * c.max_velocity, o.velocity[1] * c.max_velocity);
     this._flags = Float64Array.from(o.flags);
@@ -133,9 +140,9 @@ export class Arm {
     return this;
   }
 
-  /** Hold one torque pair for `substeps` body steps; record velocity-limit flags. */
+  /** Hold one torque pair for `substeps` body steps; record velocity-limit flags and the angles after every step. */
   integrate(action) {
-    const c = this.config, torque = TORQUES[action | 0].map((t) => t * c.gain), flags = new Float64Array(2);
+    const c = this.config, torque = TORQUES[action | 0].map((t) => t * c.gain), flags = new Float64Array(2), trace = new Float64Array(2 * c.substeps);
     for (let k = 0; k < c.substeps; k++) {
       for (let j = 0; j < 2; j++) {
         this.omega[j] = this.omega[j] + c.dt * (torque[j] - c.friction * this.omega[j]);
@@ -143,8 +150,10 @@ export class Arm {
         this.omega[j] = Math.min(c.max_velocity, Math.max(-c.max_velocity, this.omega[j]));
       }
       for (let j = 0; j < 2; j++) this.theta[j] = wrap(this.theta[j] + c.dt * this.omega[j]);
+      trace[2 * k] = this.theta[0]; trace[2 * k + 1] = this.theta[1];
     }
     this._flags = flags;
+    this.trace = trace;
   }
 
   /** End the episode at the next decision, as a time limit would (a page moving to a new target). */
@@ -193,4 +202,149 @@ export function movingPath(kind, rng, decisionsPerSecond = 10.0) {
   }
   const c1 = movingPath("circle", rng, decisionsPerSecond), c2 = movingPath("line", rng, decisionsPerSecond);
   return (tick) => { const p = c1(tick), q = c2(tick); return [0.5 * (p[0] + q[0]), 0.5 * (p[1] + q[1])]; };
+}
+
+// -- drawn figures
+
+/** The ring a figure may occupy: the config's target radii, within the body's reach. */
+export function workspaceOf(config) {
+  const [l1, l2] = config.lengths, radii = config.target_radius || DEFAULT_ARM.target_radius;
+  return { inner: Math.max(Math.abs(l1 - l2), radii[0]), outer: Math.min(l1 + l2, radii[1]), reach: l1 + l2 };
+}
+
+/** A point moved along its ray onto the ring [inner, outer] (the origin goes to the inner radius on the x axis). */
+export function clipToRing(point, inner, outer) {
+  const x = point[0], y = point[1], r = Math.hypot(x, y);
+  if (r < 1e-9) return [inner, 0];
+  const c = Math.min(outer, Math.max(inner, r));
+  return [(x * c) / r, (y * c) / r];
+}
+
+/** Points at equal arc-length `spacing` along a polyline, starting at its first point; the last point is kept when the remainder exceeds half a spacing. */
+export function resamplePolyline(points, spacing) {
+  if (!points.length) return [];
+  const out = [[points[0][0], points[0][1]]];
+  let carry = 0;
+  for (let k = 1; k < points.length; k++) {
+    const ax = points[k - 1][0], ay = points[k - 1][1], bx = points[k][0], by = points[k][1];
+    const segment = Math.hypot(bx - ax, by - ay);
+    if (!(segment > 0)) continue;
+    let t = 0;
+    while (carry + (segment - t) >= spacing) {
+      t += spacing - carry; carry = 0;
+      const f = t / segment;
+      out.push([ax + (bx - ax) * f, ay + (by - ay) * f]);
+    }
+    carry += segment - t;
+  }
+  const last = points[points.length - 1], previous = out[out.length - 1];
+  if (Math.hypot(last[0] - previous[0], last[1] - previous[1]) > spacing * 0.5) out.push([last[0], last[1]]);
+  return out;
+}
+
+/** A moving average over ±`half` points, the window shrinking at the ends so the ends stay put. */
+export function smoothPolyline(points, half) {
+  const n = points.length;
+  return points.map((_, i) => {
+    const h = Math.min(half, i, n - 1 - i);
+    let sx = 0, sy = 0;
+    for (let j = i - h; j <= i + h; j++) { sx += points[j][0]; sy += points[j][1]; }
+    return [sx / (2 * h + 1), sy / (2 * h + 1)];
+  });
+}
+
+/**
+ * Strokes (arrays of [x, y] in arm lengths, the shoulder at the origin) as the points a moving
+ * target visits. Every stroke is clipped to the ring, resampled at `fine`, smoothed over
+ * ±`smoothing` arm lengths and clipped again; consecutive strokes are joined by a straight
+ * travel segment with the pen lifted; the whole is resampled at `spacing`, the target's
+ * advance per decision. Returns {points, pen (1 on a stroke, 0 on a travel segment), strokes,
+ * length, drawn (the smoothed strokes at the fine spacing)}.
+ */
+export function figurePath(strokes, { spacing, inner, outer, smoothing = 0.02, fine = 0.005 }) {
+  if (!(spacing > 0)) throw Error("a figure path needs a positive spacing");
+  const clip = (p) => clipToRing(p, inner, outer);
+  const pieces = [];
+  for (const stroke of strokes) {
+    if (!stroke || !stroke.length) continue;
+    let pts = resamplePolyline(stroke.map(clip), fine);
+    const half = Math.round(smoothing / fine);
+    if (half > 0 && pts.length > 2) pts = smoothPolyline(pts, half).map(clip);
+    pieces.push({ pen: 1, pts });
+  }
+  const segments = [];
+  pieces.forEach((piece, i) => {
+    if (i > 0) {
+      const a = pieces[i - 1].pts[pieces[i - 1].pts.length - 1], b = piece.pts[0];
+      if (Math.hypot(b[0] - a[0], b[1] - a[1]) > 1e-9) segments.push({ pen: 0, pts: resamplePolyline([a, b], fine).map(clip) });
+    }
+    segments.push(piece);
+  });
+  const points = [], pen = [];
+  for (const segment of segments) {
+    for (const p of resamplePolyline(segment.pts, spacing)) {
+      const last = points[points.length - 1];
+      if (last && Math.hypot(p[0] - last[0], p[1] - last[1]) < 1e-9) { if (segment.pen) pen[pen.length - 1] = 1; continue; }
+      points.push(p); pen.push(segment.pen);
+    }
+  }
+  let length = 0;
+  for (let k = 1; k < points.length; k++) length += Math.hypot(points[k][0] - points[k - 1][0], points[k][1] - points[k - 1][1]);
+  return { points, pen: Uint8Array.from(pen), strokes: pieces.length, length, drawn: pieces.map((p) => p.pts) };
+}
+
+/** The distance from a point to the nearest point of the drawn strokes (at their fine spacing). */
+export function distanceToDrawing(drawn, point) {
+  let best = Infinity;
+  for (const stroke of drawn) for (const p of stroke) { const d = (p[0] - point[0]) ** 2 + (p[1] - point[1]) ** 2; if (d < best) best = d; }
+  return Math.sqrt(best);
+}
+
+/**
+ * A figure path as the moving target of one episode. The target waits at the first point until
+ * the hand comes within `startRadius` of it or `approach` decisions pass; from then on it
+ * advances one point per decision (the points are evenly spaced, so the rate is steady) and
+ * rests on the last point for `tail` decisions. `targetAt(tick, hand)` is the episode's moving
+ * target; the hand only decides when the target starts to move.
+ */
+export class CopyPath {
+  constructor(path, { approach = 60, startRadius = 0.06, tail = 10 } = {}) {
+    if (!path.points.length) throw Error("a copy needs at least one point");
+    this.path = path; this.points = path.points; this.pen = path.pen;
+    this.approach = approach; this.startRadius = startRadius; this.tail = tail;
+    this.start = null;
+  }
+
+  targetAt(tick, hand) {
+    if (this.start === null) {
+      const p = this.points[0];
+      if (Math.hypot(hand[0] - p[0], hand[1] - p[1]) <= this.startRadius || tick >= this.approach) this.start = tick;
+      else return [p[0], p[1]];
+    }
+    const p = this.points[Math.min(this.points.length - 1, tick - this.start)];
+    return [p[0], p[1]];
+  }
+
+  /** The index of the point the target sits on at `tick`, or -1 while it waits for the hand. */
+  indexAt(tick) { return this.start === null || tick < this.start ? -1 : Math.min(this.points.length - 1, tick - this.start); }
+  /** The ticks the tracking error is measured on: the target moved to reach them. */
+  movingAt(tick) { if (this.start === null) return false; const k = tick - this.start; return k >= 1 && k <= this.points.length - 1; }
+  finishedAt(tick) { return this.start !== null && tick - this.start >= this.points.length - 1 + this.tail; }
+  progressAt(tick) { const k = this.indexAt(tick); return this.points.length > 1 ? Math.max(0, k) / (this.points.length - 1) : k >= 0 ? 1 : 0; }
+  /** An episode long enough for the longest approach, the path and the rest. */
+  get horizon() { return this.approach + this.points.length + this.tail + 2; }
+}
+
+/** The example figures: a label per name. */
+export const FIGURES = { circle: "circle", star: "star", spiral: "spiral", letter: "letter S" };
+
+/** An example figure as strokes of [x, y] points in arm lengths, centred above the shoulder. */
+export function exampleFigure(name, centre = [0, 0.55]) {
+  const [cx, cy] = centre;
+  const arc = (a0, a1, n, r, x0, y0) => Array.from({ length: n + 1 }, (_, k) => { const a = a0 + ((a1 - a0) * k) / n; return [x0 + r * Math.cos(a), y0 + r * Math.sin(a)]; });
+  if (name === "circle") return [arc(0, TWO_PI, 160, 0.34, cx, cy)];
+  if (name === "star") return [Array.from({ length: 11 }, (_, k) => { const r = k % 2 ? 0.16 : 0.38, a = Math.PI / 2 + (k * Math.PI) / 5; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; })];
+  if (name === "spiral") return [Array.from({ length: 321 }, (_, k) => { const t = k / 320, a = t * 2 * TWO_PI, r = 0.04 + 0.30 * t; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; })];
+  if (name === "letter") { const r = 0.17; return [[...arc(Math.PI / 6, 1.5 * Math.PI, 60, r, cx, cy + r), ...arc(Math.PI / 2, -(5 * Math.PI) / 6, 60, r, cx, cy - r).slice(1)]]; }
+  throw Error(`no example figure named ${name}`);
 }

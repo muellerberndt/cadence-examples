@@ -1,6 +1,6 @@
 # Cadence examples
 
-Two applications that learn through one stream of experience: observe, remember, predict,
+Three applications that learn through one stream of experience: observe, remember, predict,
 act, learn from the outcome. Each entry links its page, its acceptance receipt and the
 verifier that recomputes the receipt from the event logs. The library is
 [cadence](https://github.com/muellerberndt/cadence); its README explains the principle.
@@ -19,6 +19,16 @@ link without a reset and returns to its original body.
   {{ARM_RECOVER}} and retention on the original body {{ARM_RETAIN}}; the online MLP on the
   same stream reaches {{ARM_MLP_NO_REPLAY}} without a replay ring and {{ARM_MLP_REPLAY}}
   with its own ring; the Jacobian PD controller {{ARM_PD}}; random torques {{ARM_RANDOM}}.
+  Learning curve of a read-only copy on forty held-out targets: {{ARM_CURVE_3000}} after
+  3,000 decisions of the life, {{ARM_CURVE_6000}} after 6,000, {{ARM_CURVE_10000}} after 10,000.
+- Compared ([comparisons/arm/receipt.json](comparisons/arm/receipt.json), the same life
+  with the world model replaced, five seeds): held-out reaching with an online MLP
+  {{CMP_ARM_MLP}} without a replay ring and {{CMP_ARM_MLP_RING}} with one, with an online
+  transformer {{CMP_ARM_TRANSFORMER}} without a ring and {{CMP_ARM_TRANSFORMER_RING}} with
+  one; copier tracking error {{CMP_ARM_MLP_COPIER}} (MLP), {{CMP_ARM_MLP_RING_COPIER}} (MLP
+  with ring), {{CMP_ARM_TRANSFORMER_COPIER}} (transformer), {{CMP_ARM_TRANSFORMER_RING_COPIER}}
+  (transformer with ring). The records brain reaches {{ARM_REACHING}} and {{ARM_COPIER}} from
+  one pass over the same stream with no ring.
 - Supplied: the arm dynamics and kinematics, the reward rule, the sensor encoding, the
   planning objective and the beam search over recorded consequences, the settling schedule.
 - Learned: the records of the world head (hand acceleration, joint velocity change, joint
@@ -41,6 +51,14 @@ holds a cue across a delay, adapts to doors that stop opening and grounds words 
   choice {{WORLD_CUE}} at delay 8 with the reward-shifted control at {{WORLD_CUE_SHIFT}};
   grounding {{WORLD_GROUNDING}}; door recovery {{WORLD_DOORS}}; shuffled action pairing
   {{WORLD_SHUFFLED}}; random moves {{WORLD_RANDOM}}; the privileged planner {{WORLD_PRIVILEGED}}.
+- Compared ([comparisons/world/receipt.json](comparisons/world/receipt.json), the same life
+  with the world model replaced, five seeds): consequence accuracy {{CMP_WORLD_MLP}} (MLP),
+  {{CMP_WORLD_MLP_RING}} (MLP with ring), {{CMP_WORLD_TRANSFORMER}} (transformer),
+  {{CMP_WORLD_TRANSFORMER_RING}} (transformer with ring) against {{WORLD_CONSEQUENCES}} for
+  the records brain; cue choice at delay 8: {{CMP_WORLD_MLP_CUE}}, {{CMP_WORLD_MLP_RING_CUE}},
+  {{CMP_WORLD_TRANSFORMER_CUE}}, {{CMP_WORLD_TRANSFORMER_RING_CUE}} against {{WORLD_CUE}}.
+  The requests, corrections, doors and grounding pass with every world model, since the
+  declared stores and the search carry them.
 - Supplied: the world, its tasks and reward rules, the sensor encoding with missing flags,
   four stores with declared keys, the A* search over recorded consequences, the settling
   schedule.
@@ -50,21 +68,50 @@ holds a cue across a delay, adapts to doors that stop opening and grounds words 
   random, the privileged planner, a tabular model behind the same stores and search.
 - Details: [world/README.md](world/README.md).
 
+## Connect Four
+
+One life learns what a dropped stone does, which windows of four cells are completed lines
+and what positions are worth, from the games it plays, and chooses its moves by searching
+over what it learned: no board object, no terminal oracle, no minimax labels.
+
+- Page: https://floatingpragma.io/cadence-examples/connect_four/ (play against the brain
+  while it keeps learning from the game; the columns it imagined and the values it read are
+  shown beside the whole brain; a checkpoint selector loads the brain after 100, 400 and
+  1,000 games and at every phase end).
+- Receipt: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
+  Measured: exact next boards on held-out moves {{C4_VALIDITY}}; terminal prediction
+  {{C4_TERMINAL}}; tactical suite {{C4_TACTICAL}} (win in one, block in one); paired score
+  against random {{C4_RANDOM}} and against one-ply {{C4_ONE_PLY}} (each seed at least
+  {{C4_ONE_PLY_MIN}}); planning gain over the same records without search {{C4_PLANNING}};
+  loss with corrupted dynamics {{C4_CORRUPTED}}; loss on the old opponents after the
+  adaptation games {{C4_CONTINUAL}}; decision latency p95 {{C4_LATENCY}} ms.
+- Supplied: the rules as the world, the move legality, the negamax search over imagined
+  boards within a budget of imagined transitions, the settling schedule.
+- Learned: the drop records (where a stone lands), the line records (which windows are
+  completed lines, what a position is worth), from empty records.
+- Controls: the same records frozen, corrupted dynamics, random, one-ply and minimax
+  opponents at fixed budgets.
+- Details: [connect_four/README.md](connect_four/README.md).
+
 ## Run them
 
 Python 3.11 or later and the library at the commit the receipts ran against:
 
 ```bash
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@{{CADENCE_COMMIT}}"
-python -m pytest -q -m "not slow" agent/tests arm/tests world/tests
+python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests
 python arm/run.py --seeds 0 --pilot --out runs/arm/pilot
 python world/run.py --seeds 0 --pilot --out runs/world/pilot
+python connect_four/run.py --seeds 0 --pilot --out runs/connect_four/pilot
 python tools/verify_gallery.py
 ```
 
 `--pilot` divides the budgets by ten; the acceptance runs use seeds 10 to 14 at full budget
-(`arm/README.md`, `world/README.md`). `tools/verify_gallery.py` checks each receipt's
-digest, predicates, seed schedule, source hashes and library commit. The browser engine is
+(`arm/README.md`, `world/README.md`). `comparisons/arm.py` and `comparisons/world.py` run
+the same lives with the world model replaced by an online MLP or transformer, with and
+without a replay ring ([comparisons/README.md](comparisons/README.md)).
+`tools/verify_gallery.py` checks each receipt's digest, predicates, seed schedule, source
+hashes and library commit. The browser engine is
 checked against the Python agent decision by decision (`web/parity.mjs`,
 `world/web/parity_s02.mjs`).
 
@@ -90,7 +137,7 @@ the mechanism in full.
 ## Layout
 
 `agent/`: the experience agent shared by every example (the event transaction, the records
-head, receipts, the web export). `arm/`, `world/`: one directory per example with `run.py`,
+head, receipts, the web export). `arm/`, `world/`, `connect_four/`: one directory per example with `run.py`,
 `verify.py`, `config.json`, tests, tools and `web/`. `web/`: the browser engine, the
 parity harness, the records view and the library's brain renderer. `tools/verify_gallery.py`:
 the gallery check the workflows run.

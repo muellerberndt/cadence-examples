@@ -94,6 +94,8 @@ class GraphSpec:
     sensory_to_dynamics: bool = True  # the dynamics cortex also reads the sensory copy directly
     bias: float = 0.25  # declared prior on free neurons; source neurons stay at 0
     input_gain: float = 2.0  # drive per unit observed value on a source neuron
+    field_gains: dict[str, float] = field(default_factory=dict)  # per observation field, a factor on input_gain (its flag keeps input_gain)
+    action_gain: float | None = None  # drive of the chosen action's neurons; None: input_gain
     readout_init: float = 0.0  # initial magnitude of the readout pairs (dynamics-prediction, workspace-motor)
     dt: float = 0.5
     slope: float = 1.0  # the neuron model's sigmoid slope: larger bends the units sooner (products need bends)
@@ -799,7 +801,7 @@ class Agent:
             flag = np.ones(f.width, bool) if observed is None or f.name not in observed else np.asarray(observed[f.name], bool)
             if f.kind == "continuous":
                 value = np.clip((value - f.lo) / (f.hi - f.lo), 0.0, 1.0)
-            out[self.ports.observation_fields[f.name]] = spec.input_gain * value * flag
+            out[self.ports.observation_fields[f.name]] = spec.input_gain * spec.field_gains.get(f.name, 1.0) * value * flag
             if spec.missing_flags:
                 missing = np.array([not flag.all()]) if spec.flags_per_field else ~flag
                 out[self.ports.observation_flags[f.name]] = spec.input_gain * missing
@@ -828,7 +830,7 @@ class Agent:
 
     def _with_action(self, drive: np.ndarray, actions: Sequence[int]) -> np.ndarray:
         out = np.array(drive, dtype=float)
-        gain = self.config.graph.input_gain
+        gain = self.config.graph.input_gain if self.config.graph.action_gain is None else self.config.graph.action_gain
         for i, action in enumerate(actions):
             out[i, self.ports.action] = 0.0
             for slot, k in zip(self.ports.action_slots, self._split_action(int(action)), strict=True):

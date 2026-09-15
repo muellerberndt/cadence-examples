@@ -25,10 +25,18 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Assemble the site
         run: |
-          mkdir -p _site/arm _site/world
+          mkdir -p _site/arm _site/world _site/connect_four
           cp index.html .nojekyll _site/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
+          cp connect_four/index.html connect_four/receipt.json _site/connect_four/
+          for stage in arm world connect_four; do
+            if [ -f $stage/checkpoints.json ]; then
+              mkdir -p _site/$stage
+              cp $stage/checkpoints.json _site/$stage/
+              cp -r $stage/checkpoints _site/$stage/
+            fi
+          done
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

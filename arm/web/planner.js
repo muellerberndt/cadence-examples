@@ -46,29 +46,36 @@ export class ModelPlanner {
     return -norm2(nxt.d_hand[0] / this.decisionSeconds - dx, nxt.d_hand[1] / this.decisionSeconds - dy);
   }
 
-  /** The first action of the best imagined sequence, its first-step prediction, and the search budget. */
+  /** The first action of the best imagined sequence, its first-step prediction, and the search budget.
+   *  `lastImagined` keeps the last level's candidates for display: each torque's imagined hand
+   *  positions over the rollout (from the observed hand), its score and its first action, best first. */
   plan(model, observation, goal) {
     const target = Float64Array.from(goal, (g) => g * 2.0 - 1.0);
     let expansions = 0;
     let beam = [{ first: null, obs: observation, pred: null }];
+    let imagined = [];
     for (let level = 0; level < this.depth; level++) {
       const observations = [], actions = [], entries = [];
       for (const entry of beam) for (let a = 0; a < TORQUE_COUNT; a++) { observations.push(entry.obs); actions.push(a); entries.push(entry); }
       const predictions = model.predictBatch(observations, actions, goal);
       expansions += actions.length;
       let composed = observations.map((obs, k) => compose(obs, predictions[k]));
+      const hands = composed.map((obs, k) => [[observations[k].hand[0], observations[k].hand[1]], [obs.hand[0], obs.hand[1]]]);
       const firstPredictions = predictions.slice();
       for (let r = 0; r < this.rollout - 1; r++) { // hold each candidate torque: its effect accumulates
         const more = model.predictBatch(composed, actions, goal);
         expansions += actions.length;
         composed = composed.map((obs, k) => compose(obs, more[k]));
+        composed.forEach((obs, k) => hands[k].push([obs.hand[0], obs.hand[1]]));
       }
-      const candidates = entries.map((entry, k) => ({ score: this.leafScore(composed[k], target), first: entry.first === null ? actions[k] : entry.first, obs: composed[k], pred: entry.pred === null ? firstPredictions[k] : entry.pred }));
+      const candidates = entries.map((entry, k) => ({ score: this.leafScore(composed[k], target), first: entry.first === null ? actions[k] : entry.first, obs: composed[k], pred: entry.pred === null ? firstPredictions[k] : entry.pred, action: actions[k], hands: hands[k] }));
       candidates.sort((x, y) => y.score - x.score); // stable, descending
+      imagined = candidates.map((c) => ({ action: c.action, first: c.first, score: c.score, hands: c.hands }));
       beam = candidates.slice(0, this.beam);
     }
     const best = beam[0];
     if (best.first === null || best.pred === null) throw Error("the search returned no action");
+    this.lastImagined = { chosen: best.first | 0, candidates: imagined };
     return { action: best.first | 0, prediction: best.pred, budget: { expansions, depth: this.depth, beam: this.beam } };
   }
 

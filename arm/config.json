@@ -95,7 +95,9 @@
     "copier_paths": 50,
     "copier_decisions": 200,
     "adaptation_decisions": 4000,
-    "return_decisions": 1000
+    "return_decisions": 1000,
+    "curve_interval": 1000,
+    "curve_targets": 40
   },
   "baselines": {
     "mlp_hidden": 64,
