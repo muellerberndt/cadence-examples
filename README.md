@@ -84,7 +84,7 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
   against random 0.995 and against one-ply 0.957 (each seed at least
   0.925); planning gain over the same records without search 0.61;
   loss with corrupted dynamics 0.83; loss on the old opponents after the
-  adaptation games -0.003; decision latency p95 16 ms.
+  adaptation games -0.003; decision latency p95 19 ms.
 - Supplied: the rules as the world, the move legality, the negamax search over imagined
   boards within a budget of imagined transitions, the settling schedule.
 - Learned: the drop records (where a stone lands), the line records (which windows are
