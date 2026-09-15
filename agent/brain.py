@@ -545,18 +545,26 @@ class RecordsHead:
         return self.cortex.code(readings, adapt=adapt, valued=valued)
 
     def predict(self, code: np.ndarray, *, valued: bool = True) -> dict[str, np.ndarray]:
-        reads = self.cortex.read(code)
-        out = {}
+        return self.predict_many(code[:, None, :], valued=valued)[0]
+
+    def predict_many(self, codes: np.ndarray, *, valued: bool = True) -> list[dict[str, np.ndarray]]:
+        """The predictions of ``(2, batch, cells)`` codes, one dict per row: every field is read once
+        for the whole batch, then decoded per row."""
+        reads = self.cortex.read(codes)
+        batch = codes.shape[1]
+        out: list[dict[str, np.ndarray]] = [{} for _ in range(batch)]
         for f in self.fields:
             if not valued and f.source in VALUED_SOURCES:
                 continue
             y = reads[f.name]
             if f.kind == "categorical":
                 p = np.maximum(y, 0.0)
-                total = p.sum()
-                out[f.name] = p / total if total > 0 else np.full(f.width, 1.0 / f.width)
+                total = p.sum(axis=1, keepdims=True)
+                decoded = np.where(total > 0, p / np.where(total > 0, total, 1.0), 1.0 / f.width)
             else:
-                out[f.name] = f.lo + (np.clip(y, 0.05, 0.8) - 0.05) / 0.75 * (f.hi - f.lo)
+                decoded = f.lo + (np.clip(y, 0.05, 0.8) - 0.05) / 0.75 * (f.hi - f.lo)
+            for k in range(batch):
+                out[k][f.name] = decoded[k]
         return out
 
     def learn(self, code: np.ndarray, targets: Mapping[str, tuple[np.ndarray, np.ndarray]]) -> int:
@@ -1474,7 +1482,7 @@ class Agent:
         self.ledger.imagined += len(actions)
         if self.records is not None:
             codes = self.records.code(drive[:, self.reading], adapt=False, valued=valued)
-            return [self.records.predict(codes[:, k], valued=valued) for k in range(len(actions))]
+            return self.records.predict_many(codes, valued=valued)
         w = self.config.world
         state = self.brain.settle_batch(drive, steps=w.free_steps, tolerance=w.tolerance if w.imagine_tolerance is None else w.imagine_tolerance)
         return [self.decode(state, k) for k in range(len(actions))]
