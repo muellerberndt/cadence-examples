@@ -18,10 +18,11 @@ jobs:
         run: |
           COMMIT=$(grep -oE 'cadence\.git@[0-9a-f]{40}' README.md | head -1 | cut -d@ -f2)
           python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@${COMMIT}" pytest
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Verify the receipts, their predicates and their sources
         run: python tools/verify_gallery.py
-      - name: Test the agent, the arm and the world
-        run: python -m pytest -q -m "not slow" agent/tests arm/tests world/tests
+      - name: Test the agent, the arm, the world, Connect Four and the comparisons
+        run: python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests comparisons/tests
       - name: Browser engine parity with the Python agent
         run: |
           python arm/tools/parity_fixture.py --out runs/arm/parity

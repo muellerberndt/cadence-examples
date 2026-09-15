@@ -66,7 +66,9 @@ protocol.
 
 ## Commands
 
-From the repository root, with the core's interpreter:
+From the repository root, with the core's interpreter. The networks run on `torch` (the
+CPU build suffices: `pip install torch --index-url https://download.pytorch.org/whl/cpu`);
+the stages themselves need only the library.
 
 ```bash
 PY=../cadence/.venv/bin/python
