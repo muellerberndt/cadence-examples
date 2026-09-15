@@ -1,0 +1,307 @@
+{
+ "format": "cadence-connect-four-checkpoints/1",
+ "seed": 10,
+ "run": "runs/connect_four/acceptance",
+ "inlined": "games001200",
+ "checkpoints": [
+  {
+   "id": "games000100",
+   "label": "100 games",
+   "file": "checkpoints/games000100.json",
+   "games": 100,
+   "labels": [
+    "scheduled"
+   ],
+   "bytes": 601757,
+   "transitions": 2244,
+   "drop_writes": 15708,
+   "line_writes": 97574,
+   "value_writes": 5976,
+   "extended": true,
+   "planner": {
+    "nodes": 0,
+    "searches": 0,
+    "invalid": 0,
+    "depth": 0.0,
+    "depths": {},
+    "budget": 0
+   },
+   "source": "runs/connect_four/acceptance/brain_seed10_games000100",
+   "sha256": "5f45c2ba91d4ecc8dabfe0fc541d4e02e6667c2c127f743274632ccba0b6d9fc",
+   "asset": "connect_four-games000100.json"
+  },
+  {
+   "id": "games000200",
+   "label": "200 games \u00b7 the end of the random games",
+   "file": "checkpoints/games000200.json",
+   "games": 200,
+   "labels": [
+    "after_explore"
+   ],
+   "bytes": 601822,
+   "transitions": 4319,
+   "drop_writes": 30233,
+   "line_writes": 183919,
+   "value_writes": 11671,
+   "extended": true,
+   "planner": {
+    "nodes": 0,
+    "searches": 0,
+    "invalid": 0,
+    "depth": 0.0,
+    "depths": {},
+    "budget": 0
+   },
+   "source": "runs/connect_four/acceptance/brain_seed10_games000200",
+   "sha256": "7259a8a0c3be94487213fa432432366f5178aadbed3f4e07a3649eecf28e35f7",
+   "asset": "connect_four-games000200.json"
+  },
+  {
+   "id": "games000400",
+   "label": "400 games",
+   "file": "checkpoints/games000400.json",
+   "games": 400,
+   "labels": [
+    "scheduled"
+   ],
+   "bytes": 601790,
+   "transitions": 8186,
+   "drop_writes": 57302,
+   "line_writes": 352863,
+   "value_writes": 22589,
+   "extended": true,
+   "planner": {
+    "nodes": 906146,
+    "searches": 1790,
+    "invalid": 0,
+    "depth": 3.6212290502793296,
+    "depths": {
+     "1": 161,
+     "2": 13,
+     "3": 169,
+     "4": 1447
+    },
+    "budget": 0
+   },
+   "source": "runs/connect_four/acceptance/brain_seed10_games000400",
+   "sha256": "40219b09c4fccfb6732750b7fed7cc554313706698da825db5d6de9cf5e0c2ad",
+   "asset": "connect_four-games000400.json"
+  },
+  {
+   "id": "games001000",
+   "label": "1,000 games \u00b7 the end of the mixture",
+   "file": "checkpoints/games001000.json",
+   "games": 1000,
+   "labels": [
+    "scheduled",
+    "after_mixture"
+   ],
+   "bytes": 601871,
+   "transitions": 18986,
+   "drop_writes": 132902,
+   "line_writes": 805932,
+   "value_writes": 52715,
+   "extended": true,
+   "planner": {
+    "nodes": 3252969,
+    "searches": 6862,
+    "invalid": 0,
+    "depth": 3.6279510346837656,
+    "depths": {
+     "1": 662,
+     "2": 57,
+     "3": 453,
+     "4": 5690
+    },
+    "budget": 0
+   },
+   "source": "runs/connect_four/acceptance/brain_seed10_games001000",
+   "sha256": "cc027953506ad6f199281e78bda743d921b340334b61cac75abda744f5b15c80",
+   "asset": "connect_four-games001000.json"
+  },
+  {
+   "id": "games001200",
+   "label": "1,200 games \u00b7 the end of the life",
+   "file": "checkpoints/games001200.json",
+   "games": 1200,
+   "labels": [
+    "final"
+   ],
+   "bytes": 601869,
+   "transitions": 23235,
+   "drop_writes": 162645,
+   "line_writes": 999355,
+   "value_writes": 64323,
+   "extended": true,
+   "planner": {
+    "nodes": 4163155,
+    "searches": 8816,
+    "invalid": 0,
+    "depth": 3.6336206896551726,
+    "depths": {
+     "1": 822,
+     "2": 71,
+     "3": 622,
+     "4": 7301
+    },
+    "budget": 0
+   },
+   "source": "runs/connect_four/acceptance/brain_seed10_games001200",
+   "sha256": "94ac6286ad70237353cb131e41c12e27a987eeb07bca85a1a148161bc73e7b74",
+   "asset": "connect_four-games001200.json"
+  }
+ ],
+ "receipt": {
+  "run_id": "S03-candidate-acceptance-20260915T122711Z",
+  "stage": "S03",
+  "status": "complete",
+  "pilot": false,
+  "seed": 10,
+  "split": "acceptance",
+  "seeds": [
+   10,
+   11,
+   12,
+   13,
+   14
+  ],
+  "games": {
+   "adaptation": 200,
+   "explore": 200,
+   "mixture": 800,
+   "total": 1200
+  },
+  "decisions": 12094,
+  "tactical": {
+   "success": 1.0,
+   "cases": 1000,
+   "strata": {
+    "block-first": 1.0,
+    "block-second": 1.0,
+    "win-first": 1.0,
+    "win-second": 1.0
+   }
+  },
+  "paired": {
+   "minimax_256": 0.886,
+   "one_ply": 0.968,
+   "random": 0.997
+  },
+  "paired_adaptation": {
+   "minimax_256": 0.7935,
+   "one_ply": 0.9085,
+   "random": 1.0
+  },
+  "no_planning": {
+   "minimax_256": 0.3245,
+   "one_ply": 0.4545,
+   "random": 0.932
+  },
+  "planning_gain": 0.5135,
+  "corrupted_loss": 0.851,
+  "validity": 1.0,
+  "terminal": 1.0,
+  "latency_ms": {
+   "decisions": 77245,
+   "max": 3999.614755000948,
+   "p50": 8.274323001387529,
+   "p95": 19.156200400175294
+  },
+  "transitions": 23235,
+  "imagined": 4163155,
+  "record_writes": {
+   "drop_writes": 162645,
+   "line_writes": 999355,
+   "value_writes": 64323
+  },
+  "parameters": {
+   "critic_parameters": 17,
+   "directed_synapses": 3960,
+   "drop_records": 14000,
+   "eligibility_numbers": 4164,
+   "episodic_parameters": 0,
+   "line_records": 6000,
+   "motor_parameters": 119,
+   "neurons": 187,
+   "optimizer_numbers": 8294,
+   "record_parameters": 0,
+   "world_parameters": 0
+  },
+  "cadence": "21a120311e9817e817499318f8125896cd19534d",
+  "predicates": [
+   {
+    "name": "next_board_validity",
+    "value": 1.0,
+    "threshold": 0.99,
+    "passed": true
+   },
+   {
+    "name": "terminal_prediction",
+    "value": 1.0,
+    "threshold": 0.99,
+    "passed": true
+   },
+   {
+    "name": "tactical_success",
+    "value": 1.0,
+    "threshold": 0.95,
+    "passed": true
+   },
+   {
+    "name": "paired_random",
+    "value": 0.9952,
+    "threshold": 0.85,
+    "passed": true
+   },
+   {
+    "name": "paired_random_seed_floor",
+    "value": 0.993,
+    "threshold": 0.7,
+    "passed": true
+   },
+   {
+    "name": "paired_one_ply",
+    "value": 0.9571999999999999,
+    "threshold": 0.6,
+    "passed": true
+   },
+   {
+    "name": "paired_one_ply_seed_floor",
+    "value": 0.925,
+    "threshold": 0.5,
+    "passed": true
+   },
+   {
+    "name": "planning_gain",
+    "value": 0.6068,
+    "threshold": 0.1,
+    "passed": true
+   },
+   {
+    "name": "corrupted_dynamics_loss",
+    "value": 0.8333999999999999,
+    "threshold": 0.15,
+    "passed": true
+   },
+   {
+    "name": "continual_old_loss",
+    "value": -0.0032000000000000028,
+    "threshold": 0.05,
+    "passed": true
+   },
+   {
+    "name": "latency_p95_ms",
+    "value": 19.156200400175294,
+    "threshold": 1000,
+    "passed": true
+   },
+   {
+    "name": "games_cap",
+    "value": 1200.0,
+    "threshold": 1200,
+    "passed": true
+   }
+  ]
+ },
+ "release": "checkpoints-2026-09-15"
+}

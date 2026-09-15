@@ -145,14 +145,14 @@
     "name": "latency_p95_ms",
     "passed": true,
     "per_seed": {
-     "10": 16.469997599597264,
-     "11": 16.20703920016239,
-     "12": 16.103879750426138,
-     "13": 16.09628145056376,
-     "14": 16.46955555047498
+     "10": 19.156200400175294,
+     "11": 18.980440799714394,
+     "12": 18.861191250562122,
+     "13": 18.775245650704164,
+     "14": 19.10605425082395
     },
     "threshold": 1000,
-    "value": 16.469997599597264
+    "value": 19.156200400175294
    },
    {
     "aggregation": "maximum over seeds of the games of one life",
@@ -176,9 +176,9 @@
    {
     "files": [
      {
-      "bytes": 34528,
+      "bytes": 34547,
       "path": "brain_seed10_games000100.agent.npz",
-      "sha256": "00d8fd9745c4f5f74d467f3a2dad912888688101e1edaa78a6a43f71d7ed17fc"
+      "sha256": "e25e23f94774d1bdecfe4cd65a194ecdbb5c5934ba621322f5b259920b202ea3"
      },
      {
       "bytes": 551676,
@@ -195,9 +195,9 @@
    {
     "files": [
      {
-      "bytes": 34523,
+      "bytes": 34542,
       "path": "brain_seed10_games000200.agent.npz",
-      "sha256": "fece826c66e1433bb9aaf0869347f2cb931f559235b9d6ac307cc5da41ae31ca"
+      "sha256": "0359e74fef803954dbde1a05f30ec56bb7deecaa366ca2d47cca74ee5677d8a0"
      },
      {
       "bytes": 552134,
@@ -214,9 +214,9 @@
    {
     "files": [
      {
-      "bytes": 34525,
+      "bytes": 34544,
       "path": "brain_seed10_games000400.agent.npz",
-      "sha256": "b7c90f45fcc957b13ef6414a91a70ed41c69ee89bb34ec702904d665a809794a"
+      "sha256": "e57fb02e0c0b74f17508a996adc24db6ef8e14a247061f104aac838071580b6a"
      },
      {
       "bytes": 553835,
@@ -233,9 +233,9 @@
    {
     "files": [
      {
-      "bytes": 34506,
+      "bytes": 34525,
       "path": "brain_seed10_games001000.agent.npz",
-      "sha256": "7b794098b7f8a40d71cba76358f316c739ea7d71474cee97d78d230794a55fb9"
+      "sha256": "24f19e7d6551360b29017d26c522bb7acd242df56d5eda24ed4eb98c97a3672f"
      },
      {
       "bytes": 554870,
@@ -253,9 +253,9 @@
    {
     "files": [
      {
-      "bytes": 34513,
+      "bytes": 34532,
       "path": "brain_seed10_games001200.agent.npz",
-      "sha256": "f114a275d9207c2a2afa5e0d29f1d2366fbf2cd32fca39330702929f1a94555f"
+      "sha256": "c4ebcd9c7a47ca6ab06096c847a2269a64e07e7c9936608902c72431afd43612"
      },
      {
       "bytes": 554997,
@@ -272,9 +272,9 @@
    {
     "files": [
      {
-      "bytes": 34485,
+      "bytes": 34504,
       "path": "brain_seed11_games000100.agent.npz",
-      "sha256": "f140fe3253c9630b6c3fa93f570ae510bc77a180c759ddf5e151ee47cc4d9616"
+      "sha256": "e0f680ae01b081a90466c69595c4d93b588a248701137ab7ea7293c6966046fc"
      },
      {
       "bytes": 551799,
@@ -291,9 +291,9 @@
    {
     "files": [
      {
-      "bytes": 34498,
+      "bytes": 34517,
       "path": "brain_seed11_games000200.agent.npz",
-      "sha256": "d1b17fcc5f6ad7d59b2bf7e4f5469ee90df664bf1bf6191f6d9792b3dd69a822"
+      "sha256": "120e107a073108eec9ab7f1d831f6b2afce5c494f9a02104ea7cec797904d8d5"
      },
      {
       "bytes": 552167,
@@ -310,9 +310,9 @@
    {
     "files": [
      {
-      "bytes": 34502,
+      "bytes": 34521,
       "path": "brain_seed11_games000400.agent.npz",
-      "sha256": "d2308dd9be5e2161559d8762a9ed42f5e5a41ee83bcda789cf879a54c33a60e1"
+      "sha256": "bf28861541330483df2327ad52d8a75d3e6ad1f7c03c04eedf7c91f197a0e58f"
      },
      {
       "bytes": 553481,
@@ -329,9 +329,9 @@
    {
     "files": [
      {
-      "bytes": 34485,
+      "bytes": 34504,
       "path": "brain_seed11_games001000.agent.npz",
-      "sha256": "547c394a373e69ee2701df1b15b2d91415b0f117c95526f10248b85e0ee18c31"
+      "sha256": "bf660881e075e1e2979f265e91d3b1cc483f3e2e8d98d8911e7c5332f8746f7e"
      },
      {
       "bytes": 554448,
@@ -349,9 +349,9 @@
    {
     "files": [
      {
-      "bytes": 34498,
+      "bytes": 34518,
       "path": "brain_seed11_games001200.agent.npz",
-      "sha256": "d8857d2d2e8d6487b26eeca387e43b8085e5beaba2f848de1a557ae914950314"
+      "sha256": "6980cd3f979ba26bde046748cb14530f62fcd1fdab7d449fde0fdc2e4dfd2712"
      },
      {
       "bytes": 554793,
@@ -368,9 +368,9 @@
    {
     "files": [
      {
-      "bytes": 34489,
+      "bytes": 34508,
       "path": "brain_seed12_games000100.agent.npz",
-      "sha256": "85e917d20907027ae5333e2ac02775eea6c12bc463ac7dc03b0b7ea1dbddbad7"
+      "sha256": "27e0b4735abb56b0020865c2c73cda6346567103d9275af12ea551fd9f12c271"
      },
      {
       "bytes": 550058,
@@ -387,9 +387,9 @@
    {
     "files": [
      {
-      "bytes": 34488,
+      "bytes": 34507,
       "path": "brain_seed12_games000200.agent.npz",
-      "sha256": "947145ce79aff3d42a93080ba3273a464cd4967fdb3d29e6f71e5036636c4179"
+      "sha256": "e46fe823c2dbf8729f1b630188d8d30a54ad1ab49414c12ddf434faaaf30f80e"
      },
      {
       "bytes": 550805,
@@ -406,9 +406,9 @@
    {
     "files": [
      {
-      "bytes": 34488,
+      "bytes": 34506,
       "path": "brain_seed12_games000400.agent.npz",
-      "sha256": "f4efb2efac6c26ab1c3aaef6da81a2cdff8264c963485406e638a13977c5f9dd"
+      "sha256": "42feaca9dde834b35350dae176d3ce0a3d855fc3c29a9d5772d626d9624afd1a"
      },
      {
       "bytes": 552158,
@@ -425,9 +425,9 @@
    {
     "files": [
      {
-      "bytes": 34471,
+      "bytes": 34490,
       "path": "brain_seed12_games001000.agent.npz",
-      "sha256": "d884b4b076e3e331966fb357892bf99d5947a5de07aa4174caf1dd6fcde05f4b"
+      "sha256": "55e299a4a4b83daf94dc3a3f0a23cf5f8e7582b31a5a61bdd167330f13456b9b"
      },
      {
       "bytes": 553974,
@@ -445,9 +445,9 @@
    {
     "files": [
      {
-      "bytes": 34482,
+      "bytes": 34499,
       "path": "brain_seed12_games001200.agent.npz",
-      "sha256": "31e9745fe7ed44e2eac0f8307bef992ab821ecce136ab75ce0b95d6e701819cc"
+      "sha256": "ee38728eb0964398703a6ed94a7c3a21016c82735aa243d1b4fe667a9eb4c96d"
      },
      {
       "bytes": 554370,
@@ -464,9 +464,9 @@
    {
     "files": [
      {
-      "bytes": 34501,
+      "bytes": 34519,
       "path": "brain_seed13_games000100.agent.npz",
-      "sha256": "e5da3b5c447049669f9410a385a96e7659d7c36ff2ab2ed572bc73056ec23ffd"
+      "sha256": "8c2f44201be5a214998916d4433a33d32a9b43470cb3d1f297e0bfd2e943a987"
      },
      {
       "bytes": 550576,
@@ -483,9 +483,9 @@
    {
     "files": [
      {
-      "bytes": 34485,
+      "bytes": 34504,
       "path": "brain_seed13_games000200.agent.npz",
-      "sha256": "96d30986c6ca37037da573ec4236e14e033ab79264d67c251fbf6060c3f99729"
+      "sha256": "d38ed74a663064f7e6a7cad308314fccf545331622839d8afa403d1ab3913afb"
      },
      {
       "bytes": 551470,
@@ -502,9 +502,9 @@
    {
     "files": [
      {
-      "bytes": 34497,
+      "bytes": 34516,
       "path": "brain_seed13_games000400.agent.npz",
-      "sha256": "8fb26528489495345f9b24b9ca9f8b706f66b809f046b64745a50542175986c9"
+      "sha256": "228c516764010bb03488cbd1c7decc25a13c8be1d0708231f0751d53310a3d00"
      },
      {
       "bytes": 553162,
@@ -521,9 +521,9 @@
    {
     "files": [
      {
-      "bytes": 34496,
+      "bytes": 34515,
       "path": "brain_seed13_games001000.agent.npz",
-      "sha256": "30946dc256faff94194456465d43623e28299b0dc01bf869cee361eb8e60de0a"
+      "sha256": "248ea3b9edc4b1e408e123120b551e828ac367d28b0783e0a07c39374945e64b"
      },
      {
       "bytes": 554572,
@@ -541,9 +541,9 @@
    {
     "files": [
      {
-      "bytes": 34508,
+      "bytes": 34527,
       "path": "brain_seed13_games001200.agent.npz",
-      "sha256": "ce142bec7fd094a6fe9dbdc0b0ed601aab017b4445519665802b48b433dd1c71"
+      "sha256": "28dc401bb8ba01eea0d37b27e4fd2bfbfb2339c963bb47b01cc39e3a0ae7e558"
      },
      {
       "bytes": 554789,
@@ -560,9 +560,9 @@
    {
     "files": [
      {
-      "bytes": 34486,
+      "bytes": 34505,
       "path": "brain_seed14_games000100.agent.npz",
-      "sha256": "5fe6473d00e7e425de937ccc1eec4a65c7f21b7d29ee502620f82fc4982696f9"
+      "sha256": "10b49691c3a9008f6601814faa0f6795eb07d24035f46c9cbf66d9af2dc0da38"
      },
      {
       "bytes": 550759,
@@ -579,9 +579,9 @@
    {
     "files": [
      {
-      "bytes": 34505,
+      "bytes": 34524,
       "path": "brain_seed14_games000200.agent.npz",
-      "sha256": "9c92e784920b83acf58db61753885a5fa922621ee75b03957046168b5a7cadfd"
+      "sha256": "45f6b8aa9b65a1126011548abb415a583ee02238dab01d18e6f57a1a8a9d16ec"
      },
      {
       "bytes": 551587,
@@ -598,9 +598,9 @@
    {
     "files": [
      {
-      "bytes": 34479,
+      "bytes": 34498,
       "path": "brain_seed14_games000400.agent.npz",
-      "sha256": "421af9da5a2ab98015bc41f6042acd0e5e6935f2b169f1c0dba5fd099261f04e"
+      "sha256": "7c99d7a8cf2449823e8a502da07036dd065d86a2e0fadd9eda35831a4991745d"
      },
      {
       "bytes": 553468,
@@ -617,9 +617,9 @@
    {
     "files": [
      {
-      "bytes": 34489,
+      "bytes": 34508,
       "path": "brain_seed14_games001000.agent.npz",
-      "sha256": "1d1eee14fc0fe6ec697e6780e67454beb430aea52c20f6e606a8eaf3fa3bf389"
+      "sha256": "018fc1afa091c74a0d39e8703ca9a7fdd9dcf90f1dbb58e05b3510eece2831fb"
      },
      {
       "bytes": 554687,
@@ -637,9 +637,9 @@
    {
     "files": [
      {
-      "bytes": 34490,
+      "bytes": 34510,
       "path": "brain_seed14_games001200.agent.npz",
-      "sha256": "19185135e465976193a2397802d45e5b6d926b4a131e3e7a8be38e8f6cb3069d"
+      "sha256": "5e3051f482143dced948f4a758496149d6b61a2d079e88e292e42439f9e26fe7"
      },
      {
       "bytes": 554855,
@@ -1874,9 +1874,9 @@
      {
       "files": [
        {
-        "bytes": 34528,
+        "bytes": 34547,
         "path": "brain_seed10_games000100.agent.npz",
-        "sha256": "00d8fd9745c4f5f74d467f3a2dad912888688101e1edaa78a6a43f71d7ed17fc"
+        "sha256": "e25e23f94774d1bdecfe4cd65a194ecdbb5c5934ba621322f5b259920b202ea3"
        },
        {
         "bytes": 551676,
@@ -1893,9 +1893,9 @@
      {
       "files": [
        {
-        "bytes": 34523,
+        "bytes": 34542,
         "path": "brain_seed10_games000200.agent.npz",
-        "sha256": "fece826c66e1433bb9aaf0869347f2cb931f559235b9d6ac307cc5da41ae31ca"
+        "sha256": "0359e74fef803954dbde1a05f30ec56bb7deecaa366ca2d47cca74ee5677d8a0"
        },
        {
         "bytes": 552134,
@@ -1912,9 +1912,9 @@
      {
       "files": [
        {
-        "bytes": 34525,
+        "bytes": 34544,
         "path": "brain_seed10_games000400.agent.npz",
-        "sha256": "b7c90f45fcc957b13ef6414a91a70ed41c69ee89bb34ec702904d665a809794a"
+        "sha256": "e57fb02e0c0b74f17508a996adc24db6ef8e14a247061f104aac838071580b6a"
        },
        {
         "bytes": 553835,
@@ -1931,9 +1931,9 @@
      {
       "files": [
        {
-        "bytes": 34506,
+        "bytes": 34525,
         "path": "brain_seed10_games001000.agent.npz",
-        "sha256": "7b794098b7f8a40d71cba76358f316c739ea7d71474cee97d78d230794a55fb9"
+        "sha256": "24f19e7d6551360b29017d26c522bb7acd242df56d5eda24ed4eb98c97a3672f"
        },
        {
         "bytes": 554870,
@@ -1951,9 +1951,9 @@
      {
       "files": [
        {
-        "bytes": 34513,
+        "bytes": 34532,
         "path": "brain_seed10_games001200.agent.npz",
-        "sha256": "f114a275d9207c2a2afa5e0d29f1d2366fbf2cd32fca39330702929f1a94555f"
+        "sha256": "c4ebcd9c7a47ca6ab06096c847a2269a64e07e7c9936608902c72431afd43612"
        },
        {
         "bytes": 554997,
@@ -2228,9 +2228,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 77245,
-     "max": 226.88367899991135,
-     "p50": 7.927714000288688,
-     "p95": 16.469997599597264
+     "max": 3999.614755000948,
+     "p50": 8.274323001387529,
+     "p95": 19.156200400175294
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -2459,7 +2459,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 838.3347461223602
+    "wall_seconds": 909.0550472736359
    },
    {
     "adaptation_draws": {
@@ -2639,9 +2639,9 @@
      {
       "files": [
        {
-        "bytes": 34485,
+        "bytes": 34504,
         "path": "brain_seed11_games000100.agent.npz",
-        "sha256": "f140fe3253c9630b6c3fa93f570ae510bc77a180c759ddf5e151ee47cc4d9616"
+        "sha256": "e0f680ae01b081a90466c69595c4d93b588a248701137ab7ea7293c6966046fc"
        },
        {
         "bytes": 551799,
@@ -2658,9 +2658,9 @@
      {
       "files": [
        {
-        "bytes": 34498,
+        "bytes": 34517,
         "path": "brain_seed11_games000200.agent.npz",
-        "sha256": "d1b17fcc5f6ad7d59b2bf7e4f5469ee90df664bf1bf6191f6d9792b3dd69a822"
+        "sha256": "120e107a073108eec9ab7f1d831f6b2afce5c494f9a02104ea7cec797904d8d5"
        },
        {
         "bytes": 552167,
@@ -2677,9 +2677,9 @@
      {
       "files": [
        {
-        "bytes": 34502,
+        "bytes": 34521,
         "path": "brain_seed11_games000400.agent.npz",
-        "sha256": "d2308dd9be5e2161559d8762a9ed42f5e5a41ee83bcda789cf879a54c33a60e1"
+        "sha256": "bf28861541330483df2327ad52d8a75d3e6ad1f7c03c04eedf7c91f197a0e58f"
        },
        {
         "bytes": 553481,
@@ -2696,9 +2696,9 @@
      {
       "files": [
        {
-        "bytes": 34485,
+        "bytes": 34504,
         "path": "brain_seed11_games001000.agent.npz",
-        "sha256": "547c394a373e69ee2701df1b15b2d91415b0f117c95526f10248b85e0ee18c31"
+        "sha256": "bf660881e075e1e2979f265e91d3b1cc483f3e2e8d98d8911e7c5332f8746f7e"
        },
        {
         "bytes": 554448,
@@ -2716,9 +2716,9 @@
      {
       "files": [
        {
-        "bytes": 34498,
+        "bytes": 34518,
         "path": "brain_seed11_games001200.agent.npz",
-        "sha256": "d8857d2d2e8d6487b26eeca387e43b8085e5beaba2f848de1a557ae914950314"
+        "sha256": "6980cd3f979ba26bde046748cb14530f62fcd1fdab7d449fde0fdc2e4dfd2712"
        },
        {
         "bytes": 554793,
@@ -2993,9 +2993,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 76829,
-     "max": 246.6590730000462,
-     "p50": 7.41410399950837,
-     "p95": 16.20703920016239
+     "max": 3925.7831879986043,
+     "p50": 7.834516000002623,
+     "p95": 18.980440799714394
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -3224,7 +3224,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 790.0643990039825
+    "wall_seconds": 859.8814451694489
    },
    {
     "adaptation_draws": {
@@ -3404,9 +3404,9 @@
      {
       "files": [
        {
-        "bytes": 34489,
+        "bytes": 34508,
         "path": "brain_seed12_games000100.agent.npz",
-        "sha256": "85e917d20907027ae5333e2ac02775eea6c12bc463ac7dc03b0b7ea1dbddbad7"
+        "sha256": "27e0b4735abb56b0020865c2c73cda6346567103d9275af12ea551fd9f12c271"
        },
        {
         "bytes": 550058,
@@ -3423,9 +3423,9 @@
      {
       "files": [
        {
-        "bytes": 34488,
+        "bytes": 34507,
         "path": "brain_seed12_games000200.agent.npz",
-        "sha256": "947145ce79aff3d42a93080ba3273a464cd4967fdb3d29e6f71e5036636c4179"
+        "sha256": "e46fe823c2dbf8729f1b630188d8d30a54ad1ab49414c12ddf434faaaf30f80e"
        },
        {
         "bytes": 550805,
@@ -3442,9 +3442,9 @@
      {
       "files": [
        {
-        "bytes": 34488,
+        "bytes": 34506,
         "path": "brain_seed12_games000400.agent.npz",
-        "sha256": "f4efb2efac6c26ab1c3aaef6da81a2cdff8264c963485406e638a13977c5f9dd"
+        "sha256": "42feaca9dde834b35350dae176d3ce0a3d855fc3c29a9d5772d626d9624afd1a"
        },
        {
         "bytes": 552158,
@@ -3461,9 +3461,9 @@
      {
       "files": [
        {
-        "bytes": 34471,
+        "bytes": 34490,
         "path": "brain_seed12_games001000.agent.npz",
-        "sha256": "d884b4b076e3e331966fb357892bf99d5947a5de07aa4174caf1dd6fcde05f4b"
+        "sha256": "55e299a4a4b83daf94dc3a3f0a23cf5f8e7582b31a5a61bdd167330f13456b9b"
        },
        {
         "bytes": 553974,
@@ -3481,9 +3481,9 @@
      {
       "files": [
        {
-        "bytes": 34482,
+        "bytes": 34499,
         "path": "brain_seed12_games001200.agent.npz",
-        "sha256": "31e9745fe7ed44e2eac0f8307bef992ab821ecce136ab75ce0b95d6e701819cc"
+        "sha256": "ee38728eb0964398703a6ed94a7c3a21016c82735aa243d1b4fe667a9eb4c96d"
        },
        {
         "bytes": 554370,
@@ -3758,9 +3758,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 76290,
-     "max": 226.87447800035443,
-     "p50": 7.1072774999265675,
-     "p95": 16.103879750426138
+     "max": 3999.6107450006093,
+     "p50": 7.532216500294453,
+     "p95": 18.861191250562122
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -3989,7 +3989,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 786.3838703632355
+    "wall_seconds": 853.2664723396301
    },
    {
     "adaptation_draws": {
@@ -4169,9 +4169,9 @@
      {
       "files": [
        {
-        "bytes": 34501,
+        "bytes": 34519,
         "path": "brain_seed13_games000100.agent.npz",
-        "sha256": "e5da3b5c447049669f9410a385a96e7659d7c36ff2ab2ed572bc73056ec23ffd"
+        "sha256": "8c2f44201be5a214998916d4433a33d32a9b43470cb3d1f297e0bfd2e943a987"
        },
        {
         "bytes": 550576,
@@ -4188,9 +4188,9 @@
      {
       "files": [
        {
-        "bytes": 34485,
+        "bytes": 34504,
         "path": "brain_seed13_games000200.agent.npz",
-        "sha256": "96d30986c6ca37037da573ec4236e14e033ab79264d67c251fbf6060c3f99729"
+        "sha256": "d38ed74a663064f7e6a7cad308314fccf545331622839d8afa403d1ab3913afb"
        },
        {
         "bytes": 551470,
@@ -4207,9 +4207,9 @@
      {
       "files": [
        {
-        "bytes": 34497,
+        "bytes": 34516,
         "path": "brain_seed13_games000400.agent.npz",
-        "sha256": "8fb26528489495345f9b24b9ca9f8b706f66b809f046b64745a50542175986c9"
+        "sha256": "228c516764010bb03488cbd1c7decc25a13c8be1d0708231f0751d53310a3d00"
        },
        {
         "bytes": 553162,
@@ -4226,9 +4226,9 @@
      {
       "files": [
        {
-        "bytes": 34496,
+        "bytes": 34515,
         "path": "brain_seed13_games001000.agent.npz",
-        "sha256": "30946dc256faff94194456465d43623e28299b0dc01bf869cee361eb8e60de0a"
+        "sha256": "248ea3b9edc4b1e408e123120b551e828ac367d28b0783e0a07c39374945e64b"
        },
        {
         "bytes": 554572,
@@ -4246,9 +4246,9 @@
      {
       "files": [
        {
-        "bytes": 34508,
+        "bytes": 34527,
         "path": "brain_seed13_games001200.agent.npz",
-        "sha256": "ce142bec7fd094a6fe9dbdc0b0ed601aab017b4445519665802b48b433dd1c71"
+        "sha256": "28dc401bb8ba01eea0d37b27e4fd2bfbfb2339c963bb47b01cc39e3a0ae7e558"
        },
        {
         "bytes": 554789,
@@ -4523,9 +4523,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 77132,
-     "max": 246.65925600038463,
-     "p50": 7.100759499735432,
-     "p95": 16.09628145056376
+     "max": 3999.590088000332,
+     "p50": 7.518739499573712,
+     "p95": 18.775245650704164
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -4754,7 +4754,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 785.2281694412231
+    "wall_seconds": 852.779552936554
    },
    {
     "adaptation_draws": {
@@ -4934,9 +4934,9 @@
      {
       "files": [
        {
-        "bytes": 34486,
+        "bytes": 34505,
         "path": "brain_seed14_games000100.agent.npz",
-        "sha256": "5fe6473d00e7e425de937ccc1eec4a65c7f21b7d29ee502620f82fc4982696f9"
+        "sha256": "10b49691c3a9008f6601814faa0f6795eb07d24035f46c9cbf66d9af2dc0da38"
        },
        {
         "bytes": 550759,
@@ -4953,9 +4953,9 @@
      {
       "files": [
        {
-        "bytes": 34505,
+        "bytes": 34524,
         "path": "brain_seed14_games000200.agent.npz",
-        "sha256": "9c92e784920b83acf58db61753885a5fa922621ee75b03957046168b5a7cadfd"
+        "sha256": "45f6b8aa9b65a1126011548abb415a583ee02238dab01d18e6f57a1a8a9d16ec"
        },
        {
         "bytes": 551587,
@@ -4972,9 +4972,9 @@
      {
       "files": [
        {
-        "bytes": 34479,
+        "bytes": 34498,
         "path": "brain_seed14_games000400.agent.npz",
-        "sha256": "421af9da5a2ab98015bc41f6042acd0e5e6935f2b169f1c0dba5fd099261f04e"
+        "sha256": "7c99d7a8cf2449823e8a502da07036dd065d86a2e0fadd9eda35831a4991745d"
        },
        {
         "bytes": 553468,
@@ -4991,9 +4991,9 @@
      {
       "files": [
        {
-        "bytes": 34489,
+        "bytes": 34508,
         "path": "brain_seed14_games001000.agent.npz",
-        "sha256": "1d1eee14fc0fe6ec697e6780e67454beb430aea52c20f6e606a8eaf3fa3bf389"
+        "sha256": "018fc1afa091c74a0d39e8703ca9a7fdd9dcf90f1dbb58e05b3510eece2831fb"
        },
        {
         "bytes": 554687,
@@ -5011,9 +5011,9 @@
      {
       "files": [
        {
-        "bytes": 34490,
+        "bytes": 34510,
         "path": "brain_seed14_games001200.agent.npz",
-        "sha256": "19185135e465976193a2397802d45e5b6d926b4a131e3e7a8be38e8f6cb3069d"
+        "sha256": "5e3051f482143dced948f4a758496149d6b61a2d079e88e292e42439f9e26fe7"
        },
        {
         "bytes": 554855,
@@ -5287,9 +5287,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 77790,
-     "max": 226.87555999982578,
-     "p50": 7.867991000239272,
-     "p95": 16.46955555047498
+     "max": 3999.5823730005213,
+     "p50": 8.336547499311564,
+     "p95": 19.10605425082395
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -5518,7 +5518,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 852.1397356987
+    "wall_seconds": 925.6349818706512
    }
   ],
   "planning_gain": [
@@ -5648,38 +5648,38 @@
   ]
  },
  "pilot": false,
- "receipt_sha256": "62c786d250e1aa2cc21a97d98d1b97805a62c1216a2361582ee5ee3b23e4ef87",
+ "receipt_sha256": "e79ad6e3fabd8932106882e04100fa74f0d193f469fc03e1a0bd1caf5fb3c6a7",
  "resources": {
   "latency_ms": [
    {
     "decisions": 77245,
-    "max": 226.88367899991135,
-    "p50": 7.927714000288688,
-    "p95": 16.469997599597264
+    "max": 3999.614755000948,
+    "p50": 8.274323001387529,
+    "p95": 19.156200400175294
    },
    {
     "decisions": 76829,
-    "max": 246.6590730000462,
-    "p50": 7.41410399950837,
-    "p95": 16.20703920016239
+    "max": 3925.7831879986043,
+    "p50": 7.834516000002623,
+    "p95": 18.980440799714394
    },
    {
     "decisions": 76290,
-    "max": 226.87447800035443,
-    "p50": 7.1072774999265675,
-    "p95": 16.103879750426138
+    "max": 3999.6107450006093,
+    "p50": 7.532216500294453,
+    "p95": 18.861191250562122
    },
    {
     "decisions": 77132,
-    "max": 246.65925600038463,
-    "p50": 7.100759499735432,
-    "p95": 16.09628145056376
+    "max": 3999.590088000332,
+    "p50": 7.518739499573712,
+    "p95": 18.775245650704164
    },
    {
     "decisions": 77790,
-    "max": 226.87555999982578,
-    "p50": 7.867991000239272,
-    "p95": 16.46955555047498
+    "max": 3999.5823730005213,
+    "p50": 8.336547499311564,
+    "p95": 19.10605425082395
    }
   ],
   "parameters": {
@@ -5695,18 +5695,18 @@
    "record_parameters": 0,
    "world_parameters": 0
   },
-  "peak_rss_mb": 105.75,
-  "wall_seconds": 852.1898136138916,
+  "peak_rss_mb": 109.5,
+  "wall_seconds": 925.7012434005737,
   "wall_seconds_per_seed": [
-   838.3347461223602,
-   790.0643990039825,
-   786.3838703632355,
-   785.2281694412231,
-   852.1397356987
+   909.0550472736359,
+   859.8814451694489,
+   853.2664723396301,
+   852.779552936554,
+   925.6349818706512
   ],
   "workers": 5
  },
- "run_id": "S03-candidate-acceptance-20260915T111933Z",
+ "run_id": "S03-candidate-acceptance-20260915T122711Z",
  "run_kind": "candidate",
  "schema": "cadence-experience-run/v1",
  "seeds": {
@@ -5743,7 +5743,7 @@
   "stage_dir": "connect_four",
   "stage_files": {
    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-   "brain.py": "cfb730ffa1d9f66c63dc55c5e9ca9adaca4c14d7d5af6fd0f3f4c8c2193a1cbd",
+   "brain.py": "4894991e612357766e9ee783b4e6e85f33435a3badeaab12bdebb734f9681e65",
    "config.json": "f624fcce0f428b7976abba53e5d5afa714ed14beef11304b068920db0493fa12",
    "controls.py": "d218a2b175b1291123ffeba26ca9a620f62e277cf49e2b862c394faeeffe743f",
    "env.py": "c1795f55d95525c0b44259d915b346a9bb1f1e8999f1cf6ffd9fe9c2ade69952",
@@ -5753,12 +5753,12 @@
    "verify.py": "07d6bea57c5178e784e9171937137ce24df2495bc5f2a202b0f140f6c22a045d"
   },
   "stage_repo": {
-   "commit": "c5b5982cfbee4bf29b368bda6358c5ca5833ad01",
+   "commit": "0d9c9474c3171f057778f26c8ba98c0a3f1f06e7",
    "dirty": {}
   }
  },
  "stage": "S03",
- "started_utc": "2026-09-15T11:19:33Z",
+ "started_utc": "2026-09-15T12:27:12Z",
  "status": "complete",
  "supplied_components": [
   "the Connect Four world, its opponents and its rules outside the brain; the legality mask of real moments (interface knowledge)",
