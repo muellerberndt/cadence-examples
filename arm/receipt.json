@@ -77,7 +77,7 @@
     "name": "latency_p95_ms",
     "passed": true,
     "threshold": 20.0,
-    "value": 16.952479349492933
+    "value": 12.874973300949932
    },
    {
     "aggregation": "max over seeds",
@@ -3133,8 +3133,8 @@
     },
     "latency_ms": {
      "events": 336242,
-     "p50": 1.0771110000860062,
-     "p95": 16.830360650692455
+     "p50": 1.042990000314603,
+     "p95": 12.608298999566614
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -3385,7 +3385,7 @@
     },
     "seed": 10,
     "split": "acceptance",
-    "wall_seconds": 3311.59779381752
+    "wall_seconds": 2792.2308320999146
    },
    {
     "babbling": {
@@ -5638,8 +5638,8 @@
     },
     "latency_ms": {
      "events": 336930,
-     "p50": 1.1194865001016296,
-     "p95": 16.50816310029768
+     "p50": 1.0487614999874495,
+     "p95": 12.6064591994691
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -5890,7 +5890,7 @@
     },
     "seed": 11,
     "split": "acceptance",
-    "wall_seconds": 3213.9355504512787
+    "wall_seconds": 2765.1157264709473
    },
    {
     "babbling": {
@@ -8143,8 +8143,8 @@
     },
     "latency_ms": {
      "events": 339011,
-     "p50": 1.2420699995345785,
-     "p95": 16.58924549974472
+     "p50": 1.2052019992552232,
+     "p95": 12.180236000858713
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -8395,7 +8395,7 @@
     },
     "seed": 12,
     "split": "acceptance",
-    "wall_seconds": 3368.7188625335693
+    "wall_seconds": 2848.437987804413
    },
    {
     "babbling": {
@@ -10648,8 +10648,8 @@
     },
     "latency_ms": {
      "events": 340509,
-     "p50": 1.8161280004278524,
-     "p95": 16.840700400643982
+     "p50": 1.6077370000857627,
+     "p95": 12.51278380077565
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -10900,7 +10900,7 @@
     },
     "seed": 13,
     "split": "acceptance",
-    "wall_seconds": 3362.475556373596
+    "wall_seconds": 2845.9116291999817
    },
    {
     "babbling": {
@@ -13153,8 +13153,8 @@
     },
     "latency_ms": {
      "events": 334698,
-     "p50": 1.080775999071193,
-     "p95": 16.952479349492933
+     "p50": 1.0370079999120208,
+     "p95": 12.874973300949932
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -13405,7 +13405,7 @@
     },
     "seed": 14,
     "split": "acceptance",
-    "wall_seconds": 3295.715208530426
+    "wall_seconds": 2796.6922109127045
    }
   ],
   "returned_body_success": [
@@ -13535,33 +13535,33 @@
    }
   ]
  },
- "receipt_sha256": "e549b06e5730db53b50791dd7a47cfff51b58731d738d869341c6a3b986fab01",
+ "receipt_sha256": "c12e706fa69bd4b0c60442605a987449128330faad5c88e8016ed3bf8f21cdf2",
  "resources": {
   "latency_ms": [
    {
     "events": 336242,
-    "p50": 1.0771110000860062,
-    "p95": 16.830360650692455
+    "p50": 1.042990000314603,
+    "p95": 12.608298999566614
    },
    {
     "events": 336930,
-    "p50": 1.1194865001016296,
-    "p95": 16.50816310029768
+    "p50": 1.0487614999874495,
+    "p95": 12.6064591994691
    },
    {
     "events": 339011,
-    "p50": 1.2420699995345785,
-    "p95": 16.58924549974472
+    "p50": 1.2052019992552232,
+    "p95": 12.180236000858713
    },
    {
     "events": 340509,
-    "p50": 1.8161280004278524,
-    "p95": 16.840700400643982
+    "p50": 1.6077370000857627,
+    "p95": 12.51278380077565
    },
    {
     "events": 334698,
-    "p50": 1.080775999071193,
-    "p95": 16.952479349492933
+    "p50": 1.0370079999120208,
+    "p95": 12.874973300949932
    }
   ],
   "mlp_parameters": 2182,
@@ -13576,10 +13576,10 @@
    "record_parameters": 192000,
    "world_parameters": 14022
   },
-  "peak_rss_mb": 106.05078125,
-  "wall_seconds": 3368.899897813797
+  "peak_rss_mb": 105.36328125,
+  "wall_seconds": 2848.6086027622223
  },
- "run_id": "S01-acceptance-20260915T113733Z",
+ "run_id": "S01-acceptance-20260915T123842Z",
  "schema": "cadence-experience-run/v1",
  "seeds": {
   "completed": [
@@ -13619,15 +13619,15 @@
    "config.json": "da115d9aebbfee4699d4281cf1747de930b16508234dc8adc5346e70268ad309",
    "env.py": "ea6abad82794e2a51b900dac0c78e12fd312ddbcef1ec7e70d6b5e255e1a4d1b",
    "run.py": "b4b917e59f1cee5aea891dc71addb911e5b4d2397b2191ecc50e838b2c3a6709",
-   "verify.py": "57d6f7b47c44b68c3a7ba08a482dabede245ae257999bdffa45dc30ae6f9d746"
+   "verify.py": "4bcf7d423aeb41113222583ffee9c4aac33d5352ed5974d8acff121eaf18f6ce"
   },
   "stage_repo": {
-   "commit": "443c613f769c2d3e865a15987bfb8d4b72ee1e6a",
+   "commit": "559c716892f17e2d267ba5e1ee5f1243a2725672",
    "dirty": {}
   }
  },
  "stage": "S01",
- "started_utc": "2026-09-15T11:37:33Z",
+ "started_utc": "2026-09-15T12:38:42Z",
  "status": "complete",
  "supplied_components": [
   "arm dynamics, forward kinematics for sensors and rendering, reward rule",
