@@ -62,10 +62,23 @@ def check(name: str, stage: str, pinned: str | None, *, page: bool = True) -> li
         path = (folder if page else ROOT / "comparisons") / file
         if not path.exists() or sha256_file(path) != digest:
             problems.append(f"{name}: {file} differs from the file the receipt ran")
-    commit = body.get("sources", {}).get("core", {}).get("repo", {}).get("commit")
-    if pinned is not None and commit != pinned:
+    core = body.get("sources", {}).get("core", {})
+    commit = core.get("repo", {}).get("commit")
+    if pinned is not None and commit != pinned and core.get("files_sha256") != installed_core_digest():
         problems.append(f"{name}: the receipt ran against cadence {commit}, the README installs {pinned}")
     return problems
+
+
+def installed_core_digest() -> str | None:
+    """The digest of the installed library's sources, computed as agent/receipt.py computes it,
+    so a receipt from a checkout without git history still binds to the pinned sources."""
+    try:
+        import cadence
+    except ImportError:  # pragma: no cover
+        return None
+    core = Path(cadence.__file__).resolve().parent
+    files = {str(p.relative_to(core)): sha256_file(p) for p in sorted(core.rglob("*.py"))}
+    return hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def main() -> int:
