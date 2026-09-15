@@ -66,12 +66,14 @@ def main(argv: list[str]) -> int:
                 name = e["life"].split("-")[1] + "-" + e.get("mode", "adapting")
                 if e["terminated"] or e["truncated"]:
                     heldout[name].append(float(e["terminated"]))
-            elif e["phase"] == "babbling" and e["life"] == "candidate":
+            elif e["life"] == "candidate":
+                # a babbling prediction is scored against the outcome record that follows it in
+                # the same episode; the last one is logged under the phase that follows
                 key = (e["life"], e["episode"])
                 if e["feedback_for"] is not None and key in babble_pred:
                     model_err.append(float(np.mean((babble_pred[key] - np.asarray(e["dd_hand"])) ** 2)))
                     zero_err.append(float(np.mean(np.square(e["dd_hand"]))))
-                if e["decision"] is not None and e["decision"].get("prediction"):
+                if e["phase"] == "babbling" and e["decision"] is not None and e["decision"].get("prediction"):
                     babble_pred[key] = np.asarray(e["decision"]["prediction"]["dd_hand"])
                 else:
                     babble_pred.pop(key, None)
