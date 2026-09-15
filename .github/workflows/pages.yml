@@ -29,12 +29,19 @@ jobs:
           cp index.html .nojekyll _site/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
-          cp connect_four/index.html connect_four/receipt.json _site/connect_four/
+          cp connect_four/index.html connect_four/receipt.json connect_four/cortices.json _site/connect_four/
+      - name: Fetch each page's checkpoint snapshots from the release its manifest names
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           for stage in arm world connect_four; do
             if [ -f $stage/checkpoints.json ]; then
-              mkdir -p _site/$stage
+              release=$(python -c "import json; print(json.load(open('$stage/checkpoints.json'))['release'])")
+              mkdir -p _site/$stage/checkpoints
               cp $stage/checkpoints.json _site/$stage/
-              cp -r $stage/checkpoints _site/$stage/
+              gh release download "$release" --pattern "$stage-*.json" --dir _site/$stage/checkpoints
+              for f in _site/$stage/checkpoints/$stage-*.json; do mv "$f" "_site/$stage/checkpoints/$(basename "$f" | sed "s/^$stage-//")"; done
+              python tools/checkpoint_assets.py verify $stage _site/$stage/checkpoints
             fi
           done
       - uses: actions/upload-pages-artifact@v3

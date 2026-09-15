@@ -29,3 +29,5 @@ jobs:
           node web/parity.mjs runs/arm/parity
           python world/tools/parity_fixture.py --out runs/world/parity
           node world/web/parity_s02.mjs runs/world/parity
+          python connect_four/tools/parity_fixture.py --train 40 --games 32 --out runs/connect_four/parity
+          node connect_four/web/parity.mjs runs/connect_four/parity

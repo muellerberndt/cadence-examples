@@ -152,6 +152,35 @@ Run them from the repository root. Each life is one process of small numpy work;
 - `config.json`: the game, the budgets, the suites, the gates and the brain's own sections;
   `tests/`: the engine, the evaluator and the brain.
 
+## The page
+
+`web/` holds the public page: a board a visitor plays on, with the whole brain beside it.
+`web/brain.js` is the port of this brain to the browser (the two record cortices, the
+imagination with its validator, the negamax search within its budget, and the writes after
+every move and every finished game), `web/game.js` the port of the rules and the world,
+`web/page.js` the page itself. The S00 part runs through the shared engine in `web/engine.js`,
+so `web/brain_scan.js` draws every settling step while the visitor plays and `web/records_view.js`
+draws the cells of the chosen column's reading and of the windows through the new stone. The
+brain keeps learning from the game being played, and a switch freezes it.
+
+```bash
+$PY connect_four/web/build_page.py --run runs/connect_four/acceptance --seed 10
+$PY connect_four/tools/parity_fixture.py --run runs/connect_four/acceptance --seed 10 \
+    --games 32 --out runs/connect_four/parity
+node connect_four/web/parity.mjs runs/connect_four/parity
+$PY connect_four/web/check_page.py connect_four/index.html
+```
+
+`build_page.py` writes `index.html` with the last checkpoint inlined, `checkpoints/<id>.json`
+for every other checkpoint of that life, `cortices.json` (the fixed cells both cortices were
+drawn with, shared by every checkpoint) and `checkpoints.json` (the manifest and the receipt's
+numbers). The parity harness replays a recorded fixture of 32 games through the browser brain
+and holds every column, every predicted landing, every imagined next board and every counter to
+the Python numbers exactly, and the record tables to 1e-9. `check_page.py` opens the built page
+in headless Chromium, plays a game at every checkpoint with random legal moves, and fails on a
+page error, a layout that does not fit, a brain view that does not render or an answer slower
+than 100 ms.
+
 ## Budgets, checkpoints and assumptions
 
 One life is 200 exploration games, 800 mixture games and 200 adaptation games, which is 1.2

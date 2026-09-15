@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Play Connect Four against the records · S03</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-checkpoint="../../runs/connect_four/page/checkpoints/games001200.json" data-cortices="../../runs/connect_four/page/cortices.json">
+<header class="masthead">
+  <div class="headline">
+    <h1>Play Connect Four against a brain that learned the rules by watching</h1>
+    <p class="lede">Nobody told this brain how a stone falls or what a line of four is. Two record cortices learned both from the games it played: one reads a column and holds where a stone lands, the other reads a window of four cells and holds whether it is a finished line and how the games that held it ended. It searches the boards it imagines from those records, and it keeps learning from the game you are playing.</p>
+  </div>
+  <div class="facts" id="counts">loading the brain…</div>
+</header>
+<main class="layout">
+  <section class="panel board-panel" id="game" aria-label="The board">
+    <div class="panel-head">
+      <div class="score" id="score">
+        <span class="chip you"><i></i><b id="youWins">0</b> you</span>
+        <span class="chip brain"><i></i><b id="brainWins">0</b> the brain</span>
+        <span class="chip draw"><b id="draws">0</b> drawn</span>
+      </div>
+      <span class="state" id="state">loading</span>
+    </div>
+    <div class="board-stage" id="boardStage">
+      <canvas id="board" aria-label="The Connect Four board: click a column to drop a stone"></canvas>
+      <div class="hint" id="hint"><b>Click a column</b><span>you are red and you move first</span></div>
+    </div>
+    <div class="toolbar">
+      <button type="button" id="newGame" class="primary">New game</button>
+      <label>You play <select id="side"><option value="red" selected>red · you start</option><option value="yellow">yellow · the brain starts</option></select></label>
+      <label>Learning <select id="learning"><option value="on" selected>on</option><option value="off">frozen</option></select></label>
+      <span class="toolbar-note" id="note">every move is written into the records</span>
+    </div>
+    <div class="imagined" id="imagined">
+      <div class="imagined-head"><b>What the brain imagined</b><span id="imaginedNote">it has not moved yet</span></div>
+      <div class="imagined-columns" id="imaginedColumns"></div>
+    </div>
+    <div class="key" id="boardKey"></div>
+  </section>
+  <section class="panel brain-panel" id="brain" aria-label="The whole brain">
+    <div class="panel-head">
+      <h2>The whole brain</h2>
+      <label class="checkpoint" id="checkpointBox" hidden>Brain <select id="checkpoint"></select></label>
+      <span class="phase" id="phase">—</span>
+    </div>
+    <div class="brain-row" id="brainRow">
+      <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
+      <div class="records-column" id="recordsColumn">
+        <div class="records" id="dropPanel"><div class="records-head"><b>Drop records</b><span id="dropInfo">where a stone lands</span></div><canvas id="dropRecords" aria-label="The drop cortex: the cells of the chosen column's reading, and the write that follows the move"></canvas><div class="reads" id="dropReads"></div></div>
+        <div class="records" id="linePanel"><div class="records-head"><b>Line records</b><span id="lineInfo">what a line and a won game look like</span></div><canvas id="lineRecords" aria-label="The line cortex: the cells of the windows through the new stone, and the writes that follow the move"></canvas><div class="reads" id="lineReads"></div></div>
+      </div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="toolbar">
+      <button type="button" id="play" class="primary">Pause</button><button type="button" id="step">Step one frame</button><button type="button" id="fit">Fit brain</button>
+      <label>Show <select id="view"><option value="activity">activation</option><option value="potential">potential</option><option value="change">change</option></select></label>
+      <span id="status"></span>
+    </div>
+    <div class="readouts">
+      <canvas id="strip" aria-label="Activity and change of every region over the last settling steps"></canvas>
+      <div class="readout"><h3>Dopamine per event</h3><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
+      <div class="readout"><h3>Ledger</h3><div class="ledger" id="ledger"></div></div>
+      <div class="readout"><h3>This game</h3><div class="ledger" id="counters"></div></div>
+    </div>
+  </section>
+</main>
+<footer class="notes">
+  <div class="receipt" id="receipt"></div>
+  <p><b>The move.</b> The brain receives the board as one categorical field per cell, relative to itself, and nothing else: no rules, no legal-move list beyond the mask the interface carries, no engine. To choose a column it imagines. The drop records read each column of the board and say which row a stone dropped there would occupy; the imagined board is the board plus a stone at that row. The line records read every window of four cells of the imagined board and say whether one of them is a finished line and how the games that held such windows ended. Negamax with alpha-beta searches those imagined boards, deeper while the drop records keep predicting the real board exactly, and a validator rejects an imagined board that is not the old board plus one stone.</p>
+  <p><b>The learning.</b> Every move either side makes is written into the records that read it: the column readings take the row the stone occupied, the windows of the new board take incomplete, and when the move won, the window through the new stone takes complete. When the game ends, every window pattern the game held takes the outcome of the side that had just moved. The writes touch only the cells the reading lit, so one game is written almost exactly and the games before it stay. The brain you are playing is learning from your game as it goes; the selector switches to the frozen learning if you would rather play a fixed opponent.</p>
+  <p><b>The brain.</b> The scan is the whole connectome: sensory and goal neurons drive the workspace, the workspace couples to the dynamics cortex, the motor neurons hang off the workspace, and the context neurons carry a trace of the last workspace state. Every settling step of every phase is drawn as it happens, and the synapses flash when an update moves them. The two record cortices beside the scan are not part of the connectome: their cells are a fixed random expansion of the reading, the most active cells stay lit, and the writes flash on exactly those cells. The brain selector loads the same life at earlier points, so you can play the brain after ten games and after its last.</p>
+</footer>
+<script type="module" src="page.js"></script>
+</body></html>
