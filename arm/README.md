@@ -73,6 +73,8 @@ adapting copy as well.
 
 `receipt.json` is the acceptance receipt of seeds 10 to 14: every predicate with its value
 and threshold, the source hashes of this directory and of the library, the sha256 of every
-event log and checkpoint, and the digest of the receipt itself. `verify.py` recomputes the
+event log and checkpoint, the learning curve (`metrics.curve`: after every
+`curve_interval` decisions of the life, a read-only copy's success on the first
+`curve_targets` held-out targets) and the digest of the receipt itself. `verify.py` recomputes the
 success rates and the prediction gain from the event logs and fails closed on an
 incomplete run. The page `web/` continues a life of the acceptance brain in the browser.

@@ -22,7 +22,10 @@ with a known flag; cell to its passages, the witnessed map; the last word seen, 
 the next; word to referent co-occurrence), an A* search over cells through the learned
 model's imagined consequences toward a remembered or exploration target with at most 128
 expansions, and the settling schedule with its guards. The cue decision is one-step reward
-greed over the model's reward prediction.
+greed over the model's reward prediction. The reading's gains are declared in
+`config.json`: the action's neurons at 4.0 and the object-here and carrying fields at
+twice the input gain, so readings that differ there share fewer active cells and the
+consequence records written under one goal or door rule interfere less with the others.
 
 Learned: the records of the world head (a records cortex: the reading minus its running
 mean, a fixed sparse expansion with winner-take-all inhibition, delta-rule records for
