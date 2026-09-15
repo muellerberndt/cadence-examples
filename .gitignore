@@ -3,3 +3,6 @@ __pycache__/
 runs/
 _site/
 .DS_Store
+arm/checkpoints/
+world/checkpoints/
+connect_four/checkpoints/

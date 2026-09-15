@@ -1,0 +1,73 @@
+{
+ "format": "cadence-world-checkpoints/1",
+ "page": "index.html",
+ "inlined": {
+  "id": "inlined",
+  "label": "the final brain",
+  "decisions": 37704,
+  "source": "runs/world/acceptance/world_seed10.npz"
+ },
+ "checkpoints": [
+  {
+   "id": "after-1-000-explore-steps",
+   "label": "after 1,000 explore steps",
+   "file": "checkpoints/after-1-000-explore-steps.json",
+   "bytes": 10608394,
+   "decisions": 1000,
+   "source": "runs/world/acceptance/world_seed10_explore_01000.npz",
+   "sha256": "7541ad2a51ea9a1534cb91ef2218e5c364de70771bd2984eb471e1d886074753",
+   "asset": "world-after-1-000-explore-steps.json"
+  },
+  {
+   "id": "after-5-000-explore-steps",
+   "label": "after 5,000 explore steps",
+   "file": "checkpoints/after-5-000-explore-steps.json",
+   "bytes": 10608396,
+   "decisions": 5000,
+   "source": "runs/world/acceptance/world_seed10_explore_05000.npz",
+   "sha256": "b202e113a4919ca711a59eaa553abb561eb0fb18b73f668cc287eb8f8773b4be",
+   "asset": "world-after-5-000-explore-steps.json"
+  },
+  {
+   "id": "after-10-000-explore-steps",
+   "label": "after 10,000 explore steps",
+   "file": "checkpoints/after-10-000-explore-steps.json",
+   "bytes": 10608405,
+   "decisions": 10000,
+   "source": "runs/world/acceptance/world_seed10_explore_10000.npz",
+   "sha256": "2319488d6527b6b25a1e94e8a3c83a8fea1b3f8ef6feabd8a6335778aeade6a8",
+   "asset": "world-after-10-000-explore-steps.json"
+  },
+  {
+   "id": "after-the-remembered-requests",
+   "label": "after the remembered requests",
+   "file": "checkpoints/after-the-remembered-requests.json",
+   "bytes": 10610068,
+   "decisions": 14777,
+   "source": "runs/world/acceptance/world_seed10_remember.npz",
+   "sha256": "9bd4ecdf80d9e5e751f8f8ecbe3473593208e5f840a97e232c91c432dfa75fa0",
+   "asset": "world-after-the-remembered-requests.json"
+  },
+  {
+   "id": "after-the-cue-task",
+   "label": "after the cue task",
+   "file": "checkpoints/after-the-cue-task.json",
+   "bytes": 10610095,
+   "decisions": 30460,
+   "source": "runs/world/acceptance/world_seed10_cue.npz",
+   "sha256": "b684a124aa00406083cb8f4359fd5b839c1e7af1491d1bac89c038ecd5f4c02f",
+   "asset": "world-after-the-cue-task.json"
+  },
+  {
+   "id": "after-the-doors-locked",
+   "label": "after the doors locked",
+   "file": "checkpoints/after-the-doors-locked.json",
+   "bytes": 10610082,
+   "decisions": 31785,
+   "source": "runs/world/acceptance/world_seed10_doors.npz",
+   "sha256": "d6a424497f0d332e07f4dd53020b4957cfd4cd5beb0d9ef4959e8e55c0fafa54",
+   "asset": "world-after-the-doors-locked.json"
+  }
+ ],
+ "release": "checkpoints-2026-09-15"
+}
