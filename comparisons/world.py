@@ -74,7 +74,7 @@ class Imagination:
         self.network = network
         self.reads = reads
 
-    def predict_batch(self, observations, actions, *, observed=None, goal=None):
+    def predict_batch(self, observations, actions, *, observed=None, goal=None, valued=True):
         return self.network.predict_batch(observations, actions, observed=observed, goal=goal, reads=self.reads)
 
 

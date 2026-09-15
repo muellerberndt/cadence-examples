@@ -215,6 +215,8 @@ class RecordsConfig:
     normalize_blocks: bool = True  # the valued code: divisive normalisation per input pathway (observation, goal, action, recall) so the goal and the recall reads have an equal say in the code the reward and terminal records read
     block_rate: float = 0.002  # running-norm rate of the pathways
     task_sets: bool = False  # the goal port's active unit selects the group of cells the valued code draws from (one group per goal value)
+    pathways: str = "ports"  # the input pathways of the code: "ports" (observation, goal, action, recall, context) or "fields" (each observation field with its flag, then goal, action, recall, context)
+    fan_in: int = 0  # each cell reads this many pathways, drawn at birth, and every input outside them; 0 reads every input
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -491,6 +493,7 @@ class RecordsHead:
             valued_rate=config.reward_rate, habituation=config.habituation, bias=config.bias_scale,
             pathways=list(blocks or []) if config.normalize_blocks else (), pathway_rate=config.block_rate,
             tasks=tasks if config.task_sets and tasks is not None else (),
+            fan_in=config.fan_in,
             seed=(seed * 7919 + 13) & M32,
         )
 
@@ -534,14 +537,17 @@ class RecordsHead:
     def writes(self, value: int) -> None:
         self.cortex.writes = int(value)
 
-    def code(self, readings: np.ndarray, *, adapt: bool) -> np.ndarray:
-        """The plain and valued codes of one or more readings: ``(2, batch, cells)``."""
-        return self.cortex.code(readings, adapt=adapt)
+    def code(self, readings: np.ndarray, *, adapt: bool, valued: bool = True) -> np.ndarray:
+        """The plain and valued codes of one or more readings: ``(2, batch, cells)``; with
+        ``valued=False`` the plain code alone, for imagined readings whose consequences are read."""
+        return self.cortex.code(readings, adapt=adapt, valued=valued)
 
-    def predict(self, code: np.ndarray) -> dict[str, np.ndarray]:
+    def predict(self, code: np.ndarray, *, valued: bool = True) -> dict[str, np.ndarray]:
         reads = self.cortex.read(code)
         out = {}
         for f in self.fields:
+            if not valued and f.source in VALUED_SOURCES:
+                continue
             y = reads[f.name]
             if f.kind == "categorical":
                 p = np.maximum(y, 0.0)
@@ -748,8 +754,19 @@ class Agent:
             if not config.records.context:
                 self.reading = np.concatenate([self.ports.observation, self.ports.goal, self.ports.action, self.ports.recall]).astype(np.int64)
             position = {int(n): k for k, n in enumerate(self.reading)}
-            blocks = [np.array([position[int(n)] for n in port if int(n) in position], np.int64) for port in (self.ports.observation, self.ports.goal, self.ports.action, self.ports.recall, self.ports.context)]
-            self.records = RecordsHead(len(self.reading), config.graph.prediction, config.records, seed, blocks, tasks=blocks[1])
+
+            def block(*ports: np.ndarray) -> np.ndarray:
+                return np.array([position[int(n)] for port in ports for n in port if int(n) in position], np.int64)
+
+            if config.records.pathways == "fields":
+                blocks = [block(self.ports.observation_fields[name], self.ports.observation_flags.get(name, np.zeros(0, np.int64))) for name in self.ports.observation_fields]
+            elif config.records.pathways == "ports":
+                blocks = [block(self.ports.observation)]
+            else:
+                raise ValueError("records.pathways is 'ports' or 'fields'")
+            goal_block = block(self.ports.goal)
+            blocks += [goal_block, block(self.ports.action), block(self.ports.recall), block(self.ports.context)]
+            self.records = RecordsHead(len(self.reading), config.graph.prediction, config.records, seed, blocks, tasks=goal_block)
         self._last_recall = np.zeros((streams, len(self.ports.recall)))
 
     # -- shared parameter ownership
@@ -1439,11 +1456,13 @@ class Agent:
         self.ledger.imagined += 1
         return self.decode(state, 0)
 
-    def predict_batch(self, observations: Sequence[Mapping[str, np.ndarray]], actions: Sequence[int], *, observed: Sequence[Mapping[str, np.ndarray] | None] | None = None, goal: np.ndarray | None = None, row: int = 0, context: bool = True) -> list[dict[str, np.ndarray]]:
+    def predict_batch(self, observations: Sequence[Mapping[str, np.ndarray]], actions: Sequence[int], *, observed: Sequence[Mapping[str, np.ndarray] | None] | None = None, goal: np.ndarray | None = None, row: int = 0, context: bool = True, valued: bool = True) -> list[dict[str, np.ndarray]]:
         """``predict`` for several hypothetical (observation, action) pairs in one settle.
 
         ``observed``: one flag map per observation (None: every field observed). The flags are
-        part of the reading, so an imagined state must carry the same flags a real moment would."""
+        part of the reading, so an imagined state must carry the same flags a real moment would.
+        ``valued=False`` predicts the consequence fields alone (a records head then skips its
+        valued code); the reward and terminal fields are left out of the predictions."""
         if len(observations) != len(actions) or not observations:
             raise ValueError("one action per hypothetical observation")
         if observed is not None and len(observed) != len(observations):
@@ -1452,8 +1471,8 @@ class Agent:
         drive = self._with_action(drive, [int(a) for a in actions])
         self.ledger.imagined += len(actions)
         if self.records is not None:
-            codes = self.records.code(drive[:, self.reading], adapt=False)
-            return [self.records.predict(codes[:, k]) for k in range(len(actions))]
+            codes = self.records.code(drive[:, self.reading], adapt=False, valued=valued)
+            return [self.records.predict(codes[:, k], valued=valued) for k in range(len(actions))]
         w = self.config.world
         state = self.brain.settle_batch(drive, steps=w.free_steps, tolerance=w.tolerance if w.imagine_tolerance is None else w.imagine_tolerance)
         return [self.decode(state, k) for k in range(len(actions))]

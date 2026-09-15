@@ -46,7 +46,7 @@ def agent_config(config: dict[str, Any], **over: Any) -> AgentConfig:
 
 
 class Model(Protocol):
-    def predict_batch(self, observations: list[dict[str, np.ndarray]], actions: list[int], *, goal: np.ndarray | None = None) -> list[dict[str, np.ndarray]]: ...
+    def predict_batch(self, observations: list[dict[str, np.ndarray]], actions: list[int], *, goal: np.ndarray | None = None, valued: bool = True) -> list[dict[str, np.ndarray]]: ...
 
 
 def compose(observation: dict[str, np.ndarray], deltas: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
@@ -102,12 +102,12 @@ class ModelPlanner:
         for level in range(self.depth):
             observations = [entry[1] for entry in beam for _ in range(len(TORQUES))]
             actions = [a for _ in beam for a in range(len(TORQUES))]
-            predictions = model.predict_batch(observations, actions, goal=goal)
+            predictions = model.predict_batch(observations, actions, goal=goal, valued=False)  # the consequences alone
             expansions += len(actions)
             composed = [compose(obs, pred) for obs, pred in zip(observations, predictions, strict=True)]
             first_predictions = list(predictions)
             for _ in range(self.rollout - 1):  # hold each candidate torque: its effect accumulates
-                more = model.predict_batch(composed, actions, goal=goal)
+                more = model.predict_batch(composed, actions, goal=goal, valued=False)
                 expansions += len(actions)
                 composed = [compose(obs, pred) for obs, pred in zip(composed, more, strict=True)]
             candidates = []
@@ -211,7 +211,7 @@ class OnlineMLP:
         _, y = self.forward(self._x(observation, action))
         return self._decode(y)
 
-    def predict_batch(self, observations: list[dict[str, np.ndarray]], actions: list[int], *, goal: np.ndarray | None = None) -> list[dict[str, np.ndarray]]:
+    def predict_batch(self, observations: list[dict[str, np.ndarray]], actions: list[int], *, goal: np.ndarray | None = None, valued: bool = True) -> list[dict[str, np.ndarray]]:
         return [self.predict(o, a) for o, a in zip(observations, actions, strict=True)]
 
     def learn(self, observation: dict[str, np.ndarray], action: int, deltas: dict[str, np.ndarray]) -> float:

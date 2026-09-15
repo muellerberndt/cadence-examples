@@ -233,6 +233,7 @@ class OnlineModel:
         observed: Sequence[Mapping[str, np.ndarray] | None] | None = None,
         goal: np.ndarray | None = None,
         reads: np.ndarray | None = None,
+        valued: bool = True,
     ) -> list[Prediction]:
         rows = self._outputs(self._encode(observations, actions, observed, goal, reads))
         return [self._decode(row) for row in rows]
