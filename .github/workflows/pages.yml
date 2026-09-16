@@ -30,7 +30,7 @@ jobs:
       - name: Assemble the site
         run: |
           mkdir -p _site/arm _site/world _site/connect_four _site/artist
-          cp index.html .nojekyll _site/
+          cp index.html .nojekyll sitemap.xml _site/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
           cp connect_four/index.html connect_four/receipt.json connect_four/receipt_solver.json connect_four/cortices.json _site/connect_four/

@@ -1,5 +1,7 @@
 # Cadence examples
 
+[Website](https://floatingpragma.io/) · [Cadence](https://floatingpragma.io/cadence/) · [Live brains](https://floatingpragma.io/cadence-examples/) · [Library](https://github.com/muellerberndt/cadence)
+
 Four applications that learn through one stream of experience: observe, remember, predict,
 act, learn from the outcome. Each entry links its page, its acceptance receipt and the
 verifier that recomputes the receipt from the event logs. The library is
