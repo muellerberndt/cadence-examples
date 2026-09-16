@@ -111,10 +111,10 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
 - Receipt of the stage: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
   Measured: exact next boards on held-out moves 100%; terminal prediction
   100%; tactical suite 100% (win in one, block in one); paired score
-  against random 0.995 and against one-ply 0.957 (each seed at least
-  0.925); planning gain over the same records without search 0.61;
-  loss with corrupted dynamics 0.83; loss on the old opponents after the
-  adaptation games -0.003; decision latency p95 19 ms.
+  against random 0.995 and against one-ply 0.962 (each seed at least
+  0.925); planning gain over the same records without search 0.65;
+  loss with corrupted dynamics 0.84; loss on the old opponents after the
+  adaptation games -0.004; decision latency p95 52 ms.
 - Supplied: the rules as the world, the move legality, the negamax search over imagined
   boards within a budget of imagined transitions, the settling schedule.
 - Learned: the drop records (where a stone lands), the line records (which windows are
