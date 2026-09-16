@@ -135,5 +135,7 @@ def make_opponent(name: str, seed: int, config: GameConfig | None = None, shared
         key = ("alphazero", path, int(sims or 50))
         if key not in shared:
             shared[key] = AlphaZeroOpponent(path, sims=int(sims or 50), seed=seed)
+        else:
+            shared[key].reseed(seed)
         return shared[key]
     raise ValueError(f"unknown opponent {name!r}")
