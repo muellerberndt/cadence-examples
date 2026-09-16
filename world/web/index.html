@@ -6,8 +6,9 @@
 <body data-snapshot="../../runs/world/parity/snapshot.json">
 <header class="masthead">
   <div class="headline">
+    <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Ask for an object and it goes there from memory</h1>
-    <p class="lede">The agent sees the cell it stands in. It wanders, writes down where it saw each object, and when you ask for one it searches through the consequences its records imagine and walks to the place it remembers. Move that object while it is away and the record is stale until it looks again.</p>
+    <p class="lede">It wandered, wrote down where it saw each object, and walks to the remembered place when you ask. Drag an object away while it is gone to test its memory.</p>
   </div>
   <div class="facts" id="counts">loading the snapshot…</div>
 </header>
@@ -96,10 +97,26 @@
   </section>
 </main>
 <footer class="notes">
-  <p><b>The world.</b> Six by six cells with walls, doors, four objects, four colours and eight words, permuted for each life. The agent reads its own cell, the four passages around it, what it carries and the outcome of its last action; the four neighbouring cells enter the reading only in the moment after an inspect. Asking for an object starts a new episode of the same life from a cell at least four steps away, with a deadline of twice the shortest path plus two. The stores cross that boundary and the context trace is cleared, so a request is reached in time only from a remembered place. Dragging an object to another cell changes the world under the agent: the place it wrote down stays until it stands there and sees the cell empty, which erases the record, or sees the object somewhere else, which overwrites it.</p>
-  <p><b>The decisions.</b> Every action comes from the agent's step. On a request the planner searches over cells through the consequences the records cortex imagines for each action, at most 128 expansions deep, toward the remembered place; a known cell takes its passages from the witnessed map, an unvisited one from the model's own prediction. At the cue junction the choice is one-step reward greed over the model's reward prediction. During a wander the exploration rate is one, so the actions are random and the sightings are the agent's own. The outcome of every decision is written into the records of the cells that read it, so the model keeps learning while you watch.</p>
-  <p><b>The brain.</b> Sensory and goal neurons drive the workspace; the recall neurons carry what the stores read (the remembered place of the requested object, the cue held, the word's referent strengths); the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan: the reading of the sensory, goal, action and recall neurons minus each unit's running mean goes through a fixed random expansion, the most active cells are kept (the lit ones), and their records of the next displacement, passages, cell contents, carried object, outcome and reward are read out; the outcome is written into exactly those cells (the flash, pink for reward). The imagined reads of the search flicker grey. Every settling step of every phase is drawn as it happens. The brain selector loads other points of this life when the page is served with its checkpoint manifest.</p>
-  <p id="receiptNote"><b>The receipt.</b> The numbers of the run this brain comes from appear here when the page is built from a run directory.</p>
+  <details class="card" id="card">
+    <summary>Model card<small>what this brain can do, what plays here, what was measured</small></summary>
+    <h3>What this brain can do</h3>
+    <ul class="caps">
+      <li><b>Remembers where it saw each object</b> and walks there from memory under a deadline, from a cell at least four steps away.</li>
+      <li><b>Corrects a stale memory</b> when it sees the object moved or the place empty. Drag an object to another cell to test it.</li>
+      <li><b>Holds a cue across a delay</b> of 8 to 32 steps and acts on it at the junction.</li>
+      <li><b>Grounds words in objects.</b> Teach it a word and the word becomes a request.</li>
+      <li><b>Keeps navigating when the doors stop opening</b>, relearning the passages from what it sees.</li>
+      <li><b>One stream, no replay ring.</b> The whole brain runs in your browser.</li>
+    </ul>
+    <h3>What plays here</h3>
+    <p>A 6 by 6 world of walls, doors, four objects, four colours and eight words, seen one cell at a time, and one Cadence brain. Sensory and goal neurons drive a workspace; recall neurons carry what the stores read (the remembered place, the cue held, a word's referent); the workspace couples to a dynamics cortex; motor neurons hang off the workspace; context neurons carry a trace of the last state. The world model is a records cortex whose cells hold the next displacement, passages, cell contents, carried object, outcome and reward. Four declared stores keep witnessed evidence: object to place, cell to passages, the last word seen, word to referent.</p>
+    <h3>Measured</h3>
+    <p class="measured">Acceptance receipt, five seeds. Requests fulfilled <b>100%</b> with memory, <b>18%</b> with the place records erased · visible correction <b>100%</b> · cue at delay 8 <b>100%</b> (reward-shifted control 51%) · grounding <b>100%</b> · door recovery <b>100%</b> · shuffled action pairing 3% · random moves 1%. Same life, world model swapped: cue at delay 8 <b>52%</b> for an online transformer and 59% for an online MLP, with or without a replay ring; consequence accuracy 93% to 95% against <b>98%</b> for the records brain.</p>
+    <p id="receiptNote"></p>
+    <h3>How it works</h3>
+    <p>Every action comes from the brain's step. On a request the planner searches over cells through the consequences the records imagine for each action, toward the remembered place; a known cell takes its passages from the witnessed map, an unvisited one from the model's own prediction. During a wander the actions are random and the sightings are the brain's own. The outcome of every decision is written into exactly the records that read it, so the model keeps learning while you watch.</p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/world/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/comparisons/world/receipt.json">comparison receipt</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a></p>
+  </details>
 </footer>
 <script type="module" src="page.js"></script>
 </body></html>

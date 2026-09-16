@@ -6,8 +6,9 @@
 <body data-snapshot="../../runs/artist/parity/snapshot.json">
 <header class="masthead">
   <div class="headline">
+    <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Draw a figure and the artist draws it</h1>
-    <p class="lede">The artist learned what its pen leaves on the canvas by scribbling. It picks a stroke by imagining the marks each direction would leave, follows it with torques chosen through the same records, and looks at its own canvas again as it goes.</p>
+    <p class="lede">It learned what its pen leaves on the canvas by scribbling, and it replans from its own canvas after every stroke. The whole brain is live on the right.</p>
   </div>
   <div class="facts" id="counts">loading the snapshot…</div>
 </header>
@@ -74,10 +75,26 @@
   </section>
 </main>
 <footer class="notes">
-  <p><b>The drawing.</b> Your strokes are clipped to the canvas and rasterised one pixel wide, which is the target the artist is given. The artist starts with an empty canvas and a pose somewhere over it. Every tenth of a second it commits one of eighteen choices, nine torque pairs by the pen up or down, and the pen leaves a one-pixel line along the path it swept with the pen down. The discrepancy is the symmetric Chamfer distance between the two foregrounds in canvas diagonals, and the F1 counts a drawn pixel as matched when a target pixel lies within one pixel of it. A drawing ends under a discrepancy of <b id="finishValue">0.010</b>, at <b id="capValue">200</b> decisions, or after 60 decisions without a better discrepancy.</p>
-  <p><b>The decisions.</b> Two levels of supplied search read one learned model. The slow level asks the records what one decision of motion leaves for each of eight directions and both pen states, repeats that stamp along a candidate stroke, scores the canvas it imagines by the capped discrepancy, and keeps the best stroke over a beam of four and a horizon of two. That stroke travels in the goal port. The fast level imagines all eighteen choices two decisions deep, scores the ink each is expected to leave and how well the imagined hand velocity follows the stroke, and the agent executes the best. The intention is renewed every second decision from the canvas the artist sees, so the plan follows what the pen actually left.</p>
-  <p><b>The brain.</b> Sensory and goal neurons drive the workspace; the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace. The world model is the records cortex beside the scan: the body senses, the pen state, the ink of the last decision, the canvas and target windows around the pen, the intention and the candidate action go through a fixed random expansion, the most active granules are kept, and each active cell's records of the next displacement change, velocity change, angle change and ink window are read out. When the outcome arrives it is written into exactly those records, so the brain keeps learning while it draws. The grey flickers on the raster are the search reading records it never writes.</p>
-  <p><b>The run.</b> <span id="receiptNote">the numbers of this page's run are filled in at build time</span></p>
+  <details class="card" id="card">
+    <summary>Model card<small>what this brain can do, what plays here, what was measured</small></summary>
+    <h3>What this brain can do</h3>
+    <ul class="caps">
+      <li><b>Learned what its pen leaves</b> on the canvas by scribbling. Nothing about drawing was programmed.</li>
+      <li><b>Draws figures it has never seen</b>, one stroke at a time, from a target you draw.</li>
+      <li><b>Looks at its own canvas after every stroke</b> and replans from what the pen actually left.</li>
+      <li><b>Keeps drawing when its body and its canvas change</b> mid-drawing: a longer link, an offset canvas.</li>
+      <li><b>Two levels of search read one learned model</b>: a stroke intention, then the torques that follow it.</li>
+      <li><b>One stream, no replay ring.</b> A decision takes 75 ms at the p95, inside the 100 ms it has.</li>
+    </ul>
+    <h3>What plays here</h3>
+    <p>The arm of the first example holds a pen over a 32 by 32 canvas, and one Cadence brain. Sensory and goal neurons drive a workspace; the workspace couples to a dynamics cortex that reads the efference copy of the action; motor neurons hang off the workspace. The world model is a records cortex: the body senses, the pen state, the ink of the last decision, the canvas and target windows around the pen, the intention and the candidate action pass through a fixed random expansion, and each active cell holds records of the next displacement, velocity, angle and ink window. The grey flickers on the raster are the search reading records it never writes.</p>
+    <h3>Measured</h3>
+    <p class="measured">Acceptance receipt, five seeds. Held-out foreground F1 <b>0.93</b> at a Chamfer distance of <b>0.014</b> canvas diagonals · weakest figure family 0.91 · after a longer link <b>0.93</b>, back on the original body <b>0.93</b>. Controls: the same architecture frozen from birth <b>0.00</b> · random scribbling 0.08 · the supplied path oracle 0.64 · an online MLP with a replay ring behind the same search <b>0.80</b>. Decision latency p95 75 ms.</p>
+    <p id="receiptNote"></p>
+    <h3>How it works</h3>
+    <p>Your strokes are rasterised one pixel wide as the target. Every tenth of a second the artist commits one of eighteen choices, nine torque pairs by pen up or down. The slow level of the search asks the records what one decision of motion leaves for each direction and pen state, repeats that along a candidate stroke and keeps the best over a beam of four; the fast level imagines all eighteen choices two decisions deep and executes the best. The intention is renewed every second decision from the canvas the artist sees. A drawing ends under a discrepancy of <b id="finishValue">0.010</b>, at <b id="capValue">200</b> decisions, or after 60 decisions without improvement.</p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/artist/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a></p>
+  </details>
 </footer>
 <script type="module" src="page.js"></script>
 </body></html>

@@ -6,8 +6,9 @@
 <body data-checkpoint="../../runs/connect_four/page/checkpoints/games001200.json" data-cortices="../../runs/connect_four/page/cortices.json">
 <header class="masthead">
   <div class="headline">
+    <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Play Connect Four against a brain that learned the game from scratch</h1>
-    <p class="lede">Nobody told this brain how a stone falls or what four in a row is. It learned both from the games it played, with no rules, no engine and no labelled moves, and it beats AlphaZero: <b>0.945</b> and <b>0.990</b> over 100 paired games against alpha-zero-general's Connect Four at 25 and 100 simulations per move, where 0.5 is even and 1 is every game won. It imagines the boards its moves lead to and searches them eight plies deep. On the right is the whole brain, live, while it plays you.</p>
+    <p class="lede">No rules, no engine, no labelled moves: it learned how a stone falls and what four in a row is from the games it played. It beats AlphaZero <b>0.945</b> and <b>0.990</b> over 100 paired games, and it keeps learning while it plays you.</p>
   </div>
   <div class="facts" id="counts">loading the brain…</div>
 </header>
@@ -43,8 +44,17 @@
 </main>
 <footer class="notes">
   <details class="card" id="card">
-    <summary>Model card</summary>
+    <summary>Model card<small>what this brain can do, what plays here, what was measured</small></summary>
     <p class="card-facts" id="cardFacts"></p>
+    <h3>What this brain can do</h3>
+    <ul class="caps">
+      <li><b>Learned the rules from the games it played.</b> How a stone falls and what four in a row is were never given.</li>
+      <li><b>Beats AlphaZero</b> trained with alpha-zero-general's published recipe: <b>0.945</b> and <b>0.990</b> over 100 paired games at 25 and 100 simulations per move.</li>
+      <li><b>Imagines the boards its moves lead to</b> and searches them eight plies deep; a validator rejects an imagined board that is not the old board plus one stone.</li>
+      <li><b>Keeps learning from the game you play against it.</b> Every move either side makes is written into the records that read it.</li>
+      <li><b>Sees traps coming</b>: keeps the theoretical result in 89.5% of 200 trap positions where minimax at 1,024 nodes keeps 57%.</li>
+      <li><b>Small and fast.</b> 1,200 games, half an hour on one CPU core to train; about 40 ms per move in your browser.</li>
+    </ul>
     <h3>What plays here</h3>
     <p>The Connect Four brain of cadence-examples, seed 0 of the development run of 16 September 2026, with its search set deeper than it trained at. Two record cortices and a search: the drop records hold where a stone lands in each column, the line records hold which windows of four cells are finished lines and how the games that held each window pattern ended, and negamax with alpha-beta pruning searches the boards the records imagine. The small settled regions of the agent carry the event transaction: sensory and goal neurons drive a workspace of 16, the workspace couples to a dynamics region of 8, the motor neurons read the column off the workspace, and the context neurons carry a trace of the last workspace state. The scan draws every settling step of every phase as it happens, and the synapses flash when an update moves them. The rules were never given: the world emits boards and the brain writes what it observes.</p>
     <h3>How it was trained</h3>
@@ -71,7 +81,7 @@
     <p>AlphaZero here is <a href="https://github.com/suragnair/alpha-zero-general">alpha-zero-general</a>'s Connect Four, trained by us in PyTorch with the repository's published recipe: 100 self-play games and 25 MCTS simulations per move per iteration, 32 iterations on one A10G, the model of iteration 24 (the 14th accepted network, sha256 a7477699). That model scores 0.738 against the one-ply opponent, 0.688 against minimax at 1,024 nodes and 0.562 against the solver at 70%. In the paired games its openings are sampled from its visit counts for the first three stones so the games differ, and its tree starts fresh each game.</p>
     <h3>What it cannot do</h3>
     <p>Beyond the search horizon the brain values a board as the mean of its 69 window values, and that mean separates positions weakly: the seven moves of a typical middle-game position lie within 0.02 of each other. A threat prepared further ahead than the search sees wins against it. A version whose value reading carries the support of each cell and learns from its own search is work in progress.</p>
-    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">code</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/connect_four/FINDINGS.md">what we found</a> · <a href="receipt_solver.json">receipt of the life</a> · <a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four/bench/receipts">bench receipts</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/connect_four/config_solver.json">training configuration</a></p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">code</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/connect_four/FINDINGS.md">what we found</a> · <a href="receipt_solver.json">receipt of the life</a> · <a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four/bench/receipts">bench receipts</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/connect_four/config_solver.json">training configuration</a></p>
   </details>
 </footer>
 <script type="module" src="page.js"></script>

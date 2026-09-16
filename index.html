@@ -2,46 +2,97 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark light">
-<title>Cadence examples</title>
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Four Cadence brains live in the browser: an arm that learned its body, a world that must be remembered, an artist, and a Connect Four brain that beats AlphaZero. Each learns by experience with no backward pass, and the whole brain is visible while it thinks.">
+<title>Cadence brains</title>
 <style>
-  :root { color-scheme: dark; }
-  body { max-width: 52rem; margin: 8vh auto; padding: 1.5rem; font: 17px/1.6 system-ui, sans-serif; color: #dfe6ee; background: #0b1117; }
-  a { color: #8fd3ff; }
-  h1 { font-size: 2rem; margin-bottom: .25rem; }
-  p.lead { color: #aab6c3; margin-top: 0; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1rem; margin: 2rem 0; }
-  .card { border: 1px solid #22303d; border-radius: 12px; padding: 1.1rem 1.25rem; background: #101a24; }
-  .card h2 { margin: 0 0 .4rem; font-size: 1.25rem; }
-  .card p { margin: .4rem 0; color: #c7d1db; }
-  .card .links a { margin-right: 1rem; font-weight: 600; }
-  footer { color: #8090a0; font-size: .95rem; }
+  :root { color-scheme: dark; --bg: #060b11; --panel: #0b141d; --line: #17242f; --line2: #22364a; --text: #e3ecf4; --muted: #92a6ba; --faint: #63788d; --accent: #ffb36b; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0 clamp(16px, 3vw, 40px) 48px; font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); background: radial-gradient(1100px 520px at 18% -8%, rgba(255, 179, 107, 0.07), transparent 62%), radial-gradient(900px 480px at 88% -4%, rgba(96, 165, 250, 0.06), transparent 60%), var(--bg); }
+  main { max-width: 1180px; margin: 0 auto; }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 22px 0 0; font: 600 10.5px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+  .crumbs a { color: var(--muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--text); }
+  .crumbs span { color: var(--line2); }
+  h1 { margin: 22px 0 6px; font-size: clamp(28px, 3.6vw, 40px); font-weight: 650; letter-spacing: -0.015em; line-height: 1.08; }
+  h1 em { font-style: normal; color: var(--accent); }
+  p.lead { margin: 0; color: var(--muted); max-width: 70ch; font-size: 16px; }
+  .strip { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 18px 0 0; font: 600 11px/1.6 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .strip b { color: var(--accent); font-weight: 600; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr)); gap: 12px; margin: 26px 0 0; }
+  .card { display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 16px; background: var(--panel); }
+  .card .k { font: 600 10px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  .card h2 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+  .card ul { margin: 2px 0 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+  .card li { position: relative; padding-left: 16px; font-size: 13.5px; color: #c3d2e0; line-height: 1.45; }
+  .card li::before { content: ""; position: absolute; left: 1px; top: 0.55em; width: 6px; height: 6px; transform: rotate(45deg); border: 1px solid var(--accent); }
+  .card .m { margin-top: 2px; padding-top: 10px; border-top: 1px dashed var(--line2); font: 500 11.5px/1.6 var(--mono); color: #c3d2e0; }
+  .card .m b { color: var(--accent); font-weight: 600; }
+  .card .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 6px; }
+  .card .links a { text-decoration: none; font: 600 12.5px/1 system-ui, sans-serif; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line2); color: var(--text); }
+  .card .links a.open { background: var(--accent); border-color: var(--accent); color: #1b0f05; }
+  .card .links a:hover { border-color: #3b587a; }
+  .card .links a.open:hover { filter: brightness(1.06); }
+  footer { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13.5px; max-width: 80ch; }
+  footer a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line2); }
+  footer a:hover { color: var(--text); }
 </style>
 <main>
-  <h1>Cadence examples</h1>
-  <p class="lead">Brains that learn through one stream of experience: observe, remember, predict, act, learn from the outcome. Each example ships its page, its acceptance receipt and the verifier that recomputes the receipt from the event logs.</p>
+  <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples">Source</a></nav>
+  <h1>Four brains, <em>live in your browser.</em></h1>
+  <p class="lead">Each one learns by experience: observe, remember, predict, act, learn from what followed. No backward pass, no training switch, no frozen weights. The whole brain is drawn beside the task while it thinks, and every number has a receipt and a verifier.</p>
+  <p class="strip"><span><b>No</b> backward pass</span><span><b>One</b> stream, no replay</span><span><b>Beats AlphaZero</b> 0.945 / 0.990</span><span>Runs on <b>your CPU</b></span><span><b>MIT</b> licensed</span></p>
   <div class="cards">
     <section class="card">
-      <h2>Arm</h2>
-      <p>A two-link arm learns its own body from motor babbling, reaches targets through a search over the consequences it has recorded and copies what you draw, with the whole brain live beside it.</p>
-      <p class="links"><a href="arm/">Open</a><a href="arm/receipt.json">Receipt</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">Code</a></p>
+      <span class="k">01 · Arm</span>
+      <h2>A body learned from babbling</h2>
+      <p>Draw a figure and the arm copies it. It learned its own body from random movement and plans every torque through what it remembers.</p>
+      <ul>
+        <li>Nobody programmed its kinematics</li>
+        <li>Adapts to a longer link with no reset, then returns</li>
+        <li>Keeps learning while it copies</li>
+      </ul>
+      <p class="m">Held-out reaching <b>99%</b> · online transformer on the same stream 40% · online MLP 2%</p>
+      <p class="links"><a class="open" href="arm/">Open</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">Code</a><a href="arm/receipt.json">Receipt</a></p>
     </section>
     <section class="card">
-      <h2>World</h2>
-      <p>In a 6 by 6 world seen one cell at a time, one life learns the consequences of its actions, remembers where it saw an object, corrects that memory, holds a cue across a delay and grounds words in objects.</p>
-      <p class="links"><a href="world/">Open</a><a href="world/receipt.json">Receipt</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">Code</a></p>
+      <span class="k">02 · World</span>
+      <h2>A world that must be remembered</h2>
+      <p>Ask for an object and it goes there from memory. Seen one cell at a time, the world has to be remembered to be navigated.</p>
+      <ul>
+        <li>Remembers where it saw each object, corrects the memory when the object moves</li>
+        <li>Holds a cue across a delay and grounds words in objects</li>
+        <li>Keeps navigating when doors stop opening</li>
+      </ul>
+      <p class="m">Requests fulfilled <b>100%</b> with memory, 18% erased · cue at delay 8 <b>100%</b> vs 52% transformer</p>
+      <p class="links"><a class="open" href="world/">Open</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">Code</a><a href="world/receipt.json">Receipt</a></p>
     </section>
     <section class="card">
-      <h2>Artist</h2>
-      <p>The arm holds a pen over a canvas, learns what its strokes leave and draws figures it has never seen, replanning from its own canvas after every stroke. Draw a figure and watch it drawn, with the whole brain live beside the canvas.</p>
-      <p class="links"><a href="artist/">Open</a><a href="artist/receipt.json">Receipt</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">Code</a></p>
+      <span class="k">03 · Artist</span>
+      <h2>A figure shown, a figure drawn</h2>
+      <p>Draw a figure and the artist draws it stroke by stroke. It learned what its pen leaves by scribbling and replans from its own canvas after every stroke.</p>
+      <ul>
+        <li>Draws figures it has never seen</li>
+        <li>Keeps drawing when its body and its canvas change mid-drawing</li>
+        <li>75 ms per decision at the p95, inside the 100 ms it has</li>
+      </ul>
+      <p class="m">Held-out F1 <b>0.93</b> · frozen from birth 0.00 · online MLP with replay ring 0.80</p>
+      <p class="links"><a class="open" href="artist/">Open</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">Code</a><a href="artist/receipt.json">Receipt</a></p>
     </section>
     <section class="card">
-      <h2>Connect Four</h2>
-      <p>One life learns what a dropped stone does and which windows are completed lines from the games it plays, and searches over what it learned. It beats an AlphaZero trained with alpha-zero-general's recipe in 0.945 and 0.990 of 100 paired games. Play against it while it keeps learning, with the whole brain live beside the board.</p>
-      <p class="links"><a href="connect_four/">Open</a><a href="connect_four/receipt.json">Receipt</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">Code</a></p>
+      <span class="k">04 · Connect Four</span>
+      <h2>The rules, learned by watching</h2>
+      <p>Play against a brain that learned how a stone falls and what four in a row is from the games it played. No rules, no engine, no labelled moves.</p>
+      <ul>
+        <li>Beats an AlphaZero trained with the published recipe</li>
+        <li>Searches the boards it imagines eight plies deep</li>
+        <li>Keeps learning from the game you play against it</li>
+      </ul>
+      <p class="m">vs AlphaZero <b>0.945</b> at 25 and <b>0.990</b> at 100 simulations per move, 100 paired games</p>
+      <p class="links"><a class="open" href="connect_four/">Play</a><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">Code</a><a href="connect_four/receipt.json">Receipt</a></p>
     </section>
   </div>
-  <footer>Built on <a href="https://github.com/muellerberndt/cadence">Cadence</a>: decentralised networks of neurons that learn from one stream, with no backpropagation, no training and inference steps and no replay ring. <a href="https://github.com/muellerberndt/cadence-examples">Gallery repository</a>.</footer>
+  <footer>Built on <a href="https://github.com/muellerberndt/cadence">Cadence</a>, the open-source library for brains that learn from one stream of experience. <a href="https://floatingpragma.io/cadence/">Why brains and not transformers</a> · <a href="https://github.com/muellerberndt/cadence-examples">gallery source and verifiers</a> · <a href="https://floatingpragma.io/">Pragma Research</a>.</footer>
 </main>
 </html>

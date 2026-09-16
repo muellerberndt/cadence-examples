@@ -6,8 +6,9 @@
 <body data-snapshot="../../runs/arm/parity/snapshot.json">
 <header class="masthead">
   <div class="headline">
+    <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Draw a figure and the arm copies it</h1>
-    <p class="lede">The arm learned its body from babbling, and it copies your drawing by imagining the consequence of each torque through its records and choosing the torque whose imagined motion follows the target.</p>
+    <p class="lede">The arm learned its own body from babbling and plans every torque through what it remembers. Nobody programmed its kinematics. The whole brain is live on the right.</p>
   </div>
   <div class="facts" id="counts">loading the snapshot…</div>
 </header>
@@ -81,9 +82,26 @@
   </section>
 </main>
 <footer class="notes">
-  <p><b>The copy.</b> Your strokes are resampled to even spacing, smoothed a little, clipped to the reachable ring and played as a moving target. The target waits at the first point until the hand arrives (at most six seconds), then advances one point per decision at the chosen speed; between strokes it travels in a straight line with the pen lifted. The ink is the hand's own path at the body's 50 Hz clock. The tracking error is the mean distance between the hand and the target over the moving part of the copy, in arm lengths, and the arm's full reach is one.</p>
-  <p><b>The decisions.</b> Every torque comes from the agent's step. The planner imagines each of the nine torque pairs held for three decisions through the records cortex (the blue fan at the hand), scores the imagined hand motion against a velocity toward the target, and the agent executes the best torque. The outcome of every decision is written into the records of the cells that read it, so the brain keeps learning while it copies, and a second copy of the same figure is usually closer than the first. The exploration slider sets the probability of a random torque instead of the planner's choice; it starts at zero.</p>
-  <p><b>The brain.</b> Sensory and goal neurons drive the workspace; the workspace couples to the dynamics cortex, which reads the efference copy of the action; the motor neurons hang off the workspace; the context neurons carry a trace of the last workspace state. The world model is the records cortex beside the scan (cerebellum-like, dentate-like): the reading of the sensory, goal and action neurons goes through a fixed random expansion, the most active granules are kept (the lit cells), and each active cell's records of the next displacement change, velocity change and angle change are read out; when the outcome arrives it is written into exactly those records (the flash). Every settling step of every phase of the settled regions is drawn as it happens. The brain selector loads other points of this arm's life when the page is served with its checkpoint manifest.</p>
+  <details class="card" id="card">
+    <summary>Model card<small>what this brain can do, what plays here, what was measured</small></summary>
+    <h3>What this brain can do</h3>
+    <ul class="caps">
+      <li><b>Learned its own body</b> from random motor babbling. No kinematics were written into it.</li>
+      <li><b>Copies a figure it has never seen</b> by imagining what each torque would do and taking the one whose motion follows your line.</li>
+      <li><b>Keeps learning while it copies.</b> The second copy of a figure is usually closer than the first.</li>
+      <li><b>Adapts to a changed body</b> with no reset. Lengthen the upper link by 15% and it recovers; restore the body and it returns.</li>
+      <li><b>One pass over one stream</b> of experience. No replay ring, no backward pass, no training switch.</li>
+      <li><b>Runs entirely in your browser</b>, decision for decision equal to the Python agent.</li>
+    </ul>
+    <h3>What plays here</h3>
+    <p>A two-link arm and one Cadence brain. Sensory and goal neurons drive a workspace; the workspace couples to a dynamics cortex that reads the efference copy of the action; motor neurons hang off the workspace; context neurons carry a trace of the last workspace state. The world model is a records cortex (cerebellum-like): the reading passes through a fixed random expansion, the most active cells keep it, and each active cell holds a record of what followed. Every settling step of the brain is drawn as it happens.</p>
+    <h3>Measured</h3>
+    <p class="measured">Acceptance receipt, five seeds. Held-out reaching <b>99%</b> · copier tracking error <b>0.052</b> arm lengths · after a longer link <b>99%</b>, back on the original body <b>99%</b>. Same life, world model swapped: online MLP <b>2%</b> without replay and 98% with a ring · online transformer <b>40%</b> without replay and 100% with a ring · Jacobian controller 94% · random torques 0%. Learning curve of a read-only copy: 22% after 3,000 decisions, 60% after 6,000, 87% after 10,000.</p>
+    
+    <h3>How it works</h3>
+    <p>Your strokes are resampled, clipped to the reachable ring and played as a moving target. Every torque comes from the brain's step: the planner imagines each of nine torque pairs through the records cortex (the blue fan at the hand), scores the imagined motion against the target, and the brain executes the best. The outcome of every decision is written into exactly the records that read it, so the brain keeps learning while it copies. The exploration slider sets the chance of a random torque instead of the planner's choice.</p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/arm/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/comparisons/arm/receipt.json">comparison receipt</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a></p>
+  </details>
 </footer>
 <script type="module" src="page.js"></script>
 </body></html>
