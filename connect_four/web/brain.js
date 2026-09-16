@@ -1013,6 +1013,26 @@ export class Brain {
 
   parameters() { return { drop_records: this.drop.records.parameters(), line_records: this.lines.records.parameters() }; }
 
+  /** Install the memories the page fetched beside the checkpoints (build_page.memory_file): boards packed five cells to a byte. */
+  installMemory(file) {
+    const cells = file.cells | 0, per = file.packed | 0, width = Math.ceil(cells / per);
+    const unpack = (packed, i, out) => { for (let j = 0; j < width; j++) { let v = packed[i * width + j]; for (let k = 0; k < per && j * per + k < cells; k++) { out[j * per + k] = v % 3; v = (v - (v % 3)) / 3; } } return out; };
+    const board = new Int8Array(cells);
+    if (file.proofs && file.proofs.entries) {
+      const boards = unpackArray(file.proofs.boards), sides = unpackArray(file.proofs.sides), results = unpackArray(file.proofs.results);
+      for (let i = 0; i < file.proofs.entries; i++) this.planner.memory.set(this.planner._key(unpack(boards, i, board), sides[i]), results[i]);
+    }
+    if (file.wins && file.wins.entries) {
+      const boards = unpackArray(file.wins.boards), columns = unpackArray(file.wins.columns), counts = unpackArray(file.wins.counts);
+      for (let i = 0; i < file.wins.entries; i++) {
+        const key = String.fromCharCode.apply(null, unpack(boards, i, board));
+        let m = this.planner.wins.get(key); if (!m) { m = new Map(); this.planner.wins.set(key, m); }
+        m.set(columns[i], (m.get(columns[i]) || 0) + counts[i]);
+      }
+    }
+    return { proofs: this.planner.memory.size, wins: this.planner.wins.size };
+  }
+
   get extended() {
     if (this.validity.length < this.validityMin) return false;
     let sum = 0;

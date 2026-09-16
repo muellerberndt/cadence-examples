@@ -165,6 +165,33 @@ def cortex_block(cortex, extra: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def pack_boards(boards: np.ndarray) -> np.ndarray:
+    """Boards of ternary cells packed five cells to a byte, nine bytes a board (42 cells)."""
+    boards = np.asarray(boards, dtype=np.int64).reshape(len(boards), -1)
+    cells = boards.shape[1]
+    width = -(-cells // 5)
+    padded = np.zeros((len(boards), width * 5), dtype=np.int64)
+    padded[:, :cells] = boards
+    powers = 3 ** np.arange(5)
+    return (padded.reshape(len(boards), width, 5) * powers).sum(axis=2).astype(np.uint8)
+
+
+def memory_file(brain: Brain) -> dict[str, Any]:
+    """The brain's two memories as the page fetches them beside the checkpoints: the proven
+    positions and the columns winners played, boards packed five cells to a byte."""
+    memory = brain.planner.memory
+    boards = np.array([np.frombuffer(k[0], dtype=np.int8) for k in memory], dtype=np.int8).reshape(len(memory), brain.game.cells)
+    wins = [(k, c, n) for k, counts in brain.planner.wins.items() for c, n in counts.items()]
+    wboards = np.array([np.frombuffer(k, dtype=np.int8) for k, _, _ in wins], dtype=np.int8).reshape(len(wins), brain.game.cells)
+    return {
+        "format": "cadence-connect-four-memory/1", "cells": brain.game.cells, "packed": 5,
+        "proofs": {"entries": len(memory), "boards": b64(pack_boards(boards), "|u1"), "sides": b64(np.array([k[1] for k in memory], dtype=np.int8), "|i1"),
+                   "results": b64(np.array(list(memory.values()), dtype=np.float32), "<f4")},
+        "wins": {"entries": len(wins), "boards": b64(pack_boards(wboards), "|u1"), "columns": b64(np.array([c for _, c, _ in wins], dtype=np.int8), "|i1"),
+                 "counts": b64(np.array([min(n, 65535) for _, _, n in wins], dtype=np.uint16), "<u2")},
+    }
+
+
 def memory_block(brain: Brain) -> dict[str, Any]:
     """The positions the brain's searches proved, as the page reads them back."""
     memory = brain.planner.memory
@@ -202,8 +229,8 @@ def brain_block(brain: Brain) -> dict[str, Any]:
                               "has_uint32": int(state["has_uint32"]), "uinteger": int(state["uinteger"])},
         "validity": [bool(v) for v in brain.validity],
         "extended": bool(brain.extended),
-        "memory": memory_block(brain),
-        "wins": wins_block(brain),
+        "memory": {"entries": 0, "file": "checkpoints/memory.json"},  # the memories travel in their own file, fetched by the page
+        "wins": {"entries": 0, "file": "checkpoints/memory.json"},
         "parameters": brain.parameters(),
         "cortices": {
             "drop": cortex_block(brain.drop.records, {"chosen_gain": float(brain.drop.gain),
@@ -357,6 +384,13 @@ def main() -> int:
     chosen = manifest[-1]["id"] if args.inline == "last" else manifest[0]["id"] if args.inline == "first" else f"games{int(args.inline):06d}"
     if chosen not in payloads:
         raise SystemExit(f"--inline {args.inline}: no such checkpoint ({', '.join(payloads)})")
+    remembered = Brain.load(next(e["stem"] for e in entries if f"games{int(e['games']):06d}" == chosen))
+    memory_path = folder / "memory.json"
+    memory_path.write_text(json.dumps(memory_file(remembered), separators=(",", ":")), encoding="utf-8")
+    manifest.append({"id": "memory", "label": "what the brain remembers", "file": "checkpoints/memory.json", "games": int(remembered.counts.get("games_written", 0)),
+                     "labels": ["memory"], "bytes": memory_path.stat().st_size, "proofs": len(remembered.planner.memory), "wins": len(remembered.planner.wins),
+                     "source": str(next(e["stem"] for e in entries if f"games{int(e['games']):06d}" == chosen))})
+    print(f"  memory: {memory_path} ({memory_path.stat().st_size / 1e6:.2f} MB, {len(remembered.planner.memory):,} proven positions, {len(remembered.planner.wins):,} boards with winners' columns)")
     body = {"format": MANIFEST_FORMAT, "seed": seed, "run": str(args.run), "inlined": chosen, "checkpoints": manifest, "receipt": numbers}
     (args.out.parent / "checkpoints.json").write_text(json.dumps(body, indent=1), encoding="utf-8")
 

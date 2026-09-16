@@ -44,7 +44,7 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
 
   // -- the life
   const checkpoint = { id: MANIFEST ? MANIFEST.inlined : "inlined", label: FIRST.label || "this page's brain" };
-  let brain = null, world = null, config = null;
+  let brain = null, world = null, config = null, remembered = null;
   let restState = null, lastS = null, lastV = null, previousWeights = null;
 
   // -- the game
@@ -93,6 +93,20 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
     Object.assign(stats, freshStats());
     updateFacts(payload);
     newGame({ quiet: true });
+    loadMemory(payload);
+  }
+
+  /** The brain's memories, fetched beside the checkpoints after the page is up: the positions its searches proved
+   *  and the columns winners played, from its schooling against the perfect solver. */
+  async function loadMemory(payload) {
+    const entry = MANIFEST && MANIFEST.checkpoints ? MANIFEST.checkpoints.find((c) => c.id === "memory") : null;
+    const file = entry ? entry.file : (payload.brain.memory && payload.brain.memory.file) || null;
+    if (!file) return;
+    try {
+      const sizes = brain.installMemory(await fetchJSON(file));
+      remembered = sizes;
+      updateFacts(payload);
+    } catch (error) { console.warn("the memory did not load", error); }
   }
 
   function buildLegend(payload) {
@@ -108,7 +122,7 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
     $("counts").textContent = `${b.counts.transitions.toLocaleString()} moves watched · ${(b.counts.drop_writes + b.counts.line_writes + b.counts.value_writes).toLocaleString()} records written\n`
       + `${agent.n.toLocaleString()} neurons · ${agent.E.toLocaleString()} synapses · ${records.toLocaleString()} records in two cortices`;
     const facts = $("cardFacts");
-    if (facts) facts.textContent = `${agent.n.toLocaleString()} neurons in ${payload.agent.atlas.regions.length} regions · ${agent.E.toLocaleString()} directed synapses · ${brain.drop.records.parameters().toLocaleString()} drop records and ${brain.lines.records.parameters().toLocaleString()} line records in two cortices of ${b.cortices.drop.cells.toLocaleString()} cells · ${b.counts.transitions.toLocaleString()} moves watched in ${MANIFEST && MANIFEST.receipt ? MANIFEST.receipt.games.total.toLocaleString() : "1,200"} games · search depth ${brain.extendedDepth} within ${brain.extendedBudget.toLocaleString()} imagined transitions`;
+    if (facts) facts.textContent = `${agent.n.toLocaleString()} neurons in ${payload.agent.atlas.regions.length} regions · ${agent.E.toLocaleString()} directed synapses · ${brain.drop.records.parameters().toLocaleString()} drop records and ${brain.lines.records.parameters().toLocaleString()} line records in two cortices of ${b.cortices.drop.cells.toLocaleString()} cells · ${b.counts.transitions.toLocaleString()} moves watched in ${MANIFEST && MANIFEST.receipt ? MANIFEST.receipt.games.total.toLocaleString() : "1,200"} games · search depth ${brain.extendedDepth} within ${brain.extendedBudget.toLocaleString()} imagined transitions${brain.lateStones ? `, ${brain.lateDepth} from ${brain.lateStones} stones on` : ""}${remembered ? ` · ${remembered.wins.toLocaleString()} boards with the columns winners played and ${remembered.proofs.toLocaleString()} proven positions remembered from its schooling against the perfect solver` : ""}`;
   }
 
   // ---------------------------------------------------------------- the game
