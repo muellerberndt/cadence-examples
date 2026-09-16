@@ -120,6 +120,8 @@ def main() -> None:
     p.add_argument("--suite-seed", type=int, default=99)
     p.add_argument("--depth", type=int)
     p.add_argument("--budget", type=int)
+    p.add_argument("--threat-weight", type=float, help="weight of the threat summary in the leaf value")
+    p.add_argument("--parity-weight", type=float, help="weight of the threat rows in the threat summary")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args()
     solver = Solver()
@@ -136,12 +138,16 @@ def main() -> None:
             brain.extended_depth = brain.depth = int(a.depth)
         if a.budget is not None:
             brain.extended_budget = brain.budget = int(a.budget)
+        if a.threat_weight is not None:
+            brain.imagination.threat_weight = float(a.threat_weight)
+        if a.parity_weight is not None:
+            brain.imagination.parity_weight = float(a.parity_weight)
         depth, budget = (brain.extended_depth, brain.extended_budget) if brain.extended else (brain.depth, brain.budget)
 
         def choose(cells, legal):
             return brain.planner.search(np.asarray(cells, dtype=np.int8).ravel(), np.asarray(legal, bool), depth, budget)[0]
 
-        subject = {"brain": a.brain, "depth": depth, "budget": budget}
+        subject = {"brain": a.brain, "depth": depth, "budget": budget, "threat_weight": brain.imagination.threat_weight}
     else:
         policy = make_opponent(a.policy, 7, GameConfig(), {"solver": solver})
         choose = policy

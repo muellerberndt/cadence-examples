@@ -75,6 +75,8 @@ def main() -> None:
     p.add_argument("--learning", action="store_true", help="let the brain keep learning during the games (default frozen)")
     p.add_argument("--depth", type=int, help="override the brain's extended search depth")
     p.add_argument("--budget", type=int, help="override the brain's extended budget of imagined transitions")
+    p.add_argument("--threat-weight", type=float, help="weight of the threat summary in the leaf value")
+    p.add_argument("--parity-weight", type=float, help="weight of the threat rows in the threat summary")
     a = p.parse_args()
     if bool(a.brain) == bool(a.policy):
         raise SystemExit("give exactly one of --brain or --policy")
@@ -89,7 +91,11 @@ def main() -> None:
             brain.extended_depth = brain.depth = int(a.depth)
         if a.budget is not None:
             brain.extended_budget = brain.budget = int(a.budget)
-        subject = {"brain": a.brain, "extended": bool(brain.extended), "learning": bool(a.learning), "depth": brain.extended_depth, "budget": brain.extended_budget}
+        if a.threat_weight is not None:
+            brain.imagination.threat_weight = float(a.threat_weight)
+        if a.parity_weight is not None:
+            brain.imagination.parity_weight = float(a.parity_weight)
+        subject = {"brain": a.brain, "extended": bool(brain.extended), "learning": bool(a.learning), "depth": brain.extended_depth, "budget": brain.extended_budget, "threat_weight": brain.imagination.threat_weight}
     else:
         policy = make_opponent(a.policy, seed_for(STAGE, "bench", a.seed, 0, 0), game, shared={"solver": solver})
         subject = {"policy": a.policy}

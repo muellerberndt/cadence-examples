@@ -63,7 +63,7 @@ DEFAULTS: dict[str, Any] = {
     "actor": {"epsilon": 0.0},
     "drop_records": {"cells": 2000, "active": 20, "rate": 0.5, "habituation": 0.002, "bias": 0.3, "chosen_gain": 1.0},
     "line_records": {"cells": 2000, "active": 20, "rate": 0.5, "value_rate": 0.1, "habituation": 0.002, "bias": 0.3},
-    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False},
+    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False, "threat_weight": 0.0},
 }
 
 
@@ -121,6 +121,9 @@ class Layout:
         below = self.windows - game.cols
         self.window_below = np.where(below >= 0, below, 0)
         self.window_floor = below < 0
+        cells_below = np.arange(game.cells) - game.cols
+        self.floor_cells = cells_below < 0
+        self.window_below_cells = np.where(self.floor_cells, 0, cells_below)
         self.support_powers = 2 ** np.arange(game.connect)
         self.support_patterns = 2**game.connect if self.support else 1
         self.value_patterns = self.window_patterns * self.support_patterns
@@ -316,6 +319,40 @@ class Imagination:
 
     def __init__(self, layout: Layout, drop: DropRecords, lines: LineRecords) -> None:
         self.layout, self.drop, self.lines = layout, drop, lines
+        self.threat_weight = 0.0  # 0 keeps the plain window mean as the leaf value
+        self.parity_weight = 0.0  # the rows a standing threat has to stand on to be reached
+
+    def threat_cells(self, rel: np.ndarray) -> np.ndarray:
+        """The cells that complete a line for the side read as 1 in ``rel``: ``(..., cells)``.
+
+        Read from the learned complete field alone: a window holding one empty cell whose
+        filled pattern the line records rate as a completed line puts a threat on that cell.
+        Windows share their records, so one window pattern learned once serves every position."""
+        lay = self.layout
+        w = rel[..., lay.windows]                                   # (..., windows, connect)
+        ids = w @ lay.window_powers
+        empty = w == 0
+        spot = empty.argmax(axis=-1)                                # the first empty cell of each window
+        one = empty.sum(axis=-1) == 1                               # a window one cell short of full
+        filled = np.where(one, ids + lay.window_powers[spot], 0)    # that cell taken by the side read as 1
+        hit = one & (self.lines.complete[filled] > 0.5)
+        cells = np.take_along_axis(np.broadcast_to(lay.windows, hit.shape + (lay.connect,)), spot[..., None], -1)[..., 0]
+        out = np.zeros(rel.shape, dtype=bool)
+        flat_out, flat_cells, flat_hit = out.reshape(-1, lay.cells), cells.reshape(-1, hit.shape[-1]), hit.reshape(-1, hit.shape[-1])
+        rows = np.repeat(np.arange(flat_cells.shape[0]), flat_cells.shape[1])
+        np.logical_or.at(flat_out, (rows[flat_hit.reshape(-1)], flat_cells.reshape(-1)[flat_hit.reshape(-1)]), True)
+        return flat_out.reshape(rel.shape)
+
+    def threat_summary(self, boards: np.ndarray, mover: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """How the threats stand on ``boards`` just moved by ``mover``: the threat cells each
+        side can reach at once (the cell rests on a stone or the floor) and in total."""
+        lay = self.layout
+        other = OPPONENT if mover == CANDIDATE else CANDIDATE
+        mine = self.threat_cells(VIEW[mover][boards])
+        theirs = self.threat_cells(VIEW[other][boards])
+        below = boards[..., lay.window_below_cells]
+        playable = (boards == 0) & ((lay.floor_cells) | (below != 0))
+        return (mine & playable).sum(-1), mine.sum(-1), (theirs & playable).sum(-1), theirs.sum(-1)
 
     def legal(self, board: np.ndarray) -> np.ndarray:
         """The columns of an imagined board whose top cell is empty (the interface's legality)."""
@@ -347,7 +384,41 @@ class Imagination:
         won = self.lines.complete[self.layout.window_ids(rel)].max(axis=-1) > 0.5
         full = (boards != 0).all(axis=-1)
         value = self.lines.value[self.layout.value_ids(rel)].mean(axis=-1)
+        if self.threat_weight:
+            value = self.threat_value(boards, mover, value)
         return won, full, value
+
+    def parity_threats(self, boards: np.ndarray, mover: int) -> tuple[np.ndarray, np.ndarray]:
+        """Standing threats on the rows that fall to each side when the columns fill up. The side
+        that opened the game takes the odd rows counted from the floor and the other side the even
+        ones, so a threat of the mover's on its own rows outlives one that stands on the other's."""
+        lay = self.layout
+        other = OPPONENT if mover == CANDIDATE else CANDIDATE
+        stones = (boards != 0).sum(-1)
+        opener_moves_next = (stones % 2) == 0                       # the side that opened moves on even counts
+        row = np.arange(lay.cells) // lay.cols
+        odd_rows = (row % 2) == 0                                   # the opener's rows, counted from the floor
+        mine = self.threat_cells(VIEW[mover][boards])
+        theirs = self.threat_cells(VIEW[other][boards])
+        mover_opened = ~opener_moves_next                           # the mover has just moved, so it opened when
+        mine_rows = np.where(mover_opened[..., None], odd_rows, ~odd_rows)
+        return (mine & mine_rows).sum(-1), (theirs & ~mine_rows).sum(-1)
+
+    def threat_value(self, boards: np.ndarray, mover: int, base: np.ndarray) -> np.ndarray:
+        """The leaf value of ``boards`` just moved by ``mover``, with the threats that stand on
+        them read off the records. The other side moves next: one threat of theirs that can be
+        played at once decides the position, two reachable threats of the mover's decide it the
+        other way, and otherwise the standing threats tilt the window mean."""
+        mine_now, mine_all, theirs_now, theirs_all = self.threat_summary(boards, mover)
+        w = float(self.threat_weight)
+        tilt = np.clip(np.minimum(mine_all, 3) - np.minimum(theirs_all, 3), -3, 3) / 3.0
+        if self.parity_weight:
+            mine_odd, theirs_odd = self.parity_threats(boards, mover)
+            tilt = tilt + float(self.parity_weight) * np.clip(mine_odd - theirs_odd, -2, 2) / 2.0
+        value = np.clip(base + w * 0.5 * tilt, LEAF_MARGIN, 1.0 - LEAF_MARGIN)
+        value = np.where(mine_now >= 2, 1.0 - LEAF_MARGIN, value)
+        value = np.where(theirs_now >= 1, LEAF_MARGIN, value)
+        return value
 
     def static(self, board: np.ndarray, side: int) -> float:
         """The value of a board for ``side``, the side to move (the other side just moved)."""
@@ -532,6 +603,7 @@ class Brain:
         self.drop = DropRecords(self.layout, cfg["drop_records"], brain_seed(seed, 2))
         self.lines = LineRecords(self.layout, cfg["line_records"], brain_seed(seed, 3))
         self.imagination = Imagination(self.layout, self.drop, self.lines)
+        self.imagination.threat_weight = float(cfg["planner"].get("threat_weight", 0.0))
         self.planner = Planner(self.imagination, np.random.default_rng(brain_seed(seed, 4)))
         planning = config["planning"]
         self.depth, self.budget = int(planning["depth"]), int(planning["budget"])
