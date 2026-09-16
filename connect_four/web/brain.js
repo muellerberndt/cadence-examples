@@ -25,7 +25,7 @@ import { Board, cellsOf, gameConfig } from "./game.js";
 export const CHECKPOINT_FORMAT = "cadence-connect-four-checkpoint/1";
 export const BRAIN_FORMAT = "cadence-connect-four-web/1";
 export const CANDIDATE = 1, OPPONENT = 2;      // stone values of a board relative to the candidate
-export const WIN_BONUS = 1e-3;                  // a proven result one ply sooner scores this much better
+export const WIN_BONUS = 1e-4;                  // a proven result one ply sooner scores this much better
 export const LEAF_MARGIN = 0.01;                // leaf values stay inside [margin, 1 - margin]
 export const TIE = 1e-9;
 export const VIEW = [[0, 1, 2], [0, 1, 2], [0, 2, 1]]; // VIEW[side][cell]: side 1 keeps, side 2 swaps
@@ -706,6 +706,7 @@ export class Planner {
     this.depths = new Map();
     this.budget = 0;
     this._cache = new Map();
+    this._table = new Map();  // board+side -> {depth, value, bound, best}: what earlier visits established
     this._spent = 0;
     this._limit = 0;
   }
@@ -733,46 +734,80 @@ export class Planner {
     const { children, valid } = im.compose(board, side, columns);
     for (let k = 0; k < valid.length; k++) if (!valid[k]) this.invalid += 1;
     const { won, full, value } = im.outcome(children, side);
+    const { lost, wins } = this._decided(children, side, won, full);
     const clipped = new Float64Array(value.length);
     for (let k = 0; k < value.length; k++) clipped[k] = clamp(value[k], LEAF_MARGIN, 1.0 - LEAF_MARGIN);
     // the move order: proven wins first, then the higher value, then the column nearest the middle (np.lexsort)
     const centre = (im.layout.cols - 1) / 2;
     const primary = new Float64Array(columns.length), secondary = new Float64Array(columns.length);
-    for (let k = 0; k < columns.length; k++) { primary[k] = -(won[k] ? 2.0 : value[k]); secondary[k] = Math.abs(columns[k] - centre); }
+    for (let k = 0; k < columns.length; k++) { primary[k] = -(won[k] ? 2.0 : wins[k] ? 1.9 : lost[k] ? -1.0 : value[k]); secondary[k] = Math.abs(columns[k] - centre); }
     const order = Int32Array.from({ length: columns.length }, (_, k) => k).sort((a, b) => (primary[a] - primary[b]) || (secondary[a] - secondary[b]) || (a - b));
-    const entry = { columns, children, valid, won, full, value: clipped, order };
+    const entry = { columns, children, valid, won, full, value: clipped, order, lost, wins };
     this._cache.set(key, entry);
     return entry;
   }
 
+  /** Children the threats standing on them decide before any expansion: lost when the other side
+   *  can complete a line at once, won when the mover holds two threats it can reach at once and the
+   *  other side none. Read off the records; off with the threat weight. */
+  _decided(children, side, won, full) {
+    const n = children.length, lost = new Uint8Array(n), wins = new Uint8Array(n);
+    if (!this.imagination.threatWeight) return { lost, wins };
+    for (let k = 0; k < n; k++) {
+      if (won[k] || full[k]) continue;
+      const { mineNow, theirsNow } = this.imagination.threatSummary(children[k], side);
+      if (theirsNow >= 1) lost[k] = 1;
+      else if (mineNow >= 2) wins[k] = 1;
+    }
+    return { lost, wins };
+  }
+
   /** The value of `board` for `side` to move, searched `depth` plies. */
   _negamax(board, side, depth, alpha, beta, ply) {
-    const { columns, children, valid, won, full, value, order } = this._expand(board, side);
+    const expanded = this._expand(board, side);
+    const { columns, children, valid, won, full, value, lost, wins } = expanded;
+    let order = expanded.order;
     if (!columns.length) return 0.5;
+    const key = this._key(board, side), known = this._table.get(key);
+    const alpha0 = alpha;
+    if (known !== undefined) {
+      if (known.depth >= depth) {
+        if (known.bound === 0) return known.value;
+        if (known.bound === 1) { if (known.value > alpha) alpha = known.value; }
+        else if (known.bound === -1) { if (known.value < beta) beta = known.value; }
+        if (alpha >= beta) return known.value;
+      }
+      order = [known.best, ...Array.from(order).filter((k) => k !== known.best)];
+    }
     const other = side === CANDIDATE ? OPPONENT : CANDIDATE;
-    let best = -1.0, uncertain = null;
+    let best = -1.0, bestK = order[0], uncertain = null;
     for (const k of order) {
       let v;
       if (!valid[k]) { if (uncertain === null) uncertain = this.imagination.static_(board, side); v = uncertain; }
       else if (won[k]) v = 1.0 - WIN_BONUS * ply;
       else if (full[k]) v = 0.5;
+      else if (lost[k]) v = WIN_BONUS * (ply + 1);  // the other side completes a line next
+      else if (wins[k]) v = 1.0 - WIN_BONUS * (ply + 2);  // two threats to reach, one block
       else if (depth <= 1) v = value[k];
       else v = 1.0 - this._negamax(children[k], other, depth - 1, 1.0 - beta, 1.0 - alpha, ply + 1);
-      if (v > best) best = v;
+      if (v > best) { best = v; bestK = k; }
       if (v > alpha) alpha = v;
       if (alpha >= beta) break;
     }
+    const bound = best <= alpha0 ? -1 : best >= beta ? 1 : 0;  // an upper bound, a lower bound, or the value
+    this._table.set(key, { depth, value: best, bound, best: bestK });
     return best;
   }
 
   /** The candidate's column for `board` and what the search saw. */
   search(board, legal, depth, budget) {
     this._cache = new Map();
+    this._table = new Map();
     this._spent = 0;
     this._limit = budget | 0;
     this.budget = budget | 0;
     const invalidBefore = this.invalid;
-    const { columns, children, valid, won, full, value, order } = this._expand(board, CANDIDATE);
+    const { columns, children, valid, won, full, value, order, lost, wins } = this._expand(board, CANDIDATE);
     const rank = new Map();
     order.forEach((k, i) => rank.set(columns[k], i));
     const root = [];
@@ -792,6 +827,8 @@ export class Planner {
           if (!valid[k]) v = this.imagination.static_(board, CANDIDATE);
           else if (won[k]) v = 1.0 - WIN_BONUS;
           else if (full[k]) v = 0.5;
+          else if (lost[k]) v = WIN_BONUS * 2;
+          else if (wins[k]) v = 1.0 - WIN_BONUS * 3;
           else if (d === 1) v = value[k];
           // a move cut off by this window is worse than the best by more than a tie
           else v = 1.0 - this._negamax(children[k], OPPONENT, d - 1, 0.0, 1.0 - (best - 2 * TIE), 2);
@@ -828,6 +865,7 @@ export class Planner {
       read: root.map((c) => read.get(c)), sequence: [...sequence], choice: [...choice], budget: this.budget,
     };
     this._cache = new Map();
+    this._table = new Map();
     return info;
   }
 }

@@ -53,7 +53,7 @@ FORMAT = "cadence-s03-brain/1"
 M31 = 0x7FFFFFFF
 VIEW = np.array([[0, 1, 2], [0, 1, 2], [0, 2, 1]], dtype=np.int8)  # VIEW[side][cells]: side 1 keeps, side 2 swaps
 CANDIDATE, OPPONENT = 1, 2  # stone values of a board relative to the candidate
-WIN_BONUS = 1e-3  # a proven result one ply sooner scores this much better
+WIN_BONUS = 1e-4  # a proven result one ply sooner scores this much better; 16 plies stay above every leaf
 LEAF_MARGIN = 0.01  # leaf values stay inside [margin, 1 - margin], below every proven result
 TIE = 1e-9
 
@@ -457,6 +457,7 @@ class Planner:
         self.depths: dict[int, int] = {}
         self.budget = 0
         self._cache: dict[tuple[bytes, int], tuple] = {}
+        self._table: dict[tuple[bytes, int], tuple[int, float, int, int]] = {}  # (depth, value, bound, best k)
         self._spent = 0
         self._limit = 0
 
@@ -482,18 +483,50 @@ class Planner:
         children, valid = im.compose(board, side, columns)
         self.invalid += int((~valid).sum())
         won, full, value = im.outcome(children, side)
-        order = np.lexsort((np.abs(columns - (im.layout.cols - 1) / 2), -np.where(won, 2.0, value)))
-        entry = (columns, children, valid, won, full, np.clip(value, LEAF_MARGIN, 1.0 - LEAF_MARGIN), order)
+        lost, wins = self._decided(children, side, won, full)
+        order = np.lexsort((np.abs(columns - (im.layout.cols - 1) / 2), -np.where(won, 2.0, np.where(wins, 1.9, np.where(lost, -1.0, value)))))
+        entry = (columns, children, valid, won, full, np.clip(value, LEAF_MARGIN, 1.0 - LEAF_MARGIN), order, lost, wins)
         self._cache[key] = entry
         return entry
 
+    def _decided(self, children: np.ndarray, side: int, won: np.ndarray, full: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Children the threats standing on them decide before any expansion: lost when the
+        other side can complete a line at once, won when the mover holds two threats it can
+        reach at once and the other side none. Read off the records; off with the threat weight."""
+        if not self.imagination.threat_weight:
+            no = np.zeros(len(children), dtype=bool)
+            return no, no
+        mine_now, _, theirs_now, _ = self.imagination.threat_summary(children, side)
+        open_ = ~(won | full)
+        lost = open_ & (theirs_now >= 1)
+        wins = open_ & (theirs_now == 0) & (mine_now >= 2)
+        return lost, wins
+
     def _negamax(self, board: np.ndarray, side: int, depth: int, alpha: float, beta: float, ply: int) -> float:
-        """The value of ``board`` for ``side`` to move, searched ``depth`` plies."""
-        columns, children, valid, won, full, value, order = self._expand(board, side)
+        """The value of ``board`` for ``side`` to move, searched ``depth`` plies. A table keeps
+        what earlier visits of the same board established, as a value or a bound, with the
+        column that established it searched first."""
+        columns, children, valid, won, full, value, order, lost, wins = self._expand(board, side)
         if not len(columns):
             return 0.5
+        key = (board.tobytes(), side)
+        known = self._table.get(key)
+        alpha0 = alpha
+        if known is not None:
+            k_depth, k_value, k_bound, k_best = known
+            if k_depth >= depth:
+                if k_bound == 0:
+                    return k_value
+                if k_bound == 1:
+                    alpha = max(alpha, k_value)
+                elif k_bound == -1:
+                    beta = min(beta, k_value)
+                if alpha >= beta:
+                    return k_value
+            order = [k_best] + [k for k in order if k != k_best]
         other = OPPONENT if side == CANDIDATE else CANDIDATE
         best = -1.0
+        best_k = int(order[0])
         uncertain = None
         for k in order:
             if not valid[k]:
@@ -504,25 +537,33 @@ class Planner:
                 v = 1.0 - WIN_BONUS * ply
             elif full[k]:
                 v = 0.5
+            elif lost[k]:
+                v = WIN_BONUS * (ply + 1)  # the other side completes a line next
+            elif wins[k]:
+                v = 1.0 - WIN_BONUS * (ply + 2)  # two threats to reach, one block
             elif depth <= 1:
                 v = float(value[k])
             else:
                 v = 1.0 - self._negamax(children[k], other, depth - 1, 1.0 - beta, 1.0 - alpha, ply + 1)
-            best = max(best, v)
+            if v > best:
+                best, best_k = v, int(k)
             alpha = max(alpha, v)
             if alpha >= beta:
                 break
+        bound = -1 if best <= alpha0 else (1 if best >= beta else 0)  # an upper bound, a lower bound, or the value
+        self._table[key] = (depth, best, bound, best_k)
         return best
 
     def search(self, board: np.ndarray, legal: np.ndarray, depth: int, budget: int) -> tuple[int, dict[str, Any]]:
         """The candidate's column for ``board`` (relative to the candidate, the candidate to
         move) and what the search saw: value, completed depth, imagined transitions."""
         self._cache = {}
+        self._table = {}
         self._spent = 0
         self._limit = int(budget)
         self.budget = int(budget)
         invalid_before = self.invalid
-        columns, children, valid, won, full, value, order = self._expand(board, CANDIDATE)
+        columns, children, valid, won, full, value, order, lost, wins = self._expand(board, CANDIDATE)
         rank = {int(columns[k]): i for i, k in enumerate(order)}
         root = [int(c) for c in np.flatnonzero(legal)]
         sequence = sorted(root, key=lambda c: rank.get(c, 0))
@@ -541,6 +582,10 @@ class Planner:
                         v = 1.0 - WIN_BONUS
                     elif full[k]:
                         v = 0.5
+                    elif lost[k]:
+                        v = WIN_BONUS * 2
+                    elif wins[k]:
+                        v = 1.0 - WIN_BONUS * 3
                     elif d == 1:
                         v = float(value[k])
                     else:
@@ -565,6 +610,7 @@ class Planner:
                 "next_board": children[k].astype(float), "valid": float(valid[k]),
                 "root_values": {c: (v, children[int(np.flatnonzero(columns == c)[0])], bool(valid[int(np.flatnonzero(columns == c)[0])])) for c, v in values.items()}}
         self._cache = {}
+        self._table = {}
         return column, info
 
 
