@@ -63,7 +63,7 @@ DEFAULTS: dict[str, Any] = {
     "actor": {"epsilon": 0.0},
     "drop_records": {"cells": 2000, "active": 20, "rate": 0.5, "habituation": 0.002, "bias": 0.3, "chosen_gain": 1.0},
     "line_records": {"cells": 2000, "active": 20, "rate": 0.5, "value_rate": 0.1, "habituation": 0.002, "bias": 0.3},
-    "planner": {"validity_window": 500, "validity_min": 200},
+    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False},
 }
 
 
@@ -449,7 +449,8 @@ class Planner:
         self.nodes += self._spent
         self.depths[completed] = self.depths.get(completed, 0) + 1
         info = {"value": root_value, "depth": completed, "expansions": self._spent, "invalid": self.invalid - invalid_before,
-                "next_board": children[k].astype(float), "valid": float(valid[k])}
+                "next_board": children[k].astype(float), "valid": float(valid[k]),
+                "root_values": {c: (v, children[int(np.flatnonzero(columns == c)[0])], bool(valid[int(np.flatnonzero(columns == c)[0])])) for c, v in values.items()}}
         self._cache = {}
         return column, info
 
@@ -493,13 +494,14 @@ class Brain:
         planning = config["planning"]
         self.depth, self.budget = int(planning["depth"]), int(planning["budget"])
         self.extended_depth, self.extended_budget = int(planning["extended_depth"]), int(planning["extended_budget"])
+        self.bootstrap = bool(cfg["planner"].get("bootstrap", False))
         self.validity_gate = float(config["gates"]["next_board_validity"])
         self.validity: deque[bool] = deque(maxlen=int(cfg["planner"]["validity_window"]))
         self.validity_min = int(cfg["planner"]["validity_min"])
         self.agent = Agent(self._agent_config(), seed=brain_seed(seed, 0), stream_seeds=[brain_seed(seed, 1)], planner=self._plan)
         self.is_copy = False
         self.snapshots = 0
-        self.counts = {"transitions": 0, "drop_writes": 0, "line_writes": 0, "value_writes": 0, "games_written": 0, "validity_scored": 0}
+        self.counts = {"transitions": 0, "drop_writes": 0, "line_writes": 0, "value_writes": 0, "bootstrap_writes": 0, "games_written": 0, "validity_scored": 0}
         self._episode = -1
         self._board: np.ndarray | None = None
         self._held: tuple[int, int] | None = None
@@ -593,8 +595,21 @@ class Brain:
         board = cells_of(moment.observation, self.game).astype(np.int8)
         depth, budget = (self.extended_depth, self.extended_budget) if self.extended else (self.depth, self.budget)
         column, info = self.planner.search(board, np.asarray(moment.action_mask, bool), depth, budget)
+        if self.bootstrap and self.learning and info["depth"] >= 2:
+            self._bootstrap(board, info)
         prediction = {"next_board": info["next_board"], "valid": np.array([info["valid"]]), "value": np.array([info["value"]])}
         return column, prediction, {"expansions": int(info["expansions"]), "depth": int(info["depth"]), "invalid": int(info["invalid"])}
+
+    def _bootstrap(self, board: np.ndarray, info: dict[str, Any]) -> None:
+        """What a search of at least two plies found, written into the value records as if it
+        were an outcome: the root board (the opponent just moved) toward one minus the root
+        value, and every searched root move's imagined board (the candidate just moved) toward
+        its searched value. A forced win or loss within the horizon is thereby remembered by
+        the patterns of the board that led to it, which the one-ply read then sees."""
+        lay = self.layout
+        boards = [(lay.window_ids(VIEW[OPPONENT][board]), float(np.clip(1.0 - info["value"], 0.0, 1.0)))]
+        boards += [(lay.window_ids(VIEW[CANDIDATE][child]), float(np.clip(v, 0.0, 1.0))) for v, child, valid in info["root_values"].values() if valid]
+        self.counts["bootstrap_writes"] = self.counts.get("bootstrap_writes", 0) + self.lines.learn_values(boards)
 
     def new_world(self) -> None:
         """Attach to another world: fresh event cursors and no board from the last one. The

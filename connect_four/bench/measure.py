@@ -73,6 +73,8 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--learning", action="store_true", help="let the brain keep learning during the games (default frozen)")
+    p.add_argument("--depth", type=int, help="override the brain's extended search depth")
+    p.add_argument("--budget", type=int, help="override the brain's extended budget of imagined transitions")
     a = p.parse_args()
     if bool(a.brain) == bool(a.policy):
         raise SystemExit("give exactly one of --brain or --policy")
@@ -83,7 +85,11 @@ def main() -> None:
         brain = Brain.load(a.brain)
         if not a.learning:
             brain = brain.frozen()
-        subject = {"brain": a.brain, "extended": bool(brain.extended), "learning": bool(a.learning)}
+        if a.depth is not None:
+            brain.extended_depth = brain.depth = int(a.depth)
+        if a.budget is not None:
+            brain.extended_budget = brain.budget = int(a.budget)
+        subject = {"brain": a.brain, "extended": bool(brain.extended), "learning": bool(a.learning), "depth": brain.extended_depth, "budget": brain.extended_budget}
     else:
         policy = make_opponent(a.policy, seed_for(STAGE, "bench", a.seed, 0, 0), game, shared={"solver": solver})
         subject = {"policy": a.policy}
