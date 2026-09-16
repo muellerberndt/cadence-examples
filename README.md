@@ -1,6 +1,6 @@
 # Cadence examples
 
-Three applications that learn through one stream of experience: observe, remember, predict,
+Four applications that learn through one stream of experience: observe, remember, predict,
 act, learn from the outcome. Each entry links its page, its acceptance receipt and the
 verifier that recomputes the receipt from the event logs. The library is
 [cadence](https://github.com/muellerberndt/cadence); its README explains the principle.
@@ -68,6 +68,32 @@ holds a cue across a delay, adapts to doors that stop opening and grounds words 
   random, the privileged planner, a tabular model behind the same stores and search.
 - Details: [world/README.md](world/README.md).
 
+## Artist
+
+The arm of the first example holds a pen over a canvas. One life scribbles, learns what its
+strokes leave, and then draws requested figures it has never seen, replanning from what its
+canvas shows after every stroke; a longer link and an offset canvas change the body and the
+world mid-drawing and it keeps drawing.
+
+- Page: https://floatingpragma.io/cadence-examples/artist/ (draw a figure; the artist draws
+  it stroke by stroke with the whole brain live beside it; a checkpoint selector loads the
+  life after scribbling, after the segments, after the strokes and at the end).
+- Receipt: [artist/receipt.json](artist/receipt.json), five acceptance seeds. Measured:
+  held-out foreground F1 0.93 (gate 0.80) at a Chamfer distance of 0.014
+  (gate 0.04), the weakest family 0.91 (gate 0.70); after a longer link
+  0.93 and back on the original body 0.93; the same architecture frozen
+  from birth 0.00, random scribbling 0.08, the supplied path oracle
+  0.64, an online MLP with a replay ring behind the same search 0.80;
+  decision latency p95 75 ms (gate 90).
+- Supplied: the arm body, the canvas and its stroke rasterisation, the discrepancy measure,
+  the reward rule, the target families and splits, the two-level search over the recorded
+  consequences (a stroke intention, then the torques that follow it).
+- Learned: the records of the world head (the body consequences and the marks the pen
+  leaves in the window around it) and the settled regions' synapses, from empty records.
+- Controls: born frozen, random scribbling, the path oracle, the online MLP with a ring,
+  corrupted dynamics, shuffled action pairing, replanning removed, canvas readback removed.
+- Details: [artist/README.md](artist/README.md).
+
 ## Connect Four
 
 One life learns what a dropped stone does, which windows of four cells are completed lines
@@ -99,10 +125,11 @@ Python 3.11 or later and the library at the commit the receipts ran against:
 
 ```bash
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d"
-python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests
+python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests artist/tests
 python arm/run.py --seeds 0 --pilot --out runs/arm/pilot
 python world/run.py --seeds 0 --pilot --out runs/world/pilot
 python connect_four/run.py --seeds 0 --pilot --out runs/connect_four/pilot
+python artist/run.py --seeds 0 --pilot --out runs/artist/pilot
 python tools/verify_gallery.py
 ```
 
@@ -137,7 +164,7 @@ the mechanism in full.
 ## Layout
 
 `agent/`: the experience agent shared by every example (the event transaction, the records
-head, receipts, the web export). `arm/`, `world/`, `connect_four/`: one directory per example with `run.py`,
+head, receipts, the web export). `arm/`, `world/`, `connect_four/`, `artist/`: one directory per example with `run.py`,
 `verify.py`, `config.json`, tests, tools and `web/`. `web/`: the browser engine, the
 parity harness, the records view and the library's brain renderer. `tools/verify_gallery.py`:
 the gallery check the workflows run.

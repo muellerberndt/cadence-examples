@@ -25,16 +25,17 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Assemble the site
         run: |
-          mkdir -p _site/arm _site/world _site/connect_four
+          mkdir -p _site/arm _site/world _site/connect_four _site/artist
           cp index.html .nojekyll _site/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
           cp connect_four/index.html connect_four/receipt.json connect_four/cortices.json _site/connect_four/
+          cp artist/index.html artist/receipt.json _site/artist/
       - name: Fetch each page's checkpoint snapshots from the release its manifest names
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for stage in arm world connect_four; do
+          for stage in arm world connect_four artist; do
             if [ -f $stage/checkpoints.json ]; then
               release=$(python -c "import json; print(json.load(open('$stage/checkpoints.json'))['release'])")
               mkdir -p _site/$stage/checkpoints

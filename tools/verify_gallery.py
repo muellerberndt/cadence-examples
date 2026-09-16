@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLES = {"arm": "S01", "world": "S02", "connect_four": "S03"}
+EXAMPLES = {"arm": "S01", "world": "S02", "connect_four": "S03", "artist": "S04"}
 COMPARISONS = {"comparisons/arm": "S01-comparison", "comparisons/world": "S02-comparison"}
 
 

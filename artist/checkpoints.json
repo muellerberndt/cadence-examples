@@ -1,0 +1,53 @@
+{
+ "format": "cadence-artist-checkpoints/1",
+ "page": "index.html",
+ "inlined": {
+  "id": "inlined",
+  "label": "the final brain",
+  "decisions": 38174,
+  "source": "runs/artist/acceptance/artist_seed10_final.npz"
+ },
+ "checkpoints": [
+  {
+   "id": "after-the-scribbling",
+   "label": "after the scribbling",
+   "file": "checkpoints/after-the-scribbling.json",
+   "bytes": 17958805,
+   "decisions": 10000,
+   "source": "runs/artist/acceptance/artist_seed10_scribble.npz",
+   "sha256": "b6ad8425fe6ece2563845897240868386d2806baa22a46dbe291b3cbb202a487",
+   "asset": "artist-after-the-scribbling.json"
+  },
+  {
+   "id": "after-the-segments-13-082-decisions",
+   "label": "after the segments (13,082 decisions)",
+   "file": "checkpoints/after-the-segments-13-082-decisions.json",
+   "bytes": 17958830,
+   "decisions": 13082,
+   "source": "runs/artist/acceptance/artist_seed10_segment_013082.npz",
+   "sha256": "ab7ad50b12c7d62d206009074a68dbf078a7146ae13840c07402b6978ff7fdc1",
+   "asset": "artist-after-the-segments-13-082-decisions.json"
+  },
+  {
+   "id": "after-the-strokes-20-311-decisions",
+   "label": "after the strokes (20,311 decisions)",
+   "file": "checkpoints/after-the-strokes-20-311-decisions.json",
+   "bytes": 17958852,
+   "decisions": 20311,
+   "source": "runs/artist/acceptance/artist_seed10_stroke_020311.npz",
+   "sha256": "e6ab7d87fd4141c3648fcb6bd411185597457c81ea4a106d0dca22ab8213a6ad",
+   "asset": "artist-after-the-strokes-20-311-decisions.json"
+  },
+  {
+   "id": "after-the-compositions-30-038-decisions",
+   "label": "after the compositions (30,038 decisions)",
+   "file": "checkpoints/after-the-compositions-30-038-decisions.json",
+   "bytes": 17958854,
+   "decisions": 30038,
+   "source": "runs/artist/acceptance/artist_seed10_trained.npz",
+   "sha256": "b06f40663b33fc21d9616f31d174ee29ad334ebbf411a6a281c395fb5773e634",
+   "asset": "artist-after-the-compositions-30-038-decisions.json"
+  }
+ ],
+ "release": "checkpoints-2026-09-15"
+}
