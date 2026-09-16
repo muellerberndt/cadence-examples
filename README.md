@@ -101,13 +101,11 @@ and what positions are worth, from the games it plays, and chooses its moves by 
 over what it learned: no board object, no terminal oracle, no minimax labels.
 
 - Page: https://floatingpragma.io/cadence-examples/connect_four/ (play against the brain
-  while it keeps learning from the game; the columns it imagined and the values it read are
-  shown beside the whole brain; a checkpoint selector loads the brain after 100, 400 and
-  1,000 games and at every phase end). The page's brain trained against Pascal Pons'
-  perfect solver at graded strengths and plays its records at eight plies; its model card on
-  the page states the training, the bench against the solver and against an AlphaZero we
-  trained with alpha-zero-general's published recipe (0.945 over 100 paired games at 25
-  simulations per move), and what it cannot do. Receipt of that life:
+  while it keeps learning from the game, with the whole brain live beside the board). The
+  page's brain trained against Pascal Pons' perfect solver at graded strengths and plays its
+  records at eight plies; its model card states the training, the bench against the solver
+  and against an AlphaZero we trained with alpha-zero-general's published recipe (0.945 and
+  0.990 over 100 paired games at 25 and 100 simulations per move), and what it cannot do. Receipt of that life:
   [connect_four/receipt_solver.json](connect_four/receipt_solver.json); bench receipts:
   [connect_four/bench/receipts](connect_four/bench/receipts).
 - Receipt of the stage: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.

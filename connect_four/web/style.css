@@ -92,8 +92,8 @@ select { padding: 5px 7px; font-size: 12.5px; max-width: 100%; }
 .phase.learn { color: var(--warn); border-color: rgba(255, 140, 90, 0.35); }
 .brain-row { display: flex; gap: 8px; height: var(--brain); }
 .under-scan { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-.under-scan canvas#strip { flex: 1 1 auto; height: 44px; }
-.under-scan .phase { flex: 0 1 auto; max-width: 52%; }
+.under-scan canvas#strip { flex: 1 1 auto; height: 72px; }
+.under-scan .phase { flex: 0 1 auto; max-width: 44%; }
 .lede b { color: var(--accent); font-weight: 650; }
 .card-facts { color: var(--text) !important; font: 11.5px/1.5 var(--mono) !important; }
 .stage { position: relative; flex: 1 1 auto; min-width: 0; border: 1px solid #13202c; border-radius: 12px; overflow: hidden; background: #070d13; }
