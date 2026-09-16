@@ -26,7 +26,9 @@
     "depths": {},
     "budget": 0
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000100"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000100",
+   "sha256": "fb3366b68722634ffadefe3ab102b4e085ebf53d73013abca3efd38a8cca5050",
+   "asset": "connect_four-games000100.json"
   },
   {
    "id": "games000200",
@@ -50,7 +52,9 @@
     "depths": {},
     "budget": 0
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000200"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000200",
+   "sha256": "aaddde5d60390cc552371d1275425ca1336b4d7a77a53ed98e70a8b3b7796301",
+   "asset": "connect_four-games000200.json"
   },
   {
    "id": "games000400",
@@ -79,7 +83,9 @@
     },
     "budget": 0
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000400"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000400",
+   "sha256": "0e95fbd89e13bb142d4becb55db7cfa5891e5db9283f0ab8d2cb116ca3ea9e9c",
+   "asset": "connect_four-games000400.json"
   },
   {
    "id": "games001000",
@@ -109,7 +115,9 @@
     },
     "budget": 0
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001000"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001000",
+   "sha256": "855004bbea844cbcba114e5df408aaab8a6ab8504d4af824202f9503653623dc",
+   "asset": "connect_four-games001000.json"
   },
   {
    "id": "games001200",
@@ -138,7 +146,9 @@
     },
     "budget": 0
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001200"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001200",
+   "sha256": "4dc5bd1c522e908786ea89ae9628ec223b706effefa4a84ace9e7ca2633f5d38",
+   "asset": "connect_four-games001200.json"
   }
  ],
  "receipt": {
@@ -289,5 +299,6 @@
     "passed": true
    }
   ]
- }
+ },
+ "release": "checkpoints-2026-09-16"
 }
