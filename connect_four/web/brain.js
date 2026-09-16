@@ -299,6 +299,9 @@ export class Layout {
     this.columnPatterns = 3 ** game.rows;
     this.windowPatterns = 3 ** game.connect;
     this.columnOf = Int32Array.from({ length: game.cells }, (_, i) => i % game.cols);
+    this.rowOf = Int32Array.from({ length: game.cells }, (_, i) => Math.floor(i / game.cols));
+    this.floorCells = Uint8Array.from({ length: game.cells }, (_, i) => (i - game.cols < 0 ? 1 : 0));
+    this.belowCell = Int32Array.from({ length: game.cells }, (_, i) => (i - game.cols < 0 ? 0 : i - game.cols));
     this.throughWindows = [];  // the windows through each cell
     for (let cell = 0; cell < game.cells; cell++) this.throughWindows.push(Int32Array.from(windows.map((w, k) => (w.includes(cell) ? k : -1)).filter((k) => k >= 0)));
   }
@@ -539,7 +542,90 @@ export class LineRecords {
 
 /** Imagined consequences read from the records: composed boards, their validity, terminal status and value. Reads only. */
 export class Imagination {
-  constructor(layout, drop, lines) { this.layout = layout; this.drop = drop; this.lines = lines; }
+  constructor(layout, drop, lines) {
+    this.layout = layout; this.drop = drop; this.lines = lines;
+    this.threatWeight = 0.0;  // 0 keeps the plain window mean as the leaf value
+    this.parityWeight = 0.0;  // the rows a standing threat has to stand on to be reached
+    this._rel = new Int8Array(layout.cells);
+    this._mine = new Uint8Array(layout.cells);
+    this._theirs = new Uint8Array(layout.cells);
+  }
+
+  /**
+   * The cells that complete a line for the side read as 1 in `rel`, read from the learned complete
+   * field alone: a window holding one empty cell whose filled pattern the line records rate as a
+   * completed line puts a threat on that cell.
+   */
+  threatCells(rel, out) {
+    const lay = this.layout;
+    out.fill(0);
+    for (let w = 0; w < lay.windows.length; w++) {
+      const cells = lay.windows[w];
+      let id = 0, empties = 0, spot = -1;
+      for (let k = 0; k < lay.connect; k++) {
+        const v = rel[cells[k]];
+        id += v * lay.windowPowers[k];
+        if (v === 0) { empties += 1; if (spot < 0) spot = k; }
+      }
+      if (empties !== 1) continue;  // a full window has no spot: the lookup is masked, as in Python
+      if (this.lines.complete[id + lay.windowPowers[spot]] > 0.5) out[cells[spot]] = 1;
+    }
+    return out;
+  }
+
+  /** How the threats stand on `board` just moved by `mover`: reachable at once, and in total, per side. */
+  threatSummary(board, mover) {
+    const lay = this.layout, other = mover === CANDIDATE ? OPPONENT : CANDIDATE;
+    const mine = this.threatCells(viewOf(mover, board, this._rel), this._mine);
+    const theirs = this.threatCells(viewOf(other, board, this._rel), this._theirs);
+    let mineNow = 0, mineAll = 0, theirsNow = 0, theirsAll = 0;
+    for (let i = 0; i < lay.cells; i++) {
+      const playable = board[i] === 0 && (lay.floorCells[i] === 1 || board[lay.belowCell[i]] !== 0);
+      if (mine[i]) { mineAll += 1; if (playable) mineNow += 1; }
+      if (theirs[i]) { theirsAll += 1; if (playable) theirsNow += 1; }
+    }
+    return { mineNow, mineAll, theirsNow, theirsAll };
+  }
+
+  /**
+   * Standing threats on the rows that fall to each side when the columns fill up: the side that
+   * opened takes the odd rows counted from the floor (row 0, 2, 4), the other side the even ones.
+   */
+  parityThreats(board, mover) {
+    const lay = this.layout, other = mover === CANDIDATE ? OPPONENT : CANDIDATE;
+    let stones = 0;
+    for (let i = 0; i < lay.cells; i++) if (board[i] !== 0) stones += 1;
+    const moverOpened = stones % 2 !== 0;  // the opener moves on even counts; the mover has just moved
+    const mine = this.threatCells(viewOf(mover, board, this._rel), this._mine);
+    const theirs = this.threatCells(viewOf(other, board, this._rel), this._theirs);
+    let mineOdd = 0, theirsOdd = 0;
+    for (let i = 0; i < lay.cells; i++) {
+      const openerRow = lay.rowOf[i] % 2 === 0;
+      const mineRow = moverOpened ? openerRow : !openerRow;
+      if (mine[i] && mineRow) mineOdd += 1;
+      if (theirs[i] && !mineRow) theirsOdd += 1;
+    }
+    return { mineOdd, theirsOdd };
+  }
+
+  /**
+   * The leaf value of `board` just moved by `mover` with the threats that stand on it: one threat
+   * of the other side's playable at once decides the position, two reachable threats of the mover's
+   * decide it the other way, and otherwise the standing threats tilt the window mean.
+   */
+  threatValue(board, mover, base) {
+    const { mineNow, mineAll, theirsNow, theirsAll } = this.threatSummary(board, mover);
+    const w = this.threatWeight;
+    let tilt = Math.min(Math.max(Math.min(mineAll, 3) - Math.min(theirsAll, 3), -3), 3) / 3.0;
+    if (this.parityWeight) {
+      const { mineOdd, theirsOdd } = this.parityThreats(board, mover);
+      tilt = tilt + this.parityWeight * Math.min(Math.max(mineOdd - theirsOdd, -2), 2) / 2.0;
+    }
+    let value = clamp(base + w * 0.5 * tilt, LEAF_MARGIN, 1.0 - LEAF_MARGIN);
+    if (mineNow >= 2) value = 1.0 - LEAF_MARGIN;
+    if (theirsNow >= 1) value = LEAF_MARGIN;
+    return value;
+  }
 
   /** The columns of an imagined board whose top cell is empty. */
   legal(board) {
@@ -584,6 +670,7 @@ export class Imagination {
       won[k] = top > 0.5 ? 1 : 0;
       full[k] = empty ? 0 : 1;
       value[k] = npSum(buffer, 0, ids.length) / ids.length;
+      if (this.threatWeight) value[k] = this.threatValue(boards[k], mover, value[k]);
     }
     return { won, full, value };
   }
@@ -776,6 +863,8 @@ export class Brain {
     this.lines.records.load({ ...block.cortices.lines, ...(cortices ? cortices.lines : {}) });
     this.expansion = { drop: this.drop.records.regenerated, lines: this.lines.records.regenerated };
     this.imagination = new Imagination(this.layout, this.drop, this.lines);
+    this.imagination.threatWeight = Number((this.cfg.planner || {}).threat_weight || 0);
+    this.imagination.parityWeight = Number((this.cfg.planner || {}).parity_weight || 0);
     this.planner = new Planner(this.imagination, new PCG64(block.planner_generator));
     this.depth = block.planning.depth | 0;
     this.budget = block.planning.budget | 0;
