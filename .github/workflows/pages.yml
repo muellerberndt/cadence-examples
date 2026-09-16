@@ -29,12 +29,13 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Assemble the site
         run: |
-          mkdir -p _site/arm _site/world _site/connect_four _site/artist
+          mkdir -p _site/arm _site/world _site/connect_four _site/artist _site/composer
           cp index.html .nojekyll _site/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
           cp connect_four/index.html connect_four/receipt.json connect_four/cortices.json _site/connect_four/
           cp artist/index.html artist/receipt.json _site/artist/
+          cp composer/index.html composer/receipt.json composer/checkpoints.json _site/composer/
       - name: Fetch each page's checkpoint snapshots from the release its manifest names
         env:
           GH_TOKEN: ${{ github.token }}
@@ -49,6 +50,15 @@ jobs:
               python tools/checkpoint_assets.py verify $stage _site/$stage/checkpoints
             fi
           done
+      - name: Fetch the composer's bundle (audio, frames and atlas) from the release its manifest names
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release=$(python -c "import json; print(json.load(open('composer/checkpoints.json'))['release'])")
+          mkdir -p _site/composer/assets
+          gh release download "$release" --pattern "composer-*" --dir _site/composer/assets
+          for f in _site/composer/assets/composer-*; do mv "$f" "_site/composer/assets/$(basename "$f" | sed "s/^composer-//")"; done
+          python tools/checkpoint_assets.py verify composer _site/composer/assets
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

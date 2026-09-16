@@ -1,0 +1,338 @@
+{
+ "format": "cadence-composer-assets/1",
+ "page": "index.html",
+ "bundle": {
+  "source": "/Users/muellerberndt/Projects/oph-meta/cadence-paper/experiments/experience/s06_composer/public",
+  "format": "s06-public-bundle/1",
+  "manifest_sha256": "e2a14e1696e932965dcf94eec56cd2b80e3154cd18f84c311f75a939d4c37320",
+  "pieces": 7,
+  "run": "S06-acceptance-20260916T021058Z"
+ },
+ "release": "composer-bundle-2026-09-16",
+ "checkpoints": [
+  {
+   "id": "atlas",
+   "label": "the brain's atlas",
+   "file": "assets/atlas.json",
+   "bytes": 5736978,
+   "sha256": "f5e23ddd49e464e9383ee40ea1156bcc52a28182f7e937afa3a55b742d6e5acf",
+   "source": "atlas.json",
+   "asset": "composer-atlas.json"
+  },
+  {
+   "id": "a-b-a-form-demonstration",
+   "label": "A-B-A form: the demonstration, rendered by the emulator",
+   "file": "assets/a-b-a-form-demonstration.wav",
+   "bytes": 169388,
+   "sha256": "0651bad0e8b6a8b1d210cf8ce447ed259c6a6d7674b0525a80dcf9a0a4a93b35",
+   "source": "a-b-a-form/demonstration.wav",
+   "asset": "composer-a-b-a-form-demonstration.wav"
+  },
+  {
+   "id": "a-b-a-form-imitation",
+   "label": "A-B-A form: the imitation, rendered by the emulator",
+   "file": "assets/a-b-a-form-imitation.wav",
+   "bytes": 169388,
+   "sha256": "9e3e0f4eaf196b040f4cc912c53d61969f8e840ec6d5980ca7a46527fb579c63",
+   "source": "a-b-a-form/imitation.wav",
+   "asset": "composer-a-b-a-form-imitation.wav"
+  },
+  {
+   "id": "a-b-a-form-continuation",
+   "label": "A-B-A form: the continuation, rendered by the emulator",
+   "file": "assets/a-b-a-form-continuation.wav",
+   "bytes": 84716,
+   "sha256": "d40860b9e10894e269f65260506f336804867d0c5f9f6fe589df5659489003a1",
+   "source": "a-b-a-form/continuation.wav",
+   "asset": "composer-a-b-a-form-continuation.wav"
+  },
+  {
+   "id": "a-b-a-form-imitation",
+   "label": "A-B-A form: the settling frames and the records of the imitation episode",
+   "file": "assets/a-b-a-form-imitation.frames.json",
+   "bytes": 4599183,
+   "sha256": "9de00d89bb3f93b8c3a1edd47109e041e248b7c29851f514fd16a9cc3f0aad3e",
+   "source": "a-b-a-form/imitation.frames.json",
+   "asset": "composer-a-b-a-form-imitation.frames.json"
+  },
+  {
+   "id": "a-b-a-form-continuation",
+   "label": "A-B-A form: the settling frames and the records of the continuation episode",
+   "file": "assets/a-b-a-form-continuation.frames.json",
+   "bytes": 2318650,
+   "sha256": "fd0312c7ff468c14edf357c9047f05f8c998a7bbaa6357cf5c8123fabc0774ad",
+   "source": "a-b-a-form/continuation.frames.json",
+   "asset": "composer-a-b-a-form-continuation.frames.json"
+  },
+  {
+   "id": "fast-arpeggio-demonstration",
+   "label": "Fast arpeggio: the demonstration, rendered by the emulator",
+   "file": "assets/fast-arpeggio-demonstration.wav",
+   "bytes": 169388,
+   "sha256": "fc4480a814ee0ba1b4e1bd2c3c68292d8f71b30ef50da8e1f65cc25aa19b409f",
+   "source": "fast-arpeggio/demonstration.wav",
+   "asset": "composer-fast-arpeggio-demonstration.wav"
+  },
+  {
+   "id": "fast-arpeggio-imitation",
+   "label": "Fast arpeggio: the imitation, rendered by the emulator",
+   "file": "assets/fast-arpeggio-imitation.wav",
+   "bytes": 169388,
+   "sha256": "5862a8cb485e40ec67b64b23394333c6a52760755d6717e08bf8d8daa00fdc66",
+   "source": "fast-arpeggio/imitation.wav",
+   "asset": "composer-fast-arpeggio-imitation.wav"
+  },
+  {
+   "id": "fast-arpeggio-continuation",
+   "label": "Fast arpeggio: the continuation, rendered by the emulator",
+   "file": "assets/fast-arpeggio-continuation.wav",
+   "bytes": 84716,
+   "sha256": "15789b181321ea4926fbdf7ae4be075665bf5a2c40457596df44f7a376875d87",
+   "source": "fast-arpeggio/continuation.wav",
+   "asset": "composer-fast-arpeggio-continuation.wav"
+  },
+  {
+   "id": "fast-arpeggio-imitation",
+   "label": "Fast arpeggio: the settling frames and the records of the imitation episode",
+   "file": "assets/fast-arpeggio-imitation.frames.json",
+   "bytes": 4597225,
+   "sha256": "2b95627bb6591ab48bf235776f3729414d6db4acddf7d8d087dadef7771a14de",
+   "source": "fast-arpeggio/imitation.frames.json",
+   "asset": "composer-fast-arpeggio-imitation.frames.json"
+  },
+  {
+   "id": "fast-arpeggio-continuation",
+   "label": "Fast arpeggio: the settling frames and the records of the continuation episode",
+   "file": "assets/fast-arpeggio-continuation.frames.json",
+   "bytes": 2318322,
+   "sha256": "004a143c49d10e4e19d3b0cf63aeb34bde70e475cabc484831f29ea58d37b218",
+   "source": "fast-arpeggio/continuation.frames.json",
+   "asset": "composer-fast-arpeggio-continuation.frames.json"
+  },
+  {
+   "id": "one-voice-scale-demonstration",
+   "label": "One voice, a scale: the demonstration, rendered by the emulator",
+   "file": "assets/one-voice-scale-demonstration.wav",
+   "bytes": 169388,
+   "sha256": "308b93ab31783c0ca2f58fa3f1fbcdeb1f2c8e2832c3b8e9caaf40a5d76f00a3",
+   "source": "one-voice-scale/demonstration.wav",
+   "asset": "composer-one-voice-scale-demonstration.wav"
+  },
+  {
+   "id": "one-voice-scale-imitation",
+   "label": "One voice, a scale: the imitation, rendered by the emulator",
+   "file": "assets/one-voice-scale-imitation.wav",
+   "bytes": 169388,
+   "sha256": "97b2e09c34158678f8d21985c3915f7c6a62c1d4aa160d7bfc612fa32370f5ce",
+   "source": "one-voice-scale/imitation.wav",
+   "asset": "composer-one-voice-scale-imitation.wav"
+  },
+  {
+   "id": "one-voice-scale-continuation",
+   "label": "One voice, a scale: the continuation, rendered by the emulator",
+   "file": "assets/one-voice-scale-continuation.wav",
+   "bytes": 84716,
+   "sha256": "3d7a28e83aa02d1814cea8af20d8b5422ea622b1984e58bf39aaed617975f684",
+   "source": "one-voice-scale/continuation.wav",
+   "asset": "composer-one-voice-scale-continuation.wav"
+  },
+  {
+   "id": "one-voice-scale-imitation",
+   "label": "One voice, a scale: the settling frames and the records of the imitation episode",
+   "file": "assets/one-voice-scale-imitation.frames.json",
+   "bytes": 4597326,
+   "sha256": "0b3e9c1d214d9b9ac5a0587f23d1ed4de2a08aa3f2964fcbfad65dcd32186e52",
+   "source": "one-voice-scale/imitation.frames.json",
+   "asset": "composer-one-voice-scale-imitation.frames.json"
+  },
+  {
+   "id": "one-voice-scale-continuation",
+   "label": "One voice, a scale: the settling frames and the records of the continuation episode",
+   "file": "assets/one-voice-scale-continuation.frames.json",
+   "bytes": 2317824,
+   "sha256": "ed008cd7a16f624e1a206467bbdc816015c630d13ee4d3086c997716684f61e8",
+   "source": "one-voice-scale/continuation.frames.json",
+   "asset": "composer-one-voice-scale-continuation.frames.json"
+  },
+  {
+   "id": "ostinato-in-c-a-third-up-demonstration",
+   "label": "Ostinato in C, a third up: the demonstration, rendered by the emulator",
+   "file": "assets/ostinato-in-c-a-third-up-demonstration.wav",
+   "bytes": 169388,
+   "sha256": "64d585dbe27fa2d8c9f9bac167e4b8d2eaecf98dc276aed57b4c7c2f76dc24e8",
+   "source": "ostinato-in-c-a-third-up/demonstration.wav",
+   "asset": "composer-ostinato-in-c-a-third-up-demonstration.wav"
+  },
+  {
+   "id": "ostinato-in-c-a-third-up-imitation",
+   "label": "Ostinato in C, a third up: the imitation, rendered by the emulator",
+   "file": "assets/ostinato-in-c-a-third-up-imitation.wav",
+   "bytes": 169388,
+   "sha256": "28ff8a1bcb4c520a575076932359b89ffc949b1aadbf87227af5a20dd9e36259",
+   "source": "ostinato-in-c-a-third-up/imitation.wav",
+   "asset": "composer-ostinato-in-c-a-third-up-imitation.wav"
+  },
+  {
+   "id": "ostinato-in-c-a-third-up-continuation",
+   "label": "Ostinato in C, a third up: the continuation, rendered by the emulator",
+   "file": "assets/ostinato-in-c-a-third-up-continuation.wav",
+   "bytes": 84716,
+   "sha256": "b129d5d8039a491eb2262e19fbcf4e248d724e4c16775414fcd81dc3a4dcc26d",
+   "source": "ostinato-in-c-a-third-up/continuation.wav",
+   "asset": "composer-ostinato-in-c-a-third-up-continuation.wav"
+  },
+  {
+   "id": "ostinato-in-c-a-third-up-imitation",
+   "label": "Ostinato in C, a third up: the settling frames and the records of the imitation episode",
+   "file": "assets/ostinato-in-c-a-third-up-imitation.frames.json",
+   "bytes": 4599542,
+   "sha256": "aa8e975ef3f523bc1cdf22333bb9099998a41ba2ec74375319b09440644cf767",
+   "source": "ostinato-in-c-a-third-up/imitation.frames.json",
+   "asset": "composer-ostinato-in-c-a-third-up-imitation.frames.json"
+  },
+  {
+   "id": "ostinato-in-c-a-third-up-continuation",
+   "label": "Ostinato in C, a third up: the settling frames and the records of the continuation episode",
+   "file": "assets/ostinato-in-c-a-third-up-continuation.frames.json",
+   "bytes": 2319002,
+   "sha256": "5e300547893947f318465c638e3ac8b6094459a6b776a0538349d777ed832bb7",
+   "source": "ostinato-in-c-a-third-up/continuation.frames.json",
+   "asset": "composer-ostinato-in-c-a-third-up-continuation.frames.json"
+  },
+  {
+   "id": "ostinato-in-c-demonstration",
+   "label": "Ostinato in C: the demonstration, rendered by the emulator",
+   "file": "assets/ostinato-in-c-demonstration.wav",
+   "bytes": 169388,
+   "sha256": "f271157245199268a637570446a81da079e469c5ef64b14d11d8341abcbca0bd",
+   "source": "ostinato-in-c/demonstration.wav",
+   "asset": "composer-ostinato-in-c-demonstration.wav"
+  },
+  {
+   "id": "ostinato-in-c-imitation",
+   "label": "Ostinato in C: the imitation, rendered by the emulator",
+   "file": "assets/ostinato-in-c-imitation.wav",
+   "bytes": 169388,
+   "sha256": "61d397be1b7fdc06c296ddf5c04e7761ee7b794f2e6c3a54fb234cd394c51091",
+   "source": "ostinato-in-c/imitation.wav",
+   "asset": "composer-ostinato-in-c-imitation.wav"
+  },
+  {
+   "id": "ostinato-in-c-continuation",
+   "label": "Ostinato in C: the continuation, rendered by the emulator",
+   "file": "assets/ostinato-in-c-continuation.wav",
+   "bytes": 84716,
+   "sha256": "2e9392c8ba8ace73dae4a396d01ce09dae14b9a099c4d96bae6d94cf1152c36d",
+   "source": "ostinato-in-c/continuation.wav",
+   "asset": "composer-ostinato-in-c-continuation.wav"
+  },
+  {
+   "id": "ostinato-in-c-imitation",
+   "label": "Ostinato in C: the settling frames and the records of the imitation episode",
+   "file": "assets/ostinato-in-c-imitation.frames.json",
+   "bytes": 4598526,
+   "sha256": "e6dde59e3df0a22193b186deda066f4e18ca657f1ce99202e8e0dd2eb04764cc",
+   "source": "ostinato-in-c/imitation.frames.json",
+   "asset": "composer-ostinato-in-c-imitation.frames.json"
+  },
+  {
+   "id": "ostinato-in-c-continuation",
+   "label": "Ostinato in C: the settling frames and the records of the continuation episode",
+   "file": "assets/ostinato-in-c-continuation.frames.json",
+   "bytes": 2318532,
+   "sha256": "92f50fd03afddce5667eba5678508bf5172fa32613e4473eb5670e062fefde22",
+   "source": "ostinato-in-c/continuation.frames.json",
+   "asset": "composer-ostinato-in-c-continuation.frames.json"
+  },
+  {
+   "id": "sparse-answer-demonstration",
+   "label": "Voices that rest apart: the demonstration, rendered by the emulator",
+   "file": "assets/sparse-answer-demonstration.wav",
+   "bytes": 169388,
+   "sha256": "59a5d5532146229f343edee2f5cd4afb6c70c9e5ba0c2b5cc87d142efce5d2a7",
+   "source": "sparse-answer/demonstration.wav",
+   "asset": "composer-sparse-answer-demonstration.wav"
+  },
+  {
+   "id": "sparse-answer-imitation",
+   "label": "Voices that rest apart: the imitation, rendered by the emulator",
+   "file": "assets/sparse-answer-imitation.wav",
+   "bytes": 169388,
+   "sha256": "b4bae6d8d6e449a777fa34b3320e3937298ea52995b44eb20377bff12955b1da",
+   "source": "sparse-answer/imitation.wav",
+   "asset": "composer-sparse-answer-imitation.wav"
+  },
+  {
+   "id": "sparse-answer-continuation",
+   "label": "Voices that rest apart: the continuation, rendered by the emulator",
+   "file": "assets/sparse-answer-continuation.wav",
+   "bytes": 84716,
+   "sha256": "7662f4303886201499ba4bbd50ab4dd4826d61db8ffd4cd7dcc5a9428b55e175",
+   "source": "sparse-answer/continuation.wav",
+   "asset": "composer-sparse-answer-continuation.wav"
+  },
+  {
+   "id": "sparse-answer-imitation",
+   "label": "Voices that rest apart: the settling frames and the records of the imitation episode",
+   "file": "assets/sparse-answer-imitation.frames.json",
+   "bytes": 4594795,
+   "sha256": "aa61b8819adb59871b8f26afe6590d619cd480c6a0a97caa58fd339491c8ba23",
+   "source": "sparse-answer/imitation.frames.json",
+   "asset": "composer-sparse-answer-imitation.frames.json"
+  },
+  {
+   "id": "sparse-answer-continuation",
+   "label": "Voices that rest apart: the settling frames and the records of the continuation episode",
+   "file": "assets/sparse-answer-continuation.frames.json",
+   "bytes": 2317924,
+   "sha256": "d2f8ecf894de0bc963c58dda4188f9dd61a5f7e748a2af3fe2e6a250c778bc15",
+   "source": "sparse-answer/continuation.frames.json",
+   "asset": "composer-sparse-answer-continuation.frames.json"
+  },
+  {
+   "id": "walking-bassline-demonstration",
+   "label": "Walking bass line: the demonstration, rendered by the emulator",
+   "file": "assets/walking-bassline-demonstration.wav",
+   "bytes": 169386,
+   "sha256": "d42fa0c1437144689b14a1b25e500488f7fdd24be4d08c62b3e69d4f3b359ac5",
+   "source": "walking-bassline/demonstration.wav",
+   "asset": "composer-walking-bassline-demonstration.wav"
+  },
+  {
+   "id": "walking-bassline-imitation",
+   "label": "Walking bass line: the imitation, rendered by the emulator",
+   "file": "assets/walking-bassline-imitation.wav",
+   "bytes": 169388,
+   "sha256": "47e4d3db00e4dd9e23c215ee4780517a71553136aec3dbf75b9a05bfd0a550af",
+   "source": "walking-bassline/imitation.wav",
+   "asset": "composer-walking-bassline-imitation.wav"
+  },
+  {
+   "id": "walking-bassline-continuation",
+   "label": "Walking bass line: the continuation, rendered by the emulator",
+   "file": "assets/walking-bassline-continuation.wav",
+   "bytes": 84716,
+   "sha256": "de203bca00624aa49191936a7d53929fc52b449a1f8ff795fc4744f40329152f",
+   "source": "walking-bassline/continuation.wav",
+   "asset": "composer-walking-bassline-continuation.wav"
+  },
+  {
+   "id": "walking-bassline-imitation",
+   "label": "Walking bass line: the settling frames and the records of the imitation episode",
+   "file": "assets/walking-bassline-imitation.frames.json",
+   "bytes": 4595803,
+   "sha256": "a720decc9825cb36126031bd7dbf14a0ed54a2a028ada5554355a74b318a1f5b",
+   "source": "walking-bassline/imitation.frames.json",
+   "asset": "composer-walking-bassline-imitation.frames.json"
+  },
+  {
+   "id": "walking-bassline-continuation",
+   "label": "Walking bass line: the settling frames and the records of the continuation episode",
+   "file": "assets/walking-bassline-continuation.frames.json",
+   "bytes": 2316037,
+   "sha256": "135bddecf4732a58dbe2b332570dae4029915e3f4708b1e8a90f67babbb4f5e6",
+   "source": "walking-bassline/continuation.frames.json",
+   "asset": "composer-walking-bassline-continuation.frames.json"
+  }
+ ]
+}
