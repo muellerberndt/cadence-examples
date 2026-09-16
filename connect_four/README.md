@@ -30,14 +30,32 @@ across positions, the way a cortical column repeats over space.
   finished games for the side that just moved (win 1, draw 0.5, loss 0), written when the
   outcome arrives. A board's value is the average over its windows.
 - **The search** is negamax with alpha-beta pruning and iterative deepening over imagined
-  boards: depth 2 within 256 imagined transitions per decision, and depth 4 within 1,024 once
-  the drop records' exact validity over the brain's own last 500 real transitions reaches the
-  validity gate. Leaves are scored by the line records: a completed window of the mover is a
-  win, a full board without one is a draw, and every other leaf takes the value records. A
+  boards: depth 2 within 256 imagined transitions per decision, and the extended depth and
+  budget of the planning block once the drop records' exact validity over the brain's own last
+  500 real transitions reaches the validity gate; a late schedule can set a deeper search from
+  a number of stones on. Leaves are scored by the line records: a completed window of the mover
+  is a win, a full board without one is a draw, and every other leaf takes the value records. A
   proven result ends the deepening. A validator rejects an imagined board that is not the old
   board plus one stone of the mover in an empty cell of the chosen column; that branch keeps the
   value of the position it came from, `planner.invalid` counts it, and the board is left as it
   was composed. Gravity belongs to the drop records, so the validator does not check it.
+- **The threats** (`threat_weight`, `parity_weight`): a window one cell short of a completed
+  line, read off the learned complete field, puts a threat on that cell, and a threat whose
+  cell rests on a stone or the floor can be played at once. In the search a child the other
+  side can complete a line on is lost and a child on which the mover holds two reachable
+  threats and the other side none is won, both before any expansion; at the leaves one
+  reachable threat of the side to move or two of the mover's decide the value, and otherwise
+  the standing threats, weighted by the rows that fall to each side when the columns fill, tilt
+  the window mean. A table keeps what earlier visits of a board established within one search.
+  Root values within `tie_band` of the best count as equal and the column nearest the middle
+  is played, unless a result is proven.
+- **The memories** (`remember`, `imitate`): every position a search proves (the best child a
+  proven win, or every child proven and none cut off) stays in a memory read back at every
+  visit; and on every board as its mover saw it the brain counts the columns played by the side
+  that went on to win the game, its own or the opponent's, and at the root, when the search
+  proves nothing, plays the column winners played most, unless the search saw it lose. Both
+  are saved with the checkpoint; `web/school.mjs` fills them against the perfect solver
+  (played, watched, or tutored) and `tools/school_merge.py` merges them into a checkpoint.
 
 Learning is online from one stream. There is no replay ring and no minibatch: a reading touches
 few records and the witnessed outcome is written into exactly those. The memo
@@ -58,8 +76,12 @@ workspace of 16 neurons, a dynamics region of 8, and the critic).
 
 Learned: the landing row per column reading, from every observed move of either side; which
 window patterns are completed lines, from witnessed continuations and wins; the outcome of
-finished games per window pattern for the side that just moved; and the S00 critic over the
-workspace, which is reported and which the planner does not read.
+finished games per window pattern for the side that just moved; the positions the brain's own
+searches proved and the columns winners played on the boards it has seen; and the S00 critic
+over the workspace, which is reported and which the planner does not read. Supplied on top of
+the list above: the rule that turns the threats read off the complete field into a value, the
+threat cutoffs, the tie band and the late schedule of the search, and the choice to play a
+remembered winning column when nothing is proven.
 
 ## Controls and interventions
 

@@ -110,3 +110,62 @@ hangs it: the parity of the stone count is part of the position.
 The stage receipt hashes `brain.py`, `opponents.py` and `run.py`; changing any of them, even
 behind a switch that is off, invalidates the receipt and blocks the published gallery until the
 acceptance runs again against the new bytes. That is the point of the receipt.
+
+## 14. The evaluator was the disease, and threats are the cure
+
+The brain that lost to a human on the page carried records that already knew more than its
+search could read: with the same records, frozen, at the same depth of eight plies, reading the
+threats standing on a board off the learned complete field (a window one cell short of a line,
+its empty cell resting on a stone or the floor) took the paired score against the solver at 70%
+from 0.825 to 0.950, the blunders over not-lost moves against one-ply from 11.8% to 7.2%, and the
+200 traps from 0.895 to 0.915 with the rows that fall to each side counted too. Inside the search
+the same reading decides children before they are expanded, a child the other side can complete
+a line on and a child on which the mover holds two reachable threats, and the search sees two
+plies further for the same budget. The rule that turns the threats into a value is supplied, like
+the search; the threats are read off the records.
+
+## 15. A proven result must not share a tie band with a heuristic read
+
+Root values within 0.01 of the best count as equal and the column nearest the middle is played,
+which is what keeps the centre when the opening reads are flat (after 3,3,3,3 only 3 wins, and the
+records read 0.488 against 0.487). A proven win of 1.0 and a threat-decided leaf of 0.99 fell
+within that band, and the middle column threw a won endgame at ply 30. The band now applies only
+when nothing is proven. Two constants collided the same way: a proven result ten plies deep at
+1 - 0.001 * 10 equalled the 0.99 of a decided leaf and stopped the deepening; the bonus per ply
+is 1e-4 now.
+
+## 16. Proofs remember, but they cannot learn an opening
+
+A memory of every position a search proved, read back at every visit, lengthened the losses to
+the perfect solver from 16 plies to 26 to 34 and did not remove them: proving an opening move lost
+needs every alternative refuted, and that is exponential. What the proof memory is good for is
+the end of the game and the lines the brain has already lost once.
+
+## 17. Watching perfect games is worth more than playing them
+
+On every board as its mover saw it, the brain counts the columns played by the side that went on
+to win. Played as the second player against the perfect solver for 150 games, that memory took
+the brain, first against the perfect solver, from 1 win in 30 to 1 in 30 (the lines diverge).
+Watched: 300 games of the solver against itself, at 0.1 s a game, took it to 14 wins, 4 draws and
+2 losses in 20. The tutored form, where the watched first player plays the memory's column
+where it has one and the perfect column where it has none so that every game extends the
+brain's own lines, took it to 29 of 30 with the full memory and 30 of 30 with the page's cut of
+306,313 boards after 195,000 games, two rounds. The brain never sees a score: it sees boards and
+who won.
+
+## 18. What the school buys on each side
+
+Thirty-game sets at the page's settings, ten plies within 131,072 imagined transitions and
+sixteen within 1,048,576 from eighteen stones on. Moving first: 30-0-0 against the perfect solver,
+30-0-0 at 90%, 30-0-0 at 70%. Moving second, where the first player wins with perfect play:
+0-0-30 against the full solver, 17-3-10 at 90%, 29-1-0 at 70%, 29-1-0 at 50%. A first player who
+plays the perfect column nine times in ten is far beyond human play; the losses to it come from
+positions off the remembered lines, where the opening reads are still flat.
+
+## 19. The memory travels beside the page
+
+467,501 boards with the columns winners played and 60,000 proven positions make 8.9 MB packed five
+cells to a byte, 3.1 MB gzipped, and install in about a second; the page's cut of 306,313 boards
+and 40,000 proofs, chosen by fewest stones, plays as well as the whole. The inlined checkpoint
+stays 1.5 MB and the memory is fetched after the page is up, from the release beside the
+checkpoint snapshots.
