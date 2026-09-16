@@ -50,13 +50,13 @@
     "passed": true,
     "per_seed": {
      "10": 0.997,
-     "11": 0.995,
-     "12": 0.993,
+     "11": 0.997,
+     "12": 0.997,
      "13": 0.993,
-     "14": 0.998
+     "14": 0.993
     },
     "threshold": 0.85,
-    "value": 0.9952
+    "value": 0.9954000000000001
    },
    {
     "aggregation": "minimum over seeds",
@@ -64,10 +64,10 @@
     "passed": true,
     "per_seed": {
      "10": 0.997,
-     "11": 0.995,
-     "12": 0.993,
+     "11": 0.997,
+     "12": 0.997,
      "13": 0.993,
-     "14": 0.998
+     "14": 0.993
     },
     "threshold": 0.7,
     "value": 0.993
@@ -78,13 +78,13 @@
     "passed": true,
     "per_seed": {
      "10": 0.968,
-     "11": 0.951,
-     "12": 0.97,
+     "11": 0.97,
+     "12": 0.981,
      "13": 0.925,
-     "14": 0.972
+     "14": 0.967
     },
     "threshold": 0.6,
-    "value": 0.9571999999999999
+    "value": 0.9621999999999999
    },
    {
     "aggregation": "minimum over seeds",
@@ -92,10 +92,10 @@
     "passed": true,
     "per_seed": {
      "10": 0.968,
-     "11": 0.951,
-     "12": 0.97,
+     "11": 0.97,
+     "12": 0.981,
      "13": 0.925,
-     "14": 0.972
+     "14": 0.967
     },
     "threshold": 0.5,
     "value": 0.925
@@ -106,13 +106,13 @@
     "passed": true,
     "per_seed": {
      "10": 0.5135,
-     "11": 0.711,
-     "12": 0.728,
+     "11": 0.8275,
+     "12": 0.7595,
      "13": 0.8300000000000001,
-     "14": 0.25149999999999995
+     "14": 0.3065
     },
     "threshold": 0.1,
-    "value": 0.6068
+    "value": 0.6474
    },
    {
     "aggregation": "mean over seeds of tactical success minus the corrupted copy's",
@@ -120,39 +120,39 @@
     "passed": true,
     "per_seed": {
      "10": 0.851,
-     "11": 0.8089999999999999,
-     "12": 0.7969999999999999,
+     "11": 0.8160000000000001,
+     "12": 0.839,
      "13": 0.849,
-     "14": 0.861
+     "14": 0.836
     },
     "threshold": 0.15,
-    "value": 0.8333999999999999
+    "value": 0.8382000000000002
    },
    {
     "aggregation": "the larger mean over seeds of the paired-score loss on random and on one-ply after the adaptation games",
     "losses": {
-     "one_ply": -0.01180000000000001,
-     "random": -0.0032000000000000028
+     "one_ply": -0.006100000000000017,
+     "random": -0.0038000000000000035
     },
     "name": "continual_old_loss",
     "opponent": "random",
     "passed": true,
     "threshold": 0.05,
-    "value": -0.0032000000000000028
+    "value": -0.0038000000000000035
    },
    {
     "aggregation": "maximum over seeds of the p95 decision latency, training and evaluation",
     "name": "latency_p95_ms",
     "passed": true,
     "per_seed": {
-     "10": 19.156200400175294,
-     "11": 18.980440799714394,
-     "12": 18.861191250562122,
-     "13": 18.775245650704164,
-     "14": 19.10605425082395
+     "10": 50.50189299945487,
+     "11": 50.35708800023713,
+     "12": 49.30725434978741,
+     "13": 51.85900385022251,
+     "14": 49.63578860006236
     },
     "threshold": 1000,
-    "value": 19.156200400175294
+    "value": 51.85900385022251
    },
    {
     "aggregation": "maximum over seeds of the games of one life",
@@ -176,14 +176,14 @@
    {
     "files": [
      {
-      "bytes": 34547,
+      "bytes": 34544,
       "path": "brain_seed10_games000100.agent.npz",
-      "sha256": "e25e23f94774d1bdecfe4cd65a194ecdbb5c5934ba621322f5b259920b202ea3"
+      "sha256": "79bce044f5e6bd3d85696db7abe25c7daff7daf49b96b7247cbcd84c477f43d2"
      },
      {
-      "bytes": 551676,
+      "bytes": 551716,
       "path": "brain_seed10_games000100.records.npz",
-      "sha256": "636e06740b62fc5bb5fbb58cc57388bbb9798d6b478f39cd0650072a05c4c9f9"
+      "sha256": "163f83e68c5e6e9e2f02ebba920f473d3fa3710ab79912f07e8e21dd34d7ade2"
      }
     ],
     "games": 100,
@@ -195,14 +195,14 @@
    {
     "files": [
      {
-      "bytes": 34542,
+      "bytes": 34544,
       "path": "brain_seed10_games000200.agent.npz",
-      "sha256": "0359e74fef803954dbde1a05f30ec56bb7deecaa366ca2d47cca74ee5677d8a0"
+      "sha256": "ad2d9e948a8efd43179cc876700f6805eca08e525228d36346df9712649b87cf"
      },
      {
-      "bytes": 552134,
+      "bytes": 552184,
       "path": "brain_seed10_games000200.records.npz",
-      "sha256": "9b439ecb01cc9056445793151a4804e47ac00184e88e7a60155dd975d4a5f17d"
+      "sha256": "538ef6d46561b82f0c4ef088f1c031a57d7ff9b5a21b58f80531224e660aef5e"
      }
     ],
     "games": 200,
@@ -216,17 +216,37 @@
      {
       "bytes": 34544,
       "path": "brain_seed10_games000400.agent.npz",
-      "sha256": "e57fb02e0c0b74f17508a996adc24db6ef8e14a247061f104aac838071580b6a"
+      "sha256": "ec3f68d17ca7ddbecb67bc61b9bbca79365be3aee73731b869fa085c09bd31e6"
      },
      {
-      "bytes": 553835,
+      "bytes": 553872,
       "path": "brain_seed10_games000400.records.npz",
-      "sha256": "e470e260d6d041fa484d104fe259da1a02244eddaad624623f3830c6635497e7"
+      "sha256": "568450be8625e8e26360d7947ae05ecb22b5bf90b9767ba271d0fe84b942512f"
      }
     ],
     "games": 400,
     "labels": [
      "scheduled"
+    ],
+    "seed": 10
+   },
+   {
+    "files": [
+     {
+      "bytes": 34524,
+      "path": "brain_seed10_games001000.agent.npz",
+      "sha256": "9f41870a945fbe7cbd7ff0278b75855f7d18acb1a65f4beab703bb3c4f87ac73"
+     },
+     {
+      "bytes": 554911,
+      "path": "brain_seed10_games001000.records.npz",
+      "sha256": "aabccb7eeb8ff3e53e2eedc20e226bf779ba9f081a135ce9b1b33465da16382d"
+     }
+    ],
+    "games": 1000,
+    "labels": [
+     "scheduled",
+     "after_mixture"
     ],
     "seed": 10
    },
@@ -234,33 +254,13 @@
     "files": [
      {
       "bytes": 34525,
-      "path": "brain_seed10_games001000.agent.npz",
-      "sha256": "24f19e7d6551360b29017d26c522bb7acd242df56d5eda24ed4eb98c97a3672f"
-     },
-     {
-      "bytes": 554870,
-      "path": "brain_seed10_games001000.records.npz",
-      "sha256": "b2e5a24df7ec11ec30c71df73327c22597dadf9019bb7b7aee2925a39f70939b"
-     }
-    ],
-    "games": 1000,
-    "labels": [
-     "scheduled",
-     "after_mixture"
-    ],
-    "seed": 10
-   },
-   {
-    "files": [
-     {
-      "bytes": 34532,
       "path": "brain_seed10_games001200.agent.npz",
-      "sha256": "c4ebcd9c7a47ca6ab06096c847a2269a64e07e7c9936608902c72431afd43612"
+      "sha256": "44404117649ad21732284b385e7f9dfc81ed253ac69bc3008976c4da86704491"
      },
      {
-      "bytes": 554997,
+      "bytes": 555049,
       "path": "brain_seed10_games001200.records.npz",
-      "sha256": "23ea89e2c8a23a9df3a945bfbc20a231da5bb127996229e6b25031c379663a4f"
+      "sha256": "802ddb38bb1cb09b6700d424aa6d49ae702a1134079004afec9d814163717747"
      }
     ],
     "games": 1200,
@@ -272,77 +272,19 @@
    {
     "files": [
      {
-      "bytes": 34504,
+      "bytes": 34506,
       "path": "brain_seed11_games000100.agent.npz",
-      "sha256": "e0f680ae01b081a90466c69595c4d93b588a248701137ab7ea7293c6966046fc"
+      "sha256": "2d7a6e577e32203d223ab35b32fba049222fcfe5e2b7daa68bf10c6419dcfc4e"
      },
      {
-      "bytes": 551799,
+      "bytes": 551819,
       "path": "brain_seed11_games000100.records.npz",
-      "sha256": "f73430839032496136d3752f4420f25cfdbbaaceda18bae36974c27fbf47ab3f"
+      "sha256": "e47d372deb086b1166e64e2da8eb8fb6065b269f33aa0fbb0982c2feb90436bf"
      }
     ],
     "games": 100,
     "labels": [
      "scheduled"
-    ],
-    "seed": 11
-   },
-   {
-    "files": [
-     {
-      "bytes": 34517,
-      "path": "brain_seed11_games000200.agent.npz",
-      "sha256": "120e107a073108eec9ab7f1d831f6b2afce5c494f9a02104ea7cec797904d8d5"
-     },
-     {
-      "bytes": 552167,
-      "path": "brain_seed11_games000200.records.npz",
-      "sha256": "7a48b4910df40a62312f3616d320ac016e9fa99151c38d836eb205cb4784caf4"
-     }
-    ],
-    "games": 200,
-    "labels": [
-     "after_explore"
-    ],
-    "seed": 11
-   },
-   {
-    "files": [
-     {
-      "bytes": 34521,
-      "path": "brain_seed11_games000400.agent.npz",
-      "sha256": "bf28861541330483df2327ad52d8a75d3e6ad1f7c03c04eedf7c91f197a0e58f"
-     },
-     {
-      "bytes": 553481,
-      "path": "brain_seed11_games000400.records.npz",
-      "sha256": "989adeb227bab89ca7ee7e4760a118f297b40d5e1fbc680345c871da30ae61b9"
-     }
-    ],
-    "games": 400,
-    "labels": [
-     "scheduled"
-    ],
-    "seed": 11
-   },
-   {
-    "files": [
-     {
-      "bytes": 34504,
-      "path": "brain_seed11_games001000.agent.npz",
-      "sha256": "bf660881e075e1e2979f265e91d3b1cc483f3e2e8d98d8911e7c5332f8746f7e"
-     },
-     {
-      "bytes": 554448,
-      "path": "brain_seed11_games001000.records.npz",
-      "sha256": "65ec98762e5c95ef31d2b76526b8ec1bd3a4e25c858c84e9782a866941572024"
-     }
-    ],
-    "games": 1000,
-    "labels": [
-     "scheduled",
-     "after_mixture"
     ],
     "seed": 11
    },
@@ -350,13 +292,71 @@
     "files": [
      {
       "bytes": 34518,
-      "path": "brain_seed11_games001200.agent.npz",
-      "sha256": "6980cd3f979ba26bde046748cb14530f62fcd1fdab7d449fde0fdc2e4dfd2712"
+      "path": "brain_seed11_games000200.agent.npz",
+      "sha256": "35ef91d7601ae709790b3028a8bcebc818a95b3f7c47e07106b8ce5242dea501"
      },
      {
-      "bytes": 554793,
+      "bytes": 552200,
+      "path": "brain_seed11_games000200.records.npz",
+      "sha256": "84e04af4179952d44dcaddda3537d37a816b658a01bea81d2baffd49a1bea94d"
+     }
+    ],
+    "games": 200,
+    "labels": [
+     "after_explore"
+    ],
+    "seed": 11
+   },
+   {
+    "files": [
+     {
+      "bytes": 34512,
+      "path": "brain_seed11_games000400.agent.npz",
+      "sha256": "a5e251eed2a06182aec5ede9b350be52857c29623fb4eac9630482e3a472fa88"
+     },
+     {
+      "bytes": 553716,
+      "path": "brain_seed11_games000400.records.npz",
+      "sha256": "6489aaf0515f9af9f1adb395fa6debb854a8c0c6fdf95225cd7220024b553a31"
+     }
+    ],
+    "games": 400,
+    "labels": [
+     "scheduled"
+    ],
+    "seed": 11
+   },
+   {
+    "files": [
+     {
+      "bytes": 34500,
+      "path": "brain_seed11_games001000.agent.npz",
+      "sha256": "14efb0d386dd5936837cdcc2df84a85f534685ca6cb9e567fa729d9fd9c7b57e"
+     },
+     {
+      "bytes": 554462,
+      "path": "brain_seed11_games001000.records.npz",
+      "sha256": "e6b64ba6004e172ed1499752857d6bef7adaa1e4bcd9afec5476133060caac6a"
+     }
+    ],
+    "games": 1000,
+    "labels": [
+     "scheduled",
+     "after_mixture"
+    ],
+    "seed": 11
+   },
+   {
+    "files": [
+     {
+      "bytes": 34507,
+      "path": "brain_seed11_games001200.agent.npz",
+      "sha256": "ee25e3ebffee7a38aacd8c7a19532d39000e5a90ccb87bac79e513f8f48a6609"
+     },
+     {
+      "bytes": 554604,
       "path": "brain_seed11_games001200.records.npz",
-      "sha256": "fad48ac05e52d1cef0ea02be723152aabd9e2ad27aa2ac8cf25b8b0b991a8ead"
+      "sha256": "4a0d2391f7642586b2881fbebb0cd4cdc5160c3aceb3a6306dfec1b51530ef32"
      }
     ],
     "games": 1200,
@@ -368,14 +368,14 @@
    {
     "files": [
      {
-      "bytes": 34508,
+      "bytes": 34509,
       "path": "brain_seed12_games000100.agent.npz",
-      "sha256": "27e0b4735abb56b0020865c2c73cda6346567103d9275af12ea551fd9f12c271"
+      "sha256": "71ed51dee399437994533e680fd1ee6ece9e92ac95ac0b9c5d0f2fd6c1f0e07e"
      },
      {
-      "bytes": 550058,
+      "bytes": 550094,
       "path": "brain_seed12_games000100.records.npz",
-      "sha256": "0f3d5b5cf86be1e5281fdcb5d54fa080332f3531645c236ddb7d82ca6acd5f5c"
+      "sha256": "e31b9bd6fd20e8d2712b63b7907cd3cd50f4b8c94d89b8583d8a439545e8ee9b"
      }
     ],
     "games": 100,
@@ -387,14 +387,14 @@
    {
     "files": [
      {
-      "bytes": 34507,
+      "bytes": 34512,
       "path": "brain_seed12_games000200.agent.npz",
-      "sha256": "e46fe823c2dbf8729f1b630188d8d30a54ad1ab49414c12ddf434faaaf30f80e"
+      "sha256": "90ff3b45fc7cc1156733f66b1df82b6727d35cd690ad2cbf2c27b74275d2f012"
      },
      {
-      "bytes": 550805,
+      "bytes": 550835,
       "path": "brain_seed12_games000200.records.npz",
-      "sha256": "7dc3609497ea118ab8841399b2baa91e174e6b689177cdd483f1f394afc27444"
+      "sha256": "967b248863b9d3fe74aca72a39e97caf6462a02aba80273edabef5727d8dfa2a"
      }
     ],
     "games": 200,
@@ -406,14 +406,14 @@
    {
     "files": [
      {
-      "bytes": 34506,
+      "bytes": 34510,
       "path": "brain_seed12_games000400.agent.npz",
-      "sha256": "42feaca9dde834b35350dae176d3ce0a3d855fc3c29a9d5772d626d9624afd1a"
+      "sha256": "5dba79191de8c88427e7cfbdcae901c2e6f4904cfd4a2f8b7fbd4091ab1b1d2d"
      },
      {
-      "bytes": 552158,
+      "bytes": 552196,
       "path": "brain_seed12_games000400.records.npz",
-      "sha256": "f7d0ad416be77a8a3c2c554233e0e3d1a0ffb61e3630d8e1440d4364d33c5c53"
+      "sha256": "c81965826000a0a9a03c4750ac0e6827c60d56bae84b2ccbe326f8f6cf1e4079"
      }
     ],
     "games": 400,
@@ -425,14 +425,14 @@
    {
     "files": [
      {
-      "bytes": 34490,
+      "bytes": 34494,
       "path": "brain_seed12_games001000.agent.npz",
-      "sha256": "55e299a4a4b83daf94dc3a3f0a23cf5f8e7582b31a5a61bdd167330f13456b9b"
+      "sha256": "6bae7de0e23545a958e25b7dabd7f63c89f236dd0e675c2b5cb4163eac04e1b3"
      },
      {
-      "bytes": 553974,
+      "bytes": 554151,
       "path": "brain_seed12_games001000.records.npz",
-      "sha256": "bfe68dd3a14792c1f9663d39c5234d1a9520304d014b84845434ff55252a20c9"
+      "sha256": "b8571b51ba41c16da5cc0b831637dbfbf973e14313c6618614379dc1fbb752c1"
      }
     ],
     "games": 1000,
@@ -445,14 +445,14 @@
    {
     "files": [
      {
-      "bytes": 34499,
+      "bytes": 34503,
       "path": "brain_seed12_games001200.agent.npz",
-      "sha256": "ee38728eb0964398703a6ed94a7c3a21016c82735aa243d1b4fe667a9eb4c96d"
+      "sha256": "743420d700bf70baa746a6ca80f4cc49b7184055d5ee5a184608ce56caf41e9a"
      },
      {
-      "bytes": 554370,
+      "bytes": 554678,
       "path": "brain_seed12_games001200.records.npz",
-      "sha256": "f51c081c7b138ab619933de0d61b8139bbc47c40d8c779facbbfced5056a0e90"
+      "sha256": "a6d6e161119e73bd301c39171e3a282204e0e7f6ffd8c598436fd2369aa1a8f7"
      }
     ],
     "games": 1200,
@@ -464,14 +464,14 @@
    {
     "files": [
      {
-      "bytes": 34519,
+      "bytes": 34522,
       "path": "brain_seed13_games000100.agent.npz",
-      "sha256": "8c2f44201be5a214998916d4433a33d32a9b43470cb3d1f297e0bfd2e943a987"
+      "sha256": "85c5ee06dcb057c047980e12f3166df20255ccab81b9f3339eed2e432378544a"
      },
      {
-      "bytes": 550576,
+      "bytes": 550619,
       "path": "brain_seed13_games000100.records.npz",
-      "sha256": "df6ce8cc011e176d695f8eef8757ca360dff6e4cdcf4bb091e0c8d95dc59b599"
+      "sha256": "0285b1d6c227e37c050fd7a5aee1061aca9ab079386059d414fed5028b0d1662"
      }
     ],
     "games": 100,
@@ -483,14 +483,14 @@
    {
     "files": [
      {
-      "bytes": 34504,
+      "bytes": 34501,
       "path": "brain_seed13_games000200.agent.npz",
-      "sha256": "d38ed74a663064f7e6a7cad308314fccf545331622839d8afa403d1ab3913afb"
+      "sha256": "7c3279aed448bc66a38d3605140c1c228754c24bc9eecfe68670c8d983a37844"
      },
      {
-      "bytes": 551470,
+      "bytes": 551492,
       "path": "brain_seed13_games000200.records.npz",
-      "sha256": "660b944226c3436531567849dcb6e3692be8e429b831bf76a9d91c00e877a53e"
+      "sha256": "b527cbbdecf8b9e69dd8d05b122889043d4f0917335479285e46ef10c3e34563"
      }
     ],
     "games": 200,
@@ -504,12 +504,12 @@
      {
       "bytes": 34516,
       "path": "brain_seed13_games000400.agent.npz",
-      "sha256": "228c516764010bb03488cbd1c7decc25a13c8be1d0708231f0751d53310a3d00"
+      "sha256": "65e1a9f6fec3377e462620be71047e25f4a521a08de8578dd5ccfe886a7592e5"
      },
      {
-      "bytes": 553162,
+      "bytes": 553191,
       "path": "brain_seed13_games000400.records.npz",
-      "sha256": "4385d4f5cc7b9ef333f5f3e4929ad5b407ec02fd4eb3e0ace071a3af18bb6728"
+      "sha256": "d82f7cef7f3eebcdc0e2a504ca08f6b46dd9ab3c3647590ab7478f77e2aa4638"
      }
     ],
     "games": 400,
@@ -521,14 +521,14 @@
    {
     "files": [
      {
-      "bytes": 34515,
+      "bytes": 34510,
       "path": "brain_seed13_games001000.agent.npz",
-      "sha256": "248ea3b9edc4b1e408e123120b551e828ac367d28b0783e0a07c39374945e64b"
+      "sha256": "edb4fd54f7f804011b49b70147bed6fc390e4908161c6c12c982542b2acf7a7f"
      },
      {
-      "bytes": 554572,
+      "bytes": 554586,
       "path": "brain_seed13_games001000.records.npz",
-      "sha256": "5678bf3d826542c4105ea4d2c6e97bb3979a1895856dead171b263a0c228fb70"
+      "sha256": "f0f6ea621ddeb685196b14b64c8cd15322b82e388a0d58cd206dd563f051cc72"
      }
     ],
     "games": 1000,
@@ -541,14 +541,14 @@
    {
     "files": [
      {
-      "bytes": 34527,
+      "bytes": 34524,
       "path": "brain_seed13_games001200.agent.npz",
-      "sha256": "28dc401bb8ba01eea0d37b27e4fd2bfbfb2339c963bb47b01cc39e3a0ae7e558"
+      "sha256": "eba8991b3ea46dbd1204b677da0bd30a850b22e5ff4ff31f3d346151039d2685"
      },
      {
-      "bytes": 554789,
+      "bytes": 554816,
       "path": "brain_seed13_games001200.records.npz",
-      "sha256": "60c3476dfb895ee6b806564f83401c50383c021b1077c2973f0c5d5e056310f5"
+      "sha256": "d8dad2a796bbf36310f41bb925a6edfffebdc912f8a117345a395cc44143a7a3"
      }
     ],
     "games": 1200,
@@ -560,14 +560,14 @@
    {
     "files": [
      {
-      "bytes": 34505,
+      "bytes": 34503,
       "path": "brain_seed14_games000100.agent.npz",
-      "sha256": "10b49691c3a9008f6601814faa0f6795eb07d24035f46c9cbf66d9af2dc0da38"
+      "sha256": "5185773226ecc32a0f153bf0e2cff895d7116b4b7ddf8ee125954b76269d343e"
      },
      {
-      "bytes": 550759,
+      "bytes": 550787,
       "path": "brain_seed14_games000100.records.npz",
-      "sha256": "fcbd649ce7c36acecc5a4191206662cd2c5ed7de8c63c928c7fdd4db45f3a1c1"
+      "sha256": "697dd24775bd6669fed31bb711d23217bf609cd6c31bc404feb56eb17215e439"
      }
     ],
     "games": 100,
@@ -579,14 +579,14 @@
    {
     "files": [
      {
-      "bytes": 34524,
+      "bytes": 34525,
       "path": "brain_seed14_games000200.agent.npz",
-      "sha256": "45f6b8aa9b65a1126011548abb415a583ee02238dab01d18e6f57a1a8a9d16ec"
+      "sha256": "0985e092c8dfa8fdebea82cf745bd0a362452428827aef1bd4801e1c0871ad77"
      },
      {
-      "bytes": 551587,
+      "bytes": 551615,
       "path": "brain_seed14_games000200.records.npz",
-      "sha256": "f284b765fe2a3f178207d77a88a1a9b27a470005c22a718223b7530d21a28600"
+      "sha256": "387e5820c426606108dea1863f481ee9705029fd3864fe70b64691c373cd902b"
      }
     ],
     "games": 200,
@@ -600,12 +600,12 @@
      {
       "bytes": 34498,
       "path": "brain_seed14_games000400.agent.npz",
-      "sha256": "7c99d7a8cf2449823e8a502da07036dd065d86a2e0fadd9eda35831a4991745d"
+      "sha256": "f9729b8518633e1737f084b285c39dca91f28c3df816a7e99046fdea77c489e6"
      },
      {
-      "bytes": 553468,
+      "bytes": 553573,
       "path": "brain_seed14_games000400.records.npz",
-      "sha256": "90a31af2032c01c43aefa9b3615dbfb4a32d57930f90b91bb7e1ca43e2a9c633"
+      "sha256": "654426ac49c320c26745007b18af195ecaa37640eca256b5ccb09df359ed18ee"
      }
     ],
     "games": 400,
@@ -617,14 +617,14 @@
    {
     "files": [
      {
-      "bytes": 34508,
+      "bytes": 34507,
       "path": "brain_seed14_games001000.agent.npz",
-      "sha256": "018fc1afa091c74a0d39e8703ca9a7fdd9dcf90f1dbb58e05b3510eece2831fb"
+      "sha256": "c121e7771a74b9edb1405a9dc87365f5bd71679a12a871fd9a5200cb36f46c04"
      },
      {
-      "bytes": 554687,
+      "bytes": 554616,
       "path": "brain_seed14_games001000.records.npz",
-      "sha256": "78d3ee25e2288c70d27a3210a78f670b817c4866d84ccdff460ff8ea2ccdee88"
+      "sha256": "9a09ad4086b1e05d982c543a2427e0aef7f686b7d5d02e8bdea7817c4fe99aad"
      }
     ],
     "games": 1000,
@@ -639,12 +639,12 @@
      {
       "bytes": 34510,
       "path": "brain_seed14_games001200.agent.npz",
-      "sha256": "5e3051f482143dced948f4a758496149d6b61a2d079e88e292e42439f9e26fe7"
+      "sha256": "05109f83cc775f3b27fa40797cef31c903e532682c16513cdd03c612a4d085fb"
      },
      {
-      "bytes": 554855,
+      "bytes": 554652,
       "path": "brain_seed14_games001200.records.npz",
-      "sha256": "a6025ebce62a6ad98e3771d2904de467efb56040e3665a76548071643dfef06d"
+      "sha256": "6c53576856288f618817fca99436fbeebd9de732e7d840877a58d900733902b8"
      }
     ],
     "games": 1200,
@@ -658,27 +658,27 @@
    {
     "events": 16250,
     "path": "events_seed10.jsonl",
-    "sha256": "dccd00d2aeffff3bfa9fecde862a37eae59d9700dcfcb37c27d9e753b1d44643"
+    "sha256": "6a378178b8b1a8f835e59da1faab02e3ca6b9690ef062cbd254d556c7b6348cd"
    },
    {
     "events": 16250,
     "path": "events_seed11.jsonl",
-    "sha256": "bb9128037d75b27146b8b458f760b1cfc77547c712249c7a8fffda4bee68ec17"
+    "sha256": "244e2e621441e31e4af110394e88b55b24650a499dbc3a69c02675b18469cc28"
    },
    {
     "events": 16250,
     "path": "events_seed12.jsonl",
-    "sha256": "c3c4627ee97d7d6a820c5656f9a015ddb776a525489b4611c7c78067dc748859"
+    "sha256": "479ebc0fd7a73e2a6e926c8039b9d26568ff19e4384bbfd8ffe14969dde91211"
    },
    {
     "events": 16250,
     "path": "events_seed13.jsonl",
-    "sha256": "2534f8df226d3d7bd049b6cac059c9f39d5e421d20b22b026bb98dd8a67bb1c8"
+    "sha256": "f37f7524cc0744c2aedd09d4297f4c65d2631228130ad1764107de53b29bd8b8"
    },
    {
     "events": 16250,
     "path": "events_seed14.jsonl",
-    "sha256": "bfb8e28e85e1a247233c8ce9a406fbfbd4599c08de68144eae1e0b11f83719de"
+    "sha256": "2815b9979d4f32862d8b4d847777423918bbf512561921323a492743b02667a0"
    }
   ]
  },
@@ -908,12 +908,12 @@
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.144,
-      "block-second": 0.12,
-      "win-first": 0.18,
-      "win-second": 0.172
+      "block-first": 0.136,
+      "block-second": 0.132,
+      "win-first": 0.196,
+      "win-second": 0.132
      },
-     "success": 0.154
+     "success": 0.149
     },
     "validity": {
      "changed_cell": 0.1668,
@@ -960,12 +960,12 @@
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.144,
-      "block-second": 0.148,
-      "win-first": 0.136,
-      "win-second": 0.152
+      "block-first": 0.152,
+      "block-second": 0.12,
+      "win-first": 0.148,
+      "win-second": 0.156
      },
-     "success": 0.145
+     "success": 0.144
     },
     "validity": {
      "changed_cell": 0.1668,
@@ -1065,11 +1065,11 @@
      "cases": 1000,
      "strata": {
       "block-first": 0.136,
-      "block-second": 0.168,
-      "win-first": 0.184,
+      "block-second": 0.16,
+      "win-first": 0.188,
       "win-second": 0.156
      },
-     "success": 0.161
+     "success": 0.16
     },
     "validity": {
      "changed_cell": 0.1668,
@@ -1138,70 +1138,70 @@
    {
     "planner": {
      "budget": 1024,
-     "depth": 3.946,
+     "depth": 3.988,
      "depths": {
-      "1": 18,
-      "4": 982
+      "1": 4,
+      "4": 996
      },
-     "invalid": 12054,
-     "nodes": 13673,
+     "invalid": 8768,
+     "nodes": 9308,
      "searches": 1000
     },
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.164,
-      "block-second": 0.192,
-      "win-first": 0.224,
-      "win-second": 0.184
+      "block-first": 0.184,
+      "block-second": 0.24,
+      "win-first": 0.172,
+      "win-second": 0.14
      },
-     "success": 0.191
+     "success": 0.184
     },
     "validity": {
-     "changed_cell": 0.1731,
-     "exact": 0.019,
+     "changed_cell": 0.1873,
+     "exact": 0.0132,
      "moves": 10000,
      "strata": {
       "h0-candidate": 0.0,
       "h0-opponent": 0.0,
       "h1-candidate": 0.0,
       "h1-opponent": 0.0,
-      "h2-candidate": 0.09483793517406963,
-      "h2-opponent": 0.12244897959183673,
+      "h2-candidate": 0.056422569027611044,
+      "h2-opponent": 0.07563025210084033,
       "h3-candidate": 0.0,
       "h3-opponent": 0.0,
       "h4-candidate": 0.0,
       "h4-opponent": 0.0,
-      "h5-candidate": 0.007202881152460984,
-      "h5-opponent": 0.003601440576230492
+      "h5-candidate": 0.014405762304921969,
+      "h5-opponent": 0.012004801920768308
      }
     }
    },
    {
     "planner": {
      "budget": 1024,
-     "depth": 3.946,
+     "depth": 3.976,
      "depths": {
-      "1": 18,
-      "4": 982
+      "1": 8,
+      "4": 992
      },
-     "invalid": 10667,
-     "nodes": 12521,
+     "invalid": 12634,
+     "nodes": 14770,
      "searches": 1000
     },
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.208,
-      "block-second": 0.22,
-      "win-first": 0.208,
-      "win-second": 0.176
+      "block-first": 0.128,
+      "block-second": 0.18,
+      "win-first": 0.164,
+      "win-second": 0.172
      },
-     "success": 0.203
+     "success": 0.161
     },
     "validity": {
-     "changed_cell": 0.0793,
-     "exact": 0.018,
+     "changed_cell": 0.0991,
+     "exact": 0.027,
      "moves": 10000,
      "strata": {
       "h0-candidate": 0.0,
@@ -1210,12 +1210,12 @@
       "h1-opponent": 0.0,
       "h2-candidate": 0.0,
       "h2-opponent": 0.0,
-      "h3-candidate": 0.061224489795918366,
-      "h3-opponent": 0.055222088835534214,
-      "h4-candidate": 0.025210084033613446,
-      "h4-opponent": 0.01680672268907563,
-      "h5-candidate": 0.028811524609843937,
-      "h5-opponent": 0.028811524609843937
+      "h3-candidate": 0.058823529411764705,
+      "h3-opponent": 0.056422569027611044,
+      "h4-candidate": 0.024009603841536616,
+      "h4-opponent": 0.03481392557022809,
+      "h5-candidate": 0.06722689075630252,
+      "h5-opponent": 0.08283313325330131
      }
     }
    },
@@ -1268,23 +1268,23 @@
      "depths": {
       "4": 1000
      },
-     "invalid": 6830,
-     "nodes": 6836,
+     "invalid": 6809,
+     "nodes": 6813,
      "searches": 1000
     },
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.144,
-      "block-second": 0.128,
-      "win-first": 0.128,
-      "win-second": 0.156
+      "block-first": 0.164,
+      "block-second": 0.16,
+      "win-first": 0.156,
+      "win-second": 0.176
      },
-     "success": 0.139
+     "success": 0.164
     },
     "validity": {
-     "changed_cell": 0.056,
-     "exact": 0.0005,
+     "changed_cell": 0.0312,
+     "exact": 0.0,
      "moves": 10000,
      "strata": {
       "h0-candidate": 0.0,
@@ -1293,11 +1293,11 @@
       "h1-opponent": 0.0,
       "h2-candidate": 0.0,
       "h2-opponent": 0.0,
-      "h3-candidate": 0.0012004801920768306,
-      "h3-opponent": 0.0024009603841536613,
+      "h3-candidate": 0.0,
+      "h3-opponent": 0.0,
       "h4-candidate": 0.0,
       "h4-opponent": 0.0,
-      "h5-candidate": 0.0024009603841536613,
+      "h5-candidate": 0.0,
       "h5-opponent": 0.0
      }
     }
@@ -1348,83 +1348,83 @@
    {
     "paired": {
      "minimax_256": {
-      "draws": 41,
-      "first_score": 0.142,
+      "draws": 12,
+      "first_score": 0.099,
       "games": 1000,
-      "losses": 843,
-      "score": 0.1365,
-      "second_score": 0.131,
-      "wins": 116
+      "losses": 915,
+      "score": 0.079,
+      "second_score": 0.059,
+      "wins": 73
      },
      "one_ply": {
-      "draws": 10,
-      "first_score": 0.256,
+      "draws": 3,
+      "first_score": 0.167,
       "games": 1000,
-      "losses": 755,
-      "score": 0.24,
-      "second_score": 0.224,
-      "wins": 235
+      "losses": 856,
+      "score": 0.1425,
+      "second_score": 0.118,
+      "wins": 141
      },
      "random": {
       "draws": 0,
-      "first_score": 0.886,
+      "first_score": 0.892,
       "games": 1000,
-      "losses": 138,
-      "score": 0.862,
-      "second_score": 0.838,
-      "wins": 862
+      "losses": 147,
+      "score": 0.853,
+      "second_score": 0.814,
+      "wins": 853
      }
     },
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.364,
-      "block-second": 0.34,
+      "block-first": 0.356,
+      "block-second": 0.328,
       "win-first": 1.0,
       "win-second": 1.0
      },
-     "success": 0.676
+     "success": 0.671
     }
    },
    {
     "paired": {
      "minimax_256": {
-      "draws": 7,
-      "first_score": 0.149,
+      "draws": 19,
+      "first_score": 0.114,
       "games": 1000,
-      "losses": 856,
-      "score": 0.1405,
-      "second_score": 0.132,
-      "wins": 137
+      "losses": 863,
+      "score": 0.1275,
+      "second_score": 0.141,
+      "wins": 118
      },
      "one_ply": {
-      "draws": 2,
-      "first_score": 0.237,
+      "draws": 9,
+      "first_score": 0.169,
       "games": 1000,
-      "losses": 757,
-      "score": 0.242,
-      "second_score": 0.247,
-      "wins": 241
+      "losses": 774,
+      "score": 0.2215,
+      "second_score": 0.274,
+      "wins": 217
      },
      "random": {
-      "draws": 0,
-      "first_score": 0.92,
+      "draws": 1,
+      "first_score": 0.904,
       "games": 1000,
-      "losses": 107,
-      "score": 0.893,
-      "second_score": 0.866,
-      "wins": 893
+      "losses": 120,
+      "score": 0.8795,
+      "second_score": 0.855,
+      "wins": 879
      }
     },
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.46,
-      "block-second": 0.456,
+      "block-first": 0.284,
+      "block-second": 0.268,
       "win-first": 1.0,
       "win-second": 1.0
      },
-     "success": 0.729
+     "success": 0.638
     }
    },
    {
@@ -1471,42 +1471,42 @@
    {
     "paired": {
      "minimax_256": {
-      "draws": 29,
-      "first_score": 0.711,
+      "draws": 17,
+      "first_score": 0.78,
       "games": 1000,
-      "losses": 414,
-      "score": 0.5715,
-      "second_score": 0.432,
-      "wins": 557
+      "losses": 483,
+      "score": 0.5085,
+      "second_score": 0.237,
+      "wins": 500
      },
      "one_ply": {
-      "draws": 11,
-      "first_score": 0.86,
+      "draws": 7,
+      "first_score": 0.883,
       "games": 1000,
-      "losses": 274,
-      "score": 0.7205,
-      "second_score": 0.581,
-      "wins": 715
+      "losses": 336,
+      "score": 0.6605,
+      "second_score": 0.438,
+      "wins": 657
      },
      "random": {
-      "draws": 1,
-      "first_score": 0.992,
+      "draws": 0,
+      "first_score": 0.994,
       "games": 1000,
-      "losses": 54,
-      "score": 0.9455,
-      "second_score": 0.899,
-      "wins": 945
+      "losses": 73,
+      "score": 0.927,
+      "second_score": 0.86,
+      "wins": 927
      }
     },
     "tactical": {
      "cases": 1000,
      "strata": {
-      "block-first": 0.508,
-      "block-second": 0.456,
+      "block-first": 0.604,
+      "block-second": 0.572,
       "win-first": 1.0,
       "win-second": 1.0
      },
-     "success": 0.741
+     "success": 0.794
     }
    }
   ]
@@ -1514,10 +1514,10 @@
  "counts": {
   "decisions_per_seed": [
    12094,
-   11704,
-   11328,
+   11435,
+   11710,
    12117,
-   11747
+   12253
   ],
   "events_logged": [
    16250,
@@ -1559,18 +1559,18 @@
    }
   ],
   "imagined_transitions_per_seed": [
-   4163155,
-   3877234,
-   3888224,
-   3961887,
-   4120101
+   4163183,
+   3966835,
+   4015080,
+   3961943,
+   4141388
   ],
   "real_transitions_per_seed": [
    23235,
-   22453,
-   21705,
+   21901,
+   22472,
    23272,
-   22551
+   23570
   ],
   "record_writes_per_seed": [
    {
@@ -1579,14 +1579,14 @@
     "value_writes": 64323
    },
    {
-    "drop_writes": 157171,
-    "line_writes": 952313,
-    "value_writes": 61659
+    "drop_writes": 153307,
+    "line_writes": 924538,
+    "value_writes": 61680
    },
    {
-    "drop_writes": 151935,
-    "line_writes": 864332,
-    "value_writes": 59616
+    "drop_writes": 157304,
+    "line_writes": 937965,
+    "value_writes": 61945
    },
    {
     "drop_writes": 162904,
@@ -1594,9 +1594,9 @@
     "value_writes": 63601
    },
    {
-    "drop_writes": 157857,
-    "line_writes": 957682,
-    "value_writes": 62396
+    "drop_writes": 164990,
+    "line_writes": 1029645,
+    "value_writes": 64193
    }
   ],
   "replay_writes": [
@@ -1607,7 +1607,7 @@
    0
   ]
  },
- "data_manifest_sha256": "72cc46c2ab7d88e950ff1192a4522146c8afa698f8793bf508e89ed465be1381",
+ "data_manifest_sha256": "4a67641b20ec72d4fd71da7543835740bea80a26b8d8fc590fc472d2681b82f8",
  "failures": [],
  "initialization": {
   "kind": "random",
@@ -1629,10 +1629,10 @@
   ],
   "corrupted_dynamics_loss": [
    0.851,
-   0.8089999999999999,
-   0.7969999999999999,
+   0.8160000000000001,
+   0.839,
    0.849,
-   0.861
+   0.836
   ],
   "next_board_validity": [
    1.0,
@@ -1648,14 +1648,14 @@
     "random": 1.0
    },
    {
-    "minimax_256": 0.912,
-    "one_ply": 0.983,
-    "random": 0.999
+    "minimax_256": 0.973,
+    "one_ply": 0.9975,
+    "random": 1.0
    },
    {
-    "minimax_256": 0.9155,
-    "one_ply": 0.975,
-    "random": 0.997
+    "minimax_256": 0.907,
+    "one_ply": 0.9735,
+    "random": 1.0
    },
    {
     "minimax_256": 0.942,
@@ -1663,8 +1663,8 @@
     "random": 0.998
    },
    {
-    "minimax_256": 0.94,
-    "one_ply": 0.9985,
+    "minimax_256": 0.9,
+    "one_ply": 0.982,
     "random": 0.998
    }
   ],
@@ -1675,14 +1675,14 @@
     "random": 0.997
    },
    {
-    "minimax_256": 0.8345,
-    "one_ply": 0.951,
-    "random": 0.995
+    "minimax_256": 0.9035,
+    "one_ply": 0.97,
+    "random": 0.997
    },
    {
-    "minimax_256": 0.854,
-    "one_ply": 0.97,
-    "random": 0.993
+    "minimax_256": 0.903,
+    "one_ply": 0.981,
+    "random": 0.997
    },
    {
     "minimax_256": 0.748,
@@ -1690,9 +1690,9 @@
     "random": 0.993
    },
    {
-    "minimax_256": 0.867,
-    "one_ply": 0.972,
-    "random": 0.998
+    "minimax_256": 0.877,
+    "one_ply": 0.967,
+    "random": 0.993
    }
   ],
   "per_seed": [
@@ -1703,6 +1703,7 @@
      "random": 40
     },
     "after_adaptation": {
+     "bootstrap_writes": 0,
      "drop_writes": 162645,
      "extended": true,
      "games_written": 1200,
@@ -1717,7 +1718,7 @@
        "4": 7301
       },
       "invalid": 0,
-      "nodes": 4163155,
+      "nodes": 4163183,
       "searches": 8816
      },
      "record_parameters": {
@@ -1740,6 +1741,7 @@
      "value_writes": 64323
     },
     "after_explore": {
+     "bootstrap_writes": 0,
      "drop_writes": 30233,
      "extended": true,
      "games_written": 200,
@@ -1772,6 +1774,7 @@
      "value_writes": 11671
     },
     "after_mixture": {
+     "bootstrap_writes": 0,
      "drop_writes": 132902,
      "extended": true,
      "games_written": 1000,
@@ -1786,7 +1789,7 @@
        "4": 5690
       },
       "invalid": 0,
-      "nodes": 3252969,
+      "nodes": 3252955,
       "searches": 6862
      },
      "record_parameters": {
@@ -1874,14 +1877,14 @@
      {
       "files": [
        {
-        "bytes": 34547,
+        "bytes": 34544,
         "path": "brain_seed10_games000100.agent.npz",
-        "sha256": "e25e23f94774d1bdecfe4cd65a194ecdbb5c5934ba621322f5b259920b202ea3"
+        "sha256": "79bce044f5e6bd3d85696db7abe25c7daff7daf49b96b7247cbcd84c477f43d2"
        },
        {
-        "bytes": 551676,
+        "bytes": 551716,
         "path": "brain_seed10_games000100.records.npz",
-        "sha256": "636e06740b62fc5bb5fbb58cc57388bbb9798d6b478f39cd0650072a05c4c9f9"
+        "sha256": "163f83e68c5e6e9e2f02ebba920f473d3fa3710ab79912f07e8e21dd34d7ade2"
        }
       ],
       "games": 100,
@@ -1893,14 +1896,14 @@
      {
       "files": [
        {
-        "bytes": 34542,
+        "bytes": 34544,
         "path": "brain_seed10_games000200.agent.npz",
-        "sha256": "0359e74fef803954dbde1a05f30ec56bb7deecaa366ca2d47cca74ee5677d8a0"
+        "sha256": "ad2d9e948a8efd43179cc876700f6805eca08e525228d36346df9712649b87cf"
        },
        {
-        "bytes": 552134,
+        "bytes": 552184,
         "path": "brain_seed10_games000200.records.npz",
-        "sha256": "9b439ecb01cc9056445793151a4804e47ac00184e88e7a60155dd975d4a5f17d"
+        "sha256": "538ef6d46561b82f0c4ef088f1c031a57d7ff9b5a21b58f80531224e660aef5e"
        }
       ],
       "games": 200,
@@ -1914,12 +1917,12 @@
        {
         "bytes": 34544,
         "path": "brain_seed10_games000400.agent.npz",
-        "sha256": "e57fb02e0c0b74f17508a996adc24db6ef8e14a247061f104aac838071580b6a"
+        "sha256": "ec3f68d17ca7ddbecb67bc61b9bbca79365be3aee73731b869fa085c09bd31e6"
        },
        {
-        "bytes": 553835,
+        "bytes": 553872,
         "path": "brain_seed10_games000400.records.npz",
-        "sha256": "e470e260d6d041fa484d104fe259da1a02244eddaad624623f3830c6635497e7"
+        "sha256": "568450be8625e8e26360d7947ae05ecb22b5bf90b9767ba271d0fe84b942512f"
        }
       ],
       "games": 400,
@@ -1931,14 +1934,14 @@
      {
       "files": [
        {
-        "bytes": 34525,
+        "bytes": 34524,
         "path": "brain_seed10_games001000.agent.npz",
-        "sha256": "24f19e7d6551360b29017d26c522bb7acd242df56d5eda24ed4eb98c97a3672f"
+        "sha256": "9f41870a945fbe7cbd7ff0278b75855f7d18acb1a65f4beab703bb3c4f87ac73"
        },
        {
-        "bytes": 554870,
+        "bytes": 554911,
         "path": "brain_seed10_games001000.records.npz",
-        "sha256": "b2e5a24df7ec11ec30c71df73327c22597dadf9019bb7b7aee2925a39f70939b"
+        "sha256": "aabccb7eeb8ff3e53e2eedc20e226bf779ba9f081a135ce9b1b33465da16382d"
        }
       ],
       "games": 1000,
@@ -1951,14 +1954,14 @@
      {
       "files": [
        {
-        "bytes": 34532,
+        "bytes": 34525,
         "path": "brain_seed10_games001200.agent.npz",
-        "sha256": "c4ebcd9c7a47ca6ab06096c847a2269a64e07e7c9936608902c72431afd43612"
+        "sha256": "44404117649ad21732284b385e7f9dfc81ed253ac69bc3008976c4da86704491"
        },
        {
-        "bytes": 554997,
+        "bytes": 555049,
         "path": "brain_seed10_games001200.records.npz",
-        "sha256": "23ea89e2c8a23a9df3a945bfbc20a231da5bb127996229e6b25031c379663a4f"
+        "sha256": "802ddb38bb1cb09b6700d424aa6d49ae702a1134079004afec9d814163717747"
        }
       ],
       "games": 1200,
@@ -2050,7 +2053,7 @@
       },
       "decisions": 1063,
       "depth_per_planned": 3.6304118268215415,
-      "expansions_per_planned": 494.81731784582894,
+      "expansions_per_planned": 494.8616684266103,
       "extended": true,
       "games": 300,
       "invalid": 0,
@@ -2067,7 +2070,7 @@
       },
       "decisions": 955,
       "depth_per_planned": 3.6109134045077105,
-      "expansions_per_planned": 519.043890865955,
+      "expansions_per_planned": 519.0604982206406,
       "extended": true,
       "games": 400,
       "invalid": 0,
@@ -2101,7 +2104,7 @@
       },
       "decisions": 948,
       "depth_per_planned": 3.6347305389221556,
-      "expansions_per_planned": 462.9365269461078,
+      "expansions_per_planned": 462.92814371257487,
       "extended": true,
       "games": 600,
       "invalid": 0,
@@ -2118,7 +2121,7 @@
       },
       "decisions": 846,
       "depth_per_planned": 3.613848202396804,
-      "expansions_per_planned": 495.91877496671106,
+      "expansions_per_planned": 495.83488681757655,
       "extended": true,
       "games": 700,
       "invalid": 0,
@@ -2186,7 +2189,7 @@
       },
       "decisions": 1133,
       "depth_per_planned": 3.6666666666666665,
-      "expansions_per_planned": 469.7731343283582,
+      "expansions_per_planned": 469.8149253731343,
       "extended": true,
       "games": 1100,
       "invalid": 0,
@@ -2217,7 +2220,7 @@
     "events": {
      "events": 16250,
      "path": "events_seed10.jsonl",
-     "sha256": "dccd00d2aeffff3bfa9fecde862a37eae59d9700dcfcb37c27d9e753b1d44643"
+     "sha256": "6a378178b8b1a8f835e59da1faab02e3ca6b9690ef062cbd254d556c7b6348cd"
     },
     "games": {
      "adaptation": 200,
@@ -2228,9 +2231,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 77245,
-     "max": 3999.614755000948,
-     "p50": 8.274323001387529,
-     "p95": 19.156200400175294
+     "max": 278.19631500005926,
+     "p50": 21.81385199946817,
+     "p95": 50.50189299945487
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -2238,7 +2241,7 @@
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.998155851009827e-07
+      "free": 9.998155849899604e-07
      },
      "mean_steps": {
       "free": 46.71460809387694
@@ -2258,7 +2261,7 @@
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.998155851009827e-07
+      "free": 9.998155849899604e-07
      },
      "mean_steps": {
       "free": 46.728525493798806
@@ -2459,7 +2462,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 909.0550472736359
+    "wall_seconds": 2252.377662420273
    },
    {
     "adaptation_draws": {
@@ -2468,22 +2471,23 @@
      "random": 36
     },
     "after_adaptation": {
-     "drop_writes": 157171,
+     "bootstrap_writes": 0,
+     "drop_writes": 153307,
      "extended": true,
      "games_written": 1200,
-     "line_writes": 952313,
+     "line_writes": 924538,
      "planner": {
       "budget": 1024,
-      "depth": 3.633469387755102,
+      "depth": 3.6171818835370235,
       "depths": {
-       "1": 814,
-       "2": 53,
-       "3": 595,
-       "4": 7113
+       "1": 825,
+       "2": 31,
+       "3": 658,
+       "4": 6832
       },
       "invalid": 0,
-      "nodes": 3877234,
-      "searches": 8575
+      "nodes": 3966835,
+      "searches": 8346
      },
      "record_parameters": {
       "critic_parameters": 17,
@@ -2498,13 +2502,14 @@
       "record_parameters": 0,
       "world_parameters": 0
      },
-     "transitions": 22453,
+     "transitions": 21901,
      "validity": 1.0,
      "validity_samples": 500,
-     "validity_scored": 22453,
-     "value_writes": 61659
+     "validity_scored": 21901,
+     "value_writes": 61680
     },
     "after_explore": {
+     "bootstrap_writes": 0,
      "drop_writes": 29617,
      "extended": true,
      "games_written": 200,
@@ -2537,22 +2542,23 @@
      "value_writes": 11387
     },
     "after_mixture": {
-     "drop_writes": 125958,
+     "bootstrap_writes": 0,
+     "drop_writes": 124187,
      "extended": true,
      "games_written": 1000,
-     "line_writes": 741844,
+     "line_writes": 730815,
      "planner": {
       "budget": 1024,
-      "depth": 3.6149363594540715,
+      "depth": 3.6044298861332087,
       "depths": {
-       "1": 667,
-       "2": 39,
-       "3": 432,
-       "4": 5383
+       "1": 674,
+       "2": 22,
+       "3": 470,
+       "4": 5245
       },
       "invalid": 0,
-      "nodes": 2988555,
-      "searches": 6521
+      "nodes": 3047944,
+      "searches": 6411
      },
      "record_parameters": {
       "critic_parameters": 17,
@@ -2567,11 +2573,11 @@
       "record_parameters": 0,
       "world_parameters": 0
      },
-     "transitions": 17994,
+     "transitions": 17741,
      "validity": 1.0,
      "validity_samples": 500,
-     "validity_scored": 17994,
-     "value_writes": 50036
+     "validity_scored": 17741,
+     "value_writes": 50082
     },
     "born_frozen": {
      "games": 50,
@@ -2598,12 +2604,12 @@
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.144,
-       "block-second": 0.12,
-       "win-first": 0.18,
-       "win-second": 0.172
+       "block-first": 0.136,
+       "block-second": 0.132,
+       "win-first": 0.196,
+       "win-second": 0.132
       },
-      "success": 0.154
+      "success": 0.149
      },
      "validity": {
       "changed_cell": 0.1668,
@@ -2639,14 +2645,14 @@
      {
       "files": [
        {
-        "bytes": 34504,
+        "bytes": 34506,
         "path": "brain_seed11_games000100.agent.npz",
-        "sha256": "e0f680ae01b081a90466c69595c4d93b588a248701137ab7ea7293c6966046fc"
+        "sha256": "2d7a6e577e32203d223ab35b32fba049222fcfe5e2b7daa68bf10c6419dcfc4e"
        },
        {
-        "bytes": 551799,
+        "bytes": 551819,
         "path": "brain_seed11_games000100.records.npz",
-        "sha256": "f73430839032496136d3752f4420f25cfdbbaaceda18bae36974c27fbf47ab3f"
+        "sha256": "e47d372deb086b1166e64e2da8eb8fb6065b269f33aa0fbb0982c2feb90436bf"
        }
       ],
       "games": 100,
@@ -2658,14 +2664,14 @@
      {
       "files": [
        {
-        "bytes": 34517,
+        "bytes": 34518,
         "path": "brain_seed11_games000200.agent.npz",
-        "sha256": "120e107a073108eec9ab7f1d831f6b2afce5c494f9a02104ea7cec797904d8d5"
+        "sha256": "35ef91d7601ae709790b3028a8bcebc818a95b3f7c47e07106b8ce5242dea501"
        },
        {
-        "bytes": 552167,
+        "bytes": 552200,
         "path": "brain_seed11_games000200.records.npz",
-        "sha256": "7a48b4910df40a62312f3616d320ac016e9fa99151c38d836eb205cb4784caf4"
+        "sha256": "84e04af4179952d44dcaddda3537d37a816b658a01bea81d2baffd49a1bea94d"
        }
       ],
       "games": 200,
@@ -2677,14 +2683,14 @@
      {
       "files": [
        {
-        "bytes": 34521,
+        "bytes": 34512,
         "path": "brain_seed11_games000400.agent.npz",
-        "sha256": "bf28861541330483df2327ad52d8a75d3e6ad1f7c03c04eedf7c91f197a0e58f"
+        "sha256": "a5e251eed2a06182aec5ede9b350be52857c29623fb4eac9630482e3a472fa88"
        },
        {
-        "bytes": 553481,
+        "bytes": 553716,
         "path": "brain_seed11_games000400.records.npz",
-        "sha256": "989adeb227bab89ca7ee7e4760a118f297b40d5e1fbc680345c871da30ae61b9"
+        "sha256": "6489aaf0515f9af9f1adb395fa6debb854a8c0c6fdf95225cd7220024b553a31"
        }
       ],
       "games": 400,
@@ -2696,14 +2702,14 @@
      {
       "files": [
        {
-        "bytes": 34504,
+        "bytes": 34500,
         "path": "brain_seed11_games001000.agent.npz",
-        "sha256": "bf660881e075e1e2979f265e91d3b1cc483f3e2e8d98d8911e7c5332f8746f7e"
+        "sha256": "14efb0d386dd5936837cdcc2df84a85f534685ca6cb9e567fa729d9fd9c7b57e"
        },
        {
-        "bytes": 554448,
+        "bytes": 554462,
         "path": "brain_seed11_games001000.records.npz",
-        "sha256": "65ec98762e5c95ef31d2b76526b8ec1bd3a4e25c858c84e9782a866941572024"
+        "sha256": "e6b64ba6004e172ed1499752857d6bef7adaa1e4bcd9afec5476133060caac6a"
        }
       ],
       "games": 1000,
@@ -2716,14 +2722,14 @@
      {
       "files": [
        {
-        "bytes": 34518,
+        "bytes": 34507,
         "path": "brain_seed11_games001200.agent.npz",
-        "sha256": "6980cd3f979ba26bde046748cb14530f62fcd1fdab7d449fde0fdc2e4dfd2712"
+        "sha256": "ee25e3ebffee7a38aacd8c7a19532d39000e5a90ccb87bac79e513f8f48a6609"
        },
        {
-        "bytes": 554793,
+        "bytes": 554604,
         "path": "brain_seed11_games001200.records.npz",
-        "sha256": "fad48ac05e52d1cef0ea02be723152aabd9e2ad27aa2ac8cf25b8b0b991a8ead"
+        "sha256": "4a0d2391f7642586b2881fbebb0cd4cdc5160c3aceb3a6306dfec1b51530ef32"
        }
       ],
       "games": 1200,
@@ -2736,46 +2742,46 @@
     "corrupted": {
      "planner": {
       "budget": 1024,
-      "depth": 3.946,
+      "depth": 3.988,
       "depths": {
-       "1": 18,
-       "4": 982
+       "1": 4,
+       "4": 996
       },
-      "invalid": 12054,
-      "nodes": 13673,
+      "invalid": 8768,
+      "nodes": 9308,
       "searches": 1000
      },
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.164,
-       "block-second": 0.192,
-       "win-first": 0.224,
-       "win-second": 0.184
+       "block-first": 0.184,
+       "block-second": 0.24,
+       "win-first": 0.172,
+       "win-second": 0.14
       },
-      "success": 0.191
+      "success": 0.184
      },
      "validity": {
-      "changed_cell": 0.1731,
-      "exact": 0.019,
+      "changed_cell": 0.1873,
+      "exact": 0.0132,
       "moves": 10000,
       "strata": {
        "h0-candidate": 0.0,
        "h0-opponent": 0.0,
        "h1-candidate": 0.0,
        "h1-opponent": 0.0,
-       "h2-candidate": 0.09483793517406963,
-       "h2-opponent": 0.12244897959183673,
+       "h2-candidate": 0.056422569027611044,
+       "h2-opponent": 0.07563025210084033,
        "h3-candidate": 0.0,
        "h3-opponent": 0.0,
        "h4-candidate": 0.0,
        "h4-opponent": 0.0,
-       "h5-candidate": 0.007202881152460984,
-       "h5-opponent": 0.003601440576230492
+       "h5-candidate": 0.014405762304921969,
+       "h5-opponent": 0.012004801920768308
       }
      }
     },
-    "corrupted_loss": 0.8089999999999999,
+    "corrupted_loss": 0.8160000000000001,
     "curves": [
      {
       "by_opponent": {
@@ -2809,180 +2815,180 @@
      },
      {
       "by_opponent": {
-       "one_ply": 0.7241379310344828,
-       "random": 0.9777777777777777,
-       "snapshots": 0.9230769230769231
+       "one_ply": 0.7758620689655172,
+       "random": 0.9555555555555556,
+       "snapshots": 0.8076923076923077
       },
-      "decisions": 872,
-      "depth_per_planned": 3.60125786163522,
-      "expansions_per_planned": 474.7534591194969,
+      "decisions": 844,
+      "depth_per_planned": 3.5853976531942635,
+      "expansions_per_planned": 495.3780964797914,
       "extended": true,
       "games": 300,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 795,
-      "score": 0.89,
+      "planned": 767,
+      "score": 0.865,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.8666666666666667,
+       "one_ply": 0.8,
        "random": 1.0,
-       "snapshots": 0.9285714285714286
+       "snapshots": 0.8571428571428571
       },
-      "decisions": 761,
-      "depth_per_planned": 3.534407027818448,
-      "expansions_per_planned": 476.4919472913616,
+      "decisions": 923,
+      "depth_per_planned": 3.614921780986763,
+      "expansions_per_planned": 470.4909747292419,
       "extended": true,
       "games": 400,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 683,
-      "score": 0.94,
-      "validity": 1.0
-     },
-     {
-      "by_opponent": {
-       "one_ply": 0.7777777777777778,
-       "random": 1.0,
-       "snapshots": 0.8918918918918919
-      },
-      "decisions": 836,
-      "depth_per_planned": 3.593582887700535,
-      "expansions_per_planned": 471.7433155080214,
-      "extended": true,
-      "games": 500,
-      "invalid": 0,
-      "phase": "mixture",
-      "planned": 748,
+      "planned": 831,
       "score": 0.9,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.8148148148148148,
-       "random": 0.9523809523809523,
+       "one_ply": 0.9074074074074074,
+       "random": 0.9722222222222222,
+       "snapshots": 0.8378378378378378
+      },
+      "decisions": 938,
+      "depth_per_planned": 3.588305489260143,
+      "expansions_per_planned": 474.2458233890215,
+      "extended": true,
+      "games": 500,
+      "invalid": 0,
+      "phase": "mixture",
+      "planned": 838,
+      "score": 0.905,
+      "validity": 1.0
+     },
+     {
+      "by_opponent": {
+       "one_ply": 0.6296296296296297,
+       "random": 0.9761904761904762,
        "snapshots": 0.8387096774193549
       },
-      "decisions": 929,
-      "depth_per_planned": 3.6014405762304924,
-      "expansions_per_planned": 481.97358943577433,
+      "decisions": 848,
+      "depth_per_planned": 3.6034031413612566,
+      "expansions_per_planned": 473.94633507853405,
       "extended": true,
       "games": 600,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 833,
-      "score": 0.88,
+      "planned": 764,
+      "score": 0.84,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.7678571428571429,
-       "random": 0.9428571428571428,
-       "snapshots": 0.8378378378378378
+       "one_ply": 0.875,
+       "random": 1.0,
+       "snapshots": 0.8648648648648649
       },
-      "decisions": 955,
-      "depth_per_planned": 3.6160188457008244,
-      "expansions_per_planned": 450.59481743227326,
+      "decisions": 885,
+      "depth_per_planned": 3.599236641221374,
+      "expansions_per_planned": 479.5394402035623,
       "extended": true,
       "games": 700,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 849,
-      "score": 0.855,
+      "planned": 786,
+      "score": 0.915,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.7361111111111112,
-       "random": 0.9487179487179487,
-       "snapshots": 0.76
+       "one_ply": 0.8194444444444444,
+       "random": 1.0,
+       "snapshots": 0.88
       },
-      "decisions": 996,
-      "depth_per_planned": 3.653674832962138,
-      "expansions_per_planned": 437.0556792873051,
+      "decisions": 921,
+      "depth_per_planned": 3.6325301204819276,
+      "expansions_per_planned": 464.27590361445783,
       "extended": true,
       "games": 800,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 898,
-      "score": 0.825,
+      "planned": 830,
+      "score": 0.905,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.88,
-       "random": 0.9210526315789473,
-       "snapshots": 0.7162162162162162
+       "one_ply": 0.7,
+       "random": 0.9736842105263158,
+       "snapshots": 0.7702702702702703
       },
-      "decisions": 952,
-      "depth_per_planned": 3.6513233601841195,
-      "expansions_per_planned": 437.1288837744534,
+      "decisions": 925,
+      "depth_per_planned": 3.6465005931198102,
+      "expansions_per_planned": 471.6370106761566,
       "extended": true,
       "games": 900,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 869,
-      "score": 0.835,
+      "planned": 843,
+      "score": 0.83,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.78,
+       "one_ply": 0.76,
        "random": 0.9782608695652174,
-       "snapshots": 0.7931034482758621
+       "snapshots": 0.9655172413793104
       },
-      "decisions": 931,
-      "depth_per_planned": 3.645390070921986,
-      "expansions_per_planned": 444.96217494089836,
+      "decisions": 826,
+      "depth_per_planned": 3.5585106382978724,
+      "expansions_per_planned": 475.5864361702128,
       "extended": true,
       "games": 1000,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 846,
-      "score": 0.875,
+      "planned": 752,
+      "score": 0.92,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "minimax_256": 0.7131147540983607,
-       "one_ply": 0.9565217391304348,
-       "random": 0.9375
+       "minimax_256": 0.7704918032786885,
+       "one_ply": 0.8260869565217391,
+       "random": 1.0
       },
-      "decisions": 1190,
-      "depth_per_planned": 3.707749766573296,
-      "expansions_per_planned": 407.80859010270774,
+      "decisions": 1094,
+      "depth_per_planned": 3.655453618756371,
+      "expansions_per_planned": 470.49847094801225,
       "extended": true,
       "games": 1100,
       "invalid": 0,
       "phase": "adaptation",
-      "planned": 1071,
-      "score": 0.805,
+      "planned": 981,
+      "score": 0.82,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "minimax_256": 0.648936170212766,
-       "one_ply": 0.9393939393939394,
-       "random": 0.9
+       "minimax_256": 0.7340425531914894,
+       "one_ply": 0.8484848484848485,
+       "random": 1.0
       },
-      "decisions": 1119,
-      "depth_per_planned": 3.6754832146490335,
-      "expansions_per_planned": 459.7314343845371,
+      "decisions": 1068,
+      "depth_per_planned": 3.6635220125786163,
+      "expansions_per_planned": 479.3836477987421,
       "extended": true,
       "games": 1200,
       "invalid": 0,
       "phase": "adaptation",
-      "planned": 983,
-      "score": 0.795,
+      "planned": 954,
+      "score": 0.825,
       "validity": 1.0
      }
     ],
-    "decisions": 11704,
+    "decisions": 11435,
     "events": {
      "events": 16250,
      "path": "events_seed11.jsonl",
-     "sha256": "bb9128037d75b27146b8b458f760b1cfc77547c712249c7a8fffda4bee68ec17"
+     "sha256": "244e2e621441e31e4af110394e88b55b24650a499dbc3a69c02675b18469cc28"
     },
     "games": {
      "adaptation": 200,
@@ -2992,26 +2998,26 @@
     },
     "kind": "candidate",
     "latency_ms": {
-     "decisions": 76829,
-     "max": 3925.7831879986043,
-     "p50": 7.834516000002623,
-     "p95": 18.980440799714394
+     "decisions": 74964,
+     "max": 341.5170690004743,
+     "p50": 20.985768499940605,
+     "p95": 50.35708800023713
     },
     "ledger": {
      "clipped_deltas": 0,
-     "deltas": 11704,
+     "deltas": 11435,
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.998697697577441e-07
+      "free": 9.994139660296497e-07
      },
      "mean_steps": {
-      "free": 46.022318660880345
+      "free": 46.08405223585279
      },
      "phases": {
-      "free": 12904
+      "free": 12635
      },
-     "real_transitions": 11704,
+     "real_transitions": 11435,
      "record_writes": 0,
      "rejected_updates": 0,
      "replay_writes": 0,
@@ -3019,27 +3025,27 @@
     },
     "ledger_mixture": {
      "clipped_deltas": 0,
-     "deltas": 9395,
+     "deltas": 9273,
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.998697697577441e-07
+      "free": 9.994139660296497e-07
      },
      "mean_steps": {
-      "free": 45.977489177489176
+      "free": 46.0484765891171
      },
      "phases": {
-      "free": 10395
+      "free": 10273
      },
-     "real_transitions": 9395,
+     "real_transitions": 9273,
      "record_writes": 0,
      "rejected_updates": 0,
      "replay_writes": 0,
      "unconverged_phases": {}
     },
     "minimax_256_before_after": [
-     0.8345,
-     0.912
+     0.9035,
+     0.973
     ],
     "mixture_draws": {
      "one_ply": 227,
@@ -3049,104 +3055,104 @@
     "no_planning": {
      "paired": {
       "minimax_256": {
-       "draws": 41,
-       "first_score": 0.142,
+       "draws": 12,
+       "first_score": 0.099,
        "games": 1000,
-       "losses": 843,
-       "score": 0.1365,
-       "second_score": 0.131,
-       "wins": 116
+       "losses": 915,
+       "score": 0.079,
+       "second_score": 0.059,
+       "wins": 73
       },
       "one_ply": {
-       "draws": 10,
-       "first_score": 0.256,
+       "draws": 3,
+       "first_score": 0.167,
        "games": 1000,
-       "losses": 755,
-       "score": 0.24,
-       "second_score": 0.224,
-       "wins": 235
+       "losses": 856,
+       "score": 0.1425,
+       "second_score": 0.118,
+       "wins": 141
       },
       "random": {
        "draws": 0,
-       "first_score": 0.886,
+       "first_score": 0.892,
        "games": 1000,
-       "losses": 138,
-       "score": 0.862,
-       "second_score": 0.838,
-       "wins": 862
+       "losses": 147,
+       "score": 0.853,
+       "second_score": 0.814,
+       "wins": 853
       }
      },
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.364,
-       "block-second": 0.34,
+       "block-first": 0.356,
+       "block-second": 0.328,
        "win-first": 1.0,
        "win-second": 1.0
       },
-      "success": 0.676
+      "success": 0.671
      }
     },
     "old_loss": {
-     "one_ply": -0.03200000000000003,
-     "random": -0.0040000000000000036
+     "one_ply": -0.02750000000000008,
+     "random": -0.0030000000000000027
     },
     "paired_adaptation": {
      "minimax_256": {
-      "draws": 32,
-      "first_score": 0.906,
+      "draws": 16,
+      "first_score": 0.976,
       "games": 1000,
-      "losses": 72,
-      "score": 0.912,
-      "second_score": 0.918,
-      "wins": 896
+      "losses": 19,
+      "score": 0.973,
+      "second_score": 0.97,
+      "wins": 965
      },
      "one_ply": {
-      "draws": 6,
-      "first_score": 0.981,
+      "draws": 1,
+      "first_score": 0.998,
       "games": 1000,
-      "losses": 14,
-      "score": 0.983,
-      "second_score": 0.985,
-      "wins": 980
+      "losses": 2,
+      "score": 0.9975,
+      "second_score": 0.997,
+      "wins": 997
      },
      "random": {
       "draws": 0,
-      "first_score": 0.998,
+      "first_score": 1.0,
       "games": 1000,
-      "losses": 1,
-      "score": 0.999,
+      "losses": 0,
+      "score": 1.0,
       "second_score": 1.0,
-      "wins": 999
+      "wins": 1000
      }
     },
     "paired_mixture": {
      "minimax_256": {
-      "draws": 27,
-      "first_score": 0.867,
+      "draws": 13,
+      "first_score": 0.964,
       "games": 1000,
-      "losses": 152,
-      "score": 0.8345,
-      "second_score": 0.802,
-      "wins": 821
+      "losses": 90,
+      "score": 0.9035,
+      "second_score": 0.843,
+      "wins": 897
      },
      "one_ply": {
-      "draws": 14,
-      "first_score": 0.96,
+      "draws": 6,
+      "first_score": 0.995,
       "games": 1000,
-      "losses": 42,
-      "score": 0.951,
-      "second_score": 0.942,
-      "wins": 944
+      "losses": 27,
+      "score": 0.97,
+      "second_score": 0.945,
+      "wins": 967
      },
      "random": {
       "draws": 0,
-      "first_score": 0.998,
+      "first_score": 1.0,
       "games": 1000,
-      "losses": 5,
-      "score": 0.995,
-      "second_score": 0.992,
-      "wins": 995
+      "losses": 3,
+      "score": 0.997,
+      "second_score": 0.994,
+      "wins": 997
      }
     },
     "parameters": {
@@ -3164,25 +3170,25 @@
     },
     "planner_eval": {
      "budget": 1024,
-     "depth": 3.6402761329828714,
+     "depth": 3.6317856724117714,
      "depths": {
-      "1": 3260,
-      "2": 205,
-      "3": 2264,
-      "4": 28892
+      "1": 3361,
+      "2": 126,
+      "3": 2227,
+      "4": 28402
      },
      "invalid": 0,
-     "nodes": 13696902,
-     "searches": 34621
+     "nodes": 12972425,
+     "searches": 34116
     },
-    "planning_gain": 0.711,
+    "planning_gain": 0.8275,
     "seed": 11,
     "snapshots_added": 8,
     "split": "acceptance",
     "suites": {
-     "excluded_positions": 7119,
+     "excluded_positions": 7107,
      "heldout_moves_sha256": "f80a452c0ac18bdd1b224bf5b4bb7ecc2487dcdb95f3b3bfadab107b7c0ea224",
-     "tactical_sha256": "48a39fc1d246eb75102b93ed8acdf870226842fb3bc0d2010d9a94e7744fc8cc",
+     "tactical_sha256": "54a1f5b699651777b74e651082b86850e25b3a0587e376141fcd25ca8a183e8b",
      "terminal_sha256": "dc6099dba99974fdad23b747bc1933e8176cb5a4276be2ceba617648b004a74f"
     },
     "tactical": {
@@ -3224,7 +3230,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 859.8814451694489
+    "wall_seconds": 2102.959621191025
    },
    {
     "adaptation_draws": {
@@ -3233,22 +3239,23 @@
      "random": 43
     },
     "after_adaptation": {
-     "drop_writes": 151935,
+     "bootstrap_writes": 0,
+     "drop_writes": 157304,
      "extended": true,
      "games_written": 1200,
-     "line_writes": 864332,
+     "line_writes": 937965,
      "planner": {
       "budget": 1024,
-      "depth": 3.6337926033357504,
+      "depth": 3.638463324048282,
       "depths": {
-       "1": 821,
-       "2": 39,
-       "3": 489,
-       "4": 6925
+       "1": 812,
+       "2": 44,
+       "3": 591,
+       "4": 7169
       },
       "invalid": 12,
-      "nodes": 3888224,
-      "searches": 8274
+      "nodes": 4015080,
+      "searches": 8616
      },
      "record_parameters": {
       "critic_parameters": 17,
@@ -3263,13 +3270,14 @@
       "record_parameters": 0,
       "world_parameters": 0
      },
-     "transitions": 21705,
+     "transitions": 22472,
      "validity": 1.0,
      "validity_samples": 500,
-     "validity_scored": 21705,
-     "value_writes": 59616
+     "validity_scored": 22472,
+     "value_writes": 61945
     },
     "after_explore": {
+     "bootstrap_writes": 0,
      "drop_writes": 29015,
      "extended": true,
      "games_written": 200,
@@ -3302,22 +3310,23 @@
      "value_writes": 11278
     },
     "after_mixture": {
-     "drop_writes": 121807,
+     "bootstrap_writes": 0,
+     "drop_writes": 127484,
      "extended": true,
      "games_written": 1000,
-     "line_writes": 663251,
+     "line_writes": 749617,
      "planner": {
       "budget": 1024,
-      "depth": 3.6101884381986586,
+      "depth": 3.6186236039843043,
       "depths": {
-       "1": 684,
-       "2": 27,
-       "3": 335,
-       "4": 5216
+       "1": 678,
+       "2": 31,
+       "3": 431,
+       "4": 5486
       },
       "invalid": 12,
-      "nodes": 2961876,
-      "searches": 6262
+      "nodes": 3040683,
+      "searches": 6626
      },
      "record_parameters": {
       "critic_parameters": 17,
@@ -3332,11 +3341,11 @@
       "record_parameters": 0,
       "world_parameters": 0
      },
-     "transitions": 17401,
+     "transitions": 18212,
      "validity": 1.0,
      "validity_samples": 500,
-     "validity_scored": 17401,
-     "value_writes": 48140
+     "validity_scored": 18212,
+     "value_writes": 50670
     },
     "born_frozen": {
      "games": 50,
@@ -3363,12 +3372,12 @@
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.144,
-       "block-second": 0.148,
-       "win-first": 0.136,
-       "win-second": 0.152
+       "block-first": 0.152,
+       "block-second": 0.12,
+       "win-first": 0.148,
+       "win-second": 0.156
       },
-      "success": 0.145
+      "success": 0.144
      },
      "validity": {
       "changed_cell": 0.1668,
@@ -3404,14 +3413,14 @@
      {
       "files": [
        {
-        "bytes": 34508,
+        "bytes": 34509,
         "path": "brain_seed12_games000100.agent.npz",
-        "sha256": "27e0b4735abb56b0020865c2c73cda6346567103d9275af12ea551fd9f12c271"
+        "sha256": "71ed51dee399437994533e680fd1ee6ece9e92ac95ac0b9c5d0f2fd6c1f0e07e"
        },
        {
-        "bytes": 550058,
+        "bytes": 550094,
         "path": "brain_seed12_games000100.records.npz",
-        "sha256": "0f3d5b5cf86be1e5281fdcb5d54fa080332f3531645c236ddb7d82ca6acd5f5c"
+        "sha256": "e31b9bd6fd20e8d2712b63b7907cd3cd50f4b8c94d89b8583d8a439545e8ee9b"
        }
       ],
       "games": 100,
@@ -3423,14 +3432,14 @@
      {
       "files": [
        {
-        "bytes": 34507,
+        "bytes": 34512,
         "path": "brain_seed12_games000200.agent.npz",
-        "sha256": "e46fe823c2dbf8729f1b630188d8d30a54ad1ab49414c12ddf434faaaf30f80e"
+        "sha256": "90ff3b45fc7cc1156733f66b1df82b6727d35cd690ad2cbf2c27b74275d2f012"
        },
        {
-        "bytes": 550805,
+        "bytes": 550835,
         "path": "brain_seed12_games000200.records.npz",
-        "sha256": "7dc3609497ea118ab8841399b2baa91e174e6b689177cdd483f1f394afc27444"
+        "sha256": "967b248863b9d3fe74aca72a39e97caf6462a02aba80273edabef5727d8dfa2a"
        }
       ],
       "games": 200,
@@ -3442,14 +3451,14 @@
      {
       "files": [
        {
-        "bytes": 34506,
+        "bytes": 34510,
         "path": "brain_seed12_games000400.agent.npz",
-        "sha256": "42feaca9dde834b35350dae176d3ce0a3d855fc3c29a9d5772d626d9624afd1a"
+        "sha256": "5dba79191de8c88427e7cfbdcae901c2e6f4904cfd4a2f8b7fbd4091ab1b1d2d"
        },
        {
-        "bytes": 552158,
+        "bytes": 552196,
         "path": "brain_seed12_games000400.records.npz",
-        "sha256": "f7d0ad416be77a8a3c2c554233e0e3d1a0ffb61e3630d8e1440d4364d33c5c53"
+        "sha256": "c81965826000a0a9a03c4750ac0e6827c60d56bae84b2ccbe326f8f6cf1e4079"
        }
       ],
       "games": 400,
@@ -3461,14 +3470,14 @@
      {
       "files": [
        {
-        "bytes": 34490,
+        "bytes": 34494,
         "path": "brain_seed12_games001000.agent.npz",
-        "sha256": "55e299a4a4b83daf94dc3a3f0a23cf5f8e7582b31a5a61bdd167330f13456b9b"
+        "sha256": "6bae7de0e23545a958e25b7dabd7f63c89f236dd0e675c2b5cb4163eac04e1b3"
        },
        {
-        "bytes": 553974,
+        "bytes": 554151,
         "path": "brain_seed12_games001000.records.npz",
-        "sha256": "bfe68dd3a14792c1f9663d39c5234d1a9520304d014b84845434ff55252a20c9"
+        "sha256": "b8571b51ba41c16da5cc0b831637dbfbf973e14313c6618614379dc1fbb752c1"
        }
       ],
       "games": 1000,
@@ -3481,14 +3490,14 @@
      {
       "files": [
        {
-        "bytes": 34499,
+        "bytes": 34503,
         "path": "brain_seed12_games001200.agent.npz",
-        "sha256": "ee38728eb0964398703a6ed94a7c3a21016c82735aa243d1b4fe667a9eb4c96d"
+        "sha256": "743420d700bf70baa746a6ca80f4cc49b7184055d5ee5a184608ce56caf41e9a"
        },
        {
-        "bytes": 554370,
+        "bytes": 554678,
         "path": "brain_seed12_games001200.records.npz",
-        "sha256": "f51c081c7b138ab619933de0d61b8139bbc47c40d8c779facbbfced5056a0e90"
+        "sha256": "a6d6e161119e73bd301c39171e3a282204e0e7f6ffd8c598436fd2369aa1a8f7"
        }
       ],
       "games": 1200,
@@ -3501,28 +3510,28 @@
     "corrupted": {
      "planner": {
       "budget": 1024,
-      "depth": 3.946,
+      "depth": 3.976,
       "depths": {
-       "1": 18,
-       "4": 982
+       "1": 8,
+       "4": 992
       },
-      "invalid": 10667,
-      "nodes": 12521,
+      "invalid": 12634,
+      "nodes": 14770,
       "searches": 1000
      },
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.208,
-       "block-second": 0.22,
-       "win-first": 0.208,
-       "win-second": 0.176
+       "block-first": 0.128,
+       "block-second": 0.18,
+       "win-first": 0.164,
+       "win-second": 0.172
       },
-      "success": 0.203
+      "success": 0.161
      },
      "validity": {
-      "changed_cell": 0.0793,
-      "exact": 0.018,
+      "changed_cell": 0.0991,
+      "exact": 0.027,
       "moves": 10000,
       "strata": {
        "h0-candidate": 0.0,
@@ -3531,16 +3540,16 @@
        "h1-opponent": 0.0,
        "h2-candidate": 0.0,
        "h2-opponent": 0.0,
-       "h3-candidate": 0.061224489795918366,
-       "h3-opponent": 0.055222088835534214,
-       "h4-candidate": 0.025210084033613446,
-       "h4-opponent": 0.01680672268907563,
-       "h5-candidate": 0.028811524609843937,
-       "h5-opponent": 0.028811524609843937
+       "h3-candidate": 0.058823529411764705,
+       "h3-opponent": 0.056422569027611044,
+       "h4-candidate": 0.024009603841536616,
+       "h4-opponent": 0.03481392557022809,
+       "h5-candidate": 0.06722689075630252,
+       "h5-opponent": 0.08283313325330131
       }
      }
     },
-    "corrupted_loss": 0.7969999999999999,
+    "corrupted_loss": 0.839,
     "curves": [
      {
       "by_opponent": {
@@ -3580,7 +3589,7 @@
       },
       "decisions": 825,
       "depth_per_planned": 3.5345997286295794,
-      "expansions_per_planned": 502.3419267299864,
+      "expansions_per_planned": 502.40841248303934,
       "extended": true,
       "games": 300,
       "invalid": 12,
@@ -3614,7 +3623,7 @@
       },
       "decisions": 880,
       "depth_per_planned": 3.6033163265306123,
-      "expansions_per_planned": 462.28316326530614,
+      "expansions_per_planned": 462.21173469387753,
       "extended": true,
       "games": 500,
       "invalid": 12,
@@ -3625,129 +3634,129 @@
      },
      {
       "by_opponent": {
-       "one_ply": 0.7222222222222222,
+       "one_ply": 0.7361111111111112,
        "random": 0.9722222222222222,
-       "snapshots": 0.8928571428571429
+       "snapshots": 0.7857142857142857
       },
-      "decisions": 921,
-      "depth_per_planned": 3.661853188929001,
-      "expansions_per_planned": 460.96871239470516,
+      "decisions": 930,
+      "depth_per_planned": 3.6488095238095237,
+      "expansions_per_planned": 494.83214285714286,
       "extended": true,
       "games": 600,
       "invalid": 12,
       "phase": "mixture",
-      "planned": 831,
-      "score": 0.86,
+      "planned": 840,
+      "score": 0.835,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.6896551724137931,
+       "one_ply": 0.9137931034482759,
        "random": 1.0,
-       "snapshots": 0.9705882352941176
+       "snapshots": 0.9117647058823529
       },
-      "decisions": 785,
-      "depth_per_planned": 3.5613275613275612,
-      "expansions_per_planned": 459.83261183261186,
+      "decisions": 877,
+      "depth_per_planned": 3.55627425614489,
+      "expansions_per_planned": 501.0957309184993,
       "extended": true,
       "games": 700,
       "invalid": 12,
       "phase": "mixture",
-      "planned": 693,
-      "score": 0.9,
+      "planned": 773,
+      "score": 0.945,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.625,
-       "random": 1.0,
-       "snapshots": 0.8461538461538461
+       "one_ply": 0.859375,
+       "random": 0.9761904761904762,
+       "snapshots": 0.6538461538461539
       },
-      "decisions": 916,
-      "depth_per_planned": 3.6658653846153846,
-      "expansions_per_planned": 458.27163461538464,
+      "decisions": 1019,
+      "depth_per_planned": 3.6616052060737525,
+      "expansions_per_planned": 413.0249457700651,
       "extended": true,
       "games": 800,
       "invalid": 12,
       "phase": "mixture",
-      "planned": 832,
-      "score": 0.84,
+      "planned": 922,
+      "score": 0.855,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.6724137931034483,
-       "random": 0.9761904761904762,
-       "snapshots": 0.8275862068965517
+       "one_ply": 0.8275862068965517,
+       "random": 0.9285714285714286,
+       "snapshots": 0.7586206896551724
       },
-      "decisions": 895,
-      "depth_per_planned": 3.617574257425743,
-      "expansions_per_planned": 507.0977722772277,
+      "decisions": 988,
+      "depth_per_planned": 3.649610678531702,
+      "expansions_per_planned": 438.38820912124584,
       "extended": true,
       "games": 900,
       "invalid": 12,
       "phase": "mixture",
-      "planned": 808,
-      "score": 0.845,
+      "planned": 899,
+      "score": 0.85,
       "validity": 1.0
      },
      {
       "by_opponent": {
        "one_ply": 0.8888888888888888,
-       "random": 0.9714285714285714,
-       "snapshots": 0.8289473684210527
+       "random": 0.9428571428571428,
+       "snapshots": 0.7894736842105263
       },
-      "decisions": 885,
-      "depth_per_planned": 3.611320754716981,
-      "expansions_per_planned": 477.96477987421383,
+      "decisions": 995,
+      "depth_per_planned": 3.6602924634420697,
+      "expansions_per_planned": 420.2654668166479,
       "extended": true,
       "games": 1000,
       "invalid": 12,
       "phase": "mixture",
-      "planned": 795,
-      "score": 0.895,
+      "planned": 889,
+      "score": 0.87,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "minimax_256": 0.7636363636363637,
-       "one_ply": 0.6785714285714286,
+       "minimax_256": 0.5636363636363636,
+       "one_ply": 0.75,
        "random": 1.0
       },
-      "decisions": 1128,
-      "depth_per_planned": 3.7004975124378108,
-      "expansions_per_planned": 439.9781094527363,
+      "decisions": 1140,
+      "depth_per_planned": 3.724878048780488,
+      "expansions_per_planned": 479.630243902439,
       "extended": true,
       "games": 1100,
       "invalid": 12,
       "phase": "adaptation",
-      "planned": 1005,
-      "score": 0.78,
+      "planned": 1025,
+      "score": 0.69,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "minimax_256": 0.7021276595744681,
-       "one_ply": 0.7592592592592593,
-       "random": 0.9230769230769231
+       "minimax_256": 0.7446808510638298,
+       "one_ply": 0.7222222222222222,
+       "random": 0.9615384615384616
       },
-      "decisions": 1102,
-      "depth_per_planned": 3.7140019860973186,
-      "expansions_per_planned": 480.8043694141013,
+      "decisions": 1065,
+      "depth_per_planned": 3.682901554404145,
+      "expansions_per_planned": 500.2860103626943,
       "extended": true,
       "games": 1200,
       "invalid": 12,
       "phase": "adaptation",
-      "planned": 1007,
-      "score": 0.775,
+      "planned": 965,
+      "score": 0.795,
       "validity": 1.0
      }
     ],
-    "decisions": 11328,
+    "decisions": 11710,
     "events": {
      "events": 16250,
      "path": "events_seed12.jsonl",
-     "sha256": "c3c4627ee97d7d6a820c5656f9a015ddb776a525489b4611c7c78067dc748859"
+     "sha256": "479ebc0fd7a73e2a6e926c8039b9d26568ff19e4384bbfd8ffe14969dde91211"
     },
     "games": {
      "adaptation": 200,
@@ -3757,26 +3766,26 @@
     },
     "kind": "candidate",
     "latency_ms": {
-     "decisions": 76290,
-     "max": 3999.6107450006093,
-     "p50": 7.532216500294453,
-     "p95": 18.861191250562122
+     "decisions": 75530,
+     "max": 295.8551150004496,
+     "p50": 20.629948000987497,
+     "p95": 49.30725434978741
     },
     "ledger": {
      "clipped_deltas": 0,
-     "deltas": 11328,
+     "deltas": 11710,
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.993998862367626e-07
+      "free": 9.993998861257403e-07
      },
      "mean_steps": {
-      "free": 44.24904214559387
+      "free": 44.43810999225407
      },
      "phases": {
-      "free": 12528
+      "free": 12910
      },
-     "real_transitions": 11328,
+     "real_transitions": 11710,
      "record_writes": 0,
      "rejected_updates": 0,
      "replay_writes": 0,
@@ -3784,27 +3793,27 @@
     },
     "ledger_mixture": {
      "clipped_deltas": 0,
-     "deltas": 9098,
+     "deltas": 9505,
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.993998862367626e-07
+      "free": 9.993998861257403e-07
      },
      "mean_steps": {
-      "free": 44.2432164785106
+      "free": 44.58219895287958
      },
      "phases": {
-      "free": 10098
+      "free": 10505
      },
-     "real_transitions": 9098,
+     "real_transitions": 9505,
      "record_writes": 0,
      "rejected_updates": 0,
      "replay_writes": 0,
      "unconverged_phases": {}
     },
     "minimax_256_before_after": [
-     0.854,
-     0.9155
+     0.903,
+     0.907
     ],
     "mixture_draws": {
      "one_ply": 258,
@@ -3814,104 +3823,104 @@
     "no_planning": {
      "paired": {
       "minimax_256": {
-       "draws": 7,
-       "first_score": 0.149,
+       "draws": 19,
+       "first_score": 0.114,
        "games": 1000,
-       "losses": 856,
-       "score": 0.1405,
-       "second_score": 0.132,
-       "wins": 137
+       "losses": 863,
+       "score": 0.1275,
+       "second_score": 0.141,
+       "wins": 118
       },
       "one_ply": {
-       "draws": 2,
-       "first_score": 0.237,
+       "draws": 9,
+       "first_score": 0.169,
        "games": 1000,
-       "losses": 757,
-       "score": 0.242,
-       "second_score": 0.247,
-       "wins": 241
+       "losses": 774,
+       "score": 0.2215,
+       "second_score": 0.274,
+       "wins": 217
       },
       "random": {
-       "draws": 0,
-       "first_score": 0.92,
+       "draws": 1,
+       "first_score": 0.904,
        "games": 1000,
-       "losses": 107,
-       "score": 0.893,
-       "second_score": 0.866,
-       "wins": 893
+       "losses": 120,
+       "score": 0.8795,
+       "second_score": 0.855,
+       "wins": 879
       }
      },
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.46,
-       "block-second": 0.456,
+       "block-first": 0.284,
+       "block-second": 0.268,
        "win-first": 1.0,
        "win-second": 1.0
       },
-      "success": 0.729
+      "success": 0.638
      }
     },
     "old_loss": {
-     "one_ply": -0.0050000000000000044,
-     "random": -0.0040000000000000036
+     "one_ply": 0.007499999999999951,
+     "random": -0.0030000000000000027
     },
     "paired_adaptation": {
      "minimax_256": {
-      "draws": 13,
-      "first_score": 0.969,
+      "draws": 36,
+      "first_score": 0.906,
       "games": 1000,
-      "losses": 78,
-      "score": 0.9155,
-      "second_score": 0.862,
-      "wins": 909
+      "losses": 75,
+      "score": 0.907,
+      "second_score": 0.908,
+      "wins": 889
      },
      "one_ply": {
-      "draws": 8,
-      "first_score": 0.992,
+      "draws": 15,
+      "first_score": 0.969,
       "games": 1000,
-      "losses": 21,
-      "score": 0.975,
-      "second_score": 0.958,
-      "wins": 971
+      "losses": 19,
+      "score": 0.9735,
+      "second_score": 0.978,
+      "wins": 966
      },
      "random": {
       "draws": 0,
       "first_score": 1.0,
       "games": 1000,
-      "losses": 3,
-      "score": 0.997,
-      "second_score": 0.994,
-      "wins": 997
+      "losses": 0,
+      "score": 1.0,
+      "second_score": 1.0,
+      "wins": 1000
      }
     },
     "paired_mixture": {
      "minimax_256": {
-      "draws": 36,
-      "first_score": 0.884,
+      "draws": 24,
+      "first_score": 0.882,
       "games": 1000,
-      "losses": 128,
-      "score": 0.854,
-      "second_score": 0.824,
-      "wins": 836
+      "losses": 85,
+      "score": 0.903,
+      "second_score": 0.924,
+      "wins": 891
      },
      "one_ply": {
-      "draws": 6,
-      "first_score": 0.982,
+      "draws": 2,
+      "first_score": 0.981,
       "games": 1000,
-      "losses": 27,
-      "score": 0.97,
-      "second_score": 0.958,
-      "wins": 967
+      "losses": 18,
+      "score": 0.981,
+      "second_score": 0.981,
+      "wins": 980
      },
      "random": {
       "draws": 0,
       "first_score": 0.996,
       "games": 1000,
-      "losses": 7,
-      "score": 0.993,
-      "second_score": 0.99,
-      "wins": 993
+      "losses": 3,
+      "score": 0.997,
+      "second_score": 0.998,
+      "wins": 997
      }
     },
     "parameters": {
@@ -3929,25 +3938,25 @@
     },
     "planner_eval": {
      "budget": 1024,
-     "depth": 3.554914662643831,
+     "depth": 3.643042605924702,
      "depths": {
-      "1": 3296,
-      "2": 169,
-      "3": 4821,
-      "4": 25521
+      "1": 3368,
+      "2": 106,
+      "3": 1782,
+      "4": 28636
      },
      "invalid": 0,
-     "nodes": 15264778,
-     "searches": 33807
+     "nodes": 13424178,
+     "searches": 33892
     },
-    "planning_gain": 0.728,
+    "planning_gain": 0.7595,
     "seed": 12,
     "snapshots_added": 8,
     "split": "acceptance",
     "suites": {
-     "excluded_positions": 6832,
+     "excluded_positions": 7275,
      "heldout_moves_sha256": "f932d65737522b152c1cc29cf0602d27471ec08b55b6c1246bcc15116f32a9b1",
-     "tactical_sha256": "53db478f703703f3985256c9322fb38919b28b1bc9e2c6309f5fe3d3587e17ce",
+     "tactical_sha256": "c08ae801afc2602b55254f03252751704fa18a63d13cfc95233aa8a1a7dd6839",
      "terminal_sha256": "590a15e12a47b0a945a2458b74c286e573d205738a36be2151d843fb5c5ac304"
     },
     "tactical": {
@@ -3989,7 +3998,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 853.2664723396301
+    "wall_seconds": 2132.1345961093903
    },
    {
     "adaptation_draws": {
@@ -3998,6 +4007,7 @@
      "random": 36
     },
     "after_adaptation": {
+     "bootstrap_writes": 0,
      "drop_writes": 162904,
      "extended": true,
      "games_written": 1200,
@@ -4012,7 +4022,7 @@
        "4": 7489
       },
       "invalid": 0,
-      "nodes": 3961887,
+      "nodes": 3961943,
       "searches": 8957
      },
      "record_parameters": {
@@ -4035,6 +4045,7 @@
      "value_writes": 63601
     },
     "after_explore": {
+     "bootstrap_writes": 0,
      "drop_writes": 29589,
      "extended": true,
      "games_written": 200,
@@ -4067,6 +4078,7 @@
      "value_writes": 11501
     },
     "after_mixture": {
+     "bootstrap_writes": 0,
      "drop_writes": 132517,
      "extended": true,
      "games_written": 1000,
@@ -4081,7 +4093,7 @@
        "4": 5832
       },
       "invalid": 0,
-      "nodes": 3018932,
+      "nodes": 3018988,
       "searches": 6946
      },
      "record_parameters": {
@@ -4169,14 +4181,14 @@
      {
       "files": [
        {
-        "bytes": 34519,
+        "bytes": 34522,
         "path": "brain_seed13_games000100.agent.npz",
-        "sha256": "8c2f44201be5a214998916d4433a33d32a9b43470cb3d1f297e0bfd2e943a987"
+        "sha256": "85c5ee06dcb057c047980e12f3166df20255ccab81b9f3339eed2e432378544a"
        },
        {
-        "bytes": 550576,
+        "bytes": 550619,
         "path": "brain_seed13_games000100.records.npz",
-        "sha256": "df6ce8cc011e176d695f8eef8757ca360dff6e4cdcf4bb091e0c8d95dc59b599"
+        "sha256": "0285b1d6c227e37c050fd7a5aee1061aca9ab079386059d414fed5028b0d1662"
        }
       ],
       "games": 100,
@@ -4188,14 +4200,14 @@
      {
       "files": [
        {
-        "bytes": 34504,
+        "bytes": 34501,
         "path": "brain_seed13_games000200.agent.npz",
-        "sha256": "d38ed74a663064f7e6a7cad308314fccf545331622839d8afa403d1ab3913afb"
+        "sha256": "7c3279aed448bc66a38d3605140c1c228754c24bc9eecfe68670c8d983a37844"
        },
        {
-        "bytes": 551470,
+        "bytes": 551492,
         "path": "brain_seed13_games000200.records.npz",
-        "sha256": "660b944226c3436531567849dcb6e3692be8e429b831bf76a9d91c00e877a53e"
+        "sha256": "b527cbbdecf8b9e69dd8d05b122889043d4f0917335479285e46ef10c3e34563"
        }
       ],
       "games": 200,
@@ -4209,12 +4221,12 @@
        {
         "bytes": 34516,
         "path": "brain_seed13_games000400.agent.npz",
-        "sha256": "228c516764010bb03488cbd1c7decc25a13c8be1d0708231f0751d53310a3d00"
+        "sha256": "65e1a9f6fec3377e462620be71047e25f4a521a08de8578dd5ccfe886a7592e5"
        },
        {
-        "bytes": 553162,
+        "bytes": 553191,
         "path": "brain_seed13_games000400.records.npz",
-        "sha256": "4385d4f5cc7b9ef333f5f3e4929ad5b407ec02fd4eb3e0ace071a3af18bb6728"
+        "sha256": "d82f7cef7f3eebcdc0e2a504ca08f6b46dd9ab3c3647590ab7478f77e2aa4638"
        }
       ],
       "games": 400,
@@ -4226,14 +4238,14 @@
      {
       "files": [
        {
-        "bytes": 34515,
+        "bytes": 34510,
         "path": "brain_seed13_games001000.agent.npz",
-        "sha256": "248ea3b9edc4b1e408e123120b551e828ac367d28b0783e0a07c39374945e64b"
+        "sha256": "edb4fd54f7f804011b49b70147bed6fc390e4908161c6c12c982542b2acf7a7f"
        },
        {
-        "bytes": 554572,
+        "bytes": 554586,
         "path": "brain_seed13_games001000.records.npz",
-        "sha256": "5678bf3d826542c4105ea4d2c6e97bb3979a1895856dead171b263a0c228fb70"
+        "sha256": "f0f6ea621ddeb685196b14b64c8cd15322b82e388a0d58cd206dd563f051cc72"
        }
       ],
       "games": 1000,
@@ -4246,14 +4258,14 @@
      {
       "files": [
        {
-        "bytes": 34527,
+        "bytes": 34524,
         "path": "brain_seed13_games001200.agent.npz",
-        "sha256": "28dc401bb8ba01eea0d37b27e4fd2bfbfb2339c963bb47b01cc39e3a0ae7e558"
+        "sha256": "eba8991b3ea46dbd1204b677da0bd30a850b22e5ff4ff31f3d346151039d2685"
        },
        {
-        "bytes": 554789,
+        "bytes": 554816,
         "path": "brain_seed13_games001200.records.npz",
-        "sha256": "60c3476dfb895ee6b806564f83401c50383c021b1077c2973f0c5d5e056310f5"
+        "sha256": "d8dad2a796bbf36310f41bb925a6edfffebdc912f8a117345a395cc44143a7a3"
        }
       ],
       "games": 1200,
@@ -4396,7 +4408,7 @@
       },
       "decisions": 910,
       "depth_per_planned": 3.6092233009708736,
-      "expansions_per_planned": 407.753640776699,
+      "expansions_per_planned": 407.74514563106794,
       "extended": true,
       "games": 600,
       "invalid": 0,
@@ -4413,7 +4425,7 @@
       },
       "decisions": 1000,
       "depth_per_planned": 3.661469933184855,
-      "expansions_per_planned": 418.3652561247216,
+      "expansions_per_planned": 418.3886414253898,
       "extended": true,
       "games": 700,
       "invalid": 0,
@@ -4447,7 +4459,7 @@
       },
       "decisions": 1046,
       "depth_per_planned": 3.655282817502668,
-      "expansions_per_planned": 466.6776947705443,
+      "expansions_per_planned": 466.72251867662754,
       "extended": true,
       "games": 900,
       "invalid": 0,
@@ -4512,7 +4524,7 @@
     "events": {
      "events": 16250,
      "path": "events_seed13.jsonl",
-     "sha256": "2534f8df226d3d7bd049b6cac059c9f39d5e421d20b22b026bb98dd8a67bb1c8"
+     "sha256": "f37f7524cc0744c2aedd09d4297f4c65d2631228130ad1764107de53b29bd8b8"
     },
     "games": {
      "adaptation": 200,
@@ -4523,9 +4535,9 @@
     "kind": "candidate",
     "latency_ms": {
      "decisions": 77132,
-     "max": 3999.590088000332,
-     "p50": 7.518739499573712,
-     "p95": 18.775245650704164
+     "max": 273.1888970001819,
+     "p50": 22.541013999216375,
+     "p95": 51.85900385022251
     },
     "ledger": {
      "clipped_deltas": 0,
@@ -4533,7 +4545,7 @@
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.996845032750334e-07
+      "free": 9.996845033444224e-07
      },
      "mean_steps": {
       "free": 49.399714650446796
@@ -4553,7 +4565,7 @@
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.996845032750334e-07
+      "free": 9.996845033444224e-07
      },
      "mean_steps": {
       "free": 49.55774362749609
@@ -4754,7 +4766,7 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 852.779552936554
+    "wall_seconds": 2290.2024676799774
    },
    {
     "adaptation_draws": {
@@ -4763,22 +4775,23 @@
      "random": 43
     },
     "after_adaptation": {
-     "drop_writes": 157857,
+     "bootstrap_writes": 0,
+     "drop_writes": 164990,
      "extended": true,
      "games_written": 1200,
-     "line_writes": 957682,
+     "line_writes": 1029645,
      "planner": {
       "budget": 1024,
-      "depth": 3.6398005334570334,
+      "depth": 3.666960255422217,
       "depths": {
-       "1": 792,
-       "2": 42,
-       "3": 646,
-       "4": 7143
+       "1": 771,
+       "2": 32,
+       "3": 648,
+       "4": 7632
       },
-      "invalid": 6,
-      "nodes": 4120101,
-      "searches": 8623
+      "invalid": 17,
+      "nodes": 4141388,
+      "searches": 9083
      },
      "record_parameters": {
       "critic_parameters": 17,
@@ -4793,13 +4806,14 @@
       "record_parameters": 0,
       "world_parameters": 0
      },
-     "transitions": 22551,
+     "transitions": 23570,
      "validity": 1.0,
      "validity_samples": 500,
-     "validity_scored": 22551,
-     "value_writes": 62396
+     "validity_scored": 23570,
+     "value_writes": 64193
     },
     "after_explore": {
+     "bootstrap_writes": 0,
      "drop_writes": 29505,
      "extended": true,
      "games_written": 200,
@@ -4832,22 +4846,23 @@
      "value_writes": 11397
     },
     "after_mixture": {
-     "drop_writes": 127911,
+     "bootstrap_writes": 0,
+     "drop_writes": 134204,
      "extended": true,
      "games_written": 1000,
-     "line_writes": 762515,
+     "line_writes": 821552,
      "planner": {
       "budget": 1024,
-      "depth": 3.628978478326766,
+      "depth": 3.6534724206916263,
       "depths": {
-       "1": 660,
-       "2": 23,
-       "3": 422,
-       "4": 5493
+       "1": 636,
+       "2": 22,
+       "3": 473,
+       "4": 5867
       },
-      "invalid": 6,
-      "nodes": 3068649,
-      "searches": 6598
+      "invalid": 0,
+      "nodes": 3175404,
+      "searches": 6998
      },
      "record_parameters": {
       "critic_parameters": 17,
@@ -4862,11 +4877,11 @@
       "record_parameters": 0,
       "world_parameters": 0
      },
-     "transitions": 18273,
+     "transitions": 19172,
      "validity": 1.0,
      "validity_samples": 500,
-     "validity_scored": 18273,
-     "value_writes": 51008
+     "validity_scored": 19172,
+     "value_writes": 52507
     },
     "born_frozen": {
      "games": 50,
@@ -4894,11 +4909,11 @@
       "cases": 1000,
       "strata": {
        "block-first": 0.136,
-       "block-second": 0.168,
-       "win-first": 0.184,
+       "block-second": 0.16,
+       "win-first": 0.188,
        "win-second": 0.156
       },
-      "success": 0.161
+      "success": 0.16
      },
      "validity": {
       "changed_cell": 0.1668,
@@ -4934,14 +4949,14 @@
      {
       "files": [
        {
-        "bytes": 34505,
+        "bytes": 34503,
         "path": "brain_seed14_games000100.agent.npz",
-        "sha256": "10b49691c3a9008f6601814faa0f6795eb07d24035f46c9cbf66d9af2dc0da38"
+        "sha256": "5185773226ecc32a0f153bf0e2cff895d7116b4b7ddf8ee125954b76269d343e"
        },
        {
-        "bytes": 550759,
+        "bytes": 550787,
         "path": "brain_seed14_games000100.records.npz",
-        "sha256": "fcbd649ce7c36acecc5a4191206662cd2c5ed7de8c63c928c7fdd4db45f3a1c1"
+        "sha256": "697dd24775bd6669fed31bb711d23217bf609cd6c31bc404feb56eb17215e439"
        }
       ],
       "games": 100,
@@ -4953,14 +4968,14 @@
      {
       "files": [
        {
-        "bytes": 34524,
+        "bytes": 34525,
         "path": "brain_seed14_games000200.agent.npz",
-        "sha256": "45f6b8aa9b65a1126011548abb415a583ee02238dab01d18e6f57a1a8a9d16ec"
+        "sha256": "0985e092c8dfa8fdebea82cf745bd0a362452428827aef1bd4801e1c0871ad77"
        },
        {
-        "bytes": 551587,
+        "bytes": 551615,
         "path": "brain_seed14_games000200.records.npz",
-        "sha256": "f284b765fe2a3f178207d77a88a1a9b27a470005c22a718223b7530d21a28600"
+        "sha256": "387e5820c426606108dea1863f481ee9705029fd3864fe70b64691c373cd902b"
        }
       ],
       "games": 200,
@@ -4974,12 +4989,12 @@
        {
         "bytes": 34498,
         "path": "brain_seed14_games000400.agent.npz",
-        "sha256": "7c99d7a8cf2449823e8a502da07036dd065d86a2e0fadd9eda35831a4991745d"
+        "sha256": "f9729b8518633e1737f084b285c39dca91f28c3df816a7e99046fdea77c489e6"
        },
        {
-        "bytes": 553468,
+        "bytes": 553573,
         "path": "brain_seed14_games000400.records.npz",
-        "sha256": "90a31af2032c01c43aefa9b3615dbfb4a32d57930f90b91bb7e1ca43e2a9c633"
+        "sha256": "654426ac49c320c26745007b18af195ecaa37640eca256b5ccb09df359ed18ee"
        }
       ],
       "games": 400,
@@ -4991,14 +5006,14 @@
      {
       "files": [
        {
-        "bytes": 34508,
+        "bytes": 34507,
         "path": "brain_seed14_games001000.agent.npz",
-        "sha256": "018fc1afa091c74a0d39e8703ca9a7fdd9dcf90f1dbb58e05b3510eece2831fb"
+        "sha256": "c121e7771a74b9edb1405a9dc87365f5bd71679a12a871fd9a5200cb36f46c04"
        },
        {
-        "bytes": 554687,
+        "bytes": 554616,
         "path": "brain_seed14_games001000.records.npz",
-        "sha256": "78d3ee25e2288c70d27a3210a78f670b817c4866d84ccdff460ff8ea2ccdee88"
+        "sha256": "9a09ad4086b1e05d982c543a2427e0aef7f686b7d5d02e8bdea7817c4fe99aad"
        }
       ],
       "games": 1000,
@@ -5013,12 +5028,12 @@
        {
         "bytes": 34510,
         "path": "brain_seed14_games001200.agent.npz",
-        "sha256": "5e3051f482143dced948f4a758496149d6b61a2d079e88e292e42439f9e26fe7"
+        "sha256": "05109f83cc775f3b27fa40797cef31c903e532682c16513cdd03c612a4d085fb"
        },
        {
-        "bytes": 554855,
+        "bytes": 554652,
         "path": "brain_seed14_games001200.records.npz",
-        "sha256": "a6025ebce62a6ad98e3771d2904de467efb56040e3665a76548071643dfef06d"
+        "sha256": "6c53576856288f618817fca99436fbeebd9de732e7d840877a58d900733902b8"
        }
       ],
       "games": 1200,
@@ -5035,23 +5050,23 @@
       "depths": {
        "4": 1000
       },
-      "invalid": 6830,
-      "nodes": 6836,
+      "invalid": 6809,
+      "nodes": 6813,
       "searches": 1000
      },
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.144,
-       "block-second": 0.128,
-       "win-first": 0.128,
-       "win-second": 0.156
+       "block-first": 0.164,
+       "block-second": 0.16,
+       "win-first": 0.156,
+       "win-second": 0.176
       },
-      "success": 0.139
+      "success": 0.164
      },
      "validity": {
-      "changed_cell": 0.056,
-      "exact": 0.0005,
+      "changed_cell": 0.0312,
+      "exact": 0.0,
       "moves": 10000,
       "strata": {
        "h0-candidate": 0.0,
@@ -5060,16 +5075,16 @@
        "h1-opponent": 0.0,
        "h2-candidate": 0.0,
        "h2-opponent": 0.0,
-       "h3-candidate": 0.0012004801920768306,
-       "h3-opponent": 0.0024009603841536613,
+       "h3-candidate": 0.0,
+       "h3-opponent": 0.0,
        "h4-candidate": 0.0,
        "h4-opponent": 0.0,
-       "h5-candidate": 0.0024009603841536613,
+       "h5-candidate": 0.0,
        "h5-opponent": 0.0
       }
      }
     },
-    "corrupted_loss": 0.861,
+    "corrupted_loss": 0.836,
     "curves": [
      {
       "by_opponent": {
@@ -5103,180 +5118,180 @@
      },
      {
       "by_opponent": {
-       "one_ply": 0.7424242424242424,
-       "random": 1.0,
-       "snapshots": 0.8275862068965517
+       "one_ply": 0.6818181818181818,
+       "random": 0.9736842105263158,
+       "snapshots": 0.7931034482758621
       },
-      "decisions": 903,
-      "depth_per_planned": 3.623910336239103,
-      "expansions_per_planned": 466.66500622665006,
+      "decisions": 830,
+      "depth_per_planned": 3.622795115332429,
+      "expansions_per_planned": 503.3202170963365,
       "extended": true,
       "games": 300,
       "invalid": 0,
       "phase": "mixture",
-      "planned": 803,
-      "score": 0.865,
+      "planned": 737,
+      "score": 0.825,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.7714285714285715,
-       "random": 1.0,
-       "snapshots": 0.9285714285714286
+       "one_ply": 0.7285714285714285,
+       "random": 0.972972972972973,
+       "snapshots": 0.6785714285714286
       },
-      "decisions": 849,
-      "depth_per_planned": 3.5939153439153437,
-      "expansions_per_planned": 442.4642857142857,
+      "decisions": 945,
+      "depth_per_planned": 3.6658739595719383,
+      "expansions_per_planned": 487.7443519619501,
       "extended": true,
       "games": 400,
-      "invalid": 6,
+      "invalid": 0,
       "phase": "mixture",
-      "planned": 756,
-      "score": 0.9,
+      "planned": 841,
+      "score": 0.805,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.8472222222222222,
-       "random": 0.9736842105263158,
-       "snapshots": 0.6730769230769231
+       "one_ply": 0.7916666666666666,
+       "random": 1.0,
+       "snapshots": 0.8461538461538461
       },
-      "decisions": 988,
-      "depth_per_planned": 3.6704035874439462,
-      "expansions_per_planned": 436.06502242152465,
+      "decisions": 909,
+      "depth_per_planned": 3.6065773447015834,
+      "expansions_per_planned": 490.9756394640682,
       "extended": true,
       "games": 500,
-      "invalid": 6,
+      "invalid": 0,
       "phase": "mixture",
-      "planned": 892,
+      "planned": 821,
+      "score": 0.885,
+      "validity": 1.0
+     },
+     {
+      "by_opponent": {
+       "one_ply": 0.8783783783783784,
+       "random": 0.975,
+       "snapshots": 0.717391304347826
+      },
+      "decisions": 994,
+      "depth_per_planned": 3.6384872080088986,
+      "expansions_per_planned": 444.5083426028921,
+      "extended": true,
+      "games": 600,
+      "invalid": 0,
+      "phase": "mixture",
+      "planned": 899,
+      "score": 0.88,
+      "validity": 1.0
+     },
+     {
+      "by_opponent": {
+       "one_ply": 0.7592592592592593,
+       "random": 1.0,
+       "snapshots": 0.7258064516129032
+      },
+      "decisions": 1035,
+      "depth_per_planned": 3.6991341991341993,
+      "expansions_per_planned": 406.04545454545456,
+      "extended": true,
+      "games": 700,
+      "invalid": 0,
+      "phase": "mixture",
+      "planned": 924,
       "score": 0.85,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.7837837837837838,
-       "random": 1.0,
-       "snapshots": 0.6521739130434783
+       "one_ply": 0.8636363636363636,
+       "random": 0.9767441860465116,
+       "snapshots": 0.8
       },
-      "decisions": 986,
-      "depth_per_planned": 3.6707865168539326,
-      "expansions_per_planned": 459.5741573033708,
-      "extended": true,
-      "games": 600,
-      "invalid": 6,
-      "phase": "mixture",
-      "planned": 890,
-      "score": 0.84,
-      "validity": 1.0
-     },
-     {
-      "by_opponent": {
-       "one_ply": 0.8888888888888888,
-       "random": 0.9761904761904762,
-       "snapshots": 0.7903225806451613
-      },
-      "decisions": 891,
-      "depth_per_planned": 3.6088050314465407,
-      "expansions_per_planned": 463.3006289308176,
-      "extended": true,
-      "games": 700,
-      "invalid": 6,
-      "phase": "mixture",
-      "planned": 795,
-      "score": 0.895,
-      "validity": 1.0
-     },
-     {
-      "by_opponent": {
-       "one_ply": 0.8181818181818182,
-       "random": 1.0,
-       "snapshots": 0.7428571428571429
-      },
-      "decisions": 902,
-      "depth_per_planned": 3.607940446650124,
-      "expansions_per_planned": 487.45533498759306,
+      "decisions": 1003,
+      "depth_per_planned": 3.6633221850613156,
+      "expansions_per_planned": 437.273132664437,
       "extended": true,
       "games": 800,
-      "invalid": 6,
+      "invalid": 0,
       "phase": "mixture",
-      "planned": 806,
-      "score": 0.87,
+      "planned": 897,
+      "score": 0.89,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "one_ply": 0.8333333333333334,
-       "random": 0.9787234042553191,
-       "snapshots": 0.6153846153846154
+       "one_ply": 0.8703703703703703,
+       "random": 0.9574468085106383,
+       "snapshots": 0.7115384615384616
       },
-      "decisions": 868,
-      "depth_per_planned": 3.5919689119170983,
-      "expansions_per_planned": 504.1126943005181,
+      "decisions": 1053,
+      "depth_per_planned": 3.659188034188034,
+      "expansions_per_planned": 430.5192307692308,
       "extended": true,
       "games": 900,
-      "invalid": 6,
+      "invalid": 0,
       "phase": "mixture",
-      "planned": 772,
-      "score": 0.845,
+      "planned": 936,
+      "score": 0.87,
       "validity": 1.0
      },
      {
       "by_opponent": {
        "one_ply": 0.8108108108108109,
        "random": 0.9722222222222222,
-       "snapshots": 0.9074074074074074
+       "snapshots": 0.7592592592592593
       },
-      "decisions": 992,
-      "depth_per_planned": 3.6493212669683257,
-      "expansions_per_planned": 464.9717194570136,
+      "decisions": 1054,
+      "depth_per_planned": 3.6617179215270412,
+      "expansions_per_planned": 446.6320254506893,
       "extended": true,
       "games": 1000,
-      "invalid": 6,
+      "invalid": 0,
       "phase": "mixture",
-      "planned": 884,
-      "score": 0.895,
+      "planned": 943,
+      "score": 0.855,
       "validity": 1.0
      },
      {
       "by_opponent": {
-       "minimax_256": 0.7037037037037037,
-       "one_ply": 0.7692307692307693,
-       "random": 0.8
+       "minimax_256": 0.6481481481481481,
+       "one_ply": 0.7884615384615384,
+       "random": 1.0
       },
-      "decisions": 1146,
-      "depth_per_planned": 3.6890995260663506,
-      "expansions_per_planned": 515.9184834123223,
+      "decisions": 1156,
+      "depth_per_planned": 3.7227443609022557,
+      "expansions_per_planned": 452.04323308270676,
       "extended": true,
       "games": 1100,
-      "invalid": 6,
+      "invalid": 0,
       "phase": "adaptation",
-      "planned": 1055,
-      "score": 0.74,
+      "planned": 1064,
+      "score": 0.755,
       "validity": 1.0
      },
      {
       "by_opponent": {
        "minimax_256": 0.6739130434782609,
-       "one_ply": 0.7741935483870968,
-       "random": 0.9565217391304348
+       "one_ply": 0.8064516129032258,
+       "random": 1.0
       },
-      "decisions": 1068,
-      "depth_per_planned": 3.6597938144329896,
-      "expansions_per_planned": 522.8432989690722,
+      "decisions": 1120,
+      "depth_per_planned": 3.7012732615083253,
+      "expansions_per_planned": 475.0342801175318,
       "extended": true,
       "games": 1200,
-      "invalid": 6,
+      "invalid": 17,
       "phase": "adaptation",
-      "planned": 970,
-      "score": 0.77,
+      "planned": 1021,
+      "score": 0.79,
       "validity": 1.0
      }
     ],
-    "decisions": 11747,
+    "decisions": 12253,
     "events": {
      "events": 16250,
      "path": "events_seed14.jsonl",
-     "sha256": "bfb8e28e85e1a247233c8ce9a406fbfbd4599c08de68144eae1e0b11f83719de"
+     "sha256": "2815b9979d4f32862d8b4d847777423918bbf512561921323a492743b02667a0"
     },
     "games": {
      "adaptation": 200,
@@ -5286,26 +5301,26 @@
     },
     "kind": "candidate",
     "latency_ms": {
-     "decisions": 77790,
-     "max": 3999.5823730005213,
-     "p50": 8.336547499311564,
-     "p95": 19.10605425082395
+     "decisions": 78637,
+     "max": 284.10016899943,
+     "p50": 22.58205199996155,
+     "p95": 49.63578860006236
     },
     "ledger": {
      "clipped_deltas": 0,
-     "deltas": 11747,
+     "deltas": 12253,
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.99959987146859e-07
+      "free": 9.999852319531044e-07
      },
      "mean_steps": {
-      "free": 46.63443268710898
+      "free": 46.46814836839366
      },
      "phases": {
-      "free": 12947
+      "free": 13453
      },
-     "real_transitions": 11747,
+     "real_transitions": 12253,
      "record_writes": 0,
      "rejected_updates": 0,
      "replay_writes": 0,
@@ -5313,27 +5328,27 @@
     },
     "ledger_mixture": {
      "clipped_deltas": 0,
-     "deltas": 9533,
+     "deltas": 9977,
      "episodic_writes": 0,
      "imagined": 0,
      "max_residual": {
-      "free": 9.99959987146859e-07
+      "free": 9.99959986813792e-07
      },
      "mean_steps": {
-      "free": 46.65413462451343
+      "free": 46.45640885487838
      },
      "phases": {
-      "free": 10533
+      "free": 10977
      },
-     "real_transitions": 9533,
+     "real_transitions": 9977,
      "record_writes": 0,
      "rejected_updates": 0,
      "replay_writes": 0,
      "unconverged_phases": {}
     },
     "minimax_256_before_after": [
-     0.867,
-     0.94
+     0.877,
+     0.9
     ],
     "mixture_draws": {
      "one_ply": 254,
@@ -5343,104 +5358,104 @@
     "no_planning": {
      "paired": {
       "minimax_256": {
-       "draws": 29,
-       "first_score": 0.711,
+       "draws": 17,
+       "first_score": 0.78,
        "games": 1000,
-       "losses": 414,
-       "score": 0.5715,
-       "second_score": 0.432,
-       "wins": 557
+       "losses": 483,
+       "score": 0.5085,
+       "second_score": 0.237,
+       "wins": 500
       },
       "one_ply": {
-       "draws": 11,
-       "first_score": 0.86,
+       "draws": 7,
+       "first_score": 0.883,
        "games": 1000,
-       "losses": 274,
-       "score": 0.7205,
-       "second_score": 0.581,
-       "wins": 715
+       "losses": 336,
+       "score": 0.6605,
+       "second_score": 0.438,
+       "wins": 657
       },
       "random": {
-       "draws": 1,
-       "first_score": 0.992,
+       "draws": 0,
+       "first_score": 0.994,
        "games": 1000,
-       "losses": 54,
-       "score": 0.9455,
-       "second_score": 0.899,
-       "wins": 945
+       "losses": 73,
+       "score": 0.927,
+       "second_score": 0.86,
+       "wins": 927
       }
      },
      "tactical": {
       "cases": 1000,
       "strata": {
-       "block-first": 0.508,
-       "block-second": 0.456,
+       "block-first": 0.604,
+       "block-second": 0.572,
        "win-first": 1.0,
        "win-second": 1.0
       },
-      "success": 0.741
+      "success": 0.794
      }
     },
     "old_loss": {
-     "one_ply": -0.02650000000000008,
-     "random": 0.0
+     "one_ply": -0.015000000000000013,
+     "random": -0.0050000000000000044
     },
     "paired_adaptation": {
      "minimax_256": {
       "draws": 14,
-      "first_score": 0.924,
+      "first_score": 0.848,
       "games": 1000,
-      "losses": 53,
-      "score": 0.94,
-      "second_score": 0.956,
-      "wins": 933
+      "losses": 93,
+      "score": 0.9,
+      "second_score": 0.952,
+      "wins": 893
      },
      "one_ply": {
-      "draws": 1,
-      "first_score": 1.0,
+      "draws": 0,
+      "first_score": 0.976,
       "games": 1000,
-      "losses": 1,
-      "score": 0.9985,
-      "second_score": 0.997,
-      "wins": 998
+      "losses": 18,
+      "score": 0.982,
+      "second_score": 0.988,
+      "wins": 982
      },
      "random": {
       "draws": 0,
-      "first_score": 1.0,
+      "first_score": 0.996,
       "games": 1000,
       "losses": 2,
       "score": 0.998,
-      "second_score": 0.996,
+      "second_score": 1.0,
       "wins": 998
      }
     },
     "paired_mixture": {
      "minimax_256": {
-      "draws": 24,
-      "first_score": 0.89,
+      "draws": 22,
+      "first_score": 0.898,
       "games": 1000,
-      "losses": 121,
-      "score": 0.867,
-      "second_score": 0.844,
-      "wins": 855
+      "losses": 112,
+      "score": 0.877,
+      "second_score": 0.856,
+      "wins": 866
      },
      "one_ply": {
       "draws": 8,
-      "first_score": 0.989,
+      "first_score": 0.979,
       "games": 1000,
-      "losses": 24,
-      "score": 0.972,
+      "losses": 29,
+      "score": 0.967,
       "second_score": 0.955,
-      "wins": 968
+      "wins": 963
      },
      "random": {
       "draws": 0,
-      "first_score": 1.0,
+      "first_score": 0.998,
       "games": 1000,
-      "losses": 2,
-      "score": 0.998,
-      "second_score": 0.996,
-      "wins": 998
+      "losses": 7,
+      "score": 0.993,
+      "second_score": 0.988,
+      "wins": 993
      }
     },
     "parameters": {
@@ -5458,25 +5473,25 @@
     },
     "planner_eval": {
      "budget": 1024,
-     "depth": 3.5444308777642113,
+     "depth": 3.6041830775499117,
      "depths": {
-      "1": 3321,
-      "2": 156,
-      "3": 6515,
-      "4": 26863
+      "1": 3322,
+      "2": 155,
+      "3": 4296,
+      "4": 29042
      },
      "invalid": 0,
-     "nodes": 18360450,
-     "searches": 36855
+     "nodes": 16332053,
+     "searches": 36815
     },
-    "planning_gain": 0.25149999999999995,
+    "planning_gain": 0.3065,
     "seed": 14,
     "snapshots_added": 8,
     "split": "acceptance",
     "suites": {
-     "excluded_positions": 7308,
+     "excluded_positions": 7734,
      "heldout_moves_sha256": "027442fef34e2009d0106573c56a7f39e6dd221062973b0f588396963e119579",
-     "tactical_sha256": "08fc32c2cd9e01702254eacbd214ce2957fee990ea16177ff524fe12ebfb564f",
+     "tactical_sha256": "746c0bf81d17e89f621742ecd37946c3e179151ad7a27f171613de5bfefb187f",
      "terminal_sha256": "e037c36f013205e48079aa4786908266e85ceac2b01a2f6b78f7a6af2c54450c"
     },
     "tactical": {
@@ -5518,15 +5533,15 @@
       "h5-opponent": 1.0
      }
     },
-    "wall_seconds": 925.6349818706512
+    "wall_seconds": 2312.4750471115112
    }
   ],
   "planning_gain": [
    0.5135,
-   0.711,
-   0.728,
+   0.8275,
+   0.7595,
    0.8300000000000001,
-   0.25149999999999995
+   0.3065
   ],
   "tactical_success": [
    1.0,
@@ -5551,7 +5566,7 @@
     "episodic_writes": 0,
     "imagined": 0,
     "max_residual": {
-     "free": 9.998155851009827e-07
+     "free": 9.998155849899604e-07
     },
     "mean_steps": {
      "free": 46.71460809387694
@@ -5567,19 +5582,19 @@
    },
    {
     "clipped_deltas": 0,
-    "deltas": 11704,
+    "deltas": 11435,
     "episodic_writes": 0,
     "imagined": 0,
     "max_residual": {
-     "free": 9.998697697577441e-07
+     "free": 9.994139660296497e-07
     },
     "mean_steps": {
-     "free": 46.022318660880345
+     "free": 46.08405223585279
     },
     "phases": {
-     "free": 12904
+     "free": 12635
     },
-    "real_transitions": 11704,
+    "real_transitions": 11435,
     "record_writes": 0,
     "rejected_updates": 0,
     "replay_writes": 0,
@@ -5587,19 +5602,19 @@
    },
    {
     "clipped_deltas": 0,
-    "deltas": 11328,
+    "deltas": 11710,
     "episodic_writes": 0,
     "imagined": 0,
     "max_residual": {
-     "free": 9.993998862367626e-07
+     "free": 9.993998861257403e-07
     },
     "mean_steps": {
-     "free": 44.24904214559387
+     "free": 44.43810999225407
     },
     "phases": {
-     "free": 12528
+     "free": 12910
     },
-    "real_transitions": 11328,
+    "real_transitions": 11710,
     "record_writes": 0,
     "rejected_updates": 0,
     "replay_writes": 0,
@@ -5611,7 +5626,7 @@
     "episodic_writes": 0,
     "imagined": 0,
     "max_residual": {
-     "free": 9.996845032750334e-07
+     "free": 9.996845033444224e-07
     },
     "mean_steps": {
      "free": 49.399714650446796
@@ -5627,19 +5642,19 @@
    },
    {
     "clipped_deltas": 0,
-    "deltas": 11747,
+    "deltas": 12253,
     "episodic_writes": 0,
     "imagined": 0,
     "max_residual": {
-     "free": 9.99959987146859e-07
+     "free": 9.999852319531044e-07
     },
     "mean_steps": {
-     "free": 46.63443268710898
+     "free": 46.46814836839366
     },
     "phases": {
-     "free": 12947
+     "free": 13453
     },
-    "real_transitions": 11747,
+    "real_transitions": 12253,
     "record_writes": 0,
     "rejected_updates": 0,
     "replay_writes": 0,
@@ -5648,38 +5663,38 @@
   ]
  },
  "pilot": false,
- "receipt_sha256": "e79ad6e3fabd8932106882e04100fa74f0d193f469fc03e1a0bd1caf5fb3c6a7",
+ "receipt_sha256": "26c98f926ea04bc0489962b06cddfc9de08d6d11bfe2f178ed1c1ab8f9ac440e",
  "resources": {
   "latency_ms": [
    {
     "decisions": 77245,
-    "max": 3999.614755000948,
-    "p50": 8.274323001387529,
-    "p95": 19.156200400175294
+    "max": 278.19631500005926,
+    "p50": 21.81385199946817,
+    "p95": 50.50189299945487
    },
    {
-    "decisions": 76829,
-    "max": 3925.7831879986043,
-    "p50": 7.834516000002623,
-    "p95": 18.980440799714394
+    "decisions": 74964,
+    "max": 341.5170690004743,
+    "p50": 20.985768499940605,
+    "p95": 50.35708800023713
    },
    {
-    "decisions": 76290,
-    "max": 3999.6107450006093,
-    "p50": 7.532216500294453,
-    "p95": 18.861191250562122
+    "decisions": 75530,
+    "max": 295.8551150004496,
+    "p50": 20.629948000987497,
+    "p95": 49.30725434978741
    },
    {
     "decisions": 77132,
-    "max": 3999.590088000332,
-    "p50": 7.518739499573712,
-    "p95": 18.775245650704164
+    "max": 273.1888970001819,
+    "p50": 22.541013999216375,
+    "p95": 51.85900385022251
    },
    {
-    "decisions": 77790,
-    "max": 3999.5823730005213,
-    "p50": 8.336547499311564,
-    "p95": 19.10605425082395
+    "decisions": 78637,
+    "max": 284.10016899943,
+    "p50": 22.58205199996155,
+    "p95": 49.63578860006236
    }
   ],
   "parameters": {
@@ -5695,18 +5710,18 @@
    "record_parameters": 0,
    "world_parameters": 0
   },
-  "peak_rss_mb": 109.5,
-  "wall_seconds": 925.7012434005737,
+  "peak_rss_mb": 109.5234375,
+  "wall_seconds": 2312.663970708847,
   "wall_seconds_per_seed": [
-   909.0550472736359,
-   859.8814451694489,
-   853.2664723396301,
-   852.779552936554,
-   925.6349818706512
+   2252.377662420273,
+   2102.959621191025,
+   2132.1345961093903,
+   2290.2024676799774,
+   2312.4750471115112
   ],
   "workers": 5
  },
- "run_id": "S03-candidate-acceptance-20260915T122711Z",
+ "run_id": "S03-candidate-acceptance-20260916T034315Z",
  "run_kind": "candidate",
  "schema": "cadence-experience-run/v1",
  "seeds": {
@@ -5731,7 +5746,7 @@
   "core": {
    "files_sha256": "a5eab811a68ea73ec77ef8875a3a082f09c059c7d9b16bad17a12e8300e8a7a9",
    "repo": {
-    "commit": "21a120311e9817e817499318f8125896cd19534d",
+    "commit": "ac092b876feaa4730a2fc288c993203c071cfc65",
     "dirty": {}
    },
    "version": "0.9.0"
@@ -5743,22 +5758,24 @@
   "stage_dir": "connect_four",
   "stage_files": {
    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-   "brain.py": "4894991e612357766e9ee783b4e6e85f33435a3badeaab12bdebb734f9681e65",
+   "brain.py": "68e37fcc0c29868e102cb459c13101a9c00bee2275a49b258bb3cdf7fa330979",
    "config.json": "f624fcce0f428b7976abba53e5d5afa714ed14beef11304b068920db0493fa12",
    "controls.py": "d218a2b175b1291123ffeba26ca9a620f62e277cf49e2b862c394faeeffe743f",
    "env.py": "c1795f55d95525c0b44259d915b346a9bb1f1e8999f1cf6ffd9fe9c2ade69952",
    "evaluate.py": "7c830e3fb0b1486f3d91fcd44d0d17e3c9d0070062cd5091aa6496095182ba7f",
-   "opponents.py": "c4df799ff8a276db0a75ef94cab5a87ee119142dad711d0ca7ccbc2455153c86",
-   "run.py": "c5ce0fe89bacb2ea4a48db83e1ae21e915867dd6d37519d5a577e2ecaf4e69d8",
+   "opponents.py": "9b9c08c96e07e3e47beb49ebf1a6583e5b1e8ced4dc4fa181129b698e9879bcf",
+   "run.py": "11a30d7dd31a7d06386c5e7d7a24fa2f187ba4525f59e09b52161a01502f9f03",
    "verify.py": "07d6bea57c5178e784e9171937137ce24df2495bc5f2a202b0f140f6c22a045d"
   },
   "stage_repo": {
-   "commit": "0d9c9474c3171f057778f26c8ba98c0a3f1f06e7",
-   "dirty": {}
+   "commit": "5b8384d4772c10d11b885a08471e6cf1eb3b13cf",
+   "dirty": {
+    "03_connect_four/data/positions.npz": "c5cf23af525a927e2b1aa84e943f5a22cbbf8348bf4793fd2c9f2b0fa3ddb674"
+   }
   }
  },
  "stage": "S03",
- "started_utc": "2026-09-15T12:27:12Z",
+ "started_utc": "2026-09-16T03:43:15Z",
  "status": "complete",
  "supplied_components": [
   "the Connect Four world, its opponents and its rules outside the brain; the legality mask of real moments (interface knowledge)",
