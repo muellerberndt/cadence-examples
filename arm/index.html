@@ -4101,7 +4101,7 @@ function main(FIRST) {
       ctx.beginPath(); ctx.arc(X(oldHand[0]), Y(oldHand[1]), 3 * px, 0, Math.PI * 2); ctx.fill();
       ctx.font = `${10 * Math.max(1, px * 0.9)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
       ctx.textAlign = "left";
-      ctx.fillText(`body ${baseLengths[0].toFixed(2)} → ${cfg.lengths[0].toFixed(2)}`, 14, 20);
+      ctx.fillText(`upper link ${baseLengths[0].toFixed(2)} → ${cfg.lengths[0].toFixed(2)}`, 14, H - 30); // clear of the tracking readout and the scale bar
     }
     drawLink(ctx, base, elbow, 9 * px, 7 * px, ["#4a6c8c", "#1e3247"]);
     drawLink(ctx, elbow, hand, 7 * px, 5 * px, ["#567c9c", "#243b52"]);
