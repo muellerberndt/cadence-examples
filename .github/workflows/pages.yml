@@ -29,12 +29,16 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Assemble the site
         run: |
-          mkdir -p _site/arm _site/world _site/connect_four _site/artist
+          mkdir -p _site/arm _site/world _site/connect_four _site/artist _site/assets
+          mkdir -p _site/comparisons/arm _site/comparisons/world
           cp index.html .nojekyll sitemap.xml _site/
+          cp assets/* _site/assets/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
           cp connect_four/index.html connect_four/receipt.json connect_four/receipt_solver.json connect_four/cortices.json _site/connect_four/
           cp artist/index.html artist/receipt.json _site/artist/
+          cp comparisons/arm/receipt.json _site/comparisons/arm/
+          cp comparisons/world/receipt.json _site/comparisons/world/
       - name: Fetch each page's checkpoint snapshots from the release its manifest names
         env:
           GH_TOKEN: ${{ github.token }}
