@@ -192,3 +192,17 @@ wins, every other loses, and the records read the columns within a few hundredth
 Searching deeper does not recover them in a browser's time: at eighteen plies, up to a minute a
 move, four of eight. A school of 200,000 games with an imperfect first player, and 60,000 with an
 imperfect second player, is running to push the coverage along those lines.
+
+## 22. A bigger memory makes the first player perfect and leaves the second player's tail
+
+Watching 260,000 more games (five schools with the first player perfect at 60% to 90% of its
+moves, two with the second player at 70% and 85%) took the merged memory from 866,451 boards to
+2,189,619. A page cut of 1,007,760 boards (every board seen in two games or more, then by fewest
+stones) with 72,380 proven positions, 19 MB and 6.5 MB compressed, played on the page against the
+same seeds: moving first 30-0-0 against the perfect solver with every move perfect, 20-0-0 at 90%,
+no blunder against either AlphaZero; moving second 19-0-1 at 70%, and at 90% over 60 games 28-7-25
+against 32-7-21 for the smaller memory, a difference inside the spread of three seeds (8-4-8 to
+15-2-3 for one build), with its extra throws made identically by the smaller memory. Along the
+brain's second-player games the coverage past the thirteenth stone rose by three to seven points
+for two and a half times the boards: watched games open the positions an imperfect first player
+reaches too rarely for memory to close the tail.
