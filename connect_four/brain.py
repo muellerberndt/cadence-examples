@@ -97,8 +97,9 @@ class Layout:
     """The supplied layout of the receptive fields: the cells of each column bottom to top and
     the windows of ``connect`` cells along rows, columns and both diagonals."""
 
-    def __init__(self, game: GameConfig) -> None:
+    def __init__(self, game: GameConfig, *, support: bool = False) -> None:
         self.game = game
+        self.support = bool(support)
         self.rows, self.cols, self.connect, self.cells = game.rows, game.cols, game.connect, game.cells
         self.columns = np.array([[r * game.cols + c for r in range(game.rows)] for c in range(game.cols)])
         windows = []
@@ -114,6 +115,16 @@ class Layout:
         self.window_powers = 3 ** np.arange(game.connect)
         self.column_patterns = 3**game.rows
         self.window_patterns = 3**game.connect
+        # with support, the value reading of a window also says of each cell whether it rests on
+        # a stone or the floor (the cell below is filled): a threat that is playable now reads
+        # differently from one that floats; the support bits are the low digits of the value ids
+        below = self.windows - game.cols
+        self.window_below = np.where(below >= 0, below, 0)
+        self.window_floor = below < 0
+        self.support_powers = 2 ** np.arange(game.connect)
+        self.support_patterns = 2**game.connect if self.support else 1
+        self.value_patterns = self.window_patterns * self.support_patterns
+        self.value_inputs = 3 * game.connect + (game.connect if self.support else 0)
         self.column_of = np.arange(game.cells) % game.cols
 
     def column_ids(self, rel: np.ndarray) -> np.ndarray:
@@ -123,6 +134,24 @@ class Layout:
     def window_ids(self, rel: np.ndarray) -> np.ndarray:
         """Window pattern ids of boards seen by one side: ``(..., windows)``."""
         return rel[..., self.windows] @ self.window_powers
+
+    def value_ids(self, rel: np.ndarray) -> np.ndarray:
+        """Value pattern ids: the window ids, with the support bits when the layout has them."""
+        ids = self.window_ids(rel)
+        if self.support:
+            supported = (rel[..., self.window_below] != 0) | self.window_floor
+            ids = ids * self.support_patterns + supported @ self.support_powers
+        return ids
+
+    def value_readings(self, ids: np.ndarray) -> np.ndarray:
+        """The categorical reading of value pattern ids: one one-hot of width 3 per cell, then
+        the support bit of each cell when the layout has support."""
+        ids = np.asarray(ids)
+        reading = one_hot_digits(ids // self.support_patterns, self.connect)
+        if self.support:
+            bits = ((ids % self.support_patterns)[:, None] // self.support_powers[None, :]) % 2
+            reading = np.concatenate([reading, bits.astype(float)], axis=1)
+        return reading
 
 
 def one_hot_digits(ids: np.ndarray, digits: int) -> np.ndarray:
@@ -200,8 +229,17 @@ class LineRecords:
             habituation=float(cfg["habituation"]), bias=float(cfg["bias"]), seed=seed,
         )
         self.patterns = one_hot_digits(np.arange(layout.window_patterns), layout.connect)
+        # with support the value lives in its own cortex over the supported reading; the
+        # complete field keeps the plain reading, which separates a completed window best
+        self.values = None
+        if layout.support:
+            self.values = cd.Records(
+                layout.value_inputs, {"value": 1}, cells=int(cfg["cells"]), active=int(cfg["active"]), rate=float(cfg["value_rate"]),
+                valued=["value"], valued_rate=float(cfg["value_rate"]), habituation=float(cfg["habituation"]), bias=float(cfg["bias"]), seed=seed + 1,
+            )
+        self.value_patterns = layout.value_readings(np.arange(layout.value_patterns))
         self.complete = np.zeros(layout.window_patterns)
-        self.value = np.full(layout.window_patterns, 0.5)
+        self.value = np.full(layout.value_patterns, 0.5)
         self._fresh = False
 
     def refresh(self) -> None:
@@ -212,7 +250,10 @@ class LineRecords:
         positive = np.maximum(reads["complete"], 0.0)
         total = positive.sum(axis=1)
         self.complete = np.where(total > 0, positive[:, 1] / np.maximum(total, 1e-12), 0.0)
-        self.value = 0.5 + reads["value"][:, 0]
+        if self.values is None:
+            self.value = 0.5 + reads["value"][:, 0]
+        else:
+            self.value = 0.5 + self.values.read(self.values.code(self.value_patterns, adapt=False))["value"][:, 0]
         self._fresh = True
 
     def learn_lines(self, rel_mover: np.ndarray, new_cell: int, won: bool, *, adapt: bool) -> int:
@@ -261,9 +302,10 @@ class LineRecords:
         if not total:
             return 0
         order = sorted(total)
-        code = self.records.code(self.patterns[order], adapt=False)
+        cortex = self.values if self.values is not None else self.records
+        code = cortex.code(self.value_patterns[order], adapt=False)
         for k, i in enumerate(order):
-            self.records.write(code[:, k], {"value": np.array([total[i] / count[i] - 0.5])})
+            cortex.write(code[:, k], {"value": np.array([total[i] / count[i] - 0.5])})
         self._fresh = False
         return len(order)
 
@@ -301,10 +343,10 @@ class Imagination:
         """For boards just moved by ``mover``: a completed window of the mover, a full board, and
         the value for the mover (average over windows)."""
         self.lines.refresh()
-        ids = self.layout.window_ids(VIEW[mover][boards])
-        won = self.lines.complete[ids].max(axis=-1) > 0.5
+        rel = VIEW[mover][boards]
+        won = self.lines.complete[self.layout.window_ids(rel)].max(axis=-1) > 0.5
         full = (boards != 0).all(axis=-1)
-        value = self.lines.value[ids].mean(axis=-1)
+        value = self.lines.value[self.layout.value_ids(rel)].mean(axis=-1)
         return won, full, value
 
     def static(self, board: np.ndarray, side: int) -> float:
@@ -484,8 +526,8 @@ class Brain:
         self.seed = int(seed)
         self.learning = bool(learning)
         self.game = GameConfig(**config["game"])
-        self.layout = Layout(self.game)
         cfg = brain_config(config)
+        self.layout = Layout(self.game, support=bool(cfg["line_records"].get("support", False)))
         self.cfg = cfg
         self.drop = DropRecords(self.layout, cfg["drop_records"], brain_seed(seed, 2))
         self.lines = LineRecords(self.layout, cfg["line_records"], brain_seed(seed, 3))
@@ -574,7 +616,7 @@ class Brain:
         self.counts["drop_writes"] += self.drop.learn(rel_before, column, rows, adapt=True)
         rel_after = VIEW[mover][after]
         self.counts["line_writes"] += self.lines.learn_lines(rel_after, cell, won, adapt=True)
-        self._boards.append((lay.window_ids(rel_after), mover))
+        self._boards.append((lay.value_ids(rel_after), mover))
 
     def _finish(self, moment: Moment) -> None:
         """A finished game: its boards' window patterns take the outcome of their movers."""
@@ -607,8 +649,8 @@ class Brain:
         its searched value. A forced win or loss within the horizon is thereby remembered by
         the patterns of the board that led to it, which the one-ply read then sees."""
         lay = self.layout
-        boards = [(lay.window_ids(VIEW[OPPONENT][board]), float(np.clip(1.0 - info["value"], 0.0, 1.0)))]
-        boards += [(lay.window_ids(VIEW[CANDIDATE][child]), float(np.clip(v, 0.0, 1.0))) for v, child, valid in info["root_values"].values() if valid]
+        boards = [(lay.value_ids(VIEW[OPPONENT][board]), float(np.clip(1.0 - info["value"], 0.0, 1.0)))]
+        boards += [(lay.value_ids(VIEW[CANDIDATE][child]), float(np.clip(v, 0.0, 1.0))) for v, child, valid in info["root_values"].values() if valid]
         self.counts["bootstrap_writes"] = self.counts.get("bootstrap_writes", 0) + self.lines.learn_values(boards)
 
     def new_world(self) -> None:
@@ -680,7 +722,8 @@ class Brain:
                 "extended": self.extended, "planner": self.planner.stats(), "record_parameters": self.parameters()}
 
     def parameters(self) -> dict[str, int]:
-        return {"drop_records": self.drop.records.parameters(), "line_records": self.lines.records.parameters(), **self.agent.parameters()}
+        return {"drop_records": self.drop.records.parameters(), "line_records": self.lines.records.parameters(),
+                **({"value_records": self.lines.values.parameters()} if self.lines.values is not None else {}), **self.agent.parameters()}
 
     def save(self, stem: str | Path) -> list[Path]:
         """A checkpoint between games that rebuilds this brain completely: the agent's snapshot
@@ -694,7 +737,8 @@ class Brain:
         self.agent.save(agent_file)
         data: dict[str, np.ndarray] = {"validity": np.array(list(self.validity), dtype=bool)}
         cortices: dict[str, dict[str, Any]] = {}
-        for name, cortex in (("drop", self.drop.records), ("lines", self.lines.records)):
+        named = [("drop", self.drop.records), ("lines", self.lines.records)] + ([("values", self.lines.values)] if self.lines.values is not None else [])
+        for name, cortex in named:
             data[f"{name}/projection"] = cortex.projection
             data[f"{name}/offset"] = cortex.offset
             data[f"{name}/mean"] = cortex.mean
@@ -710,7 +754,7 @@ class Brain:
         meta = {
             "format": FORMAT, "stage": STAGE, "seed": self.seed, "learning": self.learning, "is_copy": self.is_copy,
             "game": asdict(self.game), "planning": dict(self.config["planning"]), "validity_gate": self.validity_gate, "brain": self.cfg,
-            "layout": {"columns": self.layout.columns.tolist(), "windows": self.layout.windows.tolist()}, "cortices": cortices,
+            "layout": {"columns": self.layout.columns.tolist(), "windows": self.layout.windows.tolist(), "support": self.layout.support}, "cortices": cortices,
             "constants": {"leaf_margin": LEAF_MARGIN, "win_bonus": WIN_BONUS, "tie": TIE}, "counts": dict(self.counts),
             "snapshots": self.snapshots, "planner": self.planner.stats(), "planner_generator": self.planner.rng.bit_generator.state,
             "agent_file": agent_file.name,
@@ -732,7 +776,8 @@ class Brain:
                 raise ValueError("not an S03 brain checkpoint")
             config = {"game": meta["game"], "planning": meta["planning"], "gates": {"next_board_validity": meta["validity_gate"]}, "brain": meta["brain"]}
             brain = cls(config, int(meta["seed"]), learning=bool(meta["learning"]))
-            for name, cortex in (("drop", brain.drop.records), ("lines", brain.lines.records)):
+            named = [("drop", brain.drop.records), ("lines", brain.lines.records)] + ([("values", brain.lines.values)] if brain.lines.values is not None else [])
+            for name, cortex in named:
                 # the expansion rebuilds from its seed up to the rounding of the platform's log and
                 # cos (about 2e-16); the checkpoint's own arrays are installed so the life continues exactly
                 if not (np.allclose(cortex.projection, data[f"{name}/projection"], rtol=0.0, atol=1e-12) and np.allclose(cortex.offset, data[f"{name}/offset"], rtol=0.0, atol=1e-12)):

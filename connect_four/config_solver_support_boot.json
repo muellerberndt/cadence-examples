@@ -1,0 +1,152 @@
+{
+ "stage": "S03",
+ "assumptions": [
+  "The standard 6 by 7 connect-4 board for acceptance; the 4 by 4 connect-3 board (GameConfig.debug, the debug_game section) for debugging only. The observation is one categorical field of width 3 per cell (empty, self, opponent), row-major from the bottom-left and relative to the candidate, a mover field (whose move produced the board; the opening board counts as the opponent's) and a phase field (the candidate has no stone yet, or has moved). The goal port carries [candidate to move, opponent to move, candidate opened]; the side to move follows alternation on terminal boards too, so the goal never says whether the game is over.",
+  "One decision spans the candidate's move and the opponent's reply. The intermediate moment after the candidate's move is the feedback of the decision: the executed column, a known reward (0, or the outcome when the move ends the game), a mask with no legal column. The reply moment carries no feedback; when the opponent's reply ends the game it carries the reward (-1 or 0) with reward_known False, since the S00 contract ties a known reward to an executed decision. The brain absorbs the intermediate moment itself (the S00 Agent refuses a continuing moment without a legal action); brain_interface.md gives a merge recipe.",
+  "Curriculum per life: explore_games random legal games against the random opponent with epsilon 1; mixture_games against the mixture (40% random, 30% one-ply, 30% snapshots of this life: the first snapshot when the mixture starts, then one every snapshot_every games, the last snapshot_pool kept); adaptation_games against the changed mixture (20% random, 30% one-ply, 50% the supplied-rules minimax at 256 nodes) without a reset. Openers alternate. The pilot divides the game budgets, the paired games and the snapshot interval by ten; the diagnostic suites keep their size.",
+  "Held-out suites come from the held-out seed namespace and are judged by exhaustive rule checking: 10,000 single moves stratified by column height and mover; 2,000 boards balanced over nonterminal, candidate win, draw and candidate loss (draws are line-free full boards from random play that refuses line-completing columns); 1,000 tactical positions balanced over immediate win and mandatory block and over the candidate's side, excluding every position the candidate decided on during training. A block case is one whose single block leaves the opponent no immediate win; a block under a threat loses regardless and is not asked.",
+  "Paired games: paired_games per opponent, the candidate opening the even games, the two games of a pair sharing the opponent's seed; win 1, draw 0.5, loss 0; the mean over seeds and the per-seed minimum are gated separately. The planning gain is the frozen brain with its search against its own snapshot policy (the no-planning control) on the one-ply opponent's paired schedule. The corrupted-dynamics lesion is judged on the tactical suite. Continual adaptation replays the fixed suite (random, one-ply) after the adaptation games; the loss on either old opponent may not exceed continual_old_loss. The minimax opponent's paired score before and after the adaptation is reported for information.",
+  "Latency is the wall-clock of the candidate's step on decision moments, training and evaluation together, p95 at most one second. Controls: random, one-ply, minimax at 256 and 1,024 nodes (alpha-beta with terminal values only and iterative deepening under the node budget, one node per board), and the identical architecture frozen from birth after a quarter of the exploration games. A controls-only run calibrates the evaluator without a candidate and carries calibration predicates only.",
+  "The candidate's world model is two record cortices with local receptive fields whose records are shared across positions. Drop records read one column at a time (its cells from the bottom as one-hot relative to the side to move, and whether the column is the chosen one) and hold the row a stone lands in, or none, so the seven column readings of a board are one batch and every observed move of either side teaches every column. Line records read one window of connect cells along a row, a column or a diagonal relative to the side that just moved, and hold whether the window is a completed line of that side and the outcome of finished games for that side. A win is any completed window and a draw is a full board without one. The imagined next board is the board plus the mover's stone at each predicted landing; an imagined board that is not the old board plus one stone of the mover in an empty cell of the chosen column is rejected, counted and left as composed, and its branch keeps the value of the position it came from. Moves are chosen by negamax with alpha-beta pruning and iterative deepening over imagined boards, at depth 2 within 256 imagined transitions and at depth 4 within 1,024 once the drop records' exact validity over the brain's own last 500 real transitions reaches the validity gate.",
+  "The declared budget of one life is 200 exploration games, 800 mixture games and 200 adaptation games, which is 1.2 percent of the plan's cap of 100,000 games per seed. The drop records reach exact held-out validity after 20 to 50 random games and the line records classify every window pattern after about 10, and every gate already passes at 40 games on the development curve (next board 1.00, terminal 1.00, tactical 1.00, 1.00 against random and 0.94 against one-ply over 60 paired games, planning gain 0.66, corrupted loss 0.82). The declared budget is thirty times that point so the pilot, which divides the game budgets, the paired games and the snapshot interval by ten, keeps a threefold margin. Checkpoints are written after 100, 400 and 1,000 games and at the end of every phase; each is an agent snapshot beside the record cortices' configuration, fixed projection and offsets, tables and running statistics, which rebuild the brain completely.",
+  "config_solver.json: the same life with Pascal Pons' perfect solver in the curriculum (bench/pons.py): the mixture is 20% random, 20% one-ply, 20% snapshots, 20% the solver at 30% and 20% at 70% (a perfect column with that probability, else a random one); the adaptation mixture is 20% one-ply, 40% the solver at 70% and 40% the perfect solver. Perfect play alone would make every outcome a loss and every value 0; the graded strengths keep the outcomes informative.",
+  "config_solver_support_boot.json: the solver curriculum with support bits in the window readings (each cell of a window also reads whether it rests on a stone or the floor, so a playable threat reads differently from a floating one; 1,296 window patterns instead of 81) and search bootstrapping."
+ ],
+ "game": {
+  "rows": 6,
+  "cols": 7,
+  "connect": 4
+ },
+ "debug_game": {
+  "rows": 4,
+  "cols": 4,
+  "connect": 3
+ },
+ "planning": {
+  "depth": 2,
+  "budget": 256,
+  "extended_depth": 4,
+  "extended_budget": 1024
+ },
+ "training": {
+  "explore_epsilon": 1.0,
+  "epsilon": 0.1
+ },
+ "mixture": {
+  "random": 0.2,
+  "one_ply": 0.2,
+  "snapshots": 0.2,
+  "solver_030": 0.2,
+  "solver_070": 0.2
+ },
+ "adaptation_mixture": {
+  "one_ply": 0.2,
+  "solver_070": 0.4,
+  "solver_100": 0.4
+ },
+ "budget": {
+  "explore_games": 200,
+  "mixture_games": 800,
+  "adaptation_games": 200,
+  "games_cap": 1200,
+  "paired_games": 1000,
+  "snapshot_every": 100,
+  "snapshot_pool": 8,
+  "curve_block": 100
+ },
+ "evaluation": {
+  "tactical_positions": 1000,
+  "heldout_moves": 10000,
+  "terminal_boards": 2000,
+  "paired_environments": {
+   "random": 2001,
+   "one_ply": 2002,
+   "minimax_256": 2003
+  }
+ },
+ "controls": {
+  "minimax_budgets": [
+   256,
+   1024
+  ],
+  "born_frozen_explore_fraction": 0.25
+ },
+ "gates": {
+  "next_board_validity": 0.99,
+  "terminal_prediction": 0.99,
+  "tactical_success": 0.95,
+  "paired_random": 0.85,
+  "paired_random_seed_floor": 0.7,
+  "paired_one_ply": 0.6,
+  "paired_one_ply_seed_floor": 0.5,
+  "planning_gain": 0.1,
+  "corrupted_dynamics_loss": 0.15,
+  "continual_old_loss": 0.05,
+  "latency_p95_ms": 1000,
+  "calibration_control_tactical": 0.99,
+  "calibration_random_tactical_ceiling": 0.6,
+  "calibration_one_ply_beats_random": 0.75,
+  "calibration_random_vs_random_band": 0.1
+ },
+ "seeds": {
+  "development": [
+   0,
+   1
+  ],
+  "acceptance": [
+   10,
+   11,
+   12,
+   13,
+   14
+  ]
+ },
+ "checkpoints": {
+  "games": [
+   100,
+   400,
+   1000
+  ],
+  "phases": [
+   "explore",
+   "mixture",
+   "adaptation"
+  ]
+ },
+ "brain": {
+  "graph": {
+   "workspace": 16,
+   "dynamics": 8,
+   "source_scale": 2.0,
+   "bias": 0.25,
+   "input_gain": 2.0,
+   "dt": 0.5
+  },
+  "world": {},
+  "actor": {
+   "epsilon": 0.0
+  },
+  "drop_records": {
+   "cells": 2000,
+   "active": 20,
+   "rate": 0.5,
+   "habituation": 0.002,
+   "bias": 0.3,
+   "chosen_gain": 3.0
+  },
+  "line_records": {
+   "cells": 2000,
+   "active": 20,
+   "rate": 0.5,
+   "value_rate": 0.1,
+   "habituation": 0.002,
+   "bias": 0.3,
+   "support": true
+  },
+  "planner": {
+   "validity_window": 500,
+   "validity_min": 200,
+   "bootstrap": true
+  }
+ }
+}
