@@ -57,13 +57,24 @@ WIN_BONUS = 1e-4  # a proven result one ply sooner scores this much better; 16 p
 LEAF_MARGIN = 0.01  # leaf values stay inside [margin, 1 - margin], below every proven result
 TIE = 1e-9
 
+
+def plain_result(value: float) -> float:
+    """A proven search value without its ply bonus: 1 for a win, 0 for a loss, 0.5 for a draw."""
+    return 1.0 if value > 0.9 else (0.0 if value < 0.1 else 0.5)
+
+
+def proven_value(result: float, ply: int) -> float:
+    """A remembered result as the search scores it at ``ply``: as if decided one ply on."""
+    return 1.0 - WIN_BONUS * (ply + 1) if result > 0.9 else (WIN_BONUS * (ply + 1) if result < 0.1 else 0.5)
+
 DEFAULTS: dict[str, Any] = {
     "graph": {"workspace": 16, "dynamics": 8, "source_scale": 2.0, "bias": 0.25, "input_gain": 2.0, "dt": 0.5},
     "world": {},
     "actor": {"epsilon": 0.0},
     "drop_records": {"cells": 2000, "active": 20, "rate": 0.5, "habituation": 0.002, "bias": 0.3, "chosen_gain": 1.0},
     "line_records": {"cells": 2000, "active": 20, "rate": 0.5, "value_rate": 0.1, "habituation": 0.002, "bias": 0.3},
-    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False, "threat_weight": 0.0, "parity_weight": 0.0},
+    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False, "threat_weight": 0.0, "parity_weight": 0.0, "tie_band": TIE,
+                "remember": False, "memory_limit": 200000},
 }
 
 
@@ -458,6 +469,11 @@ class Planner:
         self.budget = 0
         self._cache: dict[tuple[bytes, int], tuple] = {}
         self._table: dict[tuple[bytes, int], tuple[int, float, int, int]] = {}  # (depth, value, bound, best k)
+        self._exact = False  # whether the last _negamax value was proven
+        self.tie_band = TIE  # root values this close count as equal; the expansion's order (the middle first) decides
+        self.memory: dict[tuple[bytes, int], float] = {}  # (board, side to move) -> a proven result: 1 win, 0.5 draw, 0 loss
+        self.remember = False  # write what a search proves into the memory and read it back at every visit
+        self.memory_limit = 200000
         self._spent = 0
         self._limit = 0
 
@@ -468,7 +484,7 @@ class Planner:
 
     def stats(self) -> dict[str, Any]:
         return {"nodes": self.nodes, "searches": self.searches, "invalid": self.invalid, "depth": self.depth,
-                "depths": {str(k): v for k, v in sorted(self.depths.items())}, "budget": self.budget}
+                "depths": {str(k): v for k, v in sorted(self.depths.items())}, "budget": self.budget, "memory": len(self.memory)}
 
     def _expand(self, board: np.ndarray, side: int) -> tuple:
         key = (board.tobytes(), side)
@@ -484,10 +500,28 @@ class Planner:
         self.invalid += int((~valid).sum())
         won, full, value = im.outcome(children, side)
         lost, wins = self._decided(children, side, won, full)
-        order = np.lexsort((np.abs(columns - (im.layout.cols - 1) / 2), -np.where(won, 2.0, np.where(wins, 1.9, np.where(lost, -1.0, value)))))
-        entry = (columns, children, valid, won, full, np.clip(value, LEAF_MARGIN, 1.0 - LEAF_MARGIN), order, lost, wins)
+        known = np.full(len(columns), np.nan)  # the memory's result for the side to move on each child
+        if self.remember and self.memory:
+            other = OPPONENT if side == CANDIDATE else CANDIDATE
+            for k in range(len(columns)):
+                if valid[k] and not (won[k] or full[k] or lost[k] or wins[k]):
+                    hit = self.memory.get((children[k].tobytes(), other))
+                    if hit is not None:
+                        known[k] = 1.0 - hit
+        ordered = np.where(won, 2.0, np.where(wins, 1.9, np.where(lost, -1.0, np.where(np.isnan(known), value, known))))
+        order = np.lexsort((np.abs(columns - (im.layout.cols - 1) / 2), -ordered))
+        entry = (columns, children, valid, won, full, np.clip(value, LEAF_MARGIN, 1.0 - LEAF_MARGIN), order, lost, wins, known)
         self._cache[key] = entry
         return entry
+
+    def _remember(self, key: tuple[bytes, int], result: float) -> None:
+        """Keep a proven result; when the memory is full, the positions with the most stones go
+        first, since the search re-proves them cheapest."""
+        if len(self.memory) >= self.memory_limit and key not in self.memory:
+            stones = {k: int(np.frombuffer(k[0], dtype=np.int8).astype(bool).sum()) for k in self.memory}
+            for k in sorted(stones, key=stones.get, reverse=True)[: self.memory_limit // 10]:
+                del self.memory[k]
+        self.memory[key] = float(result)
 
     def _decided(self, children: np.ndarray, side: int, won: np.ndarray, full: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """Children the threats standing on them decide before any expansion: lost when the
@@ -506,33 +540,40 @@ class Planner:
         """The value of ``board`` for ``side`` to move, searched ``depth`` plies. A table keeps
         what earlier visits of the same board established, as a value or a bound, with the
         column that established it searched first."""
-        columns, children, valid, won, full, value, order, lost, wins = self._expand(board, side)
+        columns, children, valid, won, full, value, order, lost, wins, known = self._expand(board, side)
         if not len(columns):
+            self._exact = True
             return 0.5
         key = (board.tobytes(), side)
-        known = self._table.get(key)
+        entry = self._table.get(key)
         alpha0 = alpha
-        if known is not None:
-            k_depth, k_value, k_bound, k_best = known
+        if entry is not None:
+            k_depth, k_value, k_bound, k_best = entry
             if k_depth >= depth:
                 if k_bound == 0:
+                    self._exact = False
                     return k_value
                 if k_bound == 1:
                     alpha = max(alpha, k_value)
                 elif k_bound == -1:
                     beta = min(beta, k_value)
                 if alpha >= beta:
+                    self._exact = False
                     return k_value
             order = [k_best] + [k for k in order if k != k_best]
         other = OPPONENT if side == CANDIDATE else CANDIDATE
         best = -1.0
         best_k = int(order[0])
+        best_exact = False
+        all_exact = True
+        cut = False
         uncertain = None
         for k in order:
+            exact = True
             if not valid[k]:
                 if uncertain is None:
                     uncertain = self.imagination.static(board, side)
-                v = uncertain
+                v, exact = uncertain, False
             elif won[k]:
                 v = 1.0 - WIN_BONUS * ply
             elif full[k]:
@@ -541,15 +582,24 @@ class Planner:
                 v = WIN_BONUS * (ply + 1)  # the other side completes a line next
             elif wins[k]:
                 v = 1.0 - WIN_BONUS * (ply + 2)  # two threats to reach, one block
+            elif not np.isnan(known[k]):
+                v = proven_value(known[k], ply + 1)  # what an earlier search proved of this child
             elif depth <= 1:
-                v = float(value[k])
+                v, exact = float(value[k]), False
             else:
                 v = 1.0 - self._negamax(children[k], other, depth - 1, 1.0 - beta, 1.0 - alpha, ply + 1)
+                exact = self._exact
             if v > best:
-                best, best_k = v, int(k)
+                best, best_k, best_exact = v, int(k), exact
+            all_exact = all_exact and exact
             alpha = max(alpha, v)
             if alpha >= beta:
+                cut = True
                 break
+        # the value is proven when its best child is a proven win, or every child is proven and none was cut off
+        self._exact = best_exact and (best > 0.9 or (all_exact and not cut))
+        if self._exact and self.remember:
+            self._remember(key, plain_result(best))
         bound = -1 if best <= alpha0 else (1 if best >= beta else 0)  # an upper bound, a lower bound, or the value
         self._table[key] = (depth, best, bound, best_k)
         return best
@@ -563,8 +613,9 @@ class Planner:
         self._limit = int(budget)
         self.budget = int(budget)
         invalid_before = self.invalid
-        columns, children, valid, won, full, value, order, lost, wins = self._expand(board, CANDIDATE)
+        columns, children, valid, won, full, value, order, lost, wins, known = self._expand(board, CANDIDATE)
         rank = {int(columns[k]): i for i, k in enumerate(order)}
+        root_exact: dict[int, bool] = {}
         root = [int(c) for c in np.flatnonzero(legal)]
         sequence = sorted(root, key=lambda c: rank.get(c, 0))
         choice, completed, root_value = list(root), 0, 0.5
@@ -576,8 +627,9 @@ class Planner:
             try:
                 for c in sequence:
                     k = int(np.flatnonzero(columns == c)[0])
+                    exact = True
                     if not valid[k]:
-                        v = self.imagination.static(board, CANDIDATE)
+                        v, exact = self.imagination.static(board, CANDIDATE), False
                     elif won[k]:
                         v = 1.0 - WIN_BONUS
                     elif full[k]:
@@ -586,18 +638,29 @@ class Planner:
                         v = WIN_BONUS * 2
                     elif wins[k]:
                         v = 1.0 - WIN_BONUS * 3
+                    elif not np.isnan(known[k]):
+                        v = proven_value(known[k], 2)
                     elif d == 1:
-                        v = float(value[k])
+                        v, exact = float(value[k]), False
                     else:
                         # a move cut off by this window is worse than the best by more than a tie
                         v = 1.0 - self._negamax(children[k], OPPONENT, d - 1, 0.0, 1.0 - (best - 2 * TIE), 2)
+                        exact = self._exact
                     found[c] = v
+                    root_exact[c] = exact
                     best = max(best, v)
             except Spent:
                 break
             values = found
             top = max(values.values())
-            choice = [c for c in sequence if values[c] >= top - TIE]
+            if self.remember and len(values) == len(root):
+                top_c = max(values, key=values.get)
+                if root_exact.get(top_c) and (top > 0.9 or all(root_exact.get(c) for c in root)):
+                    self._remember((board.tobytes(), CANDIDATE), plain_result(top))
+            choice = [c for c in sequence if values[c] >= top - self.tie_band]
+            if self.tie_band > TIE:
+                centre = (self.imagination.layout.cols - 1) / 2
+                choice = sorted(choice, key=lambda c: (abs(c - centre), c))[:1]  # the middle among near-equal columns
             completed, root_value = d, top
             if top >= 1.0 - WIN_BONUS * depth - TIE or top <= WIN_BONUS * depth + TIE:
                 break  # a proven result: a deeper search cannot change the choice
@@ -652,6 +715,9 @@ class Brain:
         self.imagination.threat_weight = float(cfg["planner"].get("threat_weight", 0.0))
         self.imagination.parity_weight = float(cfg["planner"].get("parity_weight", 0.0))
         self.planner = Planner(self.imagination, np.random.default_rng(brain_seed(seed, 4)))
+        self.planner.tie_band = float(cfg["planner"].get("tie_band", TIE))
+        self.planner.remember = bool(cfg["planner"].get("remember", False)) and self.learning
+        self.planner.memory_limit = int(cfg["planner"].get("memory_limit", 200000))
         planning = config["planning"]
         self.depth, self.budget = int(planning["depth"]), int(planning["budget"])
         self.extended_depth, self.extended_budget = int(planning["extended_depth"]), int(planning["extended_budget"])
@@ -796,6 +862,9 @@ class Brain:
         out.imagination = Imagination(self.layout, out.drop, out.lines)
         out.imagination.threat_weight, out.imagination.parity_weight = self.imagination.threat_weight, self.imagination.parity_weight
         out.planner = Planner(out.imagination, copy.deepcopy(self.planner.rng))
+        out.planner.tie_band = self.planner.tie_band
+        out.planner.memory = dict(self.planner.memory)  # what was proven stays readable; a frozen copy proves nothing new
+        out.planner.remember = False
         out.validity = deque(self.validity, maxlen=self.validity.maxlen)
         out.counts = dict.fromkeys(self.counts, 0)
         out._episode, out._board, out._held, out._boards = -1, None, None, []
@@ -857,6 +926,10 @@ class Brain:
         agent_file, records_file = checkpoint_files(stem)
         self.agent.save(agent_file)
         data: dict[str, np.ndarray] = {"validity": np.array(list(self.validity), dtype=bool)}
+        memory = self.planner.memory
+        data["memory/boards"] = np.array([np.frombuffer(k[0], dtype=np.int8) for k in memory], dtype=np.int8).reshape(len(memory), self.game.cells)
+        data["memory/sides"] = np.array([k[1] for k in memory], dtype=np.int8)
+        data["memory/results"] = np.array(list(memory.values()), dtype=np.float32)
         cortices: dict[str, dict[str, Any]] = {}
         named = [("drop", self.drop.records), ("lines", self.lines.records)] + ([("values", self.lines.values)] if self.lines.values is not None else [])
         for name, cortex in named:
@@ -878,6 +951,7 @@ class Brain:
             "layout": {"columns": self.layout.columns.tolist(), "windows": self.layout.windows.tolist(), "support": self.layout.support}, "cortices": cortices,
             "constants": {"leaf_margin": LEAF_MARGIN, "win_bonus": WIN_BONUS, "tie": TIE}, "counts": dict(self.counts),
             "snapshots": self.snapshots, "planner": self.planner.stats(), "planner_generator": self.planner.rng.bit_generator.state,
+            "memory": len(memory),
             "agent_file": agent_file.name,
         }
         data["meta"] = np.array(json.dumps(meta, sort_keys=True))
@@ -911,6 +985,9 @@ class Brain:
                 for field in cortex.tables:
                     cortex.tables[field] = data[f"{name}/table/{field}"].copy()
             brain.validity.extend(bool(v) for v in data["validity"])
+            if "memory/boards" in data:
+                boards, sides, results = data["memory/boards"], data["memory/sides"], data["memory/results"]
+                brain.planner.memory = {(boards[i].tobytes(), int(sides[i])): float(results[i]) for i in range(len(results))}
         brain.drop._known[:] = False
         brain.lines._fresh = False
         brain.counts = {k: int(v) for k, v in meta["counts"].items()}

@@ -165,6 +165,14 @@ def cortex_block(cortex, extra: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def memory_block(brain: Brain) -> dict[str, Any]:
+    """The positions the brain's searches proved, as the page reads them back."""
+    memory = brain.planner.memory
+    boards = np.array([np.frombuffer(k[0], dtype=np.int8) for k in memory], dtype=np.int8).reshape(len(memory), brain.game.cells)
+    return {"entries": len(memory), "boards": b64(boards, "|i1"), "sides": b64(np.array([k[1] for k in memory], dtype=np.int8), "|i1"),
+            "results": b64(np.array(list(memory.values()), dtype=np.float32), "<f4")}
+
+
 def brain_block(brain: Brain) -> dict[str, Any]:
     """The record cortices, the planner and the life's counters of one checkpoint."""
     state = brain.planner.rng.bit_generator.state
@@ -186,6 +194,7 @@ def brain_block(brain: Brain) -> dict[str, Any]:
                               "has_uint32": int(state["has_uint32"]), "uinteger": int(state["uinteger"])},
         "validity": [bool(v) for v in brain.validity],
         "extended": bool(brain.extended),
+        "memory": memory_block(brain),
         "parameters": brain.parameters(),
         "cortices": {
             "drop": cortex_block(brain.drop.records, {"chosen_gain": float(brain.drop.gain),

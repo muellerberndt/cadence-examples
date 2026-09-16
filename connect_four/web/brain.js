@@ -19,7 +19,7 @@
 // cells of the Python brain. The planner's tie-break generator is numpy's PCG64 continued from
 // the state the checkpoint saved, so a tie among equal moves falls the way Python's falls.
 
-import { ExperienceAgent, Mulberry32, npSum, topK, unpackF64 } from "../../web/engine.js";
+import { ExperienceAgent, Mulberry32, npSum, topK, unpackArray, unpackF64 } from "../../web/engine.js";
 import { Board, cellsOf, gameConfig } from "./game.js";
 
 export const CHECKPOINT_FORMAT = "cadence-connect-four-checkpoint/1";
@@ -28,6 +28,12 @@ export const CANDIDATE = 1, OPPONENT = 2;      // stone values of a board relati
 export const WIN_BONUS = 1e-4;                  // a proven result one ply sooner scores this much better
 export const LEAF_MARGIN = 0.01;                // leaf values stay inside [margin, 1 - margin]
 export const TIE = 1e-9;
+
+/** A proven search value without its ply bonus: 1 for a win, 0 for a loss, 0.5 for a draw. */
+export function plainResult(value) { return value > 0.9 ? 1.0 : value < 0.1 ? 0.0 : 0.5; }
+
+/** A remembered result as the search scores it at `ply`: as if decided one ply on. */
+export function provenValue(result, ply) { return result > 0.9 ? 1.0 - WIN_BONUS * (ply + 1) : result < 0.1 ? WIN_BONUS * (ply + 1) : 0.5; }
 export const VIEW = [[0, 1, 2], [0, 1, 2], [0, 2, 1]]; // VIEW[side][cell]: side 1 keeps, side 2 swaps
 export const MOVER_CANDIDATE = 0;               // env.MOVER.index("candidate")
 
@@ -707,6 +713,11 @@ export class Planner {
     this.budget = 0;
     this._cache = new Map();
     this._table = new Map();  // board+side -> {depth, value, bound, best}: what earlier visits established
+    this.tieBand = TIE;  // root values this close count as equal; the column nearest the middle is played
+    this.memory = new Map();  // board+side to move -> a proven result: 1 win, 0.5 draw, 0 loss
+    this.remember = false;  // write what a search proves into the memory and read it back at every visit
+    this.memoryLimit = 200000;
+    this._exact = false;  // whether the last _negamax value was proven
     this._spent = 0;
     this._limit = 0;
   }
@@ -720,7 +731,7 @@ export class Planner {
   stats() {
     const depths = {};
     for (const d of Array.from(this.depths.keys()).sort((a, b) => a - b)) depths[String(d)] = this.depths.get(d);
-    return { nodes: this.nodes, searches: this.searches, invalid: this.invalid, depth: this.depth, depths, budget: this.budget };
+    return { nodes: this.nodes, searches: this.searches, invalid: this.invalid, depth: this.depth, depths, budget: this.budget, memory: this.memory.size };
   }
 
   _key(board, side) { return String.fromCharCode.apply(null, board) + side; }
@@ -735,16 +746,36 @@ export class Planner {
     for (let k = 0; k < valid.length; k++) if (!valid[k]) this.invalid += 1;
     const { won, full, value } = im.outcome(children, side);
     const { lost, wins } = this._decided(children, side, won, full);
+    const known = new Float64Array(columns.length).fill(NaN);  // the memory's result for the side to move on each child
+    if (this.remember && this.memory.size) {
+      const other = side === CANDIDATE ? OPPONENT : CANDIDATE;
+      for (let k = 0; k < columns.length; k++) {
+        if (!valid[k] || won[k] || full[k] || lost[k] || wins[k]) continue;
+        const hit = this.memory.get(this._key(children[k], other));
+        if (hit !== undefined) known[k] = 1.0 - hit;
+      }
+    }
     const clipped = new Float64Array(value.length);
     for (let k = 0; k < value.length; k++) clipped[k] = clamp(value[k], LEAF_MARGIN, 1.0 - LEAF_MARGIN);
     // the move order: proven wins first, then the higher value, then the column nearest the middle (np.lexsort)
     const centre = (im.layout.cols - 1) / 2;
     const primary = new Float64Array(columns.length), secondary = new Float64Array(columns.length);
-    for (let k = 0; k < columns.length; k++) { primary[k] = -(won[k] ? 2.0 : wins[k] ? 1.9 : lost[k] ? -1.0 : value[k]); secondary[k] = Math.abs(columns[k] - centre); }
+    for (let k = 0; k < columns.length; k++) { primary[k] = -(won[k] ? 2.0 : wins[k] ? 1.9 : lost[k] ? -1.0 : Number.isNaN(known[k]) ? value[k] : known[k]); secondary[k] = Math.abs(columns[k] - centre); }
     const order = Int32Array.from({ length: columns.length }, (_, k) => k).sort((a, b) => (primary[a] - primary[b]) || (secondary[a] - secondary[b]) || (a - b));
-    const entry = { columns, children, valid, won, full, value: clipped, order, lost, wins };
+    const entry = { columns, children, valid, won, full, value: clipped, order, lost, wins, known };
     this._cache.set(key, entry);
     return entry;
+  }
+
+  /** Keep a proven result; when the memory is full, the positions with the most stones go first,
+   *  since the search re-proves them cheapest. */
+  _remember(key, result) {
+    if (this.memory.size >= this.memoryLimit && !this.memory.has(key)) {
+      const stones = (k) => { let n = 0; for (let i = 0; i < k.length - 1; i++) if (k.charCodeAt(i) !== 0) n++; return n; };
+      const keys = Array.from(this.memory.keys()).sort((a, b) => stones(b) - stones(a));
+      for (const k of keys.slice(0, Math.floor(this.memoryLimit / 10))) this.memory.delete(k);
+    }
+    this.memory.set(key, result);
   }
 
   /** Children the threats standing on them decide before any expansion: lost when the other side
@@ -765,35 +796,40 @@ export class Planner {
   /** The value of `board` for `side` to move, searched `depth` plies. */
   _negamax(board, side, depth, alpha, beta, ply) {
     const expanded = this._expand(board, side);
-    const { columns, children, valid, won, full, value, lost, wins } = expanded;
+    const { columns, children, valid, won, full, value, lost, wins, known } = expanded;
     let order = expanded.order;
-    if (!columns.length) return 0.5;
-    const key = this._key(board, side), known = this._table.get(key);
+    if (!columns.length) { this._exact = true; return 0.5; }
+    const key = this._key(board, side), entry = this._table.get(key);
     const alpha0 = alpha;
-    if (known !== undefined) {
-      if (known.depth >= depth) {
-        if (known.bound === 0) return known.value;
-        if (known.bound === 1) { if (known.value > alpha) alpha = known.value; }
-        else if (known.bound === -1) { if (known.value < beta) beta = known.value; }
-        if (alpha >= beta) return known.value;
+    if (entry !== undefined) {
+      if (entry.depth >= depth) {
+        if (entry.bound === 0) { this._exact = false; return entry.value; }
+        if (entry.bound === 1) { if (entry.value > alpha) alpha = entry.value; }
+        else if (entry.bound === -1) { if (entry.value < beta) beta = entry.value; }
+        if (alpha >= beta) { this._exact = false; return entry.value; }
       }
-      order = [known.best, ...Array.from(order).filter((k) => k !== known.best)];
+      order = [entry.best, ...Array.from(order).filter((k) => k !== entry.best)];
     }
     const other = side === CANDIDATE ? OPPONENT : CANDIDATE;
-    let best = -1.0, bestK = order[0], uncertain = null;
+    let best = -1.0, bestK = order[0], bestExact = false, allExact = true, cut = false, uncertain = null;
     for (const k of order) {
-      let v;
-      if (!valid[k]) { if (uncertain === null) uncertain = this.imagination.static_(board, side); v = uncertain; }
+      let v, exact = true;
+      if (!valid[k]) { if (uncertain === null) uncertain = this.imagination.static_(board, side); v = uncertain; exact = false; }
       else if (won[k]) v = 1.0 - WIN_BONUS * ply;
       else if (full[k]) v = 0.5;
       else if (lost[k]) v = WIN_BONUS * (ply + 1);  // the other side completes a line next
       else if (wins[k]) v = 1.0 - WIN_BONUS * (ply + 2);  // two threats to reach, one block
-      else if (depth <= 1) v = value[k];
-      else v = 1.0 - this._negamax(children[k], other, depth - 1, 1.0 - beta, 1.0 - alpha, ply + 1);
-      if (v > best) { best = v; bestK = k; }
+      else if (!Number.isNaN(known[k])) v = provenValue(known[k], ply + 1);  // what an earlier search proved of this child
+      else if (depth <= 1) { v = value[k]; exact = false; }
+      else { v = 1.0 - this._negamax(children[k], other, depth - 1, 1.0 - beta, 1.0 - alpha, ply + 1); exact = this._exact; }
+      if (v > best) { best = v; bestK = k; bestExact = exact; }
+      allExact = allExact && exact;
       if (v > alpha) alpha = v;
-      if (alpha >= beta) break;
+      if (alpha >= beta) { cut = true; break; }
     }
+    // the value is proven when its best child is a proven win, or every child is proven and none was cut off
+    this._exact = bestExact && (best > 0.9 || (allExact && !cut));
+    if (this._exact && this.remember) this._remember(key, plainResult(best));
     const bound = best <= alpha0 ? -1 : best >= beta ? 1 : 0;  // an upper bound, a lower bound, or the value
     this._table.set(key, { depth, value: best, bound, best: bestK });
     return best;
@@ -807,7 +843,8 @@ export class Planner {
     this._limit = budget | 0;
     this.budget = budget | 0;
     const invalidBefore = this.invalid;
-    const { columns, children, valid, won, full, value, order, lost, wins } = this._expand(board, CANDIDATE);
+    const { columns, children, valid, won, full, value, order, lost, wins, known } = this._expand(board, CANDIDATE);
+    const rootExact = new Map();
     const rank = new Map();
     order.forEach((k, i) => rank.set(columns[k], i));
     const root = [];
@@ -823,16 +860,18 @@ export class Planner {
         for (const c of sequence) {
           let k = -1;
           for (let j = 0; j < columns.length; j++) if (columns[j] === c) { k = j; break; }
-          let v;
-          if (!valid[k]) v = this.imagination.static_(board, CANDIDATE);
+          let v, exact = true;
+          if (!valid[k]) { v = this.imagination.static_(board, CANDIDATE); exact = false; }
           else if (won[k]) v = 1.0 - WIN_BONUS;
           else if (full[k]) v = 0.5;
           else if (lost[k]) v = WIN_BONUS * 2;
           else if (wins[k]) v = 1.0 - WIN_BONUS * 3;
-          else if (d === 1) v = value[k];
+          else if (!Number.isNaN(known[k])) v = provenValue(known[k], 2);
+          else if (d === 1) { v = value[k]; exact = false; }
           // a move cut off by this window is worse than the best by more than a tie
-          else v = 1.0 - this._negamax(children[k], OPPONENT, d - 1, 0.0, 1.0 - (best - 2 * TIE), 2);
+          else { v = 1.0 - this._negamax(children[k], OPPONENT, d - 1, 0.0, 1.0 - (best - 2 * TIE), 2); exact = this._exact; }
           found.set(c, v);
+          rootExact.set(c, exact);
           if (v > best) best = v;
         }
       } catch (error) { if (error !== SPENT) throw error; spent = true; }
@@ -840,7 +879,16 @@ export class Planner {
       values = found;
       let top = -Infinity;
       for (const v of values.values()) if (v > top) top = v;
-      choice = sequence.filter((c) => values.get(c) >= top - TIE);
+      if (this.remember && values.size === root.length) {
+        let topC = root[0];
+        for (const [c, v] of values) if (v > values.get(topC)) topC = c;
+        if (rootExact.get(topC) && (top > 0.9 || root.every((c) => rootExact.get(c)))) this._remember(this._key(board, CANDIDATE), plainResult(top));
+      }
+      choice = sequence.filter((c) => values.get(c) >= top - this.tieBand);
+      if (this.tieBand > TIE) {
+        const centre = (this.imagination.layout.cols - 1) / 2;
+        choice = [choice.slice().sort((a, b) => (Math.abs(a - centre) - Math.abs(b - centre)) || (a - b))[0]];  // the middle among near-equal columns
+      }
       completed = d;
       rootValue = top;
       if (top >= 1.0 - WIN_BONUS * depth - TIE || top <= WIN_BONUS * depth + TIE) break;  // a proven result
@@ -904,6 +952,14 @@ export class Brain {
     this.imagination.threatWeight = Number((this.cfg.planner || {}).threat_weight || 0);
     this.imagination.parityWeight = Number((this.cfg.planner || {}).parity_weight || 0);
     this.planner = new Planner(this.imagination, new PCG64(block.planner_generator));
+    this.planner.tieBand = Number((this.cfg.planner || {}).tie_band || TIE);
+    this.planner.remember = !!(this.cfg.planner || {}).remember && this.learning;
+    this.planner.memoryLimit = Number((this.cfg.planner || {}).memory_limit || 200000);
+    if (block.memory && block.memory.entries) {
+      const boards = unpackArray(block.memory.boards), sides = unpackArray(block.memory.sides), results = unpackArray(block.memory.results);
+      const n = this.layout.cells;
+      for (let i = 0; i < block.memory.entries; i++) this.planner.memory.set(this.planner._key(boards.subarray(i * n, (i + 1) * n), sides[i]), results[i]);
+    }
     this.depth = block.planning.depth | 0;
     this.budget = block.planning.budget | 0;
     this.extendedDepth = block.planning.extended_depth | 0;
