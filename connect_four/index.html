@@ -4613,6 +4613,7 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
   // -- the life
   const checkpoint = { id: MANIFEST ? MANIFEST.inlined : "inlined", label: FIRST.label || "this page's brain" };
   let brain = null, world = null, config = null, remembered = null;
+  let memoryPending = false;  // the page holds play until the brain's memory is installed
   let restState = null, lastS = null, lastV = null, previousWeights = null;
 
   // -- the game
@@ -4660,21 +4661,28 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
     brain.newWorld();
     Object.assign(stats, freshStats());
     updateFacts(payload);
+    memoryPending = memoryFileOf(payload) !== null;
     newGame({ quiet: true });
     loadMemory(payload);
+  }
+
+  function memoryFileOf(payload) {
+    const entry = MANIFEST && MANIFEST.checkpoints ? MANIFEST.checkpoints.find((c) => c.id === "memory") : null;
+    return entry ? entry.file : (payload.brain.memory && payload.brain.memory.file) || null;
   }
 
   /** The brain's memories, fetched beside the checkpoints after the page is up: the positions its searches proved
    *  and the columns winners played, from its schooling against the perfect solver. */
   async function loadMemory(payload) {
-    const entry = MANIFEST && MANIFEST.checkpoints ? MANIFEST.checkpoints.find((c) => c.id === "memory") : null;
-    const file = entry ? entry.file : (payload.brain.memory && payload.brain.memory.file) || null;
+    const file = memoryFileOf(payload);
     if (!file) return;
     try {
       const sizes = brain.installMemory(await fetchJSON(file));
       remembered = sizes;
       updateFacts(payload);
-    } catch (error) { console.warn("the memory did not load", error); }
+    } catch (error) { console.warn("the memory did not load; the brain plays without it", error); }
+    memoryPending = false;
+    newGame({ quiet: true });  // the game the visitor was waiting for, with the memory in
   }
 
   function buildLegend(payload) {
@@ -4704,6 +4712,11 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
     falling.length = 0; nextFall = 0;
     display = new Board(config);  // the empty board the page shows until the first stone falls
     $("hint").hidden = false;
+    if (memoryPending) {
+      $("hint").innerHTML = "<b>The brain is loading its memory</b><span>what it learned against the perfect solver</span>";
+      updateBoardState();
+      return;
+    }
     $("hint").innerHTML = human === "red" ? "<b>Click a column</b><span>you are red and you move first</span>" : "<b>The brain opens</b><span>you are yellow and answer its move</span>";
     if (human === "yellow") {
       const moment = world.reset({ first: "candidate" });
@@ -4726,7 +4739,7 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
   /** The visitor's move, and the brain's answer. */
   function drop(column) {
     column = column | 0;
-    if (over || thinking || !legalNow().includes(column)) return false;
+    if (memoryPending || over || thinking || !legalNow().includes(column)) return false;
     $("hint").hidden = true;
     const t0 = performance.now();
     const moment = started ? world.reply(column) : world.reset({ first: "opponent", opening: column });
@@ -5032,7 +5045,8 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
     pause() { running = false; }, play() { running = true; },
     /** Where a column sits on the screen, for pointer events. */
     toClient(column) { const rect = boardCanvas.getBoundingClientRect(); return [rect.left + boardFrame.x + (column + 0.5) * boardFrame.cell, rect.top + boardFrame.y + boardFrame.cell * 0.5]; },
-    ready: true,
+    /** True once the brain's memory is installed (or failed to load) and the page takes moves. */
+    get ready() { return !memoryPending; },
   };
   window.__brainScan = scan;
 }
