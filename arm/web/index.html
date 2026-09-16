@@ -10,7 +10,7 @@
   <div class="headline">
     <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Draw a figure and the arm copies it</h1>
-    <p class="lede">The arm learned its own body from babbling and plans every torque through what it remembers. Nobody programmed its kinematics. The whole brain is live on the right.</p>
+    <p class="lede">The arm learned its own body from babbling and plans every torque through what it remembers. Nobody programmed its kinematics. The whole brain is live beside it.</p>
   </div>
   <div class="facts" id="counts">loading the snapshot…</div>
 </header>
@@ -34,6 +34,7 @@
         <div class="history" id="history"></div>
       </div>
       <div class="hint" id="hint"><b>Draw a figure inside the ring</b><span>with a mouse, a pen or a finger</span></div>
+      <div class="notice" id="notice" hidden><b id="noticeText"></b><span id="noticeSub"></span><div class="track"><i id="noticeFill"></i></div></div>
     </div>
     <div class="toolbar" id="drawTools">
       <button type="button" id="again" class="primary">Copy again</button>
@@ -102,7 +103,7 @@
     
     <h3>How it works</h3>
     <p>Your strokes are resampled, clipped to the reachable ring and played as a moving target. Every torque comes from the brain's step: the planner imagines each of nine torque pairs through the records cortex (the blue fan at the hand), scores the imagined motion against the target, and the brain executes the best. The outcome of every decision is written into exactly the records that read it, so the brain keeps learning while it copies. The exploration slider sets the chance of a random torque instead of the planner's choice.</p>
-    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/arm/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/comparisons/arm/receipt.json">comparison receipt</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a></p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/arm">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/arm/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/comparisons/arm/receipt.json">comparison receipt</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">the case for brains</a></p>
   </details>
 </footer>
 <script type="module" src="page.js"></script>

@@ -147,6 +147,32 @@ def wait_for_copy(page, timeout: int = 10000) -> None:
     page.wait_for_function(ACTIVE, timeout=timeout)
 
 
+STRIP_WIDTH = 276  # below this the renderer's own region labels and its caption overlap in the strip
+
+
+def clipped(page) -> list[str]:
+    """Every leaf of the brain panel's controls and instrument row whose text does not fit its box."""
+    return page.evaluate(
+        """() => {
+            const out = [];
+            for (const el of document.querySelectorAll("#brain .toolbar *, #brain .readouts *")) {
+                if (el.children.length) continue;
+                const text = (el.textContent || "").trim();
+                if (!text) continue;
+                const box = el.getBoundingClientRect();
+                if (!box.width || !box.height) continue;
+                if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
+                    out.push(`${el.id || el.className || el.tagName.toLowerCase()} "${text.slice(0, 44)}" needs ${el.scrollWidth} by ${el.scrollHeight} px in ${el.clientWidth} by ${el.clientHeight}`);
+            }
+            return out;
+        }"""
+    )
+
+
+def strip_width(page) -> float:
+    return page.evaluate("() => { const s = document.getElementById('strip'); return s ? s.getBoundingClientRect().width : 0; }")
+
+
 def note(text: str) -> None:
     print(text, file=sys.stderr, flush=True)
 
@@ -233,6 +259,13 @@ def main() -> int:
             problems.append("the brain scan is not beside the arm canvas")
         if desktop["scrollWidth"] > view["width"] + 1:
             problems.append(f"the page scrolls sideways at {view['width']} px: scrollWidth {desktop['scrollWidth']}")
+        cut = clipped(page)
+        report["clipped_desktop"] = cut
+        if cut:
+            problems.append(f"text is cut in the brain panel at {view['width']} px: " + "; ".join(cut))
+        report["strip_width"] = strip_width(page)
+        if report["strip_width"] < STRIP_WIDTH:
+            problems.append(f"the strip chart is {report['strip_width']:.0f} px wide, under the {STRIP_WIDTH} px its labels and caption need")
         page.screenshot(path=str(out / "page_start.png"), clip=viewport, timeout=180000)
 
         # 2. draw the figure and copy it
@@ -350,6 +383,10 @@ def main() -> int:
                 problems.append("at 390 px the brain scan does not sit below the arm canvas")
             if small["scrollWidth"] > small["viewport"]["width"] + 1:
                 problems.append(f"the page scrolls sideways at 390 px: scrollWidth {small['scrollWidth']}")
+            cut = clipped(phone)
+            report["clipped_phone"] = cut
+            if cut:
+                problems.append("text is cut in the brain panel at 390 px: " + "; ".join(cut))
             phone.screenshot(path=str(out / "page_phone.png"), full_page=True, timeout=180000)
             phone.close()
         browser.close()

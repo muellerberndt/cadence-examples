@@ -24,7 +24,7 @@ const PAGE_OPTIONS = { autoplay: true, ...(window.__ARM_PAGE__ || {}) };
 const CHECKPOINT_FORMAT = "cadence-arm-checkpoints/1";
 const PHASE_TEXT = { free: "free phase", free_post: "free phase after learning", predict: "predict (the chosen torque's consequence)", imagine: "imagine (nine torques at once)", repair_free: "world repair · free", repair_plus: "world repair · nudged +β", repair_minus: "world repair · nudged −β", bootstrap: "bootstrap value (time limit)", score_plus: "actor score · +β", score_minus: "actor score · −β" };
 const REGION_NOTE = { sensory: "the arm's own senses", goal: "the target marker", efference: "copy of the executed torque", workspace: "association", dynamics: "reads the efference copy", context: "trace of the workspace", motor: "torque readout", prediction: "predicted consequences", perception: "perception", recall: "recall", intention: "intention" };
-const INK_COLOR = [143, 225, 157], MARK_COLOR = [237, 129, 182], PLAN_COLOR = [96, 165, 250], DRAW_COLOR = [219, 230, 240], TORQUE_COLOR = [255, 191, 112];
+const INK_COLOR = [143, 225, 157], MARK_COLOR = [237, 129, 182], PLAN_COLOR = [96, 165, 250], DRAW_COLOR = [219, 230, 240], TORQUE_COLOR = [255, 191, 112], BODY_GHOST = [255, 140, 90];
 const DEMO_FIGURES = ["letter", "star", "spiral", "circle"];
 const IMAGINED_SCALE = 3; // the planner's imagined hand paths, drawn at three times their size
 const COPY_SETTINGS = { approach: 60, startRadius: 0.06, tail: 10, commitDelay: 900, minLength: 0.08 }; // commitDelay: the window for adding another stroke before the copy starts
@@ -47,6 +47,7 @@ function main(FIRST) {
   let snapshot = null, checkpoint = { id: "inlined", label: "this page's brain" };
   let agent = null, planner = null, records = null, arm = null;
   let moment = null, continued = false, decisionSeconds = 0.1, baseHorizon = 200, baseLengths = [0.5, 0.5];
+  let etaOf = null, etaStart = 0, etaSmooth = null; // the copy the remaining time is measured for
   let predictionFields = [], lastPrediction = null, lastWrite = null;
   let restState = null, lastS = null, lastV = null, previousWeights = null;
   let stats = freshStats();
@@ -382,8 +383,9 @@ function main(FIRST) {
       ["imagined", `${L.imagined.toLocaleString()} reads`],
     ]);
     $("counters").innerHTML = rows([
-      ["episode", `${item.episode} · tick ${item.tick}/${c.horizon}`], ["decisions", `${s.decisions}`],
-      ["controller", `${s.controller} · ε ${item.epsilon.toFixed(2)}`], ["links", `${c.lengths[0].toFixed(2)} · ${c.lengths[1].toFixed(2)} · ${s.compute_ms.toFixed(0)} ms`],
+      ["episode", `${item.episode}`], ["tick", `${item.tick}/${c.horizon}`],
+      ["decisions", `${s.decisions} · ${s.compute_ms.toFixed(0)} ms`], ["controller", `${s.controller}`],
+      ["links", `${c.lengths[0].toFixed(2)} · ${c.lengths[1].toFixed(2)}`],
     ]);
     updateHud();
   }
@@ -512,6 +514,25 @@ function main(FIRST) {
         ctx.beginPath(); ctx.arc(lx, ly, (strong ? 2.6 : 1.7) * px, 0, Math.PI * 2); ctx.fill();
       }
     }
+    const changed = Math.abs(cfg.lengths[0] - baseLengths[0]) > 1e-9 || Math.abs(cfg.lengths[1] - baseLengths[1]) > 1e-9;
+    if (changed) {
+      // the body it was born with, drawn behind the body it has: same joint angles, the old lengths
+      const e = pose.elbow, eLen = Math.hypot(e[0], e[1]) || 1, d = [e[0] / eLen, e[1] / eLen];
+      const f = [pose.hand[0] - e[0], pose.hand[1] - e[1]], fLen = Math.hypot(f[0], f[1]) || 1, g = [f[0] / fLen, f[1] / fLen];
+      const oldElbow = [d[0] * baseLengths[0], d[1] * baseLengths[0]];
+      const oldHand = [oldElbow[0] + g[0] * baseLengths[1], oldElbow[1] + g[1] * baseLengths[1]];
+      ctx.setLineDash([3, 4]);
+      ctx.strokeStyle = shade(BODY_GHOST, 0.85); ctx.lineWidth = 1.6 * px;
+      ctx.beginPath();
+      ctx.moveTo(base[0], base[1]); ctx.lineTo(X(oldElbow[0]), Y(oldElbow[1])); ctx.lineTo(X(oldHand[0]), Y(oldHand[1]));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = shade(BODY_GHOST, 0.85);
+      ctx.beginPath(); ctx.arc(X(oldHand[0]), Y(oldHand[1]), 3 * px, 0, Math.PI * 2); ctx.fill();
+      ctx.font = `${10 * Math.max(1, px * 0.9)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      ctx.textAlign = "left";
+      ctx.fillText(`body ${baseLengths[0].toFixed(2)} → ${cfg.lengths[0].toFixed(2)}`, 14, 20);
+    }
     drawLink(ctx, base, elbow, 9 * px, 7 * px, ["#4a6c8c", "#1e3247"]);
     drawLink(ctx, elbow, hand, 7 * px, 5 * px, ["#567c9c", "#243b52"]);
     if (view.torque) drawTorques(ctx, base, elbow, hand, view.torque, px);
@@ -616,6 +637,24 @@ function main(FIRST) {
 
   // ---------------------------------------------------------------- the readouts around the canvas
 
+  /** Seconds left, spoken the way a wait is read. */
+  function timeLeft(seconds) {
+    if (!(seconds > 0) || !Number.isFinite(seconds)) return null;
+    if (seconds < 90) return `${Math.max(1, Math.round(seconds))} s left`;
+    return `${Math.round(seconds / 60)} min left`;
+  }
+
+  /** What a copy still needs, measured from the share of the figure it has covered so far. */
+  function copyEta(info) {
+    if (!info || info.phase !== "copying" || !(info.progress > 0)) { etaOf = null; return null; }
+    if (etaOf !== info.n) { etaOf = info.n; etaStart = performance.now(); etaSmooth = null; return null; }
+    const elapsed = (performance.now() - etaStart) / 1000;
+    if (elapsed < 1.5 || info.progress < 0.03) return null;
+    const left = (elapsed * (1 - info.progress)) / info.progress;
+    etaSmooth = etaSmooth === null ? left : etaSmooth * 0.9 + left * 0.1;
+    return timeLeft(etaSmooth);
+  }
+
   function updateHud() {
     const view = armView, info = view ? view.copyInfo : null;
     const drawing = sketch !== null;
@@ -636,7 +675,10 @@ function main(FIRST) {
       progress = info ? info.progress : lastResult ? 1 : 0;
       if (drawing) { state = sketch.pointer !== null ? "drawing" : `copy in ${Math.max(0, (commitAt - performance.now()) / 1000).toFixed(1)} s`; cls = "busy"; }
       else if (nextCopy) { state = "starting"; cls = "busy"; }
-      else if (info) state = info.phase === "approach" ? `copy ${info.n} · to the start` : info.phase === "copying" ? `copy ${info.n} · ${Math.round(info.progress * 100)}%` : `copy ${info.n} · finishing`;
+      else if (info) {
+        const left = copyEta(info);
+        state = info.phase === "approach" ? `copy ${info.n} · to the start` : info.phase === "copying" ? `copy ${info.n} · ${Math.round(info.progress * 100)}%${left ? ` · ${left}` : ""}` : `copy ${info.n} · finishing`;
+      }
       else if (lastResult) state = `copy ${lastResult.n} · done`;
       else state = "draw a figure";
     }
@@ -785,6 +827,43 @@ function main(FIRST) {
 
   // ---------------------------------------------------------------- checkpoints
 
+  // ---------------------------------------------------------------- notices
+
+  /** A notice over the stage while something loads; `fraction` fills its bar. */
+  function showNotice(text, sub = "", fraction = null) {
+    $("noticeText").textContent = text;
+    $("noticeSub").textContent = sub;
+    $("noticeFill").style.width = fraction === null ? "0%" : `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%`;
+    $("notice").hidden = false;
+  }
+
+  function hideNotice() { $("notice").hidden = true; }
+
+  const megabytes = (n) => `${(n / 1e6).toFixed(1)} MB`;
+  /** What a selector quotes: the bytes a visitor downloads, as the manifest measured them. */
+  const downloadSize = (entry) => entry.download_bytes || entry.bytes || 0;
+
+  /** One checkpoint snapshot, reporting the share of it that has arrived. */
+  async function fetchSnapshot(entry, onProgress) {
+    const response = await fetch(new URL(entry.file, document.baseURI));
+    if (!response.ok) throw Error(`${entry.file}: ${response.status}`);
+    const total = entry.bytes || 0; // the reader yields decoded bytes, which is what `bytes` counts
+    if (!response.body || !total) return response.json();
+    const reader = response.body.getReader(), chunks = [];
+    let read = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      read += value.length;
+      onProgress(read / total);
+    }
+    const bytes = new Uint8Array(read);
+    let at = 0;
+    for (const chunk of chunks) { bytes.set(chunk, at); at += chunk.length; }
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
   async function loadCheckpoints() {
     let body = null;
     if (location.protocol === "file:") return; // a file page cannot fetch its neighbours
@@ -797,7 +876,7 @@ function main(FIRST) {
     for (const entry of body.checkpoints || []) if (entry && entry.file && entry.id) checkpoints.push(entry);
     if (!checkpoints.length) return;
     const select = $("checkpoint");
-    select.innerHTML = [`<option value="inlined">${checkpoint.label}</option>`, ...checkpoints.map((c) => `<option value="${c.id}">${c.label}${c.bytes ? ` (${(c.bytes / 1e6).toFixed(1)} MB)` : ""}</option>`)].join("");
+    select.innerHTML = [`<option value="inlined">${checkpoint.label}</option>`, ...checkpoints.map((c) => `<option value="${c.id}">${c.label}${downloadSize(c) ? ` (${megabytes(downloadSize(c))} to download)` : ""}</option>`)].join("");
     select.value = "inlined";
     select.onchange = () => selectCheckpoint(select.value);
     $("checkpointBox").hidden = false;
@@ -810,23 +889,24 @@ function main(FIRST) {
     const entry = checkpoints.find((c) => c.id === id);
     if (!entry) return;
     select.disabled = true;
+    const waiting = `${megabytes(downloadSize(entry))} to download`;
     flash(`loading ${entry.label}…`, 60000);
     try {
       let snap = snapshotCache.get(id);
       if (!snap) {
-        const response = await fetch(new URL(entry.file, document.baseURI));
-        if (!response.ok) throw Error(`${entry.file}: ${response.status}`);
-        snap = await response.json();
+        showNotice(`Loading ${entry.label}`, waiting, 0);
+        snap = await fetchSnapshot(entry, (share) => showNotice(`Loading ${entry.label}`, waiting, share));
         if (snap.format !== "cadence-experience-web/1") throw Error(`${entry.file} is not a cadence-experience-web/1 snapshot`);
         snapshotCache.set(id, snap);
       }
+      showNotice(`Loading ${entry.label}`, "starting the brain", 1);
       installLife(snap, entry.label, id);
       flash(`${entry.label} · ${figure ? "copying the same figure" : "draw a figure"}`);
     } catch (error) {
       select.value = checkpoint.id;
       flash(`could not load that brain: ${error.message}`, 6000);
       console.error(error);
-    } finally { select.disabled = false; }
+    } finally { select.disabled = false; hideNotice(); }
   }
 
   // ---------------------------------------------------------------- the loop
