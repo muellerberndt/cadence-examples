@@ -65,6 +65,8 @@ function main() {
   const diff = new Differences(fixture.tolerances || { table: 1e-9, read: 1e-9, moment: 1e-9 });
 
   const brain = new Brain(checkpoint, { cortices });
+  const memoryFile = join(opt.fixture, "memory.json");  // the memories the page fetches beside the checkpoint
+  if (existsSync(memoryFile)) { const sizes = brain.installMemory(JSON.parse(readFileSync(memoryFile, "utf8"))); if (!opt.quiet) console.log(`memory: ${sizes.proofs} proven positions, ${sizes.wins} boards with winners' columns`); }
   const config = gameConfig(checkpoint.brain.game);
   console.log(`checkpoint: ${checkpoint.label} · ${checkpoint.brain.counts.transitions.toLocaleString()} transitions, ${brain.agent.n} neurons, ${brain.agent.E} synapses`);
   console.log(`cortices: drop ${brain.drop.records.cells} cells (${brain.drop.records.inputs} inputs), lines ${brain.lines.records.cells} cells (${brain.lines.records.inputs} inputs); ${brain.drop.records.writes + brain.lines.records.writes} writes so far`);

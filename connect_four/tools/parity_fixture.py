@@ -177,6 +177,7 @@ def main() -> int:
             raise SystemExit(f"no checkpoint at {args.checkpoint} games in {args.run}")
     payload = build_page.checkpoint_export(entry["stem"], args.out / "checkpoint.json", build_page.label_of(entry), entry["games"])
     (args.out / "cortices.json").write_text(json.dumps(payload.pop("cortices"), separators=(",", ":")), encoding="utf-8")
+    (args.out / "memory.json").write_text(json.dumps(build_page.memory_file(Brain.load(entry["stem"])), separators=(",", ":")), encoding="utf-8")  # the memories the page fetches
     print(f"checkpoint: {entry['stem']} ({entry['games']:,} games, {payload['brain']['counts']['transitions']:,} transitions)")
     if payload["expansion_difference"]:
         print(f"  the expansion this life was drawn with differs from the one this machine regenerates by {payload['expansion_difference']:.3e}; the checkpoint's is used")
