@@ -121,7 +121,8 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
   completed lines, what a position is worth), from empty records.
 - Controls: the same records frozen, corrupted dynamics, random, one-ply and minimax
   opponents at fixed budgets.
-- Details: [connect_four/README.md](connect_four/README.md).
+- Details: [connect_four/README.md](connect_four/README.md); what the work taught us:
+  [connect_four/FINDINGS.md](connect_four/FINDINGS.md).
 
 ## Run them
 
