@@ -24,13 +24,13 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1]))
 
-from agent.life import seed_for  # noqa: E402
-from connect_four.bench.pons import INVALID, Solver, move_quality  # noqa: E402
-from connect_four.brain import STAGE, Brain  # noqa: E402
-from connect_four.env import Board, GameConfig, World  # noqa: E402
-from connect_four.evaluate import summarize  # noqa: E402
-from connect_four.opponents import make_opponent  # noqa: E402
-from connect_four.run import play_brain, play_policy  # noqa: E402
+from agent.life import seed_for
+from connect_four.bench.pons import INVALID, Solver, move_quality
+from connect_four.brain import STAGE, Brain
+from connect_four.env import Board, GameConfig, World
+from connect_four.evaluate import summarize
+from connect_four.opponents import make_opponent
+from connect_four.run import play_brain, play_policy
 
 BANDS = ((0, 8), (8, 16), (16, 24), (24, 42))
 

@@ -49,7 +49,12 @@ from connect_four.evaluate import (
     tactical_suite,
     terminal_boards,
 )
-from connect_four.opponents import OnePlyOpponent, OpponentMixture, RandomOpponent, make_opponent
+from connect_four.opponents import (
+    OnePlyOpponent,
+    OpponentMixture,
+    RandomOpponent,
+    make_opponent,
+)
 
 PAIRED = ("random", "one_ply", "minimax_256")
 OLD_OPPONENTS = ("random", "one_ply")

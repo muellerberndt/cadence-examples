@@ -17,16 +17,16 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[2]))
 
-from connect_four.bench.alphazero import import_azg  # noqa: E402
-from connect_four.bench.alphazero.net import ARGS, NNetWrapper  # noqa: E402
+from connect_four.bench.alphazero import import_azg
+from connect_four.bench.alphazero.net import ARGS, NNetWrapper
 
 import_azg()
-import logging  # noqa: E402
+import logging
 
-import coloredlogs  # noqa: E402
-from Coach import Coach  # noqa: E402
-from connect4.Connect4Game import Connect4Game  # noqa: E402
-from utils import dotdict  # noqa: E402
+import coloredlogs
+from Coach import Coach
+from connect4.Connect4Game import Connect4Game
+from utils import dotdict
 
 
 def main() -> None:

@@ -3,19 +3,17 @@
 from __future__ import annotations
 
 import os
-import time
 
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
+from torch import nn, optim
 
 from . import import_azg
 
 import_azg()
-from NeuralNet import NeuralNet  # noqa: E402
-from utils import AverageMeter, dotdict  # noqa: E402
+from NeuralNet import NeuralNet
+from utils import AverageMeter, dotdict
 
 ARGS = dotdict({"lr": 0.001, "dropout": 0.3, "epochs": 10, "batch_size": 64, "cuda": torch.cuda.is_available(), "num_channels": 128})
 

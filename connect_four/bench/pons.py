@@ -86,7 +86,7 @@ class SolverOpponent:
         self.strength = float(strength)
         self.rng = np.random.default_rng(seed)
         self.solver = solver or Solver()
-        self.name = f"solver_{int(round(100 * self.strength)):03d}"
+        self.name = f"solver_{round(100 * self.strength):03d}"
 
     def __call__(self, cells: np.ndarray, legal: np.ndarray) -> int:
         cols = np.flatnonzero(legal)

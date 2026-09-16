@@ -10,9 +10,9 @@ from . import import_azg
 from .net import ARGS, NNetWrapper
 
 import_azg()
-from connect4.Connect4Game import Connect4Game  # noqa: E402
-from MCTS import MCTS  # noqa: E402
-from utils import dotdict  # noqa: E402
+from connect4.Connect4Game import Connect4Game
+from MCTS import MCTS
+from utils import dotdict
 
 
 def canonical(cells: np.ndarray) -> np.ndarray:
