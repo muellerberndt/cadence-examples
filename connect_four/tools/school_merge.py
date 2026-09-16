@@ -34,6 +34,7 @@ def main() -> None:
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--max-stones", type=int, default=24)
     p.add_argument("--limit", type=int, default=60000)
+    p.add_argument("--wins-limit", type=int, default=80000, help="boards with winners' columns kept: the fewest stones, then the most games")
     a = p.parse_args()
     brain = Brain.load(a.stem)
     before = len(brain.planner.memory)
@@ -48,18 +49,24 @@ def main() -> None:
             if old is not None and old != value:
                 raise SystemExit(f"{file}: entry {i} disagrees with the memory ({old} against {value})")
             brain.planner.memory[key] = value
+        for view, column, count in s.get("wins", []):
+            counts = brain.planner.wins.setdefault(np.asarray(view, dtype=np.int8).tobytes(), {})
+            counts[int(column)] = counts.get(int(column), 0) + int(count)
         for g in s.get("games", []):
             games[g["result"]] += 1
     stones = {k: int(np.frombuffer(k[0], dtype=np.int8).astype(bool).sum()) for k in brain.planner.memory}
     kept = sorted((k for k in brain.planner.memory if stones[k] <= a.max_stones), key=lambda k: (stones[k], k))[: a.limit]
     merged = len(brain.planner.memory)
     brain.planner.memory = {k: brain.planner.memory[k] for k in kept}
+    wins_merged = len(brain.planner.wins)
+    order = sorted(brain.planner.wins, key=lambda k: (int(np.frombuffer(k, dtype=np.int8).astype(bool).sum()), -sum(brain.planner.wins[k].values()), k))
+    brain.planner.wins = {k: brain.planner.wins[k] for k in order[: a.wins_limit]}
     a.out.parent.mkdir(parents=True, exist_ok=True)
     written = brain.save(a.out)
     receipt = a.stem.parent / "receipt.json"
     if receipt.exists():
         shutil.copy(receipt, a.out.parent / "receipt.json")
-    print(f"memory {before} -> {merged} merged -> {len(brain.planner.memory)} kept (<= {a.max_stones} stones, limit {a.limit}) from {len(a.school)} school files ({games}); wrote {', '.join(w.name for w in written)}")
+    print(f"memory {before} -> {merged} merged -> {len(brain.planner.memory)} kept (<= {a.max_stones} stones, limit {a.limit}); winners' columns on {wins_merged} -> {len(brain.planner.wins)} boards (limit {a.wins_limit}); from {len(a.school)} school files ({games}); wrote {', '.join(w.name for w in written)}")
 
 
 if __name__ == "__main__":

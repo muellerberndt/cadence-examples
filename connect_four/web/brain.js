@@ -989,6 +989,10 @@ export class Brain {
     this.budget = block.planning.budget | 0;
     this.extendedDepth = block.planning.extended_depth | 0;
     this.extendedBudget = block.planning.extended_budget | 0;
+    // the late schedule: from late_stones stones on, the extended search goes late_depth within late_budget
+    this.lateStones = (block.planning.late_stones | 0) || null;
+    this.lateDepth = block.planning.late_depth === undefined ? this.extendedDepth : block.planning.late_depth | 0;
+    this.lateBudget = block.planning.late_budget === undefined ? this.extendedBudget : block.planning.late_budget | 0;
     this.validityGate = Number(block.validity_gate);
     this.validityWindow = this.cfg.planner.validity_window | 0;
     this.validityMin = this.cfg.planner.validity_min | 0;
@@ -1102,8 +1106,9 @@ export class Brain {
 
   _plan(agent, row, moment, drive, free) {
     const board = cellsOf(moment.observation, this.game);
-    const depth = this.extended ? this.extendedDepth : this.depth;
-    const budget = this.extended ? this.extendedBudget : this.budget;
+    let depth = this.extended ? this.extendedDepth : this.depth;
+    let budget = this.extended ? this.extendedBudget : this.budget;
+    if (this.extended && this.lateStones) { let stones = 0; for (let i = 0; i < board.length; i++) if (board[i] !== 0) stones++; if (stones >= this.lateStones) { depth = this.lateDepth; budget = this.lateBudget; } }
     const legal = moment.action_mask;
     const [unchosen, chosen] = this.drop.landings(viewOf(CANDIDATE, board));  // what the drop records predict for this board
     const info = this.planner.search(board, legal, depth, budget);

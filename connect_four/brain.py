@@ -740,6 +740,9 @@ class Brain:
         planning = config["planning"]
         self.depth, self.budget = int(planning["depth"]), int(planning["budget"])
         self.extended_depth, self.extended_budget = int(planning["extended_depth"]), int(planning["extended_budget"])
+        # the late schedule: from late_stones stones on, the extended search goes late_depth within late_budget
+        self.late_stones = int(planning.get("late_stones", 0)) or None
+        self.late_depth, self.late_budget = int(planning.get("late_depth", self.extended_depth)), int(planning.get("late_budget", self.extended_budget))
         self.bootstrap = bool(cfg["planner"].get("bootstrap", False))
         self.validity_gate = float(config["gates"]["next_board_validity"])
         self.validity: deque[bool] = deque(maxlen=int(cfg["planner"]["validity_window"]))
@@ -850,6 +853,8 @@ class Brain:
     def _plan(self, agent: Agent, row: int, moment: Moment, drive: np.ndarray, free: Any) -> tuple[int, dict[str, np.ndarray], dict[str, int]]:
         board = cells_of(moment.observation, self.game).astype(np.int8)
         depth, budget = (self.extended_depth, self.extended_budget) if self.extended else (self.depth, self.budget)
+        if self.extended and self.late_stones and int((board != 0).sum()) >= self.late_stones:
+            depth, budget = self.late_depth, self.late_budget
         column, info = self.planner.search(board, np.asarray(moment.action_mask, bool), depth, budget)
         if self.bootstrap and self.learning and info["depth"] >= 2:
             self._bootstrap(board, info)

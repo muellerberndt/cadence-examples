@@ -16,14 +16,16 @@ import { createInterface } from "node:readline";
 import { Brain, CANDIDATE, OPPONENT } from "./brain.js";
 
 const argv = process.argv.slice(2);
-const opt = { side: "first", games: 10, depth: 10, budget: 131072, seed: 1, strength: 1.0, out: "school.json", memory: null, threat: null, parity: null, band: null };
+const opt = { side: "first", games: 10, depth: 10, budget: 131072, seed: 1, strength: 1.0, out: "school.json", memory: null, threat: null, parity: null, band: null, first: 1.0, second: 1.0, lateStones: 99, lateDepth: 16, lateBudget: 1048576 };
+// --side watch: the solver plays itself, the first player at --first and the second at --second (a perfect column with
+// that probability, else a random one), and the brain remembers the winner's columns without playing
 const positional = [];
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
-  if (a.startsWith("--")) opt[a.slice(2)] = argv[++i]; else positional.push(a);
+  if (a.startsWith("--")) opt[a.slice(2).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = argv[++i]; else positional.push(a);
 }
 const [checkpointFile, corticesFile, bridge, book] = positional;
-opt.games = Number(opt.games); opt.depth = Number(opt.depth); opt.budget = Number(opt.budget); opt.seed = Number(opt.seed); opt.strength = Number(opt.strength);
+opt.games = Number(opt.games); opt.depth = Number(opt.depth); opt.budget = Number(opt.budget); opt.seed = Number(opt.seed); opt.strength = Number(opt.strength); opt.first = Number(opt.first); opt.second = Number(opt.second); opt.lateStones = Number(opt.lateStones); opt.lateDepth = Number(opt.lateDepth); opt.lateBudget = Number(opt.lateBudget);
 
 const brain = new Brain(JSON.parse(readFileSync(checkpointFile, "utf8")), { cortices: JSON.parse(readFileSync(corticesFile, "utf8")), learning: false });
 brain.planner.remember = true;
@@ -67,31 +69,34 @@ function winner(board, cell) {  // whether the stone at cell completes four
 const games = [];
 const t0 = Date.now();
 for (let g = 0; g < opt.games; g++) {
+  const watching = opt.side === "watch";
   const brainFirst = opt.side === "first" || (opt.side === "both" && g % 2 === 0);
   const board = new Int8Array(cells), h = new Array(cols).fill(0); let side = 1, moves = [], result = null, throwAt = null;
   while (result === null) {
     const rel = relative(board, side);
     const legal = Uint8Array.from({ length: cols }, (_, c) => (h[c] < rows ? 1 : 0));
-    const brainTurn = (moves.length % 2 === 0) === brainFirst;
+    const brainTurn = !watching && (moves.length % 2 === 0) === brainFirst;
     let col;
     const scores = await solve(rel);
     let best = -Infinity; for (let c = 0; c < cols; c++) if (scores[c] !== INVALID && scores[c] > best) best = scores[c];
+    const strength = watching ? (side === 1 ? opt.first : opt.second) : opt.strength;
     if (brainTurn) {
-      col = brain.planner.search(rel, legal, opt.depth, opt.budget).column;
+      const late = moves.length >= opt.lateStones;
+      col = brain.planner.search(rel, legal, late ? opt.lateDepth : opt.depth, late ? opt.lateBudget : opt.budget).column;
       if (throwAt === null && best >= 0 && scores[col] < 0) throwAt = [moves.length, best, scores[col]];
-    } else if (rnd() >= opt.strength) {
+    } else if (rnd() >= strength) {
       const open = []; for (let c = 0; c < cols; c++) if (legal[c]) open.push(c); col = open[Math.floor(rnd() * open.length)];
     } else {
       const top = []; for (let c = 0; c < cols; c++) if (scores[c] === best) top.push(c); col = top[Math.floor(rnd() * top.length)];
     }
     const cell = h[col] * cols + col; board[cell] = side; h[col]++; moves.push(col);
-    if (winner(board, cell)) result = (side === 1) === brainFirst ? "win" : "loss";
+    if (winner(board, cell)) result = watching ? (side === 1 ? "first" : "second") : (side === 1) === brainFirst ? "win" : "loss";
     else if (moves.length === cells) result = "draw";
     side = 3 - side;
   }
   // the winner's moves, on the boards as the winner saw them, join the memory of winning columns
   if (result !== "draw") {
-    const winnerSide = (result === "win") === brainFirst ? 1 : 2;
+    const winnerSide = watching ? (result === "first" ? 1 : 2) : (result === "win") === brainFirst ? 1 : 2;
     const b = new Int8Array(cells), hh = new Array(cols).fill(0); let sd = 1;
     for (const col of moves) {
       if (sd === winnerSide) brain.planner.rememberWin(relative(b, sd), col);
@@ -99,13 +104,14 @@ for (let g = 0; g < opt.games; g++) {
     }
   }
   games.push({ game: g, brain_first: brainFirst, result, plies: moves.length, thrown_at: throwAt, memory: brain.planner.memory.size, wins: brain.planner.wins.size, moves });
-  console.log(`g${String(g).padStart(3, "0")} ${brainFirst ? "first " : "second"} ${result.padEnd(4)} ${String(moves.length).padStart(2)} plies thrown_at=${throwAt ? throwAt.join("/") : "-"} memory=${brain.planner.memory.size} wins=${brain.planner.wins.size} ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+  if (watching && g % 100 !== 99) continue;
+  console.log(`g${String(g).padStart(3, "0")} ${watching ? "watch " : brainFirst ? "first " : "second"} ${result.padEnd(6)} ${String(moves.length).padStart(2)} plies thrown_at=${throwAt ? throwAt.join("/") : "-"} memory=${brain.planner.memory.size} wins=${brain.planner.wins.size} ${((Date.now() - t0) / 1000).toFixed(0)}s`);
 }
 const boards = [], sides = [], results = [];
 for (const [key, value] of brain.planner.memory) { const b = []; for (let i = 0; i < cells; i++) b.push(key.charCodeAt(i)); boards.push(b); sides.push(Number(key[cells])); results.push(value); }
 const wins = [];
 for (const [key, counts] of brain.planner.wins) { const b = []; for (let i = 0; i < cells; i++) b.push(key.charCodeAt(i)); for (const [col, n] of counts) wins.push([b, col, n]); }
 writeFileSync(opt.out, JSON.stringify({ format: "cadence-connect-four-school/1", options: opt, entries: boards.length, boards, sides, results, wins, games }));
-const tally = { win: 0, draw: 0, loss: 0 }; for (const g of games) tally[g.result]++;
+const tally = { win: 0, draw: 0, loss: 0, first: 0, second: 0 }; for (const g of games) tally[g.result]++;
 console.log(`DONE ${opt.side} vs solver at ${opt.strength}: ${JSON.stringify(tally)} memory=${brain.planner.memory.size}`);
 proc.stdin.end();
