@@ -225,7 +225,7 @@ canvas#strip { display: block; width: 100%; height: 96px; min-width: 0; border-r
   <div class="headline">
     <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Play Connect Four against a brain that learned the game from scratch</h1>
-    <p class="lede">No rules, no engine, no labelled moves: it learned how a stone falls and what four in a row is from the games it played. Moving first it beat the perfect solver in <b>30</b> games of 30, it beats AlphaZero, and it keeps learning while it plays you.</p>
+    <p class="lede">No rules, no engine, no labelled moves: it learned how a stone falls and what four in a row is from the games it played. Played on this page, moving first it beat the perfect solver in <b>29</b> games of 30 and drew the other, and it beat AlphaZero in every game, first and second.</p>
   </div>
   <div class="facts" id="counts">loading the brain…</div>
 </header>
@@ -266,11 +266,12 @@ canvas#strip { display: block; width: 100%; height: 96px; min-width: 0; border-r
     <h3>What this brain can do</h3>
     <ul class="caps">
       <li><b>Learned the rules from the games it played.</b> How a stone falls and what four in a row is were never given.</li>
-      <li><b>Moving first, it beat the perfect solver 30 times in 30 games</b> at the settings this page plays with, and the solver at 90% 30 times in 30. Moving second, where the first player wins with perfect play, it beat the solver at 70% in 29 of 30 games and drew the other.</li>
+      <li><b>Moving first, it beat the perfect solver in 29 of 30 games and drew the other</b>, playing 99.8% of its moves perfectly, on this page in a browser. Moving second, where the first player wins with perfect play, it beat the solver at 70% in 18 of 20 games.</li>
+      <li><b>Beats AlphaZero</b>, both the model trained with alpha-zero-general's published recipe and a longer run of 120 iterations, at 100 simulations per move: every game, first and second.</li>
       <li><b>Reads the threats standing on a board</b> off its own records: a window one cell short of a line, and whether that cell can be played at once. Two of its own it can reach decide a position; one of the opponent's decides it the other way.</li>
       <li><b>Remembers.</b> Every position its searches proved stays proven, and on every board it has seen it remembers the columns the winning side played, its own and the opponent's. Schooled against the perfect solver, that memory carries the solver's opening play into its own.</li>
       <li><b>Imagines the boards its moves lead to</b> and searches them ten plies deep, sixteen once eighteen stones are down; a validator rejects an imagined board that is not the old board plus one stone.</li>
-      <li><b>Keeps learning from the game you play against it.</b> Every move either side makes is written into the records that read it, and a game you win teaches it your columns.</li>
+      <li><b>Remembers what it proves while you play.</b> A position its search proves stays proven for the rest of your visit. What the life and the school wrote stays as it was loaded: in a battery of games in the browser, letting a visitor's games rewrite the records turned three won positions into losses and draws.</li>
       <li><b>Small.</b> Two record cortices of 2,000 cells and an agent of 187 neurons; the life trained in under an hour on one CPU core.</li>
     </ul>
     <h3>What plays here</h3>
@@ -283,20 +284,23 @@ canvas#strip { display: block; width: 100%; height: 96px; min-width: 0; border-r
     <h3>Results</h3>
     <p>The paired protocol: 100 games per opponent, the brain opening half of them; win 1, draw 0.5, loss 0, with the score split by who opened. Every move the brain made was scored by the perfect solver: a blunder is a move that turns a won position into a drawn or lost one, or a drawn one into a lost one, counted over the positions that were not already lost, and an optimal move keeps the solver's best score. The brain played as this page plays it: ten plies within 131,072 imagined transitions, sixteen within 1,048,576 from eighteen stones on, with its memory.</p>
     <table>
-      <thead><tr><th>opponent</th><th>brain first</th><th>brain second</th></tr></thead>
+      <thead><tr><th>opponent</th><th>brain moves first</th><th>brain moves second</th></tr></thead>
       <tbody>
-        <tr><td>perfect solver</td><td>30-0-0</td><td>0-0-30 (the first player wins with perfect play)</td></tr>
-        <tr><td>perfect solver at 90%</td><td>30-0-0</td><td>17-3-10</td></tr>
-        <tr><td>perfect solver at 70%</td><td>30-0-0</td><td>29-1-0</td></tr>
-        <tr><td>perfect solver at 50%</td><td></td><td>29-1-0</td></tr>
+        <tr><td>perfect solver</td><td>29-1-0 <small>(30 games, 99.8% perfect moves)</small></td><td>0-0-10 <small>(10 games, 93.9% perfect moves)</small></td></tr>
+        <tr><td>perfect solver at 90%</td><td>19-0-1 <small>(20 games, 99.2% perfect moves)</small></td><td>15-2-3 <small>(20 games, 99.4% perfect moves)</small></td></tr>
+        <tr><td>perfect solver at 70%</td><td></td><td>18-1-1 <small>(20 games, 97.5% perfect moves)</small></td></tr>
+        <tr><td>AlphaZero, published recipe, 100 simulations</td><td>10-0-0 <small>(10 games, 90.0% perfect moves)</small></td><td>10-0-0 <small>(10 games, 93.8% perfect moves)</small></td></tr>
+        <tr><td>AlphaZero, 120-iteration run, 100 simulations</td><td>10-0-0 <small>(10 games, 90.7% perfect moves)</small></td><td>10-0-0 <small>(10 games, 89.6% perfect moves)</small></td></tr>
+        <tr><td>minimax, 1,024 nodes, true rules</td><td></td><td>10-0-0 <small>(10 games, 93.3% perfect moves)</small></td></tr>
+        <tr><td>one-ply (takes a win, blocks one)</td><td></td><td>10-0-0 <small>(10 games, 92.8% perfect moves)</small></td></tr>
       </tbody>
     </table>
-    <p>Wins, draws and losses over 30 games a side, the brain as it plays here, in the browser's own engine through Node; the solver at a strength plays the perfect column with that probability and a random one otherwise, ties among perfect columns drawn at random. The 100-game paired sets against random, one-ply, minimax at 1,024 nodes, the solver and both AlphaZero models, every move graded by the solver, are being measured on the training machine and join this card when they land.</p>
+    <p>Wins, draws and losses of games played on this page in headless Chromium: the opponent's columns were clicked on the board with the mouse, the brain answered in the page's own JavaScript, and every move the brain made was graded afterwards by the perfect solver. The solver at a strength plays the perfect column with that probability and a random one otherwise, ties among perfect columns drawn at random; AlphaZero samples its first three stones from its visit counts, so the games differ.</p>
     <p>Looking ahead: on 200 trap positions whose only sound column is refuted between four and more than ten plies later, drawn from random play and graded by the solver, the brain keeps the theoretical result in 89.5% of them at eight plies and 87.5% at four; minimax at 1,024 nodes keeps it in 57.0%, the one-ply opponent in 50.5%.</p>
     <p>For scale: minimax at 1,024 nodes blunders in 40% to 50% of its positions against the same opponents and scores 0.375 and 0.260 against the published-recipe AlphaZero at 25 and 100 simulations. The first player wins Connect Four with perfect play, so against the full solver a paired score of 0.5 is perfect play: every game opened by the solver is lost by everything, and the games the brain opens are the ones it can win.</p>
     <p>AlphaZero here is <a href="https://github.com/suragnair/alpha-zero-general">alpha-zero-general</a>'s Connect Four, trained by us in PyTorch on one A10G, in two runs. The published recipe: 100 self-play games and 25 MCTS simulations per move per iteration, 32 iterations, the model of iteration 24 (the 14th accepted network, sha256 a7477699); it scores 0.738 against the one-ply opponent, 0.688 against minimax at 1,024 nodes and 0.562 against the solver at 70%. The longer run: the same recipe at 50 simulations per move for 120 iterations, its best network when the bench ran (the 33rd accepted, at iteration 106, sha256 873e1660). In the paired games AlphaZero's openings are sampled from its visit counts for the first three stones so the games differ, and its tree starts fresh each game.</p>
     <h3>What it cannot do</h3>
-    <p>Win as the second player against perfect play: the first player wins Connect Four, and the brain loses every game it plays second against the full solver, as everything does. Against a first player who plays the perfect column 90% of the time it loses about a third of its games; that opponent is far beyond human play. Off the lines it has seen, in the opening, the values its records read are still flat, and a mistake there is a theoretical one, ten to thirty plies from its punishment, that only a perfect opponent converts. The rule that turns the threats it reads into a value is supplied, like the search; a version that learns that rule is the next lane.</p>
+    <p>Win as the second player against perfect play: the first player wins Connect Four, and the brain loses every game it plays second against the full solver, as everything does. Nor does it play perfectly off the lines it remembers. Against a first player who plays the perfect column seven times in ten it threw a won position in 5 of 20 games, between the 13th and 21st stone, in positions where one column wins and every other loses and its records read the columns within a few hundredths of each other; it still won 18 of those 20 games. The brain as first player met the same kind of position twice against AlphaZero, at the sixth stone, and won both games. More schooling on the lines an imperfect opponent opens is under way. The rule that turns the threats it reads into a value is supplied, like the search; a version that learns that rule is the next lane.</p>
     <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four">code</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/connect_four/FINDINGS.md">what we found</a> · <a href="receipt.json">receipt of the acceptance run</a> · <a href="https://github.com/muellerberndt/cadence-examples/tree/main/connect_four/bench/receipts">bench receipts</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/connect_four/config_solver_threat.json">training configuration</a></p>
   </details>
 </footer>
@@ -4351,6 +4355,7 @@ class Brain {
     this.block = block;
     this.seed = block.seed | 0;
     this.learning = options.learning === undefined ? !!block.learning : !!options.learning;
+    this.freezeRecords = false;  // freezeWhatWasLearned() keeps the records and the winners' memory as loaded
     this.game = gameConfig(block.game);
     this.layout = new Layout(this.game);
     this.cfg = block.brain;
@@ -4450,6 +4455,14 @@ class Brain {
     this.agent.config.learning = !!value;
   }
 
+  /** Keep the records, the value tables and the memory of winners' columns as they are while the agent
+   *  itself goes on learning: the games of one visitor do not rewrite what the life and the school wrote.
+   *  The positions the search proves are still remembered, since a proof holds whoever plays. */
+  freezeWhatWasLearned() {
+    this.freezeRecords = true;
+    this.planner.remember = !!(this.cfg.planner || {}).remember;
+  }
+
   // -- the event stream
 
   step(moment) {
@@ -4488,7 +4501,7 @@ class Brain {
     while (this.validity.length > this.validityWindow) this.validity.shift();
     this.counts.validity_scored += 1;
     this.counts.transitions += 1;
-    if (!this.learning) return;
+    if (!this.learning || this.freezeRecords) return;
     const relBefore = viewOf(mover, before);
     const rows = new Int32Array(lay.cols).fill(lay.rows);
     rows[lay.columnOf[cell]] = Math.floor(cell / lay.cols);
@@ -4501,7 +4514,7 @@ class Brain {
 
   /** A finished game: its boards' window patterns take the outcome of their movers. */
   _finish(moment) {
-    if (this.learning && this._boards.length) {
+    if (this.learning && !this.freezeRecords && this._boards.length) {
       const sign = Math.sign(moment.reward);
       const candidate = sign > 0 ? 1.0 : sign < 0 ? 0.0 : 0.5;
       const boards = this._boards.map(([ids, mover]) => [ids, mover === CANDIDATE ? candidate : 1.0 - candidate]);
@@ -4646,6 +4659,7 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
       },
     });
     brain.setLearning(true);
+    brain.freezeWhatWasLearned();  // a visitor's games do not rewrite the records or the school's memory
     config = gameConfig(payload.brain.game);
     const agent = brain.agent;
     scan.setAtlas(payload.agent.atlas);

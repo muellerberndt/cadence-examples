@@ -169,3 +169,26 @@ cells to a byte, 3.1 MB gzipped, and install in about a second; the page's cut o
 and 40,000 proofs, chosen by fewest stones, plays as well as the whole. The inlined checkpoint
 stays 1.5 MB and the memory is fetched after the page is up, from the release beside the
 checkpoint snapshots.
+
+## 20. The page is measured in the browser, and the browser found two things
+
+The numbers of finding 18 came from the page's brain run through Node. Played on the deployed
+page in headless Chromium, the opponent's columns clicked on the board and every brain move graded
+by the solver, 170 games found two defects. First, the page kept learning from the games played on
+it, and a session of games against the solver rewrote enough of the value records that the brain
+threw three won positions it plays correctly when fresh: once against AlphaZero, once against the
+solver at 90%, once at 70%. The page now freezes the records and the winners' memory as loaded and
+keeps only what its searches prove. On the same seeds after the change: AlphaZero, both models,
+both sides, 40-0-0; the solver moving second at 70% 18-1-1 (it was 17-2-1). Second, the page took
+moves before its 6.6 MB memory was installed; it now waits for it.
+
+## 21. What the school does not reach yet
+
+The remaining thrown positions are reproduced by a fresh brain and none is in the whole school
+memory of 866,451 boards. Along the brain's own second-player games the memory covers every
+position through the ninth stone, 80% at the thirteenth, 65% at the fifteenth and seventeenth and a
+third at the twenty-first, and the throws fall exactly where it thins: positions where one column
+wins, every other loses, and the records read the columns within a few hundredths of each other.
+Searching deeper does not recover them in a browser's time: at eighteen plies, up to a minute a
+move, four of eight. A school of 200,000 games with an imperfect first player, and 60,000 with an
+imperfect second player, is running to push the coverage along those lines.

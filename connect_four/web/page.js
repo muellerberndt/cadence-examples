@@ -78,6 +78,7 @@ function main({ checkpoint: FIRST, cortices: CORTICES }) {
       },
     });
     brain.setLearning(true);
+    brain.freezeWhatWasLearned();  // a visitor's games do not rewrite the records or the school's memory
     config = gameConfig(payload.brain.game);
     const agent = brain.agent;
     scan.setAtlas(payload.agent.atlas);

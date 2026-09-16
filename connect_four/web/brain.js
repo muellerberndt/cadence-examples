@@ -958,6 +958,7 @@ export class Brain {
     this.block = block;
     this.seed = block.seed | 0;
     this.learning = options.learning === undefined ? !!block.learning : !!options.learning;
+    this.freezeRecords = false;  // freezeWhatWasLearned() keeps the records and the winners' memory as loaded
     this.game = gameConfig(block.game);
     this.layout = new Layout(this.game);
     this.cfg = block.brain;
@@ -1057,6 +1058,14 @@ export class Brain {
     this.agent.config.learning = !!value;
   }
 
+  /** Keep the records, the value tables and the memory of winners' columns as they are while the agent
+   *  itself goes on learning: the games of one visitor do not rewrite what the life and the school wrote.
+   *  The positions the search proves are still remembered, since a proof holds whoever plays. */
+  freezeWhatWasLearned() {
+    this.freezeRecords = true;
+    this.planner.remember = !!(this.cfg.planner || {}).remember;
+  }
+
   // -- the event stream
 
   step(moment) {
@@ -1095,7 +1104,7 @@ export class Brain {
     while (this.validity.length > this.validityWindow) this.validity.shift();
     this.counts.validity_scored += 1;
     this.counts.transitions += 1;
-    if (!this.learning) return;
+    if (!this.learning || this.freezeRecords) return;
     const relBefore = viewOf(mover, before);
     const rows = new Int32Array(lay.cols).fill(lay.rows);
     rows[lay.columnOf[cell]] = Math.floor(cell / lay.cols);
@@ -1108,7 +1117,7 @@ export class Brain {
 
   /** A finished game: its boards' window patterns take the outcome of their movers. */
   _finish(moment) {
-    if (this.learning && this._boards.length) {
+    if (this.learning && !this.freezeRecords && this._boards.length) {
       const sign = Math.sign(moment.reward);
       const candidate = sign > 0 ? 1.0 : sign < 0 ? 0.0 : 0.5;
       const boards = this._boards.map(([ids, mover]) => [ids, mover === CANDIDATE ? candidate : 1.0 - candidate]);
