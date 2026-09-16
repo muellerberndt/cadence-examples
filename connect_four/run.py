@@ -49,7 +49,7 @@ from connect_four.evaluate import (
     tactical_suite,
     terminal_boards,
 )
-from connect_four.opponents import OnePlyOpponent, OpponentMixture, RandomOpponent
+from connect_four.opponents import OnePlyOpponent, OpponentMixture, RandomOpponent, make_opponent
 
 PAIRED = ("random", "one_ply", "minimax_256")
 OLD_OPPONENTS = ("random", "one_ply")
@@ -77,14 +77,15 @@ def checkpoint_schedule(config: dict, pilot: bool) -> tuple[set[int], set[str]]:
     return games, set(section.get("phases", [])) | {"mixture", "adaptation"}
 
 
-def opponent_factory(name: str, game: GameConfig) -> Callable[[int], object]:
-    if name == "random":
-        return RandomOpponent
-    if name == "one_ply":
-        return lambda s: OnePlyOpponent(s, game)
-    if name.startswith("minimax_"):
-        return lambda s: MinimaxPolicy(int(name.split("_")[1]), s, game)
-    raise ValueError(f"unknown opponent {name!r}")
+def opponent_factory(name: str, game: GameConfig, shared: dict | None = None) -> Callable[[int], object]:
+    """A seeded constructor for a named opponent (``opponents.make_opponent``)."""
+    shared = shared if shared is not None else {}
+    return lambda s: make_opponent(name, s, game, shared)
+
+
+def mixture_policies(weights: dict, game: GameConfig, base: int, split: str, seed: int, shared: dict) -> dict:
+    """One opponent per named component of a mixture (``snapshots`` is the reserved pool)."""
+    return {name: make_opponent(name, seed_for(STAGE, split, seed, 0, base + k), game, shared) for k, name in enumerate(n for n in weights if n != "snapshots")}
 
 
 # -- games
@@ -314,8 +315,8 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
 
     # 2. the mixture, with snapshots of this life
     brain.set_epsilon(training["epsilon"])
-    mixture = OpponentMixture(config["mixture"], {"random": RandomOpponent(seed_for(STAGE, split, seed, 0, 1)), "one_ply": OnePlyOpponent(seed_for(STAGE, split, seed, 0, 2), game)},
-                              seed_for(STAGE, split, seed, 0, 3), pool=B["snapshot_pool"])
+    shared: dict = {}
+    mixture = OpponentMixture(config["mixture"], mixture_policies(config["mixture"], game, 1, split, seed, shared), seed_for(STAGE, split, seed, 0, 3), pool=B["snapshot_pool"])
 
     def snapshot(g: int) -> None:
         if g % B["snapshot_every"] == 0:
@@ -355,8 +356,7 @@ def run_seed(seed: int, split: str, config: dict, out: Path, pilot: bool) -> dic
 
     # 5. the changed mixture, the same life
     brain.set_epsilon(training["epsilon"])
-    changed = OpponentMixture(config["adaptation_mixture"], {"random": RandomOpponent(seed_for(STAGE, split, seed, 0, 4)), "one_ply": OnePlyOpponent(seed_for(STAGE, split, seed, 0, 5), game),
-                                                            "minimax_256": MinimaxPolicy(256, seed_for(STAGE, split, seed, 0, 6), game)}, seed_for(STAGE, split, seed, 0, 7), pool=B["snapshot_pool"])
+    changed = OpponentMixture(config["adaptation_mixture"], mixture_policies(config["adaptation_mixture"], game, 4, split, seed, shared), seed_for(STAGE, split, seed, 0, 7), pool=B["snapshot_pool"])
     train(brain, world, B["adaptation_games"], lambda g: changed.new_game(), "adaptation", counter, log, meta, latencies, None, curves, B["curve_block"], after_game=scheduled_save)
     result["adaptation_draws"] = dict(changed.draws)
     brain.set_epsilon(0.0)

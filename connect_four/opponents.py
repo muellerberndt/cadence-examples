@@ -104,3 +104,36 @@ class OpponentMixture:
 
 
 DEFAULT_WEIGHTS = {"random": 0.4, "one_ply": 0.3, "snapshots": 0.3}
+
+
+def make_opponent(name: str, seed: int, config: GameConfig | None = None, shared: dict | None = None):
+    """An opponent by name: ``random``, ``one_ply``, ``minimax_<nodes>`` (the supplied-rules
+    control), ``solver_<percent>`` (Pascal Pons' perfect solver played with that probability,
+    else a random column; ``bench/pons.py``) and ``alphazero=<checkpoint>@<sims>`` (an
+    alpha-zero-general checkpoint under MCTS; ``bench/alphazero``). ``shared`` may carry a
+    ``solver`` process and caches ``alphazero`` nets so a mixture builds them once."""
+    config = config or GameConfig()
+    shared = shared if shared is not None else {}
+    if name == "random":
+        return RandomOpponent(seed)
+    if name == "one_ply":
+        return OnePlyOpponent(seed, config)
+    if name.startswith("minimax_"):
+        from .controls import MinimaxPolicy
+
+        return MinimaxPolicy(int(name.split("_")[1]), seed, config)
+    if name.startswith("solver_"):
+        from .bench.pons import Solver, SolverOpponent
+
+        solver = shared.setdefault("solver", None) or shared.__setitem__("solver", Solver()) or shared["solver"]
+        return SolverOpponent(int(name.split("_")[1]) / 100.0, seed, solver)
+    if name.startswith("alphazero="):
+        from .bench.alphazero.opponent import AlphaZeroOpponent
+
+        spec = name[len("alphazero="):]
+        path, _, sims = spec.partition("@")
+        key = ("alphazero", path, int(sims or 50))
+        if key not in shared:
+            shared[key] = AlphaZeroOpponent(path, sims=int(sims or 50), seed=seed)
+        return shared[key]
+    raise ValueError(f"unknown opponent {name!r}")
