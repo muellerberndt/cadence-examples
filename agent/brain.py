@@ -219,6 +219,8 @@ class RecordsConfig:
     task_sets: bool = False  # the goal port's active unit selects the group of cells the valued code draws from (one group per goal value)
     pathways: str = "ports"  # the input pathways of the code: "ports" (observation, goal, action, recall, context) or "fields" (each observation field with its flag, then goal, action, recall, context)
     fan_in: int = 0  # each cell reads this many pathways, drawn at birth, and every input outside them; 0 reads every input
+    backend: str = ""  # "": the agent's backend; "cpu": NumPy records beside a device brain; "torch": the records on the device
+    precision: str = ""  # the torch records' precision; "": float64 on cuda and cpu, float32 on mps
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -486,9 +488,10 @@ class RecordsHead:
     (the positive part, normalised) or a value in the field's bounds; ``learn`` writes a
     witnessed class as a one-hot target and a witnessed value through its observed mask."""
 
-    def __init__(self, inputs: int, fields: tuple[Field, ...], config: RecordsConfig, seed: int, blocks: Sequence[np.ndarray] | None = None, tasks: np.ndarray | None = None) -> None:
+    def __init__(self, inputs: int, fields: tuple[Field, ...], config: RecordsConfig, seed: int, blocks: Sequence[np.ndarray] | None = None, tasks: np.ndarray | None = None, backend: str = "cpu") -> None:
         self.config = config
         self.fields = fields
+        self.backend = config.backend or backend
         self.cortex = cd.Records(
             inputs, {f.name: f.width for f in fields}, cells=config.granules, active=config.active,
             rate=config.rate, valued=[f.name for f in fields if f.source in VALUED_SOURCES],
@@ -497,6 +500,8 @@ class RecordsHead:
             tasks=tasks if config.task_sets and tasks is not None else (),
             fan_in=config.fan_in,
             seed=(seed * 7919 + 13) & M32,
+            backend="torch" if self.backend == "torch" else "cpu",
+            precision=config.precision or None,
         )
 
     @property
@@ -663,6 +668,8 @@ class Agent:
         stream_seeds: Sequence[int] | None = None,
         planner: Planner | None = None,
         backend: str = "cpu",
+        dense_limit: int = 2048,
+        precision: str | None = None,
     ) -> None:
         if isinstance(streams, bool) or not isinstance(streams, int) or streams < 1:
             raise ValueError("streams must be a positive integer")
@@ -673,6 +680,7 @@ class Agent:
         self.config = config
         self.streams = streams
         self.seed = int(seed)
+        self.backend = str(backend)
         self.planner = planner
         spec = config.graph
         self.connectome, self.ports = build_connectome(spec, seed=self.seed)
@@ -684,7 +692,10 @@ class Agent:
         if len(self.ports.prediction):
             readout |= _between(self.connectome, self.ports.dynamics, self.ports.prediction)
         efficacy[readout] *= spec.readout_init  # calibrated start: uniform predictions and policy
-        brain = cd.Brain(self.connectome, cd.learning_neuron_model(dt=spec.dt, slope=spec.slope), bias=bias, efficacy=efficacy, backend=backend)
+        # dense_limit decides the transport: a graph whose blocks fit it is carried by dense
+        # products between neuron ranges, a larger one by gather/scatter. A ten-times graph
+        # needs a raised limit to keep the dense path, and the dense path is what a device is fast at.
+        brain = cd.Brain(self.connectome, cd.learning_neuron_model(dt=spec.dt, slope=spec.slope), bias=bias, efficacy=efficacy, backend=backend, dense_limit=dense_limit, precision=precision)
         world_edges, motor_edges, world_neurons, motor_neurons = plasticity_masks(self.connectome, self.ports)
         self.world_edges, self.motor_edges = world_edges, motor_edges
         w, a = config.world, config.actor
@@ -776,7 +787,7 @@ class Agent:
                 raise ValueError("records.pathways is 'ports' or 'fields'")
             goal_block = block(self.ports.goal)
             blocks += [goal_block, block(self.ports.action), block(self.ports.recall), block(self.ports.context)]
-            self.records = RecordsHead(len(self.reading), config.graph.prediction, config.records, seed, blocks, tasks=goal_block)
+            self.records = RecordsHead(len(self.reading), config.graph.prediction, config.records, seed, blocks, tasks=goal_block, backend=backend)
         self._last_recall = np.zeros((streams, len(self.ports.recall)))
 
     # -- shared parameter ownership
@@ -1649,13 +1660,13 @@ class Agent:
         return path
 
     @classmethod
-    def load(cls, path: str | Path, *, planner: Planner | None = None, backend: str = "cpu") -> Agent:
+    def load(cls, path: str | Path, *, planner: Planner | None = None, backend: str = "cpu", dense_limit: int = 2048, precision: str | None = None) -> Agent:
         with np.load(path, allow_pickle=False) as data:
             meta = json.loads(str(data["meta"]))
             if meta.get("format") != "cadence-experience-agent/1":
                 raise ValueError("not an experience-agent checkpoint")
             config = AgentConfig.from_dict(meta["config"])
-            agent = cls(config, streams=int(meta["streams"]), seed=int(meta["seed"]), planner=planner, backend=backend)
+            agent = cls(config, streams=int(meta["streams"]), seed=int(meta["seed"]), planner=planner, backend=backend, dense_limit=dense_limit, precision=precision)
             efficacy, bias = data["efficacy"].copy(), data["bias"].copy()
             if efficacy.shape != agent.brain.efficacy.shape or bias.shape != agent.brain.bias.shape or not np.isfinite(efficacy).all() or not np.isfinite(bias).all():
                 raise ValueError("saved parameters do not match the developed connectome")
