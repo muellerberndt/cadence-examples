@@ -1,0 +1,1392 @@
+{
+ "acceptance": {
+  "passed": false,
+  "predicates": [
+   {
+    "aggregation": "mean of per-seed medians",
+    "learned": 5400.0,
+    "name": "score_ratio_over_strongest_control",
+    "passed": true,
+    "strongest_control": 2100.0,
+    "threshold": 1.5,
+    "value": 2.5714
+   },
+   {
+    "aggregation": "mean of per-seed medians",
+    "born_frozen": 2825.0,
+    "name": "score_over_born_frozen",
+    "passed": true,
+    "threshold": 0.0,
+    "value": 2575.0
+   },
+   {
+    "aggregation": "mean of per-seed medians",
+    "name": "score_over_shuffled_pairing",
+    "passed": true,
+    "shuffled": 3175.0,
+    "threshold": 0.0,
+    "value": 2225.0
+   },
+   {
+    "aggregation": "mean of per-seed medians",
+    "corrupt": 4350.0,
+    "name": "corrupt_world_relative_loss",
+    "passed": false,
+    "threshold": 0.2,
+    "value": 0.1944
+   },
+   {
+    "aggregation": "mean over seeds",
+    "name": "first_stage_cleared_fraction",
+    "passed": false,
+    "threshold": 0.8,
+    "value": 0.0
+   },
+   {
+    "aggregation": "max over seeds",
+    "name": "p95_decision_latency_ms",
+    "note": "four frames at 60.0998 Hz is 66.6 ms",
+    "passed": true,
+    "threshold": 66.6,
+    "value": 36.55
+   },
+   {
+    "aggregation": "max over seeds; one episode of slack",
+    "name": "decisions_per_seed",
+    "passed": true,
+    "threshold": 100000,
+    "value": 100280.0
+   },
+   {
+    "aggregation": "mean of per-seed medians; the scripted sweep, reported either way",
+    "name": "score_over_the_practical_baseline",
+    "passed": false,
+    "sweep_fire": 6625.0,
+    "threshold": 0.0,
+    "value": -1225.0
+   },
+   {
+    "actor": 3750.0,
+    "aggregation": "mean of per-seed medians; a comparison, reported either way",
+    "name": "score_over_direct_actor",
+    "passed": true,
+    "threshold": 0.0,
+    "value": 1650.0
+   },
+   {
+    "aggregation": "mean of per-seed medians",
+    "name": "motion_lesion_relative_loss",
+    "no_motion": 3250.0,
+    "passed": true,
+    "threshold": 0.2,
+    "value": 0.3981
+   },
+   {
+    "aggregation": "mean over seeds",
+    "name": "firing_margin_on_the_column",
+    "passed": false,
+    "threshold": 0.0,
+    "value": 0.0
+   }
+  ],
+  "spec_sha256": null
+ },
+ "artifacts": {
+  "episodes": {
+   "bytes": 164340,
+   "path": "episodes.json",
+   "sha256": "71140d68c2d2a2176b8757775bd33b8e92995746f5d48a392e4334064c0e3adb"
+  }
+ },
+ "config": {
+  "actions": 18,
+  "actor": {
+   "beta": 0.05,
+   "eta": 0.02,
+   "eta_bias": 0.002,
+   "temperature": 1.0
+  },
+  "budget": {
+   "acceptance_decisions": 1000000,
+   "development_decisions": 100000,
+   "pilot_decisions": 10000
+  },
+  "context_amplitude": 1.0,
+  "context_decay": 0.85,
+  "episode_rule": "game_over",
+  "frames_per_action": 4,
+  "game": "1942-Nes-v0",
+  "graph": {
+   "action_gain": 16.0,
+   "bias": 0.25,
+   "density": 1.0,
+   "dt": 0.5,
+   "dynamics": 256,
+   "episodic": 0,
+   "field_gains": {},
+   "input_gain": 2.0,
+   "lateral": 0.0,
+   "readout_init": 0.0,
+   "scale": 1.0,
+   "sensory_to_dynamics": false,
+   "source_scale": 2.0,
+   "workspace": 256
+  },
+  "locator": {
+   "kind": "template_argmax",
+   "note": "supplied perception: a fixed template whose values were measured once against the privileged plane position; a run reads pixels alone",
+   "side": 5,
+   "template": [
+    [
+     0.21,
+     0.23,
+     0.24,
+     0.23,
+     0.21
+    ],
+    [
+     0.38,
+     0.53,
+     0.55,
+     0.54,
+     0.47
+    ],
+    [
+     0.6,
+     0.74,
+     0.76,
+     0.76,
+     0.7
+    ],
+    [
+     0.39,
+     0.56,
+     0.57,
+     0.57,
+     0.5
+    ],
+    [
+     0.31,
+     0.49,
+     0.43,
+     0.48,
+     0.4
+    ]
+   ]
+  },
+  "max_gameplay_frames": 36000,
+  "moves": 9,
+  "note": "round thirteen: the action's one-hot part of the reading is driven at 16.0 instead of the observation's input_gain of 2.0. At the stage's own gain the eighteen candidate readings share 0.62 of their sixty active cells and the one-step death head returns the same number for all of them to within 0.0014; at gain 8 the share is 0.13",
+  "policy": {
+   "death_horizon": 0,
+   "death_penalty": 1.0,
+   "death_reward_scale": 1.0,
+   "death_soon_base": 0.05,
+   "death_soon_weight": 0.0,
+   "death_value_cut": false,
+   "discrimination_block": 10000,
+   "epsilon": 0.1,
+   "epsilon_decay": 20000,
+   "epsilon_floor": 0.02,
+   "explore_fire": true,
+   "move_hold": 1,
+   "move_temperature": 0.1,
+   "score_weight": 1.0
+  },
+  "reading": {
+   "column_cells": 16,
+   "column_pool": 2,
+   "far_side": 8,
+   "motion_scale": 4.0,
+   "near_pool": 2,
+   "near_side": 9,
+   "self_cells": 16
+  },
+  "records": {
+   "active": 60,
+   "bias_scale": 0.3,
+   "block_rate": 0.002,
+   "context": false,
+   "fan_in": 0,
+   "granules": 16000,
+   "habituation": 1e-05,
+   "normalize_blocks": true,
+   "pathways": "fields",
+   "rate": 0.2,
+   "reward_rate": 1.0
+  },
+  "shot": {
+   "base_rate": 0.3,
+   "base_rate_note": "29 score arrivals over 86 accepted shots under constant fire: 0.337",
+   "cost": 0.1,
+   "cost_rule": "free",
+   "detector": "column_motion_next",
+   "note": "one press in ten becomes a shot; the detector reads the motion above the plane on the step after the press",
+   "occupancy": 9.5,
+   "threshold": 0.06,
+   "warmup": 400,
+   "window": 24
+  },
+  "stage": "S08",
+  "suite": {
+   "acceptance_episodes": 100,
+   "development_episodes": 20,
+   "development_ids": [
+    1000,
+    1099
+   ],
+   "heldout_ids": [
+    2000,
+    2199
+   ]
+  },
+  "sweep_note": "the practical baseline: down+left and down+right alternating every 30 decisions, firing",
+  "sweep_period": 30,
+  "track": "pixels",
+  "value": {
+   "gamma": 0.98,
+   "lam": 0.95,
+   "normalize": true,
+   "rate": 1.0
+  },
+  "view": 64,
+  "world": {
+   "beta": 0.05,
+   "eta": 0.0,
+   "eta_bias": 0.0,
+   "free_steps": 8,
+   "momentum": 0.0,
+   "nudged_steps": 8
+  }
+ },
+ "config_sha256": "7549a768792273d8174cfc167b087f2204b48838a2b922511f7dab77f09d0762",
+ "controls": {},
+ "counts": {
+  "budget": 100000,
+  "decisions_per_seed": {
+   "0": 100280
+  },
+  "evaluation_episodes": 30
+ },
+ "data_manifest_sha256": "4a9021403f088b7fd6e6d0eaae2f7867874179e42e6445926914dbaf7f38071d",
+ "failures": [],
+ "initialization": {
+  "kind": "none",
+  "parent_receipt": null
+ },
+ "learned_components": [
+  "the records cortex: every consequence, reward, death and terminal record",
+  "the shot's outcome field, written from the score credit",
+  "the value records over the same code",
+  "the motor policy's readout"
+ ],
+ "manifest": {
+  "action_codec": {
+   "actions": 18,
+   "buttons": [
+    "B",
+    null,
+    "SELECT",
+    "START",
+    "UP",
+    "DOWN",
+    "LEFT",
+    "RIGHT",
+    "A"
+   ],
+   "directions": [
+    "neutral",
+    "up",
+    "down",
+    "left",
+    "right",
+    "up_left",
+    "up_right",
+    "down_left",
+    "down_right"
+   ],
+   "excluded_buttons": [
+    "SELECT",
+    "START",
+    "A"
+   ],
+   "fire_frames": 2,
+   "frames_per_action": 4,
+   "table": {
+    "0": {
+     "masks": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "name": "neutral+hold"
+    },
+    "1": {
+     "masks": [
+      1,
+      1,
+      0,
+      0
+     ],
+     "name": "neutral+fire"
+    },
+    "10": {
+     "masks": [
+      80,
+      80,
+      80,
+      80
+     ],
+     "name": "up_left+hold"
+    },
+    "11": {
+     "masks": [
+      81,
+      81,
+      80,
+      80
+     ],
+     "name": "up_left+fire"
+    },
+    "12": {
+     "masks": [
+      144,
+      144,
+      144,
+      144
+     ],
+     "name": "up_right+hold"
+    },
+    "13": {
+     "masks": [
+      145,
+      145,
+      144,
+      144
+     ],
+     "name": "up_right+fire"
+    },
+    "14": {
+     "masks": [
+      96,
+      96,
+      96,
+      96
+     ],
+     "name": "down_left+hold"
+    },
+    "15": {
+     "masks": [
+      97,
+      97,
+      96,
+      96
+     ],
+     "name": "down_left+fire"
+    },
+    "16": {
+     "masks": [
+      160,
+      160,
+      160,
+      160
+     ],
+     "name": "down_right+hold"
+    },
+    "17": {
+     "masks": [
+      161,
+      161,
+      160,
+      160
+     ],
+     "name": "down_right+fire"
+    },
+    "2": {
+     "masks": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "name": "up+hold"
+    },
+    "3": {
+     "masks": [
+      17,
+      17,
+      16,
+      16
+     ],
+     "name": "up+fire"
+    },
+    "4": {
+     "masks": [
+      32,
+      32,
+      32,
+      32
+     ],
+     "name": "down+hold"
+    },
+    "5": {
+     "masks": [
+      33,
+      33,
+      32,
+      32
+     ],
+     "name": "down+fire"
+    },
+    "6": {
+     "masks": [
+      64,
+      64,
+      64,
+      64
+     ],
+     "name": "left+hold"
+    },
+    "7": {
+     "masks": [
+      65,
+      65,
+      64,
+      64
+     ],
+     "name": "left+fire"
+    },
+    "8": {
+     "masks": [
+      128,
+      128,
+      128,
+      128
+     ],
+     "name": "right+hold"
+    },
+    "9": {
+     "masks": [
+      129,
+      129,
+      128,
+      128
+     ],
+     "name": "right+fire"
+    }
+   }
+  },
+  "core": "fceumm",
+  "core_sha256": {
+   "fceumm.json": "133a01f0f49582a43cfb3bc21ffa14db8b593053afa680f56c4e6fc9d92dc0d8",
+   "fceumm_libretro.so": "b60f93804e63d421b838b900458e086ca2f26a22d2a4ddb157f0c13a21086724"
+  },
+  "default_state": "1Player.Level1",
+  "game": "1942-Nes-v0",
+  "integration_sha256": {
+   "1Player.Level1.state": "ae05f5a7829f5ae6b8c85258e0fd10c322d4d8a20e6b767ee37231b20f8b11f4",
+   "data.json": "fb88e6394e2c5881139c0cd1763a11dd9835425f42f818ccfb452244c9d568b2",
+   "metadata.json": "ac086ab569e35aade6ae72fa3346a7c780e4d9e8d1e64b66d58a793493c6b98b",
+   "rom.nes": "017ff3154d09531d068c26869158776e2e441509cf9bbef8042964ad39b77349",
+   "rom.sha": "fedaa09f922039ed39694884b69fcf2768643cf5a14bddf81950b4e1d0dec30d",
+   "scenario.json": "1998ca122d60fdcd5690306498f09fb96e4a40ed21d74a28838ae12a0279ba4a",
+   "script.lua": "52e622a0709cf332d5aa0599f1c335415d26a4e422787b0d3bc69c199547431a"
+  },
+  "manifest_sha256": "4a9021403f088b7fd6e6d0eaae2f7867874179e42e6445926914dbaf7f38071d",
+  "observation": {
+   "buttons": {
+    "dtype": "float32",
+    "order": [
+     "B",
+     null,
+     "SELECT",
+     "START",
+     "UP",
+     "DOWN",
+     "LEFT",
+     "RIGHT",
+     "A"
+    ],
+    "shape": [
+     9
+    ],
+    "source": "fraction of the last step's frames each NES button was down"
+   },
+   "elapsed": {
+    "dtype": "float32",
+    "shape": [
+     2
+    ],
+    "source": "gameplay frames so far; frames per action"
+   },
+   "episode_rule": "first_death",
+   "excluded": [
+    "RAM",
+    "score",
+    "lives",
+    "stage",
+    "plane coordinates",
+    "audio"
+   ],
+   "idle_frames_max": 128,
+   "max_gameplay_frames": 36000,
+   "motion": {
+    "dtype": "float32",
+    "range": [
+     -1.0,
+     1.0
+    ],
+    "shape": [
+     64,
+     64
+    ],
+    "source": "displayed pixels minus the frame 1 earlier"
+   },
+   "pixels": {
+    "dtype": "float32",
+    "range": [
+     0.0,
+     1.0
+    ],
+    "shape": [
+     64,
+     64
+    ],
+    "source": "displayed pixels"
+   },
+   "rule_addresses": [
+    "0x48e",
+    "0x432"
+   ]
+  },
+  "platform": "Nes",
+  "rom": {
+   "bytes": 40976,
+   "expected_sha256": "017ff3154d09531d068c26869158776e2e441509cf9bbef8042964ad39b77349",
+   "matches": true,
+   "path": "/home/ec2-user/cadence-gamer/roms/World/1942 (JU).nes",
+   "present": true,
+   "sha256": "017ff3154d09531d068c26869158776e2e441509cf9bbef8042964ad39b77349"
+  },
+  "rom_body_sha1": "7f57eace7cada7c36412a50f2299231b304527a8",
+  "schema": "cadence-1942-emulator-manifest/v1",
+  "source_sha256": {
+   "adapter.py": "62035fd3866fb036cfddbdbfe23677e4687e756186a0c14fbdb2dfcdf9f170fd",
+   "baselines.py": "b844ab0d050c082617e4bb519bb2d8c730f9ea4ad99f5294086089fbc2f9a112",
+   "manifest.py": "da9a1c4bd3096f3c4a9fea2c408ce8f38258f3430c193c000b17a2ccbb420d81",
+   "measure.py": "7a6416f8afbacb7d4235110e09c926527148e9de57bc746e2961493c7b7827fb",
+   "privileged.py": "b24133dfad407d88f81c70eee446afd9a825d6fb51a03e0c9dd7553a3de516e1",
+   "receipts.py": "727d61d732290a41ad87102197dcf0f2571993098e9316b02ee3842547c4ce55",
+   "replay.py": "61f4da6bee5bbe1e162d1d08da790af7b0d8174b1ffe06eb7cfd6137f29e8637",
+   "run.py": "336aa25854fff5ae49b029e5485071adb8be03f63f039d7b7dda19b5fa7380a4"
+  },
+  "timing": {
+   "audio_rate_hz": 32040.5,
+   "audio_samples_per_frame": 534,
+   "region": "NTSC",
+   "resolution_height": 224,
+   "resolution_width": 240,
+   "rotation": 0,
+   "screen_rate_hz": 60.099826520671044
+  },
+  "versions": {
+   "gymnasium": "1.3.0",
+   "machine": "x86_64",
+   "numpy": "2.4.6",
+   "platform": "Linux-6.18.44-99.149.amzn2023.x86_64-x86_64-with-glibc2.34",
+   "python": "3.11.16",
+   "stable-retro": "1.0.1"
+  },
+  "wrapper": "stable-retro"
+ },
+ "metrics": {
+  "0": {
+   "actor_life": {
+    "decisions": 100929,
+    "discrimination": [],
+    "episodes": 115,
+    "hit_writes": 15080,
+    "latency_ms_median": 18.11276550142793,
+    "latency_ms_p95": 18.866765147686234,
+    "prediction": {
+     "next_column": {
+      "gain_last_half": 0.5348,
+      "gain_over_persistence": 0.5275,
+      "model": 0.003271,
+      "model_first_half": 0.003339,
+      "model_last_half": 0.003203,
+      "moments": 100929,
+      "persistence": 0.006922
+     },
+     "next_near": {
+      "gain_last_half": 0.5812,
+      "gain_over_persistence": 0.5702,
+      "model": 0.003753,
+      "model_first_half": 0.003844,
+      "model_last_half": 0.003663,
+      "moments": 100929,
+      "persistence": 0.008732
+     },
+     "reward": {
+      "model": 0.000799,
+      "model_first_half": 0.000861,
+      "model_last_half": 0.000737,
+      "moments": 100929
+     }
+    },
+    "presses": 50361,
+    "queued_shots": 15080,
+    "score_first_half": 4150.877192982456,
+    "score_last_half": 3740.3508771929824,
+    "score_mean": 3924.782608695652,
+    "value_writes": 100929,
+    "wall_seconds": 2220.6459499129996
+   },
+   "calibration": {
+    "_ece": 0.0046,
+    "bins": {
+     "0.0-0.1": [
+      0.074,
+      23383
+     ],
+     "0.1-0.2": [
+      0.103,
+      8774
+     ],
+     "0.2-0.3": [
+      0.118,
+      3155
+     ],
+     "0.3-0.4": [
+      0.136,
+      861
+     ],
+     "0.4-0.5": [
+      0.164,
+      262
+     ],
+     "0.5-0.6": [
+      0.254,
+      67
+     ],
+     "0.6-0.7": [
+      0.333,
+      27
+     ],
+     "0.7-0.8": [
+      1.0,
+      2
+     ],
+     "0.8-0.9": [
+      0.667,
+      3
+     ],
+     "0.9-1.0": [
+      0.0,
+      2
+     ]
+    },
+    "calibration_error": 0.0014,
+    "predicted": 0.0889,
+    "realised": 0.0875,
+    "shots": 36536
+   },
+   "checkpoint": "/home/ec2-user/s08b/runs/dev4_ag16_seed0/brain_seed0.pkl",
+   "conditions": {
+    "actor": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 878.5333333333333,
+     "episodes": 30,
+     "fire_rate": 0.4976475944756412,
+     "firing": {
+      "aligned": 0.49387156941113775,
+      "margin": -0.005279624222814527,
+      "otherwise": 0.4991511936339523,
+      "probes": 26356
+     },
+     "frames_in_play_mean": 3019.266666666667,
+     "latency_ms_median": 16.06454849752481,
+     "latency_ms_p95": 16.363028249543277,
+     "score_max": 12650.0,
+     "score_mean": 4191.666666666667,
+     "score_median": 3750.0,
+     "score_min": 150.0,
+     "shots_mean": 90.9,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "always_fire": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 842.4333333333333,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "firing": {
+      "aligned": 1.0,
+      "margin": 0.0,
+      "otherwise": 1.0,
+      "probes": 25273
+     },
+     "frames_in_play_mean": 2875.8,
+     "latency_ms_median": 35.76688199973432,
+     "latency_ms_p95": 36.554082699876744,
+     "score_max": 14650.0,
+     "score_mean": 6180.0,
+     "score_median": 5400.0,
+     "score_min": 1000.0,
+     "shots_mean": 109.03333333333333,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "born_frozen": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 903.0666666666667,
+     "episodes": 30,
+     "fire_rate": 0.9772626605640041,
+     "firing": {
+      "aligned": 0.9782145987229247,
+      "margin": 0.001349903616931547,
+      "otherwise": 0.9768646951059932,
+      "probes": 27092
+     },
+     "frames_in_play_mean": 3116.2,
+     "latency_ms_median": 35.66663449964835,
+     "latency_ms_p95": 36.50047869996342,
+     "score_max": 12950.0,
+     "score_mean": 3750.0,
+     "score_median": 2825.0,
+     "score_min": 50.0,
+     "shots_mean": 116.53333333333333,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "constant_fire": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 936.6,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "firing": null,
+     "frames_in_play_mean": 3251.9333333333334,
+     "latency_ms_median": 0.030606999644078314,
+     "latency_ms_p95": 0.03733664962055627,
+     "score_max": 2700.0,
+     "score_mean": 2033.3333333333333,
+     "score_median": 2100.0,
+     "score_min": 1150.0,
+     "shots_mean": 108.3,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "corrupt_world": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 824.8,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "firing": {
+      "aligned": 1.0,
+      "margin": 0.0,
+      "otherwise": 1.0,
+      "probes": 24744
+     },
+     "frames_in_play_mean": 2804.866666666667,
+     "latency_ms_median": 35.745505501836305,
+     "latency_ms_p95": 36.64210439819726,
+     "score_max": 13900.0,
+     "score_mean": 5058.333333333333,
+     "score_median": 4350.0,
+     "score_min": 200.0,
+     "shots_mean": 117.66666666666667,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "no_motion": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 873.5,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "firing": {
+      "aligned": 1.0,
+      "margin": 0.0,
+      "otherwise": 1.0,
+      "probes": 26205
+     },
+     "frames_in_play_mean": 2998.733333333333,
+     "latency_ms_median": 35.50726600224152,
+     "latency_ms_p95": 36.44164240467944,
+     "score_max": 13750.0,
+     "score_mean": 3686.6666666666665,
+     "score_median": 3250.0,
+     "score_min": 150.0,
+     "shots_mean": 118.4,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "random": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 823.0666666666667,
+     "episodes": 30,
+     "fire_rate": 0.49777255791349423,
+     "firing": null,
+     "frames_in_play_mean": 2797.266666666667,
+     "latency_ms_median": 0.03826699685305357,
+     "latency_ms_p95": 0.046167849359335315,
+     "score_max": 13550.0,
+     "score_mean": 2970.0,
+     "score_median": 2025.0,
+     "score_min": 300.0,
+     "shots_mean": 84.66666666666667,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "records": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 842.4333333333333,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "frames_in_play_mean": 2875.8,
+     "latency_ms_median": 35.745167995628435,
+     "latency_ms_p95": 36.54858290174161,
+     "log": {
+      "events": 25303,
+      "path": "events_seed0_records.jsonl",
+      "sha256": "331d51ddba076e384b744b3fccaef06afa0af6314efcae017e68fd995b9b7c77"
+     },
+     "score_max": 14650.0,
+     "score_mean": 6180.0,
+     "score_median": 5400.0,
+     "score_min": 1000.0,
+     "shots_mean": 109.03333333333333,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "shuffled_pairing": {
+     "deaths_mean": 3.0,
+     "decisions_mean": 916.1,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "firing": {
+      "aligned": 1.0,
+      "margin": 0.0,
+      "otherwise": 1.0,
+      "probes": 27483
+     },
+     "frames_in_play_mean": 3169.9333333333334,
+     "latency_ms_median": 35.788662993581966,
+     "latency_ms_p95": 36.56010340200737,
+     "score_max": 12450.0,
+     "score_mean": 4241.666666666667,
+     "score_median": 3175.0,
+     "score_min": 400.0,
+     "shots_mean": 130.2,
+     "stage_cleared_episodes": 0,
+     "stages_cleared": 0
+    },
+    "sweep_fire": {
+     "deaths_mean": 3.033333333333333,
+     "decisions_mean": 1483.8333333333333,
+     "episodes": 30,
+     "fire_rate": 1.0,
+     "firing": null,
+     "frames_in_play_mean": 5433.4,
+     "latency_ms_median": 0.03172199649270624,
+     "latency_ms_p95": 0.038123999547678956,
+     "score_max": 28150.0,
+     "score_mean": 7506.666666666667,
+     "score_median": 6625.0,
+     "score_min": 3300.0,
+     "shots_mean": 192.9,
+     "stage_cleared_episodes": 1,
+     "stages_cleared": 1
+    }
+   },
+   "events": {
+    "events": 100401,
+    "path": "events_seed0.jsonl",
+    "sha256": "5b7c460201dbd697c157f8c75da0ac2f5133b5bab8eda7c1bf38e31e793118a2"
+   },
+   "firing": {
+    "aligned": 1.0,
+    "margin": 0.0,
+    "otherwise": 1.0,
+    "probes": 25273
+   },
+   "life": {
+    "decisions": 100280,
+    "discrimination": [
+     {
+      "death_auc": 0.5894,
+      "death_deaths": 22,
+      "death_read_on_deaths": 0.00906,
+      "death_read_otherwise": 0.00284,
+      "decisions": 10000,
+      "hit_auc": 0.5532,
+      "hit_read_on_hits": 0.14493,
+      "hit_read_on_misses": 0.11161,
+      "hit_realised": 0.096,
+      "hit_shots": 2603,
+      "taken_less_untaken_on_deaths": 0.00292,
+      "taken_less_untaken_otherwise": -0.00134
+     },
+     {
+      "death_auc": 0.6125,
+      "death_deaths": 22,
+      "death_read_on_deaths": 0.00555,
+      "death_read_otherwise": 0.00249,
+      "decisions": 20000,
+      "hit_auc": 0.5388,
+      "hit_read_on_hits": 0.14217,
+      "hit_read_on_misses": 0.11668,
+      "hit_realised": 0.1068,
+      "hit_shots": 2864,
+      "taken_less_untaken_on_deaths": 0.00086,
+      "taken_less_untaken_otherwise": -0.0003
+     },
+     {
+      "death_auc": 0.53,
+      "death_deaths": 28,
+      "death_read_on_deaths": 0.01843,
+      "death_read_otherwise": 0.01148,
+      "decisions": 30000,
+      "hit_auc": 0.5734,
+      "hit_read_on_hits": 0.10902,
+      "hit_read_on_misses": 0.0813,
+      "hit_realised": 0.0688,
+      "hit_shots": 2965,
+      "taken_less_untaken_on_deaths": -0.00164,
+      "taken_less_untaken_otherwise": -0.00485
+     },
+     {
+      "death_auc": 0.7952,
+      "death_deaths": 22,
+      "death_read_on_deaths": 0.02096,
+      "death_read_otherwise": 0.00537,
+      "decisions": 40000,
+      "hit_auc": 0.5652,
+      "hit_read_on_hits": 0.14153,
+      "hit_read_on_misses": 0.1112,
+      "hit_realised": 0.1049,
+      "hit_shots": 2784,
+      "taken_less_untaken_on_deaths": 0.00906,
+      "taken_less_untaken_otherwise": -0.0057
+     },
+     {
+      "death_auc": 0.5353,
+      "death_deaths": 24,
+      "death_read_on_deaths": 0.0082,
+      "death_read_otherwise": 0.01053,
+      "decisions": 50000,
+      "hit_auc": 0.5856,
+      "hit_read_on_hits": 0.12116,
+      "hit_read_on_misses": 0.09326,
+      "hit_realised": 0.0866,
+      "hit_shots": 2921,
+      "taken_less_untaken_on_deaths": -0.00573,
+      "taken_less_untaken_otherwise": 0.00018
+     },
+     {
+      "death_auc": 0.606,
+      "death_deaths": 24,
+      "death_read_on_deaths": 0.01382,
+      "death_read_otherwise": 0.00555,
+      "decisions": 60000,
+      "hit_auc": 0.5846,
+      "hit_read_on_hits": 0.13011,
+      "hit_read_on_misses": 0.09875,
+      "hit_realised": 0.0906,
+      "hit_shots": 2958,
+      "taken_less_untaken_on_deaths": 0.00697,
+      "taken_less_untaken_otherwise": 0.00074
+     },
+     {
+      "death_auc": 0.605,
+      "death_deaths": 25,
+      "death_read_on_deaths": 0.00673,
+      "death_read_otherwise": 0.00402,
+      "decisions": 70000,
+      "hit_auc": 0.5765,
+      "hit_read_on_hits": 0.10747,
+      "hit_read_on_misses": 0.08341,
+      "hit_realised": 0.0746,
+      "hit_shots": 3028,
+      "taken_less_untaken_on_deaths": -0.00021,
+      "taken_less_untaken_otherwise": 0.00027
+     },
+     {
+      "death_auc": 0.698,
+      "death_deaths": 27,
+      "death_read_on_deaths": 0.00994,
+      "death_read_otherwise": 0.00348,
+      "decisions": 80000,
+      "hit_auc": 0.5745,
+      "hit_read_on_hits": 0.10942,
+      "hit_read_on_misses": 0.08237,
+      "hit_realised": 0.0748,
+      "hit_shots": 2927,
+      "taken_less_untaken_on_deaths": 0.00108,
+      "taken_less_untaken_otherwise": -0.00089
+     },
+     {
+      "death_auc": 0.6233,
+      "death_deaths": 22,
+      "death_read_on_deaths": 0.00748,
+      "death_read_otherwise": 0.00337,
+      "decisions": 90000,
+      "hit_auc": 0.5482,
+      "hit_read_on_hits": 0.10696,
+      "hit_read_on_misses": 0.09639,
+      "hit_realised": 0.0882,
+      "hit_shots": 2947,
+      "taken_less_untaken_on_deaths": -0.0004,
+      "taken_less_untaken_otherwise": 4e-05
+     },
+     {
+      "death_auc": 0.5477,
+      "death_deaths": 24,
+      "death_read_on_deaths": 0.00704,
+      "death_read_otherwise": 0.00432,
+      "decisions": 100000,
+      "hit_auc": 0.612,
+      "hit_read_on_hits": 0.13022,
+      "hit_read_on_misses": 0.09353,
+      "hit_realised": 0.0873,
+      "hit_shots": 2897,
+      "taken_less_untaken_on_deaths": 0.00013,
+      "taken_less_untaken_otherwise": -0.00012
+     },
+     {
+      "death_auc": 0.4158,
+      "death_deaths": 1,
+      "death_read_on_deaths": 0.00374,
+      "death_read_otherwise": 0.00866,
+      "decisions": 100280,
+      "hit_auc": 0.7326,
+      "hit_read_on_hits": 0.09409,
+      "hit_read_on_misses": 0.05309,
+      "hit_realised": 0.0337,
+      "hit_shots": 89,
+      "taken_less_untaken_on_deaths": -0.00469,
+      "taken_less_untaken_otherwise": 0.00461
+     }
+    ],
+    "episodes": 121,
+    "hit_writes": 28983,
+    "latency_ms_median": 33.09471600005054,
+    "latency_ms_p95": 38.34955300408183,
+    "prediction": {
+     "next_column": {
+      "gain_last_half": 0.587,
+      "gain_over_persistence": 0.5726,
+      "model": 0.003139,
+      "model_first_half": 0.003145,
+      "model_last_half": 0.003133,
+      "moments": 100280,
+      "persistence": 0.007344
+     },
+     "next_near": {
+      "gain_last_half": 0.6108,
+      "gain_over_persistence": 0.5912,
+      "model": 0.003731,
+      "model_first_half": 0.003706,
+      "model_last_half": 0.003756,
+      "moments": 100280,
+      "persistence": 0.009128
+     },
+     "reward": {
+      "model": 0.000993,
+      "model_first_half": 0.000956,
+      "model_last_half": 0.001029,
+      "moments": 100280
+     }
+    },
+    "presses": 98949,
+    "queued_shots": 28983,
+    "score_first_half": 5762.5,
+    "score_last_half": 6407.5,
+    "score_mean": 6124.793388429752,
+    "value_writes": 100280,
+    "wall_seconds": 3762.0014420789994
+   },
+   "parameters": {
+    "critic_parameters": 257,
+    "directed_synapses": 421632,
+    "eligibility_numbers": 423290,
+    "episodic_parameters": 0,
+    "motor_parameters": 2827,
+    "neurons": 1401,
+    "optimizer_numbers": 1692132,
+    "record_parameters": 3760000,
+    "value_records": 16000,
+    "world_parameters": 291051
+   },
+   "seed": 0,
+   "shuffled_life": {
+    "decisions": 50380,
+    "discrimination": [
+     {
+      "death_auc": 0.5917,
+      "death_deaths": 24,
+      "death_read_on_deaths": 0.0085,
+      "death_read_otherwise": 0.00407,
+      "decisions": 10000,
+      "hit_auc": 0.5864,
+      "hit_read_on_hits": 0.14897,
+      "hit_read_on_misses": 0.10839,
+      "hit_realised": 0.0944,
+      "hit_shots": 2797,
+      "taken_less_untaken_on_deaths": 0.00128,
+      "taken_less_untaken_otherwise": -0.00097
+     },
+     {
+      "death_auc": 0.6103,
+      "death_deaths": 23,
+      "death_read_on_deaths": 0.00633,
+      "death_read_otherwise": 0.00556,
+      "decisions": 20000,
+      "hit_auc": 0.5414,
+      "hit_read_on_hits": 0.11237,
+      "hit_read_on_misses": 0.09927,
+      "hit_realised": 0.089,
+      "hit_shots": 2954,
+      "taken_less_untaken_on_deaths": -0.00632,
+      "taken_less_untaken_otherwise": -0.00453
+     },
+     {
+      "death_auc": 0.5158,
+      "death_deaths": 21,
+      "death_read_on_deaths": 0.01044,
+      "death_read_otherwise": 0.0035,
+      "decisions": 30000,
+      "hit_auc": 0.5987,
+      "hit_read_on_hits": 0.14935,
+      "hit_read_on_misses": 0.10404,
+      "hit_realised": 0.0919,
+      "hit_shots": 2992,
+      "taken_less_untaken_on_deaths": 0.0045,
+      "taken_less_untaken_otherwise": -0.00316
+     },
+     {
+      "death_auc": 0.5454,
+      "death_deaths": 22,
+      "death_read_on_deaths": 0.00325,
+      "death_read_otherwise": 0.00328,
+      "decisions": 40000,
+      "hit_auc": 0.5751,
+      "hit_read_on_hits": 0.12469,
+      "hit_read_on_misses": 0.10006,
+      "hit_realised": 0.0924,
+      "hit_shots": 2998,
+      "taken_less_untaken_on_deaths": -0.00371,
+      "taken_less_untaken_otherwise": -0.00109
+     },
+     {
+      "death_auc": 0.6077,
+      "death_deaths": 25,
+      "death_read_on_deaths": 0.00976,
+      "death_read_otherwise": 0.00717,
+      "decisions": 50000,
+      "hit_auc": 0.5778,
+      "hit_read_on_hits": 0.11459,
+      "hit_read_on_misses": 0.08933,
+      "hit_realised": 0.0805,
+      "hit_shots": 2907,
+      "taken_less_untaken_on_deaths": 0.00147,
+      "taken_less_untaken_otherwise": -0.00235
+     },
+     {
+      "death_auc": 0.2889,
+      "death_deaths": 1,
+      "death_read_on_deaths": 0.0,
+      "death_read_otherwise": 0.00356,
+      "decisions": 50380,
+      "hit_auc": 0.4444,
+      "hit_read_on_hits": 0.04862,
+      "hit_read_on_misses": 0.06332,
+      "hit_realised": 0.041,
+      "hit_shots": 122,
+      "taken_less_untaken_on_deaths": -0.003,
+      "taken_less_untaken_otherwise": -0.00133
+     }
+    ],
+    "episodes": 59,
+    "hit_writes": 14770,
+    "latency_ms_median": 29.206112994870637,
+    "latency_ms_p95": 30.432445502083283,
+    "prediction": {
+     "next_column": {
+      "gain_last_half": 0.5417,
+      "gain_over_persistence": 0.5295,
+      "model": 0.00327,
+      "model_first_half": 0.003396,
+      "model_last_half": 0.003145,
+      "moments": 50380,
+      "persistence": 0.006951
+     },
+     "next_near": {
+      "gain_last_half": 0.5919,
+      "gain_over_persistence": 0.5761,
+      "model": 0.003707,
+      "model_first_half": 0.003822,
+      "model_last_half": 0.003591,
+      "moments": 50380,
+      "persistence": 0.008744
+     },
+     "reward": {
+      "model": 0.000927,
+      "model_first_half": 0.000965,
+      "model_last_half": 0.000889,
+      "moments": 50380
+     }
+    },
+    "presses": 49535,
+    "queued_shots": 14770,
+    "score_first_half": 3644.8275862068967,
+    "score_last_half": 4222.413793103448,
+    "score_mean": 3878.813559322034,
+    "value_writes": 50380,
+    "wall_seconds": 1677.2296810570042
+   }
+  }
+ },
+ "numerics": {},
+ "privileged": {
+  "addresses": {
+   "lives": "0x432",
+   "loops": "0x436",
+   "plane": "0x48e",
+   "score": "0x427",
+   "stage": "0x438",
+   "x": "0x3b2",
+   "y": "0x3af"
+  },
+  "metrics": [
+   "score",
+   "deaths",
+   "game_over",
+   "stage",
+   "frames_in_play",
+   "weapon_upgrades"
+  ],
+  "progress": "stage reached and frames in play; 1942 exposes no verified within-stage counter",
+  "source": "emulator RAM through Adapter.privileged_ram",
+  "track": "privileged-diagnostic",
+  "visible_to_agent": false
+ },
+ "receipt_sha256": "143a6a96c28ac4ce3be80a9a2e1f22de24e33f37cf4296f6695dbf2609e8d69e",
+ "resources": {
+  "host": "ip-172-31-63-162.ec2.internal",
+  "machine": "x86_64",
+  "peak_rss_mb": 1866.390625,
+  "platform": "Linux-6.18.44-99.149.amzn2023.x86_64-x86_64-with-glibc2.34",
+  "wall_seconds": 8732.441217422485,
+  "workers": 1
+ },
+ "run_id": "s08-development-1789561201",
+ "schema": "cadence-experience-run/v1",
+ "seeds": {
+  "brain_seeds": [
+   0
+  ],
+  "mode": "development"
+ },
+ "sources": {
+  "executable": "/home/ec2-user/venv_gamer/bin/python",
+  "machine": "x86_64",
+  "packages": {
+   "gymnasium": "1.3.0",
+   "numpy": "2.4.6",
+   "stable-retro": "1.0.1"
+  },
+  "platform": "Linux-6.18.44-99.149.amzn2023.x86_64-x86_64-with-glibc2.34",
+  "python": "3.11.16 (main, Aug 24 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-5)]",
+  "repositories": {
+   "cadence": {
+    "branch": "main",
+    "dirty_files": 0,
+    "dirty_hashes": {},
+    "head": "ac092b876feaa4730a2fc288c993203c071cfc65"
+   },
+   "cadence-1942": {
+    "branch": "player-v09",
+    "dirty_files": 13,
+    "dirty_hashes": {
+     "brain1942/aversion.py": "d520162c99b531161f6834146a380fc3670b58a82ab312ad87d982646b53a643",
+     "brain1942/brain.py": "769265940b44d99df39a0d902f914caa0da652e02b51013e858b6cf1dffa5603",
+     "brain1942/onestep.py": "2a55a3867b84c36136f9f42ecb10a375daadf855226d608f67effe7df4270fdb",
+     "brain1942/practice.py": "ebb537ef9265d15043e43bc4ab6d28260b3b83733334e7376a1363a931810547",
+     "brain1942/uniform.py": "e89756bbfa4535a0878997cfa5c59442d14a7aa059e87f44ec246338c74bf20c",
+     "tests/test_aversion.py": "d0c590e519d46fef2024bce4e9c7939d6aec46c0c3d3a3d44eb5251ab403d9be",
+     "tests/test_onestep.py": "51507228ff05457e2a0a41940b997e9780db1fc372d69e9dc8e40041664e3229",
+     "tests/test_uniform.py": "461508ca1834b8c9a98c4b49d0d985b03c3526e52e47f4a9460de20ab8b6f4d7",
+     "tools/marathon.sh": "8b7789ab4724ab5e2c7a03159e6596206bc09532fe330748661d5b14cf19361d",
+     "tools/uniform_pilot.py": "6735756b4ccfe4c7958e08a95a7d4ae53e15b2ed70c057323827b0f26e37ea32"
+    },
+    "head": "93d3b77db358b78da24e79f7c8d670ce961ef335"
+   },
+   "cadence-examples": {
+    "branch": "connect-four-bench",
+    "dirty_files": 0,
+    "dirty_hashes": {},
+    "head": "ffbf1aa0e5b31f5506c9588ec04e5df538a5880f"
+   },
+   "cadence-paper": {
+    "branch": "main",
+    "dirty_files": 55,
+    "dirty_hashes": {
+     "EXPERIENCE_BASED_LEARNING_PLAN.md": "2a4e353b695a1d2b28b6bba54118073bd202b2bba89e2a987cd592a0896a02d9",
+     "README.md": "451fa20fda7f9bb43638275ac04f9d2c3678aee1038f214614fa4dcceed0bce7",
+     "experiments/common/brain09.py": "8faa27ce239de560575e087422ae043cb348872ca2bae5873d7aa2d0b753c8ec",
+     "experiments/common/brain_v09.py": "51c476bb837388baf0341233819082b766ebadeb2ecd4118e53ef06d38ef5025",
+     "experiments/common/hopper_body.py": "0dddcfcbdb85120d90003010a2708d1655f81bb434a1713b3ea0e38d3d515ccf",
+     "experiments/common/merge_v09.py": "56a2fe75779284e33539fc7bd3b2e45af0f2b7e6ebfa6573af56dc678c1a4a72",
+     "experiments/common/mnist_v09.py": "ad5c1c83ed30a89a49ac82a3c2598b049efe5846d2b11b01ceeb45c69ed1b92e",
+     "experiments/common/pilot_status.py": "ec4e1db639d09e0ba17e5cfe9a1286ba5d6d4c0fb58d6f05b0b8f309b354880c",
+     "experiments/common/pong.py": "6c23bb386a44cf4f529489650035ba5ad72db6bda9498a118fd2648078308022",
+     "experiments/experience/s08_1942/life.py": "7ac8230d50f5764ba66f8622e3ade4594a2286412c71c94709bd8e856d799cf5",
+     "experiments/experience/s08_1942/tests/test_boundary.py": "77414310f6cf9df52ea0800305ce34a3baa3c9a293d354378fb0586e5d2066f5",
+     "experiments/t1_repeat_previous/run.py": "e187dd0388edb755ebf6d1b3c56699c04373f485dea26e2452398f8e29e242d0",
+     "paper/main.tex": "102a6e5511101d027d7ca478f39f394fd7bae873afc26cef4c1e2df771242a4b",
+     "tools/append_status.py": "337adf8ccfdbdaea33ed81ae764fde72c157e3fd371e0c7934cfa91039dc25c9",
+     "tools/bench_m4.py": "08ac4c202a7e93244983172d56b79f63de4f5e61f64a0a838ca0f9a815df583a"
+    },
+    "head": "26b73a923a6fed04b392fafad5d053418a16f21f"
+   }
+  },
+  "stage_dir": "s08_1942",
+  "stage_files": {
+   "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "ablate.py": "62273d817da496fea30a2ec6bc49013e8b51f20eb2ba6dc88ee9536724df0e6c",
+   "adapt.py": "25a4a100ca099744cbfb90bd5accb9d06e2ba95f62cdc9d70872144bca0a812a",
+   "brain.py": "8f3e561fb424b6480d9f63e3c9d3d0048636fcfce55f9dce5424d38955ff9de0",
+   "config.json": "bdcfefda9538148e1b1386bb720acc8c8d3f03764f23a37a96921ac14b4b074b",
+   "conftest.py": "db80da781cce4e4f0d3a4eca3c95171e5b0dc2b8f258c895374a6ddd09160c2f",
+   "evaluate.py": "6d96f3a49afb69f0093fbb0f552112747734ad3d24d3762c36474982849d5901",
+   "life.py": "7ac8230d50f5764ba66f8622e3ade4594a2286412c71c94709bd8e856d799cf5",
+   "paths.py": "98d21b9d06a52fd881db36ad137b8d491db23bfef1ae02b0f3b41e3084f5d6b2",
+   "probe_codes.py": "4d8587834fec9d42618fcc5241adfe6c7748ca569124bacc108f5a52f79f9294",
+   "probe_locator.py": "3bd57bc4e09a98837fea7ca74cdd11e3255f7334a38a38233c1dd94cc89ad40c",
+   "probe_locator2.py": "9e1baada1dd517dce6f85960898741f688fc364a8f5529008ee1131b6b30fadb",
+   "probe_locator3.py": "3a5629cc861dd1bbd41e440ff01521a6dd16b1dbcc58678beec532c1027b663f",
+   "probe_locator4.py": "4fff3a08560cb7b06ba30cb5f3b60cbce4551dfcbe69940acd7ed538cd199d50",
+   "probe_seeshot.py": "79ea12c7aacbbc9bcb3ac6248efae889a1fd3a0bc0212d835050e4d3fea00a9f",
+   "probe_shot.py": "67450e98b7ad96ae0c25dc2c96fb9fe6c6cc5b0b0d52adee902e4bbeed0124c9",
+   "probe_survival.py": "43eebceb50636a039dacc7c1a0a5a07675448efe5e28ac5ff33aba2b5b217abd",
+   "record.py": "838672f629bfd8f4ccf713b0b232357531da9b2cf5ad99257dad5036809739db",
+   "run.py": "586eabdf3023b0c4368439a41f22e179ed553f1fe9e032c9d5d336435ec5b215",
+   "verify.py": "8d523e616f42badd67e84791720e5cec646b69ed1affbba051f92480f2415fc0"
+  },
+  "stage_repo": {
+   "commit": null,
+   "dirty": {}
+  }
+ },
+ "stage": "S08",
+ "started_utc": "2026-09-16T12:20:01Z",
+ "status": "complete",
+ "supplied_components": [
+  "the emulator boundary, its action codec and its episode rule",
+  "the plane locator: a fixed five by five template whose values were measured once against the privileged plane position",
+  "the reward: the score gained in the step divided by 100, less one for each death, built from privileged instrumentation",
+  "the shot detector's threshold on the motion above the plane, measured on the boundary"
+ ],
+ "track": "pixels + supplied reward"
+}
