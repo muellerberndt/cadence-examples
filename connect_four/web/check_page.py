@@ -161,7 +161,7 @@ def main() -> int:
         report["checkpoints"] = page.evaluate("window.__page.checkpoints")
 
         # 1. the layout: the board and the brain side by side, both on the first screen
-        desktop = geometry(page, ["board", "scan", "dropRecords", "lineRecords", "imagined", "receipt"])
+        desktop = geometry(page, ["board", "scan", "strip", "card"])
         report["layout_desktop"] = desktop
         view = desktop["viewport"]
         for name in ("board", "scan"):
@@ -192,22 +192,14 @@ def main() -> int:
             problems.append(f"the brain scan drew no settling steps ({after['steps']} vs {report['renderer']['steps']})")
         if after["neurons"] < 1 or after["regions"] < 1:
             problems.append(f"the brain scan holds no neurons or regions: {after}")
-        views = page.evaluate("({drop: {...window.__page.views.drop.counts, active: window.__page.views.drop.activeIndex.length, frames: window.__page.views.drop.frames}, lines: {...window.__page.views.lines.counts, active: window.__page.views.lines.activeIndex.length, frames: window.__page.views.lines.frames}})")
-        report["records_views"] = views
-        for name, v in views.items():
-            if v["codes"] < 1 or v["writes"] < 1 or v["active"] < 1 or v["frames"] < 1:
-                problems.append(f"the {name} records view did not render a code, a write or a frame: {v}")
         imagined = first["imagined"]
         if not imagined or not imagined["columns"] or len(imagined["read"]) != len(imagined["columns"]):
             problems.append(f"the page does not carry what the brain imagined: {imagined}")
-        if page.inner_text("#imaginedColumns").strip() == "":
-            problems.append("the search line is empty")
-        report["imagined_note"] = page.inner_text("#imaginedNote")
         report["state"] = page.inner_text("#state")
-        report["receipt_facts"] = page.eval_on_selector_all("#receipt .fact h4", "els => els.map(e => e.textContent)")
-        if len(report["receipt_facts"]) < 4:
-            problems.append(f"the receipt panel states {len(report['receipt_facts'])} numbers")
-        for name, selector in (("board_after.png", "#boardStage"), ("brain_after.png", "#brainRow"), ("records_after.png", "#recordsColumn")):
+        report["card_facts"] = page.text_content("#cardFacts")
+        if "neurons" not in report["card_facts"]:
+            problems.append("the model card states no neuron count")
+        for name, selector in (("board_after.png", "#boardStage"), ("brain_after.png", "#brainRow")):
             page.locator(selector).screenshot(path=str(out / name), timeout=180000)
 
         # 4. every other checkpoint: a game each, the same bound
@@ -239,7 +231,6 @@ def main() -> int:
 
         report["stats_after"] = {k: v for k, v in page.evaluate("window.__page.stats").items() if k != "renderer"}
         report["phase_label"] = page.inner_text("#phase")
-        report["status"] = page.inner_text("#status")
         page.screenshot(path=str(out / "page_full.png"), full_page=True, timeout=180000)
 
         # 6. phone width: the board above the brain, nothing scrolling sideways
@@ -253,7 +244,7 @@ def main() -> int:
             for column in (3, 2, 4):
                 phone.evaluate("(c) => window.__page.drop(c)", column)
             time.sleep(0.5)
-            small = geometry(phone, ["board", "scan", "dropRecords", "lineRecords"])
+            small = geometry(phone, ["board", "scan"])
             report["layout_phone"] = small
             if small["board"]["bottom"] > small["scan"]["y"] + 1:
                 problems.append("at 390 px the brain scan does not sit below the board")
