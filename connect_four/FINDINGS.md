@@ -13,7 +13,11 @@ plies within 1,024 imagined transitions to eight within 32,768, with the learned
 unchanged, moved the paired score against minimax at 1,024 nodes from 0.875 to 0.955, against
 the perfect solver played at 70% from 0.725 to 0.890, and against AlphaZero from 0.730 and 0.800
 to 0.945 and 0.990. Blunders in positions not already lost fell from 17% to 27% of moves to 10% to
-18%. The browser pays about 40 ms per move for it.
+18%. On 200 trap positions whose only sound column is refuted between four and more than ten
+plies later (`bench/lookahead.py`, stratified by that horizon), the brain keeps the result in
+89.5% at eight plies and 87.5% at four, against 57.0% for minimax at 1,024 nodes and 50.5% for
+one-ply: the records carry some of what the search cannot reach. The browser pays about 40 ms
+per move for the deeper search.
 
 ## 2. The demo lost to what it cannot see, not to what it cannot do
 

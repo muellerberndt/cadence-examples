@@ -66,6 +66,7 @@
         <tr><td>AlphaZero, 100 simulations per move</td><td>0.800</td><td>17.1%</td><td>0.990</td><td>16.8%</td></tr>
       </tbody>
     </table>
+    <p>Looking ahead: on 200 trap positions whose only sound column is refuted between four and more than ten plies later, drawn from random play and graded by the solver, the brain keeps the theoretical result in 89.5% of them at eight plies and 87.5% at four; minimax at 1,024 nodes keeps it in 57.0%, the one-ply opponent in 50.5%.</p>
     <p>For scale: minimax at 1,024 nodes blunders in 40% to 50% of its positions against the same opponents and scores 0.375 and 0.260 against the two AlphaZero settings. The first player wins Connect Four with perfect play, so every imperfect player loses to the perfect solver over a paired schedule.</p>
     <p>AlphaZero here is <a href="https://github.com/suragnair/alpha-zero-general">alpha-zero-general</a>'s Connect Four, trained by us in PyTorch with the repository's published recipe: 100 self-play games and 25 MCTS simulations per move per iteration, 32 iterations on one A10G, the model of iteration 24 (the 14th accepted network, sha256 a7477699). That model scores 0.738 against the one-ply opponent, 0.688 against minimax at 1,024 nodes and 0.562 against the solver at 70%. In the paired games its openings are sampled from its visit counts for the first three stones so the games differ, and its tree starts fresh each game.</p>
     <h3>What it cannot do</h3>
