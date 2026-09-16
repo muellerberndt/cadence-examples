@@ -21,6 +21,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install the library at the commit the receipts ran against
+        run: |
+          COMMIT=$(grep -oE 'cadence\.git@[0-9a-f]{40}' README.md | head -1 | cut -d@ -f2)
+          python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@${COMMIT}"
       - run: python tools/verify_gallery.py
       - uses: actions/configure-pages@v5
       - name: Assemble the site
