@@ -1,0 +1,156 @@
+{
+ "block_hz": 50,
+ "counts": {
+  "blocks": 2304,
+  "by_source": {
+   "written for this stage": 7
+  },
+  "by_split": {
+   "heldout": 2,
+   "train": 4,
+   "validation": 1
+  },
+  "groups": 6,
+  "notes": 258,
+  "pieces": 7,
+  "seconds": 46.08
+ },
+ "manifest_sha256": "66af352d6a22eaa1528a9a4163160ac202b7e5208ea604ac6f65b5623ea7a5ef",
+ "pieces": [
+  {
+   "blocks": 576,
+   "family": "sample/form",
+   "file_sha256": "64f7b95dfca1170e8a96b9833456be383cb8bea9671ca15c7cbc766ba93508b5",
+   "fps": 50,
+   "frames": 576,
+   "group": "family:sample/form",
+   "licence": "public domain",
+   "musical_hash": "1ba12de544c9ed4039b75dac3e1d335eb37dd11a9db59e2f992374adda8ef96d",
+   "name": "sample/a-b-a-form",
+   "notes": 70,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.9595,
+   "source": "written for this stage",
+   "source_sha256": "64f7b95dfca1170e8a96b9833456be383cb8bea9671ca15c7cbc766ba93508b5",
+   "split": "heldout"
+  },
+  {
+   "blocks": 192,
+   "family": "sample/arpeggio",
+   "file_sha256": "aa2191385fd4f4dd7f0ae9a4647132757e3c4b18cf266d006b0e53d10b6d0d57",
+   "fps": 50,
+   "frames": 192,
+   "group": "family:sample/arpeggio",
+   "licence": "public domain",
+   "musical_hash": "0f76450ff02836d9c93ac1a7e89e9210c1fb7116f1c03bd19d15f739981d66c8",
+   "name": "sample/fast-arpeggio",
+   "notes": 36,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.6042,
+   "source": "written for this stage",
+   "source_sha256": "aa2191385fd4f4dd7f0ae9a4647132757e3c4b18cf266d006b0e53d10b6d0d57",
+   "split": "train"
+  },
+  {
+   "blocks": 192,
+   "family": "sample/scale",
+   "file_sha256": "65b67d616076562016e3c897180a36edb268afb1dc19f1b5aa662995ee352c6b",
+   "fps": 50,
+   "frames": 192,
+   "group": "family:sample/scale",
+   "licence": "public domain",
+   "musical_hash": "b78484bda20b6879896632423a02ce4c33f3ed2c54b949f5b234f72d32baf2fd",
+   "name": "sample/one-voice-scale",
+   "notes": 16,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.3056,
+   "source": "written for this stage",
+   "source_sha256": "65b67d616076562016e3c897180a36edb268afb1dc19f1b5aa662995ee352c6b",
+   "split": "heldout"
+  },
+  {
+   "blocks": 384,
+   "family": "sample/ostinato",
+   "file_sha256": "37c440b1cd3b68a41b14b3857e1048cf0c7637f29de0ed44590f80842dd985eb",
+   "fps": 50,
+   "frames": 384,
+   "group": "family:sample/ostinato",
+   "licence": "public domain",
+   "musical_hash": "e2ec00918d105ef7df2884c7c4b9909ab72dcca2289c485d4df9920e0001415b",
+   "name": "sample/ostinato-in-c-a-third-up",
+   "notes": 52,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.9549,
+   "source": "written for this stage",
+   "source_sha256": "37c440b1cd3b68a41b14b3857e1048cf0c7637f29de0ed44590f80842dd985eb",
+   "split": "train"
+  },
+  {
+   "blocks": 384,
+   "family": "sample/ostinato",
+   "file_sha256": "796a410c5edd9a0ef061f00f7b598abd4a8beaca74b2cb54fc5290cef9feed5c",
+   "fps": 50,
+   "frames": 384,
+   "group": "family:sample/ostinato",
+   "licence": "public domain",
+   "musical_hash": "96a0629a2b283473202c1b0fd7c431f5ffbffdd06e1d6384ffc2027a73e18d19",
+   "name": "sample/ostinato-in-c",
+   "notes": 52,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.9549,
+   "source": "written for this stage",
+   "source_sha256": "796a410c5edd9a0ef061f00f7b598abd4a8beaca74b2cb54fc5290cef9feed5c",
+   "split": "train"
+  },
+  {
+   "blocks": 384,
+   "family": "sample/sparse",
+   "file_sha256": "94931482884cb72f5e4b7661301ed67ea1807ea0a130bb9053bb9403ccb5bc0b",
+   "fps": 50,
+   "frames": 384,
+   "group": "family:sample/sparse",
+   "licence": "public domain",
+   "musical_hash": "6ee34c75877f2952bd5db274980136478a2e90aad49e30ddd40e410326de71b4",
+   "name": "sample/sparse-answer",
+   "notes": 16,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.5694,
+   "source": "written for this stage",
+   "source_sha256": "94931482884cb72f5e4b7661301ed67ea1807ea0a130bb9053bb9403ccb5bc0b",
+   "split": "train"
+  },
+  {
+   "blocks": 192,
+   "family": "sample/bassline",
+   "file_sha256": "0cc4edfbaf754f4ac4fa90acd7d18bdcc4e48f2214675724db0ef5b84228c47d",
+   "fps": 50,
+   "frames": 192,
+   "group": "family:sample/bassline",
+   "licence": "public domain",
+   "musical_hash": "e33cdfb6a35f0221132f47ec1a08351f270b028443ab9ce8ac0c162d37bb3c72",
+   "name": "sample/walking-bassline",
+   "notes": 16,
+   "pitches_moved_into_the_register": 0,
+   "sounding_share": 0.3056,
+   "source": "written for this stage",
+   "source_sha256": "0cc4edfbaf754f4ac4fa90acd7d18bdcc4e48f2214675724db0ef5b84228c47d",
+   "split": "validation"
+  }
+ ],
+ "root": "/Users/muellerberndt/Projects/oph-meta/cadence-paper/experiments/experience/s06_composer/data/sample",
+ "schema": "s06-corpus/v1",
+ "sources": {
+  "written for this stage": {
+   "extraction": "written directly as notes on the block clock",
+   "kind": "sample",
+   "licence": "public domain",
+   "origin": "written in this repository by tools/make_sample.py"
+  }
+ },
+ "split_weights": {
+  "heldout": 3,
+  "of": 20,
+  "train": 16,
+  "validation": 1
+ }
+}

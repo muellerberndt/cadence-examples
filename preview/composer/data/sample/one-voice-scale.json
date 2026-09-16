@@ -1,0 +1,129 @@
+{
+ "block_hz": 50,
+ "blocks": 192,
+ "family": "sample/scale",
+ "licence": "public domain",
+ "name": "sample/one-voice-scale",
+ "schema": "s06-piece/v1",
+ "shared": {
+  "cutoff": 24,
+  "resonance": 2,
+  "routing": 0,
+  "volume": 15
+ },
+ "source": "written for this stage",
+ "voices": [
+  {
+   "notes": [],
+   "settings": {
+    "attack": 0,
+    "decay": 3,
+    "release": 2,
+    "sustain": 10,
+    "waveform": 1
+   }
+  },
+  {
+   "notes": [
+    [
+     0,
+     11,
+     49
+    ],
+    [
+     12,
+     11,
+     51
+    ],
+    [
+     24,
+     11,
+     53
+    ],
+    [
+     36,
+     11,
+     54
+    ],
+    [
+     48,
+     11,
+     56
+    ],
+    [
+     60,
+     11,
+     58
+    ],
+    [
+     72,
+     11,
+     60
+    ],
+    [
+     84,
+     11,
+     61
+    ],
+    [
+     96,
+     11,
+     49
+    ],
+    [
+     108,
+     11,
+     51
+    ],
+    [
+     120,
+     11,
+     53
+    ],
+    [
+     132,
+     11,
+     54
+    ],
+    [
+     144,
+     11,
+     56
+    ],
+    [
+     156,
+     11,
+     58
+    ],
+    [
+     168,
+     11,
+     60
+    ],
+    [
+     180,
+     11,
+     61
+    ]
+   ],
+   "settings": {
+    "attack": 0,
+    "decay": 2,
+    "pulse_width": 6,
+    "release": 1,
+    "sustain": 12,
+    "waveform": 2
+   }
+  },
+  {
+   "notes": [],
+   "settings": {
+    "attack": 2,
+    "decay": 4,
+    "release": 3,
+    "sustain": 13,
+    "waveform": 0
+   }
+  }
+ ]
+}

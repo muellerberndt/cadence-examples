@@ -1,0 +1,129 @@
+{
+ "block_hz": 50,
+ "blocks": 192,
+ "family": "sample/bassline",
+ "licence": "public domain",
+ "name": "sample/walking-bassline",
+ "schema": "s06-piece/v1",
+ "shared": {
+  "cutoff": 24,
+  "resonance": 2,
+  "routing": 0,
+  "volume": 15
+ },
+ "source": "written for this stage",
+ "voices": [
+  {
+   "notes": [
+    [
+     0,
+     11,
+     25
+    ],
+    [
+     12,
+     11,
+     30
+    ],
+    [
+     24,
+     11,
+     32
+    ],
+    [
+     36,
+     11,
+     34
+    ],
+    [
+     48,
+     11,
+     32
+    ],
+    [
+     60,
+     11,
+     30
+    ],
+    [
+     72,
+     11,
+     25
+    ],
+    [
+     84,
+     11,
+     32
+    ],
+    [
+     96,
+     11,
+     25
+    ],
+    [
+     108,
+     11,
+     30
+    ],
+    [
+     120,
+     11,
+     32
+    ],
+    [
+     132,
+     11,
+     34
+    ],
+    [
+     144,
+     11,
+     32
+    ],
+    [
+     156,
+     11,
+     30
+    ],
+    [
+     168,
+     11,
+     25
+    ],
+    [
+     180,
+     11,
+     32
+    ]
+   ],
+   "settings": {
+    "attack": 0,
+    "decay": 3,
+    "release": 2,
+    "sustain": 10,
+    "waveform": 1
+   }
+  },
+  {
+   "notes": [],
+   "settings": {
+    "attack": 0,
+    "decay": 2,
+    "pulse_width": 6,
+    "release": 1,
+    "sustain": 12,
+    "waveform": 2
+   }
+  },
+  {
+   "notes": [],
+   "settings": {
+    "attack": 2,
+    "decay": 4,
+    "release": 3,
+    "sustain": 13,
+    "waveform": 0
+   }
+  }
+ ]
+}
