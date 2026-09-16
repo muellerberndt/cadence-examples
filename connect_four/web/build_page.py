@@ -173,6 +173,14 @@ def memory_block(brain: Brain) -> dict[str, Any]:
             "results": b64(np.array(list(memory.values()), dtype=np.float32), "<f4")}
 
 
+def wins_block(brain: Brain) -> dict[str, Any]:
+    """The columns winners played on the boards the brain has seen, as the page reads them back."""
+    wins = [(k, c, n) for k, counts in brain.planner.wins.items() for c, n in counts.items()]
+    boards = np.array([np.frombuffer(k, dtype=np.int8) for k, _, _ in wins], dtype=np.int8).reshape(len(wins), brain.game.cells)
+    return {"entries": len(wins), "boards": b64(boards, "|i1"), "columns": b64(np.array([c for _, c, _ in wins], dtype=np.int8), "|i1"),
+            "counts": b64(np.array([n for _, _, n in wins], dtype=np.int32), "<i4")}
+
+
 def brain_block(brain: Brain) -> dict[str, Any]:
     """The record cortices, the planner and the life's counters of one checkpoint."""
     state = brain.planner.rng.bit_generator.state
@@ -195,6 +203,7 @@ def brain_block(brain: Brain) -> dict[str, Any]:
         "validity": [bool(v) for v in brain.validity],
         "extended": bool(brain.extended),
         "memory": memory_block(brain),
+        "wins": wins_block(brain),
         "parameters": brain.parameters(),
         "cortices": {
             "drop": cortex_block(brain.drop.records, {"chosen_gain": float(brain.drop.gain),

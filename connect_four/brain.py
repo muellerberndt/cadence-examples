@@ -74,7 +74,7 @@ DEFAULTS: dict[str, Any] = {
     "drop_records": {"cells": 2000, "active": 20, "rate": 0.5, "habituation": 0.002, "bias": 0.3, "chosen_gain": 1.0},
     "line_records": {"cells": 2000, "active": 20, "rate": 0.5, "value_rate": 0.1, "habituation": 0.002, "bias": 0.3},
     "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False, "threat_weight": 0.0, "parity_weight": 0.0, "tie_band": TIE,
-                "remember": False, "memory_limit": 200000},
+                "remember": False, "memory_limit": 200000, "imitate": False},
 }
 
 
@@ -474,6 +474,8 @@ class Planner:
         self.memory: dict[tuple[bytes, int], float] = {}  # (board, side to move) -> a proven result: 1 win, 0.5 draw, 0 loss
         self.remember = False  # write what a search proves into the memory and read it back at every visit
         self.memory_limit = 200000
+        self.wins: dict[bytes, dict[int, int]] = {}  # a board as its mover sees it -> column -> games that mover went on to win
+        self.imitate = False  # at the root, play the remembered winning column when the search proves nothing
         self._spent = 0
         self._limit = 0
 
@@ -484,7 +486,7 @@ class Planner:
 
     def stats(self) -> dict[str, Any]:
         return {"nodes": self.nodes, "searches": self.searches, "invalid": self.invalid, "depth": self.depth,
-                "depths": {str(k): v for k, v in sorted(self.depths.items())}, "budget": self.budget, "memory": len(self.memory)}
+                "depths": {str(k): v for k, v in sorted(self.depths.items())}, "budget": self.budget, "memory": len(self.memory), "wins": len(self.wins)}
 
     def _expand(self, board: np.ndarray, side: int) -> tuple:
         key = (board.tobytes(), side)
@@ -513,6 +515,12 @@ class Planner:
         entry = (columns, children, valid, won, full, np.clip(value, LEAF_MARGIN, 1.0 - LEAF_MARGIN), order, lost, wins, known)
         self._cache[key] = entry
         return entry
+
+    def remember_win(self, view: np.ndarray, column: int) -> None:
+        """Count a column that its mover, who went on to win, played on ``view`` (the board as
+        that mover sees it)."""
+        counts = self.wins.setdefault(np.ascontiguousarray(view, dtype=np.int8).tobytes(), {})
+        counts[int(column)] = counts.get(int(column), 0) + 1
 
     def _remember(self, key: tuple[bytes, int], result: float) -> None:
         """Keep a proven result; when the memory is full, the positions with the most stones go
@@ -664,12 +672,22 @@ class Planner:
             completed, root_value = d, top
             if top >= 1.0 - WIN_BONUS * depth - TIE or top <= WIN_BONUS * depth + TIE:
                 break  # a proven result: a deeper search cannot change the choice
-        column = int(choice[int(self.rng.integers(len(choice)))])
+        remembered = None
+        if self.imitate and self.wins and not (root_value > 0.9 or root_value < 0.1):
+            # the search proved nothing: a column a winner played here before, unless the search saw it lose
+            counts = self.wins.get(board.tobytes())
+            if counts:
+                best_count = 0
+                for c in root:
+                    n = counts.get(c, 0)
+                    if n > best_count and values.get(c, 1.0) >= 0.1:
+                        best_count, remembered = n, c
+        column = remembered if remembered is not None else int(choice[int(self.rng.integers(len(choice)))])
         k = int(np.flatnonzero(columns == column)[0])
         self.searches += 1
         self.nodes += self._spent
         self.depths[completed] = self.depths.get(completed, 0) + 1
-        info = {"value": root_value, "depth": completed, "expansions": self._spent, "invalid": self.invalid - invalid_before,
+        info = {"value": root_value, "depth": completed, "expansions": self._spent, "invalid": self.invalid - invalid_before, "remembered": remembered,
                 "next_board": children[k].astype(float), "valid": float(valid[k]),
                 "root_values": {c: (v, children[int(np.flatnonzero(columns == c)[0])], bool(valid[int(np.flatnonzero(columns == c)[0])])) for c, v in values.items()}}
         self._cache = {}
@@ -718,6 +736,7 @@ class Brain:
         self.planner.tie_band = float(cfg["planner"].get("tie_band", TIE))
         self.planner.remember = bool(cfg["planner"].get("remember", False)) and self.learning
         self.planner.memory_limit = int(cfg["planner"].get("memory_limit", 200000))
+        self.planner.imitate = bool(cfg["planner"].get("imitate", False))
         planning = config["planning"]
         self.depth, self.budget = int(planning["depth"]), int(planning["budget"])
         self.extended_depth, self.extended_budget = int(planning["extended_depth"]), int(planning["extended_budget"])
@@ -733,6 +752,7 @@ class Brain:
         self._board: np.ndarray | None = None
         self._held: tuple[int, int] | None = None
         self._boards: list[tuple[np.ndarray, int]] = []
+        self._plays: list[tuple[np.ndarray, int, int]] = []  # the boards of the game as their movers saw them, and the columns
 
     def _agent_config(self) -> AgentConfig:
         g = self.cfg["graph"]
@@ -759,7 +779,7 @@ class Brain:
                 raise ValueError("an intermediate moment offers no action and follows its decision once")
         cells = cells_of(moment.observation, self.game).astype(np.int8)
         if new_episode:
-            self._episode, self._board, self._boards = moment.episode_id, None, []
+            self._episode, self._board, self._boards, self._plays = moment.episode_id, None, [], []
         elif self._board is not None:
             self._observe(self._board, cells, moment)
         self._board = cells
@@ -802,15 +822,24 @@ class Brain:
         rel_after = VIEW[mover][after]
         self.counts["line_writes"] += self.lines.learn_lines(rel_after, cell, won, adapt=True)
         self._boards.append((lay.value_ids(rel_after), mover))
+        self._plays.append((rel_before.copy(), column, mover))
 
     def _finish(self, moment: Moment) -> None:
-        """A finished game: its boards' window patterns take the outcome of their movers."""
+        """A finished game: its boards' window patterns take the outcome of their movers, and
+        the winner's columns, on the boards as the winner saw them, join the memory of winning
+        columns."""
         if self.learning and self._boards:
             candidate = {1.0: 1.0, 0.0: 0.5, -1.0: 0.0}[float(np.sign(moment.reward))]
             boards = [(ids, candidate if mover == CANDIDATE else 1.0 - candidate) for ids, mover in self._boards]
             self.counts["value_writes"] += self.lines.learn_values(boards)
             self.counts["games_written"] += 1
+            if candidate != 0.5:
+                winner = CANDIDATE if candidate == 1.0 else OPPONENT
+                for view, column, mover in self._plays:
+                    if mover == winner:
+                        self.planner.remember_win(view, column)
         self._boards = []
+        self._plays = []
 
     # -- deciding
 
@@ -843,7 +872,7 @@ class Brain:
         cortices, the agent's parameters and the validity record stay. Refused while a decision
         awaits its outcome."""
         self.agent.new_stream(0)
-        self._episode, self._board, self._held, self._boards = -1, None, None, []
+        self._episode, self._board, self._held, self._boards, self._plays = -1, None, None, [], []
 
     def set_epsilon(self, epsilon: float) -> None:
         self.agent.config = replace(self.agent.config, actor=replace(self.agent.config.actor, epsilon=float(epsilon)))
@@ -865,9 +894,11 @@ class Brain:
         out.planner.tie_band = self.planner.tie_band
         out.planner.memory = dict(self.planner.memory)  # what was proven stays readable; a frozen copy proves nothing new
         out.planner.remember = False
+        out.planner.wins = {k: dict(v) for k, v in self.planner.wins.items()}
+        out.planner.imitate = self.planner.imitate
         out.validity = deque(self.validity, maxlen=self.validity.maxlen)
         out.counts = dict.fromkeys(self.counts, 0)
-        out._episode, out._board, out._held, out._boards = -1, None, None, []
+        out._episode, out._board, out._held, out._boards, out._plays = -1, None, None, [], []
         return out
 
     def snapshot_policy(self) -> Callable[[np.ndarray, np.ndarray], int]:
@@ -930,6 +961,10 @@ class Brain:
         data["memory/boards"] = np.array([np.frombuffer(k[0], dtype=np.int8) for k in memory], dtype=np.int8).reshape(len(memory), self.game.cells)
         data["memory/sides"] = np.array([k[1] for k in memory], dtype=np.int8)
         data["memory/results"] = np.array(list(memory.values()), dtype=np.float32)
+        wins = [(k, c, n) for k, counts in self.planner.wins.items() for c, n in counts.items()]
+        data["wins/boards"] = np.array([np.frombuffer(k, dtype=np.int8) for k, _, _ in wins], dtype=np.int8).reshape(len(wins), self.game.cells)
+        data["wins/columns"] = np.array([c for _, c, _ in wins], dtype=np.int8)
+        data["wins/counts"] = np.array([n for _, _, n in wins], dtype=np.int32)
         cortices: dict[str, dict[str, Any]] = {}
         named = [("drop", self.drop.records), ("lines", self.lines.records)] + ([("values", self.lines.values)] if self.lines.values is not None else [])
         for name, cortex in named:
@@ -951,7 +986,7 @@ class Brain:
             "layout": {"columns": self.layout.columns.tolist(), "windows": self.layout.windows.tolist(), "support": self.layout.support}, "cortices": cortices,
             "constants": {"leaf_margin": LEAF_MARGIN, "win_bonus": WIN_BONUS, "tie": TIE}, "counts": dict(self.counts),
             "snapshots": self.snapshots, "planner": self.planner.stats(), "planner_generator": self.planner.rng.bit_generator.state,
-            "memory": len(memory),
+            "memory": len(memory), "wins": len(wins),
             "agent_file": agent_file.name,
         }
         data["meta"] = np.array(json.dumps(meta, sort_keys=True))
@@ -988,6 +1023,10 @@ class Brain:
             if "memory/boards" in data:
                 boards, sides, results = data["memory/boards"], data["memory/sides"], data["memory/results"]
                 brain.planner.memory = {(boards[i].tobytes(), int(sides[i])): float(results[i]) for i in range(len(results))}
+            if "wins/boards" in data:
+                wb, wc, wn = data["wins/boards"], data["wins/columns"], data["wins/counts"]
+                for i in range(len(wn)):
+                    brain.planner.wins.setdefault(wb[i].tobytes(), {})[int(wc[i])] = int(wn[i])
         brain.drop._known[:] = False
         brain.lines._fresh = False
         brain.counts = {k: int(v) for k, v in meta["counts"].items()}

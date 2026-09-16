@@ -718,6 +718,8 @@ export class Planner {
     this.remember = false;  // write what a search proves into the memory and read it back at every visit
     this.memoryLimit = 200000;
     this._exact = false;  // whether the last _negamax value was proven
+    this.wins = new Map();  // a board as its mover sees it -> Map(column -> games that mover went on to win)
+    this.imitate = false;  // at the root, play the remembered winning column when the search proves nothing
     this._spent = 0;
     this._limit = 0;
   }
@@ -765,6 +767,14 @@ export class Planner {
     const entry = { columns, children, valid, won, full, value: clipped, order, lost, wins, known };
     this._cache.set(key, entry);
     return entry;
+  }
+
+  /** Count a column that its mover, who went on to win, played on `view` (the board as that mover sees it). */
+  rememberWin(view, column) {
+    const key = String.fromCharCode.apply(null, view);
+    let counts = this.wins.get(key);
+    if (!counts) { counts = new Map(); this.wins.set(key, counts); }
+    counts.set(column, (counts.get(column) || 0) + 1);
   }
 
   /** Keep a proven result; when the memory is full, the positions with the most stones go first,
@@ -893,7 +903,16 @@ export class Planner {
       rootValue = top;
       if (top >= 1.0 - WIN_BONUS * depth - TIE || top <= WIN_BONUS * depth + TIE) break;  // a proven result
     }
-    const column = choice[this.rng.integers(choice.length)];
+    let remembered = null;
+    if (this.imitate && this.wins.size && !(rootValue > 0.9 || rootValue < 0.1)) {
+      // the search proved nothing: a column a winner played here before, unless the search saw it lose
+      const counts = this.wins.get(String.fromCharCode.apply(null, board));
+      if (counts) {
+        let bestCount = 0;
+        for (const c of root) { const n = counts.get(c) || 0; if (n > bestCount && (values.get(c) === undefined || values.get(c) >= 0.1)) { bestCount = n; remembered = c; } }
+      }
+    }
+    const column = remembered !== null ? remembered : choice[this.rng.integers(choice.length)];
     let k = -1;
     for (let j = 0; j < columns.length; j++) if (columns[j] === column) { k = j; break; }
     this.searches += 1;
@@ -910,7 +929,7 @@ export class Planner {
       value: rootValue, depth: completed, expansions: this._spent, invalid: this.invalid - invalidBefore,
       next_board: Float64Array.from(children[k]), valid: valid[k] ? 1.0 : 0.0,
       column, columns: [...root], searched: root.map((c) => (values.has(c) ? values.get(c) : null)),
-      read: root.map((c) => read.get(c)), sequence: [...sequence], choice: [...choice], budget: this.budget,
+      read: root.map((c) => read.get(c)), sequence: [...sequence], choice: [...choice], budget: this.budget, remembered,
     };
     this._cache = new Map();
     this._table = new Map();
@@ -955,6 +974,12 @@ export class Brain {
     this.planner.tieBand = Number((this.cfg.planner || {}).tie_band || TIE);
     this.planner.remember = !!(this.cfg.planner || {}).remember && this.learning;
     this.planner.memoryLimit = Number((this.cfg.planner || {}).memory_limit || 200000);
+    this.planner.imitate = !!(this.cfg.planner || {}).imitate;
+    if (block.wins && block.wins.entries) {
+      const boards = unpackArray(block.wins.boards), columns = unpackArray(block.wins.columns), counts = unpackArray(block.wins.counts);
+      const n = this.layout.cells;
+      for (let i = 0; i < block.wins.entries; i++) for (let k = 0; k < counts[i]; k++) this.planner.rememberWin(boards.subarray(i * n, (i + 1) * n), columns[i]);
+    }
     if (block.memory && block.memory.entries) {
       const boards = unpackArray(block.memory.boards), sides = unpackArray(block.memory.sides), results = unpackArray(block.memory.results);
       const n = this.layout.cells;
@@ -999,7 +1024,7 @@ export class Brain {
   /** Attach to another world: fresh event cursors and no board from the last one. */
   newWorld() {
     this.agent.newStream(0);
-    this._episode = -1; this._board = null; this._held = null; this._boards = [];
+    this._episode = -1; this._board = null; this._held = null; this._boards = []; this._plays = [];
   }
 
   setLearning(value) {
@@ -1014,7 +1039,7 @@ export class Brain {
     const intermediate = moment.feedback_for !== null && moment.feedback_for !== undefined && !moment.terminated && !moment.truncated;
     if (newEpisode && this._held !== null) throw Error("a decision awaits its reply moment; a new episode cannot start");
     const cells = cellsOf(moment.observation, this.game);
-    if (newEpisode) { this._episode = moment.episode_id; this._board = null; this._boards = []; }
+    if (newEpisode) { this._episode = moment.episode_id; this._board = null; this._boards = []; this._plays = []; }
     else if (this._board !== null) this._observe(this._board, cells, moment);
     this._board = cells;
     if (intermediate) { this._held = [moment.feedback_for | 0, moment.executed | 0]; return null; }
@@ -1023,7 +1048,7 @@ export class Brain {
     }
     this._held = null;
     if (moment.terminated) this._finish(moment);
-    else if (moment.truncated) this._boards = [];
+    else if (moment.truncated) { this._boards = []; this._plays = []; }
     return this.agent.step(moment);
   }
 
@@ -1053,6 +1078,7 @@ export class Brain {
     const relAfter = viewOf(mover, after);
     this.counts.line_writes += this.lines.learnLines(relAfter, cell, won, true, this.report);
     this._boards.push([this.layout.windowIds(relAfter), mover]);
+    this._plays.push([Int8Array.from(relBefore), column, mover]);
   }
 
   /** A finished game: its boards' window patterns take the outcome of their movers. */
@@ -1063,8 +1089,13 @@ export class Brain {
       const boards = this._boards.map(([ids, mover]) => [ids, mover === CANDIDATE ? candidate : 1.0 - candidate]);
       this.counts.value_writes += this.lines.learnValues(boards, this.report);
       this.counts.games_written += 1;
+      if (candidate !== 0.5) {  // the winner's columns, on the boards as the winner saw them, join the memory of winning columns
+        const winner = candidate === 1.0 ? CANDIDATE : OPPONENT;
+        for (const [view, column, mover] of this._plays) if (mover === winner) this.planner.rememberWin(view, column);
+      }
     }
     this._boards = [];
+    this._plays = [];
   }
 
   // -- deciding
