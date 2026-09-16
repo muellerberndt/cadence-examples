@@ -16,7 +16,8 @@
    "decisions": 1000,
    "source": "runs/world/acceptance/world_seed10_explore_01000.npz",
    "sha256": "7541ad2a51ea9a1534cb91ef2218e5c364de70771bd2984eb471e1d886074753",
-   "asset": "world-after-1-000-explore-steps.json"
+   "asset": "world-after-1-000-explore-steps.json",
+   "download_bytes": 1972661
   },
   {
    "id": "after-5-000-explore-steps",
@@ -26,7 +27,8 @@
    "decisions": 5000,
    "source": "runs/world/acceptance/world_seed10_explore_05000.npz",
    "sha256": "b202e113a4919ca711a59eaa553abb561eb0fb18b73f668cc287eb8f8773b4be",
-   "asset": "world-after-5-000-explore-steps.json"
+   "asset": "world-after-5-000-explore-steps.json",
+   "download_bytes": 2322167
   },
   {
    "id": "after-10-000-explore-steps",
@@ -36,7 +38,8 @@
    "decisions": 10000,
    "source": "runs/world/acceptance/world_seed10_explore_10000.npz",
    "sha256": "2319488d6527b6b25a1e94e8a3c83a8fea1b3f8ef6feabd8a6335778aeade6a8",
-   "asset": "world-after-10-000-explore-steps.json"
+   "asset": "world-after-10-000-explore-steps.json",
+   "download_bytes": 2421759
   },
   {
    "id": "after-the-remembered-requests",
@@ -46,7 +49,8 @@
    "decisions": 14777,
    "source": "runs/world/acceptance/world_seed10_remember.npz",
    "sha256": "9bd4ecdf80d9e5e751f8f8ecbe3473593208e5f840a97e232c91c432dfa75fa0",
-   "asset": "world-after-the-remembered-requests.json"
+   "asset": "world-after-the-remembered-requests.json",
+   "download_bytes": 2548556
   },
   {
    "id": "after-the-cue-task",
@@ -56,7 +60,8 @@
    "decisions": 30460,
    "source": "runs/world/acceptance/world_seed10_cue.npz",
    "sha256": "b684a124aa00406083cb8f4359fd5b839c1e7af1491d1bac89c038ecd5f4c02f",
-   "asset": "world-after-the-cue-task.json"
+   "asset": "world-after-the-cue-task.json",
+   "download_bytes": 2647727
   },
   {
    "id": "after-the-doors-locked",
@@ -66,7 +71,8 @@
    "decisions": 31785,
    "source": "runs/world/acceptance/world_seed10_doors.npz",
    "sha256": "d6a424497f0d332e07f4dd53020b4957cfd4cd5beb0d9ef4959e8e55c0fafa54",
-   "asset": "world-after-the-doors-locked.json"
+   "asset": "world-after-the-doors-locked.json",
+   "download_bytes": 2667959
   }
  ],
  "release": "checkpoints-2026-09-15"

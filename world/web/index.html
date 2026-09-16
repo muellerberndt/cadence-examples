@@ -10,7 +10,7 @@
   <div class="headline">
     <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Ask for an object and it goes there from memory</h1>
-    <p class="lede">It wandered, wrote down where it saw each object, and walks to the remembered place when you ask. Drag an object away while it is gone to test its memory.</p>
+    <p class="lede">It wanders, writes down where it sees each object, and walks to the remembered place when you ask. Drag an object away while it is gone to test its memory.</p>
   </div>
   <div class="facts" id="counts">loading the snapshot…</div>
 </header>
@@ -30,6 +30,7 @@
         <div class="history" id="history"></div>
       </div>
       <div class="hint" id="hint"><b>Ask for an object</b><span>or drag one to another cell while the agent is away</span></div>
+      <div class="notice" id="notice" hidden><b id="noticeText"></b><span id="noticeSub"></span><div class="track"><i id="noticeFill"></i></div></div>
     </div>
     <div class="stores" id="stores">
       <div class="store-row" id="places"></div>
@@ -78,7 +79,7 @@
     </div>
     <div class="brain-row" id="brainRow">
       <div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
-      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the imagined reads of the search flickering, the writes flashing, and the reading"></canvas><div class="reads" id="recordReads"></div></div>
+      <div class="records" id="recordsPanel" hidden><div class="records-head"><b>Records cortex</b><span id="recordsInfo">cerebellum-like / dentate-like</span></div><canvas id="records" aria-label="The records cortex: the granule raster with the active cells lit, the imagined reads of the search flickering, the writes flashing, and the reading"></canvas><div class="reads" id="recordReads"></div><div class="recall-port"><b>Recall port</b><canvas id="recall" aria-label="What the stores drive into the recall neurons: the place read, the cue and the word read"></canvas></div></div>
     </div>
     <div class="legend" id="legend"></div>
     <div class="toolbar">
@@ -94,7 +95,6 @@
       <div class="readout"><h3>Dopamine per event</h3><div class="bar" id="dopamineBar"><div class="zero"></div><div class="fill" id="dopamineFill"></div></div><div class="ledger" id="critic"></div></div>
       <div class="readout"><h3>Ledger</h3><div class="ledger" id="ledger"></div></div>
       <div class="readout"><h3>The world now</h3><div class="ledger" id="counters"></div></div>
-      <div class="readout"><h3>Recall port</h3><canvas id="recall" aria-label="What the stores drive into the recall neurons: the place read, the cue and the word read"></canvas></div>
     </div>
   </section>
 </main>
@@ -117,7 +117,7 @@
     <p id="receiptNote"></p>
     <h3>How it works</h3>
     <p>Every action comes from the brain's step. On a request the planner searches over cells through the consequences the records imagine for each action, toward the remembered place; a known cell takes its passages from the witnessed map, an unvisited one from the model's own prediction. During a wander the actions are random and the sightings are the brain's own. The outcome of every decision is written into exactly the records that read it, so the model keeps learning while you watch.</p>
-    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/world/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/comparisons/world/receipt.json">comparison receipt</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a></p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/world">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/world/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/comparisons/world/receipt.json">comparison receipt</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">the case for brains</a></p>
   </details>
 </footer>
 <script type="module" src="page.js"></script>

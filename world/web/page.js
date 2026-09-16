@@ -515,7 +515,7 @@ function main(FIRST) {
     fill.style.left = d < 0 ? `${50 - half}%` : "50%";
     fill.style.width = `${half}%`;
     const worldRow = agent.records ? ["written now", s.learning.records_written === undefined ? "—" : `${s.learning.records_written} fields`] : ["world step", s.learning.world_scale_step === undefined ? "—" : s.learning.world_scale_step.toExponential(2)];
-    $("critic").innerHTML = rows([["clipped TD", d.toFixed(4)], ["critic bias", agent.bCritic.toFixed(4)], worldRow, ["consequences", s.correct ? `${s.correct[0]}/${s.correct[1]} right` : "—"]]);
+    $("critic").innerHTML = rows([["clipped TD", d.toFixed(4)], ["critic bias", agent.bCritic.toFixed(4)], worldRow, ["consequences", s.correct ? `${s.correct[0]}/${s.correct[1]}` : "—"]]);
     const lp = ledgerPhase || agent.lastPhase, L = item.ledger;
     const unconverged = Object.values(L.unconverged_phases).reduce((a, b) => a + b, 0);
     $("ledger").innerHTML = rows([
@@ -528,8 +528,8 @@ function main(FIRST) {
     $("counters").innerHTML = rows([
       ["episode", `${v.episode} · tick ${v.tick}/${v.horizon}`], ["goal", GOAL_NAMES[v.goal] || `${v.goal}`],
       ["action", `${v.decisionAction === null ? "—" : ACTIONS[v.decisionAction]} · ${s.controller}`],
-      ["plan", v.search ? `${v.search.kind} · ${v.search.path.length} actions · ${s.expansions} expansions` : "—"],
-      ["doors", `${v.doorRule} · ε ${item.epsilon.toFixed(2)} · ${s.compute_ms.toFixed(0)} ms`],
+      ["plan", v.search ? `${v.search.kind} · ${v.search.path.length} actions` : "—"],
+      ["doors", `${v.doorRule} · ${s.compute_ms.toFixed(0)} ms`],
     ]);
     // the stores, under the world
     $("places").innerHTML = `<span class="tag">places</span>` + st.places.map((r) => {
@@ -854,6 +854,88 @@ function main(FIRST) {
 
   // ---------------------------------------------------------------- checkpoints
 
+  // ---------------------------------------------------------------- the opening wander
+
+  const OPENING_EVENTS = 1200; // the cap on the wander the page opens with
+  let opening = false;
+
+  /** Every settling frame of a wander nobody watched is dropped; the last event still shows. */
+  function trimQueue() {
+    let last = null;
+    for (const item of queue) if (item.kind === "event") last = item;
+    queue.length = 0;
+    if (last) queue.push(last);
+  }
+
+  const remembered = () => brain.places.records().filter((r) => r.where).length;
+
+  /**
+   * The page opens on a brain that has already seen the four objects. The stores are the life's
+   * own bookkeeping, so they are filled the only way they can be: by wandering. The events run in
+   * slices between frames, undrawn, with the notice showing how far the wander has come.
+   */
+  function openingWander(onDone = null) {
+    if (opening) return;
+    opening = true;
+    const wasDemo = demo;
+    demo = false;
+    setRunning(false);
+    let ran = 0;
+    const slice = () => {
+      const t0 = performance.now();
+      while (ran < OPENING_EVENTS && remembered() < OBJECTS && performance.now() - t0 < 24) { computeEvent(); ran += 1; }
+      trimQueue();
+      drain(0);
+      const seen = remembered();
+      showNotice("Wandering", `${seen} of ${OBJECTS} objects seen · ${brain.map.records().length}/36 cells`, ran / OPENING_EVENTS);
+      if (ran < OPENING_EVENTS && seen < OBJECTS) { requestAnimationFrame(slice); return; }
+      opening = false;
+      hideNotice();
+      demo = wasDemo;
+      setRunning(true);
+      flash(`${seen} of ${OBJECTS} objects remembered · ask for one`);
+      if (onDone) onDone();
+    };
+    requestAnimationFrame(slice);
+  }
+
+  // ---------------------------------------------------------------- notices
+
+  /** A notice over the stage while something loads; `fraction` fills its bar. */
+  function showNotice(text, sub = "", fraction = null) {
+    $("noticeText").textContent = text;
+    $("noticeSub").textContent = sub;
+    $("noticeFill").style.width = fraction === null ? "0%" : `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%`;
+    $("notice").hidden = false;
+  }
+
+  function hideNotice() { $("notice").hidden = true; }
+
+  const megabytes = (n) => `${(n / 1e6).toFixed(1)} MB`;
+  /** What a selector quotes: the bytes a visitor downloads, as the manifest measured them. */
+  const downloadSize = (entry) => entry.download_bytes || entry.bytes || 0;
+
+  /** One checkpoint snapshot, reporting the share of it that has arrived. */
+  async function fetchSnapshot(entry, onProgress) {
+    const response = await fetch(new URL(entry.file, document.baseURI));
+    if (!response.ok) throw Error(`${entry.file}: ${response.status}`);
+    const total = entry.bytes || 0; // the reader yields decoded bytes, which is what `bytes` counts
+    if (!response.body || !total) return response.json();
+    const reader = response.body.getReader(), chunks = [];
+    let read = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      read += value.length;
+      onProgress(read / total);
+    }
+    const bytes = new Uint8Array(read);
+    let at = 0;
+    for (const chunk of chunks) { bytes.set(chunk, at); at += chunk.length; }
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
   async function loadCheckpoints() {
     let body = null;
     if (location.protocol === "file:") return; // a file page cannot fetch its neighbours
@@ -866,8 +948,12 @@ function main(FIRST) {
     for (const entry of body.checkpoints || []) if (entry && entry.file && entry.id) checkpoints.push(entry);
     if (!checkpoints.length) return;
     const select = $("checkpoint");
-    select.innerHTML = [`<option value="inlined">${checkpoint.label}</option>`, ...checkpoints.map((c) => `<option value="${c.id}">${c.label}${c.bytes ? ` (${(c.bytes / 1e6).toFixed(1)} MB)` : ""}</option>`)].join("");
-    select.value = "inlined";
+    select.innerHTML = [
+      `<option value="inlined">${checkpoint.label}, after wandering</option>`,
+      `<option value="fresh">${checkpoint.label}, before wandering</option>`,
+      ...checkpoints.map((c) => `<option value="${c.id}">${c.label}${downloadSize(c) ? ` (${megabytes(downloadSize(c))} to download)` : ""}</option>`),
+    ].join("");
+    select.value = checkpoint.id === "fresh" ? "fresh" : "inlined";
     select.onchange = () => selectCheckpoint(select.value);
     $("checkpointBox").hidden = false;
   }
@@ -875,27 +961,29 @@ function main(FIRST) {
   async function selectCheckpoint(id) {
     const select = $("checkpoint");
     if (id === checkpoint.id) return;
-    if (id === "inlined") { installLife(FIRST, "this page's brain", "inlined"); flash("this page's brain"); return; }
+    if (id === "fresh") { stopDemo(); installLife(FIRST, "this page's brain", "fresh"); flash("a fresh life: its stores are empty"); return; }
+    if (id === "inlined") { installLife(FIRST, "this page's brain", "inlined"); openingWander(); return; }
     const entry = checkpoints.find((c) => c.id === id);
     if (!entry) return;
     select.disabled = true;
+    const waiting = `${megabytes(downloadSize(entry))} to download`;
     flash(`loading ${entry.label}…`, 60000);
     try {
       let snap = snapshotCache.get(id);
       if (!snap) {
-        const response = await fetch(new URL(entry.file, document.baseURI));
-        if (!response.ok) throw Error(`${entry.file}: ${response.status}`);
-        snap = await response.json();
+        showNotice(`Loading ${entry.label}`, waiting, 0);
+        snap = await fetchSnapshot(entry, (share) => showNotice(`Loading ${entry.label}`, waiting, share));
         if (snap.format !== "cadence-experience-web/1") throw Error(`${entry.file} is not a cadence-experience-web/1 snapshot`);
         snapshotCache.set(id, snap);
       }
+      showNotice(`Loading ${entry.label}`, "starting the brain", 1);
       installLife(snap, entry.label, id);
       flash(`${entry.label}: its stores are empty, so let it wander before asking`);
     } catch (error) {
       select.value = checkpoint.id;
       flash(`could not load that brain: ${error.message}`, 6000);
       console.error(error);
-    } finally { select.disabled = false; }
+    } finally { select.disabled = false; hideNotice(); }
   }
 
   // ---------------------------------------------------------------- the loop
@@ -937,6 +1025,7 @@ function main(FIRST) {
   loadCheckpoints();
   demo = PAGE_OPTIONS.autoplay !== false;
   requestAnimationFrame(frame);
+  if (PAGE_OPTIONS.autoplay !== false && PAGE_OPTIONS.wander !== false) openingWander();
 
   window.__page = {
     scan, get agent() { return agent; }, get brain() { return brain; }, get world() { return world; }, get cur() { return cur; }, get records() { return records; }, queue,
@@ -975,6 +1064,10 @@ function main(FIRST) {
     move(k, cell) { return placeObject(k | 0, cell); },
     pause() { setRunning(false); }, play() { setRunning(true); },
     selectCheckpoint,
+    /** Wander until the four objects are remembered; resolves with what the stores hold. */
+    wander() { return new Promise((resolve) => openingWander(() => resolve({ remembered: remembered(), cells: brain.map.records().length }))); },
+    /** The same brain with empty stores: the life as it was before it wandered. */
+    fresh() { installLife(FIRST, "this page's brain", "fresh"); flash("a fresh life: its stores are empty"); return this.task; },
     /** Where a cell sits on the screen, for pointer events. */
     toClient(cell) { const r = worldCanvas.getBoundingClientRect(); return [r.left + viewFrame.x0 + (cell[0] + 0.5) * viewFrame.cs, r.top + viewFrame.y0 + (cell[1] + 0.5) * viewFrame.cs]; },
     cellAt(x, y) { return cellAt(x, y); },
