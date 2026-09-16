@@ -82,6 +82,7 @@ function main(FIRST) {
   let running = PAGE_OPTIONS.autoplay !== false, pace = 1, due = 0, fps = 60, lastFrame = performance.now();
   let stageView = null, shownAt = 0, currentPhase = null, ledgerPhase = null, lastStepText = "", flashText = "", flashUntil = 0;
   let phaseText = "—", phaseClass = "", showPlan = true;
+  let chosenEpsilon = null; // the slider once a visitor moves it; until then every brain runs at its own rate
   const results = []; // every finished drawing: {n, family, chamfer, f1, decisions, brain}
   const rng = new PageRandom(0xa11ce);
   const checkpoints = [], snapshotCache = new Map();
@@ -115,7 +116,11 @@ function main(FIRST) {
       onLearn: (info) => queue.push({ kind: "learn", phase: info.phase, changed: info.changed.length, rejected: info.rejected, dopamine: info.dopamine, td_error: info.td_error, weights: info.changed.length ? agent.effectiveWeights() : null }),
       onRecords: (info) => queue.push({ ...info, kind: "records", event: info.kind }),
     });
-    agent.config.actor.epsilon = Number($("epsilon").value) || 0;
+    // the life's own exploration rate, the rate the receipt's run measured: at 0 the two-level search
+    // can sit on a stroke it never commits, and the drawing ends with an empty canvas
+    if (chosenEpsilon === null) $("epsilon").value = String(agent.config.actor.epsilon);
+    else agent.config.actor.epsilon = chosenEpsilon;
+    $("epsilonValue").textContent = agent.config.actor.epsilon.toFixed(2);
     predictionFields = agent.config.graph.prediction;
     lastPrediction = null; lastWrite = null;
     const extra = snap.extra;
@@ -374,7 +379,7 @@ function main(FIRST) {
     $("counters").innerHTML = rows([
       ["drawing", info ? `${info.n} · ${info.name}` : "—"],
       ["decisions", `${item.tick}/${geometry.max_decisions} · ${world.strokes} strokes`],
-      ["choice", `${s.controller} · ε ${item.epsilon.toFixed(2)} · pen ${item.penState ? "down" : "up"}`],
+      ["choice", `${s.controller} · pen ${item.penState ? "down" : "up"}`],
       ["imagined", b ? `${b.expansions || 0} choices · ${b.intentions || 0} strokes` : "—"],
       ["compute", `${s.compute_ms.toFixed(0)} ms per decision`],
     ]);
@@ -679,7 +684,7 @@ function main(FIRST) {
   $("step").onclick = () => { setRunning(false); if (wantsEvents()) { computeEvent(); drain(0); showAtOnce(); } else flash("draw a figure or pick a family first"); };
   $("fit").onclick = () => scan.fit();
   $("view").onchange = () => { scan.options.mode = $("view").value; scan.draw(); };
-  $("epsilon").oninput = () => { agent.config.actor.epsilon = Number($("epsilon").value); $("epsilonValue").textContent = agent.config.actor.epsilon.toFixed(2); };
+  $("epsilon").oninput = () => { chosenEpsilon = Number($("epsilon").value); agent.config.actor.epsilon = chosenEpsilon; $("epsilonValue").textContent = chosenEpsilon.toFixed(2); };
 
   function setRunning(value) {
     running = value;
@@ -688,6 +693,43 @@ function main(FIRST) {
   }
 
   // ---------------------------------------------------------------- checkpoints
+
+  // ---------------------------------------------------------------- notices
+
+  /** A notice over the stage while something loads; `fraction` fills its bar. */
+  function showNotice(text, sub = "", fraction = null) {
+    $("noticeText").textContent = text;
+    $("noticeSub").textContent = sub;
+    $("noticeFill").style.width = fraction === null ? "0%" : `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%`;
+    $("notice").hidden = false;
+  }
+
+  function hideNotice() { $("notice").hidden = true; }
+
+  const megabytes = (n) => `${(n / 1e6).toFixed(1)} MB`;
+  /** What a selector quotes: the bytes a visitor downloads, as the manifest measured them. */
+  const downloadSize = (entry) => entry.download_bytes || entry.bytes || 0;
+
+  /** One checkpoint snapshot, reporting the share of it that has arrived. */
+  async function fetchSnapshot(entry, onProgress) {
+    const response = await fetch(new URL(entry.file, document.baseURI));
+    if (!response.ok) throw Error(`${entry.file}: ${response.status}`);
+    const total = entry.bytes || 0; // the reader yields decoded bytes, which is what `bytes` counts
+    if (!response.body || !total) return response.json();
+    const reader = response.body.getReader(), chunks = [];
+    let read = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      read += value.length;
+      onProgress(read / total);
+    }
+    const bytes = new Uint8Array(read);
+    let at = 0;
+    for (const chunk of chunks) { bytes.set(chunk, at); at += chunk.length; }
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
 
   async function loadCheckpoints() {
     let body = null;
@@ -701,7 +743,7 @@ function main(FIRST) {
     for (const entry of body.checkpoints || []) if (entry && entry.file && entry.id) checkpoints.push(entry);
     if (!checkpoints.length) return;
     const select = $("checkpoint");
-    select.innerHTML = [`<option value="inlined">${checkpoint.label}</option>`, ...checkpoints.map((c) => `<option value="${c.id}">${c.label}${c.bytes ? ` (${(c.bytes / 1e6).toFixed(1)} MB)` : ""}</option>`)].join("");
+    select.innerHTML = [`<option value="inlined">${checkpoint.label}</option>`, ...checkpoints.map((c) => `<option value="${c.id}">${c.label}${downloadSize(c) ? ` (${megabytes(downloadSize(c))} to download)` : ""}</option>`)].join("");
     select.value = "inlined";
     select.onchange = () => selectCheckpoint(select.value);
     $("checkpointBox").hidden = false;
@@ -714,23 +756,24 @@ function main(FIRST) {
     const entry = checkpoints.find((c) => c.id === id);
     if (!entry) return;
     select.disabled = true;
+    const waiting = `${megabytes(downloadSize(entry))} to download`;
     flash(`loading ${entry.label}…`, 60000);
     try {
       let snap = snapshotCache.get(id);
       if (!snap) {
-        const response = await fetch(new URL(entry.file, document.baseURI));
-        if (!response.ok) throw Error(`${entry.file}: ${response.status}`);
-        snap = await response.json();
+        showNotice(`Loading ${entry.label}`, waiting, 0);
+        snap = await fetchSnapshot(entry, (share) => showNotice(`Loading ${entry.label}`, waiting, share));
         if (snap.format !== "cadence-experience-web/1") throw Error(`${entry.file} is not a cadence-experience-web/1 snapshot`);
         snapshotCache.set(id, snap);
       }
+      showNotice(`Loading ${entry.label}`, "starting the brain", 1);
       installLife(snap, entry.label, id);
       flash(`${entry.label} · ${nextDrawing || drawing ? "drawing the same figure" : "draw a figure"}`);
     } catch (error) {
       select.value = checkpoint.id;
       flash(`could not load that brain: ${error.message}`, 6000);
       console.error(error);
-    } finally { select.disabled = false; }
+    } finally { select.disabled = false; hideNotice(); }
   }
 
   // ---------------------------------------------------------------- the loop

@@ -10,7 +10,7 @@
   <div class="headline">
     <nav class="crumbs" aria-label="Where this page sits"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><a href="../">Brains</a><span>/</span><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">Code</a><span>/</span><a href="receipt.json">Receipt</a></nav>
     <h1>Draw a figure and the artist draws it</h1>
-    <p class="lede">It learned what its pen leaves on the canvas by scribbling, and it replans from its own canvas after every stroke. The whole brain is live on the right.</p>
+    <p class="lede">It learned what its pen leaves on the canvas by scribbling, and it replans from its own canvas after every stroke. The whole brain is live beside it.</p>
   </div>
   <div class="facts" id="counts">loading the snapshot…</div>
 </header>
@@ -31,6 +31,7 @@
         <div class="history" id="history"></div>
       </div>
       <div class="hint" id="hint"><b>Draw a figure on the canvas</b><span>with a mouse, a pen or a finger</span></div>
+      <div class="notice" id="notice" hidden><b id="noticeText"></b><span id="noticeSub"></span><div class="track"><i id="noticeFill"></i></div></div>
     </div>
     <div class="toolbar" id="drawTools">
       <button type="button" id="again" class="primary">Draw again</button>
@@ -65,7 +66,7 @@
     <div class="toolbar">
       <button type="button" id="play" class="primary">Pause</button><button type="button" id="step">Step one decision</button><button type="button" id="fit">Fit brain</button>
       <label>Show <select id="view"><option value="activity">activation</option><option value="potential">potential</option><option value="change">change</option></select></label>
-      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0"><span id="epsilonValue">0.00</span></label>
+      <label>Exploration ε <input id="epsilon" type="range" min="0" max="1" step="0.05" value="0.1"><span id="epsilonValue">0.10</span></label>
       <span id="status"></span>
     </div>
     <div class="readouts">
@@ -95,7 +96,7 @@
     <p id="receiptNote"></p>
     <h3>How it works</h3>
     <p>Your strokes are rasterised one pixel wide as the target. Every tenth of a second the artist commits one of eighteen choices, nine torque pairs by pen up or down. The slow level of the search asks the records what one decision of motion leaves for each direction and pen state, repeats that along a candidate stroke and keeps the best over a beam of four; the fast level imagines all eighteen choices two decisions deep and executes the best. The intention is renewed every second decision from the canvas the artist sees. A drawing ends under a discrepancy of <b id="finishValue">0.010</b>, at <b id="capValue">200</b> decisions, or after 60 decisions without improvement.</p>
-    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/artist/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">why brains, not transformers</a></p>
+    <p class="card-links"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/artist">code</a> · <a href="receipt.json">receipt</a> · <a href="https://github.com/muellerberndt/cadence-examples/blob/main/artist/README.md">details</a> · <a href="https://github.com/muellerberndt/cadence">the cadence library</a> · <a href="https://floatingpragma.io/cadence/">the case for brains</a></p>
   </details>
 </footer>
 <script type="module" src="page.js"></script>

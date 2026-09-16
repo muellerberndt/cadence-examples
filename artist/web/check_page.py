@@ -19,6 +19,8 @@ through ``window.__page.run()`` and the measurement repeats. The check:
 4. recomputes the Chamfer distance and the F1 of each drawing from the page's own canvas and
    target, compares them with the page's readout, and requires the better of the two to reach
    --min-f1, which defaults to the largest F1 bar the run's receipt reports (its f1_simple gate);
+   the first drawing of the session is judged on its own as well, because it is the one a visitor
+   asks for: it has to leave ink and to reach the same bar;
 5. saves page_after.png, brain_after.png, records_after.png and canvas_after.png;
 6. exercises the rest of the page: a two-stroke figure, every target family, Clear, the brain
    selector when a checkpoint manifest sits beside the page, and the live loop;
@@ -159,6 +161,32 @@ def wait_for_drawing(page, timeout: int = 15000) -> None:
     page.wait_for_function(ACTIVE, timeout=timeout)
 
 
+STRIP_WIDTH = 276  # below this the renderer's own region labels and its caption overlap in the strip
+
+
+def clipped(page) -> list[str]:
+    """Every leaf of the brain panel's controls and instrument row whose text does not fit its box."""
+    return page.evaluate(
+        """() => {
+            const out = [];
+            for (const el of document.querySelectorAll("#brain .toolbar *, #brain .readouts *")) {
+                if (el.children.length) continue;
+                const text = (el.textContent || "").trim();
+                if (!text) continue;
+                const box = el.getBoundingClientRect();
+                if (!box.width || !box.height) continue;
+                if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
+                    out.push(`${el.id || el.className || el.tagName.toLowerCase()} "${text.slice(0, 44)}" needs ${el.scrollWidth} by ${el.scrollHeight} px in ${el.clientWidth} by ${el.clientHeight}`);
+            }
+            return out;
+        }"""
+    )
+
+
+def strip_width(page) -> float:
+    return page.evaluate("() => { const s = document.getElementById('strip'); return s ? s.getBoundingClientRect().width : 0; }")
+
+
 def note(text: str) -> None:
     print(text, file=sys.stderr, flush=True)
 
@@ -251,6 +279,13 @@ def main() -> int:
             problems.append("the brain scan is not beside the canvas")
         if desktop["scrollWidth"] > view["width"] + 1:
             problems.append(f"the page scrolls sideways at {view['width']} px: scrollWidth {desktop['scrollWidth']}")
+        cut = clipped(page)
+        report["clipped_desktop"] = cut
+        if cut:
+            problems.append(f"text is cut in the brain panel at {view['width']} px: " + "; ".join(cut))
+        report["strip_width"] = strip_width(page)
+        if report["strip_width"] < STRIP_WIDTH:
+            problems.append(f"the strip chart is {report['strip_width']:.0f} px wide, under the {STRIP_WIDTH} px its labels and caption need")
         for name in ("body", "brain"):
             if desktop[name]["bottom"] > view["height"] + 0.5:
                 problems.append(f"the {name} panel falls below the first screen: {desktop[name]['bottom']:.0f} px of {view['height']}")
@@ -266,6 +301,11 @@ def main() -> int:
         if result_first is None:
             problems.append(f"the first drawing did not finish within {args.events} decisions")
         report["drawing_1"] = {**first, "page": result_first, "measured": measures(log_first)}
+        # the first drawing of a session is the one a visitor asks for, so it is judged on its own
+        if not report["drawing_1"]["measured"]["ink"]:
+            problems.append(f"the first drawing of the session left no ink in {first['decisions']} decisions")
+        elif judge and report["drawing_1"]["measured"]["f1"] < bar:
+            problems.append(f"the first drawing of the session reaches F1 {report['drawing_1']['measured']['f1']:.3f}, below the bar {bar:.3f}")
 
         # 3. the same figure again, with everything the brain learned from the first
         note("drawing 1 done; draw again")
@@ -371,6 +411,10 @@ def main() -> int:
                 problems.append("at 390 px the brain scan does not sit below the canvas")
             if small["scrollWidth"] > small["viewport"]["width"] + 1:
                 problems.append(f"the page scrolls sideways at 390 px: scrollWidth {small['scrollWidth']}")
+            cut = clipped(phone)
+            report["clipped_phone"] = cut
+            if cut:
+                problems.append("text is cut in the brain panel at 390 px: " + "; ".join(cut))
             phone.screenshot(path=str(out / "page_phone.png"), full_page=True, timeout=180000)
             phone.close()
         browser.close()
