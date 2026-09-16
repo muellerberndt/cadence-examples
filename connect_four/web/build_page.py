@@ -167,7 +167,10 @@ def cortex_block(cortex, extra: dict[str, Any]) -> dict[str, Any]:
 
 def pack_boards(boards: np.ndarray) -> np.ndarray:
     """Boards of ternary cells packed five cells to a byte, nine bytes a board (42 cells)."""
-    boards = np.asarray(boards, dtype=np.int64).reshape(len(boards), -1)
+    boards = np.asarray(boards, dtype=np.int64)
+    if boards.size == 0:
+        return np.zeros((0, 9), dtype=np.uint8)
+    boards = boards.reshape(len(boards), -1)
     cells = boards.shape[1]
     width = -(-cells // 5)
     padded = np.zeros((len(boards), width * 5), dtype=np.int64)
