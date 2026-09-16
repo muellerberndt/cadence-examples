@@ -103,8 +103,14 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
 - Page: https://floatingpragma.io/cadence-examples/connect_four/ (play against the brain
   while it keeps learning from the game; the columns it imagined and the values it read are
   shown beside the whole brain; a checkpoint selector loads the brain after 100, 400 and
-  1,000 games and at every phase end).
-- Receipt: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
+  1,000 games and at every phase end). The page's brain trained against Pascal Pons'
+  perfect solver at graded strengths and plays its records at eight plies; its model card on
+  the page states the training, the bench against the solver and against an AlphaZero we
+  trained with alpha-zero-general's published recipe (0.945 over 100 paired games at 25
+  simulations per move), and what it cannot do. Receipt of that life:
+  [connect_four/receipt_solver.json](connect_four/receipt_solver.json); bench receipts:
+  [connect_four/bench/receipts](connect_four/bench/receipts).
+- Receipt of the stage: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
   Measured: exact next boards on held-out moves 100%; terminal prediction
   100%; tactical suite 100% (win in one, block in one); paired score
   against random 0.995 and against one-ply 0.957 (each seed at least

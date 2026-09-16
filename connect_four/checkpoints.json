@@ -1,7 +1,7 @@
 {
  "format": "cadence-connect-four-checkpoints/1",
- "seed": 10,
- "run": "runs/connect_four/acceptance",
+ "seed": 0,
+ "run": "runs/connect_four/solver_dev_d8",
  "inlined": "games001200",
  "checkpoints": [
   {
@@ -13,10 +13,10 @@
     "scheduled"
    ],
    "bytes": 601757,
-   "transitions": 2244,
-   "drop_writes": 15708,
-   "line_writes": 97574,
-   "value_writes": 5976,
+   "transitions": 2055,
+   "drop_writes": 14385,
+   "line_writes": 84699,
+   "value_writes": 5535,
    "extended": true,
    "planner": {
     "nodes": 0,
@@ -26,9 +26,7 @@
     "depths": {},
     "budget": 0
    },
-   "source": "runs/connect_four/acceptance/brain_seed10_games000100",
-   "sha256": "5f45c2ba91d4ecc8dabfe0fc541d4e02e6667c2c127f743274632ccba0b6d9fc",
-   "asset": "connect_four-games000100.json"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000100"
   },
   {
    "id": "games000200",
@@ -38,11 +36,11 @@
    "labels": [
     "after_explore"
    ],
-   "bytes": 601822,
-   "transitions": 4319,
-   "drop_writes": 30233,
-   "line_writes": 183919,
-   "value_writes": 11671,
+   "bytes": 601834,
+   "transitions": 4186,
+   "drop_writes": 29302,
+   "line_writes": 173605,
+   "value_writes": 11316,
    "extended": true,
    "planner": {
     "nodes": 0,
@@ -52,9 +50,7 @@
     "depths": {},
     "budget": 0
    },
-   "source": "runs/connect_four/acceptance/brain_seed10_games000200",
-   "sha256": "7259a8a0c3be94487213fa432432366f5178aadbed3f4e07a3649eecf28e35f7",
-   "asset": "connect_four-games000200.json"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000200"
   },
   {
    "id": "games000400",
@@ -64,28 +60,26 @@
    "labels": [
     "scheduled"
    ],
-   "bytes": 601790,
-   "transitions": 8186,
-   "drop_writes": 57302,
-   "line_writes": 352863,
-   "value_writes": 22589,
+   "bytes": 601795,
+   "transitions": 7772,
+   "drop_writes": 54404,
+   "line_writes": 327102,
+   "value_writes": 21503,
    "extended": true,
    "planner": {
-    "nodes": 906146,
-    "searches": 1790,
+    "nodes": 854850,
+    "searches": 1681,
     "invalid": 0,
-    "depth": 3.6212290502793296,
+    "depth": 3.620464009518144,
     "depths": {
-     "1": 161,
-     "2": 13,
-     "3": 169,
-     "4": 1447
+     "1": 159,
+     "2": 15,
+     "3": 131,
+     "4": 1376
     },
     "budget": 0
    },
-   "source": "runs/connect_four/acceptance/brain_seed10_games000400",
-   "sha256": "40219b09c4fccfb6732750b7fed7cc554313706698da825db5d6de9cf5e0c2ad",
-   "asset": "connect_four-games000400.json"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000400"
   },
   {
    "id": "games001000",
@@ -96,28 +90,26 @@
     "scheduled",
     "after_mixture"
    ],
-   "bytes": 601871,
-   "transitions": 18986,
-   "drop_writes": 132902,
-   "line_writes": 805932,
-   "value_writes": 52715,
+   "bytes": 601884,
+   "transitions": 19107,
+   "drop_writes": 133749,
+   "line_writes": 827515,
+   "value_writes": 53288,
    "extended": true,
    "planner": {
-    "nodes": 3252969,
-    "searches": 6862,
+    "nodes": 3282970,
+    "searches": 7026,
     "invalid": 0,
-    "depth": 3.6279510346837656,
+    "depth": 3.6574153145459722,
     "depths": {
-     "1": 662,
-     "2": 57,
-     "3": 453,
-     "4": 5690
+     "1": 613,
+     "2": 73,
+     "3": 422,
+     "4": 5918
     },
     "budget": 0
    },
-   "source": "runs/connect_four/acceptance/brain_seed10_games001000",
-   "sha256": "cc027953506ad6f199281e78bda743d921b340334b61cac75abda744f5b15c80",
-   "asset": "connect_four-games001000.json"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001000"
   },
   {
    "id": "games001200",
@@ -127,43 +119,38 @@
    "labels": [
     "final"
    ],
-   "bytes": 601869,
-   "transitions": 23235,
-   "drop_writes": 162645,
-   "line_writes": 999355,
-   "value_writes": 64323,
+   "bytes": 601905,
+   "transitions": 23730,
+   "drop_writes": 166110,
+   "line_writes": 1057850,
+   "value_writes": 65476,
    "extended": true,
    "planner": {
-    "nodes": 4163155,
-    "searches": 8816,
+    "nodes": 4324443,
+    "searches": 9148,
     "invalid": 0,
-    "depth": 3.6336206896551726,
+    "depth": 3.6911893310013117,
     "depths": {
-     "1": 822,
-     "2": 71,
-     "3": 622,
-     "4": 7301
+     "1": 669,
+     "2": 139,
+     "3": 540,
+     "4": 7800
     },
     "budget": 0
    },
-   "source": "runs/connect_four/acceptance/brain_seed10_games001200",
-   "sha256": "94ac6286ad70237353cb131e41c12e27a987eeb07bca85a1a148161bc73e7b74",
-   "asset": "connect_four-games001200.json"
+   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001200"
   }
  ],
  "receipt": {
-  "run_id": "S03-candidate-acceptance-20260915T122711Z",
+  "run_id": "S03-candidate-development-20260916T014940Z",
   "stage": "S03",
   "status": "complete",
   "pilot": false,
-  "seed": 10,
-  "split": "acceptance",
+  "seed": 0,
+  "split": "development",
   "seeds": [
-   10,
-   11,
-   12,
-   13,
-   14
+   0,
+   1
   ],
   "games": {
    "adaptation": 200,
@@ -171,7 +158,7 @@
    "mixture": 800,
    "total": 1200
   },
-  "decisions": 12094,
+  "decisions": 12283,
   "tactical": {
    "success": 1.0,
    "cases": 1000,
@@ -183,36 +170,36 @@
    }
   },
   "paired": {
-   "minimax_256": 0.886,
-   "one_ply": 0.968,
-   "random": 0.997
+   "minimax_256": 0.912,
+   "one_ply": 0.972,
+   "random": 0.995
   },
   "paired_adaptation": {
-   "minimax_256": 0.7935,
-   "one_ply": 0.9085,
+   "minimax_256": 0.9345,
+   "one_ply": 0.988,
    "random": 1.0
   },
   "no_planning": {
-   "minimax_256": 0.3245,
-   "one_ply": 0.4545,
-   "random": 0.932
+   "minimax_256": 0.1955,
+   "one_ply": 0.3105,
+   "random": 0.892
   },
-  "planning_gain": 0.5135,
-  "corrupted_loss": 0.851,
+  "planning_gain": 0.6615,
+  "corrupted_loss": 0.853,
   "validity": 1.0,
   "terminal": 1.0,
   "latency_ms": {
-   "decisions": 77245,
-   "max": 3999.614755000948,
-   "p50": 8.274323001387529,
-   "p95": 19.156200400175294
+   "decisions": 75777,
+   "max": 5537.044200999958,
+   "p50": 17.384557000013956,
+   "p95": 30.584912399990564
   },
-  "transitions": 23235,
-  "imagined": 4163155,
+  "transitions": 23730,
+  "imagined": 4324443,
   "record_writes": {
-   "drop_writes": 162645,
-   "line_writes": 999355,
-   "value_writes": 64323
+   "drop_writes": 166110,
+   "line_writes": 1057850,
+   "value_writes": 65476
   },
   "parameters": {
    "critic_parameters": 17,
@@ -227,7 +214,7 @@
    "record_parameters": 0,
    "world_parameters": 0
   },
-  "cadence": "21a120311e9817e817499318f8125896cd19534d",
+  "cadence": "ac092b876feaa4730a2fc288c993203c071cfc65",
   "predicates": [
    {
     "name": "next_board_validity",
@@ -249,49 +236,49 @@
    },
    {
     "name": "paired_random",
-    "value": 0.9952,
+    "value": 0.995,
     "threshold": 0.85,
     "passed": true
    },
    {
     "name": "paired_random_seed_floor",
-    "value": 0.993,
+    "value": 0.995,
     "threshold": 0.7,
     "passed": true
    },
    {
     "name": "paired_one_ply",
-    "value": 0.9571999999999999,
+    "value": 0.966,
     "threshold": 0.6,
     "passed": true
    },
    {
     "name": "paired_one_ply_seed_floor",
-    "value": 0.925,
+    "value": 0.96,
     "threshold": 0.5,
     "passed": true
    },
    {
     "name": "planning_gain",
-    "value": 0.6068,
+    "value": 0.6685,
     "threshold": 0.1,
     "passed": true
    },
    {
     "name": "corrupted_dynamics_loss",
-    "value": 0.8333999999999999,
+    "value": 0.8545,
     "threshold": 0.15,
     "passed": true
    },
    {
     "name": "continual_old_loss",
-    "value": -0.0032000000000000028,
+    "value": 0.006249999999999978,
     "threshold": 0.05,
     "passed": true
    },
    {
     "name": "latency_p95_ms",
-    "value": 19.156200400175294,
+    "value": 30.584912399990564,
     "threshold": 1000,
     "passed": true
    },
@@ -302,6 +289,5 @@
     "passed": true
    }
   ]
- },
- "release": "checkpoints-2026-09-15"
+ }
 }

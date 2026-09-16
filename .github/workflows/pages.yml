@@ -33,7 +33,7 @@ jobs:
           cp index.html .nojekyll _site/
           cp arm/index.html arm/receipt.json _site/arm/
           cp world/index.html world/receipt.json _site/world/
-          cp connect_four/index.html connect_four/receipt.json connect_four/cortices.json _site/connect_four/
+          cp connect_four/index.html connect_four/receipt.json connect_four/receipt_solver.json connect_four/cortices.json _site/connect_four/
           cp artist/index.html artist/receipt.json _site/artist/
       - name: Fetch each page's checkpoint snapshots from the release its manifest names
         env:

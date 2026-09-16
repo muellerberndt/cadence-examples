@@ -162,3 +162,19 @@ canvas#strip { display: block; width: 100%; height: 96px; min-width: 0; border-r
   .phase { max-width: 100%; }
   .imagined-columns .meter { height: 24px; }
 }
+
+/* the model card */
+.card { grid-column: 1 / -1; margin: 10px 0 4px; border: 1px solid var(--line); border-radius: 12px; background: #09121a; padding: 0 14px; }
+.card summary { cursor: pointer; padding: 10px 0; font: 600 11.5px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); list-style: none; }
+.card summary::-webkit-details-marker { display: none; }
+.card summary::before { content: "▸ "; color: var(--accent); }
+.card[open] summary::before { content: "▾ "; }
+.card h3 { margin: 12px 0 4px; font: 600 12px var(--mono); color: var(--text); }
+.card p { margin: 6px 0 10px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+.card a { color: var(--accent); text-decoration: none; }
+.card table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font: 11.5px var(--mono); font-variant-numeric: tabular-nums; }
+.card th, .card td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+.card th:first-child, .card td:first-child { text-align: left; white-space: normal; }
+.card th { color: var(--faint); font-weight: 600; }
+.card-links { padding-bottom: 12px; }
+@media (max-width: 720px) { .card table { display: block; overflow-x: auto; } }

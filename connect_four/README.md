@@ -181,6 +181,34 @@ in headless Chromium, plays a game at every checkpoint with random legal moves, 
 page error, a layout that does not fit, a brain view that does not render or an answer slower
 than 100 ms.
 
+## The page's brain and the bench
+
+The brain on the page is seed 0 of `config_solver.json`: the same life with Pascal Pons'
+perfect solver in the curriculum at graded strengths (`bench/pons.py`; the solver plays the
+perfect column with probability 0.3 or 0.7 in the mixture and 0.7 or 1.0 in the adaptation,
+else a random one). Its records play at eight plies within 32,768 imagined transitions; the
+search is supplied, so the records are unchanged. `bench/measure.py` plays paired games
+against named opponents and scores every candidate move with the solver: optimal, a slip
+(worse, the theoretical result kept) or a blunder (the result changes), the blunder rate over
+the positions not already lost. `bench/setup_external.sh` fetches and builds the solver with
+its opening book and alpha-zero-general under the git-ignored `external/`;
+`bench/alphazero/` is that repository's Connect Four in PyTorch with a trainer and an
+opponent; `opponents.make_opponent` names every opponent (`solver_070`,
+`alphazero=<checkpoint>@<sims>`, ...). The model card on the page carries the numbers; the
+receipts are in `bench/receipts/`.
+
+```bash
+bash connect_four/bench/setup_external.sh
+$PY connect_four/run.py --config connect_four/config_solver.json --seeds 0 1 --workers 2 --out runs/connect_four/solver_dev
+$PY connect_four/bench/measure.py --brain runs/connect_four/solver_dev/brain_seed0_games001200 --games 100 \
+    --depth 8 --budget 32768 --opponents one_ply minimax_1024 solver_070 --out runs/connect_four/bench/solver_dev_seed0
+$PY connect_four/bench/alphazero/train.py --out runs/connect_four/alphazero/recipe --iters 32 --episodes 100 --sims 25
+```
+
+`config_solver_boot.json` adds search bootstrapping (the searched root values are written
+into the value records) and `config_solver_support.json` a value cortex whose reading carries
+the support of each window cell; both are work in progress.
+
 ## Budgets, checkpoints and assumptions
 
 One life is 200 exploration games, 800 mixture games and 200 adaptation games, which is 1.2

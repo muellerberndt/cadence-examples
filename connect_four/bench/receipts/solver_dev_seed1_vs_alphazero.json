@@ -1,0 +1,138 @@
+{
+ "format": "cadence-connect-four-bench/1",
+ "subject": {
+  "brain": "runs/connect_four/solver_dev/brain_seed1_games001200",
+  "extended": true,
+  "learning": false,
+  "depth": 4,
+  "budget": 1024
+ },
+ "games_per_opponent": 100,
+ "seed": 0,
+ "opponents": {
+  "alphazero=runs/connect_four/alphazero/recipe/best_iter24.pth.tar@25": {
+   "paired": {
+    "games": 100,
+    "score": 0.775,
+    "wins": 70,
+    "draws": 15,
+    "losses": 15,
+    "first_score": 0.94,
+    "second_score": 0.61
+   },
+   "quality": {
+    "moves": 1417,
+    "optimal": 0.6513761467889908,
+    "slip": 0.21312632321806635,
+    "blunder": 0.13549752999294284,
+    "not_lost": {
+     "moves": 558,
+     "optimal": 0.5931899641577061,
+     "slip": 0.06272401433691756,
+     "blunder": 0.34408602150537637
+    },
+    "won": {
+     "moves": 383,
+     "optimal": 0.6240208877284595,
+     "slip": 0.09138381201044386,
+     "blunder": 0.2845953002610966
+    },
+    "by_band": {
+     "0-8": {
+      "moves": 400,
+      "optimal": 0.3125,
+      "slip": 0.295,
+      "blunder": 0.3925
+     },
+     "8-16": {
+      "moves": 380,
+      "optimal": 0.6447368421052632,
+      "slip": 0.28421052631578947,
+      "blunder": 0.07105263157894737
+     },
+     "16-24": {
+      "moves": 326,
+      "optimal": 0.8220858895705522,
+      "slip": 0.15337423312883436,
+      "blunder": 0.024539877300613498
+     },
+     "24-42": {
+      "moves": 311,
+      "optimal": 0.9163987138263665,
+      "slip": 0.08360128617363344,
+      "blunder": 0.0
+     }
+    }
+   },
+   "seconds": 72.91586208343506,
+   "latency_ms": {
+    "p50": 15.743238000140991,
+    "p95": 29.638021200116782,
+    "max": 316.0829840007864
+   }
+  },
+  "alphazero=runs/connect_four/alphazero/recipe/best_iter24.pth.tar@100": {
+   "paired": {
+    "games": 100,
+    "score": 0.36,
+    "wins": 19,
+    "draws": 34,
+    "losses": 47,
+    "first_score": 0.46,
+    "second_score": 0.26
+   },
+   "quality": {
+    "moves": 1817,
+    "optimal": 0.6637314254265272,
+    "slip": 0.20803522289488166,
+    "blunder": 0.1282333516785911,
+    "not_lost": {
+     "moves": 463,
+     "optimal": 0.4924406047516199,
+     "slip": 0.004319654427645789,
+     "blunder": 0.5032397408207343
+    },
+    "won": {
+     "moves": 176,
+     "optimal": 0.4375,
+     "slip": 0.011363636363636364,
+     "blunder": 0.5511363636363636
+    },
+    "by_band": {
+     "0-8": {
+      "moves": 400,
+      "optimal": 0.315,
+      "slip": 0.255,
+      "blunder": 0.43
+     },
+     "8-16": {
+      "moves": 396,
+      "optimal": 0.5606060606060606,
+      "slip": 0.3838383838383838,
+      "blunder": 0.05555555555555555
+     },
+     "16-24": {
+      "moves": 376,
+      "optimal": 0.6888297872340425,
+      "slip": 0.2074468085106383,
+      "blunder": 0.10372340425531915
+     },
+     "24-42": {
+      "moves": 645,
+      "optimal": 0.9286821705426357,
+      "slip": 0.07131782945736434,
+      "blunder": 0.0
+     }
+    }
+   },
+   "seconds": 230.81086683273315,
+   "latency_ms": {
+    "p50": 14.350825000292389,
+    "p95": 29.631139000230178,
+    "max": 31.682494999586197
+   }
+  }
+ },
+ "seconds": 303.7276463508606,
+ "solver_calls": 591
+}

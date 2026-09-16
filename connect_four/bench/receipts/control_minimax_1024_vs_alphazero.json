@@ -1,0 +1,124 @@
+{
+ "format": "cadence-connect-four-bench/1",
+ "subject": {
+  "policy": "minimax_1024"
+ },
+ "games_per_opponent": 100,
+ "seed": 0,
+ "opponents": {
+  "alphazero=runs/connect_four/alphazero/recipe/best_iter24.pth.tar@25": {
+   "paired": {
+    "games": 100,
+    "score": 0.375,
+    "wins": 35,
+    "draws": 5,
+    "losses": 60,
+    "first_score": 0.41,
+    "second_score": 0.34
+   },
+   "quality": {
+    "moves": 1564,
+    "optimal": 0.5818414322250639,
+    "slip": 0.25831202046035806,
+    "blunder": 0.159846547314578,
+    "not_lost": {
+     "moves": 501,
+     "optimal": 0.45708582834331335,
+     "slip": 0.043912175648702596,
+     "blunder": 0.499001996007984
+    },
+    "won": {
+     "moves": 339,
+     "optimal": 0.44542772861356933,
+     "slip": 0.06489675516224189,
+     "blunder": 0.4896755162241888
+    },
+    "by_band": {
+     "0-8": {
+      "moves": 400,
+      "optimal": 0.295,
+      "slip": 0.335,
+      "blunder": 0.37
+     },
+     "8-16": {
+      "moves": 395,
+      "optimal": 0.4835443037974684,
+      "slip": 0.38734177215189874,
+      "blunder": 0.1291139240506329
+     },
+     "16-24": {
+      "moves": 359,
+      "optimal": 0.6295264623955432,
+      "slip": 0.2590529247910863,
+      "blunder": 0.11142061281337047
+     },
+     "24-42": {
+      "moves": 410,
+      "optimal": 0.9146341463414634,
+      "slip": 0.05853658536585366,
+      "blunder": 0.026829268292682926
+     }
+    }
+   },
+   "seconds": 72.55723142623901
+  },
+  "alphazero=runs/connect_four/alphazero/recipe/best_iter24.pth.tar@100": {
+   "paired": {
+    "games": 100,
+    "score": 0.26,
+    "wins": 21,
+    "draws": 10,
+    "losses": 69,
+    "first_score": 0.32,
+    "second_score": 0.2
+   },
+   "quality": {
+    "moves": 1493,
+    "optimal": 0.580040187541862,
+    "slip": 0.25184192900200936,
+    "blunder": 0.1681178834561286,
+    "not_lost": {
+     "moves": 483,
+     "optimal": 0.44306418219461696,
+     "slip": 0.037267080745341616,
+     "blunder": 0.5196687370600414
+    },
+    "won": {
+     "moves": 322,
+     "optimal": 0.40683229813664595,
+     "slip": 0.055900621118012424,
+     "blunder": 0.5372670807453416
+    },
+    "by_band": {
+     "0-8": {
+      "moves": 399,
+      "optimal": 0.2882205513784461,
+      "slip": 0.3408521303258145,
+      "blunder": 0.37092731829573933
+     },
+     "8-16": {
+      "moves": 391,
+      "optimal": 0.4859335038363171,
+      "slip": 0.3938618925831202,
+      "blunder": 0.12020460358056266
+     },
+     "16-24": {
+      "moves": 331,
+      "optimal": 0.676737160120846,
+      "slip": 0.21148036253776434,
+      "blunder": 0.11178247734138973
+     },
+     "24-42": {
+      "moves": 372,
+      "optimal": 0.9059139784946236,
+      "slip": 0.043010752688172046,
+      "blunder": 0.051075268817204304
+     }
+    }
+   },
+   "seconds": 195.51520442962646
+  }
+ },
+ "seconds": 268.07260394096375,
+ "solver_calls": 2623
+}
