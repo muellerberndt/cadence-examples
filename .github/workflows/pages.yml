@@ -53,26 +53,6 @@ jobs:
               python tools/checkpoint_assets.py verify $stage _site/$stage/checkpoints
             fi
           done
-      - name: Fetch the unlinked composer preview's brain from the release its manifest names
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p _site/preview/composer
-          cp -R preview/composer/. _site/preview/composer/
-          release=$(python -c "import json; print(json.load(open('preview/composer/checkpoints.json'))['release'])")
-          gh release download "$release" --pattern "composer-preview-*" --dir _site/preview/composer
-          for f in _site/preview/composer/composer-preview-*; do mv "$f" "_site/preview/composer/$(basename "$f" | sed 's/^composer-preview-//')"; done
-          python tools/checkpoint_assets.py verify preview/composer _site/preview/composer
-      - name: Fetch the unlinked player preview's episodes from the release its manifest names
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          mkdir -p _site/preview/player/assets
-          cp preview/player/index.html preview/player/receipt.json preview/player/checkpoints.json _site/preview/player/
-          release=$(python -c "import json; print(json.load(open('preview/player/checkpoints.json'))['release'])")
-          gh release download "$release" --pattern "player-preview-*" --dir _site/preview/player/assets
-          for f in _site/preview/player/assets/player-preview-*; do mv "$f" "_site/preview/player/assets/$(basename "$f" | sed 's/^player-preview-//')"; done
-          python tools/checkpoint_assets.py verify preview/player _site/preview/player/assets
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
