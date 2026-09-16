@@ -894,8 +894,9 @@ export class Planner {
         for (const [c, v] of values) if (v > values.get(topC)) topC = c;
         if (rootExact.get(topC) && (top > 0.9 || root.every((c) => rootExact.get(c)))) this._remember(this._key(board, CANDIDATE), plainResult(top));
       }
-      choice = sequence.filter((c) => values.get(c) >= top - this.tieBand);
-      if (this.tieBand > TIE) {
+      const proven = top > 0.9 || top < 0.1;  // a proven result never shares the band with a heuristic read
+      choice = sequence.filter((c) => values.get(c) >= top - (proven ? TIE : this.tieBand));
+      if (this.tieBand > TIE && !proven) {
         const centre = (this.imagination.layout.cols - 1) / 2;
         choice = [choice.slice().sort((a, b) => (Math.abs(a - centre) - Math.abs(b - centre)) || (a - b))[0]];  // the middle among near-equal columns
       }

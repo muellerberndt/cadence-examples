@@ -665,8 +665,9 @@ class Planner:
                 top_c = max(values, key=values.get)
                 if root_exact.get(top_c) and (top > 0.9 or all(root_exact.get(c) for c in root)):
                     self._remember((board.tobytes(), CANDIDATE), plain_result(top))
-            choice = [c for c in sequence if values[c] >= top - self.tie_band]
-            if self.tie_band > TIE:
+            proven = top > 0.9 or top < 0.1  # a proven result never shares the band with a heuristic read
+            choice = [c for c in sequence if values[c] >= top - (TIE if proven else self.tie_band)]
+            if self.tie_band > TIE and not proven:
                 centre = (self.imagination.layout.cols - 1) / 2
                 choice = sorted(choice, key=lambda c: (abs(c - centre), c))[:1]  # the middle among near-equal columns
             completed, root_value = d, top

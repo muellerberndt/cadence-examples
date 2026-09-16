@@ -16,7 +16,9 @@ import { createInterface } from "node:readline";
 import { Brain, CANDIDATE, OPPONENT } from "./brain.js";
 
 const argv = process.argv.slice(2);
-const opt = { side: "first", games: 10, depth: 10, budget: 131072, seed: 1, strength: 1.0, out: "school.json", memory: null, threat: null, parity: null, band: null, first: 1.0, second: 1.0, lateStones: 99, lateDepth: 16, lateBudget: 1048576 };
+const opt = { side: "first", games: 10, depth: 10, budget: 131072, seed: 1, strength: 1.0, out: "school.json", memory: null, threat: null, parity: null, band: null, first: 1.0, second: 1.0, lateStones: 99, lateDepth: 16, lateBudget: 1048576, tutor: "" };
+// --tutor first|second|both (with --side watch): the tutored side plays the column the memory holds for the board
+// when it holds one, and the perfect column where it holds none, so every watched game extends the brain's own lines
 // --side watch: the solver plays itself, the first player at --first and the second at --second (a perfect column with
 // that probability, else a random one), and the brain remembers the winner's columns without playing
 const positional = [];
@@ -80,7 +82,15 @@ for (let g = 0; g < opt.games; g++) {
     const scores = await solve(rel);
     let best = -Infinity; for (let c = 0; c < cols; c++) if (scores[c] !== INVALID && scores[c] > best) best = scores[c];
     const strength = watching ? (side === 1 ? opt.first : opt.second) : opt.strength;
-    if (brainTurn) {
+    const tutored = watching && (opt.tutor === "both" || (opt.tutor === "first" && side === 1) || (opt.tutor === "second" && side === 2));
+    const remembered = tutored ? brain.planner.wins.get(String.fromCharCode.apply(null, rel)) : null;
+    if (remembered) {
+      let bestCount = 0; col = -1;
+      for (const [c, n] of remembered) if (legal[c] && n > bestCount) { bestCount = n; col = c; }
+      if (col < 0) { const top = []; for (let c = 0; c < cols; c++) if (scores[c] === best) top.push(c); col = top[Math.floor(rnd() * top.length)]; }
+    } else if (tutored) {
+      const top = []; for (let c = 0; c < cols; c++) if (scores[c] === best) top.push(c); col = top[Math.floor(rnd() * top.length)];
+    } else if (brainTurn) {
       const late = moves.length >= opt.lateStones;
       col = brain.planner.search(rel, legal, late ? opt.lateDepth : opt.depth, late ? opt.lateBudget : opt.budget).column;
       if (throwAt === null && best >= 0 && scores[col] < 0) throwAt = [moves.length, best, scores[col]];
