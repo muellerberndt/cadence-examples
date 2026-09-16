@@ -1,7 +1,7 @@
 {
  "format": "cadence-connect-four-checkpoints/1",
  "seed": 10,
- "run": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m",
+ "run": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b",
  "inlined": "games001200",
  "checkpoints": [
   {
@@ -12,7 +12,7 @@
    "labels": [
     "scheduled"
    ],
-   "bytes": 602094,
+   "bytes": 602093,
    "transitions": 2244,
    "drop_writes": 15708,
    "line_writes": 97574,
@@ -28,9 +28,9 @@
     "memory": 0,
     "wins": 1059
    },
-   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m/brain_seed10_games000100",
-   "sha256": "94a8d9da18ec23f82105722120ded70c15ac03361284cb7b2020951c256b3ced",
-   "download_bytes": 112883,
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b/brain_seed10_games000100",
+   "sha256": "711ef0ce4e74075cd702fc550112c24af128e766c319fd9ac95687ba5401761a",
+   "download_bytes": 112882,
    "asset": "connect_four-games000100.json"
   },
   {
@@ -41,7 +41,7 @@
    "labels": [
     "after_explore"
    ],
-   "bytes": 602160,
+   "bytes": 602159,
    "transitions": 4319,
    "drop_writes": 30233,
    "line_writes": 183919,
@@ -57,9 +57,9 @@
     "memory": 0,
     "wins": 1989
    },
-   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m/brain_seed10_games000200",
-   "sha256": "28f7558b11a1e0f12b9ada2fd4c558e7e766824d26b997b80e64cba9bf9db597",
-   "download_bytes": 113406,
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b/brain_seed10_games000200",
+   "sha256": "ec2c1fc003c0d8d8cdb869eb0565930be9c0ca72ccb5b20c63ba0b482cea133d",
+   "download_bytes": 113405,
    "asset": "connect_four-games000200.json"
   },
   {
@@ -70,7 +70,7 @@
    "labels": [
     "scheduled"
    ],
-   "bytes": 602132,
+   "bytes": 602131,
    "transitions": 8384,
    "drop_writes": 58688,
    "line_writes": 367399,
@@ -91,9 +91,9 @@
     "memory": 3072,
     "wins": 3448
    },
-   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m/brain_seed10_games000400",
-   "sha256": "d39dec5156a07535e6797e84251b719bb90a94b459ebffb986c1a57253f41b6d",
-   "download_bytes": 115008,
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b/brain_seed10_games000400",
+   "sha256": "eeab23f06417e91d0b439ee2936df04eb551f3f0022cb49bf8eebc7317945ef1",
+   "download_bytes": 115006,
    "asset": "connect_four-games000400.json"
   },
   {
@@ -105,7 +105,7 @@
     "scheduled",
     "after_mixture"
    ],
-   "bytes": 602216,
+   "bytes": 602215,
    "transitions": 19682,
    "drop_writes": 137774,
    "line_writes": 850692,
@@ -126,9 +126,9 @@
     "memory": 9860,
     "wins": 6961
    },
-   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m/brain_seed10_games001000",
-   "sha256": "09b1d83fcb8ce5a5fae92832de6eebdf77c1d95ef7cbc3271cc518a4cc17fbde",
-   "download_bytes": 115610,
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b/brain_seed10_games001000",
+   "sha256": "e608d681abbcd21718b17fb0485736d03087416e29aa7c14773c29d49030e243",
+   "download_bytes": 115608,
    "asset": "connect_four-games001000.json"
   },
   {
@@ -139,7 +139,7 @@
    "labels": [
     "final"
    ],
-   "bytes": 602231,
+   "bytes": 602230,
    "transitions": 24174,
    "drop_writes": 169218,
    "line_writes": 1067618,
@@ -160,9 +160,9 @@
     "memory": 72380,
     "wins": 1007760
    },
-   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m/brain_seed10_games001200",
-   "sha256": "bb36fcd29e723af656975a6c5d571ec3c9b5960533ed226d12c1935154c52769",
-   "download_bytes": 115722,
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b/brain_seed10_games001200",
+   "sha256": "472747c7abbf729f36aae98890a925afc7daa7fd15183268e17c86b24c1bb344",
+   "download_bytes": 115720,
    "asset": "connect_four-games001200.json"
   },
   {
@@ -176,7 +176,7 @@
    "bytes": 20286463,
    "proofs": 72380,
    "wins": 1007760,
-   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled1m/brain_seed10_games001200",
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled42b/brain_seed10_games001200",
    "sha256": "a38746903c4edc63ea65183fd924f28c14bf21ddf49691440dfa03dd1fe237af",
    "download_bytes": 6783926,
    "asset": "connect_four-memory.json"

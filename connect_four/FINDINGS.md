@@ -206,3 +206,14 @@ against 32-7-21 for the smaller memory, a difference inside the spread of three 
 brain's second-player games the coverage past the thirteenth stone rose by three to seven points
 for two and a half times the boards: watched games open the positions an imperfect first player
 reaches too rarely for memory to close the tail.
+
+## 23. A depth cap threw a proof the budget could afford
+
+On the live page the brain, first against the perfect solver, lost one game in forty: at the
+twenty-second stone only column 4 kept the win, the search stopped at its cap of sixteen plies with
+every column near 0.48, and at eighteen plies it proves column 4 a win in 27,000 imagined boards and a
+tenth of a second. Of the nineteen positions the brain threw in all browser batteries, the capped
+schedule plays seven soundly; the same budgets with no depth cap play seventeen. With the search
+bounded only by its budget (131,072 imagined transitions, 524,288 from eighteen stones on) the page
+played first against the perfect solver 40-0-0 with every move perfect over two seeds, and second at
+70% 29-1-0; halving the late budget from 1,048,576 changed no result and halved the slowest move.

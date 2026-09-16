@@ -107,9 +107,9 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
   page's brain is seed 10 of the five-seed acceptance run, trained against Pascal Pons'
   perfect solver at graded strengths and then schooled against it: it reads the threats on a
   board off its records, remembers what its searches proved and the columns winners played,
-  and plays its records at ten plies, sixteen late. Played on the page in a browser: moving
-  first it beat the perfect solver in 30 of 30 games with every move perfect; it beat both
-  AlphaZero models in every game, first and second; moving second it beat the solver at 70% in 19 of 20. Its model card states the training, the schooling, the
+  and searches its records as deep as its budget of imagined boards reaches. Played on the page in a browser: moving
+  first it beat the perfect solver in 40 of 40 games with every move perfect; it beat both
+  AlphaZero models in every game, first and second; moving second it beat the solver at 70% in 29 of 30. Its model card states the training, the schooling, the
   bench and what it cannot do; bench receipts: [connect_four/bench/receipts](connect_four/bench/receipts).
 - Receipt of the stage: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
   Measured: exact next boards on held-out moves 100%; terminal prediction
