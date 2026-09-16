@@ -1,7 +1,7 @@
 {
  "format": "cadence-connect-four-checkpoints/1",
- "seed": 0,
- "run": "runs/connect_four/solver_dev_d8",
+ "seed": 10,
+ "run": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled",
  "inlined": "games001200",
  "checkpoints": [
   {
@@ -12,11 +12,11 @@
    "labels": [
     "scheduled"
    ],
-   "bytes": 601757,
-   "transitions": 2055,
-   "drop_writes": 14385,
-   "line_writes": 84699,
-   "value_writes": 5535,
+   "bytes": 602094,
+   "transitions": 2244,
+   "drop_writes": 15708,
+   "line_writes": 97574,
+   "value_writes": 5976,
    "extended": true,
    "planner": {
     "nodes": 0,
@@ -24,10 +24,13 @@
     "invalid": 0,
     "depth": 0.0,
     "depths": {},
-    "budget": 0
+    "budget": 0,
+    "memory": 0,
+    "wins": 1059
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000100",
-   "sha256": "fb3366b68722634ffadefe3ab102b4e085ebf53d73013abca3efd38a8cca5050",
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled/brain_seed10_games000100",
+   "sha256": "94a8d9da18ec23f82105722120ded70c15ac03361284cb7b2020951c256b3ced",
+   "download_bytes": 112883,
    "asset": "connect_four-games000100.json"
   },
   {
@@ -38,11 +41,11 @@
    "labels": [
     "after_explore"
    ],
-   "bytes": 601834,
-   "transitions": 4186,
-   "drop_writes": 29302,
-   "line_writes": 173605,
-   "value_writes": 11316,
+   "bytes": 602160,
+   "transitions": 4319,
+   "drop_writes": 30233,
+   "line_writes": 183919,
+   "value_writes": 11671,
    "extended": true,
    "planner": {
     "nodes": 0,
@@ -50,10 +53,13 @@
     "invalid": 0,
     "depth": 0.0,
     "depths": {},
-    "budget": 0
+    "budget": 0,
+    "memory": 0,
+    "wins": 1989
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000200",
-   "sha256": "aaddde5d60390cc552371d1275425ca1336b4d7a77a53ed98e70a8b3b7796301",
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled/brain_seed10_games000200",
+   "sha256": "28f7558b11a1e0f12b9ada2fd4c558e7e766824d26b997b80e64cba9bf9db597",
+   "download_bytes": 113406,
    "asset": "connect_four-games000200.json"
   },
   {
@@ -64,27 +70,30 @@
    "labels": [
     "scheduled"
    ],
-   "bytes": 601795,
-   "transitions": 7772,
-   "drop_writes": 54404,
-   "line_writes": 327102,
-   "value_writes": 21503,
+   "bytes": 602132,
+   "transitions": 8384,
+   "drop_writes": 58688,
+   "line_writes": 367399,
+   "value_writes": 22956,
    "extended": true,
    "planner": {
-    "nodes": 854850,
-    "searches": 1681,
+    "nodes": 774843,
+    "searches": 1876,
     "invalid": 0,
-    "depth": 3.620464009518144,
+    "depth": 3.5474413646055436,
     "depths": {
-     "1": 159,
-     "2": 15,
-     "3": 131,
-     "4": 1376
+     "1": 246,
+     "2": 3,
+     "3": 105,
+     "4": 1522
     },
-    "budget": 0
+    "budget": 0,
+    "memory": 3072,
+    "wins": 3448
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games000400",
-   "sha256": "0e95fbd89e13bb142d4becb55db7cfa5891e5db9283f0ab8d2cb116ca3ea9e9c",
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled/brain_seed10_games000400",
+   "sha256": "d39dec5156a07535e6797e84251b719bb90a94b459ebffb986c1a57253f41b6d",
+   "download_bytes": 115008,
    "asset": "connect_four-games000400.json"
   },
   {
@@ -96,27 +105,30 @@
     "scheduled",
     "after_mixture"
    ],
-   "bytes": 601884,
-   "transitions": 19107,
-   "drop_writes": 133749,
-   "line_writes": 827515,
-   "value_writes": 53288,
+   "bytes": 602216,
+   "transitions": 19682,
+   "drop_writes": 137774,
+   "line_writes": 850692,
+   "value_writes": 55414,
    "extended": true,
    "planner": {
-    "nodes": 3282970,
-    "searches": 7026,
+    "nodes": 3041467,
+    "searches": 7162,
     "invalid": 0,
-    "depth": 3.6574153145459722,
+    "depth": 3.5189891091873777,
     "depths": {
-     "1": 613,
-     "2": 73,
-     "3": 422,
-     "4": 5918
+     "1": 1012,
+     "2": 19,
+     "3": 371,
+     "4": 5760
     },
-    "budget": 0
+    "budget": 0,
+    "memory": 9860,
+    "wins": 6961
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001000",
-   "sha256": "855004bbea844cbcba114e5df408aaab8a6ab8504d4af824202f9503653623dc",
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled/brain_seed10_games001000",
+   "sha256": "09b1d83fcb8ce5a5fae92832de6eebdf77c1d95ef7cbc3271cc518a4cc17fbde",
+   "download_bytes": 115610,
    "asset": "connect_four-games001000.json"
   },
   {
@@ -127,40 +139,62 @@
    "labels": [
     "final"
    ],
-   "bytes": 601905,
-   "transitions": 23730,
-   "drop_writes": 166110,
-   "line_writes": 1057850,
-   "value_writes": 65476,
+   "bytes": 602230,
+   "transitions": 24174,
+   "drop_writes": 169218,
+   "line_writes": 1067618,
+   "value_writes": 67357,
    "extended": true,
    "planner": {
-    "nodes": 4324443,
-    "searches": 9148,
+    "nodes": 3906315,
+    "searches": 9195,
     "invalid": 0,
-    "depth": 3.6911893310013117,
+    "depth": 3.545405111473627,
     "depths": {
-     "1": 669,
-     "2": 139,
-     "3": 540,
-     "4": 7800
+     "1": 1208,
+     "2": 25,
+     "3": 506,
+     "4": 7456
     },
-    "budget": 0
+    "budget": 0,
+    "memory": 52384,
+    "wins": 314339
    },
-   "source": "runs/connect_four/solver_dev_d8/brain_seed0_games001200",
-   "sha256": "4dc5bd1c522e908786ea89ae9628ec223b706effefa4a84ace9e7ca2633f5d38",
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled/brain_seed10_games001200",
+   "sha256": "753f5951089b63c969eb35c4b75ebec2a8d48380e2d4b2cf047e704d2db017d7",
+   "download_bytes": 115723,
    "asset": "connect_four-games001200.json"
+  },
+  {
+   "id": "memory",
+   "label": "what the brain remembers",
+   "file": "checkpoints/memory.json",
+   "games": 1200,
+   "labels": [
+    "memory"
+   ],
+   "bytes": 6561447,
+   "proofs": 52384,
+   "wins": 314339,
+   "source": "/private/tmp/claude-501/-Users-muellerberndt-Projects-oph-meta/e200f33f-0160-40d3-93f5-a042d278eb23/scratchpad/page_schooled/brain_seed10_games001200",
+   "sha256": "28f2802116c4d12472dbb90f2433f21408bb42464fd9b30ee68f36e5caf37a23",
+   "download_bytes": 2231487,
+   "asset": "connect_four-memory.json"
   }
  ],
  "receipt": {
-  "run_id": "S03-candidate-development-20260916T014940Z",
+  "run_id": "S03-candidate-acceptance-20260916T102654Z",
   "stage": "S03",
   "status": "complete",
   "pilot": false,
-  "seed": 0,
-  "split": "development",
+  "seed": 10,
+  "split": "acceptance",
   "seeds": [
-   0,
-   1
+   10,
+   11,
+   12,
+   13,
+   14
   ],
   "games": {
    "adaptation": 200,
@@ -168,7 +202,7 @@
    "mixture": 800,
    "total": 1200
   },
-  "decisions": 12283,
+  "decisions": 12512,
   "tactical": {
    "success": 1.0,
    "cases": 1000,
@@ -180,36 +214,36 @@
    }
   },
   "paired": {
-   "minimax_256": 0.912,
-   "one_ply": 0.972,
-   "random": 0.995
+   "minimax_256": 0.9635,
+   "one_ply": 0.9955,
+   "random": 0.999
   },
   "paired_adaptation": {
-   "minimax_256": 0.9345,
-   "one_ply": 0.988,
+   "minimax_256": 0.9675,
+   "one_ply": 0.9925,
    "random": 1.0
   },
   "no_planning": {
-   "minimax_256": 0.1955,
-   "one_ply": 0.3105,
-   "random": 0.892
+   "minimax_256": 0.781,
+   "one_ply": 0.9465,
+   "random": 0.997
   },
-  "planning_gain": 0.6615,
-  "corrupted_loss": 0.853,
+  "planning_gain": 0.049000000000000044,
+  "corrupted_loss": 0.798,
   "validity": 1.0,
   "terminal": 1.0,
   "latency_ms": {
-   "decisions": 75777,
-   "max": 5537.044200999958,
-   "p50": 17.384557000013956,
-   "p95": 30.584912399990564
+   "decisions": 69075,
+   "max": 298.7031940028828,
+   "p50": 70.94578300166177,
+   "p95": 201.07638859917643
   },
-  "transitions": 23730,
-  "imagined": 4324443,
+  "transitions": 24174,
+  "imagined": 3906315,
   "record_writes": {
-   "drop_writes": 166110,
-   "line_writes": 1057850,
-   "value_writes": 65476
+   "drop_writes": 169218,
+   "line_writes": 1067618,
+   "value_writes": 67357
   },
   "parameters": {
    "critic_parameters": 17,
@@ -246,49 +280,49 @@
    },
    {
     "name": "paired_random",
-    "value": 0.995,
+    "value": 0.9994,
     "threshold": 0.85,
     "passed": true
    },
    {
     "name": "paired_random_seed_floor",
-    "value": 0.995,
+    "value": 0.999,
     "threshold": 0.7,
     "passed": true
    },
    {
     "name": "paired_one_ply",
-    "value": 0.966,
+    "value": 0.9945999999999999,
     "threshold": 0.6,
     "passed": true
    },
    {
     "name": "paired_one_ply_seed_floor",
-    "value": 0.96,
+    "value": 0.992,
     "threshold": 0.5,
     "passed": true
    },
    {
     "name": "planning_gain",
-    "value": 0.6685,
+    "value": 0.11410000000000002,
     "threshold": 0.1,
     "passed": true
    },
    {
     "name": "corrupted_dynamics_loss",
-    "value": 0.8545,
+    "value": 0.8074,
     "threshold": 0.15,
     "passed": true
    },
    {
     "name": "continual_old_loss",
-    "value": 0.006249999999999978,
+    "value": -0.0006000000000000005,
     "threshold": 0.05,
     "passed": true
    },
    {
     "name": "latency_p95_ms",
-    "value": 30.584912399990564,
+    "value": 201.07638859917643,
     "threshold": 1000,
     "passed": true
    },
@@ -300,5 +334,5 @@
    }
   ]
  },
- "release": "checkpoints-2026-09-16"
+ "release": "checkpoints-2026-09-16-connect-four"
 }

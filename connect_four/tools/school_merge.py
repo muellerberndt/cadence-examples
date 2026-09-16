@@ -35,9 +35,12 @@ def main() -> None:
     p.add_argument("--max-stones", type=int, default=24)
     p.add_argument("--limit", type=int, default=60000)
     p.add_argument("--wins-limit", type=int, default=80000, help="boards with winners' columns kept: the fewest stones, then the most games")
+    p.add_argument("--drop-life-proofs", action="store_true", help="forget the proofs the life recorded while its records were still learning; keep the school's")
     a = p.parse_args()
     brain = Brain.load(a.stem)
     before = len(brain.planner.memory)
+    if a.drop_life_proofs:
+        brain.planner.memory = {}
     games = {"win": 0, "draw": 0, "loss": 0}
     for file in a.school:
         s = json.loads(file.read_text())
