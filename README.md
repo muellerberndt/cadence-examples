@@ -1,6 +1,6 @@
 # Cadence examples
 
-[Website](https://floatingpragma.io/) · [Cadence](https://floatingpragma.io/cadence/) · [Library](https://github.com/muellerberndt/cadence)
+[Website](https://floatingpragma.io/) · [Cadence](https://floatingpragma.io/cadence/) · [Live brains](https://floatingpragma.io/cadence-examples/) · [Library](https://github.com/muellerberndt/cadence)
 
 Four applications that learn through one stream of experience: observe, remember, predict,
 act, learn from the outcome. Each entry links its page, its acceptance receipt and the
@@ -13,7 +13,7 @@ A two-link arm learns its own body from motor babbling, reaches targets through 
 over the consequences it has recorded, copies what a visitor draws, adapts to a longer
 link without a reset and returns to its original body.
 
-- Page: [arm/index.html](arm/index.html) (draw a figure; the arm copies it while
+- Page: https://floatingpragma.io/cadence-examples/arm/ (draw a figure; the arm copies it while
   the whole brain runs beside it; a checkpoint selector loads intermediate states of the life).
 - Receipt: [arm/receipt.json](arm/receipt.json), five acceptance seeds. Measured: held-out
   reaching 99% (gate 0.9, each seed at least 98%); copier
@@ -45,7 +45,7 @@ In a 6 by 6 world seen one cell at a time, one life learns the consequences of i
 actions, remembers where it saw an object, corrects that memory when the object moves,
 holds a cue across a delay, adapts to doors that stop opening and grounds words in objects.
 
-- Page: [world/index.html](world/index.html) (the world, the four stores, the
+- Page: https://floatingpragma.io/cadence-examples/world/ (the world, the four stores, the
   records cortex and the whole brain, phase by phase).
 - Receipt: [world/receipt.json](world/receipt.json), five acceptance seeds. Measured:
   requests fulfilled 100% with memory and 18% with the memory
@@ -77,7 +77,7 @@ strokes leave, and then draws requested figures it has never seen, replanning fr
 canvas shows after every stroke; a longer link and an offset canvas change the body and the
 world mid-drawing and it keeps drawing.
 
-- Page: [artist/index.html](artist/index.html) (draw a figure; the artist draws
+- Page: https://floatingpragma.io/cadence-examples/artist/ (draw a figure; the artist draws
   it stroke by stroke with the whole brain live beside it; a checkpoint selector loads the
   life after scribbling, after the segments, after the strokes and at the end).
 - Receipt: [artist/receipt.json](artist/receipt.json), five acceptance seeds. Measured:
@@ -102,7 +102,7 @@ One life learns what a dropped stone does, which windows of four cells are compl
 and what positions are worth, from the games it plays, and chooses its moves by searching
 over what it learned: no board object, no terminal oracle, no minimax labels.
 
-- Page: [connect_four/index.html](connect_four/index.html) (play against the brain
+- Page: https://floatingpragma.io/cadence-examples/connect_four/ (play against the brain
   while it keeps learning from the game, with the whole brain live beside the board). The
   page's brain is seed 10 of the five-seed acceptance run, trained against Pascal Pons'
   perfect solver at graded strengths and then schooled against it: it reads the threats on a
