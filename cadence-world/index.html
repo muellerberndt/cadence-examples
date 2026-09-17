@@ -57,7 +57,12 @@
   .believed { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); min-height: 2.4em; margin-top: 6px; }
   .believed b { color: var(--ink); font-weight: 500; }
   #complexity { width: 100%; height: auto; display: block; }
+  .board { background: var(--panel); border: 1px solid var(--line); padding: 8px 10px; }
+  .board h2 { display: flex; justify-content: space-between; gap: 8px; }
+  .board h2 small { font-family: var(--font-mono); font-weight: 400; font-size: 11px; color: var(--ink-3); letter-spacing: 0; }
   .lineages { display: grid; gap: 4px; }
+  .lineage.lead span, .lineage.lead b { color: var(--sun); }
+  .lineage.shown i { box-shadow: 0 0 0 2px var(--sun); }
   .lineage { display: grid; grid-template-columns: 12px 1fr 34px; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 11px; }
   .lineage i { width: 12px; height: 12px; border-radius: 50%; display: block; }
   .lineage .bar { height: 6px; background: var(--line); position: relative; }
@@ -89,7 +94,7 @@
   <div class="left">
     <div class="world" id="world">
       <canvas id="gl"></canvas>
-      <div class="hint">drag to orbit · wheel to zoom · shift-drag to pan<br>click a creature to open its brain</div>
+      <div class="hint">drag to orbit · wheel to zoom · shift-drag to pan<br>click a creature to open its brain; the ring marks the one shown</div>
       <div class="caption" id="caption">What is <span>press 1 2 3</span></div>
     </div>
     <div class="legend">
@@ -107,6 +112,11 @@
   </div>
 
   <aside>
+    <div class="board">
+      <h2>Lineages <small id="lead"></small></h2>
+      <div class="lineages" id="lineages"></div>
+    </div>
+
     <div class="views" role="group" aria-label="View">
       <button class="view" data-view="is" aria-pressed="true"><kbd>1</kbd><span><b>What is</b><small>soil, food, rock, the sun, every creature and what it does</small></span></button>
       <button class="view" data-view="known" aria-pressed="false"><kbd>2</kbd><span><b>What is known</b><small>the union of the living observers' records; dark where none has looked</small></span></button>
@@ -114,10 +124,10 @@
     </div>
 
     <div>
-      <h2>The selected brain, live</h2>
+      <h2>A brain, live</h2>
       <canvas id="brain" width="340" height="440"></canvas>
       <div id="believed" class="believed">Click a creature.</div>
-      <div class="row" style="margin-top:6px"><button class="act" id="follow" aria-pressed="false">Follow it</button><button class="act" id="eldest">The eldest</button><button class="act" id="biggest">The biggest brain</button><button class="act" id="hunter">A hunter</button><button class="act" id="halves">Two halves</button></div>
+      <div class="row" style="margin-top:6px"><button class="act" id="winners" aria-pressed="true">A winner's brain</button><button class="act" id="follow" aria-pressed="false">Follow it</button><button class="act" id="eldest">The eldest</button><button class="act" id="biggest">The biggest brain</button><button class="act" id="hunter">A hunter</button><button class="act" id="halves">Two halves</button></div>
     </div>
 
     <dl class="counters">
@@ -140,15 +150,10 @@
       <canvas id="complexity" width="340" height="70"></canvas>
     </div>
 
-    <div>
-      <h2>Lineages</h2>
-      <div class="lineages" id="lineages"></div>
-    </div>
-
     <div class="controls">
       <div class="row">
         <button class="act" id="pause">Pause</button>
-        <label>ticks per second <input type="range" id="speed" min="0" max="7" value="3"> <span id="speed-v">4</span></label>
+        <label>ticks per second <input type="range" id="speed" min="0" max="7" value="6"> <span id="speed-v">30</span></label>
       </div>
       <div class="row">
         <button class="act" id="rain">Rain food</button>
@@ -602,8 +607,9 @@ function resize() { const r = glCanvas.parentElement.getBoundingClientRect(); re
 addEventListener('resize', resize);
 
 // ---------- the clock: simulation ticks at a chosen rate, frames in between ----------
-let sub, pop, seed = 0, view = 'is', paused = false, rate = 4, acc = 0, lastNow = performance.now(), chosen = null, mass0 = 0, frame = 0;
+let sub, pop, seed = 0, view = 'is', paused = false, rate = 30, acc = 0, lastNow = performance.now(), chosen = null, mass0 = 0, frame = 0;
 const anims = []; // {kind, t0, ...} from the population's events; age = simTime - t0
+let leader = null, autoBrain = true;
 const ticker = []; let eatSeen = 0;
 function simTime() { return sub.tick + Math.min(acc, 1); }
 function tick() {
@@ -615,6 +621,13 @@ function tick() {
   }
   if (anims.length > 4000) anims.splice(0, anims.length - 4000);
   if (sub.tick % 50 === 0) { history.push(stats()); if (history.length > 400) history.shift(); }
+  if (autoBrain && (!chosen || chosen.dead)) pickWinner();
+}
+function pickWinner() { // a random member of the leading lineage
+  const counts = new Map(); for (const c of pop.creatures) counts.set(c.lineage, (counts.get(c.lineage) || 0) + 1);
+  let best = null, n = 0; for (const [l, k] of counts) if (k > n) { n = k; best = l; }
+  const m = pop.creatures.filter(c => c.lineage === best); if (!m.length) return;
+  chosen = m[(Math.random() * m.length) | 0]; glowFor = null;
 }
 function say(e) {
   const id = c => `<b>#${c.id}</b>`; let line = null, cls = e.kind;
@@ -782,8 +795,10 @@ function drawComplexity() {
 function lineagePanel() {
   const counts = new Map(), hueOf = new Map();
   for (const c of pop.creatures) { counts.set(c.lineage, (counts.get(c.lineage) || 0) + 1); if (!hueOf.has(c.lineage)) hueOf.set(c.lineage, c.g.hue); }
-  const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8); const max = top.length ? top[0][1] : 1;
-  document.getElementById('lineages').innerHTML = top.map(([l, n]) => `<div class="lineage"><i style="background:hsl(${hueOf.get(l) * 360 | 0} 70% 60%)"></i><div class="bar"><b style="width:${(100 * n / max) | 0}%;background:hsl(${hueOf.get(l) * 360 | 0} 60% 55%)"></b></div><span>${n}</span></div>`).join('') || '<span class="lineage">none alive</span>';
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 7); const max = top.length ? top[0][1] : 1;
+  leader = top.length ? top[0][0] : null;
+  document.getElementById('lineages').innerHTML = top.map(([l, n], k) => `<div class="lineage${k === 0 ? ' lead' : ''}${chosen && !chosen.dead && chosen.lineage === l ? ' shown' : ''}"><i style="background:hsl(${hueOf.get(l) * 360 | 0} 70% 60%)"></i><div class="bar"><b style="width:${(100 * n / max) | 0}%;background:hsl(${hueOf.get(l) * 360 | 0} 60% 55%)"></b></div><span>${n}</span></div>`).join('') || '<span class="lineage">none alive</span>';
+  if (leader !== null) { const m = pop.creatures.filter(c => c.lineage === leader); const ctx = m.reduce((a, c) => a + c.brain.cortices.length, 0) / m.length, cells = m.reduce((a, c) => a + c.brain.cellsTotal, 0) / m.length, hunters = m.filter(c => c.bites > 0 && c.bites >= c.eats).length; document.getElementById('lead').textContent = `leader: ${m.length} alive, ${ctx.toFixed(1)} cortices, ${cells | 0} cells, ${hunters} hunters`; }
 }
 function stats() {
   const cs = pop.creatures, n = Math.max(cs.length, 1); let cells = 0, ctx = 0, read = 0, speak = 0, hears = 0, hor = 0, inner = 0, halves = 0, hunters = 0, grazers = 0;
@@ -800,14 +815,15 @@ function counters() {
   const b = document.getElementById('believed');
   if (chosen && chosen.dead) b.innerHTML = `<b>creature ${chosen.id}</b> died at tick ${chosen.diedAt} after ${chosen.eats} meals and ${chosen.bites} bites. Its records left the known world with it.`;
   else if (chosen) b.innerHTML = `<b>creature ${chosen.id}</b>, lineage ${chosen.lineage}, age ${chosen.age}, holds ${chosen.energy}${chosen.carried ? ' and carries soil' : ''}. ${chosen.eats} meals, ${chosen.bites} bites given, ${chosen.bitten} taken. ${chosen.brain.cortices.length} ${chosen.brain.cortices.length > 1 ? 'cortices' : 'cortex'}, ${chosen.brain.cellsTotal} cells. Last: ${chosen.brain.actions[chosen.last]} → ${OUTCOMES[chosen.outcome]}.`;
-  else b.textContent = 'Click a creature to open its brain and follow its day.';
+  else b.textContent = 'A random brain of the leading lineage is shown; click a creature to see its own.';
 }
 
 // ---------- state ----------
-const followBtn = document.getElementById('follow');
+const followBtn = document.getElementById('follow'), winnersBtn = document.getElementById('winners');
+winnersBtn.addEventListener('click', () => { autoBrain = true; winnersBtn.setAttribute('aria-pressed', 'true'); chosen = null; pickWinner(); });
 function rulesFromBoxes() { const r = {}; for (const k of Object.keys(DEFAULT_RULES)) r[k] = document.getElementById('r-' + k).checked; return r; }
-function reseed() { seed++; sub = new Substrate(seed, rulesFromBoxes()); pop = new Population(sub, seed + 100); mass0 = pop.mass; chosen = null; history.length = 0; anims.length = 0; ticker.length = 0; acc = 0; cam.follow = false; followBtn.setAttribute('aria-pressed', 'false'); }
-function select(c) { chosen = c; glowFor = null; }
+function reseed() { seed++; sub = new Substrate(seed, rulesFromBoxes()); pop = new Population(sub, seed + 100); mass0 = pop.mass; chosen = null; history.length = 0; anims.length = 0; ticker.length = 0; acc = 0; cam.follow = false; autoBrain = true; winnersBtn.setAttribute('aria-pressed', 'true'); followBtn.setAttribute('aria-pressed', 'false'); }
+function select(c) { chosen = c; glowFor = null; autoBrain = false; winnersBtn.setAttribute('aria-pressed', 'false'); }
 function focus(c) { if (!c) return; select(c); cam.follow = true; followBtn.setAttribute('aria-pressed', 'true'); cam.dist = Math.min(cam.dist, 22); }
 function setView(v) { view = v; document.querySelectorAll('.view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v))); document.getElementById('caption').firstChild.textContent = { is: 'What is', known: 'What is known', believes: 'What one believes' }[v] + ' '; }
 document.querySelectorAll('.view').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
