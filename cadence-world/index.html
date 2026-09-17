@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Witnessed World</title>
+<meta name="description" content="A conserved-mass world under a moving sun, observed by creatures whose brains are inherited as wiring and learned as records.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --ground: #0a0c11; --panel: #11141b; --line: #232833;
+    --ink: #ddd6c6; --ink-2: #8d8a80; --ink-3: #5a5a58;
+    --sun: #f0c56a; --leaf: #b6e264; --alert: #e0679a;
+    --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding-inline: 20px; padding-block: 16px 32px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 22px; margin-bottom: 12px; }
+  h1 { font-family: var(--font-display); font-weight: 300; font-size: 30px; letter-spacing: -0.01em; margin: 0; font-variation-settings: "opsz" 72; }
+  h1 em { font-style: italic; color: var(--sun); }
+  header p { margin: 0; color: var(--ink-2); max-width: 66ch; }
+  .stage { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 18px; align-items: start; }
+  .world { position: relative; height: min(78vh, 820px); min-height: 360px; background: #000; border: 1px solid var(--line); overflow: hidden; }
+  .world canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  .caption { position: absolute; left: 10px; bottom: 8px; font-family: var(--font-display); font-size: 15px; text-shadow: 0 1px 6px #000, 0 0 2px #000; pointer-events: none; }
+  .caption span { color: var(--ink-2); font-family: var(--font-mono); font-size: 11px; margin-left: 10px; letter-spacing: 0.06em; }
+  .hint { position: absolute; right: 10px; top: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); text-shadow: 0 1px 4px #000; pointer-events: none; text-align: right; }
+  aside { display: flex; flex-direction: column; gap: 16px; }
+  .views { display: grid; gap: 6px; }
+  .view { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: baseline; text-align: left; background: var(--panel); border: 1px solid var(--line); color: var(--ink); padding: 7px 10px; cursor: pointer; font: inherit; }
+  .view kbd { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); border: 1px solid var(--line); padding: 1px 5px; text-align: center; }
+  .view b { font-family: var(--font-display); font-weight: 600; font-size: 15px; display: block; }
+  .view small { color: var(--ink-2); display: block; font-size: 12px; }
+  .view[aria-pressed="true"] { border-color: var(--sun); }
+  .view[aria-pressed="true"] kbd { color: var(--sun); border-color: var(--sun); }
+  .view:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; }
+  .counters { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; margin: 0; }
+  .counters dt { color: var(--ink-2); }
+  .counters dd { margin: 0; text-align: right; }
+  .counters dd.ok { color: var(--leaf); } .counters dd.bad { color: var(--alert); }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 14px; margin: 0 0 6px; color: var(--ink-2); letter-spacing: 0.02em; }
+  #brain { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--line); }
+  .believed { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); min-height: 2.4em; margin-top: 6px; }
+  .believed b { color: var(--ink); font-weight: 500; }
+  #complexity { width: 100%; height: auto; display: block; }
+  .lineages { display: grid; gap: 4px; }
+  .lineage { display: grid; grid-template-columns: 12px 1fr 34px; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 11px; }
+  .lineage i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .lineage .bar { height: 6px; background: var(--line); position: relative; }
+  .lineage .bar b { position: absolute; inset: 0 auto 0 0; }
+  .lineage span { text-align: right; color: var(--ink-2); }
+  .controls { display: grid; gap: 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  button.act { font: inherit; font-size: 12px; background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 10px; cursor: pointer; }
+  button.act:hover { border-color: var(--ink-2); }
+  button.act[aria-pressed="true"] { border-color: var(--sun); color: var(--sun); }
+  label { color: var(--ink-2); font-size: 12px; display: flex; gap: 8px; align-items: center; }
+  input[type=range] { accent-color: var(--sun); width: 110px; }
+  .rules { color: var(--ink-2); font-size: 12.5px; max-width: 64ch; }
+  .rules p { margin: 0 0 6px; }
+  code { font-family: var(--font-mono); font-size: 11.5px; }
+  @media (max-width: 820px) { .stage { grid-template-columns: 1fr; } .world { height: 70vh; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Witnessed <em>World</em></h1>
+  <p>Mass conserved, one sun, local rules. The creatures inherit the wiring of a brain and learn its records in one life; a larger brain costs more to run. The default view draws the world from what the living have seen.</p>
+</header>
+
+<div class="stage">
+  <div class="world" id="world">
+    <canvas id="gl"></canvas>
+    <div class="hint">drag to orbit · wheel to zoom · shift-drag to pan<br>click a creature to open its brain</div>
+    <div class="caption" id="caption">What is known <span>press 1 2 3</span></div>
+  </div>
+
+  <aside>
+    <div class="views" role="group" aria-label="View">
+      <button class="view" data-view="is" aria-pressed="false"><kbd>1</kbd><span><b>What is</b><small>soil, food as height, the sun, every creature</small></span></button>
+      <button class="view" data-view="known" aria-pressed="true"><kbd>2</kbd><span><b>What is known</b><small>the union of the living observers' records; dark where none has looked</small></span></button>
+      <button class="view" data-view="believes" aria-pressed="false"><kbd>3</kbd><span><b>What one believes</b><small>the selected creature's own records</small></span></button>
+    </div>
+
+    <div>
+      <h2>The selected brain, live</h2>
+      <canvas id="brain" width="330" height="320"></canvas>
+      <div id="believed" class="believed">Click a creature.</div>
+      <div class="row" style="margin-top:6px"><button class="act" id="follow" aria-pressed="false">Follow it</button><button class="act" id="eldest">Select the eldest</button><button class="act" id="biggest">Select the biggest brain</button></div>
+    </div>
+
+    <dl class="counters">
+      <dt>tick</dt><dd id="c-tick">0</dd>
+      <dt>alive</dt><dd id="c-alive">0</dd>
+      <dt>born / died</dt><dd id="c-births">0 / 0</dd>
+      <dt>mass: soil + food + held</dt><dd id="c-mass">0</dd>
+      <dt>conserved</dt><dd id="c-ok" class="ok">yes</dd>
+      <dt>cells witnessed</dt><dd id="c-seen">0%</dd>
+      <dt>records wrong by ≥2</dt><dd id="c-err">0%</dd>
+      <dt>mean brain cells</dt><dd id="c-cells">0</dd>
+      <dt>mean reading units</dt><dd id="c-read">0</dd>
+      <dt>with symbols / with ears</dt><dd id="c-sym">0% / 0%</dd>
+      <dt>sun contrast</dt><dd id="c-sun">0.00</dd>
+    </dl>
+
+    <div>
+      <h2>Brain size and speech over time</h2>
+      <canvas id="complexity" width="330" height="70"></canvas>
+    </div>
+
+    <div>
+      <h2>Lineages</h2>
+      <div class="lineages" id="lineages"></div>
+    </div>
+
+    <div class="controls">
+      <div class="row">
+        <button class="act" id="pause">Pause</button>
+        <label>speed <input type="range" id="speed" min="0" max="8" value="2"> <span id="speed-v">2×</span></label>
+      </div>
+      <div class="row">
+        <button class="act" id="rain">Rain food</button>
+        <button class="act" id="eclipse">Eclipse</button>
+        <button class="act" id="cull">Cull a lineage</button>
+        <button class="act" id="reseed">New world</button>
+      </div>
+    </div>
+
+    <div class="rules">
+      <p>Per tick, per cell: with probability 0.08 × light a unit of soil becomes food; with 0.01 food becomes soil; with 0.05 a unit of soil steps to a neighbour. Food is drawn as height.</p>
+      <p>A creature reads a window of cells, its energy, the light and what it last did, as one binary reading. A fixed sparse expansion, developed from its genome, turns the reading into a few active cells; each active cell holds one record per action of the mass that followed. It acts on the mean of those records, and after the outcome writes the error into exactly those cells. The genome carries the window radius, the number of cells, how many fire, the learning rate, the horizon, the exploration, and the number of symbols it can utter; a split mutates it.</p>
+      <p>Each tick a creature loses a unit to the soil under it with probability 0.08 + 0.0004 per reading unit + 0.01 per 256 cells + 0.002 per active cell + 0.05 if it moved + 0.02 if it spoke. At 24 units it splits. At 0 it dies and its records leave the known world.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+'use strict';
+// ---------- Mulberry32, the generator the Python world uses ----------
+function Mulberry(seed) { this.s = seed >>> 0; }
+Mulberry.prototype.random = function () {
+  let a = (this.s = (this.s + 0x6D2B79F5) >>> 0);
+  let t = Math.imul(a ^ (a >>> 15), a | 1) >>> 0;
+  t = (t ^ (t + Math.imul(t ^ (t >>> 7), t | 61))) >>> 0;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+// ---------- the substrate ----------
+const CFG = { w: 96, h: 96, soil: 6, grow: 0.08, decay: 0.01, diffuse: 0.05, day: 900, season: 9000, contrastMin: 0.25, foodCap: 8 };
+const POP = { initial: 300, birth: 12, splitAt: 24, max: 1500, base: 0.08, move: 0.05, emit: 0.02, read: 0.0004, cell: 0.01 / 256, write: 0.002 };
+const N = CFG.w * CFG.h;
+const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+const BASE_ACTIONS = ['north', 'east', 'south', 'west', 'eat', 'wait'];
+const OUTCOMES = ['none', 'moved', 'blocked', 'ate', 'spoke'];
+
+class Substrate {
+  constructor(seed) {
+    this.rng = new Mulberry(seed); this.tick = 0;
+    this.soil = new Int32Array(N).fill(CFG.soil); this.food = new Int32Array(N);
+    this.lightRow = new Float64Array(CFG.w); this.contrast = 0; this.eclipse = 0; this.peak = 0;
+  }
+  light() {
+    const t = this.tick;
+    let c = CFG.contrastMin + (1 - CFG.contrastMin) * 0.5 * (1 - Math.cos(2 * Math.PI * t / CFG.season));
+    if (this.eclipse > 0) { c *= 0.15; this.eclipse--; }
+    this.contrast = c; this.peak = ((t / CFG.day) % 1) * CFG.w;
+    for (let x = 0; x < CFG.w; x++) this.lightRow[x] = 0.5 + 0.5 * c * Math.cos(2 * Math.PI * (x / CFG.w - t / CFG.day));
+  }
+  step() {
+    this.light();
+    const { soil, food, rng } = this;
+    for (let i = 0; i < N; i++) { const u = rng.random(); if (u < CFG.grow * this.lightRow[i % CFG.w] && soil[i] > 0 && food[i] < CFG.foodCap) { soil[i]--; food[i]++; } }
+    for (let i = 0; i < N; i++) { const u = rng.random(); if (u < CFG.decay && food[i] > 0) { food[i]--; soil[i]++; } }
+    const leaving = new Uint8Array(N), dir = new Uint8Array(N);
+    for (let i = 0; i < N; i++) { const u = rng.random(); leaving[i] = (u < CFG.diffuse && soil[i] > 0) ? 1 : 0; }
+    for (let i = 0; i < N; i++) { const d = rng.random(); dir[i] = Math.min((d * 4) | 0, 3); }
+    for (let i = 0; i < N; i++) if (leaving[i]) {
+      soil[i]--; const x = i % CFG.w, y = (i / CFG.w) | 0; const [dx, dy] = DIRS[dir[i]];
+      soil[((y + dy + CFG.h) % CFG.h) * CFG.w + (x + dx + CFG.w) % CFG.w]++;
+    }
+    this.tick++;
+  }
+  get mass() { let m = 0; for (let i = 0; i < N; i++) m += this.soil[i] + this.food[i]; return m; }
+}
+
+// ---------- the genome: what is inherited ----------
+const GENE = {
+  radius: [1, 2], cells: [128, 256, 512, 1024], active: [4, 8, 16, 32], fanin: [4, 6, 8, 12],
+  eps: [0.02, 0.05, 0.1, 0.2], lr: [0.05, 0.1, 0.2, 0.4], gamma: [0, 0.3, 0.6, 0.9], symbols: [0, 1, 2, 4], ear: [0, 1],
+};
+function firstGenome(rng) {
+  return { radius: 0, cells: 1, active: 1, fanin: 2, eps: 2, lr: 2, gamma: 2, symbols: 0, ear: 0, wiring: (rng.random() * 4294967296) >>> 0, hue: rng.random() };
+}
+function mutate(g, rng) {
+  const c = Object.assign({}, g);
+  for (const k of Object.keys(GENE)) if (rng.random() < 0.12) { const n = GENE[k].length; c[k] = Math.max(0, Math.min(n - 1, c[k] + (rng.random() < 0.5 ? -1 : 1))); }
+  if (rng.random() < 0.05) c.wiring = (rng.random() * 4294967296) >>> 0;
+  c.hue = (((g.hue + (rng.random() - 0.5) * 0.02) % 1) + 1) % 1;
+  return c;
+}
+const G = (g, k) => GENE[k][g[k]];
+
+// ---------- the brain: a records cortex developed from the genome ----------
+class Brain {
+  constructor(g) {
+    this.g = g;
+    const r = G(g, 'radius'); this.r = r; this.nWin = (2 * r + 1) ** 2;
+    this.K = G(g, 'symbols'); this.ear = G(g, 'ear'); this.A = 6 + this.K;
+    this.foodOff = 0; this.occOff = this.nWin * 9; this.energyOff = this.occOff + this.nWin; this.outcomeOff = this.energyOff + 4; this.lightOff = this.outcomeOff + 5;
+    this.earOff = this.lightOff + 3; this.D = this.earOff + (this.ear ? this.K + 1 : 0);
+    this.M = G(g, 'cells'); this.k = Math.min(G(g, 'active'), this.M >> 3); this.fanin = G(g, 'fanin');
+    // development: the fixed sparse expansion, the same for the same wiring seed and layout
+    const dev = new Mulberry(g.wiring ^ (this.D * 2654435761));
+    this.idx = new Int32Array(this.M * this.fanin); this.w = new Int8Array(this.M * this.fanin);
+    for (let i = 0; i < this.idx.length; i++) { this.idx[i] = (dev.random() * this.D) | 0; this.w[i] = dev.random() < 0.7 ? 1 : -1; }
+    this.records = new Float32Array(this.M * this.A);
+    this.x = new Uint8Array(this.D); this.act = new Int32Array(this.M); this.active = new Int32Array(this.k);
+    this.q = new Float32Array(this.A); this.prevActive = null; this.prevAction = -1; this.lastDelta = 0;
+    this.eps = G(g, 'eps'); this.lr = G(g, 'lr'); this.gamma = G(g, 'gamma');
+  }
+  read(pop, c) { // the reading: binary units
+    const x = this.x; x.fill(0); const s = pop.sub, r = this.r; let q = 0;
+    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++, q++) {
+      const i = ((c.y + dy + CFG.h) % CFG.h) * CFG.w + (c.x + dx + CFG.w) % CFG.w;
+      x[this.foodOff + q * 9 + Math.min(s.food[i], 8)] = 1;
+      if (pop.occ[i] >= 0 && pop.occ[i] !== c.slot) x[this.occOff + q] = 1;
+    }
+    x[this.energyOff + Math.min(3, (c.energy * 4 / POP.splitAt) | 0)] = 1;
+    x[this.outcomeOff + c.outcome] = 1;
+    const l = s.lightRow[c.x]; x[this.lightOff + (l < 0.4 ? 0 : l < 0.6 ? 1 : 2)] = 1;
+    if (this.ear) x[this.earOff + Math.min(c.heard, this.K)] = 1;
+  }
+  code() { // the fixed expansion, winner-take-all: the k most driven cells, ties to the lower index
+    const { M, fanin, idx, w, x, act } = this;
+    for (let m = 0; m < M; m++) { let a = 0; const b = m * fanin; for (let j = 0; j < fanin; j++) a += w[b + j] * x[idx[b + j]]; act[m] = a; }
+    // counting sort over the integer range [-fanin, fanin]
+    const counts = new Int32Array(2 * fanin + 1); for (let m = 0; m < M; m++) counts[act[m] + fanin]++;
+    let need = this.k, threshold = fanin, over = 0;
+    for (let v = 2 * fanin; v >= 0; v--) { if (counts[v] >= need) { threshold = v - fanin; over = need; break; } need -= counts[v]; threshold = v - fanin - 1; }
+    let n = 0, atT = 0;
+    for (let m = 0; m < M && n < this.k; m++) { if (act[m] > threshold) this.active[n++] = m; else if (act[m] === threshold && atT < over) { this.active[n++] = m; atT++; } }
+    while (n < this.k) this.active[n++] = 0;
+  }
+  predict() { const q = this.q; q.fill(0); for (let j = 0; j < this.k; j++) { const b = this.active[j] * this.A; for (let a = 0; a < this.A; a++) q[a] += this.records[b + a]; } for (let a = 0; a < this.A; a++) q[a] /= this.k; }
+  learn(reward) { // one write into exactly the cells the previous reading touched
+    if (!this.prevActive) return;
+    let best = -Infinity; for (let a = 0; a < this.A; a++) if (this.q[a] > best) best = this.q[a];
+    const target = reward + this.gamma * best, a = this.prevAction; let delta = 0;
+    for (let j = 0; j < this.k; j++) { const i = this.prevActive[j] * this.A + a; const d = target - this.records[i]; this.records[i] += this.lr * d; delta += d; }
+    this.lastDelta = delta / this.k;
+  }
+  choose(rng) {
+    const u = rng.random(); let a;
+    if (u < this.eps) a = (rng.random() * this.A) | 0;
+    else { let best = -Infinity; a = 0; for (let i = 0; i < this.A; i++) if (this.q[i] > best) { best = this.q[i]; a = i; } }
+    this.prevActive = this.active.slice(); this.prevAction = a; return a;
+  }
+  get price() { return POP.read * this.D + POP.cell * this.M + POP.write * this.k; }
+}
+
+// ---------- the population, with the known view kept incrementally ----------
+class Population {
+  constructor(sub, seed) {
+    this.sub = sub; this.rng = new Mulberry(seed); this.nextId = 0; this.creatures = []; this.births = 0; this.deaths = 0;
+    this.count = new Int32Array(N); this.sum = new Float64Array(N); this.sumsq = new Float64Array(N); this.sumTick = new Float64Array(N);
+    this.occ = new Int32Array(N).fill(-1); this.spoken = [];
+    for (let k = 0; k < POP.initial; k++) {
+      const x = (this.rng.random() * CFG.w) | 0, y = (this.rng.random() * CFG.h) | 0;
+      if (this.occ[y * CFG.w + x] >= 0) continue;
+      this.spawn(x, y, POP.birth, firstGenome(this.rng), null, null);
+    }
+  }
+  spawn(x, y, energy, g, lineage, parent) {
+    const id = this.nextId++;
+    const c = { id, x, y, energy, g, brain: new Brain(g), lineage: lineage === null ? id : lineage, parent, born: this.sub.tick, age: 0, last: 5, outcome: 0, heard: 0, symbol: 0, symbolPrev: 0, mem: new Map(), slot: -1 };
+    this.creatures.push(c); return c;
+  }
+  get held() { let m = 0; for (const c of this.creatures) m += c.energy; return m; }
+  get mass() { return this.sub.mass + this.held; }
+  record(c, i, food) {
+    const old = c.mem.get(i);
+    if (old !== undefined) { const f = old & 15, t = old >>> 4; this.count[i]--; this.sum[i] -= f; this.sumsq[i] -= f * f; this.sumTick[i] -= t; }
+    c.mem.set(i, food | (this.sub.tick << 4));
+    this.count[i]++; this.sum[i] += food; this.sumsq[i] += food * food; this.sumTick[i] += this.sub.tick;
+  }
+  forget(c) { for (const [i, v] of c.mem) { const f = v & 15, t = v >>> 4; this.count[i]--; this.sum[i] -= f; this.sumsq[i] -= f * f; this.sumTick[i] -= t; } c.mem.clear(); }
+  reindex() { this.occ.fill(-1); this.creatures.forEach((c, k) => { c.slot = k; this.occ[c.y * CFG.w + c.x] = k; }); }
+  hear(c) { // the nearest speaker within two cells, last tick
+    for (let d = 1; d <= 2; d++) for (let dy = -d; dy <= d; dy++) for (let dx = -d; dx <= d; dx++) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) !== d) continue;
+      const k = this.occ[((c.y + dy + CFG.h) % CFG.h) * CFG.w + (c.x + dx + CFG.w) % CFG.w];
+      if (k >= 0 && this.creatures[k].symbolPrev > 0) return this.creatures[k].symbolPrev;
+    }
+    return 0;
+  }
+  step() {
+    const s = this.sub, cs = this.creatures, n = cs.length; this.reindex(); this.spoken.length = 0;
+    for (const c of cs) { c.symbolPrev = c.symbol; c.symbol = 0; }
+    const order = new Int32Array(n); for (let i = 0; i < n; i++) order[i] = i;
+    const draws = new Float64Array(Math.max(n - 1, 0)); for (let i = 0; i < draws.length; i++) draws[i] = this.rng.random();
+    for (let i = n - 1; i > 0; i--) { const j = (draws[n - 1 - i] * (i + 1)) | 0; const t = order[i]; order[i] = order[j]; order[j] = t; }
+    for (let q = 0; q < n; q++) {
+      const k = order[q], c = cs[k], b = c.brain; c.age++;
+      const r = b.r;
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { const i = ((c.y + dy + CFG.h) % CFG.h) * CFG.w + (c.x + dx + CFG.w) % CFG.w; this.record(c, i, s.food[i]); }
+      c.heard = b.ear ? this.hear(c) : 0;
+      b.read(this, c); b.code(); b.predict(); b.learn(c.reward || 0);
+      const a = b.choose(this.rng); c.last = a; c.outcome = 0; let moved = false; const before = c.energy;
+      if (a < 4) {
+        const [dx, dy] = DIRS[a]; const nx = (c.x + dx + CFG.w) % CFG.w, ny = (c.y + dy + CFG.h) % CFG.h, ni = ny * CFG.w + nx;
+        if (this.occ[ni] < 0) { this.occ[c.y * CFG.w + c.x] = -1; this.occ[ni] = k; c.x = nx; c.y = ny; moved = true; c.outcome = 1; } else c.outcome = 2;
+      } else if (a === 4) { const i = c.y * CFG.w + c.x; if (s.food[i] > 0) { s.food[i]--; c.energy++; c.outcome = 3; } }
+      else if (a >= 6) { c.symbol = a - 5; c.outcome = 4; this.spoken.push(c); }
+      const price = POP.base + b.price + (moved ? POP.move : 0) + (a >= 6 ? POP.emit : 0);
+      if (this.rng.random() < price) { c.energy--; s.soil[c.y * CFG.w + c.x]++; }
+      c.reward = c.energy - before;
+    }
+    const survivors = [];
+    for (const c of cs) { if (c.energy <= 0) { this.deaths++; this.forget(c); c.dead = true; continue; } survivors.push(c); }
+    this.creatures = survivors; this.reindex();
+    const children = [];
+    for (const c of this.creatures) {
+      if (c.energy < POP.splitAt || this.creatures.length + children.length >= POP.max) continue;
+      const free = DIRS.filter(([dx, dy]) => this.occ[((c.y + dy + CFG.h) % CFG.h) * CFG.w + (c.x + dx + CFG.w) % CFG.w] < 0);
+      if (!free.length) continue;
+      const [dx, dy] = free[(this.rng.random() * free.length) | 0];
+      const nx = (c.x + dx + CFG.w) % CFG.w, ny = (c.y + dy + CFG.h) % CFG.h;
+      const share = c.energy >> 1; c.energy -= share;
+      const g = mutate(c.g, this.rng);
+      const child = { id: this.nextId++, x: nx, y: ny, energy: share, g, brain: new Brain(g), lineage: c.lineage, parent: c.id, born: s.tick, age: 0, last: 5, outcome: 0, heard: 0, symbol: 0, symbolPrev: 0, mem: new Map(), slot: -1 };
+      this.occ[ny * CFG.w + nx] = 1; children.push(child); this.births++;
+    }
+    this.creatures.push(...children); this.reindex();
+  }
+}
+
+// ---------- the 3D world ----------
+const glCanvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x06070b); scene.fog = new THREE.Fog(0x06070b, 120, 260);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.5, 600);
+scene.add(new THREE.AmbientLight(0x8a8a9a, 0.55));
+const sunLight = new THREE.DirectionalLight(0xfff0d0, 0.9); scene.add(sunLight);
+const cellMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.96, 1, 0.96), new THREE.MeshLambertMaterial(), N);
+cellMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(cellMesh);
+const creatureMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.34, 10, 8), new THREE.MeshLambertMaterial({ emissive: 0x111111 }), POP.max);
+creatureMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(creatureMesh);
+const marker = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.07, 8, 32), new THREE.MeshBasicMaterial({ color: 0xf0c56a })); marker.rotation.x = Math.PI / 2; marker.visible = false; scene.add(marker);
+const windowBox = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({ color: 0xf0c56a })); windowBox.visible = false; scene.add(windowBox);
+const sunBar = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.6, CFG.h + 4), new THREE.MeshBasicMaterial({ color: 0xf0c56a, transparent: true, opacity: 0.55 })); scene.add(sunBar);
+const ringGeo = new THREE.RingGeometry(0.5, 0.7, 20); const rings = [];
+for (let i = 0; i < 64; i++) { const m = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.visible = false; scene.add(rings.push(m) && m); }
+const _m = new THREE.Matrix4(), _p = new THREE.Vector3(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _c = new THREE.Color();
+const cx0 = CFG.w / 2 - 0.5, cz0 = CFG.h / 2 - 0.5;
+
+// the orbit: azimuth, polar, distance, target
+const cam = { az: 0.6, pol: 0.95, dist: 110, target: new THREE.Vector3(cx0, 0, cz0), follow: false };
+function placeCamera() {
+  const t = cam.target; camera.position.set(t.x + cam.dist * Math.sin(cam.pol) * Math.sin(cam.az), t.y + cam.dist * Math.cos(cam.pol), t.z + cam.dist * Math.sin(cam.pol) * Math.cos(cam.az));
+  camera.lookAt(t);
+}
+let drag = null;
+glCanvas.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, moved: 0, pan: e.shiftKey || e.button === 2 }; glCanvas.setPointerCapture(e.pointerId); });
+glCanvas.addEventListener('pointermove', e => {
+  if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY; drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.pan) { const k = cam.dist * 0.0016; const right = new THREE.Vector3(Math.cos(cam.az), 0, -Math.sin(cam.az)), fwd = new THREE.Vector3(-Math.sin(cam.az), 0, -Math.cos(cam.az)); cam.target.addScaledVector(right, -dx * k).addScaledVector(fwd, -dy * k); cam.follow = false; followBtn.setAttribute('aria-pressed', 'false'); }
+  else { cam.az -= dx * 0.006; cam.pol = Math.max(0.12, Math.min(1.5, cam.pol - dy * 0.006)); }
+});
+glCanvas.addEventListener('pointerup', e => { if (drag && drag.moved < 6) pick(e); drag = null; });
+glCanvas.addEventListener('contextmenu', e => e.preventDefault());
+glCanvas.addEventListener('wheel', e => { e.preventDefault(); cam.dist = Math.max(6, Math.min(240, cam.dist * Math.exp(e.deltaY * 0.0012))); }, { passive: false });
+const raycaster = new THREE.Raycaster(); const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.6);
+function pick(e) {
+  const r = glCanvas.getBoundingClientRect(); const v = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  raycaster.setFromCamera(v, camera); const hit = new THREE.Vector3(); if (!raycaster.ray.intersectPlane(groundPlane, hit)) return;
+  let best = null, bd = 2.5; for (const c of pop.creatures) { const d = Math.hypot(c.x - hit.x, c.y - hit.z); if (d < bd) { bd = d; best = c; } }
+  if (best) select(best);
+}
+function resize() { const r = glCanvas.parentElement.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize);
+
+function foodRGB(f, k) { const t = Math.min(f / CFG.foodCap, 1); return [(46 + 136 * t) * k / 255, (33 + 193 * t) * k / 255, (24 + 76 * t) * k / 255]; }
+function drawWorld() {
+  const t = performance.now() / 1000;
+  for (let i = 0; i < N; i++) {
+    const x = i % CFG.w, z = (i / CFG.w) | 0; let rgb, h;
+    if (view === 'is') { h = 0.2 + sub.food[i] * 0.14; rgb = foodRGB(sub.food[i], 0.55 + 0.45 * Math.min(sub.soil[i] / 12, 1)); const l = sub.lightRow[x]; rgb[0] += 0.28 * (l - 0.5); rgb[1] += 0.18 * (l - 0.5); }
+    else if (view === 'known') {
+      const n = pop.count[i];
+      if (n === 0) { h = 0.12; rgb = [0.02, 0.02, 0.03]; }
+      else {
+        const held = pop.sum[i] / n, age = sub.tick - pop.sumTick[i] / n, variance = Math.max(pop.sumsq[i] / n - held * held, 0);
+        const k = (n === 1 ? 0.4 : n < 4 ? 0.65 : 1) * Math.max(0.3, 1 - age / 3000); h = 0.2 + held * 0.14; rgb = foodRGB(held, k);
+        if (Math.abs(held - sub.food[i]) >= 2 || variance > 1) { const sh = 0.25 + 0.25 * Math.sin(t * 2.2 + i * 0.37); rgb = [rgb[0] * (1 - sh) + 0.35 * sh, rgb[1] * (1 - sh) + 0.12 * sh, rgb[2] * (1 - sh) + 0.45 * sh]; }
+      }
+    } else {
+      const v = chosen && !chosen.dead ? chosen.mem.get(i) : undefined;
+      if (v === undefined) { h = 0.12; rgb = [0.02, 0.02, 0.03]; } else { const f = v & 15, age = sub.tick - (v >>> 4); h = 0.2 + f * 0.14; rgb = foodRGB(f, Math.max(0.3, 1 - age / 1500)); }
+    }
+    _p.set(x, h / 2, z); _s.set(1, h, 1); _m.compose(_p, _q, _s); cellMesh.setMatrixAt(i, _m); cellMesh.setColorAt(i, _c.setRGB(rgb[0], rgb[1], rgb[2]));
+  }
+  cellMesh.instanceMatrix.needsUpdate = true; cellMesh.instanceColor.needsUpdate = true;
+  const cs = pop.creatures;
+  for (let k = 0; k < POP.max; k++) {
+    if (k < cs.length) {
+      const c = cs[k], sc = 0.6 + 0.7 * Math.min(c.energy / POP.splitAt, 1), h = view === 'is' ? 0.2 + sub.food[c.y * CFG.w + c.x] * 0.14 : 0.2;
+      _p.set(c.x, h + 0.34 * sc, c.y); _s.set(sc, sc, sc); _m.compose(_p, _q, _s); creatureMesh.setMatrixAt(k, _m);
+      const dim = view === 'believes' && c !== chosen ? 0.35 : 1;
+      creatureMesh.setColorAt(k, _c.setHSL(c.g.hue, 0.7 * dim, 0.55 * dim));
+    } else { _s.set(0, 0, 0); _m.compose(_p, _q, _s); creatureMesh.setMatrixAt(k, _m); }
+  }
+  creatureMesh.instanceMatrix.needsUpdate = true; creatureMesh.instanceColor.needsUpdate = true;
+  sunBar.position.set(sub.peak, 1.2, cz0); sunBar.material.opacity = 0.2 + 0.5 * sub.contrast;
+  sunLight.position.set(sub.peak, 60, cz0 + 20); sunLight.intensity = 0.4 + 0.8 * sub.contrast;
+  // speech as rings
+  let ri = 0; for (const c of pop.spoken) { if (ri >= rings.length) break; const m = rings[ri++]; m.visible = true; m.position.set(c.x, 1.0, c.y); m.scale.setScalar(1 + 2 * ((t * 3) % 1)); m.material.color.setHSL(0.12 + c.symbol * 0.2, 0.9, 0.7); }
+  for (; ri < rings.length; ri++) rings[ri].visible = false;
+  if (chosen && !chosen.dead) {
+    marker.visible = true; marker.position.set(chosen.x, 1.4, chosen.y);
+    const w = 2 * chosen.brain.r + 1; windowBox.visible = true; windowBox.position.set(chosen.x, 0.6, chosen.y); windowBox.scale.set(w, 1.2, w);
+    if (cam.follow) cam.target.lerp(new THREE.Vector3(chosen.x, 0.3, chosen.y), 0.15);
+  } else { marker.visible = false; windowBox.visible = false; }
+  placeCamera(); renderer.render(scene, camera);
+}
+
+// ---------- the brain scan ----------
+const bc = document.getElementById('brain'), bctx = bc.getContext('2d'); let glow = null, glowFor = null;
+function drawBrain() {
+  const W = bc.width, H = bc.height; bctx.fillStyle = '#11141b'; bctx.fillRect(0, 0, W, H);
+  if (!chosen) { bctx.fillStyle = '#5a5a58'; bctx.font = '12px IBM Plex Mono, monospace'; bctx.fillText('no creature selected', 12, 24); return; }
+  const b = chosen.brain, g = chosen.g, hue = (g.hue * 360) | 0;
+  if (chosen.dead) { bctx.fillStyle = '#8d8a80'; bctx.font = '12px IBM Plex Mono, monospace'; bctx.fillText(`creature ${chosen.id} died at tick ${chosen.diedAt}`, 12, 24); return; }
+  // the reading: the window as a mini map, then the small fields
+  const r = b.r, wn = 2 * r + 1, cellPx = 60 / wn; const x0 = 12, y0 = 12;
+  for (let q = 0; q < b.nWin; q++) {
+    let f = 0; for (let v = 0; v < 9; v++) if (b.x[b.foodOff + q * 9 + v]) f = v;
+    const rgb = foodRGB(f, 1); bctx.fillStyle = `rgb(${rgb[0] * 255 | 0} ${rgb[1] * 255 | 0} ${rgb[2] * 255 | 0})`;
+    bctx.fillRect(x0 + (q % wn) * cellPx, y0 + ((q / wn) | 0) * cellPx, cellPx - 1, cellPx - 1);
+    if (b.x[b.occOff + q]) { bctx.fillStyle = '#ddd6c6'; bctx.beginPath(); bctx.arc(x0 + (q % wn + 0.5) * cellPx, y0 + (((q / wn) | 0) + 0.5) * cellPx, cellPx * 0.2, 0, 7); bctx.fill(); }
+  }
+  bctx.strokeStyle = '#f0c56a'; bctx.strokeRect(x0 + r * cellPx - 0.5, y0 + r * cellPx - 0.5, cellPx, cellPx);
+  bctx.fillStyle = '#8d8a80'; bctx.font = '10px IBM Plex Mono, monospace';
+  const fields = [['energy', b.energyOff, 4], ['last', b.outcomeOff, 5], ['light', b.lightOff, 3]]; if (b.ear) fields.push(['heard', b.earOff, b.K + 1]);
+  let fy = y0 + 4;
+  for (const [name, off, n] of fields) { bctx.fillStyle = '#8d8a80'; bctx.fillText(name, 82, fy + 8); for (let v = 0; v < n; v++) { bctx.fillStyle = b.x[off + v] ? '#f0c56a' : '#232833'; bctx.fillRect(124 + v * 9, fy, 7, 7); } fy += 13; }
+  bctx.fillStyle = '#8d8a80'; bctx.fillText(`${b.D} units read`, 82, fy + 8);
+  // the expansion: M cells on a grid, active ones lit, with a trail
+  if (glowFor !== chosen) { glow = new Float32Array(b.M); glowFor = chosen; }
+  for (let m = 0; m < b.M; m++) glow[m] *= 0.82; for (let j = 0; j < b.k; j++) glow[b.active[j]] = 1;
+  const side = Math.ceil(Math.sqrt(b.M)), gx = 12, gy = 84, gw = 200, px = gw / side;
+  bctx.fillStyle = '#0a0c11'; bctx.fillRect(gx - 2, gy - 2, gw + 4, gw + 4);
+  for (let m = 0; m < b.M; m++) { const v = glow[m]; if (v < 0.02) { bctx.fillStyle = '#1a1e27'; } else bctx.fillStyle = `hsl(${hue} 70% ${20 + 50 * v}%)`; bctx.fillRect(gx + (m % side) * px, gy + ((m / side) | 0) * px, Math.max(px - 1, 1), Math.max(px - 1, 1)); }
+  bctx.fillStyle = '#8d8a80'; bctx.fillText(`${b.M} cells, ${b.k} fire`, gx, gy + gw + 12);
+  // the records read: one bar per action
+  const names = BASE_ACTIONS.concat(Array.from({ length: b.K }, (_, i) => `say ${i + 1}`)); const ax = 222, ay = 84, bw = 96, rowH = Math.min(18, 200 / b.A);
+  let lo = Infinity, hi = -Infinity; for (let a = 0; a < b.A; a++) { lo = Math.min(lo, b.q[a]); hi = Math.max(hi, b.q[a]); } const span = Math.max(hi - lo, 0.05);
+  for (let a = 0; a < b.A; a++) {
+    const y = ay + a * rowH; const chosenA = a === chosen.last; bctx.fillStyle = chosenA ? '#ddd6c6' : '#8d8a80'; bctx.fillText(names[a], ax, y + 9);
+    const zero = ax + 44 + bw * Math.max(0, Math.min(1, (0 - lo) / span)); const end = ax + 44 + bw * ((b.q[a] - lo) / span);
+    bctx.fillStyle = chosenA ? `hsl(${hue} 70% 60%)` : '#3a4050'; bctx.fillRect(Math.min(zero, end), y + 2, Math.max(Math.abs(end - zero), 1), rowH - 5);
+  }
+  bctx.fillStyle = '#5a5a58'; bctx.fillText(`last write ${b.lastDelta >= 0 ? '+' : ''}${b.lastDelta.toFixed(3)}`, ax, ay + b.A * rowH + 12);
+  bctx.fillStyle = '#8d8a80';
+  bctx.fillText(`radius ${b.r}  fan-in ${b.fanin}  lr ${b.lr}  γ ${b.gamma}  ε ${b.eps}`, 12, H - 8);
+}
+
+// ---------- the sidebar ----------
+const cxc = document.getElementById('complexity'), cxctx = cxc.getContext('2d'); const history = [];
+function drawComplexity() {
+  const W = cxc.width, H = cxc.height; cxctx.fillStyle = '#11141b'; cxctx.fillRect(0, 0, W, H);
+  if (history.length < 2) return;
+  const n = history.length, maxCells = Math.max(...history.map(h => h.cells), 256);
+  const line = (key, max, color) => { cxctx.strokeStyle = color; cxctx.lineWidth = 1.5; cxctx.beginPath(); history.forEach((h, i) => { const x = i / (n - 1) * (W - 2) + 1, y = H - 4 - (h[key] / max) * (H - 10); i ? cxctx.lineTo(x, y) : cxctx.moveTo(x, y); }); cxctx.stroke(); };
+  line('cells', maxCells, '#f0c56a'); line('speak', 1, '#b6e264'); line('read', Math.max(...history.map(h => h.read), 100), '#8d8a80');
+  cxctx.fillStyle = '#8d8a80'; cxctx.font = '10px IBM Plex Mono, monospace';
+  cxctx.fillText(`cells ${history[n - 1].cells | 0}`, 4, 10); cxctx.fillStyle = '#b6e264'; cxctx.fillText(`speak ${(100 * history[n - 1].speak) | 0}%`, 90, 10); cxctx.fillStyle = '#8d8a80'; cxctx.fillText(`read ${history[n - 1].read | 0}`, 170, 10);
+}
+function lineagePanel() {
+  const counts = new Map(), hueOf = new Map();
+  for (const c of pop.creatures) { counts.set(c.lineage, (counts.get(c.lineage) || 0) + 1); if (!hueOf.has(c.lineage)) hueOf.set(c.lineage, c.g.hue); }
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8); const max = top.length ? top[0][1] : 1;
+  document.getElementById('lineages').innerHTML = top.map(([l, n]) => `<div class="lineage"><i style="background:hsl(${hueOf.get(l) * 360 | 0} 70% 60%)"></i><div class="bar"><b style="width:${(100 * n / max) | 0}%;background:hsl(${hueOf.get(l) * 360 | 0} 60% 55%)"></b></div><span>${n}</span></div>`).join('') || '<span class="lineage">none alive</span>';
+}
+function counters() {
+  const m = pop.mass; let seen = 0, wrong = 0;
+  for (let i = 0; i < N; i++) if (pop.count[i] > 0) { seen++; if (Math.abs(pop.sum[i] / pop.count[i] - sub.food[i]) >= 2) wrong++; }
+  const cs = pop.creatures, n = Math.max(cs.length, 1); let cells = 0, read = 0, speak = 0, ears = 0;
+  for (const c of cs) { cells += c.brain.M; read += c.brain.D; speak += c.brain.K > 0; ears += c.brain.ear; }
+  const set = (id, v) => { document.getElementById(id).textContent = v; };
+  set('c-tick', sub.tick); set('c-alive', cs.length); set('c-births', `${pop.births} / ${pop.deaths}`); set('c-mass', m);
+  const ok = document.getElementById('c-ok'); ok.textContent = m === mass0 ? 'yes' : 'NO'; ok.className = m === mass0 ? 'ok' : 'bad';
+  set('c-seen', `${(100 * seen / N).toFixed(0)}%`); set('c-err', seen ? `${(100 * wrong / seen).toFixed(0)}%` : '–'); set('c-sun', sub.contrast.toFixed(2));
+  set('c-cells', (cells / n).toFixed(0)); set('c-read', (read / n).toFixed(0)); set('c-sym', `${(100 * speak / n).toFixed(0)}% / ${(100 * ears / n).toFixed(0)}%`);
+  const b = document.getElementById('believed');
+  if (chosen && chosen.dead) b.innerHTML = `<b>creature ${chosen.id}</b> died at tick ${chosen.diedAt}. Its records left the known world with it.`;
+  else if (chosen) b.innerHTML = `<b>creature ${chosen.id}</b>, lineage ${chosen.lineage}, age ${chosen.age}, holds ${chosen.energy}. ${chosen.brain.K ? `speaks ${chosen.brain.K} symbol${chosen.brain.K > 1 ? 's' : ''}` : 'mute'}${chosen.brain.ear ? ', hears' : ', deaf'}. Last: ${BASE_ACTIONS.concat(['say 1', 'say 2', 'say 3', 'say 4'])[chosen.last]} → ${OUTCOMES[chosen.outcome]}. Knows ${chosen.mem.size} cells.`;
+  else b.textContent = 'Click a creature to open its brain and follow its day.';
+}
+
+// ---------- state and loop ----------
+let sub, pop, seed = 0, view = 'known', paused = false, ticksPerFrame = 2, chosen = null, mass0 = 0, frame = 0;
+const followBtn = document.getElementById('follow');
+function reseed() { seed++; sub = new Substrate(seed); pop = new Population(sub, seed + 100); mass0 = pop.mass; chosen = null; history.length = 0; cam.follow = false; followBtn.setAttribute('aria-pressed', 'false'); }
+function select(c) { chosen = c; glowFor = null; }
+function setView(v) { view = v; document.querySelectorAll('.view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === v))); document.getElementById('caption').firstChild.textContent = { is: 'What is', known: 'What is known', believes: 'What one believes' }[v] + ' '; }
+function loop() {
+  if (!paused) for (let k = 0; k < ticksPerFrame; k++) {
+    sub.step(); pop.step();
+    if (chosen && chosen.dead && !chosen.diedAt) chosen.diedAt = sub.tick;
+    if (sub.tick % 50 === 0) { const cs = pop.creatures, n = Math.max(cs.length, 1); let cells = 0, read = 0, speak = 0; for (const c of cs) { cells += c.brain.M; read += c.brain.D; speak += c.brain.K > 0; } history.push({ cells: cells / n, read: read / n, speak: speak / n }); if (history.length > 400) history.shift(); }
+  }
+  drawWorld(); drawBrain();
+  if (frame++ % 8 === 0) { counters(); lineagePanel(); drawComplexity(); }
+  requestAnimationFrame(loop);
+}
+document.querySelectorAll('.view').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return; if (e.key === '1') setView('is'); if (e.key === '2') setView('known'); if (e.key === '3') setView('believes'); if (e.key === ' ') { paused = !paused; document.getElementById('pause').textContent = paused ? 'Run' : 'Pause'; e.preventDefault(); } });
+document.getElementById('pause').addEventListener('click', e => { paused = !paused; e.target.textContent = paused ? 'Run' : 'Pause'; });
+const speed = document.getElementById('speed'); speed.addEventListener('input', () => { ticksPerFrame = +speed.value; document.getElementById('speed-v').textContent = `${speed.value}×`; });
+document.getElementById('reseed').addEventListener('click', reseed);
+followBtn.addEventListener('click', () => { if (!chosen) return; cam.follow = !cam.follow; followBtn.setAttribute('aria-pressed', String(cam.follow)); if (cam.follow) cam.dist = Math.min(cam.dist, 28); });
+document.getElementById('eldest').addEventListener('click', () => { let b = null; for (const c of pop.creatures) if (!b || c.age > b.age) b = c; if (b) { select(b); cam.follow = true; followBtn.setAttribute('aria-pressed', 'true'); cam.dist = Math.min(cam.dist, 28); } });
+document.getElementById('biggest').addEventListener('click', () => { let b = null; for (const c of pop.creatures) if (!b || c.brain.M * c.brain.D > b.brain.M * b.brain.D) b = c; if (b) { select(b); cam.follow = true; followBtn.setAttribute('aria-pressed', 'true'); cam.dist = Math.min(cam.dist, 28); } });
+document.getElementById('rain').addEventListener('click', () => { let moved = 0, guard = 0; const r = new Mulberry(sub.tick); while (moved < 800 && guard++ < 100000) { const i = (r.random() * N) | 0; if (sub.soil[i] > 0 && sub.food[i] < CFG.foodCap) { sub.soil[i]--; sub.food[i]++; moved++; } } });
+document.getElementById('eclipse').addEventListener('click', () => { sub.eclipse = 1800; });
+document.getElementById('cull').addEventListener('click', () => {
+  const counts = new Map(); for (const c of pop.creatures) counts.set(c.lineage, (counts.get(c.lineage) || 0) + 1);
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]; if (!top) return;
+  for (const c of pop.creatures) if (c.lineage === top[0]) { sub.soil[c.y * CFG.w + c.x] += c.energy; c.energy = 0; }
+});
+reseed(); setView('known'); resize(); loop();
+</script>
+</body>
+</html>
