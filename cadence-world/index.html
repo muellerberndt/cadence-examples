@@ -173,7 +173,7 @@
     <div class="rules">
       <p>Per tick, per cell: with probability 0.08 × light × fertility a unit of soil becomes food (an unripe bud, where food ripens); with 0.01 food becomes soil; with 0.05 a unit of soil steps to a neighbour. Rock holds no soil and cannot be entered.</p>
       <p>A creature's reading is a set of field groups: the food, the unripe buds, the creatures, the rock, the kind of ground and the kin in its window; its energy, the light, what it last did, whether it is dark, what it carries, what it heard, and the codes its own cortices produced a tick ago. Each cortex reads the groups its mask names through a fixed sparse expansion developed from its genome and holds one record per active cell and action of the mass that followed. The brain acts on the sum of what its cortices read, or, with a horizon above zero, on a search through the readings its moves would produce; after the outcome every cortex writes the error into exactly the cells its reading touched. A split mutates the genome: the genes, each cortex's mask, size and wiring; a cortex can be added, removed, or split into two halves.</p>
-      <p>Each tick a creature loses a unit to the soil under it with probability 0.08 + 0.0004 per unit read + 0.01 per 256 cells + 0.002 per active cell + a tenth of a read per imagined reading + 0.05 if it moved + 0.02 if it spoke + 0.10 if it bit. A bite takes up to three units from a neighbour. It splits at the threshold its genome names. At 0 it dies into the soil and its records leave the known world.</p>
+      <p>Each tick a creature loses a unit to the soil under it with probability 0.08 + 0.0001 per unit read + 0.01 per 256 cells + 0.002 per active cell + a tenth of a read per imagined reading + 0.05 if it moved + 0.02 if it spoke + 0.10 if it bit. A bite takes up to three units from a neighbour. It splits at the threshold its genome names. At 0 it dies into the soil and its records leave the known world.</p>
     </div>
   </aside>
 </div>
@@ -542,6 +542,7 @@ return { Mulberry, INNER_WIDTH, MAX_CORTICES, RULES, CFG, POP, N, DIRS, OUTCOMES
 'use strict';
 const { CFG, POP, N, DIRS, OUTCOMES, GROUP_NAMES, G, bit, Substrate, Population } = CW;
 const DEFAULT_RULES = { ripen: true, rock: true, night: false, kinds: false, bite: true, carry: true, digest: false };
+POP.read = 0.0001; // the page's world reads at a quarter of the sweep-1 price: the price at which seeing survives biting (design, section 15)
 const ABBREV = { food: 'food', occ: 'others', energy: 'energy', out: 'last', light: 'light', green: 'unripe', rock: 'rock', kind: 'kind', lastkind: 'digested', kin: 'kin', dark: 'dark', carried: 'carried', heard: 'heard', inner: 'the other cortices' };
 const RATES = [0, 1, 2, 4, 8, 15, 30, 60];
 
