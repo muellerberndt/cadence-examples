@@ -94,8 +94,8 @@ $NODE artist/web/parity.mjs runs/artist/parity
 ../cadence-artist/.venv/bin/python artist/web/check_page.py runs/artist/web/index.html
 ```
 
-The published page is the acceptance run built into the place `.github/workflows/pages.yml`
-copies from, which is `artist/index.html` with `artist/checkpoints.json` beside it:
+The committed page is the acceptance run built into `artist/index.html` with
+`artist/checkpoints.json` beside it:
 
 ```bash
 $PY artist/web/build_page.py --run runs/artist/acceptance --seed 10 --out artist/index.html

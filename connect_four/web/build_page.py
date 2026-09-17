@@ -20,14 +20,7 @@ the repository root and it fetches the checkpoint named by ``<body data-checkpoi
 
 Written beside the page: ``checkpoints/<id>.json`` (one per checkpoint), ``cortices.json`` (the
 fixed cells both cortices were drawn with, shared by every checkpoint of the life and inlined in
-the page) and ``checkpoints.json`` (the manifest, also inlined). To publish the page,
-.github/workflows/pages.yml needs
-
-    mkdir -p _site/connect_four
-    cp connect_four/index.html connect_four/receipt.json connect_four/checkpoints.json connect_four/cortices.json _site/connect_four/
-    cp -r connect_four/checkpoints _site/connect_four/checkpoints
-
-and tools/verify_gallery.py needs ``"connect_four": "S03"`` in EXAMPLES.
+the page) and ``checkpoints.json`` (the manifest, also inlined). tools/verify_gallery.py needs ``"connect_four": "S03"`` in EXAMPLES.
 """
 
 from __future__ import annotations
