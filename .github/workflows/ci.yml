@@ -16,15 +16,20 @@ jobs:
           node-version: "22"
       - name: Install the library at the worm's commit
         run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
-      - name: Rebuild the connectome and the newborn brain; the committed files must not change
+      - name: The browser brain and body against the committed exports
+        run: |
+          node worm/tests/parity.mjs
+          node worm/tests/body.mjs
+      - name: Rebuild the connectome, the newborn brain and the test cases on this machine
         run: |
           python worm/tools/build_connectome.py
           python worm/tools/export_web.py
-          git diff --exit-code worm/data/connectome.json worm/web/data worm/tests/parity_cases.json worm/tests/body_cases.json
-      - name: The browser brain against the library's TemporalPatchNet
-        run: node worm/tests/parity.mjs
-      - name: The body under stress, and the browser body against the Python body
-        run: node worm/tests/body.mjs
+      - name: The rebuilt exports are the committed ones, exactly where nothing is rounded and to 1e-6 where the library's arithmetic is
+        run: python worm/tools/check_exports.py
+      - name: The browser brain and body against this machine's library
+        run: |
+          node worm/tests/parity.mjs
+          node worm/tests/body.mjs --cases
   connect_four:
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +50,26 @@ jobs:
         run: |
           python connect_four/tools/parity_fixture.py --train 40 --games 32 --out runs/connect_four/parity
           node connect_four/web/parity.mjs runs/connect_four/parity
+  connect4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the library at the commit the record-patch Connect Four was measured with
+        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+      - name: The receipt, the games in it and the brain the page plays
+        run: python connect4/verify.py
+      - name: The page reads what the library reads and searches as the reference searches
+        run: |
+          python connect4/web/export.py --patch connect4/brain/v1.npz --positions 300 --out /tmp/connect4
+          node connect4/web/parity.mjs /tmp/connect4
+          python connect4/web/search_fixture.py --patch connect4/brain/v1.npz --positions 60 --out /tmp/connect4
+          node connect4/web/search_parity.mjs /tmp/connect4
   amen:
     runs-on: ubuntu-latest
     steps:

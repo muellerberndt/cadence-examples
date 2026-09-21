@@ -1,7 +1,7 @@
 // The body under stress: irritants crowded round the worm, pokes and treats at random,
 // several plates. After every physics step the centreline must be one body length, inside
 // the plate, and nowhere bent tighter than the body can bend.
-//   node worm/tests/body.mjs
+//   node worm/tests/body.mjs            add --cases to check only the tracks against the Python body
 import { readFileSync, existsSync } from "node:fs";
 import { Life, mulberry32 } from "../web/life.js";
 
@@ -42,9 +42,9 @@ function check(life, where) {
   return sharpest / DS;               // the tightest curvature along the body, rad/mm
 }
 
-const steps = Math.round(p.tick / p.physics_step);
+const steps = Math.round(p.tick / p.physics_step), casesOnly = process.argv.includes("--cases");     // --cases: only the Python body's tracks
 let worst = 0;
-for (const [seed, scene] of [[1, "ring"], [2, "ring"], [3, "ring"], [4, "corner"], [5, "carpet"], [6, "plain"]]) {
+for (const [seed, scene] of casesOnly ? [] : [[1, "ring"], [2, "ring"], [3, "ring"], [4, "corner"], [5, "carpet"], [6, "plain"]]) {
   const life = new Life(spec, p, seed), hand = mulberry32(1000 + seed);
   if (scene === "ring") for (let k = 0; k < 6; k++) life.place("noxious", life.body.x + 0.9 * Math.cos(k / 6 * 2 * Math.PI), life.body.y + 0.9 * Math.sin(k / 6 * 2 * Math.PI), "B");
   if (scene === "carpet") for (let x = 1; x < life.w; x += 0.7) for (let y = 1; y < life.h; y += 0.7) life.place("noxious", x, y, "B");
@@ -64,6 +64,37 @@ for (const [seed, scene] of [[1, "ring"], [2, "ring"], [3, "ring"], [4, "corner"
   }
   worst = Math.max(worst, tight);
   console.log(`${scene.padEnd(6)} seed ${seed}: ${reversals} reversals, ${life.lessons} lessons, tightest bend ${tight.toFixed(1)} rad/mm, nearest the edge ${edge.toFixed(3)} mm, gain ${life.brain.growth().toFixed(3)}`);
+}
+// Chaos, without the brain: bodies started at random places, many against an edge or in a corner, reversing at random,
+// their headings kicked harder than any smell kicks them, crawling and dwelling. Which life a brain leads differs between
+// machines in the last digit of a float; this does not.
+if (!casesOnly) {
+  let steps = 0, tight = 0, edge = 1e9, reversals = 0;
+  for (let seed = 1; seed <= 300; seed++) {
+    const life = new Life(spec, p, seed), r = mulberry32(5000 + seed), u = (lo, hi) => lo + (hi - lo) * r();
+    const where = r(), x = where < 0.4 ? (r() < 0.5 ? u(0.1, 0.5) : life.w - u(0.1, 0.5)) : u(0.5, life.w - 0.5);
+    const y = where < 0.25 || where > 0.7 ? (r() < 0.5 ? u(0.1, 0.5) : life.h - u(0.1, 0.5)) : u(0.5, life.h - 0.5);
+    // moved there rigidly, turned about the head until the whole body lies on the plate
+    const b0 = life.body, [hx, hy] = b0.trail[0];
+    for (let tries = 0; tries < 80; tries++) {
+      const turn = tries ? u(-Math.PI, Math.PI) : 0, c = Math.cos(turn), s = Math.sin(turn);
+      const moved = b0.trail.map(([a, b]) => [x + c * (a - hx) - s * (b - hy), y + s * (a - hx) + c * (b - hy)]);
+      if (!moved.every(([a, b]) => life.inside(a, b))) continue;
+      Object.assign(b0, { trail: moved, x, y, heading: b0.heading + turn, theta: b0.theta + turn }); break;
+    }
+    let dwell = false;
+    for (let k = 0; k < 4000; k++) {
+      if (k % 10 === 0) {
+        if (life.body.mode === "forward") { life.body.heading += u(-0.5, 0.5); if (r() < 0.12) { life.reverse(u(0.2, 3.6), (r() < 0.8 ? -1 : 1) * u(1.5, 3.0)); reversals++; } }
+        if (r() < 0.05) dwell = !dwell;
+      }
+      life.physics(p.physics_step, dwell); steps++;
+      tight = Math.max(tight, check(life, `chaos seed ${seed} step ${k}`));
+      for (const [a, b] of life.body.trail) edge = Math.min(edge, a, b, life.w - a, life.h - b);
+    }
+  }
+  worst = Math.max(worst, tight);
+  console.log(`chaos : 300 bodies, ${steps} steps, ${reversals} reversals, tightest bend ${tight.toFixed(1)} rad/mm, nearest the edge ${edge.toFixed(3)} mm`);
 }
 const bound = p.max_curvature * 1.4;   // chords of 0.05 mm across 0.014 mm steps overstate a bounded curvature by up to 28%
 if (worst > bound) throw new Error(`a bend of ${worst.toFixed(1)} rad/mm exceeds ${bound}`);

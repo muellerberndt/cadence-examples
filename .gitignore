@@ -8,3 +8,4 @@ __pycache__/
 # Connect Four's local checkpoints and the external solver and AlphaZero checkouts
 connect_four/checkpoints/
 connect_four/external/
+connect4/external/

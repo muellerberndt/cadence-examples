@@ -33,8 +33,8 @@ export class Life {
     // follows it, and the leading end can only change direction at a bounded curvature.
     const heading = this.uniform(-Math.PI, Math.PI), L = p.body_length, crawl = 1.25 * L;
     const x0 = this.w / 2 - 0.926 * crawl * Math.cos(heading), y0 = this.h / 2 - 0.926 * crawl * Math.sin(heading);
-    this.body = { x: x0, y: y0, heading, theta: heading, phase: 0, tail_heading: 0, tail_theta: 0,
-                  trail: [], mode: "forward", timer: 0, turn: 0, turn_after: 0, walled: false };
+    this.body = { x: x0, y: y0, heading, theta: heading, phase: 0, tail_heading: 0, tail_theta: 0, tail_turn: 0,
+                  trail: [], mode: "forward", timer: 0, turn: 0, turn_after: 0, stuck: 0 };
     for (let k = 0; k <= 100; k++) this.body.trail.push([x0 - L * k / 100 * Math.cos(heading), y0 - L * k / 100 * Math.sin(heading)]);
     // born crawling: a body length and a quarter of travel gives it its wave, and brings it to the middle of the plate
     for (let k = 0, n = Math.round(crawl / (p.crawl_speed * p.physics_step)); k < n; k++) this.physics(p.physics_step, false);
@@ -95,48 +95,68 @@ export class Life {
       else { const f = extra / seg; tr[a] = [tr[a][0] + f * (tr[b][0] - tr[a][0]), tr[a][1] + f * (tr[b][1] - tr[a][1])]; extra = 0; }
     }
   }
+  // The plate's edge. Within `wall_margin` of an edge a leading end must head inward, the more so the nearer
+  // the edge: a heading that points out is mirrored, one that runs along the edge is turned in. Returns the
+  // turn that does it, or null. `under_way` keeps a head-on turn from changing sides between steps.
+  wallTurn(x, y, heading, under_way) {
+    const m = this.p.wall_margin; let hx = Math.cos(heading), hy = Math.sin(heading), hit = false;
+    for (const [d, nx, ny] of [[x, 1, 0], [this.w - x, -1, 0], [y, 0, 1], [this.h - y, 0, -1]]) {
+      if (d >= m) continue;
+      const need = 0.4 * (1 - Math.max(0, d) / m); let c = hx * nx + hy * ny;
+      if (c >= need) continue;
+      hit = true;
+      if (c < 0) { hx -= 2 * c * nx; hy -= 2 * c * ny; c = -c; }
+      if (c < need) { const side = nx * hy - ny * hx >= 0 ? 1 : -1, a = Math.atan2(ny, nx) + side * Math.acos(need); hx = Math.cos(a); hy = Math.sin(a); }
+    }
+    if (!hit) return null;
+    let turn = wrap(Math.atan2(hy, hx) - heading);
+    if (under_way !== 0 && Math.abs(turn) > 2.4 && Math.sign(turn) !== Math.sign(under_way)) turn = Math.sign(under_way) * (TAU - Math.abs(turn));
+    return turn;
+  }
+  inside(x, y) { const e = 0.06; return x >= e && x <= this.w - e && y >= e && y <= this.h - e; }
+
   // a reversal: the tail leads for `seconds`, then the head curls through `turn` radians (an omega turn)
   reverse(seconds, turn) {
     const b = this.body;
-    Object.assign(b, { mode: "reverse", timer: seconds, turn_after: turn, turn: 0,
+    Object.assign(b, { mode: "reverse", timer: seconds, turn_after: turn, turn: 0, tail_turn: 0,
                        tail_theta: this.direction("tail"), tail_heading: this.direction("tail", this.p.swing_wavelength) });
   }
   resume() {
     const b = this.body;
-    Object.assign(b, { mode: "forward", theta: this.direction("head"), heading: this.direction("head", this.p.swing_wavelength),
-                       turn: b.turn_after, walled: false });
+    Object.assign(b, { mode: "forward", theta: this.direction("head"), heading: this.direction("head", this.p.swing_wavelength), turn: b.turn_after });
+  }
+
+  // One leading end, one step: the heading turns (an omega turn, or away from the edge), and the direction of travel
+  // follows the heading and the body wave with what is left of the bend the body allows.
+  lead(x, y, heading, theta, turn, ds) {
+    const p = this.p, away = this.wallTurn(x, y, heading, turn);
+    if (away !== null) turn = away;
+    let swing = p.swing_amplitude, d = 0;
+    if (turn !== 0) { d = clamp(turn, p.turn_curvature * ds); heading = wrap(heading + d); turn -= d; swing *= p.turn_swing; }
+    theta = wrap(theta + d + clamp(wrap(heading + swing * Math.sin(this.body.phase) - theta - d), p.max_curvature * ds - Math.abs(d)));
+    return { heading, theta, turn, x: x + ds * Math.cos(theta), y: y + ds * Math.sin(theta) };
   }
 
   physics(dt, onFood) {
     const b = this.body, p = this.p, tr = b.trail;
-    const speed = b.mode === "reverse" ? p.reverse_speed : onFood ? p.dwell_speed : p.crawl_speed;
-    const ds = speed * dt, bend = p.max_curvature * ds;
+    const speed = b.mode === "reverse" ? p.reverse_speed : onFood ? p.dwell_speed : p.crawl_speed, ds = speed * dt;
     b.phase = (b.phase + TAU * ds / p.swing_wavelength) % TAU;
     if (b.mode === "reverse") {
-      b.tail_theta += clamp(wrap(b.tail_heading + p.swing_amplitude * Math.sin(b.phase) - b.tail_theta), bend);
-      const [tx, ty] = tr[tr.length - 1], nx = tx + ds * Math.cos(b.tail_theta), ny = ty + ds * Math.sin(b.tail_theta), m = 0.08;
-      if (nx < m || nx > this.w - m || ny < m || ny > this.h - m) b.timer = 0;      // the tail has met the edge of the plate
-      else { tr.push([nx, ny]); this.trim("head"); [b.x, b.y] = tr[0]; }
+      const [tx, ty] = tr[tr.length - 1], n = this.lead(tx, ty, b.tail_heading, b.tail_theta, b.tail_turn, ds);
+      Object.assign(b, { tail_heading: n.heading, tail_theta: n.theta, tail_turn: n.turn });
+      if (!this.inside(n.x, n.y)) b.timer = 0;            // the tail has met the edge of the plate all the same
+      else { tr.push([n.x, n.y]); this.trim("head"); [b.x, b.y] = tr[0]; }
       b.timer -= dt;
       if (b.timer <= 0) this.resume();
     } else {
-      // the edge of the plate: a turn toward the mirrored heading, begun a margin away
-      let rx = Math.cos(b.heading), ry = Math.sin(b.heading), hit = false;
-      if ((b.x < p.wall_margin && rx < 0) || (b.x > this.w - p.wall_margin && rx > 0)) { rx = -rx; hit = true; }
-      if ((b.y < p.wall_margin && ry < 0) || (b.y > this.h - p.wall_margin && ry > 0)) { ry = -ry; hit = true; }
-      if (hit && (!b.walled || b.turn === 0)) b.turn = wrap(Math.atan2(ry, rx) - b.heading);
-      b.walled = hit;
-      let swing = p.swing_amplitude, d = 0;
-      if (b.turn !== 0) {           // a turn under way curls the head round at the turn's curvature
-        d = clamp(b.turn, p.turn_curvature * ds);
-        b.heading = wrap(b.heading + d); b.turn -= d; swing *= p.turn_swing;
+      const n = this.lead(b.x, b.y, b.heading, b.theta, b.turn, ds);
+      Object.assign(b, { heading: n.heading, theta: n.theta, turn: n.turn });
+      if (this.inside(n.x, n.y)) { b.x = n.x; b.y = n.y; b.stuck = 0; tr.unshift([b.x, b.y]); this.trim("tail"); }
+      else if (b.stuck < 2) { b.stuck++; this.reverse(p.pirouette_reverse, -2.2); }     // nose against the edge: back off and turn
+      else {                                                                           // both ends against edges: slide along it
+        const e = 0.06; b.x = Math.min(Math.max(n.x, e), this.w - e); b.y = Math.min(Math.max(n.y, e), this.h - e);
+        tr.unshift([b.x, b.y]); this.trim("tail");
       }
-      // the direction of travel follows the heading and the head swing with what is left of the bend the body allows
-      b.theta = wrap(b.theta + d + clamp(wrap(b.heading + swing * Math.sin(b.phase) - b.theta - d), bend - Math.abs(d)));
-      const e = 0.06;
-      b.x = Math.min(Math.max(b.x + ds * Math.cos(b.theta), e), this.w - e);
-      b.y = Math.min(Math.max(b.y + ds * Math.sin(b.theta), e), this.h - e);
-      tr.unshift([b.x, b.y]); this.trim("tail");
     }
     this.t += dt;
   }

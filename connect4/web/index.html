@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Connect Four · a Cadence record patch</title>
+<meta name="description" content="Play Connect Four against a Cadence record patch and watch what it reads while it thinks.">
+<link rel="canonical" href="https://floatingpragma.io/cadence-examples/connect4/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pragma Research">
+<meta property="og:title" content="Connect Four · a Cadence record patch">
+<meta property="og:description" content="One Cadence record patch learned how Connect Four positions end by watching a perfect player. Play it and watch what it reads while it thinks: two retinas, 256 context channels, 4,096 record cells.">
+<meta property="og:url" content="https://floatingpragma.io/cadence-examples/connect4/">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/connect4/card.jpg?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="A Connect Four game in progress beside a dark panel showing the brain mid-thought: two small boards glowing with the stones it imagines, a grid of teal and orange context cells, a wide band of record cells flashing blue, and the value it reads out. Title: Connect Four.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@muellerberndt">
+<meta name="twitter:title" content="Connect Four · a Cadence record patch">
+<meta name="twitter:description" content="One Cadence record patch learned how Connect Four positions end by watching a perfect player. Play it and watch what it reads while it thinks: two retinas, 256 context channels, 4,096 record cells.">
+<meta name="twitter:image" content="https://floatingpragma.io/cadence-examples/connect4/card.jpg?v=2">
+<meta name="twitter:image:alt" content="A Connect Four game in progress beside a dark panel showing the brain mid-thought: two small boards glowing with the stones it imagines, a grid of teal and orange context cells, a wide band of record cells flashing blue, and the value it reads out. Title: Connect Four.">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header class="masthead">
+  <div class="headline">
+    <h1>Connect Four</h1>
+    <p class="lede">One <a href="https://github.com/muellerberndt/cadence/blob/main/docs/record-patch.md">Cadence record patch</a> learned how positions end by watching a perfect player. It imagines moves and reads each imagined board; the panel on the right shows those reads as they happen.</p>
+  </div>
+  <div class="facts" id="facts">loading the brain</div>
+</header>
+
+<main class="layout">
+  <section class="panel play">
+    <div class="panel-head">
+      <div class="score"><span class="chip you"><i></i>you <b id="scoreYou">0</b></span><span class="chip brain"><i></i>brain <b id="scoreBrain">0</b></span><span class="chip draw">drawn <b id="scoreDraw">0</b></span></div>
+      <span class="state" id="state">loading</span>
+    </div>
+    <div class="board-wrap">
+      <div class="board" id="board" aria-label="Connect Four board"></div>
+    </div>
+    <div class="columns" id="columns" aria-label="What the brain found for each column"></div>
+    <div class="toolbar">
+      <button id="newGame">New game</button>
+      <label class="side">You move <select id="side"><option value="first">first</option><option value="second">second</option></select></label>
+      <span class="thought" id="thought"></span>
+    </div>
+  </section>
+
+  <section class="panel mind">
+    <div class="panel-head">
+      <h2>The brain, live</h2>
+      <span class="state" id="mindState">at rest</span>
+    </div>
+    <div class="scan"><canvas id="scan"></canvas></div>
+    <div class="legend">
+      <span><i class="k own"></i>its stones</span><span><i class="k other"></i>your stones</span>
+      <span><i class="k pos"></i>context, positive</span><span><i class="k neg"></i>context, negative</span>
+      <span><i class="k rec"></i>record cells addressed</span>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <details class="card" id="card">
+    <summary>Model card <span class="sub" id="cardFacts"></span></summary>
+    <div class="card-body">
+      <div>
+        <h3>What plays</h3>
+        <p>A single <code>cadence.RecordPatchNet</code> reads a position right after a stone has landed, as the side that placed it sees it (84 units), and says how the game ends for that side. A supplied search knows the rules, imagines moves from the centre outward, and reads the patch where it stops looking. A line it can follow to the end of the game is proven and outranks anything the patch reads.</p>
+        <h3>How it learned</h3>
+        <p>It watched Pascal Pons' perfect solver play out set-up positions to the end, and saw how each game ended for each stone placed. It saw the games and how they ended; the solver's scores were never recorded. The slow parameters learned from those positions; the record store was left empty, because writing millions of positions into it drowns it (measured: the slow readout alone then beats the two together). The records are for the games it plays afterwards.</p>
+        <h3>What you see</h3>
+        <p>Each flash on the right is one read of one imagined board: the two retinas it reads, the 256 channels of its context, the record cells that reading addresses, and the value it reads out. Reads are sampled through the search and replayed at a speed the eye can follow. The bars under the board are the value the search found for the column it chose and the most it allows each of the others; ghost stones are the line it expects.</p>
+      </div>
+      <div>
+        <h3>Measured on this build</h3>
+        <div id="results" class="results">loading the receipt</div>
+        <h3>What it cannot do</h3>
+        <p id="limits">Early in the game, before the search can see the end, it still errs: the receipt above counts how often, graded move by move by the perfect solver. Against the perfect solver it wins some games moving first and loses the rest, because from 16 to 24 stones it does not always reach the end of the game within the reads it allows itself. Moving second against perfect play it loses, as every player does. This build does not yet learn from the games you play here.</p>
+        <p class="sub">Every game and every graded move of this build: <a href="receipt.json">receipt.json</a>. The library: <a href="https://github.com/muellerberndt/cadence">cadence</a>.</p>
+      </div>
+    </div>
+  </details>
+</footer>
+<script type="module" src="page.js"></script>
+</body></html>

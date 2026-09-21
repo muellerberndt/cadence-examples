@@ -35,8 +35,9 @@ fades by orders of magnitude as it spreads.
 - Body: a centreline of exactly one body length. Whichever end leads lays the track and the
   rest of the body follows it: the head when crawling, the tail when reversing. The leading end
   can only change direction at a bounded curvature (10 rad/mm, a 0.1 mm radius), so an omega
-  turn is a curl of the head that the body follows through, mostly toward the ventral side, and
-  the plate's edge is met with a turn, not a bounce. The body wave advances with distance
+  turn is a curl of the head that the body follows through, mostly toward the ventral side.
+  Near the plate's edge either end must head inward, the more so the nearer the edge, so the
+  edge is met with a turn, not a bounce; a nose that reaches it all the same backs off. The body wave advances with distance
   travelled (one wave per 0.7 mm). The motor neurons are part of the brain and carry activity,
   but nothing in the body reads them: the body reads the command interneurons only, and the
   wave and the manoeuvres are the body's own.
@@ -65,12 +66,14 @@ A treat on the page is food arriving; a poke is pain. Both are lessons like any 
 
 `web/` runs the same brain in the browser. `web/brain.js` solves the same energy with Newton-CG
 on the sparse connectome; `tests/parity.mjs` checks it against the library on three lessons of
-5, 8 and 16 ticks (worst relative difference 8.5e-12). `tests/body.mjs` runs six lives under
-stress (irritants crowded round the worm, a plate carpeted with them, a corner, random pokes and
-treats) and checks after every physics step that the body is one body length, inside the plate,
-and nowhere bent tighter than it can bend; it also checks that the browser body lays the same
-track as the Python reference (to 1e-15 mm on three scripted crawls with reversals, omega turns
-and wall turns).
+5, 8 and 16 ticks (worst relative difference 8.5e-12). `tests/body.mjs` checks after every
+physics step that the body is one body length, inside the plate, and nowhere bent tighter than
+it can bend: in six lives under stress (irritants crowded round the worm, a plate carpeted with
+them, a corner, random pokes and treats), and in 300 bodies without a brain, started against
+edges and in corners, reversing at random with their headings kicked (1.2 million steps). The
+lives a brain leads differ between machines in the last digit of a float; the 300 do not. It
+also checks that the browser body lays the same track as the Python reference (to 1e-15 mm on
+three scripted crawls with reversals, omega turns and wall turns).
 
 ```bash
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
@@ -78,6 +81,7 @@ python worm/tools/build_connectome.py      # data/connectome.json from the sourc
 python worm/tools/export_web.py            # the newborn brain, web data and parity cases
 node worm/tests/parity.mjs
 node worm/tests/body.mjs
+python worm/tools/check_exports.py         # after a rebuild: identical where nothing is rounded, to 1e-6 elsewhere
 python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
 ```
 

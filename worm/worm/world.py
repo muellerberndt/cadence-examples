@@ -29,12 +29,13 @@ class Body:
     phase: float = 0.0         # of the body wave, advanced by distance travelled
     tail_heading: float = 0.0
     tail_theta: float = 0.0
+    tail_turn: float = 0.0
     trail: list = field(default_factory=list)
     mode: str = "forward"      # forward | reverse
     timer: float = 0.0
     turn: float = 0.0          # what is left of a turn under way
     turn_after: float = 0.0    # the omega turn that follows the reversal
-    walled: bool = False
+    stuck: int = 0             # steps in a row with the nose against the edge
 
 
 TAU = 2 * math.pi
@@ -123,10 +124,41 @@ class World:
                 tr[a] = (tr[a][0] + f * (tr[b][0] - tr[a][0]), tr[a][1] + f * (tr[b][1] - tr[a][1]))
                 extra = 0.0
 
+    def wall_turn(self, x: float, y: float, heading: float, under_way: float) -> float | None:
+        """The plate's edge. Within `wall_margin` of an edge a leading end must head inward, the more so
+        the nearer the edge: a heading that points out is mirrored, one that runs along the edge is turned
+        in. Returns the turn that does it, or None. `under_way` keeps a head-on turn from changing sides."""
+        m = self.p["wall_margin"]
+        hx, hy, hit = math.cos(heading), math.sin(heading), False
+        for d, nx, ny in ((x, 1, 0), (self.w - x, -1, 0), (y, 0, 1), (self.h - y, 0, -1)):
+            if d >= m:
+                continue
+            need = 0.4 * (1 - max(0.0, d) / m)
+            c = hx * nx + hy * ny
+            if c >= need:
+                continue
+            hit = True
+            if c < 0:
+                hx, hy, c = hx - 2 * c * nx, hy - 2 * c * ny, -c
+            if c < need:
+                side = 1 if nx * hy - ny * hx >= 0 else -1
+                a = math.atan2(ny, nx) + side * math.acos(need)
+                hx, hy = math.cos(a), math.sin(a)
+        if not hit:
+            return None
+        turn = wrap(math.atan2(hy, hx) - heading)
+        if under_way != 0 and abs(turn) > 2.4 and (turn > 0) != (under_way > 0):
+            turn = math.copysign(TAU - abs(turn), under_way)
+        return turn
+
+    def inside(self, x: float, y: float) -> bool:
+        e = 0.06
+        return e <= x <= self.w - e and e <= y <= self.h - e
+
     def reverse(self, seconds: float, turn: float) -> None:
         """The tail leads for `seconds`, then the head curls through `turn` radians (an omega turn)."""
         b = self.body
-        b.mode, b.timer, b.turn_after, b.turn = "reverse", seconds, turn, 0.0
+        b.mode, b.timer, b.turn_after, b.turn, b.tail_turn = "reverse", seconds, turn, 0.0, 0.0
         b.tail_theta = self.direction("tail")
         b.tail_heading = self.direction("tail", self.p["swing_wavelength"])
 
@@ -135,21 +167,35 @@ class World:
         b.mode = "forward"
         b.theta = self.direction("head")
         b.heading = self.direction("head", self.p["swing_wavelength"])
-        b.turn, b.walled = b.turn_after, False
+        b.turn = b.turn_after
+
+    def lead(self, x: float, y: float, heading: float, theta: float, turn: float, ds: float):
+        """One leading end, one step: the heading turns (an omega turn, or away from the edge), and the
+        direction of travel follows the heading and the body wave with what is left of the bend the body allows."""
+        p = self.p
+        away = self.wall_turn(x, y, heading, turn)
+        if away is not None:
+            turn = away
+        swing, d = p["swing_amplitude"], 0.0
+        if turn != 0:
+            d = clamp(turn, p["turn_curvature"] * ds)
+            heading = wrap(heading + d)
+            turn -= d
+            swing *= p["turn_swing"]
+        theta = wrap(theta + d + clamp(wrap(heading + swing * math.sin(self.body.phase) - theta - d),
+                                       p["max_curvature"] * ds - abs(d)))
+        return heading, theta, turn, x + ds * math.cos(theta), y + ds * math.sin(theta)
 
     def physics(self, dt: float, on_food: bool) -> None:
         b, p, tr = self.body, self.p, self.body.trail
         speed = p["reverse_speed"] if b.mode == "reverse" else p["dwell_speed"] if on_food else p["crawl_speed"]
         ds = speed * dt
-        bend = p["max_curvature"] * ds
         b.phase = math.fmod(b.phase + TAU * ds / p["swing_wavelength"], TAU)
         if b.mode == "reverse":
-            b.tail_theta += clamp(wrap(b.tail_heading + p["swing_amplitude"] * math.sin(b.phase) - b.tail_theta), bend)
             tx, ty = tr[-1]
-            nx, ny = tx + ds * math.cos(b.tail_theta), ty + ds * math.sin(b.tail_theta)
-            m = 0.08
-            if nx < m or nx > self.w - m or ny < m or ny > self.h - m:
-                b.timer = 0.0            # the tail has met the edge of the plate
+            b.tail_heading, b.tail_theta, b.tail_turn, nx, ny = self.lead(tx, ty, b.tail_heading, b.tail_theta, b.tail_turn, ds)
+            if not self.inside(nx, ny):
+                b.timer = 0.0            # the tail has met the edge of the plate all the same
             else:
                 tr.append((nx, ny))
                 self.trim("head")
@@ -158,28 +204,19 @@ class World:
             if b.timer <= 0:
                 self.resume()
         else:
-            # the edge of the plate: a turn toward the mirrored heading, begun a margin away
-            rx, ry, hit, m = math.cos(b.heading), math.sin(b.heading), False, p["wall_margin"]
-            if (b.x < m and rx < 0) or (b.x > self.w - m and rx > 0):
-                rx, hit = -rx, True
-            if (b.y < m and ry < 0) or (b.y > self.h - m and ry > 0):
-                ry, hit = -ry, True
-            if hit and (not b.walled or b.turn == 0):
-                b.turn = wrap(math.atan2(ry, rx) - b.heading)
-            b.walled = hit
-            swing, d = p["swing_amplitude"], 0.0
-            if b.turn != 0:              # a turn under way curls the head round at the turn's curvature
-                d = clamp(b.turn, p["turn_curvature"] * ds)
-                b.heading = wrap(b.heading + d)
-                b.turn -= d
-                swing *= p["turn_swing"]
-            # the direction of travel follows the heading and the head swing with what is left of the bend the body allows
-            b.theta = wrap(b.theta + d + clamp(wrap(b.heading + swing * math.sin(b.phase) - b.theta - d), bend - abs(d)))
-            e = 0.06
-            b.x = min(max(b.x + ds * math.cos(b.theta), e), self.w - e)
-            b.y = min(max(b.y + ds * math.sin(b.theta), e), self.h - e)
-            tr.insert(0, (b.x, b.y))
-            self.trim("tail")
+            b.heading, b.theta, b.turn, nx, ny = self.lead(b.x, b.y, b.heading, b.theta, b.turn, ds)
+            if self.inside(nx, ny):
+                b.x, b.y, b.stuck = nx, ny, 0
+                tr.insert(0, (b.x, b.y))
+                self.trim("tail")
+            elif b.stuck < 2:            # nose against the edge: back off and turn
+                b.stuck += 1
+                self.reverse(p["pirouette_reverse"], -2.2)
+            else:                        # both ends against edges: slide along it
+                e = 0.06
+                b.x, b.y = min(max(nx, e), self.w - e), min(max(ny, e), self.h - e)
+                tr.insert(0, (b.x, b.y))
+                self.trim("tail")
         self.t += dt
 
     def swing_direction(self) -> float:
