@@ -62,7 +62,8 @@ def main() -> None:
         raise SystemExit(f"the picture was not taken mid-thought (the page said {state!r}); rerun")
     image = Image.open(io.BytesIO(shot)).convert("RGB").resize((1200, 630), Image.LANCZOS)
     out = WEB / "card.jpg"
-    image.save(out, "JPEG", quality=88, optimize=True, progressive=True)
+    # baseline, not progressive: the card of the worm page that X fetches is baseline
+    image.save(out, "JPEG", quality=90, optimize=True, progressive=False)
     print(f"{out}: {image.size[0]} x {image.size[1]}, {out.stat().st_size / 1000:.0f} kB")
 
 
