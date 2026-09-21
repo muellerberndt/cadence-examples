@@ -22,7 +22,7 @@ export class Life {
     this.t = 0; this.tick_count = 0; this.items = []; this.events = [];
     this.prev = { food: 0, pain: 0 }; this.value_prev = 0; this.bias = 0;
     this.pending = { food: 0, pain: 0 };
-    this.stretch = []; this.path = null; this.readout = [0, 0];
+    this.stretch = []; this.path = null; this.readout = [0, 0]; this.input = [0, 0, 0, 0];
     this.activity = new Float64Array(spec.H); this.previousActivity = new Float64Array(spec.H);
     this.lessons = 0; this.rejected = 0;
     const heading = this.uniform(-Math.PI, Math.PI);
@@ -157,7 +157,7 @@ export class Life {
     const food = eating || this.pending.food > 0 ? 1 : 0, pain = hurting || this.pending.pain > 0 ? 1 : 0;
     for (const k in this.pending) this.pending[k] = Math.max(0, this.pending[k] - 1);
     const u = [a, b, food, pain];
-    const y = this.sense(u); this.readout = y;
+    const y = this.sense(u); this.readout = y; this.input = u;
     const n = this.tick_count;
     const foodOn = food > this.prev.food, painOn = pain > this.prev.pain;
     this.prev = { food, pain };

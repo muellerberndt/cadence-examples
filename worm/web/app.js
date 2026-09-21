@@ -1,5 +1,5 @@
 import { Life } from "./life.js";
-import { Renderer, COLORS } from "./render.js";
+import { Renderer, COLORS, lum } from "./render.js";
 
 const load = (f) => fetch(`data/${f}`).then((r) => r.json());
 const [spec, connectome, params] = await Promise.all([load("brain.json"), load("connectome.json"), load("params.json")]);
@@ -12,11 +12,10 @@ const life = new Life(spec, params, seed);
 life.place("food", ...life.freeSpot(), "A", true);
 life.place("noxious", ...life.freeSpot(), "B", true);
 
-const canvas = document.getElementById("world");
-const R = new Renderer(canvas, connectome, spec, params);
-addEventListener("resize", () => { R.resize(); tl.resize(); mm.resize(); });
-
 const $ = (id) => document.getElementById(id);
+const canvas = $("world");
+const R = new Renderer(canvas, connectome, spec, params, { canvas: document.querySelector("#brain canvas"), foot: $("brainfoot") });
+addEventListener("resize", () => { R.resize(); tl.resize(); mm.resize(); });
 const state = { speed: 3, paused: false, tool: null, smell: "A", effects: [], lesson: null, inspect: null };
 const stepsPerTick = Math.round(params.tick / params.physics_step);
 let acc = 0, steps = 0, last = performance.now();
@@ -77,10 +76,10 @@ function tick(res) {
     const L = res.lesson;
     history.events.push({ tick: res.tick, event: "lesson" });
     if (L.applied) {
-      const top = R.synapses.map((s) => [Math.abs(L.applied[s.k]), s]).sort((a, b) => b[0] - a[0]).slice(0, 160);
+      const top = R.edges.map((s) => [Math.abs(L.applied[s.k]), s]).sort((a, b) => b[0] - a[0]).slice(0, 160);
       state.lesson = { ...L, top, max: top[0][0] || 1, creditMax: Math.max(...L.credit) || 1, shownAt: performance.now() };
       const what = L.kinds.includes("pain") ? "pain" : "food";
-      toast(`<b>Learned from ${what}.</b> The ${L.length} ticks before it were relived with the command neurons nudged toward ${what === "pain" ? "reversing" : "moving on"}; every synapse changed by its own two ends.`);
+      toast(`<b>Learned from ${what}.</b> The ${L.length} ticks before it were relived with the command neurons nudged toward ${what === "pain" ? "reversing" : "moving on"}; every connection changed by its own two ends.`);
     }
   }
   for (const e of life.events.splice(0)) if (e.event === "treat" || e.event === "poke") history.events.push({ tick: e.tick, event: e.event });
@@ -102,8 +101,7 @@ function frame(now) {
   else { activity = new Float64Array(life.activity.length); for (let i = 0; i < activity.length; i++) activity[i] = life.previousActivity[i] + (life.activity[i] - life.previousActivity[i]) * phase; }
   state.effects = state.effects.filter((e) => now - e.at < e.dur * 1000);
   R.draw(life, { now, dt, phase, activity, lesson: state.lesson, effects: state.effects });
-  window.__worm = { life, R, state, history, get steps() { return steps; } };
-requestAnimationFrame(frame);
+  requestAnimationFrame(frame);
 }
 
 // ---- the panel, the minimap and the life strip, a few times a second -----------------------------
@@ -121,6 +119,7 @@ setInterval(panel, 250);
 const mm = { c: document.querySelector("#minimap canvas"), resize() { const d = devicePixelRatio || 1, r = this.c.getBoundingClientRect(); this.c.width = r.width * d; this.c.height = r.height * d; this.d = d; this.W = r.width; this.H = r.height; } };
 mm.resize();
 function minimap() {
+  if (!mm.W) return;               // hidden on narrow screens
   const g = mm.c.getContext("2d"); g.setTransform(mm.d, 0, 0, mm.d, 0, 0); g.clearRect(0, 0, mm.W, mm.H);
   const pad = 10, s = Math.min((mm.W - 2 * pad) / life.w, (mm.H - 2 * pad) / life.h), ox = (mm.W - life.w * s) / 2, oy = (mm.H - life.h * s) / 2;
   g.strokeStyle = "rgba(127,231,255,.3)"; g.strokeRect(ox, oy, life.w * s, life.h * s);
@@ -148,10 +147,11 @@ function lifestrip() {
     const a0 = Math.floor(c * per), a1 = Math.max(a0 + 1, Math.floor((c + 1) * per));
     for (let r = 0; r < ROWS; r++) {
       const i0 = Math.floor(r * order.length / ROWS), i1 = Math.floor((r + 1) * order.length / ROWS);
-      let v = 0;
-      for (let t = a0; t < a1; t += Math.max(1, Math.floor((a1 - a0) / 3))) for (let i = i0; i < i1; i++) v = Math.max(v, Math.abs(history.activity[t][order[i]]));
-      if (v < 0.03) continue;
-      g.fillStyle = `rgba(255,${Math.round(150 + 90 * v)},${Math.round(70 + 120 * v)},${Math.min(0.9, v * 1.1)})`;
+      let v = 0, m = 0;          // mean activity of the row's cells, brightest tick of the column
+      for (let t = a0; t < a1; t += Math.max(1, Math.floor((a1 - a0) / 3))) { m = 0; for (let i = i0; i < i1; i++) m += lum(history.activity[t][order[i]]); v = Math.max(v, m / (i1 - i0)); }
+      if (v < 0.05) continue;       // six decades, deep blue through cyan to white
+      const w = v * v;
+      g.fillStyle = `rgb(${Math.round(12 + 228 * w * v)},${Math.round(40 + 205 * Math.min(1, v * 1.15))},${Math.round(80 + 175 * Math.min(1, v * 1.4))})`;
       g.fillRect(x0 + c * colW, top + r * rowH, Math.ceil(colW), Math.ceil(rowH));
     }
   }

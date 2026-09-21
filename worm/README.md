@@ -3,8 +3,11 @@
 The nervous system of the hermaphrodite *C. elegans*, 302 neurons wired as measured, as one
 Cadence `TemporalPatchNet`. It lives on a plate, smells, eats, gets hurt, and learns during its
 life what the smells around it predict. The page draws the whole nervous system inside the
-transparent body: every neuron, every active synapse and the transmitter it releases, and every
-lesson as a repair wave spreading out from the command neurons.
+transparent body at every zoom: every neuron, every active synapse and the transmitter it
+releases, pulses running down the nerve cords, and every lesson as a repair wave spreading out
+from the command neurons. A second view shows the head at scale, straightened: the nerve ring,
+the ganglia around it, and the sensory and command neurons by name. Brightness is activity on a
+log scale from 10⁻⁶ to 1, because a signal fades by orders of magnitude as it spreads.
 
 ## The brain is the connectome
 
