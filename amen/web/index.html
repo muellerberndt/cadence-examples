@@ -23,6 +23,17 @@ h1 span{color:var(--gold)}
 .stamp b{display:block;font:900 22px/1 var(--slab);letter-spacing:.06em;color:var(--ink)}
 .sub{margin:0 0 16px;color:var(--dim);max-width:78ch;font-size:12.5px;letter-spacing:.02em}
 .sub b{color:var(--ink);font-weight:700}
+.studio{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin:4px 0 14px}
+.studio #cut{background:var(--red);color:var(--ink);border:0;padding:14px 30px;font:900 24px/1 var(--slab);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 0 var(--gold);transform:skew(-7deg)}
+.studio #cut:disabled{background:#2a2822;color:var(--dim);box-shadow:5px 5px 0 #000;cursor:wait}
+.studio #cut:not(:disabled):active{transform:skew(-7deg) translate(3px,3px);box-shadow:2px 2px 0 var(--gold)}
+.studio label{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.studio input[type=range]{accent-color:var(--gold);width:150px}
+.studio select{background:#000;color:var(--ink);border:2px solid var(--line);font:800 12px var(--mono);padding:4px 6px}
+.studio output{color:var(--gold);font-weight:800;min-width:38px}
+#status{font:800 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#000;background:var(--green);padding:6px 10px}
+#status.busy{background:var(--gold);animation:blink 0.7s steps(2) infinite}
+@keyframes blink{50%{opacity:.45}}
 nav{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}
 .side{display:flex;align-items:center;gap:5px}
 .side>b{background:var(--ink);color:#000;padding:6px 9px;font:900 12px/1 var(--slab);letter-spacing:.14em;text-transform:uppercase}
@@ -71,7 +82,13 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-
   <h1>Amen <span>Brain</span></h1>
   <div class="stripe"><i></i><i></i><i></i></div>
   <div class="stamp"><b>Dubplate</b>one patch · no GPU<br>170 bpm · 16 bars</div>
-  <p class="sub"><b>One patch learned jungle as events per half-beat.</b> It hears four bars of a track it never trained on, or nothing, and plays sixteen bars of drums, bass and texture. Below: the sound, every note, and its brain in time with both.</p>
+  <p class="sub"><b>One patch learned jungle as events per half-beat.</b> Nothing here is recorded: press the button and the trained brain computes a track in your browser, from silence, while you watch it think. When it is done the track plays, with every note and the brain in time with the sound.</p>
+  <div class="studio">
+    <button id="cut" disabled>Cut a dub</button>
+    <label>Departures<input type="range" id="energy" min="0" max="3" step="0.1" value="1"><output id="energyOut">1.0×</output></label>
+    <label>Bars<select id="bars"><option value="16" selected>16</option><option value="32">32</option></select></label>
+    <span id="status">waking the brain</span>
+  </div>
   <nav id="clips"></nav>
   <p id="now"></p>
 </header>
@@ -97,7 +114,7 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-
     <h3>The brain</h3>
     <p>One Cadence record patch. 80 input ports (a wake, an eight-position clock, and the 71 ports of the event it played last), 128 context channels whose time constants run from 2 to 128 half-beats, one linear readout to 71 output ports, 29,895 slow parameters, and a record store of 8,192 cells of which 48 fire per reading. The records hold what the slow readout got wrong at each reading, keyed by the event heard and the context; the first four bars of a new track are written into them while the slow parameters stay fixed. Trained in under seven CPU minutes on a laptop, no GPU.</p>
     <h3>What plays here</h3>
-    <p>Every clip is the literal render of what the brain played: one slice of a drum break per half-beat at the predicted gain, sub-bass notes from C1 to B2, and a texture of band-passed noise following eight predicted bands. In the clips marked "the beat held" it plays its highest-scoring event; in the clips "with departures" it leaves the loop only where it predicts a change point, by a roll (the slice just heard repeats) or a retrigger (the break restarts at a bar start). In the shaded first four bars you hear the transcription of the unheard track through the same instrument, not the brain. Every generated bar was checked against the training corpus: none occurs there verbatim.</p>
+    <p>Nothing is recorded. The page loads the trained brain (30 thousand slow parameters and the record tables, 2.5 MB) and an instrument (32 half-beat slices of a drum break, twelve sub-bass notes, band-passed noise for the texture). When you press the button the brain starts from silence, hears a count-in, and computes the track one half-beat at a time, about 1.7 million multiply-adds each, hearing every half-beat it plays. It leaves the loop only where it predicts a change point, by a roll (the slice just heard repeats) or a retrigger (the break restarts at a bar start); the Departures slider scales that probability. The browser engine is the same arithmetic as the library: on the archived run's generation from silence it reproduces every slice, note and change point, with scores equal to 2e-8.</p>
     <h3>Measured on three tracks it never trained on</h3>
     <ul>
       <li>Next drum slice: 0.84 to 0.86 correct; the most frequent slice scores 0.03 to 0.05.</li>
@@ -111,7 +128,8 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-
 </main>
 <footer>Every clip is the literal render of what the brain played · receipts beside the page</footer>
 <div class="hazard"></div>
-<script>
+<script type="module">
+import {Brain, compose} from './engine.js';
 (() => {
 const $ = id => document.getElementById(id);
 const audio = new Audio(); audio.preload = 'auto';
@@ -120,59 +138,142 @@ const report = m => { const e = document.getElementById('err'); e.textContent = 
 addEventListener('error', e => report(e.message + ' @' + e.lineno));
 addEventListener('unhandledrejection', e => report('rejected: ' + (e.reason && e.reason.message || e.reason)));
 let lastStep = -1, particles = [], flashes = {cells: new Map(), change: 0, played: 0, heard: 0, write: 0}, hbHold = 0;
-const clipsIndex = {}; const weightCache = {};
+
 
 const argmax = (a, s = 0, e = a.length) => { let m = s; for (let i = s; i < e; i++) if (a[i] > a[m]) m = i; return m; };
 const norm = a => Math.sqrt(a.reduce((x, y) => x + y * y, 0));
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
+let model = null, kit = null, brain = null, audioCtx = null, kitBuffers = null, computing = null, tracks = [], voiceCache = new Map();
+const setStatus = (text, busy) => { const s = $('status'); s.textContent = text; s.classList.toggle('busy', !!busy); };
+
 async function boot() {
-  const index = await (await fetch('traces/index.json')).json();
-  const ids = Object.keys(index);
-  const nav = $('clips'); let side = null, rack = null;
-  for (const id of ids) {
-    clipsIndex[id] = index[id];
-    const key = index[id].side || (index[id].round || 'clips');
-    if (key !== side) { side = key; rack = document.createElement('div'); rack.className = 'side'; const tag = document.createElement('b'); tag.textContent = index[id].side ? 'Side ' + index[id].side : key; rack.appendChild(tag); if (index[id].side_name) { const n = document.createElement('i'); n.textContent = index[id].side_name; rack.appendChild(n); } nav.appendChild(rack); }
-    const b = document.createElement('button'); b.dataset.id = id; b.textContent = index[id].track ? String(index[id].track) : id.replace(/^D0?/, ''); b.title = index[id].label || id; b.onclick = () => load(id); rack.appendChild(b);
-  }
-  const wanted = location.hash.slice(1);
-  if (ids.length) load(ids.includes(wanted) ? wanted : ids[0]);
   resize(); addEventListener('resize', resize);
   requestAnimationFrame(frame);
+  $('energy').oninput = () => $('energyOut').textContent = Number($('energy').value).toFixed(1) + '×';
+  const bytes = async path => (await fetch(path)).arrayBuffer();
+  model = await (await fetch('model/model.json')).json();
+  kit = await (await fetch('kit/kit.json')).json();
+  const [params, recordsY, recordsMean] = await Promise.all([bytes('model/' + model.files.params), bytes('model/' + model.files.records_y), bytes('model/' + model.files.records_mean)]);
+  await new Promise(r => setTimeout(r, 30));
+  brain = new Brain(model, params, recordsY, recordsMean);
+  layout = model.layout;
+  const rows = (flat, r, c) => Array.from({length: r}, (_, i) => Array.from(flat.subarray(i * c, (i + 1) * c)));
+  weights = {hidden: model.hidden, inputs: model.inputs, outputs: model.outputs, cells: model.records.cells, active: model.records.active, timescales: brain.timescales,
+             B: rows(brain.p.B, model.hidden, model.inputs), C: rows(brain.p.C, model.outputs, model.hidden), layout};
+  kitBuffers = {raw: await Promise.all([bytes('kit/' + kit.break_file), bytes('kit/' + kit.bass_file)])};
+  $('cut').disabled = false; setStatus('ready');
+  if (new URLSearchParams(location.search).has('debug')) window.__amen = {get tracks() { return tracks; }};
+  if (new URLSearchParams(location.search).has('autocut')) $('cut').click();
+  $('clipnote').textContent = 'Nothing is recorded here. Press CUT A DUB: the brain starts from silence, hears a count-in, and computes ' + $('bars').value + ' bars, one half-beat at a time, hearing each half-beat it plays. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
 }
 
-async function load(id) {
-  for (const b of $('clips').querySelectorAll('button')) b.classList.toggle('on', b.dataset.id === id);
-  location.hash = id;
-  audio.pause(); lastStep = -1; particles = []; flashes.cells.clear();
-  trace = null; decoded = null; waveImage = null; scoreImage = null; geo = null;
-  const nextTrace = await (await fetch(clipsIndex[id].file)).json();
-  const nextWeights = weightCache[nextTrace.weights] || (weightCache[nextTrace.weights] = await (await fetch(nextTrace.weights)).json());
-  weights = nextWeights; layout = weights.layout; trace = nextTrace;
-  audio.src = trace.audio;
-  const mine = trace;
-  (async () => {
-    try {
-      const buf = await (await fetch(mine.audio)).arrayBuffer();
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const result = await new Promise((ok, no) => { const r = ctx.decodeAudioData(buf, ok, no); if (r && r.then) r.then(ok, no); });
-      ctx.close();
-      if (trace === mine) { decoded = result; waveImage = null; }
-    } catch (e) { report('waveform decode failed: ' + e); }
-  })();
-  waveImage = null;
-  const entry = clipsIndex[id]; const now = $('now'); now.textContent = ''; const tag = document.createElement('b'); tag.textContent = entry.side ? entry.side + entry.track : id; now.appendChild(tag); now.appendChild(document.createTextNode(entry.label || trace.title));
-  $('clipnote').textContent = trace.clip + ' · ' + (clipsIndex[id].label || trace.title) + '. ' + (trace.primer_half_beats ? 'The first ' + (trace.primer_half_beats / 8) + ' bars are the primer: the brain listens and its records write (' + trace.primer_writes + ' writes). Then it plays alone, hearing each half-beat it plays.' : 'From silence: the brain plays from a wake and the clock, hearing each half-beat it plays.') + ' Run receipt ' + trace.receipt_sha256.slice(0, 8) + '.';
-  drawReadout(null);
+$('cut').onclick = async () => {
+  if (computing || !brain) return;
+  audio.pause();
+  if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const [a, b] = kitBuffers.raw; kitBuffers.drums = await audioCtx.decodeAudioData(a.slice(0)); kitBuffers.bass = await audioCtx.decodeAudioData(b.slice(0)); }
+  const bars = Number($('bars').value), energy = Number($('energy').value), seed = (Math.random() * 4294967296) >>> 0, number = tracks.length + 1;
+  trace = {clip: 'DUB ' + String(number).padStart(2, '0'), title: bars + ' bars from silence', mode: 'sample', hop_seconds: kit.hop_seconds, primer_half_beats: 0, wake_played: true,
+           primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, bars};
+  decoded = null; waveImage = null; scoreImage = null; lastStep = -1; particles = []; flashes.cells.clear(); geo = null;
+  computing = {steps: compose(brain, {bars, mode: 'sample', energy, seed}), perFrame: bars > 16 ? 2 : 1};
+  $('cut').disabled = true; setStatus('computing', true); showNow();
+};
+
+function showNow() {
+  const now = $('now'); now.textContent = ''; if (!trace) return;
+  const tag = document.createElement('b'); tag.textContent = trace.clip; now.appendChild(tag);
+  now.appendChild(document.createTextNode(trace.title + ' · departures ' + trace.energy.toFixed(1) + '× · seed ' + trace.seed));
 }
 
-$('play').onclick = () => { if (audio.paused) audio.play(); else audio.pause(); };
+function advanceComputing() {
+  for (let i = 0; i < computing.perFrame; i++) {
+    const next = computing.steps.next();
+    if (next.done) { const done = trace; computing = null; finish(done); return; }
+    trace.steps.push(next.value); scoreImage = null;
+  }
+}
+
+async function finish(done) {
+  setStatus('buffering', true);
+  const buffer = await renderTrack(done);
+  done.buffer = buffer; done.url = URL.createObjectURL(wavBlob(buffer));
+  tracks.push(done); addToRack(done);
+  if (trace === done) play(done);
+  $('cut').disabled = false;
+}
+
+function play(item) {
+  trace = item; decoded = item.buffer; waveImage = null; scoreImage = null; lastStep = -1; geo = null;
+  audio.src = item.url; audio.currentTime = 0; audio.play().then(() => setStatus('playing')).catch(() => setStatus('press play'));
+  for (const b of $('clips').querySelectorAll('button')) b.classList.toggle('on', b.dataset.id === item.clip);
+  showNow();
+  const changes = item.steps.filter(s => s.played[layout.change] > 0.5).length;
+  $('clipnote').textContent = item.clip + ' · computed in your browser just now: ' + item.steps.length + ' half-beats from silence, ' + changes + ' departures (a roll or a retrigger where the brain predicted a change point), bass and texture as predicted. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
+}
+
+function addToRack(item) {
+  const nav = $('clips'); let rack = nav.querySelector('.side');
+  if (!rack) { rack = document.createElement('div'); rack.className = 'side'; const tag = document.createElement('b'); tag.textContent = 'Your dubs'; rack.appendChild(tag); nav.appendChild(rack); }
+  const b = document.createElement('button'); b.dataset.id = item.clip; b.textContent = item.clip.slice(4); b.title = item.title; b.onclick = () => { if (!computing) play(item); }; rack.appendChild(b);
+}
+
+// The instrument: slices of the break, sub-bass notes resampled by the semitone, band-passed noise for the texture.
+async function bandVoices(seconds, rate) {
+  const key = Math.ceil(seconds) + '@' + rate; if (voiceCache.has(key)) return voiceCache.get(key);
+  const frames = Math.ceil(seconds * rate), voices = [];
+  for (let k = 0; k < kit.texture_bands.length; k++) {
+    const [lo, hi] = kit.texture_bands[k], ctx = new OfflineAudioContext(2, frames, rate), noise = ctx.createBuffer(2, frames, rate);
+    for (let ch = 0; ch < 2; ch++) { const data = noise.getChannelData(ch); let s = (7 + 31 * k + 977 * ch) >>> 0; for (let i = 0; i < frames; i++) { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; data[i] = s / 2147483648 - 1; } }
+    const src = ctx.createBufferSource(); src.buffer = noise; let node = src;
+    for (let stage = 0; stage < 2; stage++) { const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = Math.sqrt(lo * Math.min(hi, rate / 2 - 100)); f.Q.value = f.frequency.value / (Math.min(hi, rate / 2 - 100) - lo); node.connect(f); node = f; }
+    node.connect(ctx.destination); src.start();
+    const out = await ctx.startRendering(); let sq = 0; const d = out.getChannelData(0); for (let i = 0; i < frames; i++) sq += d[i] * d[i];
+    voices.push({buffer: out, rms: Math.sqrt(sq / frames) || 1});
+  }
+  voiceCache.set(key, voices); return voices;
+}
+
+async function renderTrack(item) {
+  const L = layout, hop = kit.hop_seconds, steps = item.steps, rate = audioCtx.sampleRate, seconds = steps.length * hop;
+  const voices = await bandVoices(seconds, rate), ctx = new OfflineAudioContext(2, Math.ceil(seconds * rate), rate);
+  steps.forEach((s, i) => { const p = s.played; if (p[L.drum_on] > 0.5) { const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.drums; g.gain.value = kit.drum_gain * clamp(p[L.drum_gain], 0, 1); src.connect(g); g.connect(ctx.destination); src.start(i * hop, argmax(p, 0, L.crops) * hop, hop); } });
+  const noteOf = p => argmax(p, L.note_start, L.note_start + L.notes) - L.note_start;
+  for (let i = 0; i < steps.length; i++) {
+    const p = steps[i].played; if (!(p[L.bass_on] > 0.5)) continue;
+    const held = p[L.bass_hold] > 0.5 && i > 0 && steps[i - 1].played[L.bass_on] > 0.5 && noteOf(steps[i - 1].played) === noteOf(p); if (held) continue;
+    const note = noteOf(p); let j = i + 1; while (j < steps.length && steps[j].played[L.bass_on] > 0.5 && steps[j].played[L.bass_hold] > 0.5 && noteOf(steps[j].played) === note) j++;
+    const midi = kit.first_midi + note; let sample = kit.bass_notes[0]; for (const n of kit.bass_notes) if (Math.abs(n.root_midi - midi) < Math.abs(sample.root_midi - midi)) sample = n;
+    const ratio = Math.pow(2, (midi - sample.root_midi) / 12), length = Math.min((j - i) * hop, sample.length / kit.sample_rate / ratio), end = i * hop + length;
+    const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.bass; src.playbackRate.value = ratio;
+    g.gain.setValueAtTime(kit.bass_gain, i * hop); g.gain.setValueAtTime(kit.bass_gain, Math.max(i * hop, end - kit.bass_fade_seconds)); g.gain.linearRampToValueAtTime(0, end);
+    src.connect(g); g.connect(ctx.destination); src.start(i * hop, sample.start / kit.sample_rate, length * ratio);
+  }
+  const bands = kit.texture_bands.length, first = L.texture_start + 2 + (L.texture_ports - 2 - bands);
+  voices.forEach((voice, k) => { const src = ctx.createBufferSource(), g = ctx.createGain(), unit = kit.texture_gain / Math.sqrt(bands) / voice.rms; src.buffer = voice.buffer;
+    g.gain.setValueAtTime(clamp(steps[0].played[first + k], 0, 1) * unit, 0);
+    for (let i = 1; i <= steps.length; i++) g.gain.linearRampToValueAtTime(clamp(steps[Math.min(i, steps.length - 1)].played[first + k], 0, 1) * unit, i * hop);
+    src.connect(g); g.connect(ctx.destination); src.start(0); });
+  return ctx.startRendering();
+}
+
+function wavBlob(buffer) {
+  const channels = buffer.numberOfChannels, frames = buffer.length, view = new DataView(new ArrayBuffer(44 + frames * channels * 2));
+  const text = (at, s) => { for (let i = 0; i < s.length; i++) view.setUint8(at + i, s.charCodeAt(i)); };
+  text(0, 'RIFF'); view.setUint32(4, 36 + frames * channels * 2, true); text(8, 'WAVEfmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, channels, true);
+  view.setUint32(24, buffer.sampleRate, true); view.setUint32(28, buffer.sampleRate * channels * 2, true); view.setUint16(32, channels * 2, true); view.setUint16(34, 16, true); text(36, 'data'); view.setUint32(40, frames * channels * 2, true);
+  const data = Array.from({length: channels}, (_, ch) => buffer.getChannelData(ch)); let at = 44;
+  for (let i = 0; i < frames; i++) for (let ch = 0; ch < channels; ch++) { view.setInt16(at, Math.round(clamp(data[ch][i], -1, 1) * 32767), true); at += 2; }
+  return new Blob([view], {type: 'audio/wav'});
+}
+
+$('play').onclick = () => { if (!trace || computing || !trace.url) return; if (audio.paused) audio.play(); else audio.pause(); };
+audio.addEventListener('ended', () => setStatus('ready'));
 audio.addEventListener('play', () => $('play').textContent = 'Pause');
 audio.addEventListener('pause', () => $('play').textContent = 'Play');
 const seek = e => { if (!trace) return; const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * clipSeconds(); };
 $('waveform').addEventListener('click', seek); $('score').addEventListener('click', seek);
-function clipSeconds() { return decoded ? decoded.duration : trace.steps.filter(s => s.t >= 0).length * trace.hop_seconds; }
+function clipSeconds() { return decoded ? decoded.duration : (trace.total_steps || trace.steps.length) * trace.hop_seconds; }
 
 function resize() {
   const dpr = devicePixelRatio || 1;
@@ -184,7 +285,7 @@ function resize() {
 
 function drawWave() {
   const c = $('waveform'), g = c.getContext('2d'), W = c.width, H = c.height;
-  if (!decoded) { g.fillStyle = '#060607'; g.fillRect(0, 0, W, H); if (trace) { const x = audio.currentTime / clipSeconds() * W; g.fillStyle = '#f2b632'; g.fillRect(x - 1, 0, 2, H); } return; }
+  if (!decoded) { g.fillStyle = '#060607'; g.fillRect(0, 0, W, H); const F = devicePixelRatio || 1; g.fillStyle = '#8d8775'; g.font = `${12 * F}px ui-monospace, Menlo, monospace`; g.textAlign = 'center'; g.fillText(computing ? 'NO SOUND YET · THE BRAIN IS COMPUTING' : (trace ? 'BUFFERING' : 'PRESS CUT A DUB'), W / 2, H / 2 + 4 * F); if (computing) { g.fillStyle = '#f7c52d'; g.fillRect(0, H - 4 * F, W * trace.steps.length / trace.total_steps, 4 * F); } return; }
   if (!waveImage) {
     waveImage = document.createElement('canvas'); waveImage.width = W; waveImage.height = H;
     const gg = waveImage.getContext('2d'); gg.fillStyle = '#060607'; gg.fillRect(0, 0, W, H);
@@ -206,7 +307,8 @@ function ringPos(cx, cy, r, i, n) { const a = -Math.PI / 2 + i / n * 2 * Math.PI
 function neuronPos(i, cx, cy, rIn, rOut, n) { const a = i * 2.39996; const r = rIn + (rOut - rIn) * Math.sqrt(i / (n - 1)); return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
 
 function currentStep() {
-  if (!trace) return -1;
+  if (!trace || !trace.steps.length) return -1;
+  if (computing) return trace.steps.length - 1;
   const k = Math.floor(audio.currentTime / trace.hop_seconds + 1e-6);
   const first = trace.steps[0].t < 0 ? 1 : 0;
   return clamp(k + first, 0, trace.steps.length - 1);
@@ -326,7 +428,7 @@ function drawBrain(step) {
     g.fillStyle = p.color + (1 - age * 0.7) + ')'; g.beginPath(); g.arc(x, y, p.size * F, 0, 2 * Math.PI); g.fill(); }
   // the loop through the world, as a standing arc
   g.strokeStyle = 'rgba(242,182,50,0.18)'; g.lineWidth = 1.5 * F; g.beginPath(); g.moveTo(geo.out[0], geo.out[1] + geo.out[2]); g.bezierCurveTo(geo.out[0], H * 0.98, geo.heard[0], H * 0.98, geo.heard[0], geo.heard[1] + geo.heard[2]); g.stroke();
-  g.fillStyle = '#8a8776'; g.textAlign = 'left'; g.fillText(s.phase === 'primer' ? 'LISTENING · the primer plays, records write' : 'PLAYING · closed loop, parameters and records fixed', 16 * F, 20 * F);
+  g.fillStyle = '#8a8776'; g.textAlign = 'left'; g.fillText(computing ? 'COMPUTING · the brain plays ahead of the sound, half-beat ' + (step + 1) + ' of ' + trace.total_steps : 'PLAYING · closed loop, parameters and records fixed', 16 * F, 20 * F);
   g.textAlign = 'right'; g.fillText(`${trace.clip} · ${trace.mode}`, W - 16 * F, 20 * F);
 }
 
@@ -348,6 +450,7 @@ function ensureGeometry() { const c = $('brain'); if (!geo || geo.W !== c.width 
 function frame() {
   let step = -1;
   try {
+    if (computing) advanceComputing();
     drawWave();
     step = currentStep();
     if (trace && weights && step >= 0) { ensureGeometry(); if (step !== lastStep) { onStep(step, lastStep); lastStep = step; } }
@@ -361,7 +464,7 @@ function frame() {
 function drawScore(step) {
   const c = $('score'), g = c.getContext('2d'), W = c.width, H = c.height, F = devicePixelRatio || 1;
   if (!trace || !layout) { g.fillStyle = '#060607'; g.fillRect(0, 0, W, H); return; }
-  const L = layout, steps = trace.steps.filter(s => s.t >= 0), n = steps.length, cw = W / n;
+  const L = layout, steps = trace.steps.filter(s => s.t >= 0), n = trace.total_steps || steps.length, cw = W / n;
   const hasTexture = L.texture_start != null && L.texture_ports;
   const left = 40 * F, top = 14 * F, drumH = H * (hasTexture ? 0.40 : 0.55), gap = 12 * F, bassTop = top + drumH + gap, bassH = (hasTexture ? H * 0.20 : H - bassTop - 16 * F);
   const texTop = bassTop + bassH + gap, texH = H - texTop - 16 * F;
