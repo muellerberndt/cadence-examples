@@ -21,6 +21,28 @@
      0.09032771092068605
     ]
    }
+  },
+  {
+   "name": "two-mixes",
+   "label": "Two mixes",
+   "trained_on": "26 tracks and windows of two DJ mixes, 133 minutes",
+   "run": "record-composer-v11",
+   "run_receipt_sha256": "c904f78b34b416762d83b3b0431c401be3aa1f6d799384fcd06faa119d0c0ff2",
+   "held_out_tracks": 5,
+   "held_out_ranges": {
+    "drum_identity_accuracy": [
+     0.843400447427293,
+     0.8610335195530726
+    ],
+    "bass_note_accuracy": [
+     0.438385269121813,
+     0.6472097498396407
+    ],
+    "texture_mae": [
+     0.0825049240198199,
+     0.11721595394018718
+    ]
+   }
   }
  ]
 }
