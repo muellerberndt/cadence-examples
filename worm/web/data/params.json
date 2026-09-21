@@ -1,0 +1,76 @@
+{
+  "tick": 0.5,
+  "physics_step": 0.05,
+  "plate": [
+    12.0,
+    8.0
+  ],
+  "body_length": 1.16,
+  "crawl_speed": 0.22,
+  "reverse_speed": 0.28,
+  "dwell_speed": 0.03,
+  "swing_amplitude": 0.55,
+  "swing_period": 3.2,
+  "food_radius": 0.45,
+  "noxious_radius": 0.32,
+  "odour_sigma": 1.2,
+  "window": 8,
+  "beta": 0.01,
+  "rate": 4.0,
+  "reflex_reverse": 2.0,
+  "pirouette_reverse": 1.2,
+  "base_turn": 0.015,
+  "kinesis": 1.6,
+  "taxis": 0.9,
+  "taxis_memory": 0.75,
+  "radius": 0.5,
+  "persistence": 0.3,
+  "inputs": {
+    "odour_A": [
+      "AWAL",
+      "AWAR"
+    ],
+    "odour_B": [
+      "AWCL",
+      "AWCR"
+    ],
+    "food": [
+      "CEPDL",
+      "CEPDR",
+      "CEPVL",
+      "CEPVR",
+      "ADEL",
+      "ADER",
+      "PDEL",
+      "PDER"
+    ],
+    "pain": [
+      "ASHL",
+      "ASHR"
+    ]
+  },
+  "outputs": {
+    "forward": [
+      "AVBL",
+      "AVBR",
+      "PVCL",
+      "PVCR"
+    ],
+    "reverse": [
+      "AVAL",
+      "AVAR",
+      "AVDL",
+      "AVDR",
+      "AVEL",
+      "AVER"
+    ]
+  },
+  "reverse_threshold": 0.2,
+  "reverse_gain": 1.2,
+  "prenatal_lessons": 12,
+  "food_drops": 3,
+  "noxious_drops": 2,
+  "teach": 4,
+  "teach_level": 0.8,
+  "stability": 0.97
+}

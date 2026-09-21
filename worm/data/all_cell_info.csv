@@ -1,0 +1,630 @@
+Cell name,Type,Name details,Lineage,Classification
+ADAL,Layer 3 interneuron,Anterior Process from Deirid Commissure A Left,AB plapaaaapp,Ring interneuron
+ADAR,Layer 3 interneuron,Anterior Process from Deirid Commissure A Right,AB prapaaaapp,Ring interneuron
+ADEL,Mechanosensory,Anterior DEirid Neuron Left,AB plapaaaapa,"Anterior deirid, sensory neuron"
+ADER,Mechanosensory,Anterior DEirid Neuron Right,AB prapaaaapa,"Anterior deirid, sensory neuron"
+ADFL,Amphid,Amphid Dual Ciliated Ending F Left,AB alpppppaa,Amphid neuron
+ADFR,Amphid,Amphid Dual Ciliated Ending F Right,AB praaappaa,Amphid neuron
+ADLL,"Amphid, nociceptive",Amphid Dual Ciliated Ending L Left,AB alppppaad,Amphid neuron
+ADLR,"Amphid, nociceptive",Amphid Dual Ciliated Ending L Right,AB praaapaad,Amphid neuron
+AFDL,Amphid,Amphid Finger-like Endings D Left,AB alpppapav,Amphid finger cell
+AFDR,Amphid,Amphid Finger-like Endings D Right,AB praaaapav,Amphid finger cell
+AIAL,Layer 3 interneuron,Anterior Interneuron A Left,AB plppaappa,Amphid interneuron
+AIAR,Layer 3 interneuron,Anterior Interneuron A Right,AB prppaappa,Amphid interneuron
+AIBL,Layer 2 interneuron,Anterior Interneuron B Left,AB plaapappa,Amphid interneuron
+AIBR,Layer 2 interneuron,Anterior Interneuron B Right,AB praapappa,Amphid interneuron
+AIML,Category 4 interneuron,Anterior Interneuron M Left,AB plpaapppa,Ring interneuron
+AIMR,Category 4 interneuron,Anterior Interneuron M Right,AB prpaapppa,Ring interneuron
+AINL,Category 4 interneuron,Anterior Interneuron N Left,AB alaaaalal,Ring interneuron
+AINR,Category 4 interneuron,Anterior Interneuron N Right,AB alaapaaar,Ring interneuron
+AIYL,Layer 3 interneuron,Anterior Interneuron Y Left,AB plpapaaap,Amphid interneuron
+AIYR,Layer 3 interneuron,Anterior Interneuron Y Right,AB prpapaaap,Amphid interneuron
+AIZL,Layer 3 interneuron,Anterior Interneuron Z Left,AB plapaaapav,Amphid interneuron
+AIZR,Layer 3 interneuron,Anterior Interneuron Z Right,AB prapaaapav,Amphid interneuron
+ALA,Layer 3 interneuron,Anterior Lateral Neuron A,AB alapppaaa,"Neuron, sends processes laterally and along dorsal cord"
+ALML,Mechanosensory,Anterior Lateral Microtubule Neuron Left,AB arppaappa,Anterior lateral microtubule cell
+ALMR,Mechanosensory,Anterior Lateral Microtubule Neuron Right,AB arpppappa,Anterior lateral microtubule cell
+ALNL,Touch,Anterior Lateral Neuron N Left,AB plapappppap,Neuron associated with ALM
+ALNR,Touch,Anterior Lateral Neuron N Right,AB prapappppap,Neuron associated with ALM
+AQR,Touch,"Anterior, Q-cell Derived Receptor",QR.ap,"Neuron, basal body. Not part of a sensillum, projects into ring"
+AS1,Ventral cord motor neuron,A-type Short Motor Neuron 1,P1.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS10,Ventral cord motor neuron,A-type Short Motor Neuron 10,P10.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS11,Ventral cord motor neuron,A-type Short Motor Neuron 11,P11.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS2,Ventral cord motor neuron,A-type Short Motor Neuron 2,P2.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS3,Ventral cord motor neuron,A-type Short Motor Neuron 3,P3.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS4,Ventral cord motor neuron,A-type Short Motor Neuron 4,P4.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS5,Ventral cord motor neuron,A-type Short Motor Neuron 5,P5.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS6,Ventral cord motor neuron,A-type Short Motor Neuron 6,P6.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS7,Ventral cord motor neuron,A-type Short Motor Neuron 7,P7.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS8,Ventral cord motor neuron,A-type Short Motor Neuron 8,P8.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+AS9,Ventral cord motor neuron,A-type Short Motor Neuron 9,P9.apa,"Ventral cord motor neuron, innervates dorsal muscles, no ventral counterpart"
+ASEL,Amphid,Amphid Single Cilium E Left,AB alppppppaa,"Amphid neurons, single ciliated endings"
+ASER,Amphid,Amphid Single Cilium E Right,AB praaapppaa,"Amphid neurons, single ciliated endings"
+ASGL,Amphid,Amphid Single Cilium G Left,AB plaapapap,"Amphid neurons, single ciliated endings"
+ASGR,Amphid,Amphid Single Cilium G Right,AB praapapap,"Amphid neurons, single ciliated endings"
+ASHL,"Amphid, nociceptive",Amphid Single Cilium H Left,AB plpaappaa,"Amphid neurons, single ciliated endings"
+ASHR,"Amphid, nociceptive",Amphid Single Cilium H Right,AB prpaappaa,"Amphid neurons, single ciliated endings"
+ASIL,Amphid,Amphid Single Cilium I Left,AB plaapapppa,"Amphid neurons, single ciliated endings"
+ASIR,Amphid,Amphid Single Cilium I Right,AB praapapppa,"Amphid neurons, single ciliated endings"
+ASJL,Amphid,Amphid Single Cilium J Left,AB alpppppppa,"Amphid neurons, single ciliated endings"
+ASJR,Amphid,Amphid Single Cilium J Right,AB praaappppa,"Amphid neurons, single ciliated endings"
+ASKL,Amphid,Amphid Single Cilium K Left,AB alpppapppa,"Amphid neurons, single ciliated endings"
+ASKR,Amphid,Amphid Single Cilium K Right,AB praaaapppa,"Amphid neurons, single ciliated endings"
+AUAL,Layer 3 interneuron,Amphid-associated Unknown Receptor A Left,AB alpppppppp,"Neuron, process runs with amphid processes but lacks ciliated ending"
+AUAR,Layer 3 interneuron,Amphid-associated Unknown Receptor A Right,AB praaappppp,"Neuron, process runs with amphid processes but lacks ciliated ending"
+AVAL,Layer 1 interneuron,Anterior Ventral Process A Left,AB alppaaapa,Ventral cord interneuron
+AVAR,Layer 1 interneuron,Anterior Ventral Process A Right,AB alaappapa,Ventral cord interneuron
+AVBL,Layer 1 interneuron,Anterior Ventral Process B Left,AB plpaapaap,Ventral cord interneuron
+AVBR,Layer 1 interneuron,Anterior Ventral Process B Right,AB prpaapaap,Ventral cord interneuron
+AVDL,Layer 2 interneuron,Anterior Ventral Process D Left,AB alaaapalr,Ventral cord interneuron
+AVDR,Layer 2 interneuron,Anterior Ventral Process D Right,AB alaaapprl,Ventral cord interneuron
+AVEL,Layer 1 interneuron,Anterior Ventral Process E Left,AB alpppaaaa,"Ventral cord interneuron, like AVD but outputs restricted to anterior cord"
+AVER,Layer 1 interneuron,Anterior Ventral Process E Right,AB praaaaaaa,"Ventral cord interneuron, like AVD but outputs restricted to anterior cord"
+AVFL,Layer 3 interneuron,Anterior Ventral Process F Left,P1.aaaa/ W.aaa,Interneuron
+AVFR,Layer 3 interneuron,Anterior Ventral Process F Right,P1.aaaa/ W.aaa,Interneuron
+AVG,Layer 3 interneuron,Anterior Ventral Process G,AB prpapppap,Ventral cord interneuron
+AVHL,Layer 3 interneuron,Anterior Ventral Process H Left,AB alapaaaaa,"Neuron, mainly postsynaptic in ventral cord and presynaptic in the ring"
+AVHR,Layer 3 interneuron,Anterior Ventral Process H Right,AB alappapaa,"Neuron, mainly postsynaptic in ventral cord and presynaptic in the ring"
+AVJL,Layer 2 interneuron,Anterior Ventral Process J Left,AB alapapppa,"Neuron, synapses like AVHL/R"
+AVJR,Layer 2 interneuron,Anterior Ventral Process J Right,AB alapppppa,"Neuron, synapses like AVHL/R"
+AVKL,Layer 2 interneuron,Anterior Ventral Process K Left,AB plpapapap,Ring and ventral cord interneuron
+AVKR,Layer 2 interneuron,Anterior Ventral Process K Right,AB prpapapap,Ring and ventral cord interneuron
+AVL,Layer 2 interneuron,Anterior Ventral Process L,AB prpappaap,Ring and ventral cord interneuron and an excitatory GABAergic motor neuron for rectal muscles. Few synapses
+AVM,Mechanosensory,Anterior Ventral Microtubule Neuron,QR.paa,"Anterior ventral microtubule cell, touch receptor"
+AWAL,Amphid,Amphid Wing Neuron A Left,AB plaapapaa,"Amphid wing cells, neurons having ciliated sheet-like sensory endings closely associated with amphid sheath"
+AWAR,Amphid,Amphid Wing Neuron A Right,AB praapapaa,"Amphid wing cells, neurons having ciliated sheet-like sensory endings closely associated with amphid sheath"
+AWBL,Amphid,Amphid Wing Neuron B Left,AB alpppppap,"Amphid wing cells, neurons having ciliated sheet-like sensory endings closely associated with amphid sheath"
+AWBR,Amphid,Amphid Wing Neuron B Right,AB praaappap,"Amphid wing cells, neurons having ciliated sheet-like sensory endings closely associated with amphid sheath"
+AWCL,Amphid,Amphid Wing Neuron C Left,AB plpaaaaap,"Amphid wing cells, neurons having ciliated sheet-like sensory endings closely associated with amphid sheath"
+AWCR,Amphid,Amphid Wing Neuron C Right,AB prpaaaaap,"Amphid wing cells, neurons having ciliated sheet-like sensory endings closely associated with amphid sheath"
+BAGL,"O2, CO2, social signals, touch",BAG-like Dendritic Ending Left,AB alppappap,"Neuron, ciliated ending in head, no supporting cells, associated with ILso"
+BAGR,"O2, CO2, social signals, touch",BAG-like Dendritic Ending Right,AB arappppap,"Neuron, ciliated ending in head, no supporting cells, associated with ILso"
+BDUL,Layer 3 interneuron,"Black Vesicles, Deirid Locale, Unknown Function Left",AB arppaappp,"Neuron, process runs along excretory canal and into ring, unique darkly staining synaptic vesicles"
+BDUR,Layer 3 interneuron,"Black Vesicles, Deirid Locale, Unknown Function Right",AB arpppappp,"Neuron, process runs along excretory canal and into ring, unique darkly staining synaptic vesicles"
+CANL,Canal neuron,Excretory CANal-associated Neuron Left,AB alapaaapa,"Process runs along excretory canal, no synapses, essential for survival"
+CANR,Canal neuron,Excretory CANal-associated Neuron Right,AB alappappa,"Process runs along excretory canal, no synapses, essential for survival"
+CEPDL,Cephalic,CEPhalic Sensory Neuron Dorsal Left,AB plaaaaappa,"Cephalic neurons, contain dopamine"
+CEPDR,Cephalic,CEPhalic Sensory Neuron Dorsal Right,AB arpapaappa,"Cephalic neurons, contain dopamine"
+CEPVL,Cephalic,CEPhalic Sensory Neuron Ventral Left,AB plpaappppa,"Cephalic neurons, contain dopamine"
+CEPVR,Cephalic,CEPhalic Sensory Neuron Ventral Right,AB prpaappppa,"Cephalic neurons, contain dopamine"
+DA1,Ventral cord motor neuron,Dorsal A-type Motor Neuron 1,AB prppapaap,"Ventral cord motor neurons, innervate dorsal muscles"
+DA2,Ventral cord motor neuron,Dorsal A-type Motor Neuron 2,AB plppapapa,"Ventral cord motor neurons, innervate dorsal muscles"
+DA3,Ventral cord motor neuron,Dorsal A-type Motor Neuron 3,AB prppapapa,"Ventral cord motor neurons, innervate dorsal muscles"
+DA4,Ventral cord motor neuron,Dorsal A-type Motor Neuron 4,AB plppapapp,"Ventral cord motor neurons, innervate dorsal muscles"
+DA5,Ventral cord motor neuron,Dorsal A-type Motor Neuron 5,AB prppapapp,"Ventral cord motor neurons, innervate dorsal muscles"
+DA6,Ventral cord motor neuron,Dorsal A-type Motor Neuron 6,AB plpppaaap,"Ventral cord motor neurons, innervate dorsal muscles"
+DA7,Ventral cord motor neuron,Dorsal A-type Motor Neuron 7,AB prpppaaap,"Ventral cord motor neurons, innervate dorsal muscles"
+DA8,Ventral cord motor neuron,Dorsal A-type Motor Neuron 8,AB prpapappp,"Ventral cord motor neurons, innervate dorsal muscles"
+DA9,Ventral cord motor neuron,Dorsal A-type Motor Neuron 9,AB plpppaaaa,"Ventral cord motor neurons, innervate dorsal muscles"
+DB1,Ventral cord motor neuron,Dorsal B-type Motor Neuron 1,AB plpaaaapp,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor (aka DB1/3)"
+DB2,Ventral cord motor neuron,Dorsal B-type Motor Neuron 2,AB arappappa,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor (aka DB3/1)"
+DB3,Ventral cord motor neuron,Dorsal B-type Motor Neuron 3/1,AB prpaaaapp,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor"
+DB4,Ventral cord motor neuron,Dorsal B-type Motor Neuron 4,AB prpappapp,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor"
+DB5,Ventral cord motor neuron,Dorsal B-type Motor Neuron 5,AB plpapappp,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor"
+DB6,Ventral cord motor neuron,Dorsal B-type Motor Neuron 6,AB plppaappp,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor"
+DB7,Ventral cord motor neuron,Dorsal B-type Motor Neuron 7,AB prppaappp,"Ventral cord motor neurons, innervate dorsal muscles, reciprocal inhibitor"
+DD1,Ventral cord motor neuron,Dorsal D-type Motor Neuron 1,AB plppappap,"Ventral cord motor neurons, reciprocal inhibitors, change synaptic pattern during L1"
+DD2,Ventral cord motor neuron,Dorsal D-type Motor Neuron 2,AB prppappap,"Ventral cord motor neurons, reciprocal inhibitors, change synaptic pattern during L1"
+DD3,Ventral cord motor neuron,Dorsal D-type Motor Neuron 3,AB plppapppa,"Ventral cord motor neurons, reciprocal inhibitors, change synaptic pattern during L1"
+DD4,Ventral cord motor neuron,Dorsal D-type Motor Neuron 4,AB prppapppa,"Ventral cord motor neurons, reciprocal inhibitors, change synaptic pattern during L1"
+DD5,Ventral cord motor neuron,Dorsal D-type Motor Neuron 5,AB plppapppp,"Ventral cord motor neurons, reciprocal inhibitors, change synaptic pattern during L1"
+DD6,Ventral cord motor neuron,Dorsal D-type Motor Neuron 6,AB prppapppp,"Ventral cord motor neurons, reciprocal inhibitors, change synaptic pattern during L1"
+DVA,Mechanosensory,Dorsorectal Ganglion Ventral Process A,AB prppppapp,"Ring interneurons, cell bodies in dorsorectal ganglion"
+DVB,Layer 3 interneuron,Dorsorectal Ganglion Ventral Process B,K.p,An excitatory GABAergic motor neuron/interneuron located in dorso-rectal ganglion. Innervates rectal muscles
+DVC,Layer 2 interneuron,Dorsorectal Ganglion Ventral Process C,C aapaa,"Ring interneurons, cell bodies in dorsorectal ganglion"
+FLPL,Mechanosensory,FLaP-like Dendritic Ending Left,AB plapaaapad,"Neuron, ciliated ending in head, no supporting cells, associated with ILso"
+FLPR,Mechanosensory,FLaP-like Dendritic Ending Right,AB prapaaapad,"Neuron, ciliated ending in head, no supporting cells, associated with ILso"
+HSNL,Hermaphrodite specific motor neuron,Hermaphrodite-Specific Neuron Left,AB plapppappa,"Hermaphrodite specific motor neurons (die in male embryo), innervate vulval muscles, serotonergic"
+HSNR,Hermaphrodite specific motor neuron,Hermaphrodite-Specific Neuron Right,AB prapppappa,"Hermaphrodite specific motor neurons (die in male embryo), innervate vulval muscles, serotonergic"
+I1L,Pharyngeal interneuron,Interneuron 1 (pharynx) Left,AB alpapppaa,"Pharyngeal interneurons: ant sensory, input from RIP"
+I1R,Pharyngeal interneuron,Interneuron 1 (pharynx) Right,AB arapappaa,"Pharyngeal interneurons: ant sensory, input from RIP"
+I2L,Pharyngeal interneuron,Interneuron 2 (pharynx) Left,AB alpappaapa,"Pharyngeal interneurons, ant sensory"
+I2R,Pharyngeal interneuron,Interneuron 2 (pharynx) Right,AB arapapaapa,"Pharyngeal interneurons, ant sensory"
+I3,Pharyngeal interneuron,Interneuron 3 (pharynx),MS aaaaapaa,"Pharyngeal interneuron, ant sensory"
+I4,Pharyngeal interneuron,Interneuron 4 (pharynx),MS aaaapaa,Pharyngeal interneuron
+I5,Pharyngeal interneuron,Interneuron 5 (pharynx),AB arapapapp,"Pharyngeal interneuron, post sensory"
+I6,Pharyngeal interneuron,Interneuron 6 (pharynx),MS paaapaa,"Pharyngeal interneuron, post sensory"
+IL1DL,Cephalic,Inner Labial 1 Dorsal Left,AB alapappaaa,Inner labial neuron
+IL1DR,Cephalic,Inner Labial 1 Dorsal Right,AB alappppaaa,Inner labial neuron
+IL1L,Cephalic,Inner Labial 1 Left,AB alapaappaa,Inner labial neuron
+IL1R,Cephalic,Inner Labial 1 Right,AB alaappppaa,Inner labial neuron
+IL1VL,Cephalic,Inner Labial 1 Ventral Left,AB alppapppaa,Inner labial neuron
+IL1VR,Cephalic,Inner Labial 1 Ventral Right,AB arapppppaa,Inner labial neuron
+IL2DL,Cephalic,Inner Labial 2 Dorsal Left,AB alapappap,Inner labial neuron
+IL2DR,Cephalic,Inner Labial 2 Dorsal Right,AB alappppap,Inner labial neuron
+IL2L,Cephalic,Inner Labial 2 Left,AB alapaappp,Inner labial neuron
+IL2R,Cephalic,Inner Labial 2 Right,AB alaappppp,Inner labial neuron
+IL2VL,Cephalic,Inner Labial 2 Ventral Left,AB alppapppp,Inner labial neuron
+IL2VR,Cephalic,Inner Labial 2 Ventral Right,AB arapppppp,Inner labial neuron
+LUAL,Layer 3 interneuron,LUmbar Ganglion A Left,AB plpppaapap,"Interneuron, short process in post ventral cord"
+LUAR,Layer 3 interneuron,LUmbar Ganglion A Right,AB prpppaapap,"Interneuron, short process in post ventral cord"
+M1,Pharyngeal motor neuron,Motor Neuron 1 (pharynx),MS paapaaa,Pharyngeal motorneuron
+M2L,Pharyngeal motor neuron,Motor Neuron 2 (pharynx) Left,AB araapappa,Pharyngeal motorneurons
+M2R,Pharyngeal motor neuron,Motor Neuron 2 (pharynx) Right,AB araappppa,Pharyngeal motorneurons
+M3L,Pharyngeal motor neuron,Motor Neuron 3 (pharynx) Left,AB araapappp,Pharyngeal sensory-motorneurons
+M3R,Pharyngeal motor neuron,Motor Neuron 3 (pharynx) Right,AB araappppp,Pharyngeal sensory-motorneurons
+M4,Pharyngeal motor neuron,Motor Neuron 4 (pharynx),MS paaaaaa,Pharyngeal motorneuron
+M5,Pharyngeal motor neuron,Motor Neuron 5 (pharynx),MS paaapap,Pharyngeal motorneuron
+MCL,Pharyngeal polymodal neuron,Marginal Cell Neuron (pharynx) Left,AB alpaaappp,Pharyngeal neurons that synapse onto marginal cells
+MCR,Pharyngeal polymodal neuron,Marginal Cell Neuron (pharynx) Right,AB arapaappp,Pharyngeal neurons that synapse onto marginal cells
+MI,Pharyngeal polymodal neuron,Motor/Interneuron (pharynx),AB araappaaa,Pharyngeal motor neuron/interneuron
+NSML,Pharyngeal polymodal neuron,NeuroSecretory Motor Neuron (pharynx) Left,AB araapapaav,"Pharyngeal neurosecretory motorneuron, contain serotonin"
+NSMR,Pharyngeal polymodal neuron,NeuroSecretory Motor Neuron (pharynx) Right,AB araapppaav,"Pharyngeal neurosecretory motorneuron, contain serotonin"
+OLLL,Cephalic,Outer Labial Lateral Dendrite Left,AB alppppapaa,Lateral outer labial neurons
+OLLR,Cephalic,Outer Labial Lateral Dendrite Right,AB praaapapaa,Lateral outer labial neurons
+OLQDL,Cephalic,Outer Labial Quadrant Dendrite Dorsal Left,AB alapapapaa,Quadrant outer labial neuron
+OLQDR,Cephalic,Outer Labial Quadrant Dendrite Dorsal Right,AB alapppapaa,Quadrant outer labial neuron
+OLQVL,Cephalic,Outer Labial Quadrant Dendrite Ventral Left,AB plpaaappaa,Quadrant outer labial neuron
+OLQVR,Cephalic,Outer Labial Quadrant Dendrite Ventral Right,AB prpaaappaa,Quadrant outer labial neuron
+PDA,Ventral cord motor neuron,Preanal Cell Body Dorsal Axon A,AB prpppaaaa,"Motor neuron, process in dorsal cord, same as Y cell in hermaphrodite, Y.a in male"
+PDB,Ventral cord motor neuron,Preanal Cell Body Dorsal Axon B,P12.apa,"Motor neuron, process in dorsal cord, cell body in pre-anal ganglion"
+PDEL,Mechanosensory,Posterior DEirid Left,V5L.paaa,"Neuron, dopaminergic of postderid sensillum"
+PDER,Mechanosensory,Posterior DEirid Right,V5R.paaa,"Neuron, dopaminergic of postderid sensillum"
+PHAL,Phasmid,PHasmid Neuron A Left,AB plpppaapp,"Phasmid neurons, chemosensory"
+PHAR,Phasmid,PHasmid Neuron A Right,AB prpppaapp,"Phasmid neurons, chemosensory"
+PHBL,Phasmid,PHasmid Neuron B Left,AB plapppappp,"Phasmid neurons, chemosensory"
+PHBR,Phasmid,PHasmid Neuron B Right,AB prapppappp,"Phasmid neurons, chemosensory"
+PHCL,Phasmid,PHasmid Neuron C Left,TL.pppaa,"Neuron, striated rootlet in male, possibly sensory in tail spike"
+PHCR,Phasmid,PHasmid Neuron C Right,TR.pppaa,"Neuron, striated rootlet in male, possibly sensory in tail spike"
+PLML,Mechanosensory,Posterior Lateral Microtubule Neuron Left,AB plapappppaa,"Posterior lateral microtubule cells, touch receptor neurons"
+PLMR,Mechanosensory,Posterior Lateral Microtubule Neuron Right,AB prapappppaa,"Posterior lateral microtubule cells, touch receptor neurons"
+PLNL,Touch,Posterior Lateral N Left,TL.pppap,"Interneuron, associated with PLM"
+PLNR,Touch,Posterior Lateral N Right,TR.pppap,"Interneuron, associated with PLM"
+PQR,Touch,Posterior Q-cell Derived Receptor,QL.ap,"Neuron, basal body, not part of a sensillum, projects into preanal ganglion"
+PVCL,Layer 1 interneuron,Posterior Ventral Process C Left,AB plpppaapaa,"Ventral cord interneuron, cell body in lumbar ganglion, synapses onto VB and DB motor neurons, formerly called delta"
+PVCR,Layer 1 interneuron,Posterior Ventral Process C Right,AB prpppaapaa,"Ventral cord interneuron, cell body in lumbar ganglion, synapses onto VB and DB motor neurons, formerly called delta"
+PVDL,Mechanosensory,Posterior Ventral Process D Left,V5L.paapa,"Neuron, lateral process adjacent to excretory canal"
+PVDR,Mechanosensory,Posterior Ventral Process D Right,V5R.paapa,"Neuron, lateral process adjacent to excretory canal"
+PVM,Mechanosensory,Posterior Ventral Microtubule Neuron,QL.paa,"Posterior ventral microtubule cell, touch receptor"
+PVNL,Layer 3 interneuron,Posterior Ventral Process N Left,TL.appp,"Interneuron/motor neuron, post. vent. cord, few synapses"
+PVNR,Layer 3 interneuron,Posterior Ventral Process N Right,TR.appp,"Interneuron/motor neuron, post. vent. cord, few synapses"
+PVPL,Layer 3 interneuron,Posterior Ventral Process P Left,AB plppppaaa,"Interneuron, cell body in preanal ganglion, projects along ventral cord to nerve ring"
+PVPR,Layer 3 interneuron,Posterior Ventral Process P Right,AB prppppaaa,"Interneuron, cell body in preanal ganglion, projects along ventral cord to nerve ring"
+PVQL,Layer 3 interneuron,Posterior Ventral Process Q Left,AB plapppaaa,"Interneuron, projects along ventral cord to ring"
+PVQR,Layer 3 interneuron,Posterior Ventral Process Q Right,AB prapppaaa,"Interneuron, projects along ventral cord to ring"
+PVR,Layer 3 interneuron,Posterior Ventral Process R,C aappa,"Interneuron, projects along ventral cord to ring"
+PVT,Layer 2 interneuron,Posterior Ventral Process T,AB plpappppa,"Interneuron, projects along ventral cord to ring"
+PVWL,Layer 2 interneuron,Posterior Ventral Process W Left,TL.ppa,"Interneuron, posterior ventral cord, few synapses"
+PVWR,Layer 2 interneuron,Posterior Ventral Process W Right,TR.ppa,"Interneuron, posterior ventral cord, few synapses"
+RIAL,Layer 1 interneuron,Ring Interneuron A Left,AB alapaapaa,"Ring interneuron, many synapses"
+RIAR,Layer 1 interneuron,Ring Interneuron A Right,AB alaapppaa,"Ring interneuron, many synapses"
+RIBL,Layer 2 interneuron,Ring Interneuron B Left,AB plpaappap,Ring interneuron
+RIBR,Layer 2 interneuron,Ring Interneuron B Right,AB prpaappap,Ring interneuron
+RICL,Layer 2 interneuron,Ring Interneuron C Left,AB plppaaaapp,Ring interneuron
+RICR,Layer 2 interneuron,Ring Interneuron C Right,AB prppaaaapp,Ring interneuron
+RID,Layer 1 interneuron,Ring Interneuron D,AB alappaapa,"Ring interneuron, projects along dorsal cord"
+RIFL,Layer 3 interneuron,Ring Interneuron F Left,AB plppapaaap,Ring interneuron
+RIFR,Layer 3 interneuron,Ring Interneuron F Right,AB prppapaaap,Ring interneuron
+RIGL,Layer 2 interneuron,Ring Interneuron G Left,AB plppappaa,Ring interneuron
+RIGR,Layer 2 interneuron,Ring Interneuron G Right,AB prppappaa,Ring interneuron
+RIH,Category 4 interneuron,Ring Interneuron H,AB prpappaaa,Ring interneuron
+RIML,"Layer 1 interneuron; motorneuron in White et al., 1986",Ring Interneuron M Left,AB plppaapap,Ring motor neuron
+RIMR,"Layer 1 interneuron; motorneuron in White et al., 1986",Ring Interneuron M Right,AB prppaapap,Ring motor neuron
+RIPL,Linker to pharynx,Ring Interneuron P Left,AB alpapaaaa,"Ring/pharynx interneuron, only direct connection between pharynx and ring"
+RIPR,Linker to pharynx,Ring Interneuron P Right,AB arappaaaa,"Ring/pharynx interneuron, only direct connection between pharynx and ring"
+RIR,Category 4 interneuron,Ring Interneuron R,AB prpapppaa,Ring interneuron
+RIS,Layer 3 interneuron,Ring Interneuron S,AB prpappapa,Ring interneuron
+RIVL,Head motor neuron,Ring Interneuron V Left,AB plpaapaaa,Ring interneuron
+RIVR,Head motor neuron,Ring Interneuron V Right,AB prpaapaaa,Ring interneuron
+RMDDL,Head motor neuron,Ring Motor Neuron D Dorsal Left,AB alpapapaa,"Ring motor neuron/interneuron, many synapses"
+RMDDR,Head motor neuron,Ring Motor Neuron D Dorsal Right,AB arappapaa,"Ring motor neuron/interneuron, many synapses"
+RMDL,Head motor neuron,Ring Motor Neuron D Left,AB alpppapad,"Ring motor neuron/interneuron, many synapses"
+RMDR,Head motor neuron,Ring Motor Neuron D Right,AB praaaapad,"Ring motor neuron/interneuron, many synapses"
+RMDVL,Head motor neuron,Ring Motor Neuron D Ventral Left,AB alppapaaa,"Ring motor neuron/interneuron, many synapses"
+RMDVR,Head motor neuron,Ring Motor Neuron D Ventral Right,AB arapppaaa,"Ring motor neuron/interneuron, many synapses"
+RMED,Head motor neuron,Ring Motor Neuron E Dorsal,AB alapppaap,Ring motor neuron
+RMEL,Head motor neuron,Ring Motor Neuron E Left,AB alaaaarlp,Ring motor neuron
+RMER,Head motor neuron,Ring Motor Neuron E Right,AB alaaaarrp,Ring motor neuron
+RMEV,Head motor neuron,Ring Motor Neuron E Ventral,AB plpappaaa,Ring motor neuron
+RMFL,Layer 2 interneuron,Ring Motor Neuron F Left,G2.al,Ring motor neuron/interneuron
+RMFR,Layer 2 interneuron,Ring Motor Neuron F Right,G2.ar,Ring motor neuron/interneuron
+RMGL,Layer 2 interneuron,Ring Motor Neuron G Left,AB plapaaapp,Ring interneuron
+RMGR,Layer 2 interneuron,Ring Motor Neuron G Right,AB prapaaapp,Ring interneuron
+RMHL,Head motor neuron,Ring Motor Neuron H Left,G1.l,Ring motor neuron/interneuron
+RMHR,Head motor neuron,Ring Motor Neuron H Right,G1.r,Ring motor neuron/interneuron
+SAADL,Layer 2 interneuron,Sublateral Anterior A Dorsal Left,AB alppapapa,"Ring interneuron, anteriorly projecting process that runs sublaterally"
+SAADR,Layer 2 interneuron,Sublateral Anterior A Dorsal Right,AB arapppapa,"Ring interneuron, anteriorly projecting process that runs sublaterally"
+SAAVL,Layer 2 interneuron,Sublateral Anterior A Ventral Left,AB plpaaaaaa,"Ring interneuron, anteriorly projecting process that runs sublaterally"
+SAAVR,Layer 2 interneuron,Sublateral Anterior A Ventral Right,AB prpaaaaaa,"Ring interneuron, anteriorly projecting process that runs sublaterally"
+SABD,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Anterior B Dorsal,AB plppapaap,"Ring interneuron, anteriorly projecting process that runs sublaterally, synapses to anterior body muscles in L1"
+SABVL,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Anterior B Ventral Left,AB plppapaaaa,"Ring interneuron, anteriorly projecting process that runs sublaterally, synapses to anterior body muscles in L1"
+SABVR,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Anterior B Ventral Right,AB prppapaaaa,"Ring interneuron, anteriorly projecting process that runs sublaterally, synapses to anterior body muscles in L1"
+SDQL,Touch,Sublateral Dorsal Q-cell Derived Left,QL.pap,"Post. lateral interneuron, process projects into ring"
+SDQR,Touch,Sublateral Dorsal Q-cell Derived Right,QR.pap,"Ant. lateral interneuron, process projects into ring"
+SIADL,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron A Dorsal Left,AB plpapaapa,"Receive a few synapses in the ring, have posteriorly directed processes that run sublaterally"
+SIADR,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron A Dorsal Right,AB prpapaapa,"Receive a few synapses in the ring, have posteriorly directed processes that run sublaterally"
+SIAVL,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron A Ventral Left,AB plpapappa,"Receive a few synapses in the ring, have posteriorly directed processes that run sublaterally"
+SIAVR,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron A Ventral Right,AB prpapappa,"Receive a few synapses in the ring, have posteriorly directed processes that run sublaterally"
+SIBDL,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron B Dorsal Left,AB plppaaaaa,Similar to SIA
+SIBDR,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron B Dorsal Right,AB prppaaaaa,Similar to SIA
+SIBVL,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron B Ventral Left,AB plpapaapp,Similar to SIA
+SIBVR,"Sublateral motor neuron; interneuron in White et al., 1986",Sublateral Interneuron B Ventral Right,AB prpapaapp,Similar to SIA
+SMBDL,Sublateral motor neuron,Sublateral Motor Neuron B Dorsal Left,AB alpapapapp,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMBDR,Sublateral motor neuron,Sublateral Motor Neuron B Dorsal Right,AB arappapapp,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMBVL,Sublateral motor neuron,Sublateral Motor Neuron B Ventral Left,AB alpapappp,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMBVR,Sublateral motor neuron,Sublateral Motor Neuron B Ventral Right,AB arappappp,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMDDL,Sublateral motor neuron,Sublateral Motor Neuron D Dorsal Left,AB plpapaaaa,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMDDR,Sublateral motor neuron,Sublateral Motor Neuron D Dorsal Right,AB prpapaaaa,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMDVL,Sublateral motor neuron,Sublateral Motor Neuron D Ventral Left,AB alppappaa,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+SMDVR,Sublateral motor neuron,Sublateral Motor Neuron D Ventral Right,AB arappppaa,"Ring motor neuron/interneuron, has a posteriorly directed process that runs sublaterally"
+URADL,Head motor neuron,"Unknown Receptor, not Ciliated A Dorsal Left",AB plaaaaaaa,Ring motor neuron
+URADR,Head motor neuron,"Unknown Receptor, not Ciliated A Dorsal Right",AB arpapaaaa,Ring motor neuron
+URAVL,Head motor neuron,"Unknown Receptor, not Ciliated A Ventral Left",AB plpaaapaa,Ring motor neuron
+URAVR,Head motor neuron,"Unknown Receptor, not Ciliated A Ventral Right",AB prpaaapaa,Ring motor neuron
+URBL,Category 4 interneuron,"Unknown Receptor, not Ciliated B Left",AB plaapaapa,"Neuron, presynaptic in ring, ending in head"
+URBR,Category 4 interneuron,"Unknown Receptor, not Ciliated B Right",AB praapaapa,"Neuron, presynaptic in ring, ending in head"
+URXL,"O2, CO2, social signals, touch","Unknown Receptor, not Ciliated X Left",AB plaaaaappp,Ring interneuron
+URXR,"O2, CO2, social signals, touch","Unknown Receptor, not Ciliated X Right",AB arpapaappp,Ring interneuron
+URYDL,Cephalic,"Unknown Receptor, not Ciliated Y Dorsal Left",AB alapapapp,"Neuron, presynaptic in ring, ending in head"
+URYDR,Cephalic,"Unknown Receptor, not Ciliated Y Dorsal Right",AB alapppapp,"Neuron, presynaptic in ring, ending in head"
+URYVL,Cephalic,"Unknown Receptor, not Ciliated Y Ventral Left",AB plpaaappp,"Neuron, presynaptic in ring, ending in head"
+URYVR,Cephalic,"Unknown Receptor, not Ciliated Y Ventral Right",AB prpaaappp,"Neuron, presynaptic in ring, ending in head"
+VA1,Ventral cord motor neuron,Ventral A-type Motor Neuron 1,W.pa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA10,Ventral cord motor neuron,Ventral A-type Motor Neuron 10,P10.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA11,Ventral cord motor neuron,Ventral A-type Motor Neuron 11,P11.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA12,Ventral cord motor neuron,Ventral A-type Motor Neuron 12,P12.aaaa,"Ventral cord motor neuron, innervates vent. body muscles, but also interneuron in preanal ganglion"
+VA2,Ventral cord motor neuron,Ventral A-type Motor Neuron 2,P2.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA3,Ventral cord motor neuron,Ventral A-type Motor Neuron 3,P3.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA4,Ventral cord motor neuron,Ventral A-type Motor Neuron 4,P4.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA5,Ventral cord motor neuron,Ventral A-type Motor Neuron 5,P5.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA6,Ventral cord motor neuron,Ventral A-type Motor Neuron 6,P6.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA7,Ventral cord motor neuron,Ventral A-type Motor Neuron 7,P7.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA8,Ventral cord motor neuron,Ventral A-type Motor Neuron 8,P8.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VA9,Ventral cord motor neuron,Ventral A-type Motor Neuron 9,P9.aaaa,"Ventral cord motor neuron, innervates vent. body muscles"
+VB1,Ventral cord motor neuron,Ventral B-type Motor Neuron 1,P1.aaap,"Ventral cord motor neuron, innervates vent. body muscles, also interneuron in ring"
+VB10,Ventral cord motor neuron,Ventral B-type Motor Neuron 10,P9.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB11,Ventral cord motor neuron,Ventral B-type Motor Neuron 11,P10.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB2,Ventral cord motor neuron,Ventral B-type Motor Neuron 2,W.aap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB3,Ventral cord motor neuron,Ventral B-type Motor Neuron 3,P2.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB4,Ventral cord motor neuron,Ventral B-type Motor Neuron 4,P3.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB5,Ventral cord motor neuron,Ventral B-type Motor Neuron 5,P4.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB6,Ventral cord motor neuron,Ventral B-type Motor Neuron 6,P5.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB7,Ventral cord motor neuron,Ventral B-type Motor Neuron 7,P6.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB8,Ventral cord motor neuron,Ventral B-type Motor Neuron 8,P7.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VB9,Ventral cord motor neuron,Ventral B-type Motor Neuron 9,P8.aaap,"Ventral cord motor neuron, innervates vent. body muscles"
+VC1,Hermaphrodite specific motor neuron,Ventral C-type Motor Neuron 1,P3.aap,Hermaphrodite specific ventral cord motor neuron innervates vulval muscles and ventral body muscles
+VC2,Hermaphrodite specific motor neuron,Ventral C-type Motor Neuron 2,P4.aap,Hermaphrodite specific ventral cord motor neuron innervates vulval muscles and ventral body muscles
+VC3,Hermaphrodite specific motor neuron,Ventral C-type Motor Neuron 3,P5.aap,Hermaphrodite specific ventral cord motor neuron innervates vulval muscles and ventral body muscles
+VC4,Hermaphrodite specific motor neuron,Ventral C-type Motor Neuron 4,P6.aap,Hermaphrodite specific ventral cord motor neuron innervates vulval muscles and ventral body muscles
+VC5,Hermaphrodite specific motor neuron,Ventral C-type Motor Neuron 5,P7.aap,Hermaphrodite specific ventral cord motor neuron innervates vulval muscles and ventral body muscles
+VC6,Hermaphrodite specific motor neuron,Ventral C-type Motor Neuron 6,P8.aap,Hermaphrodite specific ventral cord motor neuron innervates vulval muscles and ventral body muscles
+VD1,Ventral cord motor neuron,Ventral D-type Motor Neuron 1,W.pp,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD10,Ventral cord motor neuron,Ventral D-type Motor Neuron 10,P9.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD11,Ventral cord motor neuron,Ventral D-type Motor Neuron 11,P10.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD12,Ventral cord motor neuron,Ventral D-type Motor Neuron 12,P11.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD13,Ventral cord motor neuron,Ventral D-type Motor Neuron 13,P12.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD2,Ventral cord motor neuron,Ventral D-type Motor Neuron 2,P1.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD3,Ventral cord motor neuron,Ventral D-type Motor Neuron 3,P2.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD4,Ventral cord motor neuron,Ventral D-type Motor Neuron 4,P3.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD5,Ventral cord motor neuron,Ventral D-type Motor Neuron 5,P4.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD6,Ventral cord motor neuron,Ventral D-type Motor Neuron 6,P5.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD7,Ventral cord motor neuron,Ventral D-type Motor Neuron 7,P6.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD8,Ventral cord motor neuron,Ventral D-type Motor Neuron 8,P7.app,"Ventralcord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+VD9,Ventral cord motor neuron,Ventral D-type Motor Neuron 9,P8.app,"Ventral cord motor neuron, innervates vent body muscles, reciprocal inhibitor"
+MCML,Male head interneuron,Mystery Cell of the Male Left,AmsoL,Male specific interneuron
+MCMR,Male head interneuron,Mystery Cell of the Male Right,AmsoR,Male specific interneuron
+PVV,Male interneuron,Posterior Ventral Process V,P11.paaa,"Male specific motor neuron, pre-anal ganglion"
+PVX,Male interneuron,Posterior Ventral Process X,P12.aap,"Male specific interneuron, cell body in pre-anal ganglion, postsynaptic in ring and ventral cord"
+PVY,Male interneuron,Posterior Ventral Process Y,P11.paap,"Male specific interneuron, cell body in pre-anal ganglion"
+PVZ,Male interneuron,Posterior Ventral Process Z,P10.ppppa,"Male specific motor neuron, cell body in pre-anal ganglion"
+DVE,Male interneuron,Dorsorectal Ventral Process E,B.ppap,"Male specific interneuron, cell body in dorsorectal ganglion"
+DVF,Male interneuron,Dorsorectal Ventral Process F,B.ppppa,"Male specific interneuron, cell body in dorsorectal ganglion"
+DX1,Male interneuron,- To be added... - ,Male interneuron,- To be added... - ,Interneuron
+DX2,Male interneuron,- To be added... - ,Male interneuron,- To be added... - ,Interneuron
+DX3,Male interneuron,- To be added... - ,Male interneuron,- To be added... - ,Interneuron
+EF1,Male interneuron,- To be added... - ,Male interneuron,- To be added... - ,Interneuron
+EF2,Male interneuron,- To be added... - ,Male interneuron,- To be added... - ,Interneuron
+EF3,Male interneuron,- To be added... - ,Male interneuron,- To be added... - ,Interneuron
+PDC,Male interneuron,Preanal Cell with Dorsal Process C,P11.papa,"Male specific interneuron, pre-anal ganglion"
+PGA,Male interneuron,Preanal Ganglion Cell A,P11.papp,"Male specific interneuron, pre-anal ganglion"
+CA01,Male interneuron,"C-type Neuron, Anterior Daughter after Division 1",P3.aapa,"Male specific cells, ventral cord, not constructed"
+CA02,Male interneuron,"C-type Neuron, Anterior Daughter after Division 2",P4.aapa,"Male specific cells, ventral cord, not constructed"
+CA03,Male interneuron,"C-type Neuron, Anterior Daughter after Division 3",P5.aapa,"Male specific cells, ventral cord, not constructed"
+CA04,Male interneuron,"C-type Neuron, Anterior Daughter after Division 4",P6.aapa,"Male specific neuron, ventral cord, innervates dorsal muscles"
+CA05,Male interneuron,"C-type Neuron, Anterior Daughter after Division 5",P7.aapa,"Male specific neuron, ventral cord, innervates dorsal muscles"
+CA06,Male interneuron,"C-type Neuron, Anterior Daughter after Division 6",P8.aapa,"Male specific neuron, ventral cord, innervates dorsal muscles"
+CA07,Male interneuron,"C-type Neuron, Anterior Daughter after Division 7",P9.aapa,"Male specific neuron, ventral cord, innervates dorsal muscles"
+CA08,Male interneuron,"C-type Neuron, Anterior Daughter after Division 8",P10.aapa,"Male specific cell, ventral cord, neuron-like but lacks synapses"
+CA09,Male interneuron,"C-type Neuron, Anterior Daughter after Division 9",P11.aapa,"Male specific cell, ventral cord, neuron-like but lacks synapses"
+CP01,Male interneuron,"C-type Neuron, Posterior Daughter after Division 1",P3.aapp,Male specific neuron in ventral cord
+CP02,Male interneuron,"C-type Neuron, Posterior Daughter after Division 2",P4.aapp,Male specific neuron in ventral cord
+CP03,Male interneuron,"C-type Neuron, Posterior Daughter after Division 3",P5.aapp,Male specific neuron in ventral cord
+CP04,Male interneuron,"C-type Neuron, Posterior Daughter after Division 4",P6.aapp,Male specific motor neuron in ventral cord
+CP05,Male interneuron,"C-type Neuron, Posterior Daughter after Division 5",P7.aapp,Male specific motor neuron in ventral cord
+CP06,Male interneuron,"C-type Neuron, Posterior Daughter after Division 6",P8.aapp,Male specific motor neuron in ventral cord
+CP07,Male interneuron,"C-type Neuron, Posterior Daughter after Division 7",P9.aapp,Male specific motor neuron in ventral cord
+CP08,Male interneuron,"C-type Neuron, Posterior Daughter after Division 8",P10.aapp,"Male specific interneuron, projects into preanal ganglion"
+CP09,Male interneuron,"C-type Neuron, Posterior Daughter after Division 9",P11.aapp,"Male specific interneuron, projects into preanal ganglion"
+CEMDL,Male head sensory neuron,CEphalic Male Sensory Neuron Dorsal Left,AB plaaaaaap,"Male specific cephalic neurons (programmed cell death in hermaphrodite embryo) open to outside, possible function in male chemotaxis toward hermaphrodite"
+CEMDR,Male head sensory neuron,CEphalic Male Sensory Neuron Dorsal Right,AB arpapaaap,"Male specific cephalic neurons (programmed cell death in hermaphrodite embryo) open to outside, possible function in male chemotaxis toward hermaphrodite"
+CEMVL,Male head sensory neuron,CEphalic Male Sensory Neuron Ventral Left,AB plpaapapp,"Male specific cephalic neurons (programmed cell death in hermaphrodite embryo) open to outside, possible function in male chemotaxis toward hermaphrodite"
+CEMVR,Male head sensory neuron,CEphalic Male Sensory Neuron Ventral Right,AB prpaapapp,"Male specific cephalic neurons (programmed cell death in hermaphrodite embryo) open to outside, possible function in male chemotaxis toward hermaphrodite"
+R1AL,Male sensory neuron,Ray 1 Neuron A Left,"V5L.pppppaaa, (R1.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R1AR,Male sensory neuron,Ray 1 Neuron A Right,"V5R.pppppaaa, (R1.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R1BL,Male sensory neuron,Ray 1 Neuron B Left,"V5L.pppppapa, (R1.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R1BR,Male sensory neuron,Ray 1 Neuron B Right,"V5R.pppppapa, (R1.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R2AL,Male sensory neuron,Ray 2 Neuron A Left,"V6L.papapaaa, (R2.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R2AR,Male sensory neuron,Ray 2 Neuron A Right,"V6R.papapaaa, (R2.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R2BL,Male sensory neuron,Ray 2 Neuron B Left,"V6L.papapapa, (R2.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside,cell body in left lumbar ganglion"
+R2BR,Male sensory neuron,Ray 2 Neuron B Right,"V6R.papapapa, (R2.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R3AL,Male sensory neuron,Ray 3 Neuron A Left,"V6L.papppaaa, (R3.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R3AR,Male sensory neuron,Ray 3 Neuron A Right,"V6R.papppaaa, (R3.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R3BL,Male sensory neuron,Ray 3 Neuron B Left,"V6L.papppapa, (R3.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R3BR,Male sensory neuron,Ray 3 Neuron B Right,"V6R.papppapa, (R3.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R4AL,Male sensory neuron,Ray 4 Neuron A Left,"V6L.pppapaaa, (R4.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R4AR,Male sensory neuron,Ray 4 Neuron A Right,"V6R.pppapaaa, (R4.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R4BL,Male sensory neuron,Ray 4 Neuron B Left,"V6L.pppapapa, (R4.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R4BR,Male sensory neuron,Ray 4 Neuron B Right,"V6R.pppapapa, (R4.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R5AL,Male sensory neuron,Ray 5 Neuron A Left,"V6L.pppppaaa, (R5.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R5AR,Male sensory neuron,Ray 5 Neuron A Right,"V6R.pppppaaa, (R5.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R5BL,Male sensory neuron,Ray 5 Neuron B Left,"V6L.pppppapa, (R5.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R5BR,Male sensory neuron,Ray 5 Neuron B Right,"V6R.pppppapa, (R5.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R6AL,Male sensory neuron,Ray 6 Neuron A Left,"V6L.ppppaaaa, (R6.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R6AR,Male sensory neuron,Ray 6 Neuron A Right,"V6R.ppppaaaa, (R6.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R6BL,Male sensory neuron,Ray 6 Neuron B Left,"V6L.ppppaapa, (R6.apaL)","Male sensory rays, neuron, not darkly staining nor open to outside, cell body in left lumbar ganglion"
+R6BR,Male sensory neuron,Ray 6 Neuron B Right,"V6R.ppppaapa, (R6.apaR)","Male sensory rays, neuron, not darkly staining nor open to outside, cell body in right lumbar ganglion"
+R7AL,Male sensory neuron,Ray 7 Neuron A Left,"TL.apappaaa, (R7.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R7AR,Male sensory neuron,Ray 7 Neuron A Right,"TR.apappaaa, (R7.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R7BL,Male sensory neuron,Ray 7 Neuron B Left,"TL.apappapa, (R7.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R7BR,Male sensory neuron,Ray 7 Neuron B Right,"TR.apappapa, (R7.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R8AL,Male sensory neuron,Ray 8 Neuron A Left,"TL.appaaaaa, (R8.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R8AR,Male sensory neuron,Ray 8 Neuron A Right,"TR.appaaaaa, (R8.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R8BL,Male sensory neuron,Ray 8 Neuron B Left,"TL.appaaapa, (R8.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R8BR,Male sensory neuron,Ray 8 Neuron B Right,"TR.appaaapa, (R8.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+R9AL,Male sensory neuron,Ray 9 Neuron A Left,"TL.appapaaa, (R9.aaaL)","Male sensory rays, neuron, striated rootlet, cell body in left lumbar ganglion"
+R9AR,Male sensory neuron,Ray 9 Neuron A Right,"TR.appapaaa, (R9.aaaR)","Male sensory rays, neuron, striated rootlet, cell body in right lumbar ganglion"
+R9BL,Male sensory neuron,Ray 9 Neuron B Left,"TL.appapapa, (R9.apaL)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in left lumbar ganglion"
+R9BR,Male sensory neuron,Ray 9 Neuron B Right,"TR.appapapa, (R9.apaR)","Male sensory rays, neuron, darkly staining tip, open to outside, cell body in right lumbar ganglion"
+PHDL,Male sensory neuron,PHasmid Neuron D Left,TL.paa (PHsoL),Male specific sensory neuron
+PHDR,Male sensory neuron,PHasmid Neuron D Right,TR.paa (PHsoR),Male specific sensory neuron
+HOA,Male sensory neuron,HOok Neuron A,P10.pppa,"Male specific neuron, sensory ending in male hook sensillum, cell body in pre-anal ganglion"
+HOB,Male sensory neuron,HOok Neuron B,P10.ppap,"Male specific neuron, sensory ending in male hook sensillum, cell body in pre-anal ganglion"
+PCAL,Male sensory neuron,PostCloacal Sensilla Neuron A Left,Y.plppd,"Male specific sensory-motor neuron, sensory ending in male postcloacal sensilla, cell body in left cloacal ganglion"
+PCAR,Male sensory neuron,PostCloacal Sensilla Neuron A Right,Y.prppd,"Male specific sensory-motor neuron, sensory ending in male postcloacal sensilla, cell body in right cloacal ganglion"
+PCBL,Male sensory neuron,PostCloacal Sensilla Neuron B Left,Y.plpa,"Male specific sensory-motor neuron, sensory ending in male postcloacal sensilla, cell body in left cloacal ganglion"
+PCBR,Male sensory neuron,PostCloacal Sensilla Neuron B Right,Y.prpa,"Male specific sensory-motor neuron, sensory ending in male postcloacal sensilla, cell body in right cloacal ganglion"
+PCCL,Male sensory neuron,PostCloacal Sensilla Neuron C Left,B.arpaaa,"Male specific sensory-motor neuron, sensory ending in male postcloacal sensilla, cell body in left cloacal ganglion"
+PCCR,Male sensory neuron,PostCloacal Sensilla Neuron C Right,B.alpaaa,"Male specific sensory-motor neuron, sensory ending in male postcloacal sensilla, cell body in right cloacal ganglion"
+SPCL,Male sensory neuron,SPicule Neuron C Left,B.alpaap,"Male specific sensory/motor neuron, innervates spicule protractor muscle, cell body in left cloacal ganglion"
+SPCR,Male sensory neuron,SPicule Neuron C Right,B.arpaap,"Male specific sensory/motor neuron, innervates spicule protractor muscle, cell body in right cloacal ganglion"
+SPDL,Male sensory neuron,SPicule Neuron D Left,B.alpapaa,"Male specific sensory neuron of male copulatory spicules, ciliated, open to outside at tip of spicule, cell body in left cloacal ganglion"
+SPDR,Male sensory neuron,SPicule Neuron D Right,B.arpapaa,"Male specific sensory neuron of male copulatory spicules, ciliated, open to outside at tip of spicule, cell body in right cloacal ganglion"
+SPVL,Male sensory neuron,SPicule Neuron V Left,B.al/raalda,"Male specific sensory neuron of male copulatory spicules, ciliated, open to outside at tip of spicule, cell body in left cloacal ganglion"
+SPVR,Male sensory neuron,SPicule Neuron V Right,B.al/raarda,"Male specific sensory neuron of male copulatory spicules, ciliated, open to outside at tip of spicule, cell body in right cloacal ganglion"
+MDL01,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL02,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL03,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL04,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL05,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL06,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL07,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDL08,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL09,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL10,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL11,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL12,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL13,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL14,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL15,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL16,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL17,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL18,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL19,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL20,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL21,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL22,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL23,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDL24,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR01,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR02,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR03,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR04,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR05,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR06,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR07,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MDR08,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR09,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR10,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR11,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR12,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR13,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR14,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR15,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR16,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR17,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR18,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR19,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR20,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR21,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR22,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR23,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MDR24,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL01,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL02,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL03,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL04,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL05,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL06,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL07,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVL08,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL09,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL10,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL11,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL12,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL13,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL14,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL15,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL16,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL17,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL18,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL19,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL20,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL21,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL22,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVL23,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR01,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR02,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR03,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR04,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR05,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR06,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR07,Head muscle,- To be added... - ,Head muscle,- To be added... - ,Body wall muscle
+MVR08,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR09,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR10,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR11,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR12,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR13,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR14,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR15,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR16,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR17,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR18,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR19,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR20,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR21,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR22,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR23,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+MVR24,Main body muscle,- To be added... - ,Main body muscle,- To be added... - ,Body wall muscle
+pm1,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm3D,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm3VL,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm3VR,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm5D,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm5VR,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm5VL,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm7D,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm7VL,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm7VR,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Odd numbered pharyngeal muscle
+pm2D,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm2VL,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm2VR,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm4D,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm4VR,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm4VL,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm4_UNSPECIFIED,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm6D,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm6VR,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm6VL,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+pm8,Pharyngeal muscle,- To be added... - ,Pharyngeal muscle,- To be added... - ,Even numbered pharyngeal muscle
+MVULVA,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm1AL,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm1PL,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm1PR,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm1AR,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm2AL,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm2AR,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm2PL,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+vm2PR,Vulval muscle,- To be added... - ,Vulval muscle,- To be added... - ,Vulval muscle
+um2AL,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um2AR,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um1AL,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um1AR,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um1PL,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um1PR,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um2PL,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+um2PR,Uterine muscle,- To be added... - ,Uterine muscle,- To be added... - ,Uterine muscle
+MANAL,Anal/sphincter muscle,- To be added... - ,Anal/sphincter muscle,- To be added... - ,Sphincter and anal depressor muscle
+mu_sph,Anal/sphincter muscle,- To be added... - ,Anal/sphincter muscle,- To be added... - ,Sphincter and anal depressor muscle
+mu_anal,Anal/sphincter muscle,- To be added... - ,Anal/sphincter muscle,- To be added... - ,Sphincter and anal depressor muscle
+dglL1,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglL2,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglL3,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglL4,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglL5,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglL6,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglL7,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR1,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR2,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR3,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR4,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR5,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR6,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR7,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+dglR8,Diagonal muscle (male specific),- To be added... - ,Diagonal muscle (male specific),- To be added... - ,Diagonal muscles
+aobL,Anterior oblique (male specific),- To be added... - ,Anterior oblique (male specific),- To be added... - ,Anterior oblique muscles
+aobR,Anterior oblique (male specific),- To be added... - ,Anterior oblique (male specific),- To be added... - ,Anterior oblique muscles
+pobL,Posterior oblique (male specific),- To be added... - ,Posterior oblique (male specific),- To be added... - ,Posterior oblique muscles
+pobR,Posterior oblique (male specific),- To be added... - ,Posterior oblique (male specific),- To be added... - ,Posterior oblique muscles
+gecL,Gubernacular erector (male specific),- To be added... - ,Gubernacular erector (male specific),- To be added... - ,Gubernacular erector muscles
+gecR,Gubernacular erector (male specific),- To be added... - ,Gubernacular erector (male specific),- To be added... - ,Gubernacular erector muscles
+grtL,Gubernacular retractor (male specific),- To be added... - ,Gubernacular retractor (male specific),- To be added... - ,Gubernacular retractor muscles
+grtR,Gubernacular retractor (male specific),- To be added... - ,Gubernacular retractor (male specific),- To be added... - ,Gubernacular retractor muscles
+cdlL,Caudal longitudinal muscle (male specific),- To be added... - ,Caudal longitudinal muscle (male specific),- To be added... - ,Caudal inner longitudinal muscles
+cdlR,Caudal longitudinal muscle (male specific),- To be added... - ,Caudal longitudinal muscle (male specific),- To be added... - ,Caudal inner longitudinal muscles
+ailL,Anterior inner longitudinal muscle (male specific),- To be added... - ,Anterior inner longitudinal muscle (male specific),- To be added... - ,Anterior inner longitudinal muscles
+ailR,Anterior inner longitudinal muscle (male specific),- To be added... - ,Anterior inner longitudinal muscle (male specific),- To be added... - ,Anterior inner longitudinal muscles
+pilL,Posterior inner longitudinal muscle (male specific),- To be added... - ,Posterior inner longitudinal muscle (male specific),- To be added... - ,Posterior inner longitudinal muscles
+pilR,Posterior inner longitudinal muscle (male specific),- To be added... - ,Posterior inner longitudinal muscle (male specific),- To be added... - ,Posterior inner longitudinal muscles
+polL,Posterior outer longitudinal muscle (male specific),- To be added... - ,Posterior outer longitudinal muscle (male specific),- To be added... - ,Posterior outer longitudinal muscles
+polR,Posterior outer longitudinal muscle (male specific),- To be added... - ,Posterior outer longitudinal muscle (male specific),- To be added... - ,Posterior outer longitudinal muscles
+dspL,Dorsal spicule protractor (male specific),- To be added... - ,Dorsal spicule protractor (male specific),- To be added... - ,Spicule protractor muscles
+dspR,Dorsal spicule protractor (male specific),- To be added... - ,Dorsal spicule protractor (male specific),- To be added... - ,Spicule protractor muscles
+vspL,Ventral spicule protractor (male specific),- To be added... - ,Ventral spicule protractor (male specific),- To be added... - ,Spicule protractor muscles
+vspR,Ventral spicule protractor (male specific),- To be added... - ,Ventral spicule protractor (male specific),- To be added... - ,Spicule protractor muscles
+dsrL,Dorsal spicule retractor (male specific),- To be added... - ,Dorsal spicule retractor (male specific),- To be added... - ,Spicule retractor muscles
+dsrR,Dorsal spicule retractor (male specific),- To be added... - ,Dorsal spicule retractor (male specific),- To be added... - ,Spicule retractor muscles
+vsrL,Ventral spicule retractor (male specific),- To be added... - ,Ventral spicule retractor (male specific),- To be added... - ,Spicule retractor muscles
+vsrR,Ventral spicule retractor (male specific),- To be added... - ,Ventral spicule retractor (male specific),- To be added... - ,Spicule retractor muscles
+mu_intL,Intestinal muscles,- To be added... - ,Intestinal muscles,- To be added... - ,Intestinal muscle
+mu_intR,Intestinal muscles,- To be added... - ,Intestinal muscles,- To be added... - ,Intestinal muscle
+BWM,Unspecified body wall muscle,- To be added... - ,Unspecified body wall muscle,- To be added... - ,Body wall muscle
+GLRDL,GLR cell,- To be added... - ,GLR cell,- To be added... - ,GLR cell
+GLRDR,GLR cell,- To be added... - ,GLR cell,- To be added... - ,GLR cell
+GLRL,GLR cell,- To be added... - ,GLR cell,- To be added... - ,GLR cell
+GLRR,GLR cell,- To be added... - ,GLR cell,- To be added... - ,GLR cell
+GLRVL,GLR cell,- To be added... - ,GLR cell,- To be added... - ,GLR cell
+GLRVR,GLR cell,- To be added... - ,GLR cell,- To be added... - ,GLR cell
+CEPshDL,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid
+CEPshDR,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid
+CEPshVL,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid
+CEPshVR,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid,- To be added... - ,Sheath cell other than amphid sheath and phasmid
+mc1DL,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc1DR,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc1V,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc2DL,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc2DR,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc2V,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc3DL,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc3DR,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+mc3V,Marginal cell of the pharynx,- To be added... - ,Marginal cell of the pharynx,- To be added... - ,Marginal cells (mc) of the pharynx
+e2DL,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e2DR,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e2D,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e2V,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e2VL,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e2VR,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e3D,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e3VL,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+e3VR,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium,- To be added... - ,Pharyngeal epithelium
+g1AL,Pharyngeal glial cell,- To be added... - ,Pharyngeal glial cell,- To be added... - ,Pharyngeal epithelium
+g1AR,Pharyngeal glial cell,- To be added... - ,Pharyngeal glial cell,- To be added... - ,Pharyngeal epithelium
+g1P,Pharyngeal glial cell,- To be added... - ,Pharyngeal glial cell,- To be added... - ,Pharyngeal epithelium
+g2L,Pharyngeal glial cell,- To be added... - ,Pharyngeal glial cell,- To be added... - ,Pharyngeal epithelium
+g2R,Pharyngeal glial cell,- To be added... - ,Pharyngeal glial cell,- To be added... - ,Pharyngeal epithelium
+bm,Pharyngeal basement membrane,- To be added... - ,Pharyngeal basement membrane,- To be added... - ,Basement membrane
+exc_cell,Excretory cell,- To be added... - ,Excretory cell,- To be added... - ,Excretory cell
+exc_gl,Excretory gland,- To be added... - ,Excretory gland,- To be added... - ,Gland cell
+hmc,Head mesodermal cell,- To be added... - ,Head mesodermal cell,- To be added... - ,Head mesodermal cell
+hyp,Hypodermis,- To be added... - ,Hypodermis,- To be added... - ,Hypodermis
+int,Intestine,- To be added... - ,Intestine,- To be added... - ,Intestinal cells
+R1stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R1stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R2stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R2stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R3stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R3stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R4stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R4stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R5stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R5stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R6stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R6stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R7stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R7stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R8stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R8stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R9stL,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+R9stR,Male ray structural cell,- To be added... - ,Male ray structural cell,- To be added... - ,Ray structural cell
+proctodeum,Proctodeum (male specific),- To be added... - ,Proctodeum (male specific),- To be added... - ,Proctodeum
+gonad,Gonad (male specific),- To be added... - ,Gonad (male specific),- To be added... - ,Vas deferens

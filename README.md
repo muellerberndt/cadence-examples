@@ -1,100 +1,24 @@
 # Cadence examples
 
-[Website](https://floatingpragma.io/) · [Cadence](https://floatingpragma.io/cadence/) · [Live brains](https://floatingpragma.io/cadence-examples/) · [Library](https://github.com/muellerberndt/cadence)
+Worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each example is one
+directory with its own README, its page, the receipts behind every number it states, and a check
+that recomputes them.
 
-Four applications that learn through one stream of experience: observe, remember, predict,
-act, learn from the outcome. Each entry links its page, its acceptance receipt and the
-verifier that recomputes the receipt from the event logs. The library is
-[cadence](https://github.com/muellerberndt/cadence); its README explains the principle.
+| Example | What it shows | Evidence | Receipt |
+|---|---|---|---|
+| [worm](worm/) | The complete nervous system of *C. elegans*, 302 neurons wired as measured, as one TemporalPatchNet. It learns during its life what the smells around it predict, from food, from pain, and from the treats and pokes you give it; every neuron, synapse and lesson is drawn as it happens | the browser brain reproduces the library's TemporalPatchNet to a relative difference of 8.5e-12 on lessons it lives through | [parity](worm/tests/parity.mjs) |
+| [connect_four](connect_four/) | One life learns what a dropped stone does, which windows of four cells are completed lines and what positions are worth, from the games it plays, and chooses its moves by searching over what it learned | tactical suite 100%; paired score against random 0.995 and against one-ply 0.962; decision latency p95 52 ms | [receipt](connect_four/receipt.json) |
+| [amen](amen/) | A jungle composer in one patch: hears four bars of an unheard track, or silence, then plays sixteen bars of drums, bass and texture while the page replays its brain | next drum slice 0.84 to 0.86 on held-out tracks (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117) | [receipt](amen/runs/record-composer-v10/receipt.json) |
 
-## Arm
+## The worm
 
-A two-link arm learns its own body from motor babbling, reaches targets through a search
-over the consequences it has recorded, copies what a visitor draws, adapts to a longer
-link without a reset and returns to its original body.
-
-- Page: https://floatingpragma.io/cadence-examples/arm/ (draw a figure; the arm copies it while
-  the whole brain runs beside it; a checkpoint selector loads intermediate states of the life).
-- Receipt: [arm/receipt.json](arm/receipt.json), five acceptance seeds. Measured: held-out
-  reaching 99% (gate 0.9, each seed at least 98%); copier
-  tracking error 0.052 (bar 0.113); recovery after a longer link
-  99% and retention on the original body 99%; the online MLP on the
-  same stream reaches 3% without a replay ring and 99%
-  with its own ring; the Jacobian PD controller 94%; random torques 0%.
-  Learning curve of a read-only copy on forty held-out targets: 22% after
-  3,000 decisions of the life, 60% after 6,000, 87% after 10,000.
-- Compared ([comparisons/arm/receipt.json](comparisons/arm/receipt.json), the same life
-  with the world model replaced, five seeds): held-out reaching with an online MLP
-  2% without a replay ring and 98% with one, with an online
-  transformer 40% without a ring and 100% with
-  one; copier tracking error 0.702 (MLP), 0.102 (MLP
-  with ring), 0.596 (transformer), 0.058
-  (transformer with ring). The records brain reaches 99% and 0.052 from
-  one pass over the same stream with no ring.
-- Supplied: the arm dynamics and kinematics, the reward rule, the sensor encoding, the
-  planning objective and the beam search over recorded consequences, the settling schedule.
-- Learned: the records of the world head (hand acceleration, joint velocity change, joint
-  angle change) and the settled regions' synapses, from empty records and random synapses.
-- Controls: the Jacobian-transpose controller, the online MLP with and without a ring, the
-  architecture frozen from birth, shuffled action pairing, corrupted dynamics.
-- Details: [arm/README.md](arm/README.md).
-
-## World
-
-In a 6 by 6 world seen one cell at a time, one life learns the consequences of its
-actions, remembers where it saw an object, corrects that memory when the object moves,
-holds a cue across a delay, adapts to doors that stop opening and grounds words in objects.
-
-- Page: https://floatingpragma.io/cadence-examples/world/ (the world, the four stores, the
-  records cortex and the whole brain, phase by phase).
-- Receipt: [world/receipt.json](world/receipt.json), five acceptance seeds. Measured:
-  requests fulfilled 100% with memory and 18% with the memory
-  erased (gate: a loss of at least 30 points); visible correction 100%; cue
-  choice 100% at delay 8 with the reward-shifted control at 51%;
-  grounding 100%; door recovery 100%; shuffled action pairing
-  3%; random moves 1%; the privileged planner 100%.
-- Compared ([comparisons/world/receipt.json](comparisons/world/receipt.json), the same life
-  with the world model replaced, five seeds): consequence accuracy 95% (MLP),
-  95% (MLP with ring), 93% (transformer),
-  95% (transformer with ring) against 98% for
-  the records brain; cue choice at delay 8: 59%, 49%,
-  52%, 48% against 100%.
-  The requests, corrections, doors and grounding pass with every world model, since the
-  declared stores and the search carry them.
-- Supplied: the world, its tasks and reward rules, the sensor encoding with missing flags,
-  four stores with declared keys, the A* search over recorded consequences, the settling
-  schedule.
-- Learned: the records of the world head (eleven fields), the critic, the contents of the
-  stores.
-- Controls: erased places, erased words, shuffled pairing, reward-shifted cue, born frozen,
-  random, the privileged planner, a tabular model behind the same stores and search.
-- Details: [world/README.md](world/README.md).
-
-## Artist
-
-The arm of the first example holds a pen over a canvas. One life scribbles, learns what its
-strokes leave, and then draws requested figures it has never seen, replanning from what its
-canvas shows after every stroke; a longer link and an offset canvas change the body and the
-world mid-drawing and it keeps drawing.
-
-- Page: https://floatingpragma.io/cadence-examples/artist/ (draw a figure; the artist draws
-  it stroke by stroke with the whole brain live beside it; a checkpoint selector loads the
-  life after scribbling, after the segments, after the strokes and at the end).
-- Receipt: [artist/receipt.json](artist/receipt.json), five acceptance seeds. Measured:
-  held-out foreground F1 0.93 (gate 0.80) at a Chamfer distance of 0.014
-  (gate 0.04), the weakest family 0.91 (gate 0.70); after a longer link
-  0.93 and back on the original body 0.93; the same architecture frozen
-  from birth 0.00, random scribbling 0.08, the supplied path oracle
-  0.64, an online MLP with a replay ring behind the same search 0.80;
-  decision latency p95 75 ms (gate 90).
-- Supplied: the arm body, the canvas and its stroke rasterisation, the discrepancy measure,
-  the reward rule, the target families and splits, the two-level search over the recorded
-  consequences (a stroke intention, then the torques that follow it).
-- Learned: the records of the world head (the body consequences and the marks the pen
-  leaves in the window around it) and the settled regions' synapses, from empty records.
-- Controls: born frozen, random scribbling, the path oracle, the online MLP with a ring,
-  corrupted dynamics, shuffled action pairing, replanning removed, canvas readback removed.
-- Details: [artist/README.md](artist/README.md).
+The worm's brain is its connectome: every chemical synapse and gap junction becomes one permitted
+connection of a `PartitionedTemporalPatchNet`, weighted at birth by synapse count and signed by
+transmitter. Smells reach the olfactory neurons AWA and AWC, bacteria the dopaminergic CEP, ADE
+and PDE, pain the ASH nociceptors. The body reads the command interneurons directly: AVB and PVC
+drive it forward, AVA, AVD and AVE drive it backward. When food or pain arrives, the worm relives
+the moments that led there and learns, by centred equilibrium detuning, what its command neurons
+should have been doing on the way. Details, sources and limits: [worm/README.md](worm/README.md).
 
 ## Connect Four
 
@@ -127,52 +51,29 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
 - Details: [connect_four/README.md](connect_four/README.md); what the work taught us:
   [connect_four/FINDINGS.md](connect_four/FINDINGS.md).
 
+## The composer
+
+A record patch hears the heard stream (the previous event is an input) and continues it; the page
+replays its brain beside the music. Details, receipts and what it does not do:
+[amen/README.md](amen/README.md).
+
 ## Run them
 
-Python 3.11 or later and the library at the commit the receipts ran against:
+Each example pins the Cadence commit its evidence was produced with.
 
 ```bash
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d"
-python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests artist/tests
-python arm/run.py --seeds 0 --pilot --out runs/arm/pilot
-python world/run.py --seeds 0 --pilot --out runs/world/pilot
-python connect_four/run.py --seeds 0 --pilot --out runs/connect_four/pilot
-python artist/run.py --seeds 0 --pilot --out runs/artist/pilot
-python tools/verify_gallery.py
+# worm: cadence 3d655c84b131388c4ef05d945947fd3e9e786d45
+python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
+python worm/tools/export_web.py && node worm/tests/parity.mjs
+python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
+
+# connect_four: cadence 21a120311e9817e817499318f8125896cd19534d
+python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d" pytest
+python -m pytest -q -m "not slow" agent/tests connect_four/tests
+
+# amen: each receipt names its library commit
+python amen/verify.py
 ```
 
-`--pilot` divides the budgets by ten; the acceptance runs use seeds 10 to 14 at full budget
-(`arm/README.md`, `world/README.md`). `comparisons/arm.py` and `comparisons/world.py` run
-the same lives with the world model replaced by an online MLP or transformer, with and
-without a replay ring ([comparisons/README.md](comparisons/README.md)).
-`tools/verify_gallery.py` checks each receipt's digest, predicates, seed schedule, source
-hashes and library commit. The browser engine is
-checked against the Python agent decision by decision (`web/parity.mjs`,
-`world/web/parity_s02.mjs`).
-
-## What every example passes
-
-- Its stage gates on frozen held-out suites, on every scheduled seed, with every control.
-- Behaviour that changes through experience and survives the retention test; a born-frozen
-  agent and a causally broken learner fail the relevant test.
-- Reproduction from random initialisation and empty records by the commands above.
-- One controller for the page and the headless runner: the page continues the same life.
-- Receipts with source hashes, event logs and checkpoints named by their sha256.
-
-## The principle
-
-A patch keeps records of what followed each reading it took part in; its prediction is the
-sum of the records the reading touches, weighted by activity; the witnessed outcome is
-written into exactly those records. A sparse code touches few, so one stream suffices and
-no replay ring is needed. The settled regions complete partial readings, carry context
-across a delay and hold the policy. The library page
-[records](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md#records) states
-the mechanism in full.
-
-## Layout
-
-`agent/`: the experience agent shared by every example (the event transaction, the records
-head, receipts, the web export). `arm/`, `world/`, `connect_four/`, `artist/`: one directory per example with `run.py`,
-`verify.py`, `config.json`, tests, tools and `web/`. `web/`: the browser engine, the
-parity harness, the records view and the library's brain renderer. `tools/verify_gallery.py`:
-the gallery check the workflows run.
+`agent/`, `web/` and `conftest.py` are the actor, the browser engine and the test import path that
+Connect Four is built on.
