@@ -49,18 +49,23 @@ def main() -> int:
                 problems.append(f"{name}: {relative} does not match its recorded hash")
         if body.get("verified") is not True:
             problems.append(f"{name}: the receipt is not marked verified")
-    model = json.loads((HERE / "web/model/model.json").read_text())
-    expected = sum(math.prod(shape) for _, shape in model["params_order"]) * 8
-    if (HERE / "web/model" / model["files"]["params"]).stat().st_size != expected:
-        problems.append("the parameter file does not have the declared size")
-    if (HERE / "web/model" / model["files"]["records_y"]).stat().st_size != model["records"]["cells"] * model["outputs"] * 4:
-        problems.append("the record table does not have the declared size")
-    if (HERE / "web/model" / model["files"]["records_mean"]).stat().st_size != model["records"]["reading"] * 8:
-        problems.append("the record mean does not have the declared size")
+    index = json.loads((HERE / "web/models/index.json").read_text())
+    for entry in index["brains"]:
+        folder = HERE / "web/models" / entry["name"]
+        model = json.loads((folder / "model.json").read_text())
+        expected = sum(math.prod(shape) for _, shape in model["params_order"]) * 8
+        if (folder / model["files"]["params"]).stat().st_size != expected:
+            problems.append(f"{entry['name']}: the parameter file does not have the declared size")
+        if (folder / model["files"]["records_y"]).stat().st_size != model["records"]["cells"] * model["outputs"] * 4:
+            problems.append(f"{entry['name']}: the record table does not have the declared size")
+        if (folder / model["files"]["records_mean"]).stat().st_size != model["records"]["reading"] * 8:
+            problems.append(f"{entry['name']}: the record mean does not have the declared size")
+        if not (HERE / "runs" / entry["run"] / "receipt.json").exists():
+            problems.append(f"{entry['name']}: no receipt for run {entry['run']}")
     parity = "skipped (node is not installed)"
     if shutil.which("node"):
         result = subprocess.run(["node", str(HERE / "parity.mjs")], capture_output=True, text=True)
-        parity = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else result.stderr.strip()
+        parity = "; ".join(line.split(":")[0] for line in result.stdout.strip().splitlines()) if result.stdout.strip() else result.stderr.strip()
         if result.returncode != 0:
             problems.append("the browser engine does not reproduce the archived run: " + parity)
     for problem in problems:

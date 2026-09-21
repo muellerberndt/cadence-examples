@@ -18,8 +18,10 @@ through the instrument and played, with every note and the brain in time with th
 - `web/engine.js`: the brain's forward pass and its playing rule, the same arithmetic as the
   library: a gated linear context, a k-winner record code over a fixed random projection
   regenerated from the seed, a record read added to a linear readout.
-- `web/model/`: the trained brain: the slow parameters (float64), the record tables
-  (float32), the running mean of the record reading, and `model.json` with every constant.
+- `web/models/<name>/`: one trained brain each: the slow parameters (float64), the record
+  tables (float32), the running mean of the record reading, and `model.json` with every
+  constant. `web/models/index.json` lists them with what each was trained on and its
+  held-out figures; the page offers them as a selector, so checkpoints can be compared by ear.
 - `web/kit/`: the instrument: 32 half-beat slices of a drum break and twelve sub-bass notes
   as 16-bit wav, and `kit.json` with gains and the texture bands.
 - `runs/record-composer-v10/receipt.json`: the receipt every number here comes from, and

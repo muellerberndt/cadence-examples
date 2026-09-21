@@ -23,6 +23,12 @@ h1 span{color:var(--gold)}
 .stamp b{display:block;font:900 22px/1 var(--slab);letter-spacing:.06em;color:var(--ink)}
 .sub{margin:0 0 16px;color:var(--dim);max-width:78ch;font-size:12.5px;letter-spacing:.02em}
 .sub b{color:var(--ink);font-weight:700}
+.brains{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 12px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.brains b{background:var(--ink);color:#000;padding:6px 9px;font:900 12px/1 var(--slab);letter-spacing:.14em}
+.brains button{background:#000;color:var(--ink);border:2px solid var(--line);padding:6px 10px;font:800 11.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.brains button.on{background:var(--green);color:#000;border-color:var(--green)}
+.brains button:disabled{opacity:.5;cursor:wait}
+.brains i{font-style:normal;text-transform:none;letter-spacing:.02em}
 .studio{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin:4px 0 14px}
 .studio #cut{background:var(--red);color:var(--ink);border:0;padding:14px 30px;font:900 24px/1 var(--slab);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:5px 5px 0 var(--gold);transform:skew(-7deg)}
 .studio #cut:disabled{background:#2a2822;color:var(--dim);box-shadow:5px 5px 0 #000;cursor:wait}
@@ -89,6 +95,7 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-
     <label>Bars<select id="bars"><option value="16" selected>16</option><option value="32">32</option></select></label>
     <span id="status">waking the brain</span>
   </div>
+  <div class="brains" id="brains"></div>
   <nav id="clips"></nav>
   <p id="now"></p>
 </header>
@@ -147,22 +154,38 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 let model = null, kit = null, brain = null, audioCtx = null, kitBuffers = null, computing = null, tracks = [], voiceCache = new Map();
 const setStatus = (text, busy) => { const s = $('status'); s.textContent = text; s.classList.toggle('busy', !!busy); };
 
+const bytes = async path => (await fetch(path)).arrayBuffer();
+let brains = [], current = null;
+
+async function wake(entry) {
+  $('cut').disabled = true; setStatus('waking the brain', true);
+  for (const b of $('brains').querySelectorAll('button')) { b.disabled = true; b.classList.toggle('on', b.dataset.name === entry.name); }
+  const base = 'models/' + entry.name + '/';
+  const next = await (await fetch(base + 'model.json')).json();
+  const [params, recordsY, recordsMean] = await Promise.all([bytes(base + next.files.params), bytes(base + next.files.records_y), bytes(base + next.files.records_mean)]);
+  await new Promise(r => setTimeout(r, 30));
+  model = next; brain = new Brain(model, params, recordsY, recordsMean); layout = model.layout; current = entry; geo = null;
+  const rows = (flat, r, c) => Array.from({length: r}, (_, i) => Array.from(flat.subarray(i * c, (i + 1) * c)));
+  weights = {hidden: model.hidden, inputs: model.inputs, outputs: model.outputs, cells: model.records.cells, active: model.records.active, timescales: brain.timescales,
+             B: rows(brain.p.B, model.hidden, model.inputs), C: rows(brain.p.C, model.outputs, model.hidden), layout};
+  const r = entry.held_out_ranges, f = v => v[0].toFixed(2) + ' to ' + v[1].toFixed(2);
+  $('brainNote').textContent = entry.trained_on + ' · on ' + entry.held_out_tracks + ' unheard tracks: next slice ' + f(r.drum_identity_accuracy) + ', next bass note ' + f(r.bass_note_accuracy);
+  for (const b of $('brains').querySelectorAll('button')) b.disabled = false;
+  $('cut').disabled = false; setStatus('ready');
+}
+
 async function boot() {
   resize(); addEventListener('resize', resize);
   requestAnimationFrame(frame);
   $('energy').oninput = () => $('energyOut').textContent = Number($('energy').value).toFixed(1) + '×';
-  const bytes = async path => (await fetch(path)).arrayBuffer();
-  model = await (await fetch('model/model.json')).json();
   kit = await (await fetch('kit/kit.json')).json();
-  const [params, recordsY, recordsMean] = await Promise.all([bytes('model/' + model.files.params), bytes('model/' + model.files.records_y), bytes('model/' + model.files.records_mean)]);
-  await new Promise(r => setTimeout(r, 30));
-  brain = new Brain(model, params, recordsY, recordsMean);
-  layout = model.layout;
-  const rows = (flat, r, c) => Array.from({length: r}, (_, i) => Array.from(flat.subarray(i * c, (i + 1) * c)));
-  weights = {hidden: model.hidden, inputs: model.inputs, outputs: model.outputs, cells: model.records.cells, active: model.records.active, timescales: brain.timescales,
-             B: rows(brain.p.B, model.hidden, model.inputs), C: rows(brain.p.C, model.outputs, model.hidden), layout};
   kitBuffers = {raw: await Promise.all([bytes('kit/' + kit.break_file), bytes('kit/' + kit.bass_file)])};
-  $('cut').disabled = false; setStatus('ready');
+  brains = (await (await fetch('models/index.json')).json()).brains;
+  const strip = $('brains'); const tag = document.createElement('b'); tag.textContent = 'Brain'; strip.appendChild(tag);
+  for (const entry of brains) { const b = document.createElement('button'); b.dataset.name = entry.name; b.textContent = entry.label; b.title = entry.trained_on; b.onclick = () => { if (!computing) wake(entry); }; strip.appendChild(b); }
+  const note = document.createElement('i'); note.id = 'brainNote'; strip.appendChild(note);
+  const wanted = new URLSearchParams(location.search).get('brain');
+  await wake(brains.find(b => b.name === wanted) || brains[brains.length - 1]);
   if (new URLSearchParams(location.search).has('debug')) window.__amen = {get tracks() { return tracks; }};
   if (new URLSearchParams(location.search).has('autocut')) $('cut').click();
   $('clipnote').textContent = 'Nothing is recorded here. Press CUT A DUB: the brain starts from silence, hears a count-in, and computes ' + $('bars').value + ' bars, one half-beat at a time, hearing each half-beat it plays. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
@@ -174,7 +197,7 @@ $('cut').onclick = async () => {
   if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const [a, b] = kitBuffers.raw; kitBuffers.drums = await audioCtx.decodeAudioData(a.slice(0)); kitBuffers.bass = await audioCtx.decodeAudioData(b.slice(0)); }
   const bars = Number($('bars').value), energy = Number($('energy').value), seed = (Math.random() * 4294967296) >>> 0, number = tracks.length + 1;
   trace = {clip: 'DUB ' + String(number).padStart(2, '0'), title: bars + ' bars from silence', mode: 'sample', hop_seconds: kit.hop_seconds, primer_half_beats: 0, wake_played: true,
-           primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, bars};
+           primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, bars, brain: current.label, weights, layout: model.layout};
   decoded = null; waveImage = null; scoreImage = null; lastStep = -1; particles = []; flashes.cells.clear(); geo = null;
   computing = {steps: compose(brain, {bars, mode: 'sample', energy, seed}), perFrame: bars > 16 ? 2 : 1};
   $('cut').disabled = true; setStatus('computing', true); showNow();
@@ -183,7 +206,7 @@ $('cut').onclick = async () => {
 function showNow() {
   const now = $('now'); now.textContent = ''; if (!trace) return;
   const tag = document.createElement('b'); tag.textContent = trace.clip; now.appendChild(tag);
-  now.appendChild(document.createTextNode(trace.title + ' · departures ' + trace.energy.toFixed(1) + '× · seed ' + trace.seed));
+  now.appendChild(document.createTextNode(trace.title + ' · brain: ' + trace.brain + ' · departures ' + trace.energy.toFixed(1) + '× · seed ' + trace.seed));
 }
 
 function advanceComputing() {
@@ -204,7 +227,7 @@ async function finish(done) {
 }
 
 function play(item) {
-  trace = item; decoded = item.buffer; waveImage = null; scoreImage = null; lastStep = -1; geo = null;
+  trace = item; weights = item.weights; layout = item.layout; decoded = item.buffer; waveImage = null; scoreImage = null; lastStep = -1; geo = null;
   audio.src = item.url; audio.currentTime = 0; audio.play().then(() => setStatus('playing')).catch(() => setStatus('press play'));
   for (const b of $('clips').querySelectorAll('button')) b.classList.toggle('on', b.dataset.id === item.clip);
   showNow();

@@ -1,0 +1,26 @@
+{
+ "brains": [
+  {
+   "name": "one-mix",
+   "label": "One mix",
+   "trained_on": "16 tracks of one DJ mix, 70 minutes",
+   "run": "record-composer-v10",
+   "run_receipt_sha256": "69b6e33bf96cadec3db5118b30b2ae20acef6efe3e44c6e6c4c6e98f013290fa",
+   "held_out_tracks": 3,
+   "held_out_ranges": {
+    "drum_identity_accuracy": [
+     0.8400447427293065,
+     0.8575418994413407
+    ],
+    "bass_note_accuracy": [
+     0.5381791483113069,
+     0.6374133949191686
+    ],
+    "texture_mae": [
+     0.08471865291025253,
+     0.09032771092068605
+    ]
+   }
+  }
+ ]
+}
