@@ -6,10 +6,13 @@ life what the smells around it predict. The page draws the whole nervous system 
 transparent body at every zoom, in two tones. Structure is cold: the body, the cords, the wiring
 and every neuron at rest are pale blue on navy. Activity is hot: a firing neuron glows from deep
 red through orange to white, each synapse releases pulses in its transmitter's colour, and the
-nerve cords heat up where the cells along them fire. A lesson is the one green: the connections
+nerve cords heat up where the cells along them fire. Around each cell lies a cloud of the
+transmitter it is receiving most of, welling up as it is released and draining slowly, so food
+floods the head with dopamine. A lesson is the one green: the connections
 that changed, then a ring arriving at each cell hop by hop from the command neurons. A second
-view shows the head at scale, straightened: the nerve ring, the ganglia around it, and the
-sensory and command neurons by name. Heat follows the logarithm of activity, because a signal
+view shows the head at scale, straightened: the nerve ring, the ganglia around it, the
+sensory and command neurons by name, and what each cell is by the tint and shape of its patch
+(sensory, interneuron, command, motor, pharyngeal). Heat follows the logarithm of activity, because a signal
 fades by orders of magnitude as it spreads.
 
 ## The brain is the connectome
@@ -78,7 +81,7 @@ node worm/tests/body.mjs
 python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
 ```
 
-`web/card.png` is the page's social card, drawn by the page's own renderer:
+`web/card.jpg` is the page's social card, drawn by the page's own renderer:
 `node worm/tools/make_card.mjs` (needs Google Chrome) photographs `tools/card.html` into it.
 The page's canonical address and card address are written in `web/index.html`; change both
 when the page moves.

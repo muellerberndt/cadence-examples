@@ -70,7 +70,8 @@ canvas.addEventListener("wheel", (e) => { e.preventDefault(); R.zoom = Math.min(
   const url = document.querySelector('link[rel="canonical"]')?.href ?? location.origin + location.pathname;
   const text = "A worm that learns: the 302 neurons of C. elegans, wired as measured, learning from food and pain during its life. Live in your browser.";
   const u = encodeURIComponent(url), s = encodeURIComponent(text), title = encodeURIComponent("A worm that learns");
-  const to = { x: `https://x.com/intent/post?text=${s}&url=${u}`, linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${u}`,
+  // X remembers a card per exact address, so its link carries a tag of its own
+  const to = { x: `https://x.com/intent/post?text=${s}&url=${encodeURIComponent(url + "?from=x")}`, linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${u}`,
                reddit: `https://www.reddit.com/submit?url=${u}&title=${title}`, facebook: `https://www.facebook.com/sharer/sharer.php?u=${u}` };
   const menu = $("sharemenu"), btn = $("sharebtn"), open = (v) => { menu.classList.toggle("open", v); btn.setAttribute("aria-expanded", String(v)); };
   for (const a of menu.querySelectorAll("a[data-share]")) { a.href = to[a.dataset.share]; a.onclick = () => open(false); }

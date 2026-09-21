@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Photograph tools/card.html into web/card.png (1200 x 630 at two pixels per point).
+// Photograph tools/card.html into web/card.jpg: 1200 x 630, a JPEG of a few hundred kilobytes at most,
+// because X drops large card images and then remembers the failure for that address.
 //   node worm/tools/make_card.mjs          needs Google Chrome; CHROME=/path/to/chrome overrides where it is
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
@@ -29,11 +30,11 @@ const sock = new WebSocket(ws); await new Promise((r) => (sock.onopen = r));
 let id = 0; const pending = new Map();
 sock.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id); } };
 const send = (method, params = {}) => new Promise((r) => { const i = ++id; pending.set(i, r); sock.send(JSON.stringify({ id: i, method, params })); });
-await send("Emulation.setDeviceMetricsOverride", { width: 1200, height: 630, deviceScaleFactor: 2, mobile: false });
+await send("Emulation.setDeviceMetricsOverride", { width: 1200, height: 630, deviceScaleFactor: 1, mobile: false });
 await send("Page.navigate", { url: `http://127.0.0.1:${port}/tools/card.html` });
 for (let k = 0; k < 100; k++) { if ((await send("Runtime.evaluate", { expression: "document.title" })).result.result.value === "ready") break; await sleep(200); }
 await sleep(300);
-const shot = await send("Page.captureScreenshot", { format: "png" });
-await writeFile(join(root, "web/card.png"), Buffer.from(shot.result.data, "base64"));
-console.log("web/card.png written");
+const shot = await send("Page.captureScreenshot", { format: "jpeg", quality: 93 });
+await writeFile(join(root, "web/card.jpg"), Buffer.from(shot.result.data, "base64"));
+console.log("web/card.jpg written");
 sock.close(); chrome.kill(); server.close(); process.exit(0);

@@ -12,14 +12,16 @@
 <meta property="og:title" content="A worm that learns">
 <meta property="og:description" content="The 302 neurons of C. elegans, wired as measured, as one Cadence brain. It learns from food and pain during its life, live in your browser. Feed it, poke it, and watch every neuron and synapse.">
 <meta property="og:url" content="https://floatingpragma.io/cadence-examples/celegans/">
-<meta property="og:image" content="https://floatingpragma.io/cadence-examples/celegans/card.png">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/celegans/card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="A translucent worm on a navy plate with its nervous system glowing orange inside it, beside the title: A worm that learns.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@muellerberndt">
+<meta property="og:image:type" content="image/jpeg">
 <meta name="twitter:title" content="A worm that learns">
 <meta name="twitter:description" content="The 302 neurons of C. elegans, wired as measured, as one Cadence brain. It learns from food and pain during its life, live in your browser.">
-<meta name="twitter:image" content="https://floatingpragma.io/cadence-examples/celegans/card.png">
+<meta name="twitter:image" content="https://floatingpragma.io/cadence-examples/celegans/card.jpg">
 <meta name="twitter:image:alt" content="A translucent worm on a navy plate with its nervous system glowing orange inside it, beside the title: A worm that learns.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -40,6 +42,8 @@
   #brain .top .h{margin:0}
   #brain .key{color:var(--dim);font-size:10.5px}
   #brain .key b{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 4px 0 9px;vertical-align:0}
+  #brain .roles{display:flex;flex-wrap:wrap;gap:3px 13px;margin:6px 0 2px;color:var(--dim);font-size:10.5px}
+  #brain .roles svg{width:10px;height:10px;margin-right:5px;vertical-align:-1px;fill:none;stroke-width:1.6}
   #brainfoot{color:var(--dim);font-size:11px;min-height:15px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #brainfoot b{color:var(--ink);font-weight:600}
   .h{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
@@ -85,6 +89,13 @@
 
 <div id="brain" class="glass">
   <div class="top"><p class="h">The brain · nerve ring and head ganglia</p><span class="key"><b style="background:#9bd7ff"></b>forward<b style="background:#ff7850"></b>reverse</span></div>
+  <div class="roles">
+    <span><svg viewBox="0 0 12 12" stroke="rgb(80,225,205)"><path d="M6 1.2 11 10H1z"/></svg>sensory</span>
+    <span><svg viewBox="0 0 12 12" stroke="rgb(168,204,234)"><circle cx="6" cy="6" r="4.2"/></svg>interneuron</span>
+    <span><svg viewBox="0 0 12 12" stroke="rgb(255,240,200)"><path d="M6 .8 11.200 6 6 11.200.800 6z"/></svg>command</span>
+    <span><svg viewBox="0 0 12 12" stroke="rgb(146,156,255)"><path d="M1.800 1.800h8.400v8.400H1.800z"/></svg>motor</span>
+    <span><svg viewBox="0 0 12 12" stroke="rgb(112,132,162)"><path d="M3.300 1.400h5.400L11.400 6 8.700 10.600H3.300L.600 6z"/></svg>pharyngeal</span>
+  </div>
   <canvas></canvas>
   <div id="brainfoot"></div>
 </div>
@@ -101,7 +112,7 @@
   <div id="stats">age 0:00 · 0 lessons</div>
   <div id="legend">
     <span><b style="background:transparent;border:1px solid var(--cold)"></b>neuron at rest</span><span><b style="background:linear-gradient(90deg,#78180a,#ff6228,#ffe4b0);width:26px;border-radius:4px"></b>firing</span>
-    <span><b style="background:rgb(255,122,48)"></b>glutamate · ACh</span><span><b style="background:rgb(64,214,255)"></b>GABA</span>
+    <span><b style="background:rgb(255,200,64)"></b>glutamate · ACh</span><span><b style="background:rgb(64,214,255)"></b>GABA</span>
     <span><b style="background:rgb(255,72,190)"></b>dopamine</span><span><b style="background:rgb(176,128,255)"></b>serotonin · other</span>
     <span><b style="background:rgb(222,240,255)"></b>gap junction</span><span><b style="background:var(--learn)"></b>learning</span>
   </div>

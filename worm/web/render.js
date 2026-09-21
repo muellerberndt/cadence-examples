@@ -8,11 +8,11 @@
 export const COLORS = {
   structure: [168, 204, 234],
   hot: [255, 98, 40],
-  excitatory: [255, 122, 48],   // glutamate, acetylcholine
+  excitatory: [255, 200, 64],   // glutamate, acetylcholine: gold, apart from the heat of activity
   inhibitory: [64, 214, 255],   // GABA
   dopamine: [255, 72, 190],
   modulatory: [176, 128, 255],  // serotonin, octopamine, tyramine, peptides
-  none: [255, 122, 48],
+  none: [255, 200, 64],
   gap: [222, 240, 255],         // electrical coupling
   learning: [124, 255, 160],     // plasticity: the one green inside the worm
   odourA: [46, 230, 196],
@@ -30,9 +30,32 @@ export const lum = (a) => { const x = Math.abs(a); return x < 1e-6 ? 0 : Math.mi
 // worm is cold and a signal stands out as it spreads and fades hop by hop.
 export const fire = (a) => { const L = lum(a); return L <= 0.25 ? 0 : Math.pow((L - 0.25) / 0.75, 1.7); };
 const RAMP = [[96, 22, 12], [255, 98, 40], [255, 232, 184]];
+// What a neuron is, shown in the zoomed view by the tint and the shape of its patch.
+export const ROLES = {
+  sensory: { color: [80, 225, 205], shape: "triangle" },
+  interneuron: { color: [168, 204, 234], shape: "circle" },
+  command: { color: [255, 240, 200], shape: "diamond" },
+  motor: { color: [146, 156, 255], shape: "square" },
+  pharyngeal: { color: [112, 132, 162], shape: "hexagon" },
+};
+const FAMILIES = ["excitatory", "inhibitory", "dopamine", "modulatory"];
+function patch(g, shape, x, y, r) {
+  g.beginPath();
+  if (shape === "circle") { g.arc(x, y, r, 0, Math.PI * 2); return; }
+  const n = { triangle: 3, square: 4, diamond: 4, hexagon: 6 }[shape], turn = { triangle: -Math.PI / 2, square: Math.PI / 4, diamond: 0, hexagon: 0 }[shape];
+  const R = r * { triangle: 1.45, square: 1.3, diamond: 1.35, hexagon: 1.12 }[shape];
+  for (let k = 0; k < n; k++) { const a = turn + k * 2 * Math.PI / n; k ? g.lineTo(x + R * Math.cos(a), y + R * Math.sin(a)) : g.moveTo(x + R * Math.cos(a), y + R * Math.sin(a)); }
+  g.closePath();
+}
 export const hot = (g) => { const k = g < 0.5 ? 0 : 1, f = g < 0.5 ? g / 0.5 : (g - 0.5) / 0.5, a = RAMP[k], b = RAMP[k + 1]; return [0, 1, 2].map((i) => Math.round(a[i] + (b[i] - a[i]) * f)); };
 const AP_TIP = 0.137, AP_SPAN = 1.162, VENTRAL = 0.62, DORSAL = -0.72, RING = 0.045, HEAD = 0.1;
 
+function cloud(c) {               // transmitter in the tissue: soft, with no bright core
+  const s = document.createElement("canvas"); s.width = s.height = 64;
+  const g = s.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  r.addColorStop(0, rgba(c, 0.8)); r.addColorStop(0.4, rgba(c, 0.34)); r.addColorStop(1, rgba(c, 0));
+  g.fillStyle = r; g.fillRect(0, 0, 64, 64); return s;
+}
 function sprite(c) {
   const s = document.createElement("canvas"); s.width = s.height = 64;
   const g = s.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
@@ -57,6 +80,8 @@ export class Renderer {
                dorsal: /^(DA|DB|DD|AS)\d/.test(n.name) };   // motor neurons whose commissures reach the dorsal cord
     });
     this.sprites = {}; for (const k of Object.keys(COLORS)) this.sprites[k] = sprite(COLORS[k]);
+    this.clouds = {}; this.flood = {};
+    for (const k of FAMILIES) { this.clouds[k] = cloud(COLORS[k]); this.flood[k] = new Float32Array(spec.H); }
     // every connection, keyed into the brain's A entries for its live weight. Its path
     // follows the anatomy: between head cells through the nerve ring, along the body
     // through the ventral cord, between neighbours directly.
@@ -183,10 +208,16 @@ export class Renderer {
     }
     for (const it of life.items) this.item(g, it, view.now);
 
+    // transmitter released onto each cell, by family: it wells up as fast as it is released and drains slowly
+    const act = view.activity, A = life.brain.val, up = 1 - Math.exp(-view.dt * 14), down = 1 - Math.exp(-view.dt * 1.5);
+    const now = {}; for (const k of FAMILIES) now[k] = new Float32Array(this.cells.length);
+    for (const e of this.synapses) if (now[e.family]) now[e.family][e.b] += Math.abs(A[e.k] * act[e.a]);
+    for (const k of FAMILIES) { const level = this.flood[k], n = now[k]; for (let i = 0; i < level.length; i++) { const v = fire(n[i] * 10); level[i] += (v - level[i]) * (v > level[i] ? up : down); } }
+
     // the body, then the nervous system inside it
     const zs = Math.min(1.7, Math.max(0.3, S / 700));
     this.body(g, f, T, view, S);
-    this.nervous(g, f, T, life, view, { W, H, zs, head: 0.5, patch: 3.4, minPatch: 1.15, lw: Math.min(1.4, Math.max(0.5, S / 600)), lines: 700, pulses: 520, glow: 1, ringLines: false, edges: this.edges });
+    this.nervous(g, f, T, life, view, { W, H, zs, head: 0.5, patch: 3.4, minPatch: 1.15, lw: Math.min(1.4, Math.max(0.5, S / 600)), lines: 700, pulses: 520, glow: 1, flood: 1, roles: false, ringLines: false, edges: this.edges });
 
     // events at the mouth
     g.globalCompositeOperation = "lighter";
@@ -238,6 +269,19 @@ export class Renderer {
       }
     }
 
+    // the flood: around each cell, a cloud of the transmitter it is receiving most of
+    // (one colour per cell, or the clouds of a busy head would add up to white)
+    g.save(); g.clip(this.skin); g.globalCompositeOperation = "screen";
+    for (const c of cells) {
+      let fam = null, v = 0.04;
+      for (const k of FAMILIES) if (this.flood[k][c.i] > v) { v = this.flood[k][c.i]; fam = k; }
+      if (!fam) continue;
+      const [x, y] = pos[c.i]; if (x < -60 || y < -60 || x > o.W + 60 || y > o.H + 60) continue;
+      const sz = (14 + 58 * v) * o.zs * (c.s < 0.12 ? Math.max(o.head, 0.7) : 1);
+      g.globalAlpha = Math.min(1, o.flood * (0.35 + 0.65 * v)); g.drawImage(this.clouds[fam], x - sz / 2, y - sz / 2, sz, sz);
+    }
+    g.restore(); g.globalAlpha = 1;
+
     // what each connection carries now, in its transmitter's colour; the long axons
     // show it as pulses running along the cord
     const live = [];
@@ -269,12 +313,15 @@ export class Renderer {
     g.globalCompositeOperation = "lighter";
     for (let n = 0, drawn = 0; n < live.length && drawn < o.pulses; n++) {
       const [L, e] = live[n]; if (e.gap || L < 0.1) continue;
-      const t = (view.phase + (e.k % 5) * 0.03) % 1;
-      const q = e.via !== "direct" ? this.along(f, T, e, t) : [pos[e.a][0] + (pos[e.b][0] - pos[e.a][0]) * t, pos[e.a][1] + (pos[e.b][1] - pos[e.a][1]) * t];
-      if (q[0] < -20 || q[1] < -20 || q[0] > o.W + 20 || q[1] > o.H + 20) continue;
-      const sz = Math.max(3, (4 + 12 * L) * o.zs);
-      g.globalAlpha = Math.min(1, 0.25 + 0.75 * L);
-      g.drawImage(this.sprites[e.family], q[0] - sz / 2, q[1] - sz / 2, sz, sz);
+      const t0 = (view.phase + (e.k % 5) * 0.03) % 1, size = Math.max(3.5, (5 + 15 * L) * o.zs);
+      for (let tail = 0; tail < 3; tail++) {          // a vesicle and the streak behind it
+        const t = t0 - tail * 0.09; if (t < 0) break;
+        const q = e.via !== "direct" ? this.along(f, T, e, t) : [pos[e.a][0] + (pos[e.b][0] - pos[e.a][0]) * t, pos[e.a][1] + (pos[e.b][1] - pos[e.a][1]) * t];
+        if (q[0] < -20 || q[1] < -20 || q[0] > o.W + 20 || q[1] > o.H + 20) break;
+        const sz = size * (1 - 0.22 * tail);
+        g.globalAlpha = Math.min(1, 0.3 + 0.7 * L) * (1 - 0.38 * tail);
+        g.drawImage(this.sprites[e.family], q[0] - sz / 2, q[1] - sz / 2, sz, sz);
+      }
       drawn++;
     }
     g.globalAlpha = 1;
@@ -290,12 +337,17 @@ export class Renderer {
         g.globalAlpha = Math.min(1, 1.15 * Math.pow(L, 1.4)); g.drawImage(this.sprites.hot, x - sz / 2, y - sz / 2, sz, sz); g.globalAlpha = 1;
       }
       g.globalCompositeOperation = "source-over";
-      g.beginPath(); g.arc(x, y, r * (1 + 0.35 * L), 0, Math.PI * 2);
+      const role = o.roles ? ROLES[c.role] ?? ROLES.interneuron : null;
+      patch(g, role ? role.shape : "circle", x, y, r * (1 + 0.35 * L));
       g.fillStyle = "rgba(12,24,43,0.9)"; g.fill();
       if (L > 0.02) { g.fillStyle = rgba(hot(L), 0.25 + 0.75 * L); g.fill(); }
-      const w = Math.min(1, L * 2.5), sc = hot(Math.min(1, L + 0.2)).map((v, i) => Math.round(COLORS.structure[i] + (v - COLORS.structure[i]) * w));
-      g.strokeStyle = rgba(sc, 0.62 + 0.38 * w); g.lineWidth = Math.max(0.7, 0.9 * o.lw); g.stroke();
-      if (r > 2.2 && L <= 0.02) { g.fillStyle = rgba(COLORS.structure, 0.6); g.beginPath(); g.arc(x, y, r * 0.3, 0, Math.PI * 2); g.fill(); }
+      if (role) { g.strokeStyle = rgba(role.color, 0.95); g.lineWidth = 1.15; }       // what the cell is stays readable while it fires
+      else {
+        const w = Math.min(1, L * 2.5), sc = hot(Math.min(1, L + 0.2)).map((v, i) => Math.round(COLORS.structure[i] + (v - COLORS.structure[i]) * w));
+        g.strokeStyle = rgba(sc, 0.62 + 0.38 * w); g.lineWidth = Math.max(0.7, 0.9 * o.lw);
+      }
+      g.stroke();
+      if (r > 2.2 && L <= 0.02) { g.fillStyle = rgba(role ? role.color : COLORS.structure, 0.6); g.beginPath(); g.arc(x, y, r * 0.3, 0, Math.PI * 2); g.fill(); }
     }
     // the lesson: changed connections flare, then a ring moves outward cell by cell
     const Ls = view.lesson;
@@ -371,19 +423,16 @@ export class Renderer {
     for (let j = 0; j < 10; j++) ss.push(0.02 * (j / 10) ** 2);
     for (let k = 2; k < f.N; k++) ss.push(k / (f.N - 1));
     const N = ss.length, left = ss.map((s) => T(...this.at(f, s, 1))), right = ss.map((s) => T(...this.at(f, s, -1)));
-    const outline = () => {
-      g.beginPath(); g.moveTo(left[0][0], left[0][1]);
-      for (let k = 1; k < N; k++) g.lineTo(left[k][0], left[k][1]);
-      for (let k = N - 1; k >= 0; k--) g.lineTo(right[k][0], right[k][1]);
-      g.closePath();
-    };
+    const skin = new Path2D(); skin.moveTo(left[0][0], left[0][1]);
+    for (let k = 1; k < N; k++) skin.lineTo(left[k][0], left[k][1]);
+    for (let k = N - 1; k >= 0; k--) skin.lineTo(right[k][0], right[k][1]);
+    skin.closePath(); this.skin = skin;           // the flood of transmitter is kept inside it
     // translucent flesh
     g.globalCompositeOperation = "source-over";
-    outline();
     const [hx, hy] = T(...this.at(f, 0, 0)), [tx, ty] = T(...this.at(f, 1, 0));
     const lg = g.createLinearGradient(hx, hy, tx, ty);
     lg.addColorStop(0, "rgba(58,98,146,0.34)"); lg.addColorStop(0.5, "rgba(44,80,124,0.27)"); lg.addColorStop(1, "rgba(40,72,112,0.2)");
-    g.fillStyle = lg; g.fill();
+    g.fillStyle = lg; g.fill(skin);
     // cuticle rings
     g.strokeStyle = rgba(COLORS.structure, 0.08); g.lineWidth = 1;
     for (let k = 12; k < N - 3; k += 2) { g.beginPath(); g.moveTo(left[k][0], left[k][1]); g.lineTo(right[k][0], right[k][1]); g.stroke(); }
@@ -412,7 +461,7 @@ export class Renderer {
     g.restore();
     // the cuticle: one crisp pale line
     g.save(); g.shadowColor = rgba(COLORS.structure, 0.6); g.shadowBlur = 8;
-    outline(); g.strokeStyle = rgba([196, 222, 244], 0.92); g.lineWidth = 1.5; g.lineJoin = "round"; g.stroke();
+    g.strokeStyle = rgba([196, 222, 244], 0.92); g.lineWidth = 1.5; g.lineJoin = "round"; g.stroke(skin);
     g.restore();
   }
   decor(g) {       // quiet instrument marks at the corners
@@ -470,7 +519,7 @@ class BrainView {
     g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     g.globalCompositeOperation = "source-over"; g.clearRect(0, 0, W, H);
     R.body(g, this.f, T, view, this.k);
-    R.nervous(g, this.f, T, life, view, { W, H, zs: 0.6, head: 1, patch: 4.2, minPatch: 2.2, lw: 0.9, lines: 650, pulses: 320, glow: 0.8, ringLines: true, edges: this.edges });
+    R.nervous(g, this.f, T, life, view, { W, H, zs: 0.6, head: 1, patch: 4.6, minPatch: 2.6, lw: 0.9, lines: 650, pulses: 360, glow: 0.8, flood: 1, roles: true, ringLines: true, edges: this.edges });
     this.pos = R.pos;
 
     // the cells that sense and the cells that command, named
@@ -514,7 +563,7 @@ class BrainView {
       const c = R.cells[this.hover], [px, py] = this.pos[this.hover], a = view.activity[c.i];
       g.strokeStyle = "rgba(235,248,255,0.9)"; g.lineWidth = 1.2; g.beginPath(); g.arc(px, py, 8, 0, Math.PI * 2); g.stroke();
       const tr = c.transmitter ? c.transmitter.replaceAll("_", " + ") : "no transmitter listed";
-      this.say(`<b>${c.name}</b> · ${c.kind.split(";")[0].toLowerCase()} · ${tr} · activity ${Math.abs(a) < 1e-9 ? "0" : a.toExponential(1)}`);
+      this.say(`<b>${c.name}</b> · ${c.role} · ${c.kind.split(";")[0].toLowerCase()} · ${tr} · activity ${Math.abs(a) < 1e-9 ? "0" : a.toExponential(1)}`);
     } else this.say("Heat is activity on a log scale, 10<sup>−4.5</sup> to 1. Point at a neuron to name it.");
   }
   say(html) { if (html !== this.said) { this.foot.innerHTML = html; this.said = html; } }
