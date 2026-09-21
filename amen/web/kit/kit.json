@@ -114,13 +114,7 @@
  "texture_floor": 0.08,
  "texture_pad": {
   "bands": 5,
-  "intervals": [
-   0,
-   7,
-   12
-  ],
-  "octaves": 3,
-  "detune_cents": 7,
-  "gain": 0.35
+  "level": 0.05,
+  "ceiling": 0.25
  }
 }

@@ -145,13 +145,18 @@ export function executed(out, L, retriggers, mode, random, previous, energy = 1,
 // note is drawn only where a change point fires. At 0 every choice is the highest score.
 // Each dub also draws a signature from its seed: which bar of the break it enters on, its shares of the three departure
 // moves (roll, retrigger, bar jump) and its preferred targets, so a dub's edits recur within it and differ between dubs.
+// The dub's drum pattern is its own opening: over the first `signature.loopBars` bars departures are drawn at a raised
+// probability, and afterwards the slice played at the cycle start and at each of the opening's departures returns at the same
+// place in every cycle, unless the brain draws a fresh departure there. Between those places the brain plays on from what it
+// hears, so a fill stays local and the groove comes back.
 // With `memory` set, the brain is its own primer: after `memoryBars` it writes what it played into its records, as the
 // library does for a heard track, and plays on from that memory; the dub's own pattern then returns every four bars.
 export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 1, variation = 0, riffBars = 2, memory = false, memoryBars = 4, memoryRate = undefined, openingEnergy = undefined} = {}) {
   const model = brain.model, L = model.layout, random = mulberry(seed), horizon = 8 * bars, moments = [];
   const dice = mulberry((seed ^ 0x2c1b3c6d) >>> 0), v = mode === 'sample' ? Math.min(1, Math.max(0, variation)) : 0;
   const spread = n => { const d = Array.from({length: n}, () => -Math.log(1 - dice())), total = d.reduce((a, b) => a + b, 0); return d.map(x => (1 - v) / n + v * x / total); };
-  const signature = v > 0 ? {entry: Math.floor(dice() * 4), moves: spread(3), retriggers: spread(model.retriggers.length), jumps: spread(3)} : null;
+  const signature = v > 0 ? {entry: Math.floor(dice() * 4), moves: spread(3), retriggers: spread(model.retriggers.length), jumps: spread(3), loopBars: [1, 2, 2, 2, 4, 4][Math.floor(dice() * 6)]} : null;
+  const cycle = signature ? 8 * signature.loopBars : 0, pattern = [];
   const countIn = Array.from(model.count_in);
   if (signature) { const was = argmax(countIn, 0, L.crops); countIn[was] = 0; countIn[(8 * signature.entry + L.crops - 1) % L.crops] = 1; }
   brain.forget(); brain.reset(); let previous = null;
@@ -162,9 +167,15 @@ export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 
     for (let k = 0; k < L.event_ports; k++) u[L.heard_start + k] = heard[k];
     const step = brain.step(u);
     const power = variation > 0 && mode === 'sample' ? 8 - 6 * Math.min(1, variation) : 0, riff = t < 8 * riffBars;
-    const opening = memory && t < 8 * memoryBars, heat = opening && openingEnergy !== undefined ? openingEnergy : energy;
+    const opening = memory && t < 8 * memoryBars, setting = cycle > 0 && t < cycle;
+    const heat = setting && energy > 0 ? Math.max(energy, 1) * (1 + 4 * v) : opening && openingEnergy !== undefined ? openingEnergy : energy;
     let event = executed(step.out, L, model.retriggers, mode, random, mode === 'sample' ? heard : null, heat, (riff || opening) ? power : 0, signature);
     if (!riff && power > 0 && event[L.change] > 0.5) { const drawn = executed(step.out, L, model.retriggers, 'argmax', random, null, energy, power); for (let k = L.note_start; k < L.note_start + L.notes; k++) event[k] = drawn[k]; }
+    if (cycle > 0 && event[L.drum_on] > 0.5) {
+      const crop = argmax(event, 0, L.crops), fresh = event[L.change] > 0.5;
+      if (setting) pattern[t] = {crop, edit: fresh};
+      else { const want = pattern[t % cycle]; if (want && !fresh && (t % cycle === 0 || want.edit) && crop !== want.crop) { event[crop] = 0; event[want.crop] = 1; event[L.change] = 1; event.returned = true; } }
+    }
     previous = event;
     if (memory && t < 8 * memoryBars) { moments.push({u, h: step.h, target: event}); if (t === 8 * memoryBars - 1) brain.memorize(moments, memoryRate); }
     yield Object.assign(step, {t, phase: 'generated', heard: Array.from(heard), clock: t % 8, played: previous, signature});

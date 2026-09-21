@@ -86,10 +86,10 @@
   "schema": "cadence-examples.amen.record-composer-v11/v1",
   "sources": {
     "runs/record-composer-v11/parity.json": "25a772e5582b03ea4bc3a0b115a24dd2638a76e689a8f5fa783bbf54de6b7b26",
-    "web/engine.js": "cb189e750e213aac701c95a51418de7644486c2d821a0c9a3a66a2572f5afc66",
+    "web/engine.js": "7a7bef9ae9005b8338b08921c4fff7e3b1c5d21a160023c227c6b0539bcfea85",
     "web/kit/bass.wav": "37590125f23b05d1a9bd9eb5343437523876966a8bb8b475b9383638e588aaff",
     "web/kit/break.wav": "82be2cdd68794040dd85a90f46686664ba610c2967a2f23a9796bf02fa59ff81",
-    "web/kit/kit.json": "bc809c209f8efcff014bcfe0712549578462fb720b60f660597c8efe9a16f800",
+    "web/kit/kit.json": "83001713dd2f32ff78ae5c814076b0769f4e7f64405bf93e690032c8b265b57d",
     "web/models/two-mixes/model.json": "7818a14732f749a59bd7f8517fbcac9ed268c6a5fd533b29c76cad3f067a78f3",
     "web/models/two-mixes/params.f64": "1f09af116e5bfab13328d584c7a2241f4854230b41915a343304609d6bf5cbff",
     "web/models/two-mixes/records_mean.f64": "b577fe4eefc148290bb5b9df33c1477e04c7f4a3bb089681764b11e29e99d6dd",
