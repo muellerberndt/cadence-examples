@@ -309,7 +309,7 @@ worker.onmessage = (event) => {
   const m = event.data;
   if (m.type === "ready") {
     mind.setSizes(m.sizes);
-    $("facts").textContent = `${m.sizes.hidden} context channels · ${m.sizes.cells.toLocaleString()} record cells\n${m.search.reads.toLocaleString()} boards read a move · to the end of the game from ${m.search.lateStones} stones`;
+    $("facts").textContent = `${m.sizes.hidden} context channels · ${m.sizes.cells.toLocaleString()} record cells\n${m.search.reads.toLocaleString()} boards read a move · up to ${m.search.lateReads.toLocaleString()} from ${m.search.lateStones} stones`;
     $("cardFacts").textContent = `cadence RecordPatchNet · ${(84 * m.sizes.hidden * 2 + m.sizes.hidden * 3 + 1).toLocaleString()} slow parameters · ${m.sizes.cells.toLocaleString()} record cells`;
     newGame();
   } else if (m.type === "read") mind.read(m);

@@ -1,0 +1,1304 @@
+{
+ "format": "cadence-examples.connect4.arena/1",
+ "subject": "brain",
+ "brain": "brain.json",
+ "search": {
+  "reads": 2000,
+  "late_stones": 18,
+  "late_reads": 30000,
+  "visits": 1000000
+ },
+ "games_per_opponent": 40,
+ "opponents": {
+  "alphazero=best_iter24@25": {
+   "win_draw_loss": {
+    "first": [
+     20,
+     0,
+     0
+    ],
+    "second": [
+     20,
+     0,
+     0
+    ]
+   },
+   "all": {
+    "moves": 565,
+    "optimal": 0.8230088495575221,
+    "not_lost_moves": 500,
+    "blunder_when_not_lost": 0.046
+   },
+   "by_stones": {
+    "0-8": {
+     "moves": 160,
+     "optimal": 0.7875,
+     "not_lost_moves": 103,
+     "blunder_when_not_lost": 0.07766990291262135
+    },
+    "8-16": {
+     "moves": 156,
+     "optimal": 0.717948717948718,
+     "not_lost_moves": 152,
+     "blunder_when_not_lost": 0.09868421052631579
+    },
+    "16-24": {
+     "moves": 141,
+     "optimal": 0.851063829787234,
+     "not_lost_moves": 137,
+     "blunder_when_not_lost": 0
+    },
+    "24-42": {
+     "moves": 108,
+     "optimal": 0.9907407407407407,
+     "not_lost_moves": 108,
+     "blunder_when_not_lost": 0
+    }
+   },
+   "latency_ms": {
+    "mean": 168.91803053805322,
+    "p95": 942.2412919999988,
+    "max": 3718.219750000004
+   },
+   "seconds": 121.813,
+   "games": [
+    {
+     "columns": "341102252522550033031",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "341102252522550033031",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3041562",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "31151351335534044446304112666660052",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "311333115454554432344110606660002",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "311333115454554432344110606660002",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "13113335455141133544544060652222",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533036223300221444406",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "341102252522550033031",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533036223300221444406",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233633050005255352261100666611",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "355333501415110444334452160010056666622",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533036223300221444406",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "341102252522550033031",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "325564442334464122321",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262543223355553031444522441111100",
+     "subject_first": false,
+     "winner": 1
+    }
+   ]
+  },
+  "one_ply": {
+   "win_draw_loss": {
+    "first": [
+     20,
+     0,
+     0
+    ],
+    "second": [
+     20,
+     0,
+     0
+    ]
+   },
+   "all": {
+    "moves": 335,
+    "optimal": 0.7194029850746269,
+    "not_lost_moves": 323,
+    "blunder_when_not_lost": 0.07739938080495357
+   },
+   "by_stones": {
+    "0-8": {
+     "moves": 160,
+     "optimal": 0.66875,
+     "not_lost_moves": 152,
+     "blunder_when_not_lost": 0.10526315789473684
+    },
+    "8-16": {
+     "moves": 114,
+     "optimal": 0.6754385964912281,
+     "not_lost_moves": 112,
+     "blunder_when_not_lost": 0.08035714285714286
+    },
+    "16-24": {
+     "moves": 51,
+     "optimal": 0.9215686274509803,
+     "not_lost_moves": 49,
+     "blunder_when_not_lost": 0
+    },
+    "24-42": {
+     "moves": 10,
+     "optimal": 1,
+     "not_lost_moves": 10,
+     "blunder_when_not_lost": 0
+    }
+   },
+   "latency_ms": {
+    "mean": 94.99838085970207,
+    "p95": 164.37295799999265,
+    "max": 1802.8071660000132
+   },
+   "seconds": 33.004,
+   "games": [
+    {
+     "columns": "3040251",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "0300023415",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3410303315115441255",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "430303325262245455",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "341615112025304",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "4361515355520244",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3552525532243344663442366",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "532525332243344545",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3333351420124541445215666",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3233534623355556661444",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "311410343346022",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "1341014113622334236206352555",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3330323345242522155244411",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3202233255255044",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "33303340215",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3202322332012360036111",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3622451",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "6323533525446462",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3334444416220",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3242422465333414460255",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3620415",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "630242622323315451",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3046215",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "03622451",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3336322124332210100",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32622313456421",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3626415",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "63664434144346530555",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "341102224333253044443550011160666",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "43115121153305021200",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "311513525532232235000",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "13533321552205215114",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "32533264434122443003011",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "233322223311613000",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3046251",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "03620415",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110221133322444",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "43112114333422",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3041526",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "031545632462",
+     "subject_first": false,
+     "winner": 1
+    }
+   ]
+  },
+  "solver_070": {
+   "win_draw_loss": {
+    "first": [
+     19,
+     0,
+     1
+    ],
+    "second": [
+     17,
+     0,
+     3
+    ]
+   },
+   "all": {
+    "moves": 536,
+    "optimal": 0.8656716417910447,
+    "not_lost_moves": 436,
+    "blunder_when_not_lost": 0.0389908256880734
+   },
+   "by_stones": {
+    "0-8": {
+     "moves": 160,
+     "optimal": 0.7125,
+     "not_lost_moves": 119,
+     "blunder_when_not_lost": 0.06722689075630252
+    },
+    "8-16": {
+     "moves": 148,
+     "optimal": 0.8445945945945946,
+     "not_lost_moves": 129,
+     "blunder_when_not_lost": 0.05426356589147287
+    },
+    "16-24": {
+     "moves": 118,
+     "optimal": 0.9745762711864406,
+     "not_lost_moves": 96,
+     "blunder_when_not_lost": 0.020833333333333332
+    },
+    "24-42": {
+     "moves": 110,
+     "optimal": 1,
+     "not_lost_moves": 92,
+     "blunder_when_not_lost": 0
+    }
+   },
+   "latency_ms": {
+    "mean": 212.77947255783607,
+    "p95": 1324.470250000013,
+    "max": 2871.4765420000185
+   },
+   "seconds": 119.506,
+   "games": [
+    {
+     "columns": "333336455551111155344144406006666",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32526453322443555325326664446600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "33333253644545424",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252233655131135212201155360006600664444",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3045533352565",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "033335652565",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3333325654552442441",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32522353463646654431",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "33333152406",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32521226033221010016156363663100555544",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "333330211115555050021043446661666444252",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "323333643212266256550525566010111000144",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333414022221200325051",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252463223351532066311155666521144",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "33344443103665555040035564622",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32424232",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "304553335255330444462222402050066",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "033335655554242443031122",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "30455053553230023354442",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "0333031451210023344050442254",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "333632223366566224154625454",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32622335535355354644222101011101",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3333341102222423011210464",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32524614322433544231046055032011550011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3414433011331130066660144046602555522",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "43443333314052",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "33363226323",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32622363233266632645540000004441",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "333034443305002440066125212",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "320232231311325516621500",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "35533352252622150035324006001111144",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "533333253265225500502010",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3333364555531216161",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252645355322404",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3333315451101011550232",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "32525525230235560300332666006614141",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "333113155351553066664151022222200",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32123223334636026444445260661155",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "333336422220435",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252645355033220000233211111015566644",
+     "subject_first": false,
+     "winner": 0
+    }
+   ]
+  },
+  "solver_100": {
+   "win_draw_loss": {
+    "first": [
+     6,
+     1,
+     13
+    ],
+    "second": [
+     0,
+     0,
+     20
+    ]
+   },
+   "all": {
+    "moves": 640,
+    "optimal": 0.8734375,
+    "not_lost_moves": 227,
+    "blunder_when_not_lost": 0.09691629955947137
+   },
+   "by_stones": {
+    "0-8": {
+     "moves": 160,
+     "optimal": 0.725,
+     "not_lost_moves": 80,
+     "blunder_when_not_lost": 0.1
+    },
+    "8-16": {
+     "moves": 160,
+     "optimal": 0.80625,
+     "not_lost_moves": 53,
+     "blunder_when_not_lost": 0.18867924528301888
+    },
+    "16-24": {
+     "moves": 140,
+     "optimal": 0.9571428571428572,
+     "not_lost_moves": 31,
+     "blunder_when_not_lost": 0.12903225806451613
+    },
+    "24-42": {
+     "moves": 180,
+     "optimal": 1,
+     "not_lost_moves": 63,
+     "blunder_when_not_lost": 0
+    }
+   },
+   "latency_ms": {
+    "mean": 119.2432438578132,
+    "p95": 538.7890829999815,
+    "max": 2224.860791999963
+   },
+   "seconds": 77.94,
+   "games": [
+    {
+     "columns": "33333256555222523444520000666446640011",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "3252235355643300532226005006644",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333256555352264246642066000205011144411",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252235355643300356020005226644",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333021111555505002104445130622262666446",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252645332244355343441111121026666655",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333252644446456345555000062222166110011",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32522336553525523326066066000044444",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333024444222262043040600666611",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "3252645332244355343441111121200000055",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333154511414422230",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "325255464344332253622453451000666600011",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333512155252244432",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "3252645355322443343404020021111550011",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333512155254446232",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "32525532233423515503211100110006644",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333645555111131520052104222246666644400",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252645332245543343404022001111550011",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333642222444404626603662000011",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "3252645355322443343404022001111550011",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333154511412220434",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "325255252322355633434",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333021111555515340042244440600156622266",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3252645332244355343441111121666206655",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333154511414422230",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "32525532233423055152311111000006644",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "333330211113545554251254441400666602202606",
+     "subject_first": true,
+     "winner": -1
+    },
+    {
+     "columns": "3252645332245543343404020021111550011",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333024444222262046003460066611",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "3252645332244355343404022001111550011",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "333333215422244514424112501155050000",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "3252235364335500535622000026644",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333154511414422230",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "32525532233423055152311100000116644",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333154511412244234",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "325255252322355633434",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333512155254422436",
+     "subject_first": true,
+     "winner": 1
+    },
+    {
+     "columns": "325255644345445564661000000121332",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "33333414022221200321111666654445504006655",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "325223365535330552200062664060644",
+     "subject_first": false,
+     "winner": 0
+    }
+   ]
+  },
+  "alphazero=best_iter24@100": {
+   "win_draw_loss": {
+    "first": [
+     20,
+     0,
+     0
+    ],
+    "second": [
+     15,
+     0,
+     5
+    ]
+   },
+   "all": {
+    "moves": 552,
+    "optimal": 0.8170289855072463,
+    "not_lost_moves": 394,
+    "blunder_when_not_lost": 0.07360406091370558
+   },
+   "by_stones": {
+    "0-8": {
+     "moves": 160,
+     "optimal": 0.65,
+     "not_lost_moves": 114,
+     "blunder_when_not_lost": 0.18421052631578946
+    },
+    "8-16": {
+     "moves": 160,
+     "optimal": 0.76875,
+     "not_lost_moves": 109,
+     "blunder_when_not_lost": 0.05504587155963303
+    },
+    "16-24": {
+     "moves": 128,
+     "optimal": 0.9375,
+     "not_lost_moves": 99,
+     "blunder_when_not_lost": 0.020202020202020204
+    },
+    "24-42": {
+     "moves": 104,
+     "optimal": 1,
+     "not_lost_moves": 72,
+     "blunder_when_not_lost": 0
+    }
+   },
+   "latency_ms": {
+    "mean": 92.14113176449314,
+    "p95": 130.3699590000324,
+    "max": 1869.1212919999962
+   },
+   "seconds": 100.655,
+   "games": [
+    {
+     "columns": "32563553525522332034441441616",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "1341333114446331415555055422",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110222433223300030665566445",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32525532236436033600066122565511",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "13113303315115055622222454",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533312125155331162226166200000066444",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "32525532236436033600066122565511",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "341444323363666022110",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533312125155331162226166200000066444",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "323322022303324445",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3412121122333044434",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110222433223300030665566445",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533312125155331162226166200000066444",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "133333414114413216666664400000022",
+     "subject_first": false,
+     "winner": 0
+    },
+    {
+     "columns": "3412121122333044434",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110222433223300030665566445",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110222433223300030665566445",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "323322022303324445",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "3255644144233522131",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "3262545332243443462234666600000011",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110222433223300030665566445",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "1341333114446363665545",
+     "subject_first": false,
+     "winner": 1
+    },
+    {
+     "columns": "34110222433223300030665566445",
+     "subject_first": true,
+     "winner": 0
+    },
+    {
+     "columns": "535533312125155331162226166200000066444",
+     "subject_first": false,
+     "winner": 0
+    }
+   ]
+  }
+ },
+ "bound_to": {
+  "brain.json": "53b3c2caa0c96ca4bb0239a1a98bf1b9c9296a960e29322e35de2ff99abe1c2b",
+  "brain.js": "5f90fd674c8006c4e8ab16f549eba0209ea301b51f00b2bec7903e5e30efe5a6",
+  "patch.js": "17ec0acd772edbed32d7dd4f53ab829504edaa6831aa1f7f9977605389f941a9"
+ },
+ "alphazero": {
+  "checkpoint": "best_iter24.pth.tar",
+  "sha256": "a74776991eeee4aa9f4d385ec3affbf4d29f30762221a75706b5bc784c7b958c",
+  "recipe": "alpha-zero-general, 32 iterations of 100 self-play games at 25 simulations; the model of iteration 24"
+ },
+ "library": {
+  "name": "cadence",
+  "commit": "02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+ },
+ "training": {
+  "school_positions": 2229254,
+  "passes": 3,
+  "unseen_sign_accuracy": 0.8734,
+  "records_at_deployment": 0
+ }
+}

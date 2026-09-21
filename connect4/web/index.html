@@ -54,14 +54,14 @@
         <h3>How it learned</h3>
         <p>It watched Pascal Pons' perfect solver play out set-up positions to the end, and saw how each game ended for each stone placed. It saw the games and how they ended; the solver's scores were never recorded. The slow parameters learned from those positions; the record store was left empty, because writing millions of positions into it drowns it (measured: the slow readout alone then beats the two together). The records are for the games it plays afterwards.</p>
         <h3>What you see</h3>
-        <p>Each flash on the right is one read of one imagined board: the two retinas it reads, the 256 channels of its context, the record cells that reading addresses, and the value it reads out. Reads are sampled through the search and replayed at a speed the eye can follow. The bars under the board are the value the search found for each column; ghost stones are the line it expects.</p>
+        <p>Each flash on the right is one read of one imagined board: the two retinas it reads, the 256 channels of its context, the record cells that reading addresses, and the value it reads out. Reads are sampled through the search and replayed at a speed the eye can follow. The bars under the board are the value the search found for the column it chose and the most it allows each of the others; ghost stones are the line it expects.</p>
       </div>
       <div>
         <h3>Measured on this build</h3>
         <div id="results" class="results">loading the receipt</div>
         <h3>What it cannot do</h3>
         <p id="limits">Early in the game, before the search can see the end, it still errs: the receipt above counts how often, graded move by move by the perfect solver. Against the perfect solver it wins some games moving first and loses the rest, because from 16 to 24 stones it does not always reach the end of the game within the reads it allows itself. Moving second against perfect play it loses, as every player does. This build does not yet learn from the games you play here.</p>
-        <p class="sub">Code, receipts and the verifier: <a href="https://github.com/muellerberndt/cadence-examples/tree/connect-four-record-patch/connect4">cadence-examples/connect4</a>.</p>
+        <p class="sub">Code and the receipt: <a href="https://github.com/muellerberndt/cadence-examples/tree/connect-four-record-patch/connect4">cadence-examples/connect4</a>.</p>
       </div>
     </div>
   </details>
