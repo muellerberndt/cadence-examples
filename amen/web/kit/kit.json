@@ -1,0 +1,105 @@
+{
+ "sample_rate": 22050,
+ "hop_samples": 3780,
+ "hop_seconds": 0.17142857142857143,
+ "slices": 32,
+ "break_file": "break.wav",
+ "bass_file": "bass.wav",
+ "bass_notes": [
+  {
+   "root_midi": 36,
+   "start": 0,
+   "length": 15960
+  },
+  {
+   "root_midi": 39,
+   "start": 15960,
+   "length": 17635
+  },
+  {
+   "root_midi": 42,
+   "start": 33595,
+   "length": 19283
+  },
+  {
+   "root_midi": 45,
+   "start": 52878,
+   "length": 22472
+  },
+  {
+   "root_midi": 48,
+   "start": 75350,
+   "length": 21062
+  },
+  {
+   "root_midi": 24,
+   "start": 96412,
+   "length": 43628
+  },
+  {
+   "root_midi": 27,
+   "start": 140040,
+   "length": 46904
+  },
+  {
+   "root_midi": 30,
+   "start": 186944,
+   "length": 48487
+  },
+  {
+   "root_midi": 33,
+   "start": 235431,
+   "length": 49936
+  },
+  {
+   "root_midi": 36,
+   "start": 285367,
+   "length": 48310
+  },
+  {
+   "root_midi": 39,
+   "start": 333677,
+   "length": 50400
+  },
+  {
+   "root_midi": 42,
+   "start": 384077,
+   "length": 49019
+  }
+ ],
+ "first_midi": 24,
+ "drum_gain": 0.6,
+ "bass_gain": 0.38,
+ "bass_fade_seconds": 0.009977324263038548,
+ "texture_gain": 0.08,
+ "texture_bands": [
+  [
+   250,
+   500
+  ],
+  [
+   500,
+   1000
+  ],
+  [
+   1000,
+   2000
+  ],
+  [
+   2000,
+   4000
+  ],
+  [
+   4000,
+   6000
+  ],
+  [
+   6000,
+   8000
+  ],
+  [
+   8000,
+   11000
+  ]
+ ]
+}

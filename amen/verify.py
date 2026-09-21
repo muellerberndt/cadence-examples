@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""Recheck the amen example: every receipt's sources, and that the page has what it plays.
+"""Recheck the amen example: the receipt's sources, the shipped brain, and the browser engine.
 
     python amen/verify.py
 
-For each runs/<name>/receipt.json: the schema and shape are the expected ones, every source
-file exists and hashes to the recorded value, every clip the receipt lists has its audio,
-trace and weights among the sources, and the page's index lists exactly the receipts' clips.
-Each trace is then checked against its audio: the trace names that audio file and its hash,
-and its step count covers the clip. Exits non-zero on any failure.
+For each runs/<name>/receipt.json: the schema and shape are the expected ones, the Cadence
+commit is pinned, and every source file exists and hashes to the recorded value. The model
+files are checked against model.json (sizes follow from the declared shapes). When node is
+installed, parity.mjs is run: the browser engine must reproduce the archived run's sixteen
+bars from silence, every slice, note and change point. Exits non-zero on any failure.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import math
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -24,7 +27,7 @@ def sha(path: Path) -> str:
 
 
 def main() -> int:
-    problems, clips = [], set()
+    problems = []
     receipts = sorted((HERE / "runs").glob("*/receipt.json"))
     if not receipts:
         problems.append("no receipts under runs/")
@@ -44,29 +47,26 @@ def main() -> int:
                 problems.append(f"{name}: {relative} is missing")
             elif sha(file) != expected:
                 problems.append(f"{name}: {relative} does not match its recorded hash")
-        for clip in body.get("results", {}).get("clips", []):
-            clips.add(clip["id"])
-            for relative in (f"web/audio/{clip['id']}.mp3", f"web/traces/{clip['id']}.json"):
-                if relative not in body.get("sources", {}):
-                    problems.append(f"{name}: {relative} is not among the sources")
         if body.get("verified") is not True:
             problems.append(f"{name}: the receipt is not marked verified")
-    index = json.loads((HERE / "web/traces/index.json").read_text())
-    if set(index) != clips:
-        problems.append(f"the page index and the receipts disagree: {sorted(set(index) ^ clips)}")
-    for clip_id, entry in index.items():
-        trace = json.loads((HERE / "web" / entry["file"]).read_text())
-        audio = HERE / "web" / trace["audio"]
-        if not audio.exists() or sha(audio) != trace["audio_sha256"]:
-            problems.append(f"{clip_id}: the trace does not match its audio")
-        if not (HERE / "web" / trace["weights"]).exists():
-            problems.append(f"{clip_id}: the weights file is missing")
-        if len(trace["steps"]) != entry["steps"]:
-            problems.append(f"{clip_id}: the index and the trace disagree on the step count")
+    model = json.loads((HERE / "web/model/model.json").read_text())
+    expected = sum(math.prod(shape) for _, shape in model["params_order"]) * 8
+    if (HERE / "web/model" / model["files"]["params"]).stat().st_size != expected:
+        problems.append("the parameter file does not have the declared size")
+    if (HERE / "web/model" / model["files"]["records_y"]).stat().st_size != model["records"]["cells"] * model["outputs"] * 4:
+        problems.append("the record table does not have the declared size")
+    if (HERE / "web/model" / model["files"]["records_mean"]).stat().st_size != model["records"]["reading"] * 8:
+        problems.append("the record mean does not have the declared size")
+    parity = "skipped (node is not installed)"
+    if shutil.which("node"):
+        result = subprocess.run(["node", str(HERE / "parity.mjs")], capture_output=True, text=True)
+        parity = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else result.stderr.strip()
+        if result.returncode != 0:
+            problems.append("the browser engine does not reproduce the archived run: " + parity)
     for problem in problems:
         print("FAIL:", problem)
     if not problems:
-        print(f"amen: {len(receipts)} receipts, {len(clips)} clips, every source matches")
+        print(f"amen: {len(receipts)} receipt, every source matches; parity: {parity}")
     return 1 if problems else 0
 
 
