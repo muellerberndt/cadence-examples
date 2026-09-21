@@ -12,7 +12,10 @@
   "active": 48,
   "bias": 0.3,
   "seed": 1103,
-  "reading": 208
+  "reading": 208,
+  "rate": 0.5,
+  "habituation": 1e-05,
+  "seen": 123792
  },
  "files": {
   "params": "params.f64",

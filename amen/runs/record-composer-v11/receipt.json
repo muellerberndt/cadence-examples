@@ -5,7 +5,7 @@
     "numpy": "2.5.3",
     "python": "3.13.0"
   },
-  "question": "What does one record patch, trained on sixteen jungle tracks as events per half-beat, play from silence, and how well does it predict the next half-beat of tracks it never trained on?",
+  "question": "What does one record patch, trained on 26 jungle tracks as events per half-beat, play from silence, and how well does it predict the next half-beat of tracks it never trained on?",
   "results": {
     "active_cells": 48,
     "brain": {
@@ -85,12 +85,12 @@
   },
   "schema": "cadence-examples.amen.record-composer-v11/v1",
   "sources": {
-    "runs/record-composer-v11/parity.json": "9c8bd204510fdf4f12a14cb5535328503cea620bce5c5213b91f1d03c99d1cf0",
-    "web/engine.js": "a34b46f0d1d6dde596a8d8da79917285e307eabb75d93dc183800f68440012c0",
+    "runs/record-composer-v11/parity.json": "25a772e5582b03ea4bc3a0b115a24dd2638a76e689a8f5fa783bbf54de6b7b26",
+    "web/engine.js": "cb189e750e213aac701c95a51418de7644486c2d821a0c9a3a66a2572f5afc66",
     "web/kit/bass.wav": "37590125f23b05d1a9bd9eb5343437523876966a8bb8b475b9383638e588aaff",
     "web/kit/break.wav": "82be2cdd68794040dd85a90f46686664ba610c2967a2f23a9796bf02fa59ff81",
     "web/kit/kit.json": "bc809c209f8efcff014bcfe0712549578462fb720b60f660597c8efe9a16f800",
-    "web/models/two-mixes/model.json": "68a6580b184df8320d9b76531169e9e6800bffbe5b2d69342265718c27f1913e",
+    "web/models/two-mixes/model.json": "7818a14732f749a59bd7f8517fbcac9ed268c6a5fd533b29c76cad3f067a78f3",
     "web/models/two-mixes/params.f64": "1f09af116e5bfab13328d584c7a2241f4854230b41915a343304609d6bf5cbff",
     "web/models/two-mixes/records_mean.f64": "b577fe4eefc148290bb5b9df33c1477e04c7f4a3bb089681764b11e29e99d6dd",
     "web/models/two-mixes/records_y.f32": "8b5f6447b48cb800e568a685a6cefb4a197a9d267867cb1cff8dda8895cf873a"

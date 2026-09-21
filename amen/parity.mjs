@@ -19,7 +19,17 @@ for (const entry of index.brains) {
     if (crop !== parity.played_crop[t]) crops++; if (note !== parity.played_note[t]) notes++; if ((step.played[L.change] > 0.5 ? 1 : 0) !== parity.played_change[t]) changes++;
     t++;
   }
-  const ok = worst < 1e-5 && crops === 0 && notes === 0 && changes === 0; if (!ok) failures++;
-  console.log(`${ok ? 'ok  ' : 'FAIL'} ${entry.name} (${entry.run}): ${t} half-beats, largest output difference ${worst.toExponential(2)}, slices differing ${crops}, notes ${notes}, change points ${changes}; brain built in ${built} ms, composed in ${Date.now() - began} ms`);
+  // the brain as its own primer: four bars from silence, written into the records, then the continuation
+  let ownWorst = 0, ownCrops = 0, ownNotes = 0, u = 0; const own = parity.self_primed;
+  if (own) for (const step of compose(brain, {bars: parity.steps / 8, mode: 'argmax', memory: true, memoryBars: own.primer_half_beats / 8})) {
+    if (u >= own.primer_half_beats) { const k0 = u - own.primer_half_beats;
+      for (let k = 0; k < step.out.length; k++) ownWorst = Math.max(ownWorst, Math.abs(step.out[k] - own.outputs[k0][k]));
+      const crop = step.played[L.drum_on] > 0.5 ? step.played.slice(0, L.crops).indexOf(1) : -1, note = step.played[L.bass_on] > 0.5 ? step.played.slice(L.note_start, L.note_start + L.notes).indexOf(1) : -1;
+      if (crop !== own.played_crop[k0]) ownCrops++; if (note !== own.played_note[k0]) ownNotes++; }
+    u++;
+  }
+  brain.forget();
+  const ok = worst < 1e-5 && crops === 0 && notes === 0 && changes === 0 && ownWorst < 1e-4 && ownCrops === 0 && ownNotes === 0; if (!ok) failures++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} ${entry.name} (${entry.run}): ${t} half-beats, largest output difference ${worst.toExponential(2)}, slices differing ${crops}, notes ${notes}, change points ${changes}; after memorizing its own four bars: difference ${ownWorst.toExponential(2)}, slices ${ownCrops}, notes ${ownNotes}; brain built in ${built} ms, composed in ${Date.now() - began} ms`);
 }
 process.exit(failures ? 1 : 0);

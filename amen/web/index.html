@@ -128,8 +128,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
         <span id="status">waking the brain</span>
       </div>
       <div class="knobs">
-        <label title="How readily the brain leaves the loop where it predicts a change point">Departures<input type="range" id="energy" min="0" max="3" step="0.1" value="1"><output id="energyOut">1.0×</output></label>
-        <label title="How freely the bass draws from the brain's own spread over plausible notes: it sets a different key and riff for every dub">Variation<input type="range" id="variation" min="0" max="1" step="0.05" value="0.5"><output id="variationOut">0.50</output></label>
+        <label title="How readily the brain leaves the loop where it predicts a change point">Departures<input type="range" id="energy" min="0" max="3" step="0.1" value="1.5"><output id="energyOut">1.5×</output></label>
+        <label title="How much each dub differs: the bass draws from the brain's own spread over plausible notes, and the dub gets its own drum edits, tempo, key, pad chord and filter sweep">Variation<input type="range" id="variation" min="0" max="1" step="0.05" value="0.6"><output id="variationOut">0.60</output></label>
         <label>Bars<select id="bars"><option value="16" selected>16</option><option value="32">32</option></select></label>
       </div>
       <div class="brains" id="brains"></div>
@@ -145,18 +145,17 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
     <section data-tape="model card"><details class="card">
     <summary>Model card<small>what this brain is, what plays here, what was measured</small></summary>
     <h3>The brain</h3>
-    <p>One Cadence record patch. 80 input ports (a wake, an eight-position clock, and the 71 ports of the event it played last), 128 context channels whose time constants run from 2 to 128 half-beats, one linear readout to 71 output ports, 29,895 slow parameters, and a record store of 8,192 cells of which 48 fire per reading. The records hold what the slow readout got wrong at each reading, keyed by the event heard and the context; the first four bars of a new track are written into them while the slow parameters stay fixed. Trained in under seven CPU minutes on a laptop, no GPU.</p>
+    <p>One Cadence record patch. 80 input ports (a wake, an eight-position clock, and the 71 ports of the event it played last), 128 context channels whose time constants run from 2 to 128 half-beats, one linear readout to 71 output ports, 29,895 slow parameters, and a record store of 8,192 cells of which 48 fire per reading. The records hold what the slow readout got wrong at each reading, keyed by the event heard and the context. Every brain in the selector has this shape; they differ in what they heard. All were trained on a laptop CPU in minutes, no GPU.</p>
     <h3>What plays here</h3>
-    <p>Nothing is recorded. The page loads the trained brain (30 thousand slow parameters and the record tables, 2.5 MB) and an instrument (32 half-beat slices of a drum break, twelve sub-bass notes, band-passed noise for the texture). When you press the button the brain starts from silence, hears a count-in, and computes the track one half-beat at a time, about 1.7 million multiply-adds each, hearing every half-beat it plays. It leaves the loop only where it predicts a change point, by one of three declared moves: a roll (the slice just heard repeats), a retrigger (the break restarts at a bar start) or a bar jump (the same position in another bar of the break). The Departures slider scales that probability. The bass of the first two bars, and of every departure, is drawn from the brain's own scores over notes (the Variation slider sets how freely), so every dub has its own key and line; at zero variation every dub from silence is the same track. The browser engine is the same arithmetic as the library: on the archived run's generation from silence it reproduces every slice, note and change point, with scores equal to 2e-8.</p>
-    <h3>Measured on three tracks it never trained on</h3>
-    <ul>
-      <li>Next drum slice: 0.84 to 0.86 correct; the most frequent slice scores 0.03 to 0.05.</li>
-      <li>Next bass note: 0.54 to 0.64; repeating the previous note scores 0.14 to 0.48.</li>
-      <li>Texture bands: mean error 0.085 to 0.090; repeating the previous half-beat 0.099 to 0.117.</li>
-      <li>Change points are hard: recall 0.07 to 0.15, with a predicted probability about twice as high at true change points as elsewhere.</li>
-    </ul>
+    <p>Nothing is recorded. The page loads the trained brain (30 thousand slow parameters and the record tables, 2.5 MB) and an instrument: 32 half-beat slices of a drum break, twelve sub-bass notes, a detuned saw pad and band-passed noise for the texture. When you press the button the brain starts from silence, hears a count-in, and computes the track one half-beat at a time, about 1.7 million multiply-adds each, hearing every half-beat it plays. Each half-beat it states a slice, a loudness, a bass note or a hold, a change point, and ten texture levels; the pad sounds at the bass note each bar plays most, and the brain's texture bands set how loud and how bright it is.</p>
+    <p>The brain leaves the loop only where it predicts a change point, by one of three declared moves: a roll (the slice just heard repeats), a retrigger (the break restarts at a bar start) or a bar jump (the same position in another bar of the break). The Departures slider scales that probability. What a departure contains is not predictable from the recordings (0.02 to 0.06 correct), so the moves are a rule of the instrument and the brain decides when.</p>
+    <h3>Why two dubs differ</h3>
+    <p>From silence, the highest score at every port gives one and the same track. Each dub therefore draws from its seed. The bass of the first two bars, and of every departure, is drawn from the brain's own scores over notes; the Variation slider sets how freely. The dub gets a drum signature: the bar of the break it enters on, its shares of the three moves, and the bar starts and jumps it prefers, so its edits recur within it and differ from the next dub's. It also gets instrument settings: a tempo between 165 and 182 bpm (the slices are pitched with it, as on a turntable), a key (bass and pad transposed by up to four semitones, because from silence the brain settles on the same note every time), the pad's chord, register and detune, and a filter sweep over 4, 8 or 16 bars. At zero variation none of this is drawn. The seed is printed under the button; the same seed and settings give the same dub.</p>
+    <h3>Measured on tracks it never trained on</h3>
+    <ul id="cardMeasured"><li>Choose a brain.</li></ul>
+    <p>The browser engine is the same arithmetic as the library. On each archived run's generation from silence it reproduces every slice, note and change point with scores equal to 2e-8, and it reproduces the library's record writes to 4e-8.</p>
     <h3>Supplied, learned, limits</h3>
-    <p>Supplied: the transcription of the recordings into events (which slice, which note, where a bar departs from the bar before, the sustain above 250 Hz), the instrument that renders events, the clock, and the two moves a departure may make. Learned: everything the brain plays, from random parameters and empty records. Limits: one mix of sixteen training tracks, one seed, no transformer or recurrent baseline on the same stream yet, and a texture smoother than the real one because a squared-error readout predicts the mean.</p>
+    <p>Supplied: the transcription of the recordings into events (which slice, which note, where a bar departs from the bar before, the sustain above 250 Hz), the instrument that renders events, the clock, the three moves a departure may make, and the per-dub settings above. Learned: every event the brain plays, from random parameters and empty records. Limits: the break is one break, so the drum vocabulary is its 32 slices; the brain has no phrase clock, so it places departures by what it just heard and not by where a sixteen-bar phrase ends; change points are hard to predict; one training seed; no transformer or recurrent baseline on the same stream yet; and a texture smoother than the recorded one because a squared-error readout predicts the mean.</p>
   </details></section>
   </div>
   <div class="right">
@@ -176,7 +175,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
 <div class="hazard"></div>
 
 <script type="module">
-import {Brain, compose} from './engine.js';
+import {Brain, compose, mulberry} from './engine.js';
 (() => {
 const $ = id => document.getElementById(id);
 const audio = new Audio(); audio.preload = 'auto';
@@ -208,7 +207,13 @@ async function wake(entry) {
   const rows = (flat, r, c) => Array.from({length: r}, (_, i) => Array.from(flat.subarray(i * c, (i + 1) * c)));
   weights = {hidden: model.hidden, inputs: model.inputs, outputs: model.outputs, cells: model.records.cells, active: model.records.active, timescales: brain.timescales,
              B: rows(brain.p.B, model.hidden, model.inputs), C: rows(brain.p.C, model.outputs, model.hidden), layout};
-  const r = entry.held_out_ranges, f = v => v[0].toFixed(2) + ' to ' + v[1].toFixed(2);
+  const r = entry.held_out_ranges, f = (v, d = 2) => v[0].toFixed(d) + ' to ' + v[1].toFixed(d);
+  $('cardMeasured').replaceChildren(...[
+    'This brain (' + entry.label + ') heard ' + entry.trained_on + '. ' + entry.held_out_tracks + ' tracks were held out.',
+    'Next drum slice: ' + f(r.drum_identity_accuracy) + ' correct across the held-out tracks; the most frequent slice scores ' + f(r.frequency_baseline_drum_identity_accuracy) + '.',
+    'Next bass note: ' + f(r.bass_note_accuracy) + ' correct; repeating the previous note scores ' + f(r.repeat_previous_bass_note_accuracy) + '.',
+    'Texture bands: mean error ' + f(r.texture_mae, 3) + '; repeating the previous half-beat ' + f(r.repeat_previous_texture_mae, 3) + '.',
+    'Change points: recall ' + f(r.change_recall) + '.'].map(line => { const li = document.createElement('li'); li.textContent = line; return li; }));
   $('brainNote').textContent = entry.trained_on + ' · on ' + entry.held_out_tracks + ' unheard tracks: next slice ' + f(r.drum_identity_accuracy) + ', next bass note ' + f(r.bass_note_accuracy);
   for (const b of $('brains').querySelectorAll('button')) b.disabled = false;
   $('cut').disabled = false; setStatus('ready');
@@ -237,7 +242,10 @@ $('cut').onclick = async () => {
   audio.pause();
   if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const [a, b] = kitBuffers.raw; kitBuffers.drums = await audioCtx.decodeAudioData(a.slice(0)); kitBuffers.bass = await audioCtx.decodeAudioData(b.slice(0)); }
   const bars = Number($('bars').value), energy = Number($('energy').value), variation = Number($('variation').value), seed = (Math.random() * 4294967296) >>> 0, number = tracks.length + 1;
-  trace = {clip: 'DUB ' + String(number).padStart(2, '0'), title: bars + ' bars from silence', mode: 'sample', hop_seconds: kit.hop_seconds, primer_half_beats: 0, wake_played: true,
+  const dice = mulberry((seed ^ 0x9e3779b9) >>> 0), pickOne = list => list[Math.floor(dice() * list.length)], wild = Math.min(1, variation * 2);
+  const patch = {tempo: 1 + wild * (dice() * 0.10 - 0.06), key: Math.round(wild * (dice() * 7 - 4)), chord: pickOne([[0, 7, 12], [0, 3, 7], [0, 5, 10], [0, 7, 10], [0, 12, 19]]), octaves: dice() < 0.5 ? 2 : 3, detune: 4 + 8 * dice(),
+                 sweepBars: pickOne([4, 8, 8, 16]), sweepDepth: 0.35 + 0.55 * dice(), padGain: 0.8 + 0.6 * dice()};
+  trace = {clip: 'DUB ' + String(number).padStart(2, '0'), title: bars + ' bars from silence', mode: 'sample', hop_seconds: kit.hop_seconds / patch.tempo, patch, bpm: Math.round(175 * patch.tempo), primer_half_beats: 0, wake_played: true,
            primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, variation, bars, brain: current.label, weights, layout: model.layout};
   decoded = null; waveImage = null; scoreImage = null; lastStep = -1; particles = []; flashes.cells.clear(); geo = null;
   computing = {steps: compose(brain, {bars, mode: 'sample', energy, seed, variation}), perFrame: bars > 16 ? 2 : 1};
@@ -247,7 +255,7 @@ $('cut').onclick = async () => {
 function showNow() {
   const now = $('now'); now.textContent = ''; if (!trace) return;
   const tag = document.createElement('b'); tag.textContent = trace.clip; now.appendChild(tag);
-  now.appendChild(document.createTextNode(' ' + trace.title + ' · brain: ' + trace.brain + ' · departures ' + trace.energy.toFixed(1) + '× · variation ' + trace.variation.toFixed(2) + ' · seed ' + trace.seed));
+  now.appendChild(document.createTextNode(' ' + trace.title + ' · ' + trace.bpm + ' bpm · key ' + (trace.patch.key > 0 ? '+' : '') + trace.patch.key + ' · brain: ' + trace.brain + ' · departures ' + trace.energy.toFixed(1) + '× · variation ' + trace.variation.toFixed(2) + ' · seed ' + trace.seed));
 }
 
 function advanceComputing() {
@@ -299,16 +307,16 @@ async function bandVoices(seconds, rate) {
 }
 
 async function renderTrack(item) {
-  const L = item.layout, hop = kit.hop_seconds, steps = item.steps, rate = audioCtx.sampleRate, seconds = steps.length * hop;
+  const L = item.layout, hop = item.hop_seconds, patch = item.patch, steps = item.steps, rate = audioCtx.sampleRate, seconds = steps.length * hop;
   const solo = new URLSearchParams(location.search).get('solo'), on = layer => !solo || solo === layer;
   const voices = await bandVoices(seconds, rate), ctx = new OfflineAudioContext(2, Math.ceil(seconds * rate), rate);
-  if (on('drums')) steps.forEach((s, i) => { const p = s.played; if (p[L.drum_on] > 0.5) { const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.drums; g.gain.value = kit.drum_gain * clamp(p[L.drum_gain], 0, 1); src.connect(g); g.connect(ctx.destination); src.start(i * hop, argmax(p, 0, L.crops) * hop, hop); } });
+  if (on('drums')) steps.forEach((s, i) => { const p = s.played; if (p[L.drum_on] > 0.5) { const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.drums; src.playbackRate.value = patch.tempo; g.gain.value = kit.drum_gain * clamp(p[L.drum_gain], 0, 1); src.connect(g); g.connect(ctx.destination); src.start(i * hop, argmax(p, 0, L.crops) * kit.hop_seconds, kit.hop_seconds); } });
   const noteOf = p => argmax(p, L.note_start, L.note_start + L.notes) - L.note_start;
   for (let i = 0; on('bass') && i < steps.length; i++) {
     const p = steps[i].played; if (!(p[L.bass_on] > 0.5)) continue;
     const held = p[L.bass_hold] > 0.5 && i > 0 && steps[i - 1].played[L.bass_on] > 0.5 && noteOf(steps[i - 1].played) === noteOf(p); if (held) continue;
     const note = noteOf(p); let j = i + 1; while (j < steps.length && steps[j].played[L.bass_on] > 0.5 && steps[j].played[L.bass_hold] > 0.5 && noteOf(steps[j].played) === note) j++;
-    const midi = kit.first_midi + note; let sample = kit.bass_notes[0]; for (const n of kit.bass_notes) if (Math.abs(n.root_midi - midi) < Math.abs(sample.root_midi - midi)) sample = n;
+    const midi = kit.first_midi + note + patch.key; let sample = kit.bass_notes[0]; for (const n of kit.bass_notes) if (Math.abs(n.root_midi - midi) < Math.abs(sample.root_midi - midi)) sample = n;
     const ratio = Math.pow(2, (midi - sample.root_midi) / 12), length = Math.min((j - i) * hop, sample.length / kit.sample_rate / ratio), end = i * hop + length;
     const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.bass; src.playbackRate.value = ratio;
     g.gain.setValueAtTime(kit.bass_gain, i * hop); g.gain.setValueAtTime(kit.bass_gain, Math.max(i * hop, end - kit.bass_fade_seconds)); g.gain.linearRampToValueAtTime(0, end);
@@ -320,16 +328,19 @@ async function renderTrack(item) {
   const pad = kit.texture_pad, padBands = pad ? pad.bands : 0;
   if (on('texture') && pad) {
     // The harmony of a bar is the bass note it plays most, held through rests; the pad changes pitch at bar lines only.
-    const bus = ctx.createGain(); bus.gain.value = 1; const roots = []; let last = null;
+    const bus = ctx.createBiquadFilter(); bus.type = 'lowpass'; bus.Q.value = 2.5; const roots = []; let last = null;
+    // the sweep: a slow filter opening and closing over the dub's own number of bars
+    const curve = new Float32Array(steps.length * 4); for (let i = 0; i < curve.length; i++) { const phase = (i / 4) / (patch.sweepBars * 8); curve[i] = 500 * Math.pow(2, patch.sweepDepth * 4.5 * (0.5 - 0.5 * Math.cos(2 * Math.PI * phase))); }
+    bus.frequency.setValueCurveAtTime(curve, 0, seconds);
     for (let b = 0; b * 8 < steps.length; b++) { const count = new Map(); for (const s of steps.slice(b * 8, b * 8 + 8)) if (s.played[L.bass_on] > 0.5) { const n = noteOf(s.played); count.set(n, (count.get(n) || 0) + 1); }
       if (count.size) last = [...count.entries()].sort((x, y) => y[1] - x[1] || x[0] - y[0])[0][0]; roots.push(last); }
     const firstRoot = roots.find(r => r !== null);
-    if (firstRoot !== undefined) for (const interval of pad.intervals) for (const cents of [-pad.detune_cents, pad.detune_cents]) {
-      const osc = ctx.createOscillator(); osc.type = 'sawtooth'; const hz = r => 440 * Math.pow(2, (kit.first_midi + r + pad.octaves * 12 + interval - 69) / 12) * Math.pow(2, cents / 1200);
+    if (firstRoot !== undefined) for (const interval of patch.chord) for (const cents of [-patch.detune, patch.detune]) {
+      const osc = ctx.createOscillator(); osc.type = 'sawtooth'; const hz = r => 440 * Math.pow(2, (kit.first_midi + r + patch.key + patch.octaves * 12 + interval - 69) / 12) * Math.pow(2, cents / 1200);
       osc.frequency.setValueAtTime(hz(firstRoot), 0); roots.forEach((r, b) => { if (r !== null && b > 0) osc.frequency.setTargetAtTime(hz(r), b * 8 * hop, 0.04); });
       osc.connect(bus); osc.start(0); }
     for (let k = 0; k < padBands; k++) { const [lo, hi] = kit.texture_bands[k], f = ctx.createBiquadFilter(), g = ctx.createGain(); f.type = 'bandpass'; f.frequency.value = Math.sqrt(lo * hi); f.Q.value = f.frequency.value / (hi - lo);
-      bus.connect(f); f.connect(g); g.connect(ctx.destination); ramp(g, k, kit.texture_gain * pad.gain); }
+      bus.connect(f); f.connect(g); g.connect(ctx.destination); ramp(g, k, kit.texture_gain * pad.gain * patch.padGain); }
   }
   if (on('texture')) voices.forEach((voice, k) => { if (k < padBands) return; const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = voice.buffer;
     ramp(g, k, kit.texture_gain * (tilt[k] ?? 1) / Math.sqrt(bands) / voice.rms); src.connect(g); g.connect(ctx.destination); src.start(0); });
@@ -517,7 +528,8 @@ function drawReadout(s) {
   const R = $('readout'); if (!s) { R.innerHTML = ''; return; }
   const L = layout; const heard = s.heard ? s.heard : (s.phase === 'primer' ? (s.t > 0 ? trace.steps[s.t - 1].played : null) : null);
   const crop = v => v && v[L.drum_on] > .5 ? argmax(v, 0, L.crops) : '·';
-  const note = v => v && v[L.bass_on] > .5 ? ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][(argmax(v, L.note_start, L.note_start + L.notes) - L.note_start) % 12] + (1 + Math.floor((argmax(v, L.note_start, L.note_start + L.notes) - L.note_start) / 12)) : '·';
+  const key = trace && trace.patch ? trace.patch.key : 0, pitch = v => argmax(v, L.note_start, L.note_start + L.notes) - L.note_start + key + 12;
+  const note = v => v && v[L.bass_on] > .5 ? ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][pitch(v) % 12] + Math.floor(pitch(v) / 12) : '·';
   const top = s.out.slice(0, L.crops).map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 3).map(([v, i]) => `${i}:${v.toFixed(2)}`).join(' ');
   const cells = [['heard', crop(heard), ''], ['plays', crop(s.played), 'gold'], ['top scores', top, ''], ['bass', note(s.played), 'green'],
     ['change', L.change != null ? `${s.played && s.played[L.change] > .5 ? 'YES' : 'no'} · p ${clamp(s.out[L.change], 0, 1).toFixed(2)}` : 'no port', s.played && L.change != null && s.played[L.change] > .5 ? 'red' : ''],

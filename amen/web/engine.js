@@ -29,6 +29,7 @@ export class Brain {
     const p = new Float64Array(params); let at = 0; this.p = {};
     for (const [name, shape] of model.params_order) { const size = shape.reduce((a, b) => a * b, 1); this.p[name] = p.subarray(at, at + size); at += size; }
     this.y = new Float32Array(recordsY); this.mean = new Float64Array(recordsMean);
+    this.pristine = {y: this.y.slice(), mean: this.mean.slice(), seen: model.records.seen || 0, inputNorm: model.input_norm}; this.seen = this.pristine.seen;
     const r = model.records; this.cells = r.cells; this.active = r.active; this.reading = r.reading;
     const random = mulberry(r.seed), root = Math.sqrt(this.reading);
     this.projection = normals(random, this.reading * this.cells).slice();
@@ -40,11 +41,50 @@ export class Brain {
       const tau = Math.exp(Math.log(2) + (Math.log(model.slowest) - Math.log(2)) * j / (this.hidden - 1)), retention = 1 - 1 / tau;
       this.scale[j] = Math.sqrt((1 + retention) / (1 - retention)); this.timescales.push(Math.round(tau * 100) / 100);
     }
-    this.inputScale = Math.sqrt(this.n) / model.input_norm;
+    this.inputNorm = model.input_norm; this.inputScale = Math.sqrt(this.n) / this.inputNorm;
     this.h = new Float64Array(this.hidden); this.x = new Float64Array(this.reading); this.drive = new Float64Array(this.cells);
   }
 
   reset() { this.h.fill(0); }
+
+  // Forget what a dub wrote: the record tables, their running mean and count return to the trained ones.
+  forget() { this.y.set(this.pristine.y); this.mean.set(this.pristine.mean); this.seen = this.pristine.seen; this.inputNorm = this.pristine.inputNorm; this.inputScale = Math.sqrt(this.n) / this.inputNorm; }
+
+  // The reading of a moment: the input and the context, both with unit variance per unit.
+  readingOf(u, h) { const r = new Float64Array(this.reading); for (let i = 0; i < this.n; i++) r[i] = u[i] * this.inputScale; for (let j = 0; j < this.hidden; j++) r[this.n + j] = h[j] * this.scale[j]; return r; }
+
+  // The k-winner code of a reading under the current mean: the winning cells and their unit-length positive drives.
+  codeOf(reading) {
+    const cells = this.cells, drive = this.drive; drive.set(this.offset);
+    for (let i = 0; i < this.reading; i++) { const v = reading[i] - this.mean[i]; if (v === 0) continue; const row = i * cells, P = this.projection; for (let k = 0; k < cells; k++) drive[k] += v * P[row + k]; }
+    const K = this.active, heap = new Int32Array(K); let size = 0; const less = (a, b) => drive[a] < drive[b];
+    for (let k = 0; k < cells; k++) {
+      if (size < K) { let i = size++; heap[i] = k; while (i > 0) { const parent = (i - 1) >> 1; if (less(heap[i], heap[parent])) { const s = heap[i]; heap[i] = heap[parent]; heap[parent] = s; i = parent; } else break; } }
+      else if (drive[k] > drive[heap[0]]) { heap[0] = k; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i; if (l < K && less(heap[l], heap[m])) m = l; if (r < K && less(heap[r], heap[m])) m = r; if (m === i) break; const s = heap[i]; heap[i] = heap[m]; heap[m] = s; i = m; } }
+    }
+    const winners = Array.from(heap).sort((a, b) => a - b); let norm = 0;
+    const values = winners.map(k => { const v = Math.max(drive[k], 0); norm += v * v; return v; }); norm = Math.sqrt(norm);
+    return {winners, code: values.map(v => norm > 0 ? v / norm : v)};
+  }
+
+  // Write what was witnessed, as the library does after an observed path: the readings first move the running mean,
+  // then each moment's code takes the residual the slow readout left, by the delta rule at the record rate, in order.
+  memorize(moments, rate = this.model.records.rate) {
+    const r = this.model.records, {C, c} = this.p, H = this.hidden, O = this.outputs;
+    // the witnessed inputs first move the running input norm, and the readings are taken under the new one
+    for (const m of moments) { let sq = 0; for (let i = 0; i < this.n; i++) sq += m.u[i] * m.u[i]; this.inputNorm += 0.01 * (Math.max(Math.sqrt(sq), 1e-6) - this.inputNorm); }
+    this.inputScale = Math.sqrt(this.n) / this.inputNorm;
+    for (const m of moments) m.reading = this.readingOf(m.u, m.h);
+    for (const m of moments) { this.seen += 1; const rate = Math.max(r.habituation, 1 / this.seen); for (let i = 0; i < this.reading; i++) this.mean[i] += rate * (m.reading[i] - this.mean[i]); }
+    for (const m of moments) {
+      const {winners, code} = this.codeOf(m.reading);
+      for (let k = 0; k < O; k++) {
+        let slow = c[k]; const row = k * H; for (let j = 0; j < H; j++) slow += C[row + j] * m.h[j];
+        let read = 0; for (let i = 0; i < winners.length; i++) read += code[i] * this.y[winners[i] * O + k];
+        const error = m.target[k] - slow - read; for (let i = 0; i < winners.length; i++) this.y[winners[i] * O + k] += rate * code[i] * error;
+      }
+    }
+  }
 
   // One half-beat: the input ports u (length n) in, everything the page draws out.
   step(u) {
@@ -54,21 +94,8 @@ export class Brain {
       for (let i = 0; i < n; i++) { const v = u[i]; if (v !== 0) { a += G[row + i] * v; z += B[row + i] * v; } }
       const l = 1 / (1 + Math.exp(-a)); gate[j] = l; this.h[j] = l * this.h[j] + (1 - l) * Math.tanh(z);
     }
-    const x = this.x, cells = this.cells;
-    for (let i = 0; i < n; i++) x[i] = u[i] * this.inputScale - this.mean[i];
-    for (let j = 0; j < H; j++) x[n + j] = this.h[j] * this.scale[j] - this.mean[n + j];
-    const drive = this.drive; drive.set(this.offset);
-    for (let i = 0; i < this.reading; i++) { const v = x[i]; if (v === 0) continue; const row = i * cells; const P = this.projection; for (let k = 0; k < cells; k++) drive[k] += v * P[row + k]; }
-    // the k largest drives, by a min-heap of size k
-    const K = this.active, heap = new Int32Array(K); let size = 0;
-    const less = (a, b) => drive[a] < drive[b];
-    for (let k = 0; k < cells; k++) {
-      if (size < K) { let i = size++; heap[i] = k; while (i > 0) { const parent = (i - 1) >> 1; if (less(heap[i], heap[parent])) { const t = heap[i]; heap[i] = heap[parent]; heap[parent] = t; i = parent; } else break; } }
-      else if (drive[k] > drive[heap[0]]) { heap[0] = k; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i; if (l < K && less(heap[l], heap[m])) m = l; if (r < K && less(heap[r], heap[m])) m = r; if (m === i) break; const t = heap[i]; heap[i] = heap[m]; heap[m] = t; i = m; } }
-    }
-    const winners = Array.from(heap).sort((a, b) => a - b); let norm = 0;
-    const values = winners.map(k => { const v = Math.max(drive[k], 0); norm += v * v; return v; }); norm = Math.sqrt(norm);
-    const code = values.map(v => norm > 0 ? v / norm : v), O = this.outputs, read = new Array(O).fill(0), push = new Array(K);
+    const reading = this.readingOf(u, this.h), {winners, code} = this.codeOf(reading);
+    const O = this.outputs, K = this.active, read = new Array(O).fill(0), push = new Array(K);
     winners.forEach((cell, i) => { const row = cell * O; let sq = 0; for (let k = 0; k < O; k++) { const w = code[i] * this.y[row + k]; read[k] += w; sq += w * w; } push[i] = Math.sqrt(sq); });
     const out = new Array(O);
     for (let k = 0; k < O; k++) { let s = c[k]; const row = k * H; for (let j = 0; j < H; j++) s += C[row + j] * this.h[j]; out[k] = s + read[k]; }
@@ -85,19 +112,19 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 // position in another bar of the break); where a move has a choice, the brain's squared scores decide.
 // With `bassPower` set, a new bass note is drawn with probability proportional to its score to that power, the
 // brain's own spread over plausible notes; otherwise the highest-scoring note plays.
-export function executed(out, L, retriggers, mode, random, previous, energy = 1, bassPower = 0) {
+export function executed(out, L, retriggers, mode, random, previous, energy = 1, bassPower = 0, signature = null) {
   const e = new Array(L.event_ports).fill(0);
   const change = mode === 'sample' ? random() < clamp(out[L.change] * energy, 0, 1) : out[L.change] > 0.5;
   e[L.change] = change ? 1 : 0;
   for (let k = 0; k < L.texture_ports; k++) e[L.texture_start + k] = clamp(out[L.texture_start + k], 0, 1);
   if (out[L.drum_on] > 0.5) {
     const heard = previous && previous[L.drum_on] > 0.5; let crop;
-    const pick = options => { const w = options.map(k => Math.pow(Math.max(out[k], 0), 2) + 1e-9), total = w.reduce((a, b) => a + b, 0); let draw = random() * total;
+    const pick = (options, prefer) => { const w = options.map((k, i) => (Math.pow(Math.max(out[k], 0), 2) + 1e-9) * (prefer ? prefer[i] : 1)), total = w.reduce((a, b) => a + b, 0); let draw = random() * total;
       for (let i = 0; i < w.length; i++) { draw -= w[i]; if (draw <= 0) return options[i]; } return options[options.length - 1]; };
-    const move = mode === 'sample' && change ? random() : -1;
-    if (move >= 0 && heard && move < 1 / 3) crop = argmax(previous, 0, L.crops);
-    else if (move >= 0 && heard && move >= 2 / 3) { const next = (argmax(previous, 0, L.crops) + 1) % L.crops; crop = pick([8, 16, 24].map(d => (next + d) % L.crops)); }
-    else if (move >= 0) crop = pick(retriggers);
+    const move = mode === 'sample' && change ? random() : -1, shares = signature ? signature.moves : [1 / 3, 1 / 3, 1 / 3];
+    if (move >= 0 && heard && move < shares[0]) crop = argmax(previous, 0, L.crops);
+    else if (move >= 0 && heard && move >= shares[0] + shares[1]) { const next = (argmax(previous, 0, L.crops) + 1) % L.crops; crop = pick([8, 16, 24].map(d => (next + d) % L.crops), signature && signature.jumps); }
+    else if (move >= 0) crop = pick(retriggers, signature && signature.retriggers);
     else crop = argmax(out, 0, L.crops);
     e[crop] = 1; e[L.drum_on] = 1; e[L.drum_gain] = clamp(out[L.drum_gain], 0, 1);
   }
@@ -116,19 +143,30 @@ export function executed(out, L, retriggers, mode, random, previous, energy = 1,
 // `variation` in [0, 1] lets each dub differ: over the first `riffBars` the bass is drawn from the brain's note
 // scores (power 8 at 0+, down to 2 at 1), which sets the key and the riff it then hears and continues; afterwards a
 // note is drawn only where a change point fires. At 0 every choice is the highest score.
-export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 1, variation = 0, riffBars = 2} = {}) {
-  const model = brain.model, L = model.layout, random = mulberry(seed), horizon = 8 * bars;
-  brain.reset(); let previous = null;
+// Each dub also draws a signature from its seed: which bar of the break it enters on, its shares of the three departure
+// moves (roll, retrigger, bar jump) and its preferred targets, so a dub's edits recur within it and differ between dubs.
+// With `memory` set, the brain is its own primer: after `memoryBars` it writes what it played into its records, as the
+// library does for a heard track, and plays on from that memory; the dub's own pattern then returns every four bars.
+export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 1, variation = 0, riffBars = 2, memory = false, memoryBars = 4, memoryRate = undefined, openingEnergy = undefined} = {}) {
+  const model = brain.model, L = model.layout, random = mulberry(seed), horizon = 8 * bars, moments = [];
+  const dice = mulberry((seed ^ 0x2c1b3c6d) >>> 0), v = mode === 'sample' ? Math.min(1, Math.max(0, variation)) : 0;
+  const spread = n => { const d = Array.from({length: n}, () => -Math.log(1 - dice())), total = d.reduce((a, b) => a + b, 0); return d.map(x => (1 - v) / n + v * x / total); };
+  const signature = v > 0 ? {entry: Math.floor(dice() * 4), moves: spread(3), retriggers: spread(model.retriggers.length), jumps: spread(3)} : null;
+  const countIn = Array.from(model.count_in);
+  if (signature) { const was = argmax(countIn, 0, L.crops); countIn[was] = 0; countIn[(8 * signature.entry + L.crops - 1) % L.crops] = 1; }
+  brain.forget(); brain.reset(); let previous = null;
   for (let t = 0; t < horizon; t++) {
-    const u = new Array(model.inputs).fill(0), heard = t === 0 ? model.count_in : previous;
+    const u = new Array(model.inputs).fill(0), heard = t === 0 ? countIn : previous;
     if (t === 0) u[0] = 1;
     u[L.clock_start + (t % 8)] = 1;
     for (let k = 0; k < L.event_ports; k++) u[L.heard_start + k] = heard[k];
     const step = brain.step(u);
     const power = variation > 0 && mode === 'sample' ? 8 - 6 * Math.min(1, variation) : 0, riff = t < 8 * riffBars;
-    let event = executed(step.out, L, model.retriggers, mode, random, mode === 'sample' ? heard : null, energy, riff ? power : 0);
+    const opening = memory && t < 8 * memoryBars, heat = opening && openingEnergy !== undefined ? openingEnergy : energy;
+    let event = executed(step.out, L, model.retriggers, mode, random, mode === 'sample' ? heard : null, heat, (riff || opening) ? power : 0, signature);
     if (!riff && power > 0 && event[L.change] > 0.5) { const drawn = executed(step.out, L, model.retriggers, 'argmax', random, null, energy, power); for (let k = L.note_start; k < L.note_start + L.notes; k++) event[k] = drawn[k]; }
     previous = event;
-    yield Object.assign(step, {t, phase: 'generated', heard: Array.from(heard), clock: t % 8, played: previous});
+    if (memory && t < 8 * memoryBars) { moments.push({u, h: step.h, target: event}); if (t === 8 * memoryBars - 1) brain.memorize(moments, memoryRate); }
+    yield Object.assign(step, {t, phase: 'generated', heard: Array.from(heard), clock: t % 8, played: previous, signature});
   }
 }

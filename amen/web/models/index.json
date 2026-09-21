@@ -19,8 +19,26 @@
     "texture_mae": [
      0.08471865291025253,
      0.09032771092068605
+    ],
+    "change_recall": [
+     0.07142857142857142,
+     0.14728682170542637
+    ],
+    "frequency_baseline_drum_identity_accuracy": [
+     0.0335195530726257,
+     0.05145413870246085
+    ],
+    "repeat_previous_bass_note_accuracy": [
+     0.14007782101167315,
+     0.4842186297151655
+    ],
+    "repeat_previous_texture_mae": [
+     0.09888871905821346,
+     0.11748001506305664
     ]
-   }
+   },
+   "training_tracks": 16,
+   "training_cpu_seconds": 412
   },
   {
    "name": "two-mixes",
@@ -41,8 +59,26 @@
     "texture_mae": [
      0.0825049240198199,
      0.11721595394018718
+    ],
+    "change_recall": [
+     0.1111111111111111,
+     0.19428571428571428
+    ],
+    "frequency_baseline_drum_identity_accuracy": [
+     0.0335195530726257,
+     0.05145413870246085
+    ],
+    "repeat_previous_bass_note_accuracy": [
+     0.13470173187940987,
+     0.4842186297151655
+    ],
+    "repeat_previous_texture_mae": [
+     0.09888871905821346,
+     0.13428036299404747
     ]
-   }
+   },
+   "training_tracks": 26,
+   "training_cpu_seconds": 1397
   }
  ]
 }
