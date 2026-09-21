@@ -5,6 +5,13 @@ placed it sees it, and says how the game ends for that side. A supplied search k
 imagines moves and reads the patch where it stops looking. The page plays it in the browser
 with the same arithmetic as the library and draws every sampled read.
 
+## What this example shows
+
+- **Planning.** The brain chooses a move by imagining boards and reading a learned value where it stops looking. A line it can follow to the end of the game is proven and outranks anything it reads.
+- **Learning by watching.** The value comes from games a perfect player played out, seen with how they ended. No score was given.
+- **Slow parameters and records have different jobs.** The school trains the slow parameters and leaves the record store empty, because writing millions of positions into it drowns it (measured on three runs). The records are for the games played afterwards; that use is work in progress.
+- **Play judged move by move.** A perfect solver grades every move, by the stage of the game, beside a control that searches with no value patch.
+
 ## Layout
 
 | file | what it is |

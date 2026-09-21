@@ -15,6 +15,14 @@ sensory and command neurons by name, and what each cell is by the tint and shape
 (sensory, interneuron, command, motor, pharyngeal). Heat follows the logarithm of activity, because a signal
 fades by orders of magnitude as it spreads.
 
+## What this example shows
+
+- **Learning from experience in one life.** Apart from twelve reflex lessons before birth, nothing is trained in advance. What a smell means is learned from the food or the pain it came before, while the worm lives on the plate.
+- **Simple affect.** Food and pain are the only outcomes. They decide when a lesson happens and which command group it favours; bacteria reach the dopaminergic neurons and pain the ASH nociceptors.
+- **Direct motor control.** The body reads the command interneurons and nothing else. No controller sits between the brain and the movement.
+- **Structure as a constraint.** The measured connectome is the mask of one `PartitionedTemporalPatchNet`. Learning changes the weight of a connection that exists and cannot add one.
+- **The temporal patch used as documented.** `imagine`, `advance` and `observe`, learning by centred equilibrium detuning with backtracking, and a stability bound on every lesson.
+
 ## The brain is the connectome
 
 - Neurons: the 302 of `data/c302_A_Full.net.nml`, placed at their measured soma positions

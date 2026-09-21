@@ -17,6 +17,15 @@ line that shines with the signal it carries this tick, the record cells a grid w
 reading's code lit, and the muscles a column of motor neurons between the two halves. Every
 group, cortex and port carries its name.
 
+## What this example shows
+
+- **Evolution of bodies and wiring.** Shape, muscles and each patch's list of cortices with their reading masks mutate at every birth. Energy and death select; the world has no fitness function.
+- **Learning in one life.** Each being takes adjoint steps and writes records as it lives. Records are never inherited.
+- **Planning through its own model.** A being with a planning horizon repairs its motor on a private path under the model it learned, toward its drives, and executes the first repaired motor.
+- **Direct motor control.** The policy patch drives eight muscle ports and the mouth of a soft body that crawls by grip alone.
+- **Drives.** Energy and pain are among the senses, and the inherited drives say what the planner steers toward.
+- **Computation has a price.** Every unit read, channel, record cell, write and planning replay costs mass, so a brain has to pay for itself.
+
 ## The brain is two record patches
 
 Both are `cadence.RecordPatchNet`: a gated linear context, a slow readout, and a store of

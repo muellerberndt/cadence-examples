@@ -6,6 +6,4 @@ __pycache__/
 # local run output at the top level; examples keep their receipts in their own runs/
 /runs/
 # Connect Four's local checkpoints and the external solver and AlphaZero checkouts
-connect_four/checkpoints/
-connect_four/external/
 connect4/external/

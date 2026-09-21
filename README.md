@@ -1,16 +1,18 @@
 # Cadence examples
 
-Worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each example is one
-directory with its own README, its page, the receipts behind every number it states, and a check
-that recomputes them.
+Four worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each is one directory
+with its own README, its page, the receipts behind every number it states, and a check that
+recomputes them. Each page runs its brain in the browser with the arithmetic of the library, and a
+parity test holds the two together.
 
-| Example | What it shows | Evidence | Receipt |
-|---|---|---|---|
-| [worm](worm/) | The complete nervous system of *C. elegans*, 302 neurons wired as measured, as one TemporalPatchNet. It learns during its life what the smells around it predict, from food, from pain, and from the treats and pokes you give it; every neuron, synapse and lesson is drawn as it happens | the browser brain reproduces the library's TemporalPatchNet to a relative difference of 8.5e-12 on lessons it lives through | [parity](worm/tests/parity.mjs) |
-| [connect_four](connect_four/) | One life learns what a dropped stone does, which windows of four cells are completed lines and what positions are worth, from the games it plays, and chooses its moves by searching over what it learned | tactical suite 100%; paired score against random 0.995 and against one-ply 0.962; decision latency p95 52 ms | [receipt](connect_four/receipt.json) |
-| [connect4](connect4/) | Connect Four on one RecordPatchNet. The patch reads a position and says how the game ends for the side that placed the last stone; it learned that by watching a perfect player play out set-up positions, and a supplied search reads it. The page draws the reads as they happen: two retinas, 256 context channels, 4,096 record cells | 40-0-0 against AlphaZero at 25 simulations and 35-0-5 at 100; 36-0-4 against the perfect solver playing 70% of its moves; moving first against the perfect solver 6-1-13; every move graded by the solver. The browser engine selects the library's record cells and agrees with its values to 1e-15, and searches as the Python reference does | [receipt](connect4/web/receipt.json), [check](connect4/verify.py) |
-| [amen](amen/) | A jungle composer in one patch, running in the browser: from silence it computes sixteen bars of drums, bass and texture while the page shows its brain, then plays them | next drum slice 0.84 to 0.86 on held-out tracks (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v10/receipt.json) |
-| [patchworld](patchworld/) | Soft bodies evolve on a world that conserves its mass. Shapes, muscles and brains built from cortices of one RecordPatchNet mutate at every birth, each being learns during its life and can plan its motor through its own model, and the page opens any brain with every neuron, connection and record cell drawn as it works | the browser brain reproduces the library's RecordPatchNet to a relative difference of 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick | [parity](patchworld/sim/parity.js) |
+Each example shows a different side of the same architecture.
+
+| Example | What it shows | The brain | Evidence | Check |
+|---|---|---|---|---|
+| [worm](worm/) | Learning from experience in one life, simple affect (food and pain), direct motor control, a measured connectome as the only wiring | The 302 neurons of *C. elegans* as one `PartitionedTemporalPatchNet` masked by the connectome | the browser brain reproduces the library to a relative difference of 8.5e-12 on lessons it lives through; the body holds its invariants under stress | [parity](worm/tests/parity.mjs), [body](worm/tests/body.mjs) |
+| [amen](amen/) | Creation: from silence it computes sixteen bars of drums, bass and texture, hearing each half-beat it plays | One `RecordPatchNet`: 128 context channels, 8,192 record cells | on held-out tracks, next drum slice 0.84 to 0.86 (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v10/receipt.json), [verify](amen/verify.py) |
+| [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
+| [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 simulations and 35-0-5 at 100; 36-0-4 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 6-1-13, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
 
 ## The worm
 
@@ -23,37 +25,6 @@ the moments that led there and learns, by centred equilibrium detuning, what its
 should have been doing on the way. Details, sources and limits: [worm/README.md](worm/README.md).
 
 ## Connect Four
-
-One life learns what a dropped stone does, which windows of four cells are completed lines
-and what positions are worth, from the games it plays, and chooses its moves by searching
-over what it learned: no board object, no terminal oracle, no minimax labels.
-
-- Page: https://floatingpragma.io/cadence-examples/connect_four/ (play against the brain
-  while it keeps learning from the game, with the whole brain live beside the board). The
-  page's brain is seed 10 of the five-seed acceptance run, trained against Pascal Pons'
-  perfect solver at graded strengths and then schooled against it: it reads the threats on a
-  board off its records, remembers what its searches proved and the columns winners played,
-  and searches its records as deep as its budget of imagined boards reaches. Played on the page in a browser: moving
-  first it beat the perfect solver in 40 of 40 games with every move perfect; it beat both
-  AlphaZero models in every game, first and second; moving second it beat the solver at 70% in 29 of 30. Its model card states the training, the schooling, the
-  bench and what it cannot do; bench receipts: [connect_four/bench/receipts](connect_four/bench/receipts).
-- Receipt of the stage: [connect_four/receipt.json](connect_four/receipt.json), five acceptance seeds.
-  Measured: exact next boards on held-out moves 100%; terminal prediction
-  100%; tactical suite 100% (win in one, block in one); paired score
-  against random 0.995 and against one-ply 0.962 (each seed at least
-  0.925); planning gain over the same records without search 0.65;
-  loss with corrupted dynamics 0.84; loss on the old opponents after the
-  adaptation games -0.004; decision latency p95 52 ms.
-- Supplied: the rules as the world, the move legality, the negamax search over imagined
-  boards within a budget of imagined transitions, the settling schedule.
-- Learned: the drop records (where a stone lands), the line records (which windows are
-  completed lines, what a position is worth), from empty records.
-- Controls: the same records frozen, corrupted dynamics, random, one-ply and minimax
-  opponents at fixed budgets.
-- Details: [connect_four/README.md](connect_four/README.md); what the work taught us:
-  [connect_four/FINDINGS.md](connect_four/FINDINGS.md).
-
-## Connect Four on the record patch
 
 One `RecordPatchNet` reads a position right after a stone has landed, as the side that placed it
 sees it, and says how the game ends for that side. It learned that by watching Pascal Pons'
@@ -96,10 +67,6 @@ python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadenc
 python worm/tools/export_web.py && node worm/tests/parity.mjs && node worm/tests/body.mjs
 python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
 
-# connect_four: cadence 21a120311e9817e817499318f8125896cd19534d
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d" pytest
-python -m pytest -q -m "not slow" agent/tests connect_four/tests
-
 # connect4: cadence 02fec624648d421e02ecb00f52f3d3072e9fe9ae
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
 python connect4/verify.py
@@ -115,6 +82,3 @@ python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json && node
 node patchworld/tests/physics.test.js
 python -m http.server -d patchworld/web 8804  # then open http://127.0.0.1:8804
 ```
-
-`agent/`, `web/` and `conftest.py` are the actor, the browser engine and the test import path that
-Connect Four is built on.

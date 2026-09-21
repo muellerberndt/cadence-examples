@@ -9,6 +9,13 @@ hearing each half-beat it plays, while the page shows its activity. When the tra
 computed it is rendered through the instrument and played, with every note and the brain
 in time with the sound. The page says on its face that the brain is still training.
 
+## What this example shows
+
+- **Creation.** The brain starts from silence and computes a track of its own, one half-beat at a time. Nothing on the page is recorded.
+- **A loop through the world.** It hears each half-beat it plays, so what it does next depends on what it did.
+- **Slow and fast memory in one patch.** The slow parameters carry what the corpus sounds like and 8,192 record cells carry particular readings. The held-out figures are measured with the records writing online; the page keeps those writes off.
+- **Prediction on tracks it never heard**, against baselines on the same rows.
+
 ## What is here
 
 - `web/index.html`: the page, in two columns: the studio and the sound on the left, the
