@@ -90,3 +90,5 @@ python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json && node
 node patchworld/tests/physics.test.js
 python -m http.server -d patchworld/web 8804  # then open http://127.0.0.1:8804
 ```
+
+Made with ♥ by [Pragma Research](https://floatingpragma.io).
