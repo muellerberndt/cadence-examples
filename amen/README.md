@@ -98,7 +98,8 @@ scaled by the Variation slider; at zero none of it is drawn.
   order, so a track's own chop is not in the training data.
 - Instrument settings: a tempo between 165 and 182 bpm (the slices are pitched with it), a
   key (bass and pad transposed by two semitones down to five up), the pad's waveform, chord, register
-  and detune, and a filter sweep over 4, 8 or 16 bars. The pad sounds at the bass note each
+  and detune, how it is played (held, a skank on beats two and four, a dotted stab or a
+  swell per bar), and a filter sweep over 4, 8 or 16 bars. The pad sounds at the bass note each
   bar plays most; the brain's texture bands shape it over time, and the instrument sets the
   layer 12 dB under the drums and bass.
 
