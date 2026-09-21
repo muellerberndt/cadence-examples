@@ -119,6 +119,47 @@
    },
    "training_tracks": 71,
    "training_cpu_seconds": 1559
+  },
+  {
+   "name": "three-corpora-longer",
+   "label": "Three corpora, longer",
+   "trained_on": "the same 71 tracks and windows, six epochs in all",
+   "run": "record-composer-v13",
+   "run_receipt_sha256": "d3da5b538fd36a034651a0a2f47086d44296fdc62812edbc5d7540da277c237d",
+   "held_out_tracks": 8,
+   "held_out_ranges": {
+    "drum_identity_accuracy": [
+     0.8411633109619687,
+     0.8730769230769231
+    ],
+    "bass_note_accuracy": [
+     0.42251950947603123,
+     0.6510583707504811
+    ],
+    "texture_mae": [
+     0.081742956523274,
+     0.13669418426170932
+    ],
+    "change_recall": [
+     0.06493506493506493,
+     0.2905027932960894
+    ],
+    "frequency_baseline_drum_identity_accuracy": [
+     0.03131868131868132,
+     0.05145413870246085
+    ],
+    "repeat_previous_bass_note_accuracy": [
+     0.13470173187940987,
+     0.5155210643015521
+    ],
+    "repeat_previous_texture_mae": [
+     0.09888871905821346,
+     0.1733616457069418
+    ]
+   },
+   "training_tracks": 71,
+   "training_cpu_seconds": 1392
   }
- ]
+ ],
+ "default": "three-corpora"
 }

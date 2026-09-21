@@ -48,7 +48,7 @@ kept elsewhere and is not part of this repository.
 
 ## What the receipt says
 
-Each brain has a receipt under `runs/record-composer-v10/`, `runs/record-composer-v11/`, `runs/record-composer-v12/`. A receipt names the composer run's own sealed receipt
+Each brain has a receipt under `runs/record-composer-v10/`, `runs/record-composer-v11/`, `runs/record-composer-v12/`, `runs/record-composer-v13/`. A receipt names the composer run's own sealed receipt
 and its independent verification, the Cadence commit it trained with, the size of the brain
 (80 input ports, 128 context channels, 71 output ports, 29,895 slow parameters, 8,192 record
 cells of which 48 fire), the training cost (CPU minutes on a laptop, no GPU), and next-event
@@ -60,6 +60,14 @@ rows (in brackets):
 | One mix | 16 tracks of one DJ mix, 70 minutes | 3 | 0.84 to 0.86 (0.03 to 0.05) | 0.54 to 0.64 (0.14 to 0.48) | 0.085 to 0.090 (0.099 to 0.117) | 0.07 to 0.15 |
 | Two mixes | 26 tracks and windows of two DJ mixes, 133 minutes | 5 | 0.84 to 0.86 (0.03 to 0.05) | 0.44 to 0.65 (0.13 to 0.48) | 0.083 to 0.117 (0.099 to 0.134) | 0.11 to 0.19 |
 | Three corpora | 71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours | 8 | 0.85 to 0.88 (0.03 to 0.05) | 0.41 to 0.64 (0.13 to 0.52) | 0.080 to 0.134 (0.099 to 0.173) | 0.08 to 0.22 |
+| Three corpora, longer | the same 71 tracks and windows, six epochs in all | 8 | 0.84 to 0.87 (0.03 to 0.05) | 0.42 to 0.65 (0.13 to 0.52) | 0.082 to 0.137 (0.099 to 0.173) | 0.06 to 0.29 |
+
+The page opens with Three corpora (`default` in `web/models/index.json`). Three times the
+material did not move the held-out scores, and neither did three more epochs on it (the
+fourth brain): the instrument and the transcription set the ceiling. What changes is the
+playing from silence. The three-corpora brains leave the break's order by themselves and
+range over more bass notes; the longer-trained one predicts change points more often from
+silence, so its dubs are busier.
 
 Parity: on each archived generation from silence in the highest-score mode the browser
 engine reproduces all 128 slices, bass notes and change points, with output scores equal
@@ -79,6 +87,32 @@ the corpus's change points only the roll stands out from chance (0.12 against 0.
 retrigger occurs at 0.12, its chance level, and a bar jump at 0.05. Learned from random
 parameters and empty records: every event the brain plays, the gains, the bass line, when a
 change point is due, and the texture.
+
+## Why two dubs differ
+
+From silence, the highest score at every port gives one and the same track, and the bass
+settles on the same note every time. Each dub therefore draws the following from its seed,
+scaled by the Variation slider; at zero none of it is drawn.
+
+- The bass of the first two bars, and of every departure, is drawn from the brain's own
+  scores over notes.
+- A drum pattern of the dub's own. The break enters on one of its four bars. Over the first
+  one, two or four bars departures are drawn at a raised probability, with the dub's own
+  shares of the three moves and its preferred targets. That opening is the dub's loop: the
+  slice at the cycle start and at each of the opening's departures returns at the same place
+  in every cycle, unless the brain draws a fresh departure there. Between those places the
+  brain plays on from what it hears, so a fill stays local and the groove comes back. This
+  is a rule of the instrument: the transcription reads every repeating bar as the break in
+  order, so a track's own chop is not in the training data.
+- Instrument settings: a tempo between 165 and 182 bpm, the break's pitch (up to four
+  semitones either way, set apart from the tempo as on a sampler), a
+  key (bass and pad transposed by two semitones down to five up), the pad's waveform, chord, register
+  and detune, how it is played (held, a skank on beats two and four, a dotted stab or a
+  swell per bar), and a filter sweep over 4, 8 or 16 bars. The pad sounds at the bass note each
+  bar plays most; the brain's texture bands shape it over time, and the instrument sets the
+  layer 12 dB under the drums and bass.
+
+The seed is printed under the button. The same seed and settings give the same dub.
 
 ## Why two dubs differ
 

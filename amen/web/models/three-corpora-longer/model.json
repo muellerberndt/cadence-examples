@@ -1,0 +1,160 @@
+{
+ "schema": "cadence-examples.amen.live-model/v1",
+ "run_receipt_sha256": "d3da5b538fd36a034651a0a2f47086d44296fdc62812edbc5d7540da277c237d",
+ "library_commit": "02fec624648d421e02ecb00f52f3d3072e9fe9ae",
+ "inputs": 80,
+ "hidden": 128,
+ "outputs": 71,
+ "slowest": 128.0,
+ "input_norm": 2.6229914255366773,
+ "records": {
+  "cells": 8192,
+  "active": 48,
+  "bias": 0.3,
+  "seed": 1103,
+  "reading": 208,
+  "rate": 0.5,
+  "habituation": 1e-05,
+  "seen": 961920
+ },
+ "files": {
+  "params": "params.f64",
+  "records_y": "records_y.f32",
+  "records_mean": "records_mean.f64"
+ },
+ "params_order": [
+  [
+   "G",
+   [
+    128,
+    80
+   ]
+  ],
+  [
+   "g",
+   [
+    128
+   ]
+  ],
+  [
+   "B",
+   [
+    128,
+    80
+   ]
+  ],
+  [
+   "b",
+   [
+    128
+   ]
+  ],
+  [
+   "C",
+   [
+    71,
+    128
+   ]
+  ],
+  [
+   "c",
+   [
+    71
+   ]
+  ]
+ ],
+ "layout": {
+  "crops": 32,
+  "notes": 24,
+  "drum_on": 32,
+  "drum_gain": 33,
+  "note_start": 34,
+  "bass_on": 58,
+  "bass_hold": 59,
+  "change": 60,
+  "texture_start": 61,
+  "texture_ports": 10,
+  "heard_start": 9,
+  "clock_start": 1,
+  "event_ports": 71
+ },
+ "count_in": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  1.0,
+  1.0,
+  1.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "retriggers": [
+  0,
+  8,
+  16,
+  24
+ ]
+}

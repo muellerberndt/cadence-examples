@@ -1,0 +1,132 @@
+{
+  "environment": {
+    "cadence": "0.11.0",
+    "library_commit": "02fec624648d421e02ecb00f52f3d3072e9fe9ae",
+    "numpy": "2.5.3",
+    "python": "3.13.0"
+  },
+  "question": "What does one record patch, trained on 71 jungle tracks as events per half-beat, play from silence, and how well does it predict the next half-beat of tracks it never trained on?",
+  "results": {
+    "active_cells": 48,
+    "brain": {
+      "label": "Three corpora, longer",
+      "name": "three-corpora-longer",
+      "trained_on": "the same 71 tracks and windows, six epochs in all"
+    },
+    "browser_engine": "web/engine.js recomputes the forward pass and the playing rule; runs/<run>/parity.json holds the archived generation from silence it must reproduce (node amen/parity.mjs).",
+    "held_out": {
+      "held_out_track_a": {
+        "bass_note_accuracy": 0.4426345609065156,
+        "change_recall": 0.22285714285714286,
+        "drum_gain_mae": 0.09385895443670274,
+        "drum_identity_accuracy": 0.853310502283105,
+        "drum_kind_accuracy": 0.867579908675799,
+        "frequency_baseline_drum_identity_accuracy": 0.0410958904109589,
+        "repeat_previous_bass_note_accuracy": 0.31798866855524077,
+        "repeat_previous_texture_mae": 0.12386086253234732,
+        "texture_mae": 0.11431085638370665
+      },
+      "held_out_track_b": {
+        "bass_note_accuracy": 0.6510583707504811,
+        "change_recall": 0.16756756756756758,
+        "drum_gain_mae": 0.0721191049018927,
+        "drum_identity_accuracy": 0.8571428571428571,
+        "drum_kind_accuracy": 0.8820346320346321,
+        "frequency_baseline_drum_identity_accuracy": 0.038419913419913417,
+        "repeat_previous_bass_note_accuracy": 0.13470173187940987,
+        "repeat_previous_texture_mae": 0.13428036299404747,
+        "texture_mae": 0.081742956523274
+      },
+      "held_out_track_c": {
+        "bass_note_accuracy": 0.42251950947603123,
+        "change_recall": 0.08849557522123894,
+        "drum_gain_mae": 0.12270106848188843,
+        "drum_identity_accuracy": 0.856020942408377,
+        "drum_kind_accuracy": 0.8708551483420593,
+        "frequency_baseline_drum_identity_accuracy": 0.03228621291448516,
+        "repeat_previous_bass_note_accuracy": 0.23522853957636566,
+        "repeat_previous_texture_mae": 0.1578695929285213,
+        "texture_mae": 0.13268204064231698
+      },
+      "held_out_track_d": {
+        "bass_note_accuracy": 0.5676274944567627,
+        "change_recall": 0.06493506493506493,
+        "drum_gain_mae": 0.1107593291627962,
+        "drum_identity_accuracy": 0.8635817307692307,
+        "drum_kind_accuracy": 0.8840144230769231,
+        "frequency_baseline_drum_identity_accuracy": 0.045072115384615384,
+        "repeat_previous_bass_note_accuracy": 0.5155210643015521,
+        "repeat_previous_texture_mae": 0.1733616457069418,
+        "texture_mae": 0.13669418426170932
+      },
+      "held_out_track_e": {
+        "bass_note_accuracy": 0.4483260553129549,
+        "change_recall": 0.2905027932960894,
+        "drum_gain_mae": 0.11087315708490596,
+        "drum_identity_accuracy": 0.8730769230769231,
+        "drum_kind_accuracy": 0.8923076923076924,
+        "frequency_baseline_drum_identity_accuracy": 0.03131868131868132,
+        "repeat_previous_bass_note_accuracy": 0.26055312954876275,
+        "repeat_previous_texture_mae": 0.14378815773484957,
+        "texture_mae": 0.12156564789569091
+      },
+      "held_out_track_f": {
+        "bass_note_accuracy": 0.636643571978445,
+        "change_recall": 0.13178294573643412,
+        "drum_gain_mae": 0.10601939284586946,
+        "drum_identity_accuracy": 0.8567251461988304,
+        "drum_kind_accuracy": 0.8676900584795322,
+        "frequency_baseline_drum_identity_accuracy": 0.0445906432748538,
+        "repeat_previous_bass_note_accuracy": 0.4842186297151655,
+        "repeat_previous_texture_mae": 0.11748001506305664,
+        "texture_mae": 0.09064393808470832
+      },
+      "held_out_track_g": {
+        "bass_note_accuracy": 0.527165932452276,
+        "change_recall": 0.10416666666666667,
+        "drum_gain_mae": 0.11657832386532115,
+        "drum_identity_accuracy": 0.86731843575419,
+        "drum_kind_accuracy": 0.8931564245810056,
+        "frequency_baseline_drum_identity_accuracy": 0.0335195530726257,
+        "repeat_previous_bass_note_accuracy": 0.31057268722466963,
+        "repeat_previous_texture_mae": 0.09888871905821346,
+        "texture_mae": 0.09514661793573509
+      },
+      "held_out_track_h": {
+        "bass_note_accuracy": 0.5343709468223087,
+        "change_recall": 0.14285714285714285,
+        "drum_gain_mae": 0.1063131924693026,
+        "drum_identity_accuracy": 0.8411633109619687,
+        "drum_kind_accuracy": 0.8635346756152126,
+        "frequency_baseline_drum_identity_accuracy": 0.05145413870246085,
+        "repeat_previous_bass_note_accuracy": 0.14007782101167315,
+        "repeat_previous_texture_mae": 0.10578540156584763,
+        "texture_mae": 0.09106376924454788
+      }
+    },
+    "held_out_tracks": 8,
+    "hidden_channels": 128,
+    "independent_verification_sha256": "5b1539ff3af060985e4d0ded2c8f0ad7c99f040cdf84968f0d92fc34328efd35",
+    "input_ports": 80,
+    "output_ports": 71,
+    "protocol_schema": "cadence-amen.record-composer-protocol/v9",
+    "record_cells": 8192,
+    "run_receipt_sha256": "d3da5b538fd36a034651a0a2f47086d44296fdc62812edbc5d7540da277c237d",
+    "slow_parameters": 29895,
+    "training_cpu_seconds": 1391.6,
+    "training_tracks": 71
+  },
+  "schema": "cadence-examples.amen.record-composer-v13/v1",
+  "sources": {
+    "runs/record-composer-v13/parity.json": "1bc39b4b6346b4ebd3d7e85482d9321a93522f46e51c08a5f815c949b4c5b647",
+    "web/engine.js": "7a7bef9ae9005b8338b08921c4fff7e3b1c5d21a160023c227c6b0539bcfea85",
+    "web/kit/bass.wav": "37590125f23b05d1a9bd9eb5343437523876966a8bb8b475b9383638e588aaff",
+    "web/kit/break.wav": "82be2cdd68794040dd85a90f46686664ba610c2967a2f23a9796bf02fa59ff81",
+    "web/kit/kit.json": "83001713dd2f32ff78ae5c814076b0769f4e7f64405bf93e690032c8b265b57d",
+    "web/models/three-corpora-longer/model.json": "bcedc002359daaa64fda46a618cd73e2acc98648fdc927b2c3561751cfae76d7",
+    "web/models/three-corpora-longer/params.f64": "8de681fa8ba98928f9a161b3ada3cd9a0f0ee9bb5a6128f4335cf69d8b1d798a",
+    "web/models/three-corpora-longer/records_mean.f64": "aa35a045d45972614eaf1b85275b87505f664a8ad1ce63a04bc34d3d861e993f",
+    "web/models/three-corpora-longer/records_y.f32": "7b305d559a9bb43566cc9875d6c485b57957f851e2c5b6b18bcaa27a0bf0edbb"
+  },
+  "verified": true
+}
