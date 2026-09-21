@@ -4,7 +4,28 @@ on:
     branches: [main]
   pull_request:
 jobs:
-  examples:
+  worm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the library at the worm's commit
+        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
+      - name: Rebuild the connectome and the newborn brain; the committed files must not change
+        run: |
+          python worm/tools/build_connectome.py
+          python worm/tools/export_web.py
+          git diff --exit-code worm/data/connectome.json worm/web/data worm/tests/parity_cases.json worm/tests/body_cases.json
+      - name: The browser brain against the library's TemporalPatchNet
+        run: node worm/tests/parity.mjs
+      - name: The body under stress, and the browser body against the Python body
+        run: node worm/tests/body.mjs
+  connect_four:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,22 +35,46 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install the library at the commit the receipts ran against
+      - name: Install the library at the commit Connect Four's receipts ran against
         run: |
-          COMMIT=$(grep -oE 'cadence\.git@[0-9a-f]{40}' README.md | head -1 | cut -d@ -f2)
-          python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@${COMMIT}" pytest
+          python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d" pytest
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: Verify the receipts, their predicates and their sources
-        run: python tools/verify_gallery.py
-      - name: Test the agent, the arm, the world, Connect Four and the comparisons
-        run: python -m pytest -q -m "not slow" agent/tests arm/tests world/tests connect_four/tests artist/tests comparisons/tests
+      - name: Test the agent and Connect Four
+        run: python -m pytest -q -m "not slow" agent/tests connect_four/tests
       - name: Browser engine parity with the Python agent
         run: |
-          python arm/tools/parity_fixture.py --out runs/arm/parity
-          node web/parity.mjs runs/arm/parity
-          python world/tools/parity_fixture.py --out runs/world/parity
-          node world/web/parity_s02.mjs runs/world/parity
           python connect_four/tools/parity_fixture.py --train 40 --games 32 --out runs/connect_four/parity
           node connect_four/web/parity.mjs runs/connect_four/parity
-          python artist/tools/parity_fixture.py --scribble 400 --out runs/artist/parity
-          node artist/web/parity.mjs runs/artist/parity
+  amen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: The receipt, the model files and the browser engine against the archived run
+        run: python amen/verify.py
+  patchworld:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the library at the commit the twin is checked against
+        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+      - name: The browser brain against the library's RecordPatchNet, on a fresh fixture and on the committed one
+        run: |
+          python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json
+          node patchworld/sim/parity.js /tmp/patchworld_fixture.json
+          node patchworld/sim/parity.js
+      - name: Mass, the scallop theorem, deterministic replay
+        run: node patchworld/tests/physics.test.js
+      - name: The built page is the template with the sources inlined
+        run: python patchworld/web/build.py --check

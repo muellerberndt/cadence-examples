@@ -1,4 +1,4 @@
-"""The repository root on the import path, so tests import agent, arm and world."""
+"""The repository root on the import path, so Connect Four's tests import agent."""
 
 import sys
 from pathlib import Path

@@ -1,10 +1,10 @@
 __pycache__/
+*.pyc
 .pytest_cache/
-runs/
-_site/
+.ruff_cache/
 .DS_Store
-arm/checkpoints/
-world/checkpoints/
+# local run output at the top level; examples keep their receipts in their own runs/
+/runs/
+# Connect Four's local checkpoints and the external solver and AlphaZero checkouts
 connect_four/checkpoints/
-artist/checkpoints/
 connect_four/external/

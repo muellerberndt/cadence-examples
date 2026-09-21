@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Patch World · Cadence</title>
+<meta name="description" content="Soft bodies evolve on a world that conserves its mass. Each inherits a shape, muscles and a small Cadence brain, learns during its own life, and you can open any of them and watch every neuron and connection work.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pragma Research">
+<meta property="og:title" content="Patch World">
+<meta property="og:description" content="Soft bodies evolve on a world that conserves its mass. Each inherits a shape, muscles and a small Cadence brain, learns during its own life, and you can open any of them and watch every neuron and connection work.">
+<meta property="og:url" content="https://floatingpragma.io/cadence-examples/patchworld/">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/patchworld/card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="Soft-bodied creatures of coloured spheres and muscles crawl over a lit terrain of soil, rock and sprouting food, beside the title: Patch World.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@muellerberndt">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0c11'/%3E%3Cline x1='9' y1='21' x2='16' y2='11' stroke='%23e08a3c' stroke-width='3'/%3E%3Cline x1='16' y1='11' x2='24' y2='20' stroke='%234a9bd1' stroke-width='3'/%3E%3Ccircle cx='9' cy='21' r='4' fill='%23b6e264'/%3E%3Ccircle cx='16' cy='11' r='5' fill='%23f0c56a'/%3E%3Ccircle cx='24' cy='20' r='4' fill='%23b6e264'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --ground: #0a0c11; --panel: #11141b; --line: #232833;
+    --ink: #ddd6c6; --ink-2: #8d8a80; --ink-3: #5a5a58;
+    --sun: #f0c56a; --leaf: #b6e264; --bud: #2f8f82; --alert: #e0679a; --cool: #4a9bd1; --warm: #e08a3c;
+    --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding-inline: 20px; padding-block: 16px 32px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 22px; margin-bottom: 12px; }
+  h1 { font-family: var(--font-display); font-weight: 300; font-size: 30px; letter-spacing: -0.01em; margin: 0; font-variation-settings: "opsz" 72; }
+  h1 em { font-style: italic; color: var(--sun); }
+  header p { margin: 0; color: var(--ink-2); max-width: 70ch; }
+  header a, footer a { color: var(--sun); text-underline-offset: 3px; }
+  .stage { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+  .stage.inspecting { grid-template-columns: 1fr; }
+  .left { display: grid; grid-template-columns: 1fr; gap: 10px; min-width: 0; }
+  .left.inspecting { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .left .wide { grid-column: 1 / -1; }
+  .view { position: relative; height: min(74vh, 820px); min-height: 380px; background: #000; border: 1px solid var(--line); overflow: hidden; }
+  .left.inspecting .view { height: min(62vh, 640px); }
+  .view canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  .view::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 120px rgba(0,0,0,0.5); }
+  #netbox[hidden] { display: none; }
+  .left.inspecting #worldlegend, .left.inspecting #worldbox .hint { display: none; }
+  .caption { position: absolute; left: 12px; bottom: 10px; font-family: var(--font-display); font-size: 15px; text-shadow: 0 1px 6px #000, 0 0 2px #000; pointer-events: none; z-index: 1; }
+  .caption span { color: var(--ink-2); font-family: var(--font-mono); font-size: 11px; margin-left: 10px; letter-spacing: 0.06em; }
+  .hint { position: absolute; right: 12px; top: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); text-shadow: 0 1px 4px #000; pointer-events: none; text-align: right; z-index: 1; }
+  .legend { position: absolute; left: 12px; top: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); text-shadow: 0 1px 4px #000; pointer-events: none; z-index: 1; display: grid; gap: 1px; }
+  #netbox .legend { top: auto; bottom: 56px; display: flex; flex-wrap: wrap; gap: 2px 14px; max-width: 70%; }
+  #worldlegend { background: rgba(7,8,12,0.62); padding: 7px 10px; border: 1px solid rgba(35,40,51,0.8); }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+  .ticker { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); padding: 8px 10px; min-height: 5.5em; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 16px; }
+  .ticker div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ticker b { color: var(--ink); font-weight: 500; }
+  .ticker .bite, .ticker .injury { color: var(--alert); } .ticker .birth { color: var(--leaf); } .ticker .die { color: var(--ink-3); } .ticker .grow { color: var(--bud); }
+  aside { display: flex; flex-direction: column; gap: 14px; }
+  aside.inspecting { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  aside.inspecting > * { flex: 1 1 320px; }
+  .board { background: var(--panel); border: 1px solid var(--line); padding: 10px 12px; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 14px; margin: 0 0 6px; color: var(--ink-2); letter-spacing: 0.02em; display: flex; justify-content: space-between; gap: 8px; }
+  h2 small { font-family: var(--font-mono); font-weight: 400; font-size: 11px; color: var(--ink-3); letter-spacing: 0; }
+  .who { display: grid; grid-template-columns: 14px 1fr; gap: 10px; align-items: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-2); margin-bottom: 6px; }
+  .who i { width: 14px; height: 14px; border-radius: 50%; display: block; }
+  .who b { color: var(--ink); font-weight: 500; }
+  .genes { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 2px 12px; margin-bottom: 8px; }
+  .genes span b { color: var(--ink); font-weight: 500; }
+  #body, #brain, #shares { width: 100%; height: auto; display: block; }
+  #shares { margin-top: 8px; background: #0d1016; }
+  .counters { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; margin: 0; }
+  .counters dt { color: var(--ink-2); }
+  .counters dd { margin: 0; text-align: right; }
+  .counters dd.ok { color: var(--leaf); } .counters dd.bad { color: var(--alert); }
+  .lineages { display: grid; gap: 4px; margin-top: 8px; }
+  .lineage { display: grid; grid-template-columns: 12px 1fr 34px; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 11px; }
+  .lineage i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .lineage .bar { height: 6px; background: var(--line); position: relative; }
+  .lineage .bar b { position: absolute; inset: 0 auto 0 0; }
+  .lineage span { text-align: right; color: var(--ink-2); }
+  .lineage.shown i { box-shadow: 0 0 0 2px var(--sun); }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  button.act { font: inherit; font-size: 12px; background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 10px; cursor: pointer; }
+  button.act:hover { border-color: var(--ink-2); }
+  button.act[aria-pressed="true"] { border-color: var(--sun); color: var(--sun); }
+  button.act.primary { border-color: var(--sun); }
+  @keyframes nudge { 0%, 100% { box-shadow: 0 0 0 0 rgba(240,197,106,0); } 50% { box-shadow: 0 0 0 6px rgba(240,197,106,0.28); } }
+  button.act.nudge { animation: nudge 1.6s ease-in-out 4; }
+  .chartnote { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); margin: 6px 0 0; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; }
+  .rate { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); display: inline-flex; gap: 2px; align-items: center; }
+  .rate button { min-width: 34px; padding: 4px 6px; }
+  details.board summary { cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--ink-2); }
+  details.board .card { font-size: 12.5px; color: var(--ink-2); max-width: 70ch; }
+  details.board .card p { margin: 6px 0; }
+  details.board .card b { color: var(--ink); font-weight: 500; }
+  details.board .card a { color: var(--sun); }
+  .rulesbox { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 12px; margin: 6px 0; }
+  .rulesbox label { white-space: nowrap; }
+  footer { margin-top: 22px; color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; }
+  .nogl { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--ink-2); z-index: 2; }
+  body.card { padding: 0; overflow: hidden; } body.card header, body.card aside, body.card .row, body.card .ticker, body.card .hint, body.card .caption, body.card footer, body.card #worldlegend { display: none; }
+  body.card .stage { display: block; } body.card .view { height: 100vh; border: 0; }
+  .cardtitle { display: none; } body.card .cardtitle { display: block; position: absolute; left: 56px; bottom: 52px; z-index: 3; text-shadow: 0 2px 18px #000, 0 0 4px #000; }
+  .cardtitle b { display: block; font-family: var(--font-display); font-weight: 300; font-size: 84px; letter-spacing: -0.02em; line-height: 1; color: var(--ink); } .cardtitle b em { color: var(--sun); }
+  .cardtitle span { display: block; margin-top: 14px; font-family: var(--font-body); font-size: 26px; color: var(--ink); max-width: 22em; line-height: 1.3; }
+  @media (max-width: 900px) { #worldlegend, .hint { display: none; } .stage, .left.inspecting { grid-template-columns: 1fr; } .view, .left.inspecting .view { height: 52vh; } body { padding-inline: 16px; } aside.inspecting { flex-direction: column; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Patch <em>World</em></h1>
+  <p>Soft bodies on a world that conserves its mass under one moving sun. Each inherits a shape, muscles and a small brain, learns during its own life, and can plan its next moves through its own model of its body. Every birth mutates body and brain. Nothing tells them to crawl, eat or hunt; whatever you see, they found. <a href="rules.html">The rules</a></p>
+</header>
+<div class="stage" id="stage">
+  <div class="left" id="left">
+    <div class="view" id="worldbox">
+      <canvas id="gl" role="img" aria-label="The world in 3D: soft bodies crawling over soil, rock, mud and food under a moving sun"></canvas>
+      <div class="legend" id="worldlegend"><span><i style="background:#9fd36a"></i>food, growing where the sun passes</span><span><i style="background:#6b7384;border-radius:2px"></i>rock</span><span><i style="background:#1f4a47;border-radius:2px"></i>mud, where every step slips</span><span><i style="background:#e08a3c"></i>a muscle contracting</span><span><i style="background:#4a9bd1"></i>a muscle extending</span></div>
+      <div class="caption" id="caption">tick 0</div>
+      <div class="hint">drag to orbit · shift-drag to pan · wheel to zoom<br>click a body to open its brain · Inspect shows every neuron<br>space pause · i inspect · f follow · d director</div>
+      <div class="cardtitle"><b>Patch <em>World</em></b><span>Soft bodies evolve shapes, muscles and brains. Open any brain and watch it work.</span></div>
+    </div>
+    <div class="view" id="netbox" hidden>
+      <canvas id="net" role="img" aria-label="The chosen being's brain: every neuron, weight and record cell, lit by its activity this tick"></canvas>
+      <div class="legend"><span><i style="background:#f0c56a"></i>senses</span><span><i style="background:#b6e264"></i>muscle strains</span><span><i style="background:#4a9bd1"></i>clock and context</span><span><i style="background:#e0679a"></i>motor</span><span><i style="background:#e08a3c"></i>prediction</span><span><i style="background:#ddd6c6"></i>records</span></div>
+      <div class="caption" id="netcap">the two patches, live</div>
+      <div class="hint">drag to turn the brain<br>lines shine with the signal they carry this tick</div>
+    </div>
+    <div class="row wide">
+      <span class="rate" id="rates"></span>
+      <span class="rate" id="sizes"></span>
+      <span class="rate" id="colours"></span>
+      <button class="act" id="pause">Pause</button>
+      <button class="act primary nudge" id="inspect" aria-pressed="false" title="follow the chosen body beside its whole brain, live">Inspect</button>
+      <button class="act" id="follow" aria-pressed="false">Follow</button>
+      <button class="act" id="director" aria-pressed="true">Director</button>
+      <button class="act" id="pickEldest">Eldest</button>
+      <button class="act" id="pickPlanner">A planner</button>
+      <button class="act" id="pickBiggest">Biggest body</button>
+      <button class="act" id="pickHunter">A hunter</button>
+      <button class="act" id="export">Export chronicle</button>
+      <button class="act" id="share">Link to this world</button>
+    </div>
+    <div class="ticker wide" id="ticker"></div>
+  </div>
+  <aside id="aside">
+    <div class="board" id="beingBoard">
+      <h2>One being <small id="beingSub">click a body</small></h2>
+      <div class="who" id="who"><i></i><span>Nobody chosen. The director follows the leading lineage.</span></div>
+      <div class="genes" id="genes"></div>
+      <canvas id="body" width="336" height="120"></canvas>
+      <canvas id="brain" width="336" height="420"></canvas>
+    </div>
+    <div class="board">
+      <h2>The world <small id="worldSub"></small></h2>
+      <dl class="counters" id="counters"></dl>
+      <canvas id="shares" width="336" height="90" title="the share of the population held by each lineage over time"></canvas>
+      <p class="chartnote">One lineage usually takes the world within 10,000 to 20,000 ticks. Set ticks/s to max to watch it happen, then export the chronicle to see why.</p>
+      <div class="lineages" id="lineages"></div>
+    </div>
+    <details class="board">
+      <summary>The rules of the next world</summary>
+      <div class="rulesbox" id="rulesbox"></div>
+      <div class="row"><button class="act" id="reseed">New world with these rules</button></div>
+    </details>
+    <details class="board">
+      <summary>Model card</summary>
+      <div class="card">
+        <p><b>Physics.</b> Mass in integer units, conserved at every tick between soil, food and bodies. One sun crosses the torus; food grows in its light where the soil is rich and decays back to soil; its scent diffuses a few cells. Rock cannot be entered; mud keeps less than half of every step. A body is a graph of point masses and springs; muscles are springs whose rest length follows a motor port; each node keeps a share of its displacement along its head-ward axis, less against it and less across it, which is how a shape crawls. Bodies push each other, a mouth can bite the body ahead, and a bitten body with no energy left loses a node. The dead become food where they lie.</p>
+        <p><b>Inherited.</b> The body graph with its grips, the clock's frequency, the split threshold, the drives, the size of the records, the learning rates, the planning horizon, and the slow weights of two record patches: a policy that proposes the motor from the reading, the clock and the previous motor, and a model that predicts the change of the reading and the energy change from the reading, the clock and the motor. A child is born with three nodes and grows the rest one unit of mass at a time. Every genome is mutated at birth: node positions, grips, nodes added or removed, muscles gained or lost, and small steps on the slow weights.</p>
+        <p><b>Learned in one life.</b> The records of both patches: what the slow readout got wrong at each reading, written after every window of eight ticks. The slow weights move by the adjoint of the same window at the inherited rate, which may be zero. The planner repairs the motor ports of a private path under the model toward the drives, executes the first repaired motor, and the policy is taught that repair. Records are never inherited.</p>
+        <p><b>Price.</b> A base rate, per node, per unit of muscle work, per unit read, per record cell, per write, per planning replay, and per slow weight while learning, each paid as the probability of losing one unit of mass to the soil. Nothing else selects.</p>
+        <p><b>More.</b> Every rule with its numbers is on <a href="rules.html">the rules page</a>.</p>
+        <p><b>Brain.</b> The patches are the JavaScript twin of <code>cadence.RecordPatchNet</code>, checked against the library to 1e-15 on observation, windows, backtracking and planning. The records here use a sparse projection with eight inputs per cell; the library's dense projection is the reference. In the inspection view every line is a slow weight and shines with the signal it carries this tick; the grid is the record cells, the lit ones are the reading's code. The founders come from the gait lab, an explicit search outside the world that the world never sees again.</p>
+      </div>
+    </details>
+  </aside>
+</div>
+<footer>A Cadence example. Everything runs in this page: the world, the bodies and every brain. MIT. <a href="rules.html">The rules of Patch World</a></footer>
+<!-- CORE -->
+<script>
+'use strict';
+const { CFG, POP, N, SENSES, NS, SN, NM, NI, NOUT, HP, HM, CLOCK, MOTOR, MAXN, MAXM, S, GENE, G, Substrate, Population, wrap, ddx, FEEDBACK } = CB;
+function deserialize(j) { const th = { policy: {}, model: {} }; for (const p of ['policy', 'model']) for (const k in j.theta[p]) th[p][k] = Float64Array.from(j.theta[p][k]); return CB.cloneGenome(Object.assign({}, j, { theta: th })); }
+const FOUNDER = typeof CB_FOUNDER !== 'undefined' && CB_FOUNDER ? deserialize(CB_FOUNDER) : null;
+const RULE_NAMES = { rock: 'rock', mud: 'mud', bite: 'biting', injury: 'injury by bites', growth: 'bodies grow', devnoise: 'developmental noise', records: 'records allowed', slow: 'slow learning allowed', plan: 'planning allowed', noise: 'motor noise allowed' };
+const DEFAULT_RULES = { rock: true, mud: true, bite: true, injury: true, growth: true, devnoise: true, records: true, slow: true, plan: true, noise: true };
+const Q = new URLSearchParams(location.search), CARD = Q.has('card'), SMALL = matchMedia('(max-width: 900px)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+const LITE = Q.has('lite') || (SMALL && !Q.has('full')), SHOT = Q.has('shot') ? +Q.get('shot') : 0; if (CARD) document.body.classList.add('card');
+const SIZES = { small: 140, normal: 420, large: 640 }; let worldSize = Q.get('pop') ? +Q.get('pop') : (LITE ? SIZES.small : SIZES.normal);
+function setPopulation(n) { worldSize = n; POP.max = n; POP.initial = Math.round(n * 0.48); }
+setPopulation(worldSize); const MAXPOP = Math.max(SIZES.large, worldSize);
+const RATES = [0, 1, 4, 10, 30, 60, 120, 240, 'max'];
+const $ = id => document.getElementById(id);
+const hsl = (h, s, l) => new THREE.Color().setHSL(h, s, l);
+let colourBy = 'lineage';
+function shapeHue(b) { if (b._shapeHue === undefined) { const key = `${b.nGenome}/${b.g.springs.filter(x => x.muscle).length}/${b.g.springs.length}/${b.g.brain.policy.map(c => c.channels).join('.')}/${b.g.brain.model.map(c => c.channels).join('.')}`; let h = 2166136261; for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); } b._shapeHue = ((h >>> 0) % 997) / 997; } return b._shapeHue; }
+const hueOf = b => colourBy === 'shape' ? shapeHue(b) : b.hue;
+
+// ---------- the 3D world ----------
+const glCanvas = $('gl'); let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: !LITE, powerPreference: 'high-performance' }); }
+catch (e) { const d = document.createElement('div'); d.className = 'nogl'; d.textContent = 'This page draws the world with WebGL, which this browser or device has switched off. It runs in any current desktop or phone browser with hardware acceleration on.'; $('worldbox').appendChild(d); throw e; }
+renderer.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 2)); renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = !LITE; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x07080c); scene.fog = new THREE.Fog(0x07080c, 90, 230);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 600);
+const hemi = new THREE.HemisphereLight(0x8fa3c8, 0x2a1d12, 0.55); scene.add(hemi);
+const sunLight = new THREE.DirectionalLight(0xfff0d0, 1.15); sunLight.castShadow = !LITE; sunLight.shadow.mapSize.set(2048, 2048);
+sunLight.shadow.camera.left = -60; sunLight.shadow.camera.right = 60; sunLight.shadow.camera.top = 60; sunLight.shadow.camera.bottom = -60; sunLight.shadow.camera.near = 10; sunLight.shadow.camera.far = 220; sunLight.shadow.bias = -0.0008;
+scene.add(sunLight); scene.add(sunLight.target);
+const cx0 = CFG.w / 2 - 0.5, cz0 = CFG.h / 2 - 0.5;
+const groundGeo = new THREE.PlaneGeometry(CFG.w, CFG.h, CFG.w, CFG.h); groundGeo.rotateX(-Math.PI / 2); groundGeo.translate(cx0, 0, cz0);
+const groundCol = new Float32Array(groundGeo.attributes.position.count * 3); groundGeo.setAttribute('color', new THREE.BufferAttribute(groundCol, 3));
+const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.0 })); ground.receiveShadow = true; scene.add(ground);
+const skirt = new THREE.Mesh(new THREE.CircleGeometry(420, 48), new THREE.MeshStandardMaterial({ color: 0x05060a, roughness: 1 })); skirt.rotation.x = -Math.PI / 2; skirt.position.set(cx0, -0.12, cz0); skirt.receiveShadow = true; scene.add(skirt);
+const rim = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(CFG.w, 0.02, CFG.h)), new THREE.LineBasicMaterial({ color: 0x3a4152, transparent: true, opacity: 0.6 })); rim.position.set(cx0, 0.0, cz0); scene.add(rim);
+const rockMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0x4d5566, roughness: 0.8, flatShading: true }), N); rockMesh.castShadow = !LITE; rockMesh.receiveShadow = true; scene.add(rockMesh);
+const foodGeo = new THREE.ConeGeometry(0.13, 1, 5); foodGeo.translate(0, 0.5, 0);
+const foodMesh = new THREE.InstancedMesh(foodGeo, new THREE.MeshStandardMaterial({ roughness: 0.6, emissive: 0x1a3a10, emissiveIntensity: 0.5 }), N); foodMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); foodMesh.castShadow = !LITE; scene.add(foodMesh);
+const nodeMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 9), new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.05 }), MAXPOP * MAXN); nodeMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); nodeMesh.castShadow = !LITE; scene.add(nodeMesh);
+const springGeo = new THREE.CylinderGeometry(1, 1, 1, 7); springGeo.rotateX(Math.PI / 2);
+const springMesh = new THREE.InstancedMesh(springGeo, new THREE.MeshStandardMaterial({ roughness: 0.55 }), MAXPOP * 2 * MAXN); springMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); springMesh.castShadow = !LITE; scene.add(springMesh);
+const noseMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.11, 8, 6), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }), MAXPOP); noseMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(noseMesh);
+const marker = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.06, 8, 40), new THREE.MeshBasicMaterial({ color: 0xf0c56a })); marker.rotation.x = Math.PI / 2; marker.visible = false; scene.add(marker);
+const ghosts = []; for (let i = 0; i < 8; i++) { const m = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 6), new THREE.MeshBasicMaterial({ color: 0xf0c56a, transparent: true, opacity: 0.7 })); m.visible = false; scene.add(m); ghosts.push(m); }
+const puffs = []; for (let i = 0; i < 120; i++) { const m = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 5), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 })); m.visible = false; scene.add(m); puffs.push(m); }
+const rings = []; for (let i = 0; i < 40; i++) { const m = new THREE.Mesh(new THREE.RingGeometry(0.6, 0.8, 24), new THREE.MeshBasicMaterial({ color: 0xb6e264, transparent: true, opacity: 0.8, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.visible = false; scene.add(m); rings.push(m); }
+const TRAIL = 220, trailGeo = new THREE.BufferGeometry(); trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(TRAIL * 3), 3)); trailGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(TRAIL * 3), 3));
+const trailLine = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false })); trailLine.frustumCulled = false; scene.add(trailLine); let trail = [], trailFor = null, trailTick = -1;
+const sunBar = new THREE.Mesh(new THREE.PlaneGeometry(2.2, CFG.h), new THREE.MeshBasicMaterial({ color: 0xf0c56a, transparent: true, opacity: 0.12, depthWrite: false })); sunBar.rotation.x = -Math.PI / 2; sunBar.position.y = 0.02; scene.add(sunBar);
+const _m = new THREE.Matrix4(), _p = new THREE.Vector3(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _c = new THREE.Color(), _z = new THREE.Vector3(0, 0, 1), _d = new THREE.Vector3();
+
+const cam = { az: 0.7, pol: 0.9, dist: 95, target: new THREE.Vector3(cx0, 0, cz0), follow: false, director: true };
+function placeCamera() { const t = cam.target; camera.position.set(t.x + cam.dist * Math.sin(cam.pol) * Math.sin(cam.az), t.y + cam.dist * Math.cos(cam.pol), t.z + cam.dist * Math.sin(cam.pol) * Math.cos(cam.az)); camera.lookAt(t); }
+let drag = null;
+glCanvas.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, moved: 0, pan: e.shiftKey || e.button === 2 }; glCanvas.setPointerCapture(e.pointerId); });
+glCanvas.addEventListener('pointermove', e => {
+  if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY; drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.pan) { const k = cam.dist * 0.0016; const right = new THREE.Vector3(Math.cos(cam.az), 0, -Math.sin(cam.az)), fwd = new THREE.Vector3(-Math.sin(cam.az), 0, -Math.cos(cam.az)); cam.target.addScaledVector(right, -dx * k).addScaledVector(fwd, -dy * k); setFollow(false); setDirector(false); }
+  else { cam.az -= dx * 0.006; cam.pol = Math.max(0.15, Math.min(1.5, cam.pol - dy * 0.006)); if (cam.director) setDirector(false); }
+});
+glCanvas.addEventListener('pointerup', e => { if (drag && drag.moved < 6) pick(e); drag = null; });
+glCanvas.addEventListener('contextmenu', e => e.preventDefault());
+glCanvas.addEventListener('wheel', e => { e.preventDefault(); cam.dist = Math.max(4, Math.min(220, cam.dist * Math.exp(e.deltaY * 0.0012))); if (cam.director) setDirector(false); }, { passive: false });
+const raycaster = new THREE.Raycaster(); const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.3);
+function pick(e) {
+  const r = glCanvas.getBoundingClientRect(); const v = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  raycaster.setFromCamera(v, camera); const hit = new THREE.Vector3(); if (!raycaster.ray.intersectPlane(groundPlane, hit)) return;
+  let best = null, bd = 2.2; for (const b of pop.beings) for (let i = 0; i < b.n; i++) { const d = Math.hypot(ddx(hit.x, b.x[i], CFG.w), ddx(hit.z, b.y[i], CFG.h)); if (d < bd) { bd = d; best = b; } }
+  if (best) { select(best); setDirector(false); }
+}
+function resize() { const r = glCanvas.parentElement.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); netResize(); }
+addEventListener('resize', resize);
+
+// ---------- the clock ----------
+let sub, pop, seed = 0, paused = false, rate = Q.has('rate') ? (Q.get('rate') === 'max' ? 'max' : +Q.get('rate')) : 30, acc = 0, lastNow = performance.now(), chosen = null, mass0 = 0, frame = 0, inspecting = false;
+let tps = 0, tpsTicks = 0, tpsSince = performance.now(); // the achieved ticks per second
+const anims = [], ticker = []; let directorNext = 0, firstWorld = true;
+function tick() {
+  sub.step(); pop.step();
+  for (const e of pop.events) {
+    const a = Object.assign({ t0: sub.tick - 1 }, e); if (e.kind === 'die') { a.x = e.b.x[0]; a.y = e.b.y[0]; }
+    if (e.kind !== 'eat' || Math.random() < 0.35) anims.push(a);
+    if (e.kind !== 'eat' && e.kind !== 'grow') say(e); else if (e.kind === 'grow' && e.b === chosen) say(e);
+    if (e.kind === 'die' && e.b === chosen) chosen = null;
+  }
+  if (anims.length > 400) anims.splice(0, anims.length - 400);
+}
+function name(b) { return `<b>#${b.id}</b>`; }
+function say(e) {
+  let line = '', cls = e.kind;
+  if (e.kind === 'birth') line = `${name(e.b)} was born to #${e.parent.id}, ${e.b.nGenome} nodes in its genome`;
+  else if (e.kind === 'die') line = `${name(e.b)} ${e.killed ? 'was killed' : 'starved'} at ${e.b.age}; its body is food`;
+  else if (e.kind === 'bite') line = `${name(e.b)} bit #${e.v.id} for ${e.take}`;
+  else if (e.kind === 'injury') line = `${name(e.by)} bit a node off #${e.b.id}`;
+  else if (e.kind === 'grow') line = `${name(e.b)} grew its ${e.b.n}${e.b.n === 2 ? 'nd' : e.b.n === 3 ? 'rd' : 'th'} node`;
+  if (!line) return; ticker.unshift({ line, cls }); if (ticker.length > 12) ticker.length = 12;
+  $('ticker').innerHTML = ticker.map(t => `<div class="${t.cls}">${t.line}</div>`).join('');
+}
+function newWorld(rules) {
+  seed = (firstWorld && Q.has('seed')) ? +Q.get('seed') : (Math.random() * 1e9) | 0; firstWorld = false; sub = new Substrate(seed, rules); pop = new Population(sub, seed + 1, FOUNDER); mass0 = pop.mass; chosen = null; anims.length = 0; ticker.length = 0; $('ticker').innerHTML = '';
+  buildRock(); paintGround(); directorNext = 0; netFor = null;
+}
+function buildRock() { let k = 0; const rng = new CB.Mulberry(seed); for (let i = 0; i < N; i++) { if (!sub.rock[i]) continue; const x = i % CFG.w, z = (i / CFG.w) | 0, h = 0.55 + rng.random() * 0.35; _m.compose(_p.set(x, h / 2 - 0.02, z), _q.identity(), _s.set(1, h, 1)); rockMesh.setMatrixAt(k++, _m); } rockMesh.count = k; rockMesh.instanceMatrix.needsUpdate = true; }
+const soilLow = new THREE.Color(0x2a1c12), soilHigh = new THREE.Color(0x8a6a3e), mudCol = new THREE.Color(0x16302e), foodTint = new THREE.Color(0x3f6a25);
+function paintGround() {
+  const pos = groundGeo.attributes.position, w1 = CFG.w + 1, col = groundCol;
+  for (let vz = 0; vz <= CFG.h; vz++) for (let vx = 0; vx <= CFG.w; vx++) {
+    const i = sub.cell(vx, vz), sl = Math.min(sub.soil[i], 8) / 8, f = Math.min(sub.food[i], 8) / 8, light = 0.3 + 0.7 * sub.lightRow[vx % CFG.w];
+    _c.copy(soilLow).lerp(soilHigh, sl); if (sub.mud[i]) _c.lerp(mudCol, 0.8); if (f > 0) _c.lerp(foodTint, 0.35 * f); _c.multiplyScalar(light);
+    const k = (vz * w1 + vx) * 3; col[k] = _c.r; col[k + 1] = _c.g; col[k + 2] = _c.b; pos.setY(vz * w1 + vx, sub.mud[i] ? -0.06 : 0);
+  }
+  groundGeo.attributes.color.needsUpdate = true; pos.needsUpdate = true;
+}
+let slowFrames = 0, qualityDropped = LITE;
+function dropQuality() { qualityDropped = true; renderer.shadowMap.enabled = false; sunLight.castShadow = false; renderer.setPixelRatio(1); scene.traverse(o => { if (o.material) o.material.needsUpdate = true; }); resize(); }
+function render(now) {
+  const dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now; frame++;
+  if (!qualityDropped && frame > 40 && frame < 400 && rate !== 'max') { if (dt > 0.034) slowFrames++; if (slowFrames > 45) dropQuality(); }
+  if (!paused && rate !== 0) { // the budget of a frame given to the simulation grows with the rate; at max the page renders around ten times a second
+    const max = rate === 'max', ms = max ? 90 : rate <= 60 ? 14 : rate <= 120 ? 28 : 55; if (!max) acc += dt * rate; let steps = 0; const budget = performance.now() + ms;
+    while ((max || acc >= 1) && steps < 400 && performance.now() < budget) { tick(); if (!max) acc -= 1; steps++; tpsTicks++; } if (!max && acc > 4) acc = 0;
+  }
+  { const now2 = performance.now(); if (now2 - tpsSince > 1000) { tps = tpsTicks * 1000 / (now2 - tpsSince); tpsTicks = 0; tpsSince = now2; } }
+  if (SHOT && sub.tick >= SHOT && !paused) { paused = true; if (!chosen) pickBy(b => b.age); if (Q.has('inspect')) setInspect(true); if (CARD) { setDirector(false); cam.dist = 17; cam.pol = 1.12; cam.az = 0.9; if (chosen) { cam.target.x = chosen.x[0] + 3; cam.target.z = chosen.y[0]; } marker.visible = false; } }
+  if (frame % 4 === 0) paintGround();
+  const t = sub.tick + Math.min(acc, 1), foodCol = new THREE.Color();
+  const sx = sub.peak; sunLight.position.set(sx, 70, cz0 - 20); sunLight.target.position.set(sx, 0, cz0 + 20); sunLight.intensity = 0.7 + 0.6 * sub.contrast; sunBar.position.x = sx; hemi.intensity = 0.4 + 0.25 * sub.contrast;
+  let k = 0; for (let i = 0; i < N; i++) { const f = sub.food[i]; if (!f) continue; const x = i % CFG.w, z = (i / CFG.w) | 0, h = 0.18 + 0.62 * Math.min(f, 8) / 8; _m.compose(_p.set(x + 0.12 * Math.sin(i * 7.1), 0, z + 0.12 * Math.cos(i * 3.7)), _q.identity(), _s.set(1, h, 1)); foodMesh.setMatrixAt(k, _m); foodMesh.setColorAt(k, foodCol.setHSL(0.24 + 0.03 * Math.min(f, 8) / 8, 0.55, 0.32 + 0.2 * Math.min(f, 8) / 8)); k++; }
+  foodMesh.count = k; foodMesh.instanceMatrix.needsUpdate = true; if (foodMesh.instanceColor) foodMesh.instanceColor.needsUpdate = true;
+  let nk = 0, sk = 0, hk = 0;
+  for (const b of pop.beings) {
+    const hx = b.x[0], hy = b.y[0], hue = hueOf(b), n = b.n; const rx = x => hx + ddx(hx, x, CFG.w), rz = y => hy + ddx(hy, y, CFG.h);
+    for (let i = 0; i < n; i++) { const r = i === 0 ? 0.3 : 0.22; _m.compose(_p.set(rx(b.x[i]), r, rz(b.y[i])), _q.identity(), _s.set(r, r, r)); nodeMesh.setMatrixAt(nk, _m); nodeMesh.setColorAt(nk, _c.setHSL(hue, i === 0 ? 0.6 : 0.5, i === 0 ? 0.62 : 0.5)); nk++; }
+    for (let s = 0; s < b.nS; s++) {
+      const a = b.sa[s], c = b.sb[s]; if (a >= n || c >= n) continue;
+      const ax = rx(b.x[a]), az = rz(b.y[a]), bx = rx(b.x[c]), bz = rz(b.y[c]); _d.set(bx - ax, 0, bz - az); const len = _d.length() || 1e-3; _d.divideScalar(len);
+      const p = b.port[s], act = p >= 0 ? b.act[p] : 0, muscle = p >= 0, rad = muscle ? 0.1 - 0.045 * act : 0.045;
+      _q.setFromUnitVectors(_z, _d); _m.compose(_p.set((ax + bx) / 2, muscle ? 0.22 : 0.2, (az + bz) / 2), _q, _s.set(rad, rad, len)); springMesh.setMatrixAt(sk, _m);
+      if (muscle) { const w = 0.5 + 0.5 * act; springMesh.setColorAt(sk, _c.setRGB(0.29 + 0.59 * w, 0.61 - 0.07 * w, 0.82 - 0.58 * w)); } else springMesh.setColorAt(sk, _c.setRGB(0.35, 0.34, 0.32)); sk++;
+    }
+    _m.compose(_p.set(hx + Math.cos(b.heading) * 0.3, 0.36, hy + Math.sin(b.heading) * 0.3), _q.identity(), _s.set(1, 1, 1)); noseMesh.setMatrixAt(hk++, _m);
+  }
+  nodeMesh.count = nk; nodeMesh.instanceMatrix.needsUpdate = true; if (nodeMesh.instanceColor) nodeMesh.instanceColor.needsUpdate = true;
+  springMesh.count = sk; springMesh.instanceMatrix.needsUpdate = true; if (springMesh.instanceColor) springMesh.instanceColor.needsUpdate = true;
+  noseMesh.count = hk; noseMesh.instanceMatrix.needsUpdate = true;
+  let pk = 0, rk = 0; for (let i = anims.length - 1; i >= 0; i--) {
+    const a = anims[i], age = t - a.t0;
+    if (a.kind === 'eat' && age < 18 && pk < puffs.length) { const m = puffs[pk++]; m.visible = true; m.position.set(a.b.x[0], 0.5 + age * 0.05, a.b.y[0]); m.material.color.setHex(0xb6e264); m.material.opacity = 0.9 * (1 - age / 18); }
+    else if (a.kind === 'bite' && age < 10 && pk < puffs.length) { const m = puffs[pk++]; m.visible = true; m.position.set(a.v.x[0], 0.6, a.v.y[0]); m.scale.setScalar(1 + age * 0.3); m.material.color.setHex(0xe0679a); m.material.opacity = 0.9 * (1 - age / 10); }
+    else if (a.kind === 'birth' && age < 24 && rk < rings.length) { const m = rings[rk++]; m.visible = true; m.position.set(a.b.x[0], 0.05, a.b.y[0]); m.scale.setScalar(0.6 + age * 0.12); m.material.opacity = 0.8 * (1 - age / 24); }
+    else if (a.kind === 'die' && age < 30 && rk < rings.length) { const m = rings[rk++]; m.visible = true; m.position.set(a.x, 0.05, a.y); m.scale.setScalar(0.8 + age * 0.04); m.material.color.setHex(0x8d8a80); m.material.opacity = 0.6 * (1 - age / 30); }
+    else if (age > 40) anims.splice(i, 1);
+  }
+  for (let i = pk; i < puffs.length; i++) puffs[i].visible = false; for (let i = rk; i < rings.length; i++) { rings[i].visible = false; rings[i].material.color.setHex(0xb6e264); } for (const m of puffs) m.scale.setScalar(1);
+  if (chosen && chosen.dead) chosen = null;
+  if (cam.director && !inspecting) direct();
+  if (chosen) {
+    marker.visible = true; marker.position.set(chosen.x[0], 0.05, chosen.y[0]); marker.scale.setScalar(0.8 + 0.1 * chosen.n);
+    if (trailFor !== chosen) { trailFor = chosen; trail = []; } // where the chosen one has been: a fading line behind its head
+    if (sub.tick !== trailTick) { trailTick = sub.tick; const last = trail[trail.length - 1]; if (last && Math.hypot(last[0] - chosen.x[0], last[1] - chosen.y[0]) > 6) trail = []; trail.push([chosen.x[0], chosen.y[0]]); if (trail.length > TRAIL) trail.shift(); }
+    { const tp = trailGeo.attributes.position.array, tc = trailGeo.attributes.color.array, n = trail.length; for (let i = 0; i < n; i++) { tp[i * 3] = trail[i][0]; tp[i * 3 + 1] = 0.06; tp[i * 3 + 2] = trail[i][1]; const f = Math.pow((i + 1) / n, 2); tc[i * 3] = 0.94 * f; tc[i * 3 + 1] = 0.77 * f; tc[i * 3 + 2] = 0.42 * f; } trailGeo.setDrawRange(0, n); trailGeo.attributes.position.needsUpdate = true; trailGeo.attributes.color.needsUpdate = true; trailLine.visible = n > 1 && !CARD; }
+    drawGhosts(chosen);
+    if (cam.follow || inspecting) { const k = inspecting ? 0.15 : 0.08; cam.target.x += (chosen.x[0] - cam.target.x) * k; cam.target.z += (chosen.y[0] - cam.target.z) * k; }
+    if (inspecting) { cam.dist += (9 - cam.dist) * 0.05; cam.pol += (1.05 - cam.pol) * 0.05; cam.az += 0.0025; }
+  } else { marker.visible = false; trailLine.visible = false; for (const g of ghosts) g.visible = false; }
+  if (CARD) { marker.visible = false; for (const g of ghosts) g.visible = false; for (const r of rings) r.visible = false; }
+  placeCamera(); renderer.render(scene, camera);
+  if (inspecting) netRender();
+  if (frame % (rate === 'max' ? 6 : 3) === 0) panels();
+  requestAnimationFrame(render);
+}
+function drawGhosts(b) { // the model's private continuation: predicted changes of speed and turn integrated ahead of the head
+  const T = ghosts.length, U = new Float64Array(T * NI); let ph = b.phase;
+  for (let t = 0; t < T; t++) { const o = t * NI; U.set(b.sense, o); U[o + CLOCK] = Math.sin(ph); U[o + CLOCK + 1] = Math.cos(ph); for (let m = 0; m < NM; m++) U[o + MOTOR + m] = b.prevCmd[m]; ph += G(b.g, 'freq'); }
+  const f = b.model.forward(U, T, b.model.h, { feedback: FEEDBACK, feedbackAdd: true }); let x = b.x[0], y = b.y[0], h = b.heading;
+  for (let t = 0; t < T; t++) { const sv = U.subarray(t * NI); const sp = Math.atanh(Math.max(-0.99, Math.min(0.99, sv[S.speed] + f.output[t * NOUT + S.speed]))) * 0.15, tr = Math.atanh(Math.max(-0.99, Math.min(0.99, sv[S.turn] + f.output[t * NOUT + S.turn]))) * 0.15; h += tr * 3; x += Math.cos(h) * sp * 3; y += Math.sin(h) * sp * 3; const g = ghosts[t]; g.visible = true; g.position.set(x, 0.32, y); g.material.opacity = 0.75 - 0.08 * t; }
+}
+function direct() {
+  if (sub.tick >= directorNext || !chosen) {
+    directorNext = sub.tick + 500; const counts = new Map(); for (const b of pop.beings) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
+    let bestL = null, bc = 0; for (const [l, c] of counts) if (c > bc) { bc = c; bestL = l; }
+    let best = null; for (const b of pop.beings) if (b.lineage === bestL && b.n === b.nGenome && (!best || b.age > best.age)) best = b;
+    if (best) select(best, true);
+  }
+  if (chosen) { cam.target.x += (chosen.x[0] - cam.target.x) * 0.03; cam.target.z += (chosen.y[0] - cam.target.z) * 0.03; cam.az += 0.0006; if (cam.dist > 40) cam.dist += (34 - cam.dist) * 0.01; }
+}
+function select(b, quiet) { chosen = b; if (!quiet) setFollow(true); panels(); }
+function setFollow(v) { cam.follow = v; $('follow').setAttribute('aria-pressed', String(v)); }
+function setDirector(v) { cam.director = v; $('director').setAttribute('aria-pressed', String(v)); }
+let savedCam = null;
+function setInspect(v) {
+  if (v && !chosen) pickBy(b => b.age); if (v && !chosen) return;
+  inspecting = v; $('inspect').setAttribute('aria-pressed', String(v)); $('netbox').hidden = !v; $('stage').classList.toggle('inspecting', v); $('left').classList.toggle('inspecting', v); $('aside').classList.toggle('inspecting', v);
+  if (v) { savedCam = { dist: cam.dist, pol: cam.pol, director: cam.director }; setDirector(false); setFollow(true); } else if (savedCam) { cam.dist = savedCam.dist; cam.pol = savedCam.pol; }
+  resize();
+}
+
+// ---------- the inspection view: every neuron and every synapse of the two patches, live ----------
+const netCanvas = $('net'); let netRenderer = null, netScene, netCamera, netFor = null, netParts = null; const netCam = { az: 0.0, pol: 1.47, dist: 60 }; // az is the angle the visitor set; the view sways gently around it
+const GROUP_COLORS = { sense: new THREE.Color(0xf0c56a), strain: new THREE.Color(0xb6e264), clock: new THREE.Color(0x4a9bd1), motor: new THREE.Color(0xe0679a), context: new THREE.Color(0x4a9bd1), out: new THREE.Color(0xe08a3c), record: new THREE.Color(0xddd6c6) };
+function inputGroup(j) { return j < NS ? 'sense' : j < SN ? 'strain' : j < MOTOR ? 'clock' : 'motor'; }
+function netInit() {
+  netRenderer = new THREE.WebGLRenderer({ canvas: netCanvas, antialias: !LITE, powerPreference: 'high-performance' }); netRenderer.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 2)); netRenderer.outputEncoding = THREE.sRGBEncoding;
+  netScene = new THREE.Scene(); netScene.background = new THREE.Color(0x05060a); netCamera = new THREE.PerspectiveCamera(36, 1, 0.5, 400);
+  let d = null; netCanvas.addEventListener('pointerdown', e => { d = { x: e.clientX, y: e.clientY }; netCanvas.setPointerCapture(e.pointerId); });
+  netCanvas.addEventListener('pointermove', e => { if (!d) return; netCam.az -= (e.clientX - d.x) * 0.006; netCam.pol = Math.max(0.3, Math.min(2.6, netCam.pol - (e.clientY - d.y) * 0.006)); d = { x: e.clientX, y: e.clientY }; });
+  netCanvas.addEventListener('pointerup', () => { d = null; });
+  netCanvas.addEventListener('wheel', e => { e.preventDefault(); netCam.dist = Math.max(12, Math.min(110, netCam.dist * Math.exp(e.deltaY * 0.0012))); }, { passive: false });
+}
+function netResize() { if (!netRenderer || !inspecting) return; const r = netCanvas.parentElement.getBoundingClientRect(); netRenderer.setSize(r.width, r.height, false); netCamera.aspect = r.width / r.height; netCamera.updateProjectionMatrix(); }
+// one patch's picture: columns of reading, context and output neurons, the record cells as a grid below, every weight a line;
+// the context is coloured by cortex, and every group, cortex and port carries its name
+const CORTEX_HUES = [0.58, 0.72, 0.48, 0.85, 0.62, 0.35, 0.95, 0.15];
+const GROUP_LABEL = { chemo: 'scent', obstacle: 'obstacles', self: 'self', motion: 'motion', strain: 'muscle strains', clock: 'clock', motor: 'last motor' };
+const SHORT = ['food L-R', 'food ahead', 'food here', 'rock ahead', 'other ahead', 'energy', 'pain', 'light', 'grip', 'speed', 'turn', 'size'];
+function buildPatch(net, X, name, outName, outSpacing, cortices, outLabel) {
+  const I = net.I, H = net.H, O = net.O, D = net.D, part = { net, X, cortices };
+  const inPos = j => [X, (j - (I - 1) / 2) * -0.42 + 2.5, 0], ctxPos = i => [X + 5.5, (i - (H - 1) / 2) * -Math.min(0.75, 12 / H) + 2.5, 0], outPos = o => [X + 11, (o - (O - 1) / 2) * -outSpacing + 2.5, 0];
+  const side = Math.ceil(Math.sqrt(Math.max(D, 1))), cellPos = c => [X + 5.5 + ((c % side) - (side - 1) / 2) * 0.3, -6.5 - (Math.floor(c / side) - (side - 1) / 2) * 0.3, -1.5];
+  part.inPos = inPos; part.ctxPos = ctxPos; part.outPos = outPos; part.cellPos = cellPos;
+  part.ctxHue = new Float32Array(H); { let row = 0; cortices.forEach((c, k) => { for (let i = 0; i < c.channels; i++, row++) part.ctxHue[row] = CORTEX_HUES[k % CORTEX_HUES.length]; }); }
+  const nodes = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshBasicMaterial(), I + H + O); nodes.instanceMatrix.setUsage(THREE.DynamicDrawUsage); netScene.add(nodes); part.nodes = nodes;
+  const mk = (n) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 6), 3)); g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(n * 6), 3)); g.attributes.position.setUsage(THREE.DynamicDrawUsage); g.attributes.color.setUsage(THREE.DynamicDrawUsage); const l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false })); netScene.add(l); return l; };
+  part.edges = mk(I * H + H * O);
+  const pos = part.edges.geometry.attributes.position.array; let e = 0;
+  for (let i = 0; i < H; i++) for (let j = 0; j < I; j++) { const a = inPos(j), b = ctxPos(i); pos.set([a[0], a[1], a[2], b[0], b[1], b[2]], e * 6); e++; }
+  for (let o = 0; o < O; o++) for (let i = 0; i < H; i++) { const a = ctxPos(i), b = outPos(o); pos.set([a[0], a[1], a[2], b[0], b[1], b[2]], e * 6); e++; }
+  part.edges.geometry.attributes.position.needsUpdate = true;
+  if (D > 0) {
+    const cells = new THREE.InstancedMesh(new THREE.BoxGeometry(0.22, 0.22, 0.08), new THREE.MeshBasicMaterial(), D); cells.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    for (let c = 0; c < D; c++) { const p = cellPos(c); _m.compose(_p.set(p[0], p[1], p[2]), _q.identity(), _s.set(1, 1, 1)); cells.setMatrixAt(c, _m); cells.setColorAt(c, _c.setRGB(0.12, 0.12, 0.11)); } netScene.add(cells); part.cells = cells;
+    part.recEdges = mk(net.k * (net.fanin || 0) + net.k * O);
+    netScene.add(label(`records · ${D} cells · lit = this reading's code`, X + 5.5, -6.5 + (side / 2) * 0.3 + 1.0, -1.5, 0.75));
+  }
+  // names: the patch, the groups of the reading, each cortex, each output port
+  netScene.add(label(name, X + 5.5, 2.5 + (I / 2) * 0.42 + 2.6, 0, 1.05)); netScene.add(label('reading', X, 2.5 + (I / 2) * 0.42 + 1.0, 0, 0.8)); netScene.add(label('context', X + 5.5, 2.5 + (H / 2) * Math.min(0.75, 12 / H) + 1.0, 0, 0.8)); netScene.add(label(outName, X + 11, 2.5 + (O / 2) * outSpacing + 1.0, 0, 0.8));
+  for (const g of CB.RG_NAMES) { const idx = CB.RG[g], mid = (idx[0] + idx[idx.length - 1]) / 2, p = inPos(mid); netScene.add(label(GROUP_LABEL[g], X - 3.0, p[1], 0, 0.6)); }
+  { let row = 0; cortices.forEach((c, k) => { const p0 = ctxPos(row), p1 = ctxPos(row + c.channels - 1); netScene.add(label(`cortex ${k + 1} · ${c.channels} ch · reads ${CB.maskNames(c.mask).map(n => GROUP_LABEL[n]).join(', ')}`, X + 5.5, (p0[1] + p1[1]) / 2, 2.4, 0.6, CORTEX_HUES[k % CORTEX_HUES.length])); row += c.channels; }); }
+  for (let o = 0; o < O; o++) { const p = outPos(o); netScene.add(label(outLabel(o), X + 13.4, p[1], 0, 0.55)); }
+  return part;
+}
+function label(text, x, y, z, size, hue) { // a text sprite with a dark backing, sized to its text so it reads over the lines
+  const c = document.createElement('canvas'), g = c.getContext('2d'); g.font = '500 26px IBM Plex Mono, monospace'; const wpx = Math.min(1000, Math.ceil(g.measureText(text).width) + 20); c.width = wpx; c.height = 40;
+  g.font = '500 26px IBM Plex Mono, monospace'; g.fillStyle = 'rgba(5,6,10,0.72)'; g.fillRect(0, 0, wpx, 40); g.fillStyle = hue === undefined ? '#a8a49a' : hsl(hue, 0.5, 0.72).getStyle(); g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, wpx / 2, 21);
+  const tex = new THREE.CanvasTexture(c); tex.minFilter = THREE.LinearFilter; const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false })); sp.renderOrder = 10; sp.position.set(x, y, z); const h = (size || 1) * 1.1; sp.scale.set(h * wpx / 40, h, 1); return sp; }
+function netBuild(b) {
+  if (!netRenderer) netInit(); while (netScene && netScene.children.length) netScene.remove(netScene.children[0]);
+  const muscleOf = p => { const s = b.hasMuscle(p); return s >= 0 ? `m${p}: muscle ${b.sa[s]}-${b.sb[s]}` : `m${p}: no muscle`; };
+  const policy = buildPatch(b.policy, -22, 'policy · proposes the motor', 'proposal', 0.9, b.g.brain.policy, o => o < MAXM ? muscleOf(o) : 'mouth');
+  const model = buildPatch(b.model, 5, 'model · predicts the change of the reading', 'prediction', 0.5, b.g.brain.model, o => o < NS ? 'Δ ' + SHORT[o] : o < SN ? `Δ strain m${o - NS}` : 'Δ energy');
+  // the motor neurons: the muscles' activations, fed by the proposal (repaired by the planner) and read by the model as its motor ports
+  const motorPos = m => [-22 + 17.5, (m - (NM - 1) / 2) * -0.9 + 2.5, 0];
+  const motors = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshBasicMaterial(), NM); motors.instanceMatrix.setUsage(THREE.DynamicDrawUsage); netScene.add(motors);
+  netScene.add(label('motor neurons', -22 + 17.5, 2.5 + (NM / 2) * 0.9 + 1.6, 0, 0.8)); netScene.add(label('the muscles, lagging the motor by half', -22 + 17.5, 2.5 + (NM / 2) * 0.9 + 0.7, 0, 0.55));
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * NM * 6), 3)); g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(2 * NM * 6), 3));
+  const pos = g.attributes.position.array; for (let m = 0; m < NM; m++) { const a = policy.outPos(m), q = motorPos(m), c = model.inPos(MOTOR + m); pos.set([a[0], a[1], a[2], q[0], q[1], q[2]], m * 6); pos.set([q[0], q[1], q[2], c[0], c[1], c[2]], (NM + m) * 6); }
+  const link = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })); netScene.add(link);
+  netParts = { policy, model, link, motors, motorPos }; netFor = b; netResize();
+}
+function paintPatch(part, u, y) {
+  const net = part.net, I = net.I, H = net.H, O = net.O, h = net.h, col = part.edges.geometry.attributes.color.array; let e = 0, maxB = 1e-9, maxC = 1e-9;
+  const gB = new Float32Array(I * H), gC = new Float32Array(H * O);
+  for (let i = 0; i < H; i++) for (let j = 0; j < I; j++) { const v = Math.abs(net.B[i * I + j] * u[j]) + Math.abs(net.G[i * I + j] * u[j]); gB[i * I + j] = v; if (v > maxB) maxB = v; }
+  for (let o = 0; o < O; o++) for (let i = 0; i < H; i++) { const v = Math.abs(net.C[o * H + i] * h[i]); gC[o * H + i] = v; if (v > maxC) maxC = v; }
+  const cc = new THREE.Color();
+  const paint = (cIn, cOut, v) => { const t = Math.pow(Math.min(1, v), 0.6); col[e * 6] = cIn.r * (0.03 + 0.9 * t); col[e * 6 + 1] = cIn.g * (0.03 + 0.9 * t); col[e * 6 + 2] = cIn.b * (0.03 + 0.9 * t); col[e * 6 + 3] = cOut.r * (0.03 + 0.9 * t); col[e * 6 + 4] = cOut.g * (0.03 + 0.9 * t); col[e * 6 + 5] = cOut.b * (0.03 + 0.9 * t); e++; };
+  for (let i = 0; i < H; i++) { cc.setHSL(part.ctxHue[i], 0.55, 0.6); for (let j = 0; j < I; j++) paint(GROUP_COLORS[inputGroup(j)], cc, gB[i * I + j] / maxB); }
+  for (let o = 0; o < O; o++) for (let i = 0; i < H; i++) { cc.setHSL(part.ctxHue[i], 0.55, 0.6); paint(cc, GROUP_COLORS.out, gC[o * H + i] / maxC); }
+  part.edges.geometry.attributes.color.needsUpdate = true;
+  const nodes = part.nodes; let n = 0;
+  const put = (p, act, base) => { const t = Math.min(1, Math.abs(act)); _m.compose(_p.set(p[0], p[1], p[2]), _q.identity(), _s.setScalar(0.13 + 0.17 * t)); nodes.setMatrixAt(n, _m); nodes.setColorAt(n, _c.copy(base).multiplyScalar(0.25 + 0.75 * t)); n++; };
+  for (let j = 0; j < I; j++) put(part.inPos(j), u[j], GROUP_COLORS[inputGroup(j)]);
+  for (let i = 0; i < H; i++) put(part.ctxPos(i), h[i] * 1.5, cc.setHSL(part.ctxHue[i], 0.55, 0.6));
+  for (let o = 0; o < O; o++) put(part.outPos(o), y[o], GROUP_COLORS.out);
+  nodes.instanceMatrix.needsUpdate = true; nodes.instanceColor.needsUpdate = true;
+  if (part.cells) {
+    const D = net.D, cells = part.cells, on = new Uint8Array(D); for (let a = 0; a < net.k; a++) on[net.ci[a]] = 1;
+    for (let c = 0; c < D; c++) { let mag = 0; for (let j = 0; j < O; j++) mag += Math.abs(net.table[c * O + j]); const l = Math.min(1, mag * 1.5); cells.setColorAt(c, on[c] ? _c.setRGB(1, 0.85, 0.45) : _c.setRGB(0.1 + 0.5 * l, 0.1 + 0.48 * l, 0.1 + 0.42 * l)); }
+    cells.instanceColor.needsUpdate = true;
+    const rp = part.recEdges.geometry.attributes.position.array, rc = part.recEdges.geometry.attributes.color.array; let q = 0, mx = 1e-9; const f = net.fanin, vals = [];
+    for (let a = 0; a < net.k; a++) { const c = net.ci[a]; for (let j = 0; j < f; j++) { const idx = net.pidx[c * f + j], v = Math.abs(net.pw[c * f + j] * net.xr[idx]); vals.push(v); if (v > mx) mx = v; } }
+    let vi = 0; for (let a = 0; a < net.k; a++) { const c = net.ci[a], p = part.cellPos(c); for (let j = 0; j < f; j++) { const idx = net.pidx[c * f + j], src = idx < I ? part.inPos(idx) : part.ctxPos(idx - I), t = Math.pow(vals[vi++] / mx, 0.6) * 0.8; rp.set([src[0], src[1], src[2], p[0], p[1], p[2]], q * 6); rc.set([0.6 * t, 0.6 * t, 0.55 * t, 0.9 * t, 0.85 * t, 0.7 * t], q * 6); q++; } }
+    let my = 1e-9; for (let a = 0; a < net.k; a++) for (let o = 0; o < O; o++) { const v = Math.abs(net.cv[a] * net.table[net.ci[a] * O + o]); if (v > my) my = v; }
+    for (let a = 0; a < net.k; a++) { const c = net.ci[a], p = part.cellPos(c); for (let o = 0; o < O; o++) { const v = Math.abs(net.cv[a] * net.table[c * O + o]) / my, t = Math.pow(v, 0.6) * 0.9, d = part.outPos(o); rp.set([p[0], p[1], p[2], d[0], d[1], d[2]], q * 6); rc.set([0.9 * t, 0.85 * t, 0.7 * t, GROUP_COLORS.out.r * t, GROUP_COLORS.out.g * t, GROUP_COLORS.out.b * t], q * 6); q++; } }
+    part.recEdges.geometry.setDrawRange(0, q * 2); part.recEdges.geometry.attributes.position.needsUpdate = true; part.recEdges.geometry.attributes.color.needsUpdate = true;
+  }
+}
+function netRender() {
+  if (!chosen) return; if (netFor !== chosen) netBuild(chosen); const b = chosen;
+  paintPatch(netParts.policy, b.pu, b.prop); paintPatch(netParts.model, b.mu, b.pred);
+  // the motor neurons and their two links: proposal to muscle (amber where the planner repaired it), muscle to the model's motor port
+  const lc = netParts.link.geometry.attributes.color.array, motors = netParts.motors; let n = 0;
+  for (let m = 0; m < NM; m++) {
+    const has = m < MAXM ? b.hasMuscle(m) >= 0 : true, act = m < MAXM ? b.act[m] : b.cmd[m], t = Math.min(1, Math.abs(b.cmd[m])) * 0.9, repaired = Math.abs(b.cmd[m] - b.prop[m]) > 0.02, ta = Math.min(1, Math.abs(act)) * 0.9;
+    const p = netParts.motorPos(m); _m.compose(_p.set(p[0], p[1], p[2]), _q.identity(), _s.setScalar(has ? 0.16 + 0.2 * Math.min(1, Math.abs(act)) : 0.1)); motors.setMatrixAt(n, _m);
+    motors.setColorAt(n, has ? (act >= 0 ? _c.setRGB(0.88, 0.54, 0.24).multiplyScalar(0.3 + 0.7 * Math.min(1, act)) : _c.setRGB(0.29, 0.61, 0.82).multiplyScalar(0.3 + 0.7 * Math.min(1, -act))) : _c.setRGB(0.18, 0.18, 0.17)); n++;
+    lc.set([0.88 * t, 0.54 * t, 0.24 * t, repaired ? 0.94 * t : 0.88 * t, repaired ? 0.77 * t : 0.54 * t, repaired ? 0.42 * t : 0.24 * t], m * 6);
+    lc.set([0.88 * ta, 0.4 * ta, 0.6 * ta, 0.88 * ta, 0.4 * ta, 0.6 * ta], (NM + m) * 6);
+  }
+  motors.instanceMatrix.needsUpdate = true; motors.instanceColor.needsUpdate = true; netParts.link.geometry.attributes.color.needsUpdate = true;
+  const cx = b.g.brain; $('netcap').innerHTML = `#${b.id} <span>policy ${cx.policy.length} ${cx.policy.length === 1 ? 'cortex' : 'cortices'} (${cx.policy.map(c => c.channels).join('+')} ch) · model ${cx.model.length} ${cx.model.length === 1 ? 'cortex' : 'cortices'} (${cx.model.map(c => c.channels).join('+')} ch), ${b.model.D || 'no'} cells · ${b.horizon ? 'planning ' + b.horizon + ' ahead' : 'reflex only'} · ${b.model.updates + b.policy.updates} slow steps · ${b.model.writes} writes</span>`;
+  const ccx = -2.5; const az = netCam.az + 0.22 * Math.sin(performance.now() * 0.00035); netCamera.position.set(ccx + netCam.dist * Math.sin(netCam.pol) * Math.sin(az), -1 + netCam.dist * Math.cos(netCam.pol), netCam.dist * Math.sin(netCam.pol) * Math.cos(az)); netCamera.lookAt(ccx, -1, -0.5);
+  netRenderer.render(netScene, netCamera);
+}
+
+// ---------- the panels ----------
+const bodyCtx = $('body').getContext('2d'), brainCtx = $('brain').getContext('2d');
+const trace = { pred: [], actual: [] }; let traceFor = null;
+function panels() {
+  const bs = pop.beings, n = bs.length; $('caption').innerHTML = `tick ${sub.tick} <span>${n} alive · day ${Math.floor(sub.tick / CFG.day)} · ${paused ? 'paused' : Math.round(tps) + ' ticks/s'} · ${(pop.mass === mass0) ? 'mass conserved' : 'MASS DRIFT ' + (pop.mass - mass0)}</span>`;
+  const withR = bs.filter(b => b.policy.D > 0).length, withP = bs.filter(b => b.horizon > 0).length, withS = bs.filter(b => b.slowRate > 0).length;
+  const mean = f => n ? bs.reduce((s, b) => s + f(b), 0) / n : 0;
+  $('counters').innerHTML = [['alive', n], ['births', pop.births], ['deaths', pop.deaths], ['kills', pop.kills], ['mass', pop.mass === mass0 ? 'conserved' : 'drift ' + (pop.mass - mass0), pop.mass === mass0 ? 'ok' : 'bad'],
+    ['nodes, mean', mean(b => b.n).toFixed(1)], ['muscles, mean', mean(b => b.g.springs.filter(s => s.muscle).length).toFixed(1)], ['speed, mean', mean(b => Math.abs(b.speed)).toFixed(3)],
+    ['with records', n ? Math.round(100 * withR / n) + '%' : '-'], ['planning', n ? Math.round(100 * withP / n) + '%' : '-'], ['slow learning', n ? Math.round(100 * withS / n) + '%' : '-']]
+    .map(([k, v, c]) => `<dt>${k}</dt><dd class="${c || ''}">${v}</dd>`).join('');
+  $('worldSub').textContent = `seed ${seed}`;
+  const counts = new Map(); for (const b of bs) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  $('lineages').innerHTML = top.map(([l, c]) => { const b = bs.find(x => x.lineage === l); const css = hsl(b.hue, 0.55, 0.55).getStyle(); return `<div class="lineage ${chosen && chosen.lineage === l ? 'shown' : ''}"><i style="background:${css}"></i><div class="bar"><b style="width:${100 * c / Math.max(1, top[0][1])}%;background:${css}"></b></div><span>${c}</span></div>`; }).join('');
+  if (frame % 30 === 0) drawShares();
+  if (chosen) beingPanel(chosen); else { $('beingSub').textContent = 'click a body'; $('genes').innerHTML = ''; bodyCtx.clearRect(0, 0, 336, 120); brainCtx.clearRect(0, 0, 336, 420); }
+}
+const sharesCtx = $('shares').getContext('2d');
+function drawShares() { // the population as stacked shares of its eight largest lineages, every hundred ticks
+  const c = sharesCtx, W = 336, H = 90, frames = pop.chronicle.frames; c.clearRect(0, 0, W, H); c.fillStyle = '#0d1016'; c.fillRect(0, 0, W, H); if (frames.length < 2) return;
+  const peak = new Map(); for (const f of frames) for (const [lid, r] of Object.entries(f.lineages)) peak.set(lid, Math.max(peak.get(lid) || 0, r[0]));
+  const top = [...peak.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(e => e[0]); const hues = new Map();
+  for (const f of frames) for (const lid of top) { const r = f.lineages[lid]; if (r && r[21] !== null && !hues.has(lid)) hues.set(lid, r[21]); }
+  const x = i => 8 + (W - 16) * i / (frames.length - 1);
+  const fill = (lid, hueVal) => { c.fillStyle = lid === 'rest' ? '#2a2d36' : hsl(hueVal, 0.55, 0.5).getStyle(); c.beginPath(); frames.forEach((f, i) => { const y = H - 6 - (H - 14) * f.base[lid]; if (i) c.lineTo(x(i), y); else c.moveTo(x(0), y); }); for (let i = frames.length - 1; i >= 0; i--) c.lineTo(x(i), H - 6 - (H - 14) * frames[i].top[lid]); c.closePath(); c.fill(); };
+  for (const f of frames) { f.base = {}; f.top = {}; let acc = 0; const n = Math.max(1, f.alive); for (const lid of top) { const r = f.lineages[lid]; const s = r ? r[0] / n : 0; f.base[lid] = acc; acc += s; f.top[lid] = acc; } f.base.rest = acc; f.top.rest = 1; }
+  for (const lid of top) fill(lid, hues.get(lid) || 0); fill('rest', 0);
+  c.fillStyle = '#8d8a80'; c.font = '10px IBM Plex Mono'; c.fillText('lineages over time, largest eight; grey is everyone else', 8, 10);
+  if (chosen) { const i = top.indexOf(String(chosen.lineage)); if (i >= 0) c.fillText(`the chosen one's lineage is band ${i + 1} from the bottom`, 8, H - 8 + 6 - 6); }
+}
+function beingPanel(b) {
+  const g = b.g; $('beingSub').textContent = `#${b.id} · lineage ${b.lineage} · age ${b.age}`;
+  $('who').innerHTML = `<i style="background:${hsl(hueOf(b), 0.55, 0.55).getStyle()}"></i><span><b>#${b.id}</b> energy ${b.energy} · ${b.n} of ${b.nGenome} nodes · ${g.springs.filter(s => s.muscle).length} muscles · ate ${b.eats} · bit ${b.bites} · ${b.speed >= 0 ? 'ahead' : 'back'} ${Math.abs(b.speed).toFixed(3)}/tick</span>`;
+  $('genes').innerHTML = [['records', b.policy.D ? b.policy.D + ' cells' : 'none'], ['horizon', b.horizon], ['slow rate', b.slowRate], ['noise', b.noise], ['clock', G(g, 'freq')], ['split at', G(g, 'splitAt')], ['drives', `food ${G(g, 'dFood')} energy ${G(g, 'dEnergy')} pain ${G(g, 'dPain')} speed ${G(g, 'dSpeed')}`], ['plans', b.plans ? `${b.plans}, ${Math.round(100 * b.planAccepted / b.plans)}% repaired, ${Math.round(100 * b.planConfirmed / b.plans)}% confirmed by readback` : '0'], ['brain', `policy ${b.g.brain.policy.map(c => c.channels).join('+')} ch in ${b.g.brain.policy.length} · model ${b.g.brain.model.map(c => c.channels).join('+')} ch in ${b.g.brain.model.length}`], ['learned', `${b.model.updates + b.policy.updates} steps, ${b.model.writes + b.policy.writes} writes`]]
+    .map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join('');
+  if (traceFor !== b) { traceFor = b; trace.pred.length = trace.actual.length = 0; }
+  trace.pred.push(b.predNext[S.speed]); trace.actual.push(b.sense[S.speed]); if (trace.pred.length > 90) { trace.pred.shift(); trace.actual.shift(); }
+  drawBody(b); drawBrain(b);
+}
+function drawBody(b) {
+  const c = bodyCtx, W = 336, H = 120; c.clearRect(0, 0, W, H); c.fillStyle = '#0d1016'; c.fillRect(0, 0, W, H);
+  const hx = b.x[0], hy = b.y[0], cs = Math.cos(-b.heading), sn = Math.sin(-b.heading); const pt = i => { const dx = ddx(hx, b.x[i], CFG.w), dy = ddx(hy, b.y[i], CFG.h); return [W * 0.62 + (dx * cs - dy * sn) * 26, H * 0.5 + (dx * sn + dy * cs) * 26]; };
+  for (let s = 0; s < b.nS; s++) { const a = b.sa[s], d = b.sb[s]; if (a >= b.n || d >= b.n) continue; const [x1, y1] = pt(a), [x2, y2] = pt(d), p = b.port[s]; const act = p >= 0 ? b.act[p] : 0, w = 0.5 + 0.5 * act;
+    c.strokeStyle = p >= 0 ? `rgb(${Math.round(74 + 150 * w)},${Math.round(155 - 17 * w)},${Math.round(209 - 149 * w)})` : '#4a4c50'; c.lineWidth = p >= 0 ? 5 - 2.5 * act : 2; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    if (p >= 0) { c.fillStyle = '#8d8a80'; c.font = '9px IBM Plex Mono'; c.fillText('m' + p, (x1 + x2) / 2 + 4, (y1 + y2) / 2 - 4); } }
+  for (let i = 0; i < b.n; i++) { const [x, y] = pt(i); c.fillStyle = hsl(b.hue, 0.55, i === 0 ? 0.65 : 0.5).getStyle(); c.beginPath(); c.arc(x, y, i === 0 ? 8 : 6, 0, 2 * Math.PI); c.fill(); }
+  for (let i = b.n; i < b.nGenome; i++) { const nd = b.g.nodes[i], x = W * 0.62 + nd.x * 26, y = H * 0.5 + nd.y * 26; c.strokeStyle = '#3a3c40'; c.setLineDash([2, 3]); c.beginPath(); c.arc(x, y, 5, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]); }
+  c.fillStyle = '#8d8a80'; c.font = '10px IBM Plex Mono'; c.fillText('the body, head to the right; dotted nodes wait to grow', 8, 14);
+  c.fillText(`grip along ${b.along[0].toFixed(2)} back ${b.back[0].toFixed(2)} side ${b.side[0].toFixed(2)}`, 8, H - 8);
+}
+function bars(c, x, y, w, h, vals, lo, hi, color, count, outline) { const n = count || vals.length, bw = w / n; for (let i = 0; i < n; i++) { const v = Math.max(lo, Math.min(hi, vals[i])), f = (v - lo) / (hi - lo); if (outline) { c.strokeStyle = color; c.strokeRect(x + i * bw + 0.5, y + h - f * h + 0.5, bw - 1.5, f * h); } else { c.fillStyle = color; c.fillRect(x + i * bw, y + h - f * h, bw - 1, f * h); } } }
+function drawBrain(b) {
+  const c = brainCtx, W = 336, H = 420; c.clearRect(0, 0, W, H); c.fillStyle = '#0d1016'; c.fillRect(0, 0, W, H); c.font = '10px IBM Plex Mono';
+  const label = (t, x, y, col) => { c.fillStyle = col || '#8d8a80'; c.fillText(t, x, y); };
+  label('reading', 8, 12, '#ddd6c6'); label('senses', 8, 50); label('strains', 162, 50); label('clock', 226, 50); label('last motor', 268, 50);
+  bars(c, 8, 16, 150, 24, b.sense, -1, 1, '#f0c56a', NS); bars(c, 162, 16, 66, 24, b.sense.subarray(NS), -1, 1, '#b6e264', MAXM); bars(c, 232, 16, 22, 24, b.pu.subarray(CLOCK), -1, 1, '#4a9bd1', 2); bars(c, 262, 16, 66, 24, b.prevCmd, -1, 1, '#e0679a', NM);
+  const patch = (net, y, title, outs, outLabel, actual, cortices) => { // one patch: the context by cortex, the record cells, the outputs
+    label(`${title} · ${cortices.length} ${cortices.length === 1 ? 'cortex' : 'cortices'}`, 8, y + 10, '#ddd6c6');
+    label('context', 8, y + 24); label(net.D ? `records · ${net.D}` : 'no records', 122, y + 24); label(outLabel, 214, y + 24);
+    { let row = 0; const bw = 104 / net.H; cortices.forEach((cx, k) => { c.fillStyle = hsl(CORTEX_HUES[k % CORTEX_HUES.length], 0.55, 0.6).getStyle(); for (let i = 0; i < cx.channels; i++, row++) { const v = Math.max(-1, Math.min(1, net.h[row])), f = (v + 1) / 2; c.fillRect(8 + row * bw, y + 28 + 46 - f * 46, Math.max(1, bw - 1), f * 46); } }); }
+    if (net.D) { const side = Math.ceil(Math.sqrt(net.D)), cw = Math.min(4, 84 / side, 46 / side); const on = new Uint8Array(net.D); for (let a = 0; a < net.k; a++) on[net.ci[a]] = 1;
+      for (let i = 0; i < net.D; i++) { let mag = 0; for (let j = 0; j < net.O; j++) mag += Math.abs(net.table[i * net.O + j]); const l = Math.min(1, mag * 2); c.fillStyle = on[i] ? '#f0c56a' : `rgba(221,214,198,${0.08 + 0.6 * l})`; c.fillRect(122 + (i % side) * cw, y + 28 + Math.floor(i / side) * cw, cw - 1, cw - 1); } }
+    bars(c, 214, y + 28, 114, 46, outs, -1, 1, '#e08a3c', outs.length); if (actual) bars(c, 214, y + 28, 114, 46, actual, -1, 1, '#ddd6c6', actual.length, true);
+  };
+  patch(b.policy, 58, 'policy · proposes the motor', b.prop, 'proposal · executed', b.cmd, b.g.brain.policy);
+  patch(b.model, 142, 'model · predicts the next reading', b.predNext, 'predicted · actual', b.sense, b.g.brain.model);
+  const y = 228; label(b.horizon > 0 ? `plan · ${b.horizon} ${b.horizon === 1 ? 'tick' : 'ticks'} ahead · ${b.plans ? Math.round(100 * b.planAccepted / b.plans) : 0}% repaired · ${b.plans ? Math.round(100 * b.planConfirmed / b.plans) : 0}% confirmed` : 'plan · none, the reflex acts', 8, y + 10, '#ddd6c6');
+  label('motor: proposed (grey), executed (amber)', 8, y + 24); bars(c, 8, y + 28, 320, 30, b.prop, -1, 1, '#5a5a58', NM); bars(c, 8, y + 28, 320, 30, b.cmd, -1, 1, '#f0c56a', NM, true);
+  label(`price ${(POP.base + POP.node * b.n + b.brainPrice).toFixed(3)} per tick · model error ${b.lastErr !== undefined ? b.lastErr.toFixed(4) : '-'}`, 8, y + 74);
+  label(`error early in life ${b.nEarly ? (b.errEarly / b.nEarly).toFixed(4) : '-'} · later ${b.nLate ? (b.errLate / b.nLate).toFixed(4) : '-'}`, 8, y + 88);
+  const ty = 328; label('speed: predicted (amber), actual (white), last 90 ticks', 8, ty + 10);
+  c.strokeStyle = '#232833'; c.beginPath(); c.moveTo(8, ty + 52); c.lineTo(328, ty + 52); c.stroke();
+  const line = (arr, col) => { c.strokeStyle = col; c.lineWidth = 1.5; c.beginPath(); arr.forEach((v, i) => { const x = 8 + i * 320 / 90, yy = ty + 52 - v * 36; if (i) c.lineTo(x, yy); else c.moveTo(x, yy); }); c.stroke(); c.lineWidth = 1; };
+  line(trace.pred, '#e08a3c'); line(trace.actual, '#ddd6c6');
+  label(`ate ${b.eats} · bitten ${b.bitten} · moved ${b.dist.toFixed(1)} cells`, 8, H - 8);
+}
+
+// ---------- controls ----------
+$('rates').innerHTML = 'ticks/s ' + RATES.map(r => `<button class="act" data-rate="${r}" aria-pressed="${r === rate}">${r}</button>`).join('');
+$('rates').addEventListener('click', e => { const bt = e.target.closest('button'); if (!bt) return; rate = bt.dataset.rate === 'max' ? 'max' : +bt.dataset.rate; for (const x of $('rates').querySelectorAll('button')) x.setAttribute('aria-pressed', String(x.dataset.rate === String(rate))); });
+$('sizes').innerHTML = 'world ' + Object.entries(SIZES).map(([k, n]) => `<button class="act" data-size="${n}" aria-pressed="${n === worldSize}">${k}</button>`).join('');
+$('sizes').addEventListener('click', e => { const bt = e.target.closest('button'); if (!bt) return; setPopulation(+bt.dataset.size); for (const x of $('sizes').querySelectorAll('button')) x.setAttribute('aria-pressed', String(+x.dataset.size === worldSize)); const rules = {}; for (const x of $('rulesbox').querySelectorAll('input')) rules[x.dataset.rule] = x.checked; newWorld(rules); });
+$('pause').addEventListener('click', () => { paused = !paused; $('pause').textContent = paused ? 'Resume' : 'Pause'; });
+$('follow').addEventListener('click', () => setFollow(!cam.follow));
+$('director').addEventListener('click', () => setDirector(!cam.director));
+$('inspect').addEventListener('click', () => setInspect(!inspecting));
+const pickBy = f => { let best = null, bv = -Infinity; for (const b of pop.beings) { const v = f(b); if (v > bv) { bv = v; best = b; } } if (best) { select(best); setDirector(false); } };
+$('pickEldest').addEventListener('click', () => pickBy(b => b.age));
+$('pickPlanner').addEventListener('click', () => pickBy(b => b.horizon * 1000 + b.planAccepted));
+$('pickBiggest').addEventListener('click', () => pickBy(b => b.n * 10 + b.g.springs.filter(s => s.muscle).length));
+$('pickHunter').addEventListener('click', () => pickBy(b => b.bites));
+$('colours').innerHTML = 'colour ' + ['lineage', 'shape'].map(k => `<button class="act" data-colour="${k}" aria-pressed="${k === colourBy}" title="${k === 'lineage' ? 'one hue per founder lineage' : 'one hue per layout of body and brain, so new body plans stand out'}">${k}</button>`).join('');
+$('colours').addEventListener('click', e => { const bt = e.target.closest('button'); if (!bt) return; colourBy = bt.dataset.colour; for (const x of $('colours').querySelectorAll('button')) x.setAttribute('aria-pressed', String(x.dataset.colour === colourBy)); });
+$('share').addEventListener('click', async () => { const url = `${location.origin}${location.pathname}?seed=${seed}`; try { await navigator.clipboard.writeText(url); $('share').textContent = 'Link copied'; } catch (e) { prompt('A link to this world:', url); } setTimeout(() => { $('share').textContent = 'Link to this world'; }, 1800); });
+$('export').addEventListener('click', () => { // the chronicle as a file: every lineage every hundred ticks, the events, genome samples, the largest lineages' full genomes
+  const data = pop.chronicle.export(pop); data.meta.seed = seed; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `patch-world-bodies-seed${seed}-tick${sub.tick}.chronicle.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$('rulesbox').innerHTML = Object.keys(RULE_NAMES).map(k => `<label><input type="checkbox" data-rule="${k}" ${DEFAULT_RULES[k] ? 'checked' : ''}> ${RULE_NAMES[k]}</label>`).join('');
+$('reseed').addEventListener('click', () => { const rules = {}; for (const x of $('rulesbox').querySelectorAll('input')) rules[x.dataset.rule] = x.checked; newWorld(rules); });
+addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); $('pause').click(); } if (e.key === 'f') setFollow(!cam.follow); if (e.key === 'd') setDirector(!cam.director); if (e.key === 'i') setInspect(!inspecting); });
+
+newWorld(DEFAULT_RULES); resize(); placeCamera(); requestAnimationFrame(render);
+</script>
+</body>
+</html>
