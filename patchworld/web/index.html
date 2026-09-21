@@ -1,0 +1,1409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Patch World · Cadence</title>
+<meta name="description" content="Soft bodies evolve on a world that conserves its mass. Each inherits a shape, muscles and a small Cadence brain, learns during its own life, and you can open any of them and watch every neuron and connection work.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pragma Research">
+<meta property="og:title" content="Patch World">
+<meta property="og:description" content="Soft bodies evolve on a world that conserves its mass. Each inherits a shape, muscles and a small Cadence brain, learns during its own life, and you can open any of them and watch every neuron and connection work.">
+<meta property="og:url" content="https://floatingpragma.io/cadence-examples/patchworld/">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/patchworld/card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="Soft-bodied creatures of coloured spheres and muscles crawl over a lit terrain of soil, rock and sprouting food, beside the title: Patch World.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@muellerberndt">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0c11'/%3E%3Cline x1='9' y1='21' x2='16' y2='11' stroke='%23e08a3c' stroke-width='3'/%3E%3Cline x1='16' y1='11' x2='24' y2='20' stroke='%234a9bd1' stroke-width='3'/%3E%3Ccircle cx='9' cy='21' r='4' fill='%23b6e264'/%3E%3Ccircle cx='16' cy='11' r='5' fill='%23f0c56a'/%3E%3Ccircle cx='24' cy='20' r='4' fill='%23b6e264'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --ground: #0a0c11; --panel: #11141b; --line: #232833;
+    --ink: #ddd6c6; --ink-2: #8d8a80; --ink-3: #5a5a58;
+    --sun: #f0c56a; --leaf: #b6e264; --bud: #2f8f82; --alert: #e0679a; --cool: #4a9bd1; --warm: #e08a3c;
+    --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding-inline: 20px; padding-block: 16px 32px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 22px; margin-bottom: 12px; }
+  h1 { font-family: var(--font-display); font-weight: 300; font-size: 30px; letter-spacing: -0.01em; margin: 0; font-variation-settings: "opsz" 72; }
+  h1 em { font-style: italic; color: var(--sun); }
+  header p { margin: 0; color: var(--ink-2); max-width: 70ch; }
+  header a, footer a { color: var(--sun); text-underline-offset: 3px; }
+  .stage { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+  .stage.inspecting { grid-template-columns: 1fr; }
+  .left { display: grid; grid-template-columns: 1fr; gap: 10px; min-width: 0; }
+  .left.inspecting { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .left .wide { grid-column: 1 / -1; }
+  .view { position: relative; height: min(74vh, 820px); min-height: 380px; background: #000; border: 1px solid var(--line); overflow: hidden; }
+  .left.inspecting .view { height: min(62vh, 640px); }
+  .view canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  .view::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 120px rgba(0,0,0,0.5); }
+  #netbox[hidden] { display: none; }
+  .caption { position: absolute; left: 12px; bottom: 10px; font-family: var(--font-display); font-size: 15px; text-shadow: 0 1px 6px #000, 0 0 2px #000; pointer-events: none; z-index: 1; }
+  .caption span { color: var(--ink-2); font-family: var(--font-mono); font-size: 11px; margin-left: 10px; letter-spacing: 0.06em; }
+  .hint { position: absolute; right: 12px; top: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); text-shadow: 0 1px 4px #000; pointer-events: none; text-align: right; z-index: 1; }
+  .legend { position: absolute; left: 12px; top: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); text-shadow: 0 1px 4px #000; pointer-events: none; z-index: 1; display: grid; gap: 1px; }
+  #worldlegend { background: rgba(7,8,12,0.62); padding: 7px 10px; border: 1px solid rgba(35,40,51,0.8); }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+  .ticker { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); padding: 8px 10px; min-height: 5.5em; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 16px; }
+  .ticker div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ticker b { color: var(--ink); font-weight: 500; }
+  .ticker .bite, .ticker .injury { color: var(--alert); } .ticker .birth { color: var(--leaf); } .ticker .die { color: var(--ink-3); } .ticker .grow { color: var(--bud); }
+  aside { display: flex; flex-direction: column; gap: 14px; }
+  aside.inspecting { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  aside.inspecting > * { flex: 1 1 320px; }
+  .board { background: var(--panel); border: 1px solid var(--line); padding: 10px 12px; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 14px; margin: 0 0 6px; color: var(--ink-2); letter-spacing: 0.02em; display: flex; justify-content: space-between; gap: 8px; }
+  h2 small { font-family: var(--font-mono); font-weight: 400; font-size: 11px; color: var(--ink-3); letter-spacing: 0; }
+  .who { display: grid; grid-template-columns: 14px 1fr; gap: 10px; align-items: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-2); margin-bottom: 6px; }
+  .who i { width: 14px; height: 14px; border-radius: 50%; display: block; }
+  .who b { color: var(--ink); font-weight: 500; }
+  .genes { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 2px 12px; margin-bottom: 8px; }
+  .genes span b { color: var(--ink); font-weight: 500; }
+  #body, #brain, #shares { width: 100%; height: auto; display: block; }
+  #shares { margin-top: 8px; background: #0d1016; }
+  .counters { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; margin: 0; }
+  .counters dt { color: var(--ink-2); }
+  .counters dd { margin: 0; text-align: right; }
+  .counters dd.ok { color: var(--leaf); } .counters dd.bad { color: var(--alert); }
+  .lineages { display: grid; gap: 4px; margin-top: 8px; }
+  .lineage { display: grid; grid-template-columns: 12px 1fr 34px; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 11px; }
+  .lineage i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .lineage .bar { height: 6px; background: var(--line); position: relative; }
+  .lineage .bar b { position: absolute; inset: 0 auto 0 0; }
+  .lineage span { text-align: right; color: var(--ink-2); }
+  .lineage.shown i { box-shadow: 0 0 0 2px var(--sun); }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  button.act { font: inherit; font-size: 12px; background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 10px; cursor: pointer; }
+  button.act:hover { border-color: var(--ink-2); }
+  button.act[aria-pressed="true"] { border-color: var(--sun); color: var(--sun); }
+  button.act.primary { border-color: var(--sun); }
+  @keyframes nudge { 0%, 100% { box-shadow: 0 0 0 0 rgba(240,197,106,0); } 50% { box-shadow: 0 0 0 6px rgba(240,197,106,0.28); } }
+  button.act.nudge { animation: nudge 1.6s ease-in-out 4; }
+  .chartnote { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); margin: 6px 0 0; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; }
+  .rate { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); display: inline-flex; gap: 2px; align-items: center; }
+  .rate button { min-width: 34px; padding: 4px 6px; }
+  details.board summary { cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--ink-2); }
+  details.board .card { font-size: 12.5px; color: var(--ink-2); max-width: 70ch; }
+  details.board .card p { margin: 6px 0; }
+  details.board .card b { color: var(--ink); font-weight: 500; }
+  details.board .card a { color: var(--sun); }
+  .rulesbox { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 12px; margin: 6px 0; }
+  .rulesbox label { white-space: nowrap; }
+  footer { margin-top: 22px; color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; }
+  .nogl { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--ink-2); z-index: 2; }
+  body.card { padding: 0; overflow: hidden; } body.card header, body.card aside, body.card .row, body.card .ticker, body.card .hint, body.card .caption, body.card footer, body.card #worldlegend { display: none; }
+  body.card .stage { display: block; } body.card .view { height: 100vh; border: 0; }
+  .cardtitle { display: none; } body.card .cardtitle { display: block; position: absolute; left: 56px; bottom: 52px; z-index: 3; text-shadow: 0 2px 18px #000, 0 0 4px #000; }
+  .cardtitle b { display: block; font-family: var(--font-display); font-weight: 300; font-size: 84px; letter-spacing: -0.02em; line-height: 1; color: var(--ink); } .cardtitle b em { color: var(--sun); }
+  .cardtitle span { display: block; margin-top: 14px; font-family: var(--font-body); font-size: 26px; color: var(--ink); max-width: 22em; line-height: 1.3; }
+  @media (max-width: 900px) { #worldlegend, .hint { display: none; } .stage, .left.inspecting { grid-template-columns: 1fr; } .view, .left.inspecting .view { height: 52vh; } body { padding-inline: 16px; } aside.inspecting { flex-direction: column; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Patch <em>World</em></h1>
+  <p>Soft bodies on a world that conserves its mass under one moving sun. Each inherits a shape, muscles and a small brain, learns during its own life, and can plan its next moves through its own model of its body. Every birth mutates body and brain. Nothing tells them to crawl, eat or hunt; whatever you see, they found. <a href="rules.html">The rules</a></p>
+</header>
+<div class="stage" id="stage">
+  <div class="left" id="left">
+    <div class="view" id="worldbox">
+      <canvas id="gl" role="img" aria-label="The world in 3D: soft bodies crawling over soil, rock, mud and food under a moving sun"></canvas>
+      <div class="legend" id="worldlegend"><span><i style="background:#9fd36a"></i>food, growing where the sun passes</span><span><i style="background:#6b7384;border-radius:2px"></i>rock</span><span><i style="background:#1f4a47;border-radius:2px"></i>mud, where every step slips</span><span><i style="background:#e08a3c"></i>a muscle contracting</span><span><i style="background:#4a9bd1"></i>a muscle extending</span></div>
+      <div class="caption" id="caption">tick 0</div>
+      <div class="hint">drag to orbit · shift-drag to pan · wheel to zoom<br>click a body to open its brain · Inspect shows every neuron<br>space pause · i inspect · f follow · d director</div>
+      <div class="cardtitle"><b>Patch <em>World</em></b><span>Soft bodies evolve shapes, muscles and brains. Open any brain and watch it work.</span></div>
+    </div>
+    <div class="view" id="netbox" hidden>
+      <canvas id="net" role="img" aria-label="The chosen being's brain: every neuron, weight and record cell, lit by its activity this tick"></canvas>
+      <div class="legend"><span><i style="background:#f0c56a"></i>senses</span><span><i style="background:#b6e264"></i>muscle strains</span><span><i style="background:#4a9bd1"></i>clock and context</span><span><i style="background:#e0679a"></i>motor</span><span><i style="background:#e08a3c"></i>prediction</span><span><i style="background:#ddd6c6"></i>records</span></div>
+      <div class="caption" id="netcap">the two patches, live</div>
+      <div class="hint">drag to turn the brain<br>lines shine with the signal they carry this tick</div>
+    </div>
+    <div class="row wide">
+      <span class="rate" id="rates"></span>
+      <span class="rate" id="sizes"></span>
+      <span class="rate" id="colours"></span>
+      <button class="act" id="pause">Pause</button>
+      <button class="act primary nudge" id="inspect" aria-pressed="false" title="follow the chosen body beside its whole brain, live">Inspect</button>
+      <button class="act" id="follow" aria-pressed="false">Follow</button>
+      <button class="act" id="director" aria-pressed="true">Director</button>
+      <button class="act" id="pickEldest">Eldest</button>
+      <button class="act" id="pickPlanner">A planner</button>
+      <button class="act" id="pickBiggest">Biggest body</button>
+      <button class="act" id="pickHunter">A hunter</button>
+      <button class="act" id="export">Export chronicle</button>
+      <button class="act" id="share">Link to this world</button>
+    </div>
+    <div class="ticker wide" id="ticker"></div>
+  </div>
+  <aside id="aside">
+    <div class="board" id="beingBoard">
+      <h2>One being <small id="beingSub">click a body</small></h2>
+      <div class="who" id="who"><i></i><span>Nobody chosen. The director follows the leading lineage.</span></div>
+      <div class="genes" id="genes"></div>
+      <canvas id="body" width="336" height="120"></canvas>
+      <canvas id="brain" width="336" height="420"></canvas>
+    </div>
+    <div class="board">
+      <h2>The world <small id="worldSub"></small></h2>
+      <dl class="counters" id="counters"></dl>
+      <canvas id="shares" width="336" height="90" title="the share of the population held by each lineage over time"></canvas>
+      <p class="chartnote">One lineage usually takes the world within 10,000 to 20,000 ticks. Set ticks/s to max to watch it happen, then export the chronicle to see why.</p>
+      <div class="lineages" id="lineages"></div>
+    </div>
+    <details class="board">
+      <summary>The rules of the next world</summary>
+      <div class="rulesbox" id="rulesbox"></div>
+      <div class="row"><button class="act" id="reseed">New world with these rules</button></div>
+    </details>
+    <details class="board">
+      <summary>Model card</summary>
+      <div class="card">
+        <p><b>Physics.</b> Mass in integer units, conserved at every tick between soil, food and bodies. One sun crosses the torus; food grows in its light where the soil is rich and decays back to soil; its scent diffuses a few cells. Rock cannot be entered; mud keeps less than half of every step. A body is a graph of point masses and springs; muscles are springs whose rest length follows a motor port; each node keeps a share of its displacement along its head-ward axis, less against it and less across it, which is how a shape crawls. Bodies push each other, a mouth can bite the body ahead, and a bitten body with no energy left loses a node. The dead become food where they lie.</p>
+        <p><b>Inherited.</b> The body graph with its grips, the clock's frequency, the split threshold, the drives, the size of the records, the learning rates, the planning horizon, and the slow weights of two record patches: a policy that proposes the motor from the reading, the clock and the previous motor, and a model that predicts the change of the reading and the energy change from the reading, the clock and the motor. A child is born with three nodes and grows the rest one unit of mass at a time. Every genome is mutated at birth: node positions, grips, nodes added or removed, muscles gained or lost, and small steps on the slow weights.</p>
+        <p><b>Learned in one life.</b> The records of both patches: what the slow readout got wrong at each reading, written after every window of eight ticks. The slow weights move by the adjoint of the same window at the inherited rate, which may be zero. The planner repairs the motor ports of a private path under the model toward the drives, executes the first repaired motor, and the policy is taught that repair. Records are never inherited.</p>
+        <p><b>Price.</b> A base rate, per node, per unit of muscle work, per unit read, per record cell, per write, per planning replay, and per slow weight while learning, each paid as the probability of losing one unit of mass to the soil. Nothing else selects.</p>
+        <p><b>More.</b> Every rule with its numbers is on <a href="rules.html">the rules page</a>.</p>
+        <p><b>Brain.</b> The patches are the JavaScript twin of <code>cadence.RecordPatchNet</code>, checked against the library to 1e-15 on observation, windows, backtracking and planning. The records here use a sparse projection with eight inputs per cell; the library's dense projection is the reference. In the inspection view every line is a slow weight and shines with the signal it carries this tick; the grid is the record cells, the lit ones are the reading's code. The founders come from the gait lab, an explicit search outside the world that the world never sees again.</p>
+      </div>
+    </details>
+  </aside>
+</div>
+<footer>A Cadence example. Everything runs in this page: the world, the bodies and every brain. MIT. <a href="rules.html">The rules of Patch World</a></footer>
+<script>
+/* RecordPatch: the JavaScript twin of cadence.RecordPatchNet, with online windows and action planning.
+
+   For inputs u[t], context h[t] and outputs y[t]:
+     l[t] = sigmoid(g + G u[t])                 per-channel retention
+     z[t] = tanh(B u[t] + b)                    the input port
+     h[t] = l[t] * h[t-1] + (1 - l[t]) * z[t]
+     m[t] = read(code([k * u[t], r * h[t]]))    the record read, a port value; k scales the input block to unit variance per unit
+     y[t] = C h[t] + c + m[t]
+   The slow parameters learn by the adjoint scan of the precision-weighted half mean squared
+   error of the slow readout C h + c (the record read is outside the gradient); a record holds
+   what the slow readout got wrong at its reading. `observe` matches the library call step for
+   step (sim/parity.js checks it against ref/fixture.json). `step`/`teach`/`flush` are the same
+   operation for a continuing actor: one tick at a time, learning over a window of ticks.
+   `plan` repairs declared input ports by projected gradient with causal-replay acceptance, the
+   library's planning rule applied to this class, with optional feedback of predicted outputs
+   into the next moment's inputs. No DOM; used by sim/core.js, sim/gaitlab.js and web/index.html. */
+(function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory(); else root.CP = factory(); })(typeof self !== 'undefined' ? self : this, function () {
+'use strict';
+
+// ---------- Mulberry32: the generator of cadence.records and of the earlier worlds ----------
+function Mulberry(seed) { this.s = seed >>> 0; }
+Mulberry.prototype.random = function () {
+  let a = (this.s = (this.s + 0x6D2B79F5) >>> 0);
+  let t = Math.imul(a ^ (a >>> 15), a | 1) >>> 0;
+  t = (t ^ (t + Math.imul(t ^ (t >>> 7), t | 61))) >>> 0;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+Mulberry.prototype.normals = function (n) { // Box-Muller over pairs, as cadence.records.Mulberry32.normals
+  const pairs = (n + 1) >> 1, u = new Float64Array(2 * pairs);
+  for (let i = 0; i < u.length; i++) u[i] = this.random();
+  const out = new Float64Array(n);
+  for (let i = 0; i < pairs; i++) {
+    const r = Math.sqrt(-2 * Math.log(Math.max(u[i], 1e-12))), a = 2 * Math.PI * u[pairs + i];
+    out[i] = r * Math.cos(a); if (pairs + i < n) out[pairs + i] = r * Math.sin(a);
+  }
+  return out;
+};
+function gauss(rng) { return rng.normals(1)[0]; }
+const sigmoid = x => 0.5 * (1 + Math.tanh(0.5 * x));
+const EPS = 2.220446049250313e-16, TINY = 2.2250738585072014e-308;
+const PARAMS = ['G', 'g', 'B', 'b', 'C', 'c'];
+
+class RecordPatch {
+  constructor(o) {
+    const I = this.I = o.inputs | 0, H = this.H = o.hidden | 0, O = this.O = o.outputs | 0;
+    if (I < 1 || H < 1 || O < 1) throw new Error('inputs, hidden and outputs are positive');
+    this.D = o.cells === undefined ? 4096 : o.cells | 0; this.k = Math.min(o.active === undefined ? 32 : o.active | 0, this.D);
+    this.rate = o.recordRate === undefined ? 0.5 : o.recordRate; this.hab = o.habituation === undefined ? 1e-5 : o.habituation;
+    this.bias = o.recordBias === undefined ? 0.3 : o.recordBias; this.slowest = o.slowest === undefined ? 128 : o.slowest;
+    this.fanin = o.fanin | 0; this.seed = (o.seed | 0) >>> 0; this.W = Math.max(1, o.window | 0 || 1);
+    this.G = new Float64Array(H * I); this.g = new Float64Array(H); this.B = new Float64Array(H * I); this.b = new Float64Array(H);
+    this.C = new Float64Array(O * H); this.c = new Float64Array(O); this.prec = new Float64Array(O).fill(1);
+    this.scale = new Float64Array(H);
+    for (let i = 0; i < H; i++) { // retention timescales log-spaced from two moments to `slowest`, or one per channel when given
+      const ts = o.timescales ? o.timescales[i] : Math.exp(Math.log(2) + (H > 1 ? (Math.log(this.slowest) - Math.log(2)) * i / (H - 1) : 0)), ret = 1 - 1 / ts;
+      this.g[i] = Math.log(ret / (1 - ret)); this.scale[i] = Math.sqrt((1 + ret) / (1 - ret));
+    }
+    this.mask = null; // an optional 0/1 mask over B and G: a channel reads only the units its cortex names
+    const rng = new Mulberry(this.seed);
+    if (!o.blank) {
+      const nb = rng.normals(H * I); for (let i = 0; i < nb.length; i++) this.B[i] = nb[i] / Math.sqrt(I);
+      const nc = rng.normals(O * H); for (let i = 0; i < nc.length; i++) this.C[i] = nc[i] / Math.sqrt(H);
+    }
+    // the records: a projection of the reading [u, r h] onto D cells, k winners, one table of O columns
+    const R = this.R = I + H, D = this.D;
+    if (D > 0) {
+      const rec = new Mulberry(this.seed);
+      if (this.fanin > 0) { // each cell reads fanin units of the reading; the cheap code of the worlds
+        const f = this.fanin, w = rec.normals(D * f); this.pidx = new Int32Array(D * f); this.pw = new Float64Array(D * f);
+        for (let i = 0; i < D * f; i++) { this.pw[i] = w[i] / Math.sqrt(f); this.pidx[i] = Math.min(R - 1, (rec.random() * R) | 0); }
+      } else { // the dense projection of cadence.records: projection[i, c] = draws[i * D + c] / sqrt(R)
+        const draws = rec.normals(R * D); this.proj = new Float64Array(D * R);
+        for (let i = 0; i < R; i++) for (let c = 0; c < D; c++) this.proj[c * R + i] = draws[i * D + c] / Math.sqrt(R);
+      }
+      const off = rec.normals(D); this.offset = new Float64Array(D); for (let c = 0; c < D; c++) this.offset[c] = off[c] * this.bias;
+      this.table = new Float64Array(D * O); this.mean = new Float64Array(R); this.seen = 0;
+      this.inputNorm = 1; this.sqrtI = Math.sqrt(I); // the input block is read at unit variance per unit: scaled by sqrt(inputs) over its witnessed norm
+      this.drive = new Float64Array(D); this.xr = new Float64Array(R);
+    }
+    this.h = new Float64Array(H);
+    const W = this.W;
+    this.wu = new Float64Array(W * I); this.wgate = new Float64Array(W * H); this.wport = new Float64Array(W * H); this.wprev = new Float64Array(W * H);
+    this.whid = new Float64Array(W * H); this.wslow = new Float64Array(W * O); this.wtarget = new Float64Array(W * O); this.wknown = new Float64Array(W * O);
+    this.w = 0; this.pending = false; this.updates = 0; this.writes = 0; this.revision = 0; this.replays = 0; this.rejected = 0;
+    this.ci = new Int32Array(this.k); this.cv = new Float64Array(this.k); // the code of the last reading
+    this.wci = new Int32Array(W * this.k); this.wcv = new Float64Array(W * this.k); this.wcn = new Int32Array(W); // the codes read at each step of the window
+    this.lastRead = new Float64Array(O); this.lastSlow = new Float64Array(O);
+    this.grad = { G: new Float64Array(H * I), g: new Float64Array(H), B: new Float64Array(H * I), b: new Float64Array(H), C: new Float64Array(O * H), c: new Float64Array(O) };
+    this._gh = new Float64Array(W * H);
+  }
+
+  // ---------- parameters ----------
+  parameters() { const p = {}; for (const k of PARAMS) p[k] = Float64Array.from(this[k]); return p; }
+  setParameters(p) { for (const k of PARAMS) { if (!p[k] || p[k].length !== this[k].length) throw new Error('parameter ' + k + ' has the wrong shape'); this[k].set(p[k]); } this.revision++; }
+  setPrecision(w) { if (w.length !== this.O) throw new Error('precision has one entry per output'); this.prec.set(w); }
+  setInputMask(m) { if (m.length !== this.H * this.I) throw new Error('the mask covers hidden x inputs'); this.mask = m; this._applyMask(); }
+  _applyMask() { const m = this.mask; if (!m) return; for (let i = 0; i < m.length; i++) if (!m[i]) { this.B[i] = 0; this.G[i] = 0; } }
+  reset() { this.h.fill(0); this.w = 0; this.pending = false; }
+  get state() { return Float64Array.from(this.h); }
+  setState(h) { this.h.set(h); }
+
+  // ---------- one moment of the slow path ----------
+  _gatePort(u, uo, gate, go, port, po, G, g, B, b) {
+    const I = this.I, H = this.H;
+    for (let i = 0; i < H; i++) {
+      let s = g[i], z = b[i]; const r = i * I;
+      for (let j = 0; j < I; j++) { const x = u[uo + j]; s += G[r + j] * x; z += B[r + j] * x; }
+      gate[go + i] = sigmoid(s); port[po + i] = Math.tanh(z);
+    }
+  }
+  _slow(h, ho, out, oo, C, c) { const H = this.H, O = this.O; for (let j = 0; j < O; j++) { let s = c[j]; const r = j * H; for (let i = 0; i < H; i++) s += C[r + i] * h[ho + i]; out[oo + j] = s; } }
+
+  // ---------- the records ----------
+  _reading(u, uo, h, ho) { const xr = this.xr, I = this.I, H = this.H, mean = this.mean, sc = this.scale, k = this.sqrtI / this.inputNorm; for (let i = 0; i < I; i++) xr[i] = u[uo + i] * k - mean[i]; for (let i = 0; i < H; i++) xr[I + i] = h[ho + i] * sc[i] - mean[I + i]; }
+  _witnessNorm(u, uo) { let n2 = 0; for (let i = 0; i < this.I; i++) n2 += u[uo + i] * u[uo + i]; this.inputNorm += 0.01 * (Math.max(Math.sqrt(n2), 1e-6) - this.inputNorm); }
+  _witness(u, uo, h, ho) { // the running mean moves by a witnessed reading, as cadence.records.witness
+    if (this.hab <= 0) return; const I = this.I, H = this.H, mean = this.mean, sc = this.scale, k = this.sqrtI / this.inputNorm; this.seen++; const a = Math.max(this.hab, 1 / this.seen);
+    for (let i = 0; i < I; i++) mean[i] += a * (u[uo + i] * k - mean[i]); for (let i = 0; i < H; i++) mean[I + i] += a * (h[ho + i] * sc[i] - mean[I + i]);
+  }
+  _code(ci, cv) { // the k-winner code of the reading in xr: top-k drives, rectified, unit length; returns the active count
+    const D = this.D, k = this.k, R = this.R, xr = this.xr, drive = this.drive, off = this.offset;
+    if (this.proj) { const P = this.proj; for (let c = 0; c < D; c++) { let s = off[c]; const b = c * R; for (let i = 0; i < R; i++) s += P[b + i] * xr[i]; drive[c] = s; } }
+    else { const f = this.fanin, idx = this.pidx, w = this.pw; for (let c = 0; c < D; c++) { let s = off[c]; const b = c * f; for (let j = 0; j < f; j++) s += w[b + j] * xr[idx[b + j]]; drive[c] = s; } }
+    let n = 0, minAt = 0;
+    for (let c = 0; c < D; c++) {
+      const d = drive[c];
+      if (n < k) { ci[n] = c; cv[n] = d; if (n === 0 || d < cv[minAt]) minAt = n; n++; }
+      else if (d > cv[minAt]) { ci[minAt] = c; cv[minAt] = d; minAt = 0; for (let a = 1; a < k; a++) if (cv[a] < cv[minAt]) minAt = a; }
+    }
+    let norm = 0; for (let a = 0; a < n; a++) { cv[a] = Math.max(cv[a], 0); norm += cv[a] * cv[a]; }
+    norm = Math.sqrt(norm); if (norm > 0) { const inv = 1 / Math.max(norm, 1e-12); for (let a = 0; a < n; a++) cv[a] *= inv; }
+    return n;
+  }
+  _read(ci, cv, n, out, oo) { const O = this.O, T = this.table; for (let j = 0; j < O; j++) out[oo + j] = 0; for (let a = 0; a < n; a++) { const v = cv[a], b = ci[a] * O; for (let j = 0; j < O; j++) out[oo + j] += v * T[b + j]; } }
+  _write(ci, cv, n, target, to, known, ko) { // the delta rule into the active cells: error = target - read, masked by known
+    const O = this.O, T = this.table, r = this.rate;
+    for (let j = 0; j < O; j++) {
+      if (known && !known[ko + j]) continue;
+      let read = 0; for (let a = 0; a < n; a++) read += cv[a] * T[ci[a] * O + j];
+      const e = r * (target[to + j] - read); for (let a = 0; a < n; a++) T[ci[a] * O + j] += cv[a] * e;
+    }
+    this.writes++;
+  }
+
+  // ---------- a free path from a boundary: parameters as given, records as they stand ----------
+  // U: T*I inputs; returns {hidden, gate, port, read, output, slow} as T-major arrays. `fb` = [[outIdx, inIdx], ...] feeds
+  // moment t's prediction into moment t+1's inputs (U is written); with `feedbackAdd` the prediction is a change added to
+  // moment t's input instead; `noRead` skips the records (slow path only).
+  forward(U, T, boundary, opts) {
+    const I = this.I, H = this.H, O = this.O, P = (opts && opts.params) || this, fb = opts && opts.feedback, add = !!(opts && opts.feedbackAdd), noRead = opts && opts.noRead, fixed = opts && opts.fixedRead;
+    const hidden = new Float64Array(T * H), gate = new Float64Array(T * H), port = new Float64Array(T * H), read = new Float64Array(T * O), output = new Float64Array(T * O), slow = new Float64Array(T * O);
+    let prev = boundary, po = 0;
+    for (let t = 0; t < T; t++) {
+      const ho = t * H, uo = t * I;
+      this._gatePort(U, uo, gate, ho, port, ho, P.G, P.g, P.B, P.b);
+      for (let i = 0; i < H; i++) { const l = gate[ho + i]; hidden[ho + i] = l * prev[po + i] + (1 - l) * port[ho + i]; }
+      this._slow(hidden, ho, slow, t * O, P.C, P.c);
+      if (fixed) { for (let j = 0; j < O; j++) read[t * O + j] = fixed[t * O + j]; } else if (this.D > 0 && !noRead) { this._reading(U, uo, hidden, ho); const n = this._code(this.ci, this.cv); this._read(this.ci, this.cv, n, read, t * O); }
+      for (let j = 0; j < O; j++) output[t * O + j] = slow[t * O + j] + read[t * O + j];
+      if (fb && t + 1 < T) for (const [oi, ii] of fb) U[(t + 1) * I + ii] = (add ? U[t * I + ii] : 0) + output[t * O + oi];
+      prev = hidden; po = ho;
+    }
+    return { hidden, gate, port, read, output, slow };
+  }
+  imagine(U, T, state) { return this.forward(U, T, state || this.h); } // private: nothing changes
+  loss(out, target, T, known) { const O = this.O; let s = 0; for (let t = 0; t < T; t++) for (let j = 0; j < O; j++) { if (known && !known[t * O + j]) continue; const e = out[t * O + j] - target[t * O + j]; s += this.prec[j] * e * e; } return 0.5 * s / (T * O); }
+
+  // ---------- the adjoint scan of the slow readout's loss over a window ----------
+  _gradient(U, T, boundary, hidden, gate, port, slow, target, known, out) {
+    const I = this.I, H = this.H, O = this.O, C = this.C, gh = this._gh, G = out;
+    for (const k of PARAMS) G[k].fill(0);
+    const inv = 1 / (T * O), d = new Float64Array(T * O);
+    for (let t = 0; t < T; t++) for (let j = 0; j < O; j++) { const i = t * O + j; d[i] = known && !known[i] ? 0 : this.prec[j] * (slow[i] - target[i]) * inv; }
+    for (let t = 0; t < T; t++) for (let i = 0; i < H; i++) { let s = 0; for (let j = 0; j < O; j++) s += C[j * H + i] * d[t * O + j]; gh[t * H + i] = s; }
+    for (let t = T - 1; t >= 0; t--) {
+      const ho = t * H, uo = t * I;
+      if (t < T - 1) for (let i = 0; i < H; i++) gh[ho + i] += gate[ho + H + i] * gh[ho + H + i];
+      for (let i = 0; i < H; i++) {
+        const l = gate[ho + i], z = port[ho + i], prev = t > 0 ? hidden[ho - H + i] : boundary[i];
+        const gp = (1 - l) * gh[ho + i] * (1 - z * z), gs = gh[ho + i] * (prev - z) * l * (1 - l), r = i * I;
+        for (let j = 0; j < I; j++) { const x = U[uo + j]; G.B[r + j] += gp * x; G.G[r + j] += gs * x; }
+        G.b[i] += gp; G.g[i] += gs;
+      }
+      for (let j = 0; j < O; j++) { const dj = d[t * O + j], r = j * H; for (let i = 0; i < H; i++) G.C[r + i] += dj * hidden[ho + i]; G.c[j] += dj; }
+    }
+    return G;
+  }
+
+  // ---------- observe: the library call, one path from the live state ----------
+  observe(U, T, target, opts) {
+    const rate = opts && opts.rate !== undefined ? opts.rate : 1, backtrack = !!(opts && opts.backtrack), write = !(opts && opts.write === false), known = opts && opts.known;
+    const boundary = Float64Array.from(this.h), f = this.forward(U, T, boundary);
+    this.h.set(f.hidden.subarray((T - 1) * this.H, T * this.H));
+    const loss = this.loss(f.output, target, T, known), slowLoss = this.loss(f.slow, target, T, known);
+    this._gradient(U, T, boundary, f.hidden, f.gate, f.port, f.slow, target, known, this.grad);
+    let writes = 0; if (write && this.D > 0) writes = this._writePath(U, T, f.hidden, f.slow, target, known);
+    const a = this._admit(U, T, boundary, target, known, slowLoss, rate, backtrack);
+    return { updated: a.updated, reason: a.reason, output: f.output, loss, slowLoss, finalLoss: a.finalLoss, acceptedRate: a.acceptedRate, replayLosses: a.replayLosses, replays: a.replays, writes };
+  }
+  _writePath(U, T, hidden, slow, target, known) { // witness first, then code with the moved mean and write in order, as the library
+    const I = this.I, H = this.H, O = this.O; let n = 0;
+    for (let t = 0; t < T; t++) this._witnessNorm(U, t * I); // the input norm moves first, by every witnessed moment, as the library
+    for (let t = 0; t < T; t++) this._witness(U, t * I, hidden, t * H);
+    const resid = new Float64Array(O);
+    for (let t = 0; t < T; t++) {
+      this._reading(U, t * I, hidden, t * H); const k = this._code(this.ci, this.cv);
+      for (let j = 0; j < O; j++) resid[j] = target[t * O + j] - slow[t * O + j];
+      this._write(this.ci, this.cv, k, resid, 0, known, t * O); n++;
+    }
+    return n;
+  }
+  _admit(U, T, boundary, target, known, initial, rate, backtrack) {
+    const g = this.grad;
+    if (!backtrack) {
+      for (const k of PARAMS) { const p = this[k], d = g[k]; for (let i = 0; i < p.length; i++) p[i] -= rate * d[i]; }
+      this._applyMask(); this.updates++; this.revision++; return { updated: true, reason: 'updated', finalLoss: null, acceptedRate: rate, replayLosses: [], replays: 0 };
+    }
+    let norm2 = 0; for (const k of PARAMS) { const d = g[k]; for (let i = 0; i < d.length; i++) norm2 += d[i] * d[i]; }
+    const losses = []; let replays = 0;
+    if (initial !== null && isFinite(norm2) && norm2 > 0 && rate > 0) {
+      const trial = {}; for (const k of PARAMS) trial[k] = new Float64Array(this[k].length);
+      for (let index = 0; index < 16; index++) {
+        const step = rate * Math.pow(0.5, index);
+        for (const k of PARAMS) { const p = this[k], d = g[k], t = trial[k]; for (let i = 0; i < p.length; i++) t[i] = p[i] - step * d[i]; }
+        const f = this.forward(U, T, boundary, { params: trial, noRead: true }), loss = this.loss(f.slow, target, T, known); replays++; losses.push(loss);
+        const floor = 64 * EPS * Math.max(Math.abs(initial), Math.abs(loss), TINY);
+        if (isFinite(loss) && loss < initial - floor && loss <= initial - 1e-4 * step * norm2) {
+          for (const k of PARAMS) this[k].set(trial[k]); this._applyMask(); this.updates++; this.revision++; this.replays += replays;
+          return { updated: true, reason: 'updated', finalLoss: loss, acceptedRate: step, replayLosses: losses, replays };
+        }
+      }
+    }
+    this.replays += replays; this.rejected++;
+    return { updated: false, reason: 'no_decreasing_parameter_step', finalLoss: initial, acceptedRate: 0, replayLosses: losses, replays };
+  }
+
+  // ---------- the continuing actor: one tick at a time, learning over a window ----------
+  step(u, out) { // advance the live context by one moment; the prediction (slow readout plus record read) goes to `out`
+    const I = this.I, H = this.H, O = this.O, w = this.w, ho = w * H;
+    if (this.pending) throw new Error('teach or skip the previous step first');
+    this.wu.set(u, w * I); this.wprev.set(this.h, ho);
+    this._gatePort(this.wu, w * I, this.wgate, ho, this.wport, ho, this.G, this.g, this.B, this.b);
+    for (let i = 0; i < H; i++) { const l = this.wgate[ho + i]; this.h[i] = l * this.h[i] + (1 - l) * this.wport[ho + i]; }
+    this.whid.set(this.h, ho);
+    this._slow(this.h, 0, this.wslow, w * O, this.C, this.c); this.lastSlow.set(this.wslow.subarray(w * O, w * O + O));
+    if (this.D > 0) { this._reading(u, 0, this.h, 0); const n = this._code(this.ci, this.cv); this._read(this.ci, this.cv, n, this.lastRead, 0); this.wci.set(this.ci, w * this.k); this.wcv.set(this.cv, w * this.k); this.wcn[w] = n; } else this.lastRead.fill(0);
+    if (out) for (let j = 0; j < O; j++) out[j] = this.lastSlow[j] + this.lastRead[j];
+    this.pending = true;
+  }
+  teach(target, known) { // the witnessed outcome of the last step; `known` masks the entries observed (all when omitted)
+    if (!this.pending) throw new Error('nothing to teach'); const O = this.O, w = this.w;
+    this.wtarget.set(target, w * O); if (known) this.wknown.set(known, w * O); else this.wknown.fill(1, w * O, w * O + O);
+    this.w++; this.pending = false; return this.w >= this.W;
+  }
+  skip() { if (!this.pending) throw new Error('nothing to skip'); const O = this.O, w = this.w; this.wtarget.fill(0, w * O, w * O + O); this.wknown.fill(0, w * O, w * O + O); this.w++; this.pending = false; return this.w >= this.W; }
+  flush(rate, opts) { // learn the window: the adjoint step on the slow parameters and the writes into the records
+    const T = this.w; if (!T) return null; const H = this.H, I = this.I, O = this.O, write = !(opts && opts.write === false), clip = opts && opts.clip;
+    const boundary = this.wprev.subarray(0, H), U = this.wu.subarray(0, T * I), slow = this.wslow, target = this.wtarget, known = this.wknown;
+    const g = this._gradient(U, T, boundary, this.whid, this.wgate, this.wport, slow, target, known, this.grad);
+    let writes = 0;
+    if (write && this.D > 0) {
+      if (opts && opts.recode === false) { // write into the codes that were read, without coding the window again: the world's cheaper path
+        const resid = new Float64Array(O), k = this.k; for (let t = 0; t < T; t++) this._witnessNorm(U, t * I); for (let t = 0; t < T; t++) this._witness(U, t * I, this.whid, t * H);
+        for (let t = 0; t < T; t++) { let any = 0; for (let j = 0; j < O; j++) { resid[j] = target[t * O + j] - slow[t * O + j]; any += known[t * O + j]; } if (!any) continue; this._write(this.wci.subarray(t * k, t * k + k), this.wcv.subarray(t * k, t * k + k), this.wcn[t], resid, 0, known, t * O); writes++; }
+      } else writes = this._writePath(U, T, this.whid, slow, target, known);
+    }
+    let updated = false, scale = rate;
+    if (rate > 0) {
+      if (clip) { let n2 = 0; for (const k of PARAMS) { const d = g[k]; for (let i = 0; i < d.length; i++) n2 += d[i] * d[i]; } const n = Math.sqrt(n2); if (n > clip) scale = rate * clip / n; }
+      if (opts && opts.backtrack) { const initial = this.loss(slow, target, T, known); updated = this._admit(U, T, Float64Array.from(boundary), target, known, initial, rate, true).updated; }
+      else { for (const k of PARAMS) { const p = this[k], d = g[k]; for (let i = 0; i < p.length; i++) p[i] -= scale * d[i]; } this._applyMask(); this.updates++; this.revision++; updated = true; }
+    }
+    this.w = 0; return { updated, writes, steps: T };
+  }
+
+  // ---------- planning: repair declared input ports of a private path under the acquired model ----------
+  // U: T*I, the path to repair in place at the control ports; goal: T*O; weights: O (zero excludes an output);
+  // controls: Int32Array of input indices; lo/hi bounds, one number each or one per input port; fb feeds predicted
+  // outputs forward; returns statistics.
+  plan(U, T, goal, weights, controls, lo, hi, opts) {
+    const loA = typeof lo === 'number' ? null : lo, hiA = typeof hi === 'number' ? null : hi, loOf = j => loA ? loA[j] : lo, hiOf = j => hiA ? hiA[j] : hi, hold = !!(opts && opts.fixedRead);
+    const I = this.I, H = this.H, O = this.O, fb = (opts && opts.feedback) || null, add = !!(opts && opts.feedbackAdd), fwd = { feedback: fb, feedbackAdd: add }, rate = opts && opts.rate !== undefined ? opts.rate : 1, maxSteps = opts && opts.maxSteps !== undefined ? opts.maxSteps : 8, maxBack = opts && opts.maxBacktracks !== undefined ? opts.maxBacktracks : 8, tol = opts && opts.tolerance !== undefined ? opts.tolerance : 1e-9;
+    const boundary = Float64Array.from(opts && opts.state ? opts.state : this.h);
+    const cost = f => { let s = 0; for (let t = 0; t < T; t++) for (let j = 0; j < O; j++) { const e = f.output[t * O + j] - goal[t * O + j]; s += weights[j] * e * e; } return 0.5 * s / (T * O); };
+    let current = Float64Array.from(U), f = this.forward(current, T, boundary, fwd), replays = 1;
+    if (hold) fwd.fixedRead = f.read; // the records patch the prediction where the being stands; a proposal is judged by the slow model from there
+    const initialOutput = Float64Array.from(f.output.subarray(0, O)); // the first moment's prediction for the unrepaired path, for the caller's readback
+    const costs = [cost(f)], steps = []; let reason = 'step_cap', converged = false, residual = null;
+    if (!isFinite(costs[0])) return { inputs: current, losses: costs, steps, replays, reason: 'nonfinite_initial', converged: false };
+    const du = new Float64Array(T * I), d = new Float64Array(O), gh = new Float64Array(H), carried = new Float64Array(H), proposal = new Float64Array(T * I);
+    const isControl = new Uint8Array(I); for (const c of controls) isControl[c] = 1;
+    const inv = 1 / (T * O);
+    for (let iteration = 0; iteration <= maxSteps; iteration++) {
+      // the input gradient: error at the full prediction, sensitivity through the slow path, feedback through the chain
+      du.fill(0); carried.fill(0);
+      for (let t = T - 1; t >= 0; t--) {
+        const ho = t * H, uo = t * I;
+        for (let j = 0; j < O; j++) d[j] = weights[j] * (f.output[t * O + j] - goal[t * O + j]) * inv;
+        if (fb && t + 1 < T) for (const [oi, ii] of fb) { d[oi] += du[(t + 1) * I + ii]; if (add) du[uo + ii] += du[(t + 1) * I + ii]; }
+        for (let i = 0; i < H; i++) { let s = carried[i]; for (let j = 0; j < O; j++) s += this.C[j * H + i] * d[j]; gh[i] = s; }
+        for (let i = 0; i < H; i++) {
+          const l = f.gate[ho + i], z = f.port[ho + i], prev = t > 0 ? f.hidden[ho - H + i] : boundary[i];
+          const gp = (1 - l) * gh[i] * (1 - z * z), gs = gh[i] * (prev - z) * l * (1 - l), r = i * I;
+          for (let j = 0; j < I; j++) du[uo + j] += this.B[r + j] * gp + this.G[r + j] * gs;
+          carried[i] = l * gh[i];
+        }
+      }
+      let finite = true, res = 0;
+      for (let t = 0; t < T; t++) for (let j = 0; j < I; j++) { const i = t * I + j; if (!isControl[j]) { du[i] = 0; continue; } if (!isFinite(du[i])) finite = false; const p = Math.min(hiOf(j), Math.max(loOf(j), current[i] - du[i])); res = Math.max(res, Math.abs(current[i] - p)); }
+      if (!finite) { reason = 'nonfinite_input_gradient'; break; }
+      residual = res; if (res <= tol) { converged = true; reason = 'projected_stationary'; break; }
+      if (iteration === maxSteps) break;
+      let accepted = false, step = rate;
+      for (let back = 0; back < maxBack; back++) {
+        let slope = 0;
+        for (let i = 0; i < T * I; i++) { const j = i % I; proposal[i] = isControl[j] ? Math.min(hiOf(j), Math.max(loOf(j), current[i] - step * du[i])) : current[i]; slope += du[i] * (proposal[i] - current[i]); }
+        if (slope < 0) {
+          const replay = this.forward(proposal, T, boundary, fwd), c = cost(replay); replays++;
+          if (isFinite(c) && c < costs[costs.length - 1] && c <= costs[costs.length - 1] + 1e-4 * slope) { current.set(proposal); f = replay; costs.push(c); steps.push(step); accepted = true; break; }
+        }
+        step *= 0.5;
+      }
+      if (!accepted) { reason = 'no_decreasing_causal_step'; break; }
+    }
+    return { inputs: current, prediction: f, initialOutput, losses: costs, steps, replays, reason, converged, residual };
+  }
+
+  // ---------- counts for the price and the page ----------
+  get cells() { return this.D; }
+  get slowCount() { return this.H * this.I * 2 + this.H * 2 + this.O * this.H + this.O; }
+  snapshot() { const s = { params: this.parameters(), h: Float64Array.from(this.h) }; if (this.D > 0) { s.table = Float64Array.from(this.table); s.mean = Float64Array.from(this.mean); s.seen = this.seen; s.inputNorm = this.inputNorm; } return s; }
+  restore(s) { this.setParameters(s.params); this.h.set(s.h); if (this.D > 0 && s.table) { this.table.set(s.table); this.mean.set(s.mean); this.seen = s.seen; if (s.inputNorm) this.inputNorm = s.inputNorm; } this.w = 0; this.pending = false; }
+}
+
+return { Mulberry, gauss, sigmoid, RecordPatch, PARAMS };
+});
+
+</script>
+<script>
+/* cadence-bodies core: the substrate, soft bodies, the two-patch brain, the genome and the population. No DOM.
+   Used by web/index.html (inlined after patch.js), sim/probe.js and sim/gaitlab.js (node). */
+(function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory(require('./patch.js')); else root.CB = factory(root.CP); })(typeof self !== 'undefined' ? self : this, function (CP) {
+'use strict';
+const { Mulberry, RecordPatch } = CP;
+
+// ---------- the rules: each a flag, each one physical rule ----------
+const RULES = { rock: true, mud: true, bite: true, injury: true, growth: true, devnoise: true, night: false, split: true,
+  records: true, slow: true, plan: true, noise: true }; // the last four gate what the genome may express: the controls
+const CFG = { w: 96, h: 96, soil: 6, grow: 0.05, decay: 0.01, diffuse: 0.05, day: 900, season: 9000, contrastMin: 0.25, foodCap: 8, rockFraction: 0.10, mudFraction: 0.22, mudKeep: 0.45, warmup: 400, nightBelow: 0.35,
+  scentPasses: 4, substeps: 3, iters: 2, muscleAmp: 0.35, muscleLag: 0.5, contact: 0.6, contactPush: 0.4, sense: 2.5, aheadAt: 1.0, growAt: 6, birthNodes: 3, biteLands: 0.5, biteTake: 1, window: 8, clip: 5, backtrack: false, recode: false, fixedRead: true, policyCells: false, maxNodes: 10, maxMuscles: 8 };
+const POP = { initial: 220, birth: 20, max: 500, base: 0.035, node: 0.006, muscle: 0.02, bite: 0.1, read: 0.0001, channel: 0.0003, cell: 0.01 / 256, write: 0.0005, replay: 0.001, slow: 0.000004 };
+const N = CFG.w * CFG.h;
+const DIRS = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+const MAXN = CFG.maxNodes, MAXM = CFG.maxMuscles, MAXS = 2 * MAXN;
+// the reading: senses, then one strain per muscle port; the clock; the motor (muscles then the mouth)
+const SENSES = ['food L-R', 'food ahead', 'food here', 'rock ahead', 'other ahead', 'energy', 'pain', 'light', 'grip', 'speed', 'turn', 'size'];
+const NS = SENSES.length, SN = NS + MAXM, NM = MAXM + 1, NI = SN + 2 + NM, NOUT = SN + 1, HP = 16, HM = 16, ACTIVE = 16, FANIN = 8;
+const PORT = { policy: { inputs: NI, hidden: HP, outputs: NM }, model: { inputs: NI, hidden: HM, outputs: NOUT } };
+const CLOCK = SN, MOTOR = SN + 2; // offsets in the reading
+const S = {}; SENSES.forEach((n, i) => S[n] = i);
+// the reading in groups: a cortex is a block of channels that reads the groups its mask names
+const RG = { chemo: [S['food L-R'], S['food ahead'], S['food here']], obstacle: [S['rock ahead'], S['other ahead']], self: [S.energy, S.pain, S.light, S.grip], motion: [S.speed, S.turn, S.size],
+  strain: Array.from({ length: MAXM }, (_, m) => NS + m), clock: [CLOCK, CLOCK + 1], motor: Array.from({ length: NM }, (_, m) => MOTOR + m) };
+const RG_NAMES = Object.keys(RG), gbit = name => 1 << RG_NAMES.indexOf(name), ALL_MASK = (1 << RG_NAMES.length) - 1, MAXH = 64, SLOWEST = [8, 32, 128];
+function maskUnits(mask) { const u = new Uint8Array(NI); RG_NAMES.forEach((n, k) => { if (mask & (1 << k)) for (const j of RG[n]) u[j] = 1; }); return u; }
+function maskCount(mask) { let c = 0; RG_NAMES.forEach((n, k) => { if (mask & (1 << k)) c += RG[n].length; }); return c; }
+function maskNames(mask) { return RG_NAMES.filter((n, k) => mask & (1 << k)); }
+function brainH(cortices) { return cortices.reduce((s, c) => s + c.channels, 0); }
+function inputMask(cortices) { const H = brainH(cortices), m = new Uint8Array(H * NI); let row = 0; for (const c of cortices) { const u = maskUnits(c.mask); for (let i = 0; i < c.channels; i++, row++) m.set(u, row * NI); } return m; }
+function blockTimescales(n, slowest) { const ts = new Float64Array(n); for (let i = 0; i < n; i++) ts[i] = Math.exp(Math.log(2) + (n > 1 ? (Math.log(SLOWEST[slowest]) - Math.log(2)) * i / (n - 1) : 0)); return ts; }
+function timescalesOf(cortices) { const ts = new Float64Array(brainH(cortices)); let row = 0; for (const c of cortices) { ts.set(blockTimescales(c.channels, c.slowest), row); row += c.channels; } return ts; }
+function cortexStart(cortices, k) { let s = 0; for (let i = 0; i < k; i++) s += cortices[i].channels; return s; }
+function cortexOfRow(cortices, row) { let s = 0; for (let k = 0; k < cortices.length; k++) { s += cortices[k].channels; if (row < s) return k; } return cortices.length - 1; }
+function defaultBrain() { // the founders: a motor cortex of eight fast channels on the scent and the clock, a context cortex on everything; one model cortex on everything
+  return { policy: [{ mask: gbit('chemo') | gbit('clock'), channels: 8, slowest: 0 }, { mask: ALL_MASK, channels: 8, slowest: 2 }], model: [{ mask: ALL_MASK, channels: 16, slowest: 2 }] }; }
+function cloneBrain(br) { return { policy: br.policy.map(c => Object.assign({}, c)), model: br.model.map(c => Object.assign({}, c)) }; }
+function applyMask(th, cortices) { const m = inputMask(cortices); for (let i = 0; i < m.length; i++) if (!m[i]) { th.B[i] = 0; th.G[i] = 0; } }
+const wrap = (v, m) => (v >= 0 && v < m) ? v : ((v % m) + m) % m, ddx = (a, b, m) => { let d = b - a; if (d > m / 2) d -= m; else if (d < -m / 2) d += m; return d; };
+function gauss(rng) { return rng.normals(1)[0]; }
+
+// blobs on the torus for rock and mud
+function blobs(rng, fraction, count, maxLen) {
+  const out = new Uint8Array(N); let filled = 0; const target = fraction * N;
+  for (let b = 0; b < count && filled < target; b++) {
+    let x = (rng.random() * CFG.w) | 0, y = (rng.random() * CFG.h) | 0; const len = 6 + (rng.random() * (maxLen || 40)) | 0;
+    for (let s = 0; s < len; s++) {
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const i = ((y + dy + CFG.h) % CFG.h) * CFG.w + (x + dx + CFG.w) % CFG.w; if (!out[i]) { out[i] = 1; filled++; } }
+      const [dx, dy] = DIRS[(rng.random() * 4) | 0]; x = (x + dx + CFG.w) % CFG.w; y = (y + dy + CFG.h) % CFG.h;
+    }
+  }
+  return out;
+}
+
+// ---------- the substrate: mass in soil and food, one sun, rock, mud ----------
+class Substrate {
+  constructor(seed, rules, cfg) {
+    this.rules = Object.assign({}, RULES, rules || {}); this.cfg = Object.assign({}, CFG, cfg || {}); this.rng = new Mulberry(seed); this.tick = 0;
+    this.rock = this.rules.rock ? blobs(this.rng, this.cfg.rockFraction, 200) : new Uint8Array(N);
+    this.mud = this.rules.mud ? blobs(this.rng, this.cfg.mudFraction, 120, 60) : new Uint8Array(N);
+    this.keep = new Float64Array(N); for (let i = 0; i < N; i++) this.keep[i] = this.mud[i] ? this.cfg.mudKeep : 1;
+    this.soil = new Int32Array(N); for (let i = 0; i < N; i++) this.soil[i] = this.rock[i] ? 0 : this.cfg.soil;
+    this.food = new Int32Array(N); this.lightRow = new Float64Array(CFG.w); this.contrast = 0; this.peak = 0;
+    this.scent = new Float64Array(N); this._tmp = new Float64Array(N);
+    for (let t = 0; t < this.cfg.warmup; t++) this.step(); this.tick = 0;
+  }
+  smell() { // the scent of food: the food field blurred over the torus, what a head can smell from a few cells away
+    const a = this.scent, b = this._tmp, w = CFG.w, h = CFG.h, r = 2, k = 1 / (2 * r + 1);
+    for (let i = 0; i < N; i++) a[i] = this.food[i];
+    for (let it = 0; it < this.cfg.scentPasses; it++) {
+      for (let y = 0; y < h; y++) { const o = y * w; let s = 0; for (let d = -r; d <= r; d++) s += a[o + ((d + w) % w)]; for (let x = 0; x < w; x++) { b[o + x] = s * k; s += a[o + ((x + r + 1) % w)] - a[o + ((x - r + w) % w)]; } }
+      for (let x = 0; x < w; x++) { let s = 0; for (let d = -r; d <= r; d++) s += b[((d + h) % h) * w + x]; for (let y = 0; y < h; y++) { a[y * w + x] = s * k; s += b[((y + r + 1) % h) * w + x] - b[((y - r + h) % h) * w + x]; } }
+    }
+  }
+  scentAt(x, y) { return this.scent[this.cell(x, y)]; }
+  cell(x, y) { const xi = x | 0, yi = y | 0; return ((yi >= 0 && yi < CFG.h) ? yi : (((yi % CFG.h) + CFG.h) % CFG.h)) * CFG.w + ((xi >= 0 && xi < CFG.w) ? xi : (((xi % CFG.w) + CFG.w) % CFG.w)); }
+  light() {
+    const t = this.tick, c = CFG.contrastMin + (1 - CFG.contrastMin) * 0.5 * (1 - Math.cos(2 * Math.PI * t / CFG.season));
+    this.contrast = c; this.peak = ((t / CFG.day) % 1) * CFG.w;
+    for (let x = 0; x < CFG.w; x++) this.lightRow[x] = 0.5 + 0.5 * c * Math.cos(2 * Math.PI * (x / CFG.w - t / CFG.day));
+  }
+  step() {
+    this.light();
+    const { soil, food, rng, rock } = this, cfg = this.cfg;
+    for (let i = 0; i < N; i++) { // growth: fertility scales with the soil up to four units; one draw per cell
+      const u = rng.random(); if (rock[i] || soil[i] <= 0 || food[i] >= cfg.foodCap) continue;
+      if (u < cfg.grow * this.lightRow[i % CFG.w] * Math.min(soil[i], 4) / 4) { soil[i]--; food[i]++; }
+    }
+    for (let i = 0; i < N; i++) { const u = rng.random(); if (u < cfg.decay && food[i] > 0) { food[i]--; soil[i]++; } }
+    for (let i = 0; i < N; i++) { // diffusion of soil to a random neighbour
+      const u = rng.random(); if (u >= cfg.diffuse || soil[i] <= 0) continue; const d = Math.min((rng.random() * 4) | 0, 3);
+      const x = i % CFG.w, y = (i / CFG.w) | 0; const j = ((y + DIRS[d][1] + CFG.h) % CFG.h) * CFG.w + (x + DIRS[d][0] + CFG.w) % CFG.w; if (rock[j]) continue; soil[i]--; soil[j]++;
+    }
+    this.smell(); this.tick++;
+  }
+  dark(i) { return this.rules.night && this.lightRow[i % CFG.w] < this.cfg.nightBelow; }
+  get mass() { let m = 0; for (let i = 0; i < N; i++) m += this.soil[i] + this.food[i]; return m; }
+}
+
+// ---------- the genome: a body graph, a clock, life genes, and the slow parameters of two patches ----------
+const GENE = { freq: [0.12, 0.18, 0.25, 0.35, 0.5], splitAt: [24, 32, 44, 60, 80], noise: [0, 0.03, 0.08, 0.15], horizon: [0, 1, 2, 4], cells: [0, 128, 256, 512, 1024],
+  slowRate: [0, 0.3, 1, 3], recordRate: [0.2, 0.5, 1], planRadius: [0.25, 0.5, 1], dFood: [0, 0.25, 0.5, 1], dEnergy: [0, 0.25, 0.5, 1], dPain: [0, 0.25, 0.5, 1], dSpeed: [0, 0.25, 0.5, 1] };
+const G = (g, k) => GENE[k][g[k]];
+const P = { seed: 0 };
+function randomTheta(port, cortices, seed, cScale) { // the library's initialization at the cortices' width, masked to what each cortex reads, the readout scaled down
+  const p = new RecordPatch(Object.assign({}, port, { hidden: brainH(cortices), seed, cells: 0, timescales: timescalesOf(cortices) })).parameters(); for (let i = 0; i < p.C.length; i++) p.C[i] *= cScale; applyMask(p, cortices); return p; }
+// theta surgery: channels inserted or deleted at a row, keeping every other weight where it was
+function rowsInsert(th, port, at, count, rng, units, ts) {
+  const I = port.inputs, O = port.outputs, H0 = th.b.length, H1 = H0 + count;
+  const B = new Float64Array(H1 * I), Gm = new Float64Array(H1 * I), b = new Float64Array(H1), g = new Float64Array(H1), C = new Float64Array(O * H1);
+  for (let i = 0; i < H0; i++) { const ni = i < at ? i : i + count; B.set(th.B.subarray(i * I, (i + 1) * I), ni * I); Gm.set(th.G.subarray(i * I, (i + 1) * I), ni * I); b[ni] = th.b[i]; g[ni] = th.g[i]; for (let o = 0; o < O; o++) C[o * H1 + ni] = th.C[o * H0 + i]; }
+  for (let k = 0; k < count; k++) { const ni = at + k; for (let j = 0; j < I; j++) B[ni * I + j] = units[j] ? 0.3 * gauss(rng) / Math.sqrt(I) : 0; const ret = 1 - 1 / ts[k]; g[ni] = Math.log(ret / (1 - ret)); }
+  th.B = B; th.G = Gm; th.b = b; th.g = g; th.C = C;
+}
+function rowsDelete(th, port, at, count) {
+  const I = port.inputs, O = port.outputs, H0 = th.b.length, H1 = H0 - count;
+  const B = new Float64Array(H1 * I), Gm = new Float64Array(H1 * I), b = new Float64Array(H1), g = new Float64Array(H1), C = new Float64Array(O * H1);
+  for (let i = 0, ni = 0; i < H0; i++) { if (i >= at && i < at + count) continue; B.set(th.B.subarray(i * I, (i + 1) * I), ni * I); Gm.set(th.G.subarray(i * I, (i + 1) * I), ni * I); b[ni] = th.b[i]; g[ni] = th.g[i]; for (let o = 0; o < O; o++) C[o * H1 + ni] = th.C[o * H0 + i]; ni++; }
+  th.B = B; th.G = Gm; th.b = b; th.g = g; th.C = C;
+}
+function mutateBrain(c, rng, r) { // structure: a mask bit flipped, a cortex added, removed, resized or split; the readout of new channels starts at zero
+  for (const name of ['policy', 'model']) {
+    const cx = c.brain[name], th = c.theta[name], port = PORT[name];
+    if (rng.random() < r.mask) { const k = (rng.random() * cx.length) | 0, bit = 1 << ((rng.random() * RG_NAMES.length) | 0), m = cx[k].mask ^ bit; if (m) { const was = maskUnits(cx[k].mask), now = maskUnits(m), s0 = cortexStart(cx, k); cx[k].mask = m;
+      for (let i = s0; i < s0 + cx[k].channels; i++) for (let j = 0; j < NI; j++) { if (now[j] && !was[j]) th.B[i * NI + j] = 0.3 * gauss(rng) / Math.sqrt(NI); else if (!now[j]) { th.B[i * NI + j] = 0; th.G[i * NI + j] = 0; } } } }
+    if (rng.random() < r.cortexAdd && brainH(cx) + 4 <= MAXH) { const src = cx[(rng.random() * cx.length) | 0], bit = 1 << ((rng.random() * RG_NAMES.length) | 0), mask = (src.mask ^ bit) || src.mask, channels = rng.random() < 0.5 ? 4 : 8, slowest = (rng.random() * SLOWEST.length) | 0;
+      rowsInsert(th, port, brainH(cx), channels, rng, maskUnits(mask), blockTimescales(channels, slowest)); cx.push({ mask, channels, slowest }); }
+    if (rng.random() < r.cortexRemove && cx.length > 1) { const k = (rng.random() * cx.length) | 0; rowsDelete(th, port, cortexStart(cx, k), cx[k].channels); cx.splice(k, 1); }
+    if (rng.random() < r.cortexResize) { const k = (rng.random() * cx.length) | 0, c0 = cx[k], grow = rng.random() < 0.5; if (grow && brainH(cx) + 2 <= MAXH) { rowsInsert(th, port, cortexStart(cx, k) + c0.channels, 2, rng, maskUnits(c0.mask), blockTimescales(2, c0.slowest)); c0.channels += 2; } else if (!grow && c0.channels > 2) { rowsDelete(th, port, cortexStart(cx, k) + c0.channels - 2, 2); c0.channels -= 2; } }
+    if (rng.random() < r.cortexSplit) { const k = (rng.random() * cx.length) | 0, c0 = cx[k], bits = RG_NAMES.map((n, i) => 1 << i).filter(b => c0.mask & b); if (c0.channels >= 4 && bits.length >= 2) {
+      let ma = 0, mb = 0; for (const b of bits) { if (rng.random() < 0.5) ma |= b; else mb |= b; } if (!ma) { ma = bits[0]; mb &= ~ma; } if (!mb) { mb = bits[bits.length - 1]; ma &= ~mb; }
+      const half = c0.channels >> 1, s0 = cortexStart(cx, k); cx.splice(k, 1, { mask: ma, channels: half, slowest: c0.slowest }, { mask: mb, channels: c0.channels - half, slowest: c0.slowest });
+      const ua = maskUnits(ma), ub = maskUnits(mb); for (let i = s0; i < s0 + c0.channels; i++) { const u = i < s0 + half ? ua : ub; for (let j = 0; j < NI; j++) if (!u[j]) { th.B[i * NI + j] = 0; th.G[i * NI + j] = 0; } } } }
+  }
+}
+function duplicateChannel(c, srcPort, dstPort, rng, mirror) { // a new muscle's drive: the channel that drives the source port is duplicated with a shifted clock phase (or mirrored), and the new port reads the copy
+  const th = c.theta.policy, cx = c.brain.policy, H = th.b.length, I = NI; if (brainH(cx) + 1 > MAXH) return;
+  let best = 0, bv = -1; for (let i = 0; i < H; i++) { const v = Math.abs(th.C[srcPort * H + i]); if (v > bv) { bv = v; best = i; } }
+  const k = cortexOfRow(cx, best), at = best + 1; rowsInsert(th, PORT.policy, at, 1, rng, maskUnits(cx[k].mask), blockTimescales(1, cx[k].slowest)); cx[k].channels++;
+  const H1 = H + 1; for (let j = 0; j < I; j++) { th.B[at * I + j] = th.B[best * I + j]; th.G[at * I + j] = th.G[best * I + j]; } th.b[at] = th.b[best]; th.g[at] = th.g[best];
+  if (mirror) th.B[at * I + S['food L-R']] = -th.B[best * I + S['food L-R']]; // a bilateral pair steers by the sign of the scent's side
+  else { const ang = rng.random() * 2 * Math.PI, cs = Math.cos(ang), sn = Math.sin(ang), s0 = th.B[best * I + CLOCK], c0 = th.B[best * I + CLOCK + 1]; th.B[at * I + CLOCK] = s0 * cs - c0 * sn; th.B[at * I + CLOCK + 1] = s0 * sn + c0 * cs; }
+  for (let i = 0; i < H1; i++) th.C[dstPort * H1 + i] = 0; th.C[dstPort * H1 + at] = th.C[srcPort * H1 + best]; th.c[dstPort] = th.c[srcPort];
+}
+function copyTheta(t) { const c = {}; for (const k in t) c[k] = Float64Array.from(t[k]); return c; }
+function founderGenome(rng) { // a three-node chain with two longitudinal muscles and a ratchet grip; random slow weights (the gait lab sets the motor rows)
+  const g = { hue: rng.random(),
+    nodes: [{ x: 0, y: 0, along: 0.9, side: 0.1, back: 0.15 }, { x: -1, y: 0, along: 0.9, side: 0.1, back: 0.15 }, { x: -2, y: 0, along: 0.9, side: 0.1, back: 0.15 }],
+    springs: [{ a: 0, b: 1, muscle: 1, port: 0 }, { a: 1, b: 2, muscle: 1, port: 1 }],
+    freq: 2, splitAt: 1, noise: 1, horizon: 0, cells: 2, slowRate: 1, recordRate: 1, planRadius: 1, dFood: 3, dEnergy: 2, dPain: 2, dSpeed: 1,
+    brain: defaultBrain(), theta: null };
+  g.theta = { policy: randomTheta(PORT.policy, g.brain.policy, (rng.random() * 4294967296) >>> 0, 0.3), model: randomTheta(PORT.model, g.brain.model, (rng.random() * 4294967296) >>> 0, 0.1) }; return g;
+}
+function cloneGenome(g) { const c = { hue: g.hue, nodes: g.nodes.map(n => Object.assign({}, n)), springs: g.springs.map(s => Object.assign({}, s)), freq: g.freq, splitAt: g.splitAt, noise: g.noise, horizon: g.horizon, cells: g.cells, slowRate: g.slowRate, recordRate: g.recordRate, planRadius: g.planRadius, dFood: g.dFood, dEnergy: g.dEnergy, dPain: g.dPain, dSpeed: g.dSpeed, brain: g.brain ? cloneBrain(g.brain) : defaultBrain(), theta: { policy: copyTheta(g.theta.policy), model: copyTheta(g.theta.model) } };
+  if (!g.brain) { applyMask(c.theta.policy, c.brain.policy); applyMask(c.theta.model, c.brain.model); } return c; } // a genome without cortices gets the founders' layout
+function stepGene(v, n, rng) { return Math.max(0, Math.min(n - 1, v + (rng.random() < 0.5 ? -1 : 1))); }
+function freePort(g) { const used = new Set(g.springs.filter(s => s.muscle).map(s => s.port)); for (let p = 0; p < MAXM; p++) if (!used.has(p)) return p; return -1; }
+function degree(g, i) { let d = 0; for (const s of g.springs) if (s.a === i || s.b === i) d++; return d; }
+function mutateTheta(t, rng, p, sigma) { for (const k in t) { const a = t[k], s = (k === 'B' || k === 'C') ? sigma : sigma * 0.5; for (let i = 0; i < a.length; i++) if (rng.random() < p) a[i] += s * gauss(rng); } }
+function mutate(g, rng, rates) {
+  const c = cloneGenome(g), r = Object.assign({ gene: 0.1, body: 0.2, add: 0.12, remove: 0.06, mirror: 0.05, muscle: 0.1, spring: 0.06, grip: 0.12, theta: 0.02, sigma: 0.1, mask: 0.05, cortexAdd: 0.05, cortexRemove: 0.04, cortexResize: 0.05, cortexSplit: 0.03 }, rates || {});
+  for (const k of Object.keys(GENE)) if (rng.random() < r.gene) c[k] = stepGene(c[k], GENE[k].length, rng);
+  for (let i = 1; i < c.nodes.length; i++) if (rng.random() < r.body) { c.nodes[i].x += 0.2 * gauss(rng); c.nodes[i].y += 0.2 * gauss(rng); }
+  for (const n of c.nodes) if (rng.random() < r.grip) { for (const k of ['along', 'side', 'back']) n[k] = Math.min(1, Math.max(0.02, n[k] * Math.exp(0.25 * gauss(rng)))); }
+  if (rng.random() < r.add && c.nodes.length < MAXN) { // a new node beside an existing one, joined to it and, half the time, to another neighbour: a triangle
+    const j = (rng.random() * c.nodes.length) | 0, base = c.nodes[j], ang = rng.random() * 2 * Math.PI, len = 0.7 + 0.6 * rng.random();
+    const node = { x: base.x + Math.cos(ang) * len, y: base.y + Math.sin(ang) * len, along: base.along, side: base.side, back: base.back }; c.nodes.push(node); const i = c.nodes.length - 1;
+    const muscle = rng.random() < 0.5 ? 1 : 0, port = muscle ? freePort(c) : -1; c.springs.push({ a: j, b: i, muscle: port >= 0 ? 1 : 0, port });
+    if (rng.random() < 0.5) { let best = -1, bd = 1e9; for (let k = 0; k < i; k++) { if (k === j) continue; const d = Math.hypot(c.nodes[k].x - node.x, c.nodes[k].y - node.y); if (d < bd && d < 2.2) { bd = d; best = k; } } if (best >= 0) c.springs.push({ a: best, b: i, muscle: 0, port: -1 }); }
+    if (port >= 0 && rng.random() < 0.5) { // the new muscle copies another muscle's drive with a shifted phase: a duplicated segment
+      const others = c.springs.filter(s => s.muscle && s.port !== port); if (others.length) { const src = others[(rng.random() * others.length) | 0].port; duplicateChannel(c, src, port, rng, false); copyStrainColumn(c.theta, src, port); }
+    }
+  }
+  if (rng.random() < r.mirror && c.nodes.length < MAXN) { // a limb mirrored across the body's axis: the node, its springs to mirrored neighbours, its muscles with mirrored drive
+    const side = []; for (let i = 1; i < c.nodes.length; i++) if (Math.abs(c.nodes[i].y) > 0.25) side.push(i);
+    if (side.length) { const i = side[(rng.random() * side.length) | 0], src = c.nodes[i], mx = src.x, my = -src.y;
+      const twin = k => { let b = -1, bd = 0.3; for (let j = 0; j < c.nodes.length; j++) { const d = Math.hypot(c.nodes[j].x - c.nodes[k].x, c.nodes[j].y + c.nodes[k].y); if (d < bd) { bd = d; b = j; } } return b; };
+      if (twin(i) < 0) { c.nodes.push({ x: mx, y: my, along: src.along, side: src.side, back: src.back }); const ni = c.nodes.length - 1;
+        for (const sp of c.springs.slice()) { const o = sp.a === i ? sp.b : sp.b === i ? sp.a : -1; if (o < 0) continue; const tw = twin(o), to = tw >= 0 ? tw : o; if (to === ni) continue;
+          let port = -1; if (sp.muscle) { port = freePort(c); if (port >= 0) { duplicateChannel(c, sp.port, port, rng, true); copyStrainColumn(c.theta, sp.port, port); } }
+          c.springs.push({ a: Math.min(to, ni), b: Math.max(to, ni), muscle: port >= 0 ? 1 : 0, port }); } } }
+  }
+  if (rng.random() < r.remove && c.nodes.length > 2) { // a leaf goes, with its springs; indices above it shift down
+    const leaves = []; for (let i = 1; i < c.nodes.length; i++) if (degree(c, i) === 1) leaves.push(i);
+    if (leaves.length) { const i = leaves[(rng.random() * leaves.length) | 0]; c.nodes.splice(i, 1); c.springs = c.springs.filter(s => s.a !== i && s.b !== i).map(s => ({ a: s.a > i ? s.a - 1 : s.a, b: s.b > i ? s.b - 1 : s.b, muscle: s.muscle, port: s.port })); }
+  }
+  if (rng.random() < r.muscle) { const s = c.springs[(rng.random() * c.springs.length) | 0]; if (s.muscle) { s.muscle = 0; s.port = -1; } else { const p = freePort(c); if (p >= 0) { s.muscle = 1; s.port = p; } } }
+  if (rng.random() < r.spring && c.nodes.length > 2) { // a cross spring between two close unconnected nodes
+    const i = (rng.random() * c.nodes.length) | 0, j = (rng.random() * c.nodes.length) | 0;
+    if (i !== j && !c.springs.some(s => (s.a === i && s.b === j) || (s.a === j && s.b === i)) && Math.hypot(c.nodes[i].x - c.nodes[j].x, c.nodes[i].y - c.nodes[j].y) < 2.5) c.springs.push({ a: Math.min(i, j), b: Math.max(i, j), muscle: 0, port: -1 });
+  }
+  mutateBrain(c, rng, r);
+  mutateTheta(c.theta.policy, rng, r.theta, r.sigma); mutateTheta(c.theta.model, rng, r.theta, r.sigma); applyMask(c.theta.policy, c.brain.policy); applyMask(c.theta.model, c.brain.model);
+  c.hue = (((g.hue + (rng.random() - 0.5) * 0.02) % 1) + 1) % 1;
+  return c;
+}
+function copyStrainColumn(theta, src, dst) { for (const t of [theta.policy, theta.model]) { const H = t.b.length; for (let i = 0; i < H; i++) { t.B[i * NI + NS + dst] = t.B[i * NI + NS + src]; t.G[i * NI + NS + dst] = t.G[i * NI + NS + src]; } } }
+function genomeMuscles(g) { return g.springs.filter(s => s.muscle).length; }
+
+// ---------- a being: a soft body with a two-patch brain ----------
+class Being {
+  constructor(pop, id, g, x, y, heading, energy, lineage, parent) {
+    const rules = pop.rules, rng = pop.rng, cfg = pop.sub.cfg;
+    this.id = id; this.g = g; this.lineage = lineage === null ? id : lineage; this.parent = parent; this.born = pop.sub.tick; this.age = 0; this.hue = g.hue;
+    this.energy = energy; this.reward = 0; this.pain = 0; this.eats = 0; this.bites = 0; this.bitten = 0; this.kills = 0; this.dist = 0; this.speed = 0; this.turn = 0; this.slot = -1; this.dead = false;
+    this.plans = 0; this.planAccepted = 0; this.planConfirmed = 0; this.replays = 0; this.repairPending = false; this.repairPredicted = 0; this.errEarly = 0; this.errLate = 0; this.nEarly = 0; this.nLate = 0; this.effort = 0;
+    const nn = g.nodes.length; this.nGenome = nn; this.n = 0; this.heading = heading;
+    this.x = new Float64Array(MAXN); this.y = new Float64Array(MAXN); this.px = new Float64Array(MAXN); this.py = new Float64Array(MAXN); this.fx = new Float64Array(MAXN); this.fy = new Float64Array(MAXN);
+    this.along = new Float64Array(MAXN); this.side = new Float64Array(MAXN); this.back = new Float64Array(MAXN); this.axisOf = new Int32Array(MAXN).fill(-1);
+    const dev = rules.devnoise ? (cfg.devNoise === undefined ? 0.08 : cfg.devNoise) : 0; this.dev = dev;
+    for (let i = 0; i < nn; i++) { const nd = g.nodes[i], j = dev ? Math.exp(dev * gauss(rng)) : 1; this.along[i] = Math.min(1, nd.along * j); this.side[i] = Math.min(1, nd.side * j); this.back[i] = Math.min(1, nd.back * j); }
+    const ns = g.springs.length; this.nS = ns; this.sa = new Int32Array(ns); this.sb = new Int32Array(ns); this.rest0 = new Float64Array(ns); this.rest = new Float64Array(ns); this.muscle = new Int8Array(ns); this.port = new Int8Array(ns); this.len = new Float64Array(ns);
+    for (let s = 0; s < ns; s++) { const sp = g.springs[s]; this.sa[s] = sp.a; this.sb[s] = sp.b; const a = g.nodes[sp.a], b = g.nodes[sp.b]; this.rest0[s] = Math.max(0.35, Math.hypot(a.x - b.x, a.y - b.y) * (dev ? Math.exp(dev * gauss(rng)) : 1)); this.rest[s] = this.rest0[s]; this.muscle[s] = sp.muscle; this.port[s] = sp.port; }
+    for (let i = 0; i < nn; i++) { let best = 1e9; for (let s = 0; s < ns; s++) { const o = this.sa[s] === i ? this.sb[s] : this.sb[s] === i ? this.sa[s] : -1; if (o >= 0 && o < best) best = o; } this.axisOf[i] = best === 1e9 ? -1 : best; }
+    this.act = new Float64Array(MAXM); this.cmd = new Float64Array(NM); this.prevCmd = new Float64Array(NM); this.prop = new Float64Array(NM);
+    this.sense = new Float64Array(SN); this.prevSense = new Float64Array(SN); this.predNext = new Float64Array(SN); this.pu = new Float64Array(NI); this.mu = new Float64Array(NI); this.pred = new Float64Array(NOUT); this.target = new Float64Array(NOUT); this.known = new Float64Array(NOUT);
+    this.phase = rng.random() * 2 * Math.PI; this.aheadSlot = -1; this.prevAhead = 0;
+    const cells = rules.records ? G(g, 'cells') : 0, seed = (rng.random() * 4294967296) >>> 0;
+    // the policy keeps no records: a repair learned one-shot became the next proposal and the gait drifted (LEARNINGS 12); its slow weights learn confirmed repairs
+    this.policy = new RecordPatch(Object.assign({}, PORT.policy, { hidden: brainH(g.brain.policy), timescales: timescalesOf(g.brain.policy), seed, cells: cfg.policyCells ? cells : 0, active: ACTIVE, fanin: FANIN, recordRate: G(g, 'recordRate'), window: cfg.window, blank: true })); this.policy.setParameters(g.theta.policy); this.policy.setInputMask(inputMask(g.brain.policy));
+    this.model = new RecordPatch(Object.assign({}, PORT.model, { hidden: brainH(g.brain.model), timescales: timescalesOf(g.brain.model), seed: seed ^ 0x9e3779b9, cells, active: ACTIVE, fanin: FANIN, recordRate: G(g, 'recordRate'), window: cfg.window, blank: true })); this.model.setParameters(g.theta.model); this.model.setInputMask(inputMask(g.brain.model));
+    this.slowRate = rules.slow ? G(g, 'slowRate') : 0; this.horizon = rules.plan ? G(g, 'horizon') : 0; this.noise = rules.noise ? G(g, 'noise') : 0;
+    this.weights = new Float64Array(NOUT); this.goal = new Float64Array(NOUT); // the drives: what the planner repairs toward
+    // the model predicts the change of each reading and the energy change; the drives ask for readings to rise or fall
+    this.weights[S['food ahead']] = G(g, 'dFood'); this.goal[S['food ahead']] = 1; this.weights[S['food here']] = G(g, 'dFood'); this.goal[S['food here']] = 1;
+    this.weights[S.pain] = G(g, 'dPain'); this.goal[S.pain] = -1; this.weights[S.speed] = G(g, 'dSpeed'); this.goal[S.speed] = 1; this.weights[SN] = G(g, 'dEnergy'); this.goal[SN] = 1;
+    this.drive = 0; for (const w of this.weights) this.drive += w;
+    if (this.horizon > 0) { const T = this.horizon; this.planU = new Float64Array(T * NI); this.planGoal = new Float64Array(T * NOUT); for (let t = 0; t < T; t++) this.planGoal.set(this.goal, t * NOUT); this.lo = new Float64Array(NI); this.hi = new Float64Array(NI); }
+    this.place(x, y, heading, rules.growth ? Math.min(cfg.birthNodes, nn) : nn);
+    this.readUnits = g.brain.policy.reduce((s, c) => s + maskCount(c.mask), 0) + g.brain.model.reduce((s, c) => s + maskCount(c.mask), 0); this.channels = this.policy.H + this.model.H;
+    this.brainPrice = POP.read * this.readUnits + POP.channel * this.channels + POP.cell * (this.policy.D + this.model.D) + (this.slowRate > 0 ? POP.slow * (this.policy.slowCount + this.model.slowCount) : 0) + (cells > 0 ? POP.write * 2 * ACTIVE : 0);
+  }
+  place(hx, hy, heading, n) { // the first n nodes of the genome in the body frame at the head, facing `heading`
+    const cs = Math.cos(heading), sn = Math.sin(heading); this.n = n;
+    for (let i = 0; i < n; i++) { const nd = this.g.nodes[i]; this.x[i] = wrap(hx + nd.x * cs - nd.y * sn, CFG.w); this.y[i] = wrap(hy + nd.x * sn + nd.y * cs, CFG.h); }
+    this.px.set(this.x); this.py.set(this.y); this.axes();
+  }
+  grow() { // one more node of the genome, placed in the current head frame
+    const i = this.n, nd = this.g.nodes[i], cs = Math.cos(this.heading), sn = Math.sin(this.heading);
+    this.x[i] = wrap(this.x[0] + nd.x * cs - nd.y * sn, CFG.w); this.y[i] = wrap(this.y[0] + nd.x * sn + nd.y * cs, CFG.h); this.px[i] = this.x[i]; this.py[i] = this.y[i]; this.n++; this.axes();
+  }
+  shrink() { this.n--; const s = this.n; for (let k = 0; k < this.nS; k++) if (this.port[k] >= 0 && (this.sa[k] === s || this.sb[k] === s)) this.act[this.port[k]] = 0; this.axes(); }
+  hasMuscle(port) { for (let s = 0; s < this.nS; s++) if (this.port[s] === port && this.sa[s] < this.n && this.sb[s] < this.n) return s; return -1; }
+  axes() { // each node's head-ward direction: the head from the mean of its neighbours, every other node toward its lowest-index neighbour
+    const n = this.n; let mx = 0, my = 0, c = 0;
+    for (let s = 0; s < this.nS; s++) { const a = this.sa[s], b = this.sb[s]; if (a >= n || b >= n) continue; if (a === 0) { mx += ddx(this.x[0], this.x[b], CFG.w); my += ddx(this.y[0], this.y[b], CFG.h); c++; } else if (b === 0) { mx += ddx(this.x[0], this.x[a], CFG.w); my += ddx(this.y[0], this.y[a], CFG.h); c++; } }
+    if (c) { const l = Math.hypot(mx, my) || 1; this.fx[0] = -mx / l; this.fy[0] = -my / l; } else { this.fx[0] = Math.cos(this.heading); this.fy[0] = Math.sin(this.heading); }
+    for (let i = 1; i < n; i++) { const j = this.axisOf[i]; if (j < 0 || j >= n) { this.fx[i] = this.fx[0]; this.fy[i] = this.fy[0]; continue; } const dx = ddx(this.x[i], this.x[j], CFG.w), dy = ddx(this.y[i], this.y[j], CFG.h), l = Math.hypot(dx, dy) || 1; this.fx[i] = dx / l; this.fy[i] = dy / l; }
+    this.heading = Math.atan2(this.fy[0], this.fx[0]);
+  }
+  get body() { return this.n; }
+}
+
+// ---------- the population ----------
+class Population {
+  constructor(sub, seed, founder, opts) {
+    this.sub = sub; this.rules = sub.rules; this.cfg = sub.cfg; this.rng = new Mulberry(seed); this.nextId = 0; this.beings = []; this.births = 0; this.deaths = 0; this.kills = 0; this.events = []; this.onDeath = null;
+    this.head = new Int32Array(N); this.next = new Int32Array(POP.max * MAXN); this.founderGenome = founder || null; this.mutRates = null;
+    const initial = opts && opts.initial !== undefined ? opts.initial : POP.initial;
+    this.chronicle = opts && opts.chronicle === false ? null : new Chronicle(this, opts && opts.every, opts && opts.maxEvents);
+    for (let k = 0; k < initial; k++) {
+      const x = this.rng.random() * CFG.w, y = this.rng.random() * CFG.h; if (sub.rock[sub.cell(x, y)]) continue;
+      const g = this.founderGenome ? cloneGenome(this.founderGenome) : founderGenome(this.rng); g.hue = this.rng.random();
+      this.spawn(g, x, y, this.rng.random() * 2 * Math.PI, POP.birth, null, null);
+    }
+  }
+  spawn(g, x, y, heading, energy, lineage, parent) {
+    const b = new Being(this, this.nextId++, g, x, y, heading, energy, lineage, parent);
+    b.energy -= b.n; if (b.energy <= 0) { b.energy = 1; } // the body's nodes hold a unit each, paid from the share
+    this.beings.push(b); return b;
+  }
+  get held() { let m = 0; for (const b of this.beings) m += b.energy + b.n; return m; }
+  get mass() { return this.sub.mass + this.held; }
+  index() { // every node into the cell grid, for contacts and the ahead sense
+    this.head.fill(-1); const s = this.sub;
+    this.beings.forEach((b, k) => { b.slot = k; for (let i = 0; i < b.n; i++) { const c = s.cell(b.x[i], b.y[i]), q = k * MAXN + i; this.next[q] = this.head[c]; this.head[c] = q; } });
+  }
+  nearNode(x, y, radius, exclude) { // the closest node of another being within radius: returns [slot, distance] or null
+    const s = this.sub; let best = null, bd = radius;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      let q = this.head[s.cell(x + dx, y + dy)];
+      while (q >= 0) { const k = (q / MAXN) | 0, i = q % MAXN; if (k !== exclude) { const b = this.beings[k]; const d = Math.hypot(ddx(x, b.x[i], CFG.w), ddx(y, b.y[i], CFG.h)); if (d < bd) { bd = d; best = k; } } q = this.next[q]; }
+    }
+    return best === null ? null : [best, bd];
+  }
+  sense(b) { // what the head can tell, in the reading's order
+    const s = this.sub, hx = b.x[0], hy = b.y[0], cs = Math.cos(b.heading), sn = Math.sin(b.heading), sv = b.sense;
+    const hc = s.cell(hx, hy), dark = s.dark(hc), ax = hx + cs * this.cfg.aheadAt, ay = hy + sn * this.cfg.aheadAt;
+    // the smell of food: sampled to the left and the right of the head, and ahead of it; the nose is the head
+    const left = dark ? 0 : s.scentAt(hx + cs * 0.8 - sn * 1.2, hy + sn * 0.8 + cs * 1.2), right = dark ? 0 : s.scentAt(hx + cs * 0.8 + sn * 1.2, hy + sn * 0.8 - cs * 1.2), ahead = dark ? 0 : s.scentAt(hx + cs * 1.8, hy + sn * 1.8);
+    sv[0] = Math.tanh((left - right) * 4); sv[1] = Math.tanh(ahead * 1.5); sv[2] = dark ? 0 : Math.min(s.food[hc] / 4, 1); sv[3] = s.rock[s.cell(ax, ay)] ? 1 : 0;
+    const near = this.nearNode(ax, ay, 0.9, b.slot); b.aheadSlot = near ? near[0] : -1; sv[4] = near ? 1 : 0;
+    sv[5] = Math.min(b.energy / G(b.g, 'splitAt'), 1) * 2 - 1; sv[6] = b.pain > 0 ? 1 : 0; sv[7] = s.lightRow[hc % CFG.w] * 2 - 1; sv[8] = s.keep[hc] * 2 - 1;
+    sv[9] = Math.tanh(b.speed / 0.15); sv[10] = Math.tanh(b.turn / 0.15); sv[11] = b.n / b.nGenome * 2 - 1;
+    for (let p = 0; p < MAXM; p++) sv[NS + p] = 0;
+    for (let k = 0; k < b.nS; k++) if (b.port[k] >= 0 && b.sa[k] < b.n && b.sb[k] < b.n) sv[NS + b.port[k]] = Math.max(-1, Math.min(1, (b.len[k] / b.rest0[k] - 1) / this.cfg.muscleAmp));
+  }
+  brain(b) { // the two patches: the model learns what followed; the policy proposes; the planner repairs the proposal under the model; the policy learns the repair
+    const cfg = this.cfg, rules = this.rules, g = b.g, sv = b.sense, cs = Math.sin(b.phase), cc = Math.cos(b.phase);
+    // (1) the model's previous step is taught what actually followed
+    if (b.model.pending) { // the target is the change of the reading since the prediction was made, and the energy change
+      for (let j = 0; j < SN; j++) b.target[j] = sv[j] - b.prevSense[j]; b.target[SN] = Math.max(-1, Math.min(1, b.reward)); b.known.fill(1); for (let p = 0; p < MAXM; p++) if (b.hasMuscle(p) < 0) b.known[NS + p] = 0;
+      let e = 0, c = 0; for (let j = 0; j < SN; j++) if (b.known[j]) { const d = b.pred[j] - b.target[j]; e += d * d; c++; } e = c ? e / c : 0; if (b.age <= 150) { b.errEarly += e; b.nEarly++; } else { b.errLate += e; b.nLate++; } b.lastErr = e;
+      if (b.model.teach(b.target, b.known)) b.model.flush(b.slowRate, { clip: cfg.clip, backtrack: cfg.backtrack, recode: cfg.recode });
+    }
+    // (2) the policy's previous step is settled by readback: a repair executed last tick is learned only if what actually
+    //     followed beat what the model had predicted for the unrepaired proposal; otherwise the step is skipped
+    if (b.policy.pending) {
+      let learn = false;
+      if (b.repairPending) { let actual = 0; for (let j = 0; j < NOUT; j++) actual += b.weights[j] * (b.target[j] - b.goal[j]) ** 2; actual /= NOUT; learn = actual < b.repairPredicted; if (learn) b.planConfirmed++; }
+      if (learn) { if (b.policy.teach(b.prevCmd)) b.policy.flush(b.slowRate, { clip: cfg.clip, backtrack: cfg.backtrack, recode: cfg.recode }); } else if (b.policy.skip()) b.policy.flush(b.slowRate, { clip: cfg.clip, backtrack: cfg.backtrack, recode: cfg.recode });
+      b.repairPending = false;
+    }
+    // (3) the policy proposes the motor from the reading, the clock and the previous motor
+    const pu = b.pu; pu.set(sv); pu[CLOCK] = cs; pu[CLOCK + 1] = cc; for (let m = 0; m < NM; m++) pu[MOTOR + m] = b.prevCmd[m];
+    b.policy.step(pu, b.prop);
+    const cmd = b.cmd; for (let m = 0; m < NM; m++) { let v = b.prop[m]; if (b.noise > 0 && m < MAXM) v += b.noise * gauss(this.rng); cmd[m] = Math.max(-1, Math.min(1, v)); }
+    // (4) the planner repairs the motor ports of a private path under the model, toward the drives
+    if (b.horizon > 0 && b.drive > 0) {
+      const T = b.horizon, U = b.planU, r = G(g, 'planRadius'); let ph = b.phase;
+      for (let t = 0; t < T; t++) { const o = t * NI; U.set(sv, o); U[o + CLOCK] = Math.sin(ph); U[o + CLOCK + 1] = Math.cos(ph); for (let m = 0; m < NM; m++) U[o + MOTOR + m] = cmd[m]; ph += G(g, 'freq'); }
+      for (let j = 0; j < NI; j++) { b.lo[j] = -1; b.hi[j] = 1; } for (let m = 0; m < MAXM; m++) { b.lo[MOTOR + m] = Math.max(-1, cmd[m] - r); b.hi[MOTOR + m] = Math.min(1, cmd[m] + r); }
+      const p = b.model.plan(U, T, b.planGoal, b.weights, MOTORS, b.lo, b.hi, { feedback: T > 1 ? FEEDBACK : null, feedbackAdd: true, fixedRead: cfg.fixedRead, rate: 2, maxSteps: 4, maxBacktracks: 4 });
+      b.plans++; b.replays += p.replays; b.lastPlan = p;
+      if (p.losses.length > 1) { // a repair: executed now, learned only after readback confirms it
+        b.planAccepted++; for (let m = 0; m < MAXM; m++) cmd[m] = p.inputs[MOTOR + m];
+        let predicted = 0; for (let j = 0; j < NOUT; j++) predicted += b.weights[j] * (p.initialOutput[j] - b.goal[j]) ** 2; b.repairPredicted = predicted / NOUT; b.repairPending = true;
+      }
+    }
+    // (5) the model predicts what this motor will do
+    const mu = b.mu; mu.set(sv); mu[CLOCK] = cs; mu[CLOCK + 1] = cc; for (let m = 0; m < NM; m++) mu[MOTOR + m] = cmd[m];
+    b.model.step(mu, b.pred); for (let j = 0; j < SN; j++) b.predNext[j] = sv[j] + b.pred[j]; b.prevSense.set(sv);
+    b.prevCmd.set(cmd); b.phase += G(g, 'freq'); if (b.phase > 2 * Math.PI) b.phase -= 2 * Math.PI;
+  }
+  physics(b) { // muscles set rest lengths; springs are projected; friction filters each node's displacement by its grip; rock and other bodies push back
+    const cfg = this.cfg, s = this.sub, n = b.n, ns = b.nS, amp = cfg.muscleAmp, x = b.x, y = b.y, px = b.px, py = b.py; let effort = 0;
+    for (let k = 0; k < ns; k++) { const p = b.port[k]; if (p >= 0) { const a = b.act[p], c = b.cmd[p]; const na = a + cfg.muscleLag * (c - a); effort += Math.abs(na - a); b.act[p] = na; b.rest[k] = b.rest0[k] * (1 + amp * na); } }
+    const hx0 = x[0], hy0 = y[0], head0 = b.heading;
+    for (let sub = 0; sub < cfg.substeps; sub++) {
+      for (let i = 0; i < n; i++) { px[i] = x[i]; py[i] = y[i]; }
+      for (let it = 0; it < cfg.iters; it++) for (let k = 0; k < ns; k++) {
+        const a = b.sa[k], c = b.sb[k]; if (a >= n || c >= n) continue;
+        const dx = ddx(x[a], x[c], CFG.w), dy = ddx(y[a], y[c], CFG.h), d = Math.hypot(dx, dy) || 1e-6, e = (d - b.rest[k]) / d * 0.5;
+        x[a] += dx * e; y[a] += dy * e; x[c] -= dx * e; y[c] -= dy * e;
+      }
+      if (sub === 0) for (let i = 0; i < n; i++) { // contact with other bodies: push apart
+        const near = this.nearNode(x[i], y[i], cfg.contact, b.slot); if (!near) continue; const o = this.beings[near[0]];
+        let bi = 0, bd = 1e9; for (let j = 0; j < o.n; j++) { const d = Math.hypot(ddx(x[i], o.x[j], CFG.w), ddx(y[i], o.y[j], CFG.h)); if (d < bd) { bd = d; bi = j; } }
+        const dx = ddx(x[i], o.x[bi], CFG.w), dy = ddx(y[i], o.y[bi], CFG.h), d = bd || 1e-6, push = (cfg.contact - d) / d * cfg.contactPush;
+        x[i] -= dx * push; y[i] -= dy * push; o.x[bi] += dx * push; o.y[bi] += dy * push;
+      }
+      for (let i = 0; i < n; i++) { // friction: the displacement kept depends on its direction against the node's head-ward axis and on the ground
+        let dx = ddx(px[i], x[i], CFG.w), dy = ddx(py[i], y[i], CFG.h); const fx = b.fx[i], fy = b.fy[i];
+        const a = dx * fx + dy * fy, sd = -dx * fy + dy * fx, ka = a >= 0 ? b.along[i] : b.back[i], ground = s.keep[s.cell(px[i], py[i])];
+        dx = ground * (ka * a * fx - b.side[i] * sd * fy); dy = ground * (ka * a * fy + b.side[i] * sd * fx);
+        let nx = wrap(px[i] + dx, CFG.w), ny = wrap(py[i] + dy, CFG.h);
+        if (s.rock[s.cell(nx, ny)]) { nx = px[i]; ny = py[i]; }
+        x[i] = nx; y[i] = ny;
+      }
+    }
+    for (let k = 0; k < ns; k++) { const a = b.sa[k], c = b.sb[k]; b.len[k] = (a < n && c < n) ? Math.hypot(ddx(x[a], x[c], CFG.w), ddx(y[a], y[c], CFG.h)) : b.rest0[k]; }
+    b.axes();
+    const mx = ddx(hx0, x[0], CFG.w), my = ddx(hy0, y[0], CFG.h); b.speed = mx * Math.cos(head0) + my * Math.sin(head0); b.dist += Math.hypot(mx, my);
+    let dt = b.heading - head0; if (dt > Math.PI) dt -= 2 * Math.PI; else if (dt < -Math.PI) dt += 2 * Math.PI; b.turn = dt;
+    return effort;
+  }
+  step() {
+    const s = this.sub, bs = this.beings, cfg = this.cfg, rules = this.rules; this.index(); this.events.length = 0;
+    const n = bs.length, order = new Int32Array(n); for (let i = 0; i < n; i++) order[i] = i;
+    for (let i = n - 1; i > 0; i--) { const j = (this.rng.random() * (i + 1)) | 0; const t = order[i]; order[i] = order[j]; order[j] = t; }
+    for (let q = 0; q < n; q++) {
+      const b = bs[order[q]]; if (b.dead) continue; b.age++;
+      this.sense(b); this.brain(b);
+      const before = b.energy; let bit = false;
+      if (rules.bite && b.cmd[MAXM] > 0.5 && b.aheadSlot >= 0) { // the mouth: a bite at the body ahead
+        const v = bs[b.aheadSlot]; if (v && !v.dead) {
+          bit = true; if (this.rng.random() < cfg.biteLands) {
+            let take = 0; if (v.energy > 0) { take = Math.min(cfg.biteTake, v.energy); v.energy -= take; } else if (rules.injury && v.n > 2) { v.shrink(); take = 1; this.events.push({ kind: 'injury', b: v, by: b }); }
+            if (take > 0) { b.energy += take; v.pain = 3; v.bitten++; b.bites++; v.lastBiter = b.lineage; this.events.push({ kind: 'bite', b, v, take }); }
+          }
+        }
+      }
+      const effort = this.physics(b);
+      const hc = s.cell(b.x[0], b.y[0]);
+      if (s.food[hc] > 0) { s.food[hc]--; b.energy++; b.eats++; this.events.push({ kind: 'eat', b }); }
+      b.pain = Math.max(0, b.pain - 1);
+      const price = POP.base + POP.node * b.n + POP.muscle * effort + b.brainPrice + POP.replay * (b.lastPlan ? b.lastPlan.replays : 0) + (bit ? POP.bite : 0);
+      b.lastPlan = null; b.effort = effort;
+      if (this.rng.random() < price && b.energy > 0) { b.energy--; s.soil[hc]++; } // a body already at zero owes nothing more: energy never goes below zero
+      b.reward = b.energy - before;
+      if (rules.growth && b.n < b.nGenome && b.energy > cfg.growAt) { b.energy--; b.grow(); this.events.push({ kind: 'grow', b }); }
+    }
+    const survivors = [];
+    for (const b of bs) {
+      if (b.energy <= 0 || b.n < 2) { this.deaths++; if (b.pain > 0) this.kills++; const hc = s.cell(b.x[0], b.y[0]); s.soil[hc] += Math.max(0, b.energy); for (let i = 0; i < b.n; i++) s.food[s.cell(b.x[i], b.y[i])]++; b.energy = 0; b.n = 0; b.dead = true; b.diedAt = s.tick; this.events.push({ kind: 'die', b, killed: b.pain > 0 }); if (this.onDeath) this.onDeath(b); continue; }
+      survivors.push(b);
+    }
+    this.beings = survivors;
+    const children = []; const cand = this.beings.slice(); for (let i = cand.length - 1; i > 0; i--) { const j = (this.rng.random() * (i + 1)) | 0; const x = cand[i]; cand[i] = cand[j]; cand[j] = x; }
+    if (rules.split) for (const b of cand) {
+      if (b.energy < G(b.g, 'splitAt') || b.n < b.nGenome || this.beings.length + children.length >= POP.max) continue;
+      const share = b.energy >> 1; if (share <= cfg.birthNodes + 1) continue; b.energy -= share;
+      const tail = b.n - 1, ang = b.heading + Math.PI + (this.rng.random() - 0.5), bx = wrap(b.x[tail] + Math.cos(ang) * 1.2, CFG.w), by = wrap(b.y[tail] + Math.sin(ang) * 1.2, CFG.h);
+      const child = this.spawn(mutate(b.g, this.rng, this.mutRates), bx, by, ang, share, b.lineage, b.id); this.beings.pop(); children.push(child); this.births++; this.events.push({ kind: 'birth', b: child, parent: b });
+    }
+    this.beings.push(...children); this.index();
+    if (this.chronicle) this.chronicle.tick(this);
+  }
+}
+
+// ---------- the chronicle: what every lineage did, every hundred ticks, and the events that decided it ----------
+const FRAME_KEYS = ['n', 'births', 'deaths', 'starved', 'killed', 'kills', 'bitesGiven', 'bitesTaken', 'meals', 'speed', 'age', 'energy', 'nodes', 'muscles', 'channels', 'cortices', 'records', 'planning', 'plans', 'confirmed', 'ageAtDeath', 'hue'];
+function serializeGenome(g) { const c = cloneGenome(g); const th = { policy: {}, model: {} }; for (const p of ['policy', 'model']) for (const k in c.theta[p]) th[p][k] = Array.from(c.theta[p][k]); c.theta = th; return c; }
+function genomeSummary(g) { const s = { genes: {}, nodes: g.nodes.length, muscles: g.springs.filter(x => x.muscle).length, springs: g.springs.length, grips: { along: 0, back: 0, side: 0 }, brain: cloneBrain(g.brain), thetaNorm: {} };
+  for (const k of Object.keys(GENE)) s.genes[k] = G(g, k); for (const n of g.nodes) { s.grips.along += n.along / g.nodes.length; s.grips.back += n.back / g.nodes.length; s.grips.side += n.side / g.nodes.length; }
+  for (const p of ['policy', 'model']) { let n2 = 0; for (const k of ['B', 'C']) for (const v of g.theta[p][k]) n2 += v * v; s.thetaNorm[p] = Math.sqrt(n2); } return s; }
+class Chronicle {
+  constructor(pop, every, maxEvents) { this.every = every || 100; this.maxEvents = maxEvents || 40000; this.frames = []; this.events = []; this.samples = {}; this.acc = new Map(); this.founder = pop.founderGenome ? genomeSummary(pop.founderGenome) : null; this.founderFull = pop.founderGenome ? serializeGenome(pop.founderGenome) : null; this.deathAges = new Map(); }
+  bucket(lid) { let a = this.acc.get(lid); if (!a) { a = { births: 0, deaths: 0, starved: 0, killed: 0, kills: 0, bitesGiven: 0, bitesTaken: 0, meals: 0 }; this.acc.set(lid, a); } return a; }
+  tick(pop) {
+    const t = pop.sub.tick;
+    for (const e of pop.events) {
+      if (e.kind === 'eat') { this.bucket(e.b.lineage).meals++; continue; }
+      if (e.kind === 'grow') continue;
+      if (e.kind === 'birth') this.bucket(e.b.lineage).births++;
+      else if (e.kind === 'die') { const a = this.bucket(e.b.lineage); a.deaths++; if (e.killed) { a.killed++; if (e.b.lastBiter !== undefined) this.bucket(e.b.lastBiter).kills++; } else a.starved++; let d = this.deathAges.get(e.b.lineage); if (!d) { d = []; this.deathAges.set(e.b.lineage, d); } d.push(e.b.age); }
+      else if (e.kind === 'bite') { this.bucket(e.b.lineage).bitesGiven++; this.bucket(e.v.lineage).bitesTaken++; }
+      const ev = { t, kind: e.kind, id: e.b.id, lineage: e.b.lineage, x: +e.b.x[0].toFixed(1), y: +e.b.y[0].toFixed(1) };
+      if (e.kind === 'die') { ev.age = e.b.age; ev.cause = e.killed ? 'killed' : 'starved'; if (e.killed && e.b.lastBiter !== undefined) ev.by = e.b.lastBiter; }
+      if (e.kind === 'bite') { ev.victim = e.v.id; ev.victimLineage = e.v.lineage; ev.take = e.take; }
+      if (e.kind === 'injury') { ev.by = e.by.id; ev.byLineage = e.by.lineage; }
+      if (e.kind === 'birth') { ev.parent = e.parent.id; ev.nodes = e.b.nGenome; }
+      this.events.push(ev);
+    }
+    if (this.events.length > this.maxEvents) this.events.splice(0, this.events.length - this.maxEvents);
+    if (t % this.every === 0) this.frame(pop);
+    if (t % (this.every * 10) === 0) this.sample(pop);
+  }
+  frame(pop) {
+    const t = pop.sub.tick, by = new Map();
+    for (const b of pop.beings) { let g = by.get(b.lineage); if (!g) { g = []; by.set(b.lineage, g); } g.push(b); }
+    const lineages = {}; const all = new Set([...by.keys(), ...this.acc.keys()]);
+    for (const lid of all) {
+      const bs = by.get(lid) || [], a = this.acc.get(lid) || { births: 0, deaths: 0, starved: 0, killed: 0, kills: 0, bitesGiven: 0, bitesTaken: 0, meals: 0 }, n = bs.length, m = f => n ? bs.reduce((s, b) => s + f(b), 0) / n : 0;
+      const ages = this.deathAges.get(lid) || [];
+      lineages[lid] = [n, a.births, a.deaths, a.starved, a.killed, a.kills, a.bitesGiven, a.bitesTaken, a.meals, +m(b => Math.abs(b.speed)).toFixed(4), +m(b => b.age).toFixed(1), +m(b => b.energy).toFixed(2), +m(b => b.nGenome).toFixed(2), +m(b => b.g.springs.filter(x => x.muscle).length).toFixed(2), +m(b => b.policy.H + b.model.H).toFixed(1), +m(b => b.g.brain.policy.length + b.g.brain.model.length).toFixed(2), +m(b => b.model.D > 0 ? 1 : 0).toFixed(2), +m(b => b.horizon > 0 ? 1 : 0).toFixed(2), bs.reduce((s, b) => s + b.plans, 0), bs.reduce((s, b) => s + b.planConfirmed, 0), ages.length ? +(ages.reduce((s, v) => s + v, 0) / ages.length).toFixed(1) : null, n ? +bs[0].hue.toFixed(3) : null];
+    }
+    let food = 0; for (let i = 0; i < N; i++) food += pop.sub.food[i];
+    this.frames.push({ t, alive: pop.beings.length, food, lineages }); this.acc.clear(); this.deathAges.clear();
+  }
+  sample(pop) { // the eldest of each of the ten largest lineages, summarized (no weights)
+    const by = new Map(); for (const b of pop.beings) { const e = by.get(b.lineage); if (!e || b.age > e.age) by.set(b.lineage, b); }
+    const counts = new Map(); for (const b of pop.beings) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
+    const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+    for (const [lid, n] of top) { const b = by.get(lid); if (!this.samples[lid]) this.samples[lid] = []; this.samples[lid].push(Object.assign({ t: pop.sub.tick, n, id: b.id, age: b.age }, genomeSummary(b.g))); }
+  }
+  export(pop, fullGenomes) { // everything, and the full genomes of the eldest of the six largest living lineages
+    const counts = new Map(); for (const b of pop.beings) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
+    const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, fullGenomes === undefined ? 6 : fullGenomes), genomes = {};
+    for (const [lid] of top) { let e = null; for (const b of pop.beings) if (b.lineage === lid && (!e || b.age > e.age)) e = b; if (e) genomes[lid] = Object.assign({ id: e.id, age: e.age }, serializeGenome(e.g)); }
+    return { meta: { tick: pop.sub.tick, every: this.every, rules: pop.rules, prices: Object.assign({}, POP), cfg: Object.assign({}, pop.cfg), keys: FRAME_KEYS, senses: SENSES, groups: RG_NAMES }, founder: this.founder, founderGenome: this.founderFull, frames: this.frames, events: this.events, samples: this.samples, genomes };
+  }
+}
+const MOTORS = Int32Array.from({ length: MAXM }, (_, m) => MOTOR + m);
+const FEEDBACK = Array.from({ length: SN }, (_, j) => [j, j]); // the predicted changes are added to the next moment's reading
+
+return { Mulberry, gauss, FEEDBACK, Chronicle, serializeGenome, genomeSummary, FRAME_KEYS, RG, RG_NAMES, gbit, ALL_MASK, MAXH, SLOWEST, maskUnits, maskCount, maskNames, brainH, cortexStart, defaultBrain, RULES, CFG, POP, N, DIRS, SENSES, NS, SN, NM, NI, NOUT, HP, HM, ACTIVE, FANIN, PORT, CLOCK, MOTOR, MOTORS, MAXN, MAXM, S, GENE, G, wrap, ddx, blobs, Substrate, Being, Population, founderGenome, cloneGenome, mutate, mutateTheta, genomeMuscles, freePort, RecordPatch };
+});
+
+</script>
+<script>const CB_FOUNDER = {"hue": 0.16781516090035464, "nodes": [{"x": 0, "y": 0, "along": 0.8841942216715732, "side": 0.40671571977696414, "back": 0.14452176069395303}, {"x": -1.141666197160929, "y": 0.4048899371692264, "along": 0.7545697088386869, "side": 0.06989953215875597, "back": 0.20250121155459141}, {"x": -1.0265373378999185, "y": -0.37163341849904735, "along": 1, "side": 0.039426657052171125, "back": 0.10071317616479564}, {"x": -1.8498553512723197, "y": 0.028372753373500842, "along": 1, "side": 0.17084771908535226, "back": 0.16067912176611482}], "springs": [{"a": 0, "b": 1, "muscle": 1, "port": 0}, {"a": 0, "b": 2, "muscle": 1, "port": 1}, {"a": 1, "b": 3, "muscle": 1, "port": 2}, {"a": 2, "b": 3, "muscle": 1, "port": 3}, {"a": 1, "b": 2, "muscle": 0, "port": -1}], "freq": 2, "splitAt": 1, "noise": 1, "horizon": 0, "cells": 2, "slowRate": 1, "recordRate": 1, "planRadius": 1, "dFood": 3, "dEnergy": 2, "dPain": 2, "dSpeed": 1, "theta": {"policy": {"G": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "g": [-1.3862943611198906, -1.3862943611198906, -1.3862943611198906, -1.3862943611198906, -1.3862943611198906, -1.3862943611198906, -1.3862943611198906, -1.3862943611198906, 2.855272574400453, 3.1463681435606285, 3.4339872044851463, 3.719026751719581, 4.00214220905194, 4.2838168073494804, 4.564409233944969, 4.844187086458591], "B": [-3.7680007725813884, 0.2552779483330525, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.525763042996924, -3.4260482453452883, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5252666521800246, -0.26333991099480025, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.6035740433217462, 3.1138427615374087, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4.33783142298383, 0.23191415938033305, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5475072478771588, -1.8959759211680285, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.612327940528571, 0.4950683731282075, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.34833480355015195, 0.26209463102798064, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.9881872886747154, 0.911124349298956, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.7051612186777425, 2.7177238455200086, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.764857947578889, -0.36059728524658, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.7153745980557579, -1.1250340103885668, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.538375626834691, 0.4055948832117381, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.1193955963312257, 1.4455113223488203, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.283705872226699, -0.28145359272816645, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5012913570477654, 0.12184599524835277, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.21937620701163651, 0.022627287854202836, 0.12026035847573754, 0.15092135750465854, 0.0992849378737241, 0.01103181094554339, -0.05507196652675584, 0.06352964226517885, 0.08748589377418896, -0.14441271338235484, -0.18281141261221057, -0.10360392213119303, -0.32900855022754427, 0.2733067448076491, -0.2787179143354768, -0.004292077578096302, 0.13616012269367736, -0.03393266956125791, -0.010216767801419141, -0.10638893281607106, 0.17129565445725795, -0.13013647707606285, 0.029005521347573313, 0.04285042119868224, 0.06524914140282558, 0.025517418648136624, -0.019323445406743474, 0.15409949930419437, 0.07274170399710697, 0.021857680878388495, -0.20333713978304996, 0.3883042118024138, 0.20989179489841617, -0.06681178036482639, 0.11279343247059158, -0.05559409083893668, -0.021774223072912716, 0.08832216198228694, 0.16365364604202992, 0.15902328410216196, 0.26003223630802635, 0.15040120494605932, -0.08785286280099197, -0.15977033118466363, -0.05010373593578721, -0.14333606198912935, 0.022799855618678613, 0.08630376553720243, -0.22514219026553656, -0.15565754196700451, -0.5241715635237879, -0.06868944461039292, 0.09824337206410795, -0.35365779513484197, -0.301864313227084, -0.06593208186242455, -0.17003670818529876, -0.20822082714514825, -0.1973176957565035, -0.28708929181795845, 0.24443992732572722, 0.11692045428305828, 0.19084833868167975, -0.24049068966383372, -0.0689463624648124, -0.17889045054126404, 0.4342071569388969, -0.21350288746413548, 0.12305752418260041, -0.10220526768950429, 0.013890864726415236, -0.02450689653579874, -0.15948135305800198, -0.15080487553749244, 0.05648964589063255, -0.2921483083553113, -0.21754692887356944, -0.10222647903725925, 0.2450250954852923, -0.17277118188788898, 0.15157750984199617, -0.1786527953709716, -0.10258480902680443, -0.12775057345753177, 0.22765190796054569, 0.25802351628576414, 0.2670564084668146, -0.17108529351968346, -0.16784375727952694, 0.031055913895279685, -0.07669715663648982, 0.04033110220502632, 0.05994830034770185, -0.171605995368852, -0.08610875756014326, 0.29108337199036877, 0.006714143591522581, -0.04002558905700384, 0.07883712798857956, -0.1313970436725066, -0.06516547159883511, -0.19921092162484036, 0.28779960164668145, 0.08514027140779623, -0.24448622892432853, 0.13220218085850274, 0.058200331633774506, 0.12798217529549938, 0.1695677189484903, -0.10488987969742135, 0.053738156004134265, -0.11287010021769708, 0.12908765767339964, 0.26651687474110747, 0.22674769074274384, 0.147710055739729, -0.008516697903101023, -0.3139126337771599, 0.4427924736422778, 0.028888026069485, -0.1316869955265332, 0.5181143774429776, -0.16290428871034385, -0.047366744661091635, 0.3195611598613023, -0.012588155121448273, -0.337752089525205, -0.15986531011873345, 0.01467724054609356, 0.03960484681515879, -0.08206411219107823, 0.07060033078951337, 0.08229511716895722, -0.3218738205423396, -0.09171287510662483, -0.31777853730284306, -0.10689215373215166, 0.05449131804200391, -0.04451236434595837, -0.20579044212557182, 0.148509949582917, -0.20642514184842856, -0.08113217577429462, 0.08412023767860626, 0.08328824790812928, -0.2066178682503519, 0.10447887294010574, 0.2900640455166149, -0.07706183415436918, 0.055219638331173534, -0.0633508599729337, -0.38830594795025486, -0.0448483242170393, 0.5175680301608809, 0.17123933952818132, -0.18873587347562312, 0.06996710964717955, 0.1070238192490983, -0.06910010060137761, -0.12543888015484161, 0.06291419037114203, 0.025946329478057452, 0.20316680185798852, -0.1748756862118859, 0.08451106847233016, 0.03644891979965413, 0.2256853583091978, 0.21302662096861832, -0.2508293477593178, -0.0046174581716781175, -0.3970826811195196, -0.023680026851510994, 0.33160889605760774, -0.155610987188459, -0.18442577292314144, -0.06752650057438658, 0.1680498604748945, -0.1378765868997626, 0.18710833072140942, 0.06329812986471589, 0.3596187500495672, -0.2102700179500526, -0.002765183952190375, -0.252854992617148, -0.052749407508206794, 0.2097367437844581, 0.04152597883284204, 0.15205640496858774, -0.006491950462236204, 0.18690461586623797, 0.07387017598279551, 0.05531006570057608, -0.24283930965136166, 0.23076361252673633, -0.06368737809350572, -0.20314220714542625, -0.14637646055086967, 0.1444502108856355, 0.03504395420666606, -0.287907647934666, -0.04782564172814655, 0.21352178697690175, -0.45242208016621094, 0.0524128456358856, 0.2772553759366172, -0.07978370835116542, -0.11118792990994027, -0.3944562627305594, -0.09636641922091028, -0.29437758969370204, -0.0316702220143746, 0.09671635426510437, 0.14365506282799828, 0.14109485617876966, -0.05836047887488919, -0.0202278269026598, 0.2536813803030741, 0.2364471257595201, 0.14922707847375136, 0.20096136563944375, 0.3584493889340033, -0.04374254604311323, -0.09188459972648667, 0.13274849228624006, 0.16436128794066446, 0.20713079497684905, 0.08723466601356389, -0.12835531313776477, 0.129414525938789, -0.006371951177954919, -0.013105361419845219, 0.018197496503430437, 0.09013647906447414, -0.2430554739898076, 0.07058889399733786, -0.042572093722017194, -0.1663624103164622, 0.030210307054542574, 0.03635815276319312, -0.02050144092621155, 0.18673500364678852, 0.1360783132445413, -0.29686238253871333, -0.30765841299518826, -0.14487915602214554, 0.10835215027570123, 0.12413197386984381, -0.03424448789598834], "b": [0.5106901024749688, 0.10591863885893923, -0.09431257501990042, -0.9994117132317323, -1.103377336380576, 0.3053230806327961, 0.8539638458454827, 0.9685890472222143, 0, 0, 0, 0, 0, 0, 0, 0], "C": [2.445347278101709, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.6579160792176988, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.7611648008278082, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.4654345387352052, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.831994567133107, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3.3526599831101884, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.372279063182104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.9444823268811414, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "c": [0, 0, 0, 0, 0, 0, 0, 0, 0]}, "model": {"G": [0.02060801387919329, -0.007661537735064143, -0.0009908974996487652, 0, 0, -0.09327888739080206, 0, 0.09327888739080206, -0.09327888739080206, -0.030615295886398133, -0.015159912981525633, -0.09327888739080206, 0.0477460243793478, -0.035518405483572026, 0.0422389021949017, 0.10310539103302194, 0, 0, 0, 0, -0.03746581306155166, -0.038847149180807276, 0.034163826421089526, -0.10419570565333028, -0.011301890733478296, 0.1303511572233938, -0.015268006915920448, 0.04881598265962122, 0.004436170158044998, -0.06336263715387866, 0, 0.03130455087535712, -0.02809369582293156, -0.018516749380209932, 0, 0, -0.09996788208933693, 0, 0.09996788208933693, -0.09996788208933693, -0.032106207697680994, -0.010639629107161517, -0.09996788208933693, 0.04148767200730844, -0.060932669902052775, 0.0043686817786345936, 0.1001287394495009, 0, 0, 0, 0, -0.05891928174339231, -0.02149746720191244, -0.03705360413729434, -0.10813300426879387, -0.05917821502191158, 0.12922937947501106, 0.008197224421974188, 0.0568707706307423, 0.03715949909652342, -0.06034397798049984, 0, 0.03399144801796157, -0.0805197416607156, -0.004422463567221813, 0, 0, -0.18312187764332696, 0, 0.18312187764332696, -0.18312187764332696, -0.06563004925772853, -0.016277489141590024, -0.18312187764332696, 0.06773614480927204, -0.08366120527161827, 0.016156790098870145, 0.1488429337875716, 0, 0, 0, 0, -0.06159631216295177, -0.07494519539872763, 0.03742031068827882, -0.13820943112166326, -0.033428191105725306, 0.1599829420723542, -0.012992066827567077, 0.11760640593852252, 0.018315086266605825, -0.11759699255089212, 0, 0.016151800656581266, -0.051594310352540744, -0.03006232449858785, 0, 0, -0.13558501687797506, 0, 0.13558501687797506, -0.13558501687797506, -0.046577701102946546, -0.003412160756935401, -0.13558501687797506, 0.040292433214702085, -0.06855767930686311, 0.0242751071333633, 0.11471879710193975, 0, 0, 0, 0, -0.05021334565215298, -0.04389086369078516, 0.028841634786440737, -0.08745007348658813, -0.04091153003861199, 0.1297687549020999, -0.009023031538333033, 0.057347102351380894, 0.03356341184077636, -0.08382661533910822, 0, -0.026440183616553495, -0.055963355655678476, -0.030920203083499822, 0, 0, -0.11294434600770813, 0, 0.11294434600770813, -0.11294434600770813, -0.0669494076821104, 0.06370920597506959, -0.11294434600770813, 0.030442919299264962, -0.10144704808302174, 0.002800266248810731, 0.08007998771121756, 0, 0, 0, 0, -0.0911428839352499, 0.05252459728817047, -0.06307536226801068, -0.06458878750211974, -0.03428677787506614, 0.08852641962210449, 0.06964583332809494, -0.011381869582488225, 0.06973834852767882, -0.02334064952272694, 0, 0.004480188981234858, -0.02958948134769243, 0.011222819994112704, 0, 0, -0.08586248479014053, 0, 0.08586248479014053, -0.08586248479014053, -0.0541279105582508, -0.07472396058137044, -0.08586248479014053, 0.0895021670427989, -0.021055874534349633, 0.09333288275678474, 0.06331833390664961, 0, 0, 0, 0, -0.0018684237321342906, -0.08903405440151556, 0.07953294808839441, -0.08697653649682617, 0.06826844018974257, 0.06398555999543852, -0.0646077173507122, 0.11341766839813047, -0.07562697985703219, -0.0639233732381819, 0, 0.003555424364598119, -0.024425994374837046, -0.004940985002629119, 0, 0, -0.036609007681306316, 0, 0.036609007681306316, -0.036609007681306316, -0.014288409614150663, 0.010560892280780004, -0.036609007681306316, -0.0006220384407342725, -0.006068846892309754, -0.022531500854492258, 0.02892856284005378, 0, 0, 0, 0, -0.0026919579201386936, 0.005286762039188579, -0.031001662617604158, -0.001413779845837266, -0.028011647730207756, 0.03146593508333878, 0.006962889155259059, -0.0072611864918793005, -0.008908147650385792, -0.020840465682390768, 0, 0.0013396967809430908, 0.002943345643734593, 0.006063132211024586, 0, 0, -0.0015064626135346774, 0, 0.0015064626135346774, -0.0015064626135346774, 0.004432766162891601, -0.0099748560818235, -0.0015064626135346774, 0.008291529558687609, 0.001153487940576131, 0.0043099555112570695, -0.0024939705908778092, 0, 0, 0, 0, -0.0009195725928667502, -0.008070311316645592, 0.015073415643774127, -0.010247600516479433, 0.0005105418458593551, 0.0020353515895987968, -0.007713573688087123, 0.013978398353018198, -0.003924843392209625, -0.002411811686900093, 0, 0.0008126614348173637, -0.014148910742250661, -0.009239254538670512, 0, 0, -0.014979777077318724, 0, 0.014979777077318724, -0.014979777077318724, -0.010422308266928646, -0.007610785778316451, -0.014979777077318724, 0.007853144029751095, -0.010934884352679954, 0.004703931884591053, 0.007460888992297454, 0, 0, 0, 0, -0.0032272846194149095, -0.014066815103978902, 0.009345619018833429, -0.014974886525551822, 0.006869752627465799, 0.007039925989949274, -0.010248095243979039, 0.014628099041164406, -0.014036468762082227, -0.007586245965723277, 0, 0.00040192443097158276, -0.0003681018903915206, -0.0002393010290012564, 0, 0, -0.005413338984744286, 0, 0.005413338984744286, -0.005413338984744286, -0.0007383574494195467, -0.004407250204693389, -0.005413338984744286, 0.005235764051454638, -0.0007006479928927256, 0.008743479848388594, 0.003980016890907007, 0, 0, 0, 0, -0.0012392232821881813, -0.002030992184003684, 0.0048839860203509075, -0.0037532405445452146, 0.0022025659664931417, 0.005014078895749677, -0.0015403020685725416, 0.006323341040394301, -1.3349149571424694e-05, -0.003932458941293246, 0, 0.00038880044244026397, -0.001954536071677249, 0.00027609069603174656, 0, 0, -0.0023095923639147174, 0, 0.0023095923639147174, -0.0023095923639147174, -0.001523022151180225, 0.0024997858588912776, -0.0023095923639147174, 0.00017545602156727612, -0.003525682308472067, -0.0022247465450122724, 0.002281736773231381, 0, 0, 0, 0, -0.002849464467257623, 0.00179272013795688, -0.002964183506569184, -0.0005407647519823445, -0.0026207925144731384, 0.0018858167133750426, 0.0029461285443844725, -0.0005999660075138312, 0.002379653182136965, -0.00062701573581991, 0, 0.00040152494960510673, -0.000930644439995886, -0.00047009575185224715, 0, 0, -0.0029070508394075435, 0, 0.0029070508394075435, -0.0029070508394075435, -0.00039367244221421373, -0.0007868236637159307, -0.0029070508394075435, 0.0009101196061522683, -0.0006574342679645847, 0.0015118898609402306, 0.0019789441500672514, 0, 0, 0, 0, -0.0007047870160743139, 0.00022008162492277787, -0.00015000708313607887, -0.0011102997960108561, -0.0009779174945792855, 0.0027514446026106814, 0.0004463260239359764, 0.0002446418734570985, 0.001051977789358311, -0.001732083272336252, 0, -0.000851672861158695, -0.0008937564460587616, 0.0006954569792026668, 0, 0, -0.0043769500436925, 0, 0.0043769500436925, -0.0043769500436925, -0.0007601117116207778, -0.003322008619816583, -0.0043769500436925, 0.004776355071905075, -0.0004783063994175891, 0.006315865072116846, 0.002616697536486025, 0, 0, 0, 0, -0.0009829119449585022, -0.003408401336748013, 0.005175347010771568, -0.004753307573576769, 0.004316997769604288, 0.0027324952119735383, -0.0026898469355853476, 0.006075697491838351, -0.0015261668020155293, -0.0025636129772170393, 0, -0.0001949630937346151, -0.00022266658539298135, 8.081718512665199e-05, 0, 0, -0.0005838939521918394, 0, 0.0005838939521918394, -0.0005838939521918394, -0.00011525346154957085, -9.380743968360096e-05, -0.0005838939521918394, -0.00036372021292416885, 0.0005273297382214577, 0.00016251535214546693, 0.0002511480183888919, 0, 0, 0, 0, 0.00043704789413825994, 3.453524993317976e-05, -0.00040792888309578205, 0.00022828608942193935, 0.0003209163571884711, 0.0003958025698916955, 9.146209157279972e-05, -0.000450635973515942, -0.00011414875728495785, -0.00023390887444795896, 0, -0.0005413502478554094, 0.0002261842588158938, 0.00045604927423433255, 0, 0, -0.0005233271631401371, 0, 0.0005233271631401371, -0.0005233271631401371, 7.230424383732295e-05, -0.0003064318980302893, -0.0005233271631401371, 5.0922289895870484e-05, 0.0011109327259311741, 0.0005828194393580541, 0.00012994785185890622, 0, 0, 0, 0, 0.0011651136486824222, -0.0002001269264972721, 0.0003381728586786252, 0.0010428945917537963, 0.0010649664217668427, -5.596841894823795e-05, -0.00032479697265994323, -0.0006833383900739801, -0.0015270810086433686, -0.0004052919361474506, 0, -0.0005255595647715844, -0.00010215156388977792, 0.0001550978995793468, 0, 0, -0.0009371499079940185, 0, 0.0009371499079940185, -0.0009371499079940185, -2.4993452830191638e-05, 4.847714699345196e-05, -0.0009371499079940185, 0.0006943497180349388, -9.357017215613963e-05, 0.0013008249103197273, 0.00048516277952273095, 0, 0, 0, 0, -0.00014623429492486922, 0.00033303633912222904, 0.0004643269097185334, 0.00020184942040714826, 0.0010362870438527596, 0.000682081718099511, 0.00045567152670029866, 2.475671376750514e-05, -4.97202929869852e-05, -0.0002411354070905705, 0], "g": [-0.09327888739080206, 0.39412807079586193, 0.7260242938064279, 1.1439015094974112, 1.5089884326556207, 1.8600476642651718, 2.2205668444249484, 2.5579516155440585, 2.8402927973231344, 3.14095480457588, 3.4316776121212342, 3.716119700880174, 3.997765259008255, 4.283232913397288, 4.563885906781826, 4.843249936550596], "B": [-0.03458691371842211, -0.22521657476838852, -0.09254507844215432, 0.3683733118337199, 0.04858198949780003, 0.10819902962953847, 0.47656197546848594, 0.1838655050483361, -0.11029769844701322, 0.5123616307111809, 0.1445463099935128, 0.09678118648795088, -0.010403265071016748, 0.4808660318458838, 0.2175082040531819, -0.2208054363821312, -0.22454293151323823, 0.2686309022571561, 0.10599399396181022, -0.15424478566568062, -0.1809711852225273, 0.031627197086866135, 0.1916719960104791, -0.1653331015584038, -0.2671620040610533, 0.2109176593735444, -0.060970953841118176, 0.11762630221165435, 0.08738993536117359, -0.04201857312243345, -0.1237180851507149, -0.06210202716217497, -0.2850941326222217, -0.25031389176346386, -0.27394634502498294, 0.02131211786902595, -0.24771858814717468, -0.1403581523999422, -0.3576933326616187, -0.05574238498259384, -0.3265368526922258, 0.42891625269807554, -0.08235919685182719, -0.006351422885378991, -0.2004990416703753, -0.059826168617412794, -0.09062200779525328, 0.14758496322352874, 0.011128054337936502, 0.2728397938492782, 0.039865434853569144, -0.35245331643435357, -0.08973812025924231, 0.12606534665183092, 0.5096660933516606, 0.22064051100903223, 0.012629701464356585, 0.028991038971877454, -0.029672685394847836, -0.136189481146022, 0.0945140102722832, -0.038060787128110146, 0.02763451814162915, -0.12296178554299352, -0.06849315102704076, 0.32044010129619227, -0.17412562703369847, 0.3197931620237735, -0.0038157412193107363, -0.07138482973373171, -0.22141202925658338, -0.3201017297749065, 0.40498569238420723, -0.11848580414716793, -0.31140350696615743, 0.41395712479081054, -0.2232531300998566, -0.12314556887241242, -0.044984071426718994, -0.33571992979535953, -0.060277090747086884, 0.017267616256932013, -0.31990741366779357, 0.08784654519882397, 0.41173931854173296, -0.1849343531444338, 0.3450490947864049, 0.1071926937461271, 0.0009373350170909047, -0.0630238337258029, -0.2061444130045163, 0.06676032267886751, -0.10028579003571239, 0.010578628601951238, -0.15170821035791637, -0.5364070522059654, 0.057888328655292566, -0.13300946424020718, 0.23884936232749893, 0.275226814527815, -0.17882927012701907, -0.06836056412980651, 0.23461861094744743, -0.0293477364982486, -0.06447026458734921, 0.24048027633615407, 0.23419623093107578, 0.15648463899931925, 0.09831796348639248, -0.06543895666309078, 0.27244059160660605, 0.05440502175004159, -0.10816611232927467, 0.23812537705006204, -0.20301332748778964, -0.37042871343736683, -0.0703562469869236, -0.23486153295544407, -0.14903920318504546, 0.22340360034236384, 0.2861623289775217, 0.10106845730839885, -0.023110456585752236, 0.2989942065980516, -0.1310338782141678, 0.06786804922600119, -0.3363439482201298, 0.10009327190560612, 0.1011380975992564, 0.3235325662228259, 0.21922900987125862, 0.18122738729631788, -0.05088601649167526, -0.5248027840383406, 0.3027855315038294, 0.008610211893524821, -0.3167766179132299, 0.03812354137861913, -0.22280966235485614, -0.26193212999828286, 0.27101293768028256, -0.3095198982963912, -0.2902386011652944, -0.06437865166800445, -0.0020446195098056956, -0.20460664471220336, -0.01732407295167614, 0.01104703080818275, -0.1605371563356765, -0.10153589059536919, -0.19320686695632583, -0.1534913221032048, 0.18401041253683528, -0.058321069015470225, -0.06545088779401095, 0.15387648208170637, 0.09960165101727173, 0.1777016860050528, 0.014344701999917444, 0.05889292769254097, -0.2098931137286966, 0.10357855913124042, -0.23167052098821764, 0.07305871400736147, 0.18220966307092412, 0.22110858302704944, -0.3477066045810518, -0.20223111864923252, 0.0856814380983631, -0.29022750847811923, 0.15881055896635535, -0.1764498774143624, 0.1024516655486019, -0.024701876806781212, -0.2924198062039607, -0.06832676078503254, 0.050048787167305056, 0.011045758547296999, 0.20438895477233188, 0.05016713963292953, 0.02697104835068828, 0.0633905093315, 0.19053844494029232, 0.13242712859039363, 0.04810338158586231, 0.06479215499012156, 0.7631950126665625, 0.008739720432188184, -0.027597372424981805, -0.07236867013437831, 0.0014817100579850861, -0.037667309600407595, -0.30528338296264096, 0.001729072356655713, 0.16143898128452056, -0.3357268814349567, 0.14101872476725083, -0.0005413090337039229, 0.15379158039578583, 0.07534175462465263, -0.13690380022450432, -0.24889680268852077, -0.009674951789423892, 0.3805898889127907, -0.06038434908420221, 0.2323780847940948, -0.23395312363235488, 0.051710381710163365, 0.21379145531951185, -0.28502858081498844, -0.21613350706709425, 0.10498139618291001, 0.062010898022134504, -0.2201530890228065, 0.08582653349065328, -0.050851936100161595, -0.006846557299155993, -0.27747465727924603, -0.11588874804090284, 0.29280815534842974, 0.15011407570580365, -0.17202984352248116, 0.2077135179713762, 0.08488884477855238, -0.05725575788175125, 0.0061256593777327525, 0.002049080604810391, 0.05096916812593633, -0.16954061554792657, 0.1414522010782448, 0.28754485598296387, 0.00933059118688941, -0.13248014612805967, -0.152617097805641, -0.11534517228931855, 0.07182135541198656, -0.3305070637494879, 0.2554921188058693, 0.13519317409238557, -0.1135848116459653, -0.22627564784924145, 0.1754800315147954, -0.2624247829215539, 0.015945984633464125, -0.16017782397584399, -0.1260176588504494, -0.06966400312864232, -0.2312146192347242, -0.09381656967767972, 0.18991763742044984, 0.11792907931939817, -0.2609034404598749, -0.1401857254152917, 0.08372141699670597, 0.4218464147821161, 0.4017958060620871, -0.1467622436009083, -0.372664527225495, -0.3197737724416609, 0.3245725375525399, 0.3142155067411153, 0.07982920379521723, 0.20798005502993894, 0.15815419867482114, -0.07650944374590384, 0.022222591243711738, 0.3802800799988013, 0.027353538008131714, 0.1269444579671447, -0.08294480353187571, 0.06205618409609308, -0.04593217372418604, 0.14486954737925123, -0.20463166895943138, -0.10502243172661836, -0.3211163164480176, -0.02529327214538105, 0.12240151435044123, -0.22439251127817442, -0.14696038567548134, -0.220198689135002, -0.1718334230678238, 0.008842615396192542, 0.11276131304449341, 0.2327662035796154, -0.298649506453729, 0.05889657722861109, 0.0917955060559101, 0.1532320485731983, 0.023445371067545597, 0.05563610318051176, -0.13152178142023857, 0.02278827737014637, -0.143850707630873, 0.031177886288750026, 0.0436364892722517, 0.13562685371500238, -0.0709384269200676, 0.5025698111850688, 0.017667249820622222, -0.14648013675133764, 0.1333564478866423, -0.29780990489037973, 0.06822054996519437, 0.264453998534585, -0.05934446978929386, -0.1405476023670123, -0.30786404100294884, -0.02721033820105711, -0.22181844431520678, -0.07445709753701177, -0.05328314051069802, 0.09212240248026325, -0.26049425736919474, 0.1650478140847082, 0.16458388894479212, 0.23862850283100356, 0.24647897037610042, -0.10415504896430217, 0.09210954368801054, 0.13256812599071824, -0.17289586120034126, -0.20668856811058617, 0.2132006715767683, -0.05591034444874788, 0.0666644061890617, 0.08126692135353998, 0.20132081948323122, -0.23744665978783175, 0.049202931675505025, -0.05905165596205031, -0.2381302759818084, 0.10472590961468271, 0.1022252207693288, 0.424907488278922, -0.22798500793255466, 0.3055540341896194, 0.30005431723847265, 0.15738856482924904, 0.10578692977988502, 0.01435286811013943, -0.25961858694298273, 0.2028619697307182, -0.5666942305713609, -0.4814354911920124, -0.29968711474750004, 0.24456176348425082, 0.010113971852605966, -0.04687336945599033, -0.1585130160341045, 0.10355773545799848, -0.054580073023647875, -0.1318438839266649, 0.0007571891949468831, -0.11332527039941803, -0.05733959906925378, -0.022963348917167226, -0.07229489034513867, -0.02805840477271128, 0.0724039025265693, 0.20985701800376916, -0.17977926295821578, 0.16719664071220125, 0.011675194177854845, -0.015831096794223693, -0.09141749481852901, -0.2280087456073939, -0.09577214386928254, -0.16204801748633288, 0.16920253325506285, -0.3216407893848964, -0.28882372942891893, -0.03464031132478384, -0.10895610135037327, -0.06507049690638128, 0.08035595343074749, -0.06638236691232816, 0.10331705055577688, 0.05640242213500416, 0.03851222027358087, -0.12495692599258909, -0.45952626025335086, -0.08598796141342147, 0.18740556564384261, 0.03807350432167597, 0.1731709336888844, -0.35764900043028963, -0.040764918388706876, 0.011431266433448972, -0.049749528738390086, 0.1373386491800978, 0.13247513758803103, -0.05536463692706562, -0.37061502752990416, 0.02491105096375323, -0.09597009299129333, 0.19929557707676163, -0.23058312903989522, -0.016817289608548187, -0.049665353268041675, -0.14330256811948863, -0.0008979985058229605, 0.0307017512606244, 0.2032250577078365, 0.00981352093425008, -0.039254332321031614, 0.08217905975163864, 0.3298358701204848, -0.18034246827328881, 0.34579013571130485, -0.2600778519697573, -0.07990858114929464, -0.1373848804337791, 0.17830434689938288, 0.0635563896411297, -0.09386493872762816, 0.006740040897161139, -0.3386507719724743, -0.052866370247075994, -0.13440033659149733, -0.19489558789427297, -0.1637501067543427, 0.3076912248333239, 0.14617542623248242, -0.19955140553389644, 0.0753883456779857, 0.14557341288503825, 0.38466148330545297, 0.21706972700369426, 0.20142395460897228, 0.07100843623687185, 0.3647959779543834, 0.15875746776623822, -0.156185699827898, 0.17400120513776396, 0.054224649176822, -0.10576202953150604, 0.1821378028132369, -0.2298327393216319, -0.13374622017558788, 0.013993317126234727, 0.3840030762992376, -0.16537848630302118, -0.03934772362791265, -0.09059920774107076, 0.32118850826261525, -0.3163254179950491, 0.06775741982484945, 0.2951388230038795, 0.19308222640849163, 0.09200063632763648, 0.198614360481868, -0.06338144225319049, -0.29388180837408234, 0.006378006499014998, 0.31858920927823214, -0.09714697549755595, -0.29950667686800214, -0.06709909731245771, -0.29488822461446856, -0.11058291385292421, 0.08051736807799731, 0.29668701567321176, -0.14720594077991545, 0.01214258997971567, -0.035094226774342055, -0.24740792952980925, -0.08058987665838839, 0.06579821537571744, 0.26205191399722055, -0.1399063846395406, 0.004598880375132423, 0.05425747485367494, -0.16735612598625604, 0.30448464906547756, 0.21415645973035002, 0.2996556356997079, 0.06484026620562874, -0.00400525414863882, 0.41439359110201823, -0.1430851601555482, 0.03519613144541671, 0.2973238074514673, 0.15972355395275825, -0.21483638854223677, 0.1919578867243307, 0.07598877327779477, -0.025280074433518453, 0.07257694777042752, -0.10043568376142242, 0.17091378501028412, -0.07079897889269324, 0.35261421741225535, -0.027529971680158076, 0.28972447445717836, -0.11700448545808373], "b": [0.01660875689026468, 0.04250623693498727, 0.06974980828617176, 0.07250723801004826, -0.030568830966297297, -0.0714019036765918, 0.03281962807359367, -0.0417916369120109, -0.019166734419035325, 0.004178628227548572, 0.008552285759252513, -0.005796669641497862, -0.00408384272076479, -0.004257119914379311, 0.006387444416964162, -0.000612681865871727], "C": [0.026746624326169918, -0.013395818300825885, -0.04431180975170575, -0.07021235291967567, 0.004304613302992632, 0.029176264225073596, -0.109257087023696, -0.008841586661101044, 0.024224404678535063, -0.05525332920530204, 0.06971154928928737, 0.018956313835275046, -0.009378112518194703, -0.03862484813268667, 0.011650146156777657, 0.05576045504684654, -0.002060973747333315, 0.006473198564489958, 0.007289011354969133, 0.017911771934762653, 0.005157874634196017, -0.009188746168974896, -0.0037026385307430956, -0.015387803949590018, -0.015502577563947318, 0.0050170678511422305, 0.03609806782023425, -0.00717958113730948, 0.02587237190036702, 0.01197946428035743, 0.015652582906766712, -0.0026537325178850055, 0.0173381459956245, 0.07049259458581997, 0.033612944313706684, 0.10521075836277934, 0.0591294469043198, -0.030547433209835197, 0.0032990997539312176, -0.03472531486550739, 0.012244639081609778, 0.004392044240244672, -0.03086862624320122, 0.010512535218531545, -0.005028498229669114, -0.0001268647600021829, 0.0035770744541135696, -0.00672908892566578, -0.0028331721420471897, -0.0010080117522474287, -0.008335937180055245, -0.008785622982518513, -0.00903112215759509, -0.007707221682757439, 0.002630863809953682, 0.02748635743800281, -0.030545884607659127, -0.0036517381036016675, -0.02340677731588308, -0.016246879054703903, 0.0037818089022333174, -0.02797777766593985, -0.004713857853905589, 0.011808693769844598, -0.002526829210093516, -0.0036058759003015028, -0.0001397936701979607, 0.0004900417213712083, -0.0019531465760257677, -0.005453027638976992, 0.0020080364718145214, 0.003274270829081089, -0.024477400935773157, -0.022714629045878718, 0.02502950332708427, 0.010804547550297, 0.027612930920940474, -0.036193855064523, -0.0004205658720138095, -0.01638520402168532, 0.0007947399858467248, 0.009073334293881161, -0.003575799737274491, 0.007033774126337505, 0.00914433636142949, -0.021653784948365038, -0.008066102637863629, 0.016026529802309345, -0.0046307009558240915, -0.044868609899044024, -0.04146522088038822, -0.010769691657695412, 0.0017526468223001042, -0.009652822481486618, 0.01685833016595953, -0.02083647534640107, 0.002076892738629111, 0.007483639759300885, 0.006203985227536432, 0.009739967243393242, -0.00048296772605168985, 0.0005604563296620688, 0.013231662931748671, 0.010893343431742546, 0.018471386092765593, -0.00714387469835309, -0.010784132004027464, 0.008797762508875364, -0.014438728395126058, 0.007735099284055914, 0.0275946976266886, -0.014327149518038602, 0.0015852328903950832, 0.007446257656397488, -0.004159259789844816, 0.004507690132161934, 0.002831184585612994, -0.006925613773390713, -0.00831118023822982, 0.007359974867324944, -0.00354095301426467, 0.011168689673038875, -0.04113709301601905, -0.008395956236003187, -0.006712675631277296, 0.0017898461472096812, 0.0023692189553807174, 0.01393268874920977, 0.003543933212086145, -0.001056579992547828, 0.010822681122349735, 0.0030708529450381426, -0.0006968387968962566, 0.008109552269856168, 0.0128515459965849, -0.017857554651312616, 0.002720605427308558, 0.0009772112425653805, 0.046346807969228514, -0.018239394411461225, -0.006519392868966834, 0.0071864130087657165, -0.02258371330626945, -0.012602667678697449, -0.3928728810106033, 0.20794234642427628, 0.068092149286888, -0.16741662342966052, 0.45271600413786844, -0.29887560681047703, 0.14740184023900874, 0.03866580058722778, 0.16887729196396198, 0.010095670884051413, -0.002168637046151149, -0.01566862501656699, 0.015401836346105523, -0.020235659330968186, 0.051262834645255835, -0.01001191297757692, -0.20292976722543277, -0.2812737230817414, -0.27140181574100686, 0.03123450356141279, -0.24213960275096397, -0.24852185064791057, -0.036839442483870374, 0.017472700029299997, -0.03855520074846731, 0.07813660808120126, -0.029778125444925363, -0.03699996063680388, 0.06020469297583341, -0.011487564206484953, 0.05702260886404848, -0.02917355424111033, -0.0011040375696278145, 0.004951739594137524, 0.0006896488400709274, 0.009165486794951059, -0.005832502089483005, 0.010261712210953839, 0.009196702092779861, 0.013886448791797713, 0.02129283488389679, 0.01571119073328363, -0.0031876653972852127, 0.019050444824135364, -0.01317031907843442, 0.055705455569854484, -0.07360635592659213, -0.007846055021945563, 0.3239923300883955, -0.09481182931932593, 0.4521842682110985, -0.3512321108118049, 0.1821225665802774, 0.16777442999596182, -0.12286050838572511, 0.03423288495488298, -0.06976540650154475, -0.048759430686464225, 0.02077131336273707, 0.05212743110784752, -0.0059490158401927905, 0.0139502676750491, -0.036196445486046266, 0.002545320489139457, -0.11317066995526578, 0.5297442598769627, -0.3894094593310588, -0.25472084468837275, 0.0867546222644078, -0.0806723026257899, 0.07572590824608971, -0.07150328044137391, 0.01897156723525499, 0.00027026058448266206, -0.011928286140031236, 0.06380566693052607, -0.002970107818979223, 0.03416001711502327, -0.0030160868363057138, -0.030753078549422063, -0.2959357536973043, 0.15894264883469875, 0.26004162234711725, -0.03352614495445655, 0.2742071219314343, 0.12132998779080283, -0.05805310797580919, 0.07156205863205592, -0.09012920903822227, 0.018699936437033993, 0.0011865812973203594, 0.00993916190968132, 0.08781366892531381, 0.022539652845800253, -0.07384299642005811, -0.062393318248924655, 0.2305594615179677, -0.13845339160700612, -0.032000566106224065, -0.0316908216829747, 0.052247281129951584, -0.038762707326137215, -0.0027338472984080433, 0.0878918146965415, -0.010059615005252579, -0.07053777985191838, -0.025110031872090974, 0.018085283294490547, -0.04157074985702937, -0.031666497901529554, -0.02189161589307521, 0.036269442467224265, 0.039340949521587315, 0.020894581387236794, 0.008789801733110794, 0.041712376233299, 0.023423038524754643, -0.009711089473209403, -0.007078154038319954, 0.023956592390664493, -0.04134201346816068, 0.003289065018061664, 0.007793072745612695, -0.05114932676792009, -0.0456595449049589, 0.03838236694272076, -0.06402415739632472, 0.04078348049356097, 0.008166613916357052, 0.012615353549717927, -0.0339920600466373, 0.029784955856303683, -0.025390293330147085, -0.023493073762834257, 0.0006516175808944722, 0.00927457932050953, -0.017618324089410876, 0.006169960774960758, -0.00011688957676485285, 0.018944786588452216, 0.02862480207150473, -0.031345969875241755, -0.001758901067706214, -0.01768928072955937, 0.01972678150586212, -0.029873220953730295, 0.01317759907533937, -0.037033648499463646, -0.04224143292404559, 0.02157142324160195, -0.0418311021480681, 0.011486653805304517, -0.033039459438348656, 0.04395987824586759, 0.014081514914782664, -0.006913557743584047, 0.0007011601913759607, 0.02558196556758485, -0.020032601522097675, 0.013129642298344563, -0.011220740040300124, -0.006168044331191618, 0.022837471741232202, 0.0008019596477794848, -0.004514723795793589, 0.012718003331197554, 0.02350876339088627, -0.001138154077581888, -0.03511068714150618, -0.04002696022627111, -0.005003621868569955, 0.02157919950442451, 0.018212824003603738, 0.026517180706589007, 0.005142077233244914, -0.001429722993520794, -0.06584704938964436, -0.13083413639771388, -0.08841999528703959, -0.3357108030765784, -0.16082805995376268, 0.1339629392669393, -0.054017208420914786, -0.05596599912522135, 0.1257179535891584, -0.006441889621395232, -0.03396878666947687, -0.028102110060786296, -0.10385859343281965, 0.0012104594885422157, 0.027398817161133064, 0.0573145433709671], "c": [-0.03378798018050456, 0.0023664677698548714, -0.02298867680406754, 0.0015199104625284545, -0.0008431455014884875, -0.0015866166859038093, 0.0036696289131951305, 0.0001373780600612207, 0.0003840702471327534, -0.11219505894210999, -0.0696100470938211, -0.033660633036991114, -0.0008008334589264688, 0.10210303947383613, -0.0014510398811482562, -0.044168889151879324, 0, 0, 0, 0, 0.048804140327364964]}}};</script>
+<script>
+'use strict';
+const { CFG, POP, N, SENSES, NS, SN, NM, NI, NOUT, HP, HM, CLOCK, MOTOR, MAXN, MAXM, S, GENE, G, Substrate, Population, wrap, ddx, FEEDBACK } = CB;
+function deserialize(j) { const th = { policy: {}, model: {} }; for (const p of ['policy', 'model']) for (const k in j.theta[p]) th[p][k] = Float64Array.from(j.theta[p][k]); return CB.cloneGenome(Object.assign({}, j, { theta: th })); }
+const FOUNDER = typeof CB_FOUNDER !== 'undefined' && CB_FOUNDER ? deserialize(CB_FOUNDER) : null;
+const RULE_NAMES = { rock: 'rock', mud: 'mud', bite: 'biting', injury: 'injury by bites', growth: 'bodies grow', devnoise: 'developmental noise', records: 'records allowed', slow: 'slow learning allowed', plan: 'planning allowed', noise: 'motor noise allowed' };
+const DEFAULT_RULES = { rock: true, mud: true, bite: true, injury: true, growth: true, devnoise: true, records: true, slow: true, plan: true, noise: true };
+const Q = new URLSearchParams(location.search), CARD = Q.has('card'), SMALL = matchMedia('(max-width: 900px)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+const LITE = Q.has('lite') || (SMALL && !Q.has('full')), SHOT = Q.has('shot') ? +Q.get('shot') : 0; if (CARD) document.body.classList.add('card');
+const SIZES = { small: 140, normal: 420, large: 640 }; let worldSize = Q.get('pop') ? +Q.get('pop') : (LITE ? SIZES.small : SIZES.normal);
+function setPopulation(n) { worldSize = n; POP.max = n; POP.initial = Math.round(n * 0.48); }
+setPopulation(worldSize); const MAXPOP = Math.max(SIZES.large, worldSize);
+const RATES = [0, 1, 4, 10, 30, 60, 120, 240, 'max'];
+const $ = id => document.getElementById(id);
+const hsl = (h, s, l) => new THREE.Color().setHSL(h, s, l);
+let colourBy = 'lineage';
+function shapeHue(b) { if (b._shapeHue === undefined) { const key = `${b.nGenome}/${b.g.springs.filter(x => x.muscle).length}/${b.g.springs.length}/${b.g.brain.policy.map(c => c.channels).join('.')}/${b.g.brain.model.map(c => c.channels).join('.')}`; let h = 2166136261; for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); } b._shapeHue = ((h >>> 0) % 997) / 997; } return b._shapeHue; }
+const hueOf = b => colourBy === 'shape' ? shapeHue(b) : b.hue;
+
+// ---------- the 3D world ----------
+const glCanvas = $('gl'); let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: !LITE, powerPreference: 'high-performance' }); }
+catch (e) { const d = document.createElement('div'); d.className = 'nogl'; d.textContent = 'This page draws the world with WebGL, which this browser or device has switched off. It runs in any current desktop or phone browser with hardware acceleration on.'; $('worldbox').appendChild(d); throw e; }
+renderer.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 2)); renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = !LITE; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x07080c); scene.fog = new THREE.Fog(0x07080c, 90, 230);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 600);
+const hemi = new THREE.HemisphereLight(0x8fa3c8, 0x2a1d12, 0.55); scene.add(hemi);
+const sunLight = new THREE.DirectionalLight(0xfff0d0, 1.15); sunLight.castShadow = !LITE; sunLight.shadow.mapSize.set(2048, 2048);
+sunLight.shadow.camera.left = -60; sunLight.shadow.camera.right = 60; sunLight.shadow.camera.top = 60; sunLight.shadow.camera.bottom = -60; sunLight.shadow.camera.near = 10; sunLight.shadow.camera.far = 220; sunLight.shadow.bias = -0.0008;
+scene.add(sunLight); scene.add(sunLight.target);
+const cx0 = CFG.w / 2 - 0.5, cz0 = CFG.h / 2 - 0.5;
+const groundGeo = new THREE.PlaneGeometry(CFG.w, CFG.h, CFG.w, CFG.h); groundGeo.rotateX(-Math.PI / 2); groundGeo.translate(cx0, 0, cz0);
+const groundCol = new Float32Array(groundGeo.attributes.position.count * 3); groundGeo.setAttribute('color', new THREE.BufferAttribute(groundCol, 3));
+const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.0 })); ground.receiveShadow = true; scene.add(ground);
+const skirt = new THREE.Mesh(new THREE.CircleGeometry(420, 48), new THREE.MeshStandardMaterial({ color: 0x05060a, roughness: 1 })); skirt.rotation.x = -Math.PI / 2; skirt.position.set(cx0, -0.12, cz0); skirt.receiveShadow = true; scene.add(skirt);
+const rim = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(CFG.w, 0.02, CFG.h)), new THREE.LineBasicMaterial({ color: 0x3a4152, transparent: true, opacity: 0.6 })); rim.position.set(cx0, 0.0, cz0); scene.add(rim);
+const rockMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0x4d5566, roughness: 0.8, flatShading: true }), N); rockMesh.castShadow = !LITE; rockMesh.receiveShadow = true; scene.add(rockMesh);
+const foodGeo = new THREE.ConeGeometry(0.13, 1, 5); foodGeo.translate(0, 0.5, 0);
+const foodMesh = new THREE.InstancedMesh(foodGeo, new THREE.MeshStandardMaterial({ roughness: 0.6, emissive: 0x1a3a10, emissiveIntensity: 0.5 }), N); foodMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); foodMesh.castShadow = !LITE; scene.add(foodMesh);
+const nodeMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 9), new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.05 }), MAXPOP * MAXN); nodeMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); nodeMesh.castShadow = !LITE; scene.add(nodeMesh);
+const springGeo = new THREE.CylinderGeometry(1, 1, 1, 7); springGeo.rotateX(Math.PI / 2);
+const springMesh = new THREE.InstancedMesh(springGeo, new THREE.MeshStandardMaterial({ roughness: 0.55 }), MAXPOP * 2 * MAXN); springMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); springMesh.castShadow = !LITE; scene.add(springMesh);
+const noseMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.11, 8, 6), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }), MAXPOP); noseMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(noseMesh);
+const marker = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.06, 8, 40), new THREE.MeshBasicMaterial({ color: 0xf0c56a })); marker.rotation.x = Math.PI / 2; marker.visible = false; scene.add(marker);
+const ghosts = []; for (let i = 0; i < 8; i++) { const m = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 6), new THREE.MeshBasicMaterial({ color: 0xf0c56a, transparent: true, opacity: 0.7 })); m.visible = false; scene.add(m); ghosts.push(m); }
+const puffs = []; for (let i = 0; i < 120; i++) { const m = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 5), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 })); m.visible = false; scene.add(m); puffs.push(m); }
+const rings = []; for (let i = 0; i < 40; i++) { const m = new THREE.Mesh(new THREE.RingGeometry(0.6, 0.8, 24), new THREE.MeshBasicMaterial({ color: 0xb6e264, transparent: true, opacity: 0.8, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.visible = false; scene.add(m); rings.push(m); }
+const TRAIL = 220, trailGeo = new THREE.BufferGeometry(); trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(TRAIL * 3), 3)); trailGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(TRAIL * 3), 3));
+const trailLine = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false })); trailLine.frustumCulled = false; scene.add(trailLine); let trail = [], trailFor = null, trailTick = -1;
+const sunBar = new THREE.Mesh(new THREE.PlaneGeometry(2.2, CFG.h), new THREE.MeshBasicMaterial({ color: 0xf0c56a, transparent: true, opacity: 0.12, depthWrite: false })); sunBar.rotation.x = -Math.PI / 2; sunBar.position.y = 0.02; scene.add(sunBar);
+const _m = new THREE.Matrix4(), _p = new THREE.Vector3(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _c = new THREE.Color(), _z = new THREE.Vector3(0, 0, 1), _d = new THREE.Vector3();
+
+const cam = { az: 0.7, pol: 0.9, dist: 95, target: new THREE.Vector3(cx0, 0, cz0), follow: false, director: true };
+function placeCamera() { const t = cam.target; camera.position.set(t.x + cam.dist * Math.sin(cam.pol) * Math.sin(cam.az), t.y + cam.dist * Math.cos(cam.pol), t.z + cam.dist * Math.sin(cam.pol) * Math.cos(cam.az)); camera.lookAt(t); }
+let drag = null;
+glCanvas.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, moved: 0, pan: e.shiftKey || e.button === 2 }; glCanvas.setPointerCapture(e.pointerId); });
+glCanvas.addEventListener('pointermove', e => {
+  if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY; drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.pan) { const k = cam.dist * 0.0016; const right = new THREE.Vector3(Math.cos(cam.az), 0, -Math.sin(cam.az)), fwd = new THREE.Vector3(-Math.sin(cam.az), 0, -Math.cos(cam.az)); cam.target.addScaledVector(right, -dx * k).addScaledVector(fwd, -dy * k); setFollow(false); setDirector(false); }
+  else { cam.az -= dx * 0.006; cam.pol = Math.max(0.15, Math.min(1.5, cam.pol - dy * 0.006)); if (cam.director) setDirector(false); }
+});
+glCanvas.addEventListener('pointerup', e => { if (drag && drag.moved < 6) pick(e); drag = null; });
+glCanvas.addEventListener('contextmenu', e => e.preventDefault());
+glCanvas.addEventListener('wheel', e => { e.preventDefault(); cam.dist = Math.max(4, Math.min(220, cam.dist * Math.exp(e.deltaY * 0.0012))); if (cam.director) setDirector(false); }, { passive: false });
+const raycaster = new THREE.Raycaster(); const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.3);
+function pick(e) {
+  const r = glCanvas.getBoundingClientRect(); const v = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  raycaster.setFromCamera(v, camera); const hit = new THREE.Vector3(); if (!raycaster.ray.intersectPlane(groundPlane, hit)) return;
+  let best = null, bd = 2.2; for (const b of pop.beings) for (let i = 0; i < b.n; i++) { const d = Math.hypot(ddx(hit.x, b.x[i], CFG.w), ddx(hit.z, b.y[i], CFG.h)); if (d < bd) { bd = d; best = b; } }
+  if (best) { select(best); setDirector(false); }
+}
+function resize() { const r = glCanvas.parentElement.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); netResize(); }
+addEventListener('resize', resize);
+
+// ---------- the clock ----------
+let sub, pop, seed = 0, paused = false, rate = Q.has('rate') ? (Q.get('rate') === 'max' ? 'max' : +Q.get('rate')) : 30, acc = 0, lastNow = performance.now(), chosen = null, mass0 = 0, frame = 0, inspecting = false;
+let tps = 0, tpsTicks = 0, tpsSince = performance.now(); // the achieved ticks per second
+const anims = [], ticker = []; let directorNext = 0, firstWorld = true;
+function tick() {
+  sub.step(); pop.step();
+  for (const e of pop.events) {
+    const a = Object.assign({ t0: sub.tick - 1 }, e); if (e.kind === 'die') { a.x = e.b.x[0]; a.y = e.b.y[0]; }
+    if (e.kind !== 'eat' || Math.random() < 0.35) anims.push(a);
+    if (e.kind !== 'eat' && e.kind !== 'grow') say(e); else if (e.kind === 'grow' && e.b === chosen) say(e);
+    if (e.kind === 'die' && e.b === chosen) chosen = null;
+  }
+  if (anims.length > 400) anims.splice(0, anims.length - 400);
+}
+function name(b) { return `<b>#${b.id}</b>`; }
+function say(e) {
+  let line = '', cls = e.kind;
+  if (e.kind === 'birth') line = `${name(e.b)} was born to #${e.parent.id}, ${e.b.nGenome} nodes in its genome`;
+  else if (e.kind === 'die') line = `${name(e.b)} ${e.killed ? 'was killed' : 'starved'} at ${e.b.age}; its body is food`;
+  else if (e.kind === 'bite') line = `${name(e.b)} bit #${e.v.id} for ${e.take}`;
+  else if (e.kind === 'injury') line = `${name(e.by)} bit a node off #${e.b.id}`;
+  else if (e.kind === 'grow') line = `${name(e.b)} grew its ${e.b.n}${e.b.n === 2 ? 'nd' : e.b.n === 3 ? 'rd' : 'th'} node`;
+  if (!line) return; ticker.unshift({ line, cls }); if (ticker.length > 12) ticker.length = 12;
+  $('ticker').innerHTML = ticker.map(t => `<div class="${t.cls}">${t.line}</div>`).join('');
+}
+function newWorld(rules) {
+  seed = (firstWorld && Q.has('seed')) ? +Q.get('seed') : (Math.random() * 1e9) | 0; firstWorld = false; sub = new Substrate(seed, rules); pop = new Population(sub, seed + 1, FOUNDER); mass0 = pop.mass; chosen = null; anims.length = 0; ticker.length = 0; $('ticker').innerHTML = '';
+  buildRock(); paintGround(); directorNext = 0; netFor = null;
+}
+function buildRock() { let k = 0; const rng = new CB.Mulberry(seed); for (let i = 0; i < N; i++) { if (!sub.rock[i]) continue; const x = i % CFG.w, z = (i / CFG.w) | 0, h = 0.55 + rng.random() * 0.35; _m.compose(_p.set(x, h / 2 - 0.02, z), _q.identity(), _s.set(1, h, 1)); rockMesh.setMatrixAt(k++, _m); } rockMesh.count = k; rockMesh.instanceMatrix.needsUpdate = true; }
+const soilLow = new THREE.Color(0x2a1c12), soilHigh = new THREE.Color(0x8a6a3e), mudCol = new THREE.Color(0x16302e), foodTint = new THREE.Color(0x3f6a25);
+function paintGround() {
+  const pos = groundGeo.attributes.position, w1 = CFG.w + 1, col = groundCol;
+  for (let vz = 0; vz <= CFG.h; vz++) for (let vx = 0; vx <= CFG.w; vx++) {
+    const i = sub.cell(vx, vz), sl = Math.min(sub.soil[i], 8) / 8, f = Math.min(sub.food[i], 8) / 8, light = 0.3 + 0.7 * sub.lightRow[vx % CFG.w];
+    _c.copy(soilLow).lerp(soilHigh, sl); if (sub.mud[i]) _c.lerp(mudCol, 0.8); if (f > 0) _c.lerp(foodTint, 0.35 * f); _c.multiplyScalar(light);
+    const k = (vz * w1 + vx) * 3; col[k] = _c.r; col[k + 1] = _c.g; col[k + 2] = _c.b; pos.setY(vz * w1 + vx, sub.mud[i] ? -0.06 : 0);
+  }
+  groundGeo.attributes.color.needsUpdate = true; pos.needsUpdate = true;
+}
+let slowFrames = 0, qualityDropped = LITE;
+function dropQuality() { qualityDropped = true; renderer.shadowMap.enabled = false; sunLight.castShadow = false; renderer.setPixelRatio(1); scene.traverse(o => { if (o.material) o.material.needsUpdate = true; }); resize(); }
+function render(now) {
+  const dt = Math.min(0.1, (now - lastNow) / 1000); lastNow = now; frame++;
+  if (!qualityDropped && frame > 40 && frame < 400 && rate !== 'max') { if (dt > 0.034) slowFrames++; if (slowFrames > 45) dropQuality(); }
+  if (!paused && rate !== 0) { // the budget of a frame given to the simulation grows with the rate; at max the page renders around ten times a second
+    const max = rate === 'max', ms = max ? 90 : rate <= 60 ? 14 : rate <= 120 ? 28 : 55; if (!max) acc += dt * rate; let steps = 0; const budget = performance.now() + ms;
+    while ((max || acc >= 1) && steps < 400 && performance.now() < budget) { tick(); if (!max) acc -= 1; steps++; tpsTicks++; } if (!max && acc > 4) acc = 0;
+  }
+  { const now2 = performance.now(); if (now2 - tpsSince > 1000) { tps = tpsTicks * 1000 / (now2 - tpsSince); tpsTicks = 0; tpsSince = now2; } }
+  if (SHOT && sub.tick >= SHOT && !paused) { paused = true; if (!chosen) pickBy(b => b.age); if (Q.has('inspect')) setInspect(true); if (CARD) { setDirector(false); cam.dist = 17; cam.pol = 1.12; cam.az = 0.9; if (chosen) { cam.target.x = chosen.x[0] + 3; cam.target.z = chosen.y[0]; } marker.visible = false; } }
+  if (frame % 4 === 0) paintGround();
+  const t = sub.tick + Math.min(acc, 1), foodCol = new THREE.Color();
+  const sx = sub.peak; sunLight.position.set(sx, 70, cz0 - 20); sunLight.target.position.set(sx, 0, cz0 + 20); sunLight.intensity = 0.7 + 0.6 * sub.contrast; sunBar.position.x = sx; hemi.intensity = 0.4 + 0.25 * sub.contrast;
+  let k = 0; for (let i = 0; i < N; i++) { const f = sub.food[i]; if (!f) continue; const x = i % CFG.w, z = (i / CFG.w) | 0, h = 0.18 + 0.62 * Math.min(f, 8) / 8; _m.compose(_p.set(x + 0.12 * Math.sin(i * 7.1), 0, z + 0.12 * Math.cos(i * 3.7)), _q.identity(), _s.set(1, h, 1)); foodMesh.setMatrixAt(k, _m); foodMesh.setColorAt(k, foodCol.setHSL(0.24 + 0.03 * Math.min(f, 8) / 8, 0.55, 0.32 + 0.2 * Math.min(f, 8) / 8)); k++; }
+  foodMesh.count = k; foodMesh.instanceMatrix.needsUpdate = true; if (foodMesh.instanceColor) foodMesh.instanceColor.needsUpdate = true;
+  let nk = 0, sk = 0, hk = 0;
+  for (const b of pop.beings) {
+    const hx = b.x[0], hy = b.y[0], hue = hueOf(b), n = b.n; const rx = x => hx + ddx(hx, x, CFG.w), rz = y => hy + ddx(hy, y, CFG.h);
+    for (let i = 0; i < n; i++) { const r = i === 0 ? 0.3 : 0.22; _m.compose(_p.set(rx(b.x[i]), r, rz(b.y[i])), _q.identity(), _s.set(r, r, r)); nodeMesh.setMatrixAt(nk, _m); nodeMesh.setColorAt(nk, _c.setHSL(hue, i === 0 ? 0.6 : 0.5, i === 0 ? 0.62 : 0.5)); nk++; }
+    for (let s = 0; s < b.nS; s++) {
+      const a = b.sa[s], c = b.sb[s]; if (a >= n || c >= n) continue;
+      const ax = rx(b.x[a]), az = rz(b.y[a]), bx = rx(b.x[c]), bz = rz(b.y[c]); _d.set(bx - ax, 0, bz - az); const len = _d.length() || 1e-3; _d.divideScalar(len);
+      const p = b.port[s], act = p >= 0 ? b.act[p] : 0, muscle = p >= 0, rad = muscle ? 0.1 - 0.045 * act : 0.045;
+      _q.setFromUnitVectors(_z, _d); _m.compose(_p.set((ax + bx) / 2, muscle ? 0.22 : 0.2, (az + bz) / 2), _q, _s.set(rad, rad, len)); springMesh.setMatrixAt(sk, _m);
+      if (muscle) { const w = 0.5 + 0.5 * act; springMesh.setColorAt(sk, _c.setRGB(0.29 + 0.59 * w, 0.61 - 0.07 * w, 0.82 - 0.58 * w)); } else springMesh.setColorAt(sk, _c.setRGB(0.35, 0.34, 0.32)); sk++;
+    }
+    _m.compose(_p.set(hx + Math.cos(b.heading) * 0.3, 0.36, hy + Math.sin(b.heading) * 0.3), _q.identity(), _s.set(1, 1, 1)); noseMesh.setMatrixAt(hk++, _m);
+  }
+  nodeMesh.count = nk; nodeMesh.instanceMatrix.needsUpdate = true; if (nodeMesh.instanceColor) nodeMesh.instanceColor.needsUpdate = true;
+  springMesh.count = sk; springMesh.instanceMatrix.needsUpdate = true; if (springMesh.instanceColor) springMesh.instanceColor.needsUpdate = true;
+  noseMesh.count = hk; noseMesh.instanceMatrix.needsUpdate = true;
+  let pk = 0, rk = 0; for (let i = anims.length - 1; i >= 0; i--) {
+    const a = anims[i], age = t - a.t0;
+    if (a.kind === 'eat' && age < 18 && pk < puffs.length) { const m = puffs[pk++]; m.visible = true; m.position.set(a.b.x[0], 0.5 + age * 0.05, a.b.y[0]); m.material.color.setHex(0xb6e264); m.material.opacity = 0.9 * (1 - age / 18); }
+    else if (a.kind === 'bite' && age < 10 && pk < puffs.length) { const m = puffs[pk++]; m.visible = true; m.position.set(a.v.x[0], 0.6, a.v.y[0]); m.scale.setScalar(1 + age * 0.3); m.material.color.setHex(0xe0679a); m.material.opacity = 0.9 * (1 - age / 10); }
+    else if (a.kind === 'birth' && age < 24 && rk < rings.length) { const m = rings[rk++]; m.visible = true; m.position.set(a.b.x[0], 0.05, a.b.y[0]); m.scale.setScalar(0.6 + age * 0.12); m.material.opacity = 0.8 * (1 - age / 24); }
+    else if (a.kind === 'die' && age < 30 && rk < rings.length) { const m = rings[rk++]; m.visible = true; m.position.set(a.x, 0.05, a.y); m.scale.setScalar(0.8 + age * 0.04); m.material.color.setHex(0x8d8a80); m.material.opacity = 0.6 * (1 - age / 30); }
+    else if (age > 40) anims.splice(i, 1);
+  }
+  for (let i = pk; i < puffs.length; i++) puffs[i].visible = false; for (let i = rk; i < rings.length; i++) { rings[i].visible = false; rings[i].material.color.setHex(0xb6e264); } for (const m of puffs) m.scale.setScalar(1);
+  if (chosen && chosen.dead) chosen = null;
+  if (cam.director && !inspecting) direct();
+  if (chosen) {
+    marker.visible = true; marker.position.set(chosen.x[0], 0.05, chosen.y[0]); marker.scale.setScalar(0.8 + 0.1 * chosen.n);
+    if (trailFor !== chosen) { trailFor = chosen; trail = []; } // where the chosen one has been: a fading line behind its head
+    if (sub.tick !== trailTick) { trailTick = sub.tick; const last = trail[trail.length - 1]; if (last && Math.hypot(last[0] - chosen.x[0], last[1] - chosen.y[0]) > 6) trail = []; trail.push([chosen.x[0], chosen.y[0]]); if (trail.length > TRAIL) trail.shift(); }
+    { const tp = trailGeo.attributes.position.array, tc = trailGeo.attributes.color.array, n = trail.length; for (let i = 0; i < n; i++) { tp[i * 3] = trail[i][0]; tp[i * 3 + 1] = 0.06; tp[i * 3 + 2] = trail[i][1]; const f = Math.pow((i + 1) / n, 2); tc[i * 3] = 0.94 * f; tc[i * 3 + 1] = 0.77 * f; tc[i * 3 + 2] = 0.42 * f; } trailGeo.setDrawRange(0, n); trailGeo.attributes.position.needsUpdate = true; trailGeo.attributes.color.needsUpdate = true; trailLine.visible = n > 1 && !CARD; }
+    drawGhosts(chosen);
+    if (cam.follow || inspecting) { const k = inspecting ? 0.15 : 0.08; cam.target.x += (chosen.x[0] - cam.target.x) * k; cam.target.z += (chosen.y[0] - cam.target.z) * k; }
+    if (inspecting) { cam.dist += (9 - cam.dist) * 0.05; cam.pol += (1.05 - cam.pol) * 0.05; cam.az += 0.0025; }
+  } else { marker.visible = false; trailLine.visible = false; for (const g of ghosts) g.visible = false; }
+  if (CARD) { marker.visible = false; for (const g of ghosts) g.visible = false; for (const r of rings) r.visible = false; }
+  placeCamera(); renderer.render(scene, camera);
+  if (inspecting) netRender();
+  if (frame % (rate === 'max' ? 6 : 3) === 0) panels();
+  requestAnimationFrame(render);
+}
+function drawGhosts(b) { // the model's private continuation: predicted changes of speed and turn integrated ahead of the head
+  const T = ghosts.length, U = new Float64Array(T * NI); let ph = b.phase;
+  for (let t = 0; t < T; t++) { const o = t * NI; U.set(b.sense, o); U[o + CLOCK] = Math.sin(ph); U[o + CLOCK + 1] = Math.cos(ph); for (let m = 0; m < NM; m++) U[o + MOTOR + m] = b.prevCmd[m]; ph += G(b.g, 'freq'); }
+  const f = b.model.forward(U, T, b.model.h, { feedback: FEEDBACK, feedbackAdd: true }); let x = b.x[0], y = b.y[0], h = b.heading;
+  for (let t = 0; t < T; t++) { const sv = U.subarray(t * NI); const sp = Math.atanh(Math.max(-0.99, Math.min(0.99, sv[S.speed] + f.output[t * NOUT + S.speed]))) * 0.15, tr = Math.atanh(Math.max(-0.99, Math.min(0.99, sv[S.turn] + f.output[t * NOUT + S.turn]))) * 0.15; h += tr * 3; x += Math.cos(h) * sp * 3; y += Math.sin(h) * sp * 3; const g = ghosts[t]; g.visible = true; g.position.set(x, 0.32, y); g.material.opacity = 0.75 - 0.08 * t; }
+}
+function direct() {
+  if (sub.tick >= directorNext || !chosen) {
+    directorNext = sub.tick + 500; const counts = new Map(); for (const b of pop.beings) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
+    let bestL = null, bc = 0; for (const [l, c] of counts) if (c > bc) { bc = c; bestL = l; }
+    let best = null; for (const b of pop.beings) if (b.lineage === bestL && b.n === b.nGenome && (!best || b.age > best.age)) best = b;
+    if (best) select(best, true);
+  }
+  if (chosen) { cam.target.x += (chosen.x[0] - cam.target.x) * 0.03; cam.target.z += (chosen.y[0] - cam.target.z) * 0.03; cam.az += 0.0006; if (cam.dist > 40) cam.dist += (34 - cam.dist) * 0.01; }
+}
+function select(b, quiet) { chosen = b; if (!quiet) setFollow(true); panels(); }
+function setFollow(v) { cam.follow = v; $('follow').setAttribute('aria-pressed', String(v)); }
+function setDirector(v) { cam.director = v; $('director').setAttribute('aria-pressed', String(v)); }
+let savedCam = null;
+function setInspect(v) {
+  if (v && !chosen) pickBy(b => b.age); if (v && !chosen) return;
+  inspecting = v; $('inspect').setAttribute('aria-pressed', String(v)); $('netbox').hidden = !v; $('stage').classList.toggle('inspecting', v); $('left').classList.toggle('inspecting', v); $('aside').classList.toggle('inspecting', v);
+  if (v) { savedCam = { dist: cam.dist, pol: cam.pol, director: cam.director }; setDirector(false); setFollow(true); } else if (savedCam) { cam.dist = savedCam.dist; cam.pol = savedCam.pol; }
+  resize();
+}
+
+// ---------- the inspection view: every neuron and every synapse of the two patches, live ----------
+const netCanvas = $('net'); let netRenderer = null, netScene, netCamera, netFor = null, netParts = null; const netCam = { az: 0.12, pol: 1.45, dist: 60 };
+const GROUP_COLORS = { sense: new THREE.Color(0xf0c56a), strain: new THREE.Color(0xb6e264), clock: new THREE.Color(0x4a9bd1), motor: new THREE.Color(0xe0679a), context: new THREE.Color(0x4a9bd1), out: new THREE.Color(0xe08a3c), record: new THREE.Color(0xddd6c6) };
+function inputGroup(j) { return j < NS ? 'sense' : j < SN ? 'strain' : j < MOTOR ? 'clock' : 'motor'; }
+function netInit() {
+  netRenderer = new THREE.WebGLRenderer({ canvas: netCanvas, antialias: !LITE, powerPreference: 'high-performance' }); netRenderer.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 2)); netRenderer.outputEncoding = THREE.sRGBEncoding;
+  netScene = new THREE.Scene(); netScene.background = new THREE.Color(0x05060a); netCamera = new THREE.PerspectiveCamera(36, 1, 0.5, 400);
+  let d = null; netCanvas.addEventListener('pointerdown', e => { d = { x: e.clientX, y: e.clientY }; netCanvas.setPointerCapture(e.pointerId); });
+  netCanvas.addEventListener('pointermove', e => { if (!d) return; netCam.az -= (e.clientX - d.x) * 0.006; netCam.pol = Math.max(0.3, Math.min(2.6, netCam.pol - (e.clientY - d.y) * 0.006)); d = { x: e.clientX, y: e.clientY }; });
+  netCanvas.addEventListener('pointerup', () => { d = null; });
+  netCanvas.addEventListener('wheel', e => { e.preventDefault(); netCam.dist = Math.max(12, Math.min(110, netCam.dist * Math.exp(e.deltaY * 0.0012))); }, { passive: false });
+}
+function netResize() { if (!netRenderer || !inspecting) return; const r = netCanvas.parentElement.getBoundingClientRect(); netRenderer.setSize(r.width, r.height, false); netCamera.aspect = r.width / r.height; netCamera.updateProjectionMatrix(); }
+// one patch's picture: columns of reading, context and output neurons, the record cells as a grid below, every weight a line;
+// the context is coloured by cortex, and every group, cortex and port carries its name
+const CORTEX_HUES = [0.58, 0.72, 0.48, 0.85, 0.62, 0.35, 0.95, 0.15];
+const GROUP_LABEL = { chemo: 'scent', obstacle: 'obstacles', self: 'self', motion: 'motion', strain: 'muscle strains', clock: 'clock', motor: 'last motor' };
+const SHORT = ['food L-R', 'food ahead', 'food here', 'rock ahead', 'other ahead', 'energy', 'pain', 'light', 'grip', 'speed', 'turn', 'size'];
+function buildPatch(net, X, name, outName, outSpacing, cortices, outLabel) {
+  const I = net.I, H = net.H, O = net.O, D = net.D, part = { net, X, cortices };
+  const inPos = j => [X, (j - (I - 1) / 2) * -0.42 + 2.5, 0], ctxPos = i => [X + 5.5, (i - (H - 1) / 2) * -Math.min(0.75, 12 / H) + 2.5, 0], outPos = o => [X + 11, (o - (O - 1) / 2) * -outSpacing + 2.5, 0];
+  const side = Math.ceil(Math.sqrt(Math.max(D, 1))), cellPos = c => [X + 5.5 + ((c % side) - (side - 1) / 2) * 0.3, -6.5 - (Math.floor(c / side) - (side - 1) / 2) * 0.3, -1.5];
+  part.inPos = inPos; part.ctxPos = ctxPos; part.outPos = outPos; part.cellPos = cellPos;
+  part.ctxHue = new Float32Array(H); { let row = 0; cortices.forEach((c, k) => { for (let i = 0; i < c.channels; i++, row++) part.ctxHue[row] = CORTEX_HUES[k % CORTEX_HUES.length]; }); }
+  const nodes = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshBasicMaterial(), I + H + O); nodes.instanceMatrix.setUsage(THREE.DynamicDrawUsage); netScene.add(nodes); part.nodes = nodes;
+  const mk = (n) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 6), 3)); g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(n * 6), 3)); g.attributes.position.setUsage(THREE.DynamicDrawUsage); g.attributes.color.setUsage(THREE.DynamicDrawUsage); const l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false })); netScene.add(l); return l; };
+  part.edges = mk(I * H + H * O);
+  const pos = part.edges.geometry.attributes.position.array; let e = 0;
+  for (let i = 0; i < H; i++) for (let j = 0; j < I; j++) { const a = inPos(j), b = ctxPos(i); pos.set([a[0], a[1], a[2], b[0], b[1], b[2]], e * 6); e++; }
+  for (let o = 0; o < O; o++) for (let i = 0; i < H; i++) { const a = ctxPos(i), b = outPos(o); pos.set([a[0], a[1], a[2], b[0], b[1], b[2]], e * 6); e++; }
+  part.edges.geometry.attributes.position.needsUpdate = true;
+  if (D > 0) {
+    const cells = new THREE.InstancedMesh(new THREE.BoxGeometry(0.22, 0.22, 0.08), new THREE.MeshBasicMaterial(), D); cells.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    for (let c = 0; c < D; c++) { const p = cellPos(c); _m.compose(_p.set(p[0], p[1], p[2]), _q.identity(), _s.set(1, 1, 1)); cells.setMatrixAt(c, _m); cells.setColorAt(c, _c.setRGB(0.12, 0.12, 0.11)); } netScene.add(cells); part.cells = cells;
+    part.recEdges = mk(net.k * (net.fanin || 0) + net.k * O);
+    netScene.add(label(`records · ${D} cells · lit = this reading's code`, X + 5.5, -6.5 + (side / 2) * 0.3 + 1.0, -1.5, 0.75));
+  }
+  // names: the patch, the groups of the reading, each cortex, each output port
+  netScene.add(label(name, X + 5.5, 2.5 + (I / 2) * 0.42 + 2.6, 0, 1.05)); netScene.add(label('reading', X, 2.5 + (I / 2) * 0.42 + 1.0, 0, 0.8)); netScene.add(label('context', X + 5.5, 2.5 + (H / 2) * Math.min(0.75, 12 / H) + 1.0, 0, 0.8)); netScene.add(label(outName, X + 11, 2.5 + (O / 2) * outSpacing + 1.0, 0, 0.8));
+  for (const g of CB.RG_NAMES) { const idx = CB.RG[g], mid = (idx[0] + idx[idx.length - 1]) / 2, p = inPos(mid); netScene.add(label(GROUP_LABEL[g], X - 3.0, p[1], 0, 0.6)); }
+  { let row = 0; cortices.forEach((c, k) => { const p0 = ctxPos(row), p1 = ctxPos(row + c.channels - 1); netScene.add(label(`cortex ${k + 1} · ${c.channels} ch · reads ${CB.maskNames(c.mask).map(n => GROUP_LABEL[n]).join(', ')}`, X + 5.5, (p0[1] + p1[1]) / 2, 2.4, 0.6, CORTEX_HUES[k % CORTEX_HUES.length])); row += c.channels; }); }
+  for (let o = 0; o < O; o++) { const p = outPos(o); netScene.add(label(outLabel(o), X + 13.4, p[1], 0, 0.55)); }
+  return part;
+}
+function label(text, x, y, z, size, hue) { // a text sprite with a dark backing, sized to its text so it reads over the lines
+  const c = document.createElement('canvas'), g = c.getContext('2d'); g.font = '500 26px IBM Plex Mono, monospace'; const wpx = Math.min(1000, Math.ceil(g.measureText(text).width) + 20); c.width = wpx; c.height = 40;
+  g.font = '500 26px IBM Plex Mono, monospace'; g.fillStyle = 'rgba(5,6,10,0.72)'; g.fillRect(0, 0, wpx, 40); g.fillStyle = hue === undefined ? '#a8a49a' : hsl(hue, 0.5, 0.72).getStyle(); g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, wpx / 2, 21);
+  const tex = new THREE.CanvasTexture(c); tex.minFilter = THREE.LinearFilter; const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false })); sp.renderOrder = 10; sp.position.set(x, y, z); const h = (size || 1) * 1.1; sp.scale.set(h * wpx / 40, h, 1); return sp; }
+function netBuild(b) {
+  if (!netRenderer) netInit(); while (netScene && netScene.children.length) netScene.remove(netScene.children[0]);
+  const muscleOf = p => { const s = b.hasMuscle(p); return s >= 0 ? `m${p}: muscle ${b.sa[s]}-${b.sb[s]}` : `m${p}: no muscle`; };
+  const policy = buildPatch(b.policy, -22, 'policy · proposes the motor', 'proposal', 0.9, b.g.brain.policy, o => o < MAXM ? muscleOf(o) : 'mouth');
+  const model = buildPatch(b.model, 5, 'model · predicts the change of the reading', 'prediction', 0.5, b.g.brain.model, o => o < NS ? 'Δ ' + SHORT[o] : o < SN ? `Δ strain m${o - NS}` : 'Δ energy');
+  // the motor neurons: the muscles' activations, fed by the proposal (repaired by the planner) and read by the model as its motor ports
+  const motorPos = m => [-22 + 17.5, (m - (NM - 1) / 2) * -0.9 + 2.5, 0];
+  const motors = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 10, 8), new THREE.MeshBasicMaterial(), NM); motors.instanceMatrix.setUsage(THREE.DynamicDrawUsage); netScene.add(motors);
+  netScene.add(label('motor neurons', -22 + 17.5, 2.5 + (NM / 2) * 0.9 + 1.6, 0, 0.8)); netScene.add(label('the muscles, lagging the motor by half', -22 + 17.5, 2.5 + (NM / 2) * 0.9 + 0.7, 0, 0.55));
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * NM * 6), 3)); g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(2 * NM * 6), 3));
+  const pos = g.attributes.position.array; for (let m = 0; m < NM; m++) { const a = policy.outPos(m), q = motorPos(m), c = model.inPos(MOTOR + m); pos.set([a[0], a[1], a[2], q[0], q[1], q[2]], m * 6); pos.set([q[0], q[1], q[2], c[0], c[1], c[2]], (NM + m) * 6); }
+  const link = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })); netScene.add(link);
+  netParts = { policy, model, link, motors, motorPos }; netFor = b; netResize();
+}
+function paintPatch(part, u, y) {
+  const net = part.net, I = net.I, H = net.H, O = net.O, h = net.h, col = part.edges.geometry.attributes.color.array; let e = 0, maxB = 1e-9, maxC = 1e-9;
+  const gB = new Float32Array(I * H), gC = new Float32Array(H * O);
+  for (let i = 0; i < H; i++) for (let j = 0; j < I; j++) { const v = Math.abs(net.B[i * I + j] * u[j]) + Math.abs(net.G[i * I + j] * u[j]); gB[i * I + j] = v; if (v > maxB) maxB = v; }
+  for (let o = 0; o < O; o++) for (let i = 0; i < H; i++) { const v = Math.abs(net.C[o * H + i] * h[i]); gC[o * H + i] = v; if (v > maxC) maxC = v; }
+  const cc = new THREE.Color();
+  const paint = (cIn, cOut, v) => { const t = Math.pow(Math.min(1, v), 0.6); col[e * 6] = cIn.r * (0.03 + 0.9 * t); col[e * 6 + 1] = cIn.g * (0.03 + 0.9 * t); col[e * 6 + 2] = cIn.b * (0.03 + 0.9 * t); col[e * 6 + 3] = cOut.r * (0.03 + 0.9 * t); col[e * 6 + 4] = cOut.g * (0.03 + 0.9 * t); col[e * 6 + 5] = cOut.b * (0.03 + 0.9 * t); e++; };
+  for (let i = 0; i < H; i++) { cc.setHSL(part.ctxHue[i], 0.55, 0.6); for (let j = 0; j < I; j++) paint(GROUP_COLORS[inputGroup(j)], cc, gB[i * I + j] / maxB); }
+  for (let o = 0; o < O; o++) for (let i = 0; i < H; i++) { cc.setHSL(part.ctxHue[i], 0.55, 0.6); paint(cc, GROUP_COLORS.out, gC[o * H + i] / maxC); }
+  part.edges.geometry.attributes.color.needsUpdate = true;
+  const nodes = part.nodes; let n = 0;
+  const put = (p, act, base) => { const t = Math.min(1, Math.abs(act)); _m.compose(_p.set(p[0], p[1], p[2]), _q.identity(), _s.setScalar(0.13 + 0.17 * t)); nodes.setMatrixAt(n, _m); nodes.setColorAt(n, _c.copy(base).multiplyScalar(0.25 + 0.75 * t)); n++; };
+  for (let j = 0; j < I; j++) put(part.inPos(j), u[j], GROUP_COLORS[inputGroup(j)]);
+  for (let i = 0; i < H; i++) put(part.ctxPos(i), h[i] * 1.5, cc.setHSL(part.ctxHue[i], 0.55, 0.6));
+  for (let o = 0; o < O; o++) put(part.outPos(o), y[o], GROUP_COLORS.out);
+  nodes.instanceMatrix.needsUpdate = true; nodes.instanceColor.needsUpdate = true;
+  if (part.cells) {
+    const D = net.D, cells = part.cells, on = new Uint8Array(D); for (let a = 0; a < net.k; a++) on[net.ci[a]] = 1;
+    for (let c = 0; c < D; c++) { let mag = 0; for (let j = 0; j < O; j++) mag += Math.abs(net.table[c * O + j]); const l = Math.min(1, mag * 1.5); cells.setColorAt(c, on[c] ? _c.setRGB(1, 0.85, 0.45) : _c.setRGB(0.1 + 0.5 * l, 0.1 + 0.48 * l, 0.1 + 0.42 * l)); }
+    cells.instanceColor.needsUpdate = true;
+    const rp = part.recEdges.geometry.attributes.position.array, rc = part.recEdges.geometry.attributes.color.array; let q = 0, mx = 1e-9; const f = net.fanin, vals = [];
+    for (let a = 0; a < net.k; a++) { const c = net.ci[a]; for (let j = 0; j < f; j++) { const idx = net.pidx[c * f + j], v = Math.abs(net.pw[c * f + j] * net.xr[idx]); vals.push(v); if (v > mx) mx = v; } }
+    let vi = 0; for (let a = 0; a < net.k; a++) { const c = net.ci[a], p = part.cellPos(c); for (let j = 0; j < f; j++) { const idx = net.pidx[c * f + j], src = idx < I ? part.inPos(idx) : part.ctxPos(idx - I), t = Math.pow(vals[vi++] / mx, 0.6) * 0.8; rp.set([src[0], src[1], src[2], p[0], p[1], p[2]], q * 6); rc.set([0.6 * t, 0.6 * t, 0.55 * t, 0.9 * t, 0.85 * t, 0.7 * t], q * 6); q++; } }
+    let my = 1e-9; for (let a = 0; a < net.k; a++) for (let o = 0; o < O; o++) { const v = Math.abs(net.cv[a] * net.table[net.ci[a] * O + o]); if (v > my) my = v; }
+    for (let a = 0; a < net.k; a++) { const c = net.ci[a], p = part.cellPos(c); for (let o = 0; o < O; o++) { const v = Math.abs(net.cv[a] * net.table[c * O + o]) / my, t = Math.pow(v, 0.6) * 0.9, d = part.outPos(o); rp.set([p[0], p[1], p[2], d[0], d[1], d[2]], q * 6); rc.set([0.9 * t, 0.85 * t, 0.7 * t, GROUP_COLORS.out.r * t, GROUP_COLORS.out.g * t, GROUP_COLORS.out.b * t], q * 6); q++; } }
+    part.recEdges.geometry.setDrawRange(0, q * 2); part.recEdges.geometry.attributes.position.needsUpdate = true; part.recEdges.geometry.attributes.color.needsUpdate = true;
+  }
+}
+function netRender() {
+  if (!chosen) return; if (netFor !== chosen) netBuild(chosen); const b = chosen;
+  paintPatch(netParts.policy, b.pu, b.prop); paintPatch(netParts.model, b.mu, b.pred);
+  // the motor neurons and their two links: proposal to muscle (amber where the planner repaired it), muscle to the model's motor port
+  const lc = netParts.link.geometry.attributes.color.array, motors = netParts.motors; let n = 0;
+  for (let m = 0; m < NM; m++) {
+    const has = m < MAXM ? b.hasMuscle(m) >= 0 : true, act = m < MAXM ? b.act[m] : b.cmd[m], t = Math.min(1, Math.abs(b.cmd[m])) * 0.9, repaired = Math.abs(b.cmd[m] - b.prop[m]) > 0.02, ta = Math.min(1, Math.abs(act)) * 0.9;
+    const p = netParts.motorPos(m); _m.compose(_p.set(p[0], p[1], p[2]), _q.identity(), _s.setScalar(has ? 0.16 + 0.2 * Math.min(1, Math.abs(act)) : 0.1)); motors.setMatrixAt(n, _m);
+    motors.setColorAt(n, has ? (act >= 0 ? _c.setRGB(0.88, 0.54, 0.24).multiplyScalar(0.3 + 0.7 * Math.min(1, act)) : _c.setRGB(0.29, 0.61, 0.82).multiplyScalar(0.3 + 0.7 * Math.min(1, -act))) : _c.setRGB(0.18, 0.18, 0.17)); n++;
+    lc.set([0.88 * t, 0.54 * t, 0.24 * t, repaired ? 0.94 * t : 0.88 * t, repaired ? 0.77 * t : 0.54 * t, repaired ? 0.42 * t : 0.24 * t], m * 6);
+    lc.set([0.88 * ta, 0.4 * ta, 0.6 * ta, 0.88 * ta, 0.4 * ta, 0.6 * ta], (NM + m) * 6);
+  }
+  motors.instanceMatrix.needsUpdate = true; motors.instanceColor.needsUpdate = true; netParts.link.geometry.attributes.color.needsUpdate = true;
+  const cx = b.g.brain; $('netcap').innerHTML = `#${b.id} <span>policy ${cx.policy.length} ${cx.policy.length === 1 ? 'cortex' : 'cortices'} (${cx.policy.map(c => c.channels).join('+')} ch) · model ${cx.model.length} ${cx.model.length === 1 ? 'cortex' : 'cortices'} (${cx.model.map(c => c.channels).join('+')} ch), ${b.model.D || 'no'} cells · ${b.horizon ? 'planning ' + b.horizon + ' ahead' : 'reflex only'} · ${b.model.updates + b.policy.updates} slow steps · ${b.model.writes} writes</span>`;
+  const ccx = -2.5; netCamera.position.set(ccx + netCam.dist * Math.sin(netCam.pol) * Math.sin(netCam.az), -1 + netCam.dist * Math.cos(netCam.pol), netCam.dist * Math.sin(netCam.pol) * Math.cos(netCam.az)); netCamera.lookAt(ccx, -1, -0.5);
+  netCam.az += 0.0012; netRenderer.render(netScene, netCamera);
+}
+
+// ---------- the panels ----------
+const bodyCtx = $('body').getContext('2d'), brainCtx = $('brain').getContext('2d');
+const trace = { pred: [], actual: [] }; let traceFor = null;
+function panels() {
+  const bs = pop.beings, n = bs.length; $('caption').innerHTML = `tick ${sub.tick} <span>${n} alive · day ${Math.floor(sub.tick / CFG.day)} · ${paused ? 'paused' : Math.round(tps) + ' ticks/s'} · ${(pop.mass === mass0) ? 'mass conserved' : 'MASS DRIFT ' + (pop.mass - mass0)}</span>`;
+  const withR = bs.filter(b => b.policy.D > 0).length, withP = bs.filter(b => b.horizon > 0).length, withS = bs.filter(b => b.slowRate > 0).length;
+  const mean = f => n ? bs.reduce((s, b) => s + f(b), 0) / n : 0;
+  $('counters').innerHTML = [['alive', n], ['births', pop.births], ['deaths', pop.deaths], ['kills', pop.kills], ['mass', pop.mass === mass0 ? 'conserved' : 'drift ' + (pop.mass - mass0), pop.mass === mass0 ? 'ok' : 'bad'],
+    ['nodes, mean', mean(b => b.n).toFixed(1)], ['muscles, mean', mean(b => b.g.springs.filter(s => s.muscle).length).toFixed(1)], ['speed, mean', mean(b => Math.abs(b.speed)).toFixed(3)],
+    ['with records', n ? Math.round(100 * withR / n) + '%' : '-'], ['planning', n ? Math.round(100 * withP / n) + '%' : '-'], ['slow learning', n ? Math.round(100 * withS / n) + '%' : '-']]
+    .map(([k, v, c]) => `<dt>${k}</dt><dd class="${c || ''}">${v}</dd>`).join('');
+  $('worldSub').textContent = `seed ${seed}`;
+  const counts = new Map(); for (const b of bs) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  $('lineages').innerHTML = top.map(([l, c]) => { const b = bs.find(x => x.lineage === l); const css = hsl(b.hue, 0.55, 0.55).getStyle(); return `<div class="lineage ${chosen && chosen.lineage === l ? 'shown' : ''}"><i style="background:${css}"></i><div class="bar"><b style="width:${100 * c / Math.max(1, top[0][1])}%;background:${css}"></b></div><span>${c}</span></div>`; }).join('');
+  if (frame % 30 === 0) drawShares();
+  if (chosen) beingPanel(chosen); else { $('beingSub').textContent = 'click a body'; $('genes').innerHTML = ''; bodyCtx.clearRect(0, 0, 336, 120); brainCtx.clearRect(0, 0, 336, 420); }
+}
+const sharesCtx = $('shares').getContext('2d');
+function drawShares() { // the population as stacked shares of its eight largest lineages, every hundred ticks
+  const c = sharesCtx, W = 336, H = 90, frames = pop.chronicle.frames; c.clearRect(0, 0, W, H); c.fillStyle = '#0d1016'; c.fillRect(0, 0, W, H); if (frames.length < 2) return;
+  const peak = new Map(); for (const f of frames) for (const [lid, r] of Object.entries(f.lineages)) peak.set(lid, Math.max(peak.get(lid) || 0, r[0]));
+  const top = [...peak.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(e => e[0]); const hues = new Map();
+  for (const f of frames) for (const lid of top) { const r = f.lineages[lid]; if (r && r[21] !== null && !hues.has(lid)) hues.set(lid, r[21]); }
+  const x = i => 8 + (W - 16) * i / (frames.length - 1);
+  const fill = (lid, hueVal) => { c.fillStyle = lid === 'rest' ? '#2a2d36' : hsl(hueVal, 0.55, 0.5).getStyle(); c.beginPath(); frames.forEach((f, i) => { const y = H - 6 - (H - 14) * f.base[lid]; if (i) c.lineTo(x(i), y); else c.moveTo(x(0), y); }); for (let i = frames.length - 1; i >= 0; i--) c.lineTo(x(i), H - 6 - (H - 14) * frames[i].top[lid]); c.closePath(); c.fill(); };
+  for (const f of frames) { f.base = {}; f.top = {}; let acc = 0; const n = Math.max(1, f.alive); for (const lid of top) { const r = f.lineages[lid]; const s = r ? r[0] / n : 0; f.base[lid] = acc; acc += s; f.top[lid] = acc; } f.base.rest = acc; f.top.rest = 1; }
+  for (const lid of top) fill(lid, hues.get(lid) || 0); fill('rest', 0);
+  c.fillStyle = '#8d8a80'; c.font = '10px IBM Plex Mono'; c.fillText('lineages over time, largest eight; grey is everyone else', 8, 10);
+  if (chosen) { const i = top.indexOf(String(chosen.lineage)); if (i >= 0) c.fillText(`the chosen one's lineage is band ${i + 1} from the bottom`, 8, H - 8 + 6 - 6); }
+}
+function beingPanel(b) {
+  const g = b.g; $('beingSub').textContent = `#${b.id} · lineage ${b.lineage} · age ${b.age}`;
+  $('who').innerHTML = `<i style="background:${hsl(hueOf(b), 0.55, 0.55).getStyle()}"></i><span><b>#${b.id}</b> energy ${b.energy} · ${b.n} of ${b.nGenome} nodes · ${g.springs.filter(s => s.muscle).length} muscles · ate ${b.eats} · bit ${b.bites} · ${b.speed >= 0 ? 'ahead' : 'back'} ${Math.abs(b.speed).toFixed(3)}/tick</span>`;
+  $('genes').innerHTML = [['records', b.policy.D ? b.policy.D + ' cells' : 'none'], ['horizon', b.horizon], ['slow rate', b.slowRate], ['noise', b.noise], ['clock', G(g, 'freq')], ['split at', G(g, 'splitAt')], ['drives', `food ${G(g, 'dFood')} energy ${G(g, 'dEnergy')} pain ${G(g, 'dPain')} speed ${G(g, 'dSpeed')}`], ['plans', b.plans ? `${b.plans}, ${Math.round(100 * b.planAccepted / b.plans)}% repaired, ${Math.round(100 * b.planConfirmed / b.plans)}% confirmed by readback` : '0'], ['brain', `policy ${b.g.brain.policy.map(c => c.channels).join('+')} ch in ${b.g.brain.policy.length} · model ${b.g.brain.model.map(c => c.channels).join('+')} ch in ${b.g.brain.model.length}`], ['learned', `${b.model.updates + b.policy.updates} steps, ${b.model.writes + b.policy.writes} writes`]]
+    .map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join('');
+  if (traceFor !== b) { traceFor = b; trace.pred.length = trace.actual.length = 0; }
+  trace.pred.push(b.predNext[S.speed]); trace.actual.push(b.sense[S.speed]); if (trace.pred.length > 90) { trace.pred.shift(); trace.actual.shift(); }
+  drawBody(b); drawBrain(b);
+}
+function drawBody(b) {
+  const c = bodyCtx, W = 336, H = 120; c.clearRect(0, 0, W, H); c.fillStyle = '#0d1016'; c.fillRect(0, 0, W, H);
+  const hx = b.x[0], hy = b.y[0], cs = Math.cos(-b.heading), sn = Math.sin(-b.heading); const pt = i => { const dx = ddx(hx, b.x[i], CFG.w), dy = ddx(hy, b.y[i], CFG.h); return [W * 0.62 + (dx * cs - dy * sn) * 26, H * 0.5 + (dx * sn + dy * cs) * 26]; };
+  for (let s = 0; s < b.nS; s++) { const a = b.sa[s], d = b.sb[s]; if (a >= b.n || d >= b.n) continue; const [x1, y1] = pt(a), [x2, y2] = pt(d), p = b.port[s]; const act = p >= 0 ? b.act[p] : 0, w = 0.5 + 0.5 * act;
+    c.strokeStyle = p >= 0 ? `rgb(${Math.round(74 + 150 * w)},${Math.round(155 - 17 * w)},${Math.round(209 - 149 * w)})` : '#4a4c50'; c.lineWidth = p >= 0 ? 5 - 2.5 * act : 2; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    if (p >= 0) { c.fillStyle = '#8d8a80'; c.font = '9px IBM Plex Mono'; c.fillText('m' + p, (x1 + x2) / 2 + 4, (y1 + y2) / 2 - 4); } }
+  for (let i = 0; i < b.n; i++) { const [x, y] = pt(i); c.fillStyle = hsl(b.hue, 0.55, i === 0 ? 0.65 : 0.5).getStyle(); c.beginPath(); c.arc(x, y, i === 0 ? 8 : 6, 0, 2 * Math.PI); c.fill(); }
+  for (let i = b.n; i < b.nGenome; i++) { const nd = b.g.nodes[i], x = W * 0.62 + nd.x * 26, y = H * 0.5 + nd.y * 26; c.strokeStyle = '#3a3c40'; c.setLineDash([2, 3]); c.beginPath(); c.arc(x, y, 5, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]); }
+  c.fillStyle = '#8d8a80'; c.font = '10px IBM Plex Mono'; c.fillText('the body, head to the right; dotted nodes wait to grow', 8, 14);
+  c.fillText(`grip along ${b.along[0].toFixed(2)} back ${b.back[0].toFixed(2)} side ${b.side[0].toFixed(2)}`, 8, H - 8);
+}
+function bars(c, x, y, w, h, vals, lo, hi, color, count, outline) { const n = count || vals.length, bw = w / n; for (let i = 0; i < n; i++) { const v = Math.max(lo, Math.min(hi, vals[i])), f = (v - lo) / (hi - lo); if (outline) { c.strokeStyle = color; c.strokeRect(x + i * bw + 0.5, y + h - f * h + 0.5, bw - 1.5, f * h); } else { c.fillStyle = color; c.fillRect(x + i * bw, y + h - f * h, bw - 1, f * h); } } }
+function drawBrain(b) {
+  const c = brainCtx, W = 336, H = 420; c.clearRect(0, 0, W, H); c.fillStyle = '#0d1016'; c.fillRect(0, 0, W, H); c.font = '10px IBM Plex Mono';
+  const label = (t, x, y, col) => { c.fillStyle = col || '#8d8a80'; c.fillText(t, x, y); };
+  label('reading', 8, 12, '#ddd6c6'); label('senses', 8, 50); label('strains', 162, 50); label('clock', 226, 50); label('last motor', 268, 50);
+  bars(c, 8, 16, 150, 24, b.sense, -1, 1, '#f0c56a', NS); bars(c, 162, 16, 66, 24, b.sense.subarray(NS), -1, 1, '#b6e264', MAXM); bars(c, 232, 16, 22, 24, b.pu.subarray(CLOCK), -1, 1, '#4a9bd1', 2); bars(c, 262, 16, 66, 24, b.prevCmd, -1, 1, '#e0679a', NM);
+  const patch = (net, y, title, outs, outLabel, actual, cortices) => { // one patch: the context by cortex, the record cells, the outputs
+    label(`${title} · ${cortices.length} ${cortices.length === 1 ? 'cortex' : 'cortices'}`, 8, y + 10, '#ddd6c6');
+    label('context', 8, y + 24); label(net.D ? `records · ${net.D}` : 'no records', 122, y + 24); label(outLabel, 214, y + 24);
+    { let row = 0; const bw = 104 / net.H; cortices.forEach((cx, k) => { c.fillStyle = hsl(CORTEX_HUES[k % CORTEX_HUES.length], 0.55, 0.6).getStyle(); for (let i = 0; i < cx.channels; i++, row++) { const v = Math.max(-1, Math.min(1, net.h[row])), f = (v + 1) / 2; c.fillRect(8 + row * bw, y + 28 + 46 - f * 46, Math.max(1, bw - 1), f * 46); } }); }
+    if (net.D) { const side = Math.ceil(Math.sqrt(net.D)), cw = Math.min(4, 84 / side, 46 / side); const on = new Uint8Array(net.D); for (let a = 0; a < net.k; a++) on[net.ci[a]] = 1;
+      for (let i = 0; i < net.D; i++) { let mag = 0; for (let j = 0; j < net.O; j++) mag += Math.abs(net.table[i * net.O + j]); const l = Math.min(1, mag * 2); c.fillStyle = on[i] ? '#f0c56a' : `rgba(221,214,198,${0.08 + 0.6 * l})`; c.fillRect(122 + (i % side) * cw, y + 28 + Math.floor(i / side) * cw, cw - 1, cw - 1); } }
+    bars(c, 214, y + 28, 114, 46, outs, -1, 1, '#e08a3c', outs.length); if (actual) bars(c, 214, y + 28, 114, 46, actual, -1, 1, '#ddd6c6', actual.length, true);
+  };
+  patch(b.policy, 58, 'policy · proposes the motor', b.prop, 'proposal · executed', b.cmd, b.g.brain.policy);
+  patch(b.model, 142, 'model · predicts the next reading', b.predNext, 'predicted · actual', b.sense, b.g.brain.model);
+  const y = 228; label(b.horizon > 0 ? `plan · ${b.horizon} ${b.horizon === 1 ? 'tick' : 'ticks'} ahead · ${b.plans ? Math.round(100 * b.planAccepted / b.plans) : 0}% repaired · ${b.plans ? Math.round(100 * b.planConfirmed / b.plans) : 0}% confirmed` : 'plan · none, the reflex acts', 8, y + 10, '#ddd6c6');
+  label('motor: proposed (grey), executed (amber)', 8, y + 24); bars(c, 8, y + 28, 320, 30, b.prop, -1, 1, '#5a5a58', NM); bars(c, 8, y + 28, 320, 30, b.cmd, -1, 1, '#f0c56a', NM, true);
+  label(`price ${(POP.base + POP.node * b.n + b.brainPrice).toFixed(3)} per tick · model error ${b.lastErr !== undefined ? b.lastErr.toFixed(4) : '-'}`, 8, y + 74);
+  label(`error early in life ${b.nEarly ? (b.errEarly / b.nEarly).toFixed(4) : '-'} · later ${b.nLate ? (b.errLate / b.nLate).toFixed(4) : '-'}`, 8, y + 88);
+  const ty = 328; label('speed: predicted (amber), actual (white), last 90 ticks', 8, ty + 10);
+  c.strokeStyle = '#232833'; c.beginPath(); c.moveTo(8, ty + 52); c.lineTo(328, ty + 52); c.stroke();
+  const line = (arr, col) => { c.strokeStyle = col; c.lineWidth = 1.5; c.beginPath(); arr.forEach((v, i) => { const x = 8 + i * 320 / 90, yy = ty + 52 - v * 36; if (i) c.lineTo(x, yy); else c.moveTo(x, yy); }); c.stroke(); c.lineWidth = 1; };
+  line(trace.pred, '#e08a3c'); line(trace.actual, '#ddd6c6');
+  label(`ate ${b.eats} · bitten ${b.bitten} · moved ${b.dist.toFixed(1)} cells`, 8, H - 8);
+}
+
+// ---------- controls ----------
+$('rates').innerHTML = 'ticks/s ' + RATES.map(r => `<button class="act" data-rate="${r}" aria-pressed="${r === rate}">${r}</button>`).join('');
+$('rates').addEventListener('click', e => { const bt = e.target.closest('button'); if (!bt) return; rate = bt.dataset.rate === 'max' ? 'max' : +bt.dataset.rate; for (const x of $('rates').querySelectorAll('button')) x.setAttribute('aria-pressed', String(x.dataset.rate === String(rate))); });
+$('sizes').innerHTML = 'world ' + Object.entries(SIZES).map(([k, n]) => `<button class="act" data-size="${n}" aria-pressed="${n === worldSize}">${k}</button>`).join('');
+$('sizes').addEventListener('click', e => { const bt = e.target.closest('button'); if (!bt) return; setPopulation(+bt.dataset.size); for (const x of $('sizes').querySelectorAll('button')) x.setAttribute('aria-pressed', String(+x.dataset.size === worldSize)); const rules = {}; for (const x of $('rulesbox').querySelectorAll('input')) rules[x.dataset.rule] = x.checked; newWorld(rules); });
+$('pause').addEventListener('click', () => { paused = !paused; $('pause').textContent = paused ? 'Resume' : 'Pause'; });
+$('follow').addEventListener('click', () => setFollow(!cam.follow));
+$('director').addEventListener('click', () => setDirector(!cam.director));
+$('inspect').addEventListener('click', () => setInspect(!inspecting));
+const pickBy = f => { let best = null, bv = -Infinity; for (const b of pop.beings) { const v = f(b); if (v > bv) { bv = v; best = b; } } if (best) { select(best); setDirector(false); } };
+$('pickEldest').addEventListener('click', () => pickBy(b => b.age));
+$('pickPlanner').addEventListener('click', () => pickBy(b => b.horizon * 1000 + b.planAccepted));
+$('pickBiggest').addEventListener('click', () => pickBy(b => b.n * 10 + b.g.springs.filter(s => s.muscle).length));
+$('pickHunter').addEventListener('click', () => pickBy(b => b.bites));
+$('colours').innerHTML = 'colour ' + ['lineage', 'shape'].map(k => `<button class="act" data-colour="${k}" aria-pressed="${k === colourBy}" title="${k === 'lineage' ? 'one hue per founder lineage' : 'one hue per layout of body and brain, so new body plans stand out'}">${k}</button>`).join('');
+$('colours').addEventListener('click', e => { const bt = e.target.closest('button'); if (!bt) return; colourBy = bt.dataset.colour; for (const x of $('colours').querySelectorAll('button')) x.setAttribute('aria-pressed', String(x.dataset.colour === colourBy)); });
+$('share').addEventListener('click', async () => { const url = `${location.origin}${location.pathname}?seed=${seed}`; try { await navigator.clipboard.writeText(url); $('share').textContent = 'Link copied'; } catch (e) { prompt('A link to this world:', url); } setTimeout(() => { $('share').textContent = 'Link to this world'; }, 1800); });
+$('export').addEventListener('click', () => { // the chronicle as a file: every lineage every hundred ticks, the events, genome samples, the largest lineages' full genomes
+  const data = pop.chronicle.export(pop); data.meta.seed = seed; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `patch-world-bodies-seed${seed}-tick${sub.tick}.chronicle.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$('rulesbox').innerHTML = Object.keys(RULE_NAMES).map(k => `<label><input type="checkbox" data-rule="${k}" ${DEFAULT_RULES[k] ? 'checked' : ''}> ${RULE_NAMES[k]}</label>`).join('');
+$('reseed').addEventListener('click', () => { const rules = {}; for (const x of $('rulesbox').querySelectorAll('input')) rules[x.dataset.rule] = x.checked; newWorld(rules); });
+addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); $('pause').click(); } if (e.key === 'f') setFollow(!cam.follow); if (e.key === 'd') setDirector(!cam.director); if (e.key === 'i') setInspect(!inspecting); });
+
+newWorld(DEFAULT_RULES); resize(); placeCamera(); requestAnimationFrame(render);
+</script>
+</body>
+</html>

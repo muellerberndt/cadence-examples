@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>The rules · Patch World</title>
+<meta name="description" content="Every rule of Patch World: the conserved mass, the sun, food and scent, how a shape crawls, what a life costs, what the brain reads and learns, and what a birth mutates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0c11'/%3E%3Cline x1='9' y1='21' x2='16' y2='11' stroke='%23e08a3c' stroke-width='3'/%3E%3Cline x1='16' y1='11' x2='24' y2='20' stroke='%234a9bd1' stroke-width='3'/%3E%3Ccircle cx='9' cy='21' r='4' fill='%23b6e264'/%3E%3Ccircle cx='16' cy='11' r='5' fill='%23f0c56a'/%3E%3Ccircle cx='24' cy='20' r='4' fill='%23b6e264'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ground: #0a0c11; --panel: #11141b; --line: #232833;
+    --ink: #ddd6c6; --ink-2: #a39f94; --ink-3: #6a6a66;
+    --sun: #f0c56a; --leaf: #b6e264; --bud: #2f8f82; --alert: #e0679a; --cool: #4a9bd1; --warm: #e08a3c;
+    --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 28px 20px 64px; }
+  main { max-width: 760px; margin: 0 auto; }
+  a { color: var(--sun); text-underline-offset: 3px; }
+  .crumb { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); margin-bottom: 18px; }
+  h1 { font-family: var(--font-display); font-weight: 300; font-size: clamp(34px, 6vw, 48px); letter-spacing: -0.015em; line-height: 1.1; margin: 0 0 12px; font-variation-settings: "opsz" 96; }
+  h1 em { color: var(--sun); }
+  .lead { font-size: 18px; color: var(--ink-2); margin: 0 0 32px; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; margin: 44px 0 10px; letter-spacing: -0.005em; }
+  h2 span { font-family: var(--font-mono); font-weight: 400; font-size: 12px; color: var(--ink-3); margin-right: 10px; letter-spacing: 0.06em; }
+  p { margin: 0 0 14px; }
+  ul { margin: 0 0 14px; padding-left: 20px; } li { margin-bottom: 6px; }
+  code, .mono { font-family: var(--font-mono); font-size: 0.86em; color: var(--ink); }
+  pre { background: var(--panel); border: 1px solid var(--line); padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.55; color: var(--ink-2); margin: 0 0 16px; }
+  figure { margin: 22px 0 24px; background: var(--panel); border: 1px solid var(--line); padding: 16px 16px 10px; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { font-size: 13.5px; color: var(--ink-2); margin-top: 10px; }
+  .tablewrap { overflow-x: auto; margin: 0 0 18px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-weight: 500; font-size: 11.5px; color: var(--ink-3); letter-spacing: 0.05em; text-transform: uppercase; }
+  td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; padding-right: 0; }
+  .note { border-left: 2px solid var(--sun); padding: 2px 0 2px 14px; color: var(--ink-2); margin: 0 0 16px; }
+  .svgtext { font-family: "IBM Plex Mono", monospace; font-size: 12px; fill: #a39f94; }
+  .svgtitle { font-family: "IBM Plex Sans", sans-serif; font-size: 13px; fill: #ddd6c6; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<main>
+  <div class="crumb"><a href="./">← back to the world</a></div>
+  <h1>The rules of Patch <em>World</em></h1>
+  <p class="lead">Patch World has a short list of physical rules and no goal. Nothing in it says crawl, eat or reproduce. Bodies that do those things leave descendants, and the others return to the soil. This page is the whole list.</p>
+
+  <h2><span>01</span>One quantity, conserved</h2>
+  <p>The world is a torus of 96 by 96 cells. It holds one quantity, mass, in whole units. At every tick every unit is in exactly one place: the soil of a cell, the food on a cell, or a body. No rule creates or destroys a unit. The page checks this at every tick and shows it in the caption.</p>
+  <figure>
+    <svg viewBox="0 0 720 150" role="img" aria-label="Mass moves from soil to food by sunlight, from food to a body by eating, and from a body back to the soil by living and to food by dying.">
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a39f94"/></marker></defs>
+      <rect x="20" y="50" width="150" height="54" fill="#2a1c12" stroke="#7a5a3a"/><text x="95" y="82" text-anchor="middle" class="svgtitle">soil</text>
+      <rect x="285" y="50" width="150" height="54" fill="#1d2a14" stroke="#b6e264"/><text x="360" y="82" text-anchor="middle" class="svgtitle">food</text>
+      <rect x="550" y="50" width="150" height="54" fill="#1a1d26" stroke="#f0c56a"/><text x="625" y="82" text-anchor="middle" class="svgtitle">a body</text>
+      <line x1="172" y1="68" x2="282" y2="68" stroke="#a39f94" marker-end="url(#a)"/><text x="227" y="58" text-anchor="middle" class="svgtext">sunlight</text>
+      <line x1="282" y1="92" x2="172" y2="92" stroke="#a39f94" marker-end="url(#a)"/><text x="227" y="112" text-anchor="middle" class="svgtext">decay</text>
+      <line x1="437" y1="68" x2="547" y2="68" stroke="#a39f94" marker-end="url(#a)"/><text x="492" y="58" text-anchor="middle" class="svgtext">eating</text>
+      <line x1="547" y1="92" x2="437" y2="92" stroke="#a39f94" marker-end="url(#a)"/><text x="492" y="112" text-anchor="middle" class="svgtext">dying</text>
+      <path d="M625,106 C625,140 95,140 95,106" fill="none" stroke="#a39f94" marker-end="url(#a)"/><text x="360" y="146" text-anchor="middle" class="svgtext">the price of living, one unit at a time</text>
+      <text x="360" y="28" text-anchor="middle" class="svgtext">every unit of mass is always in exactly one of these</text>
+    </svg>
+    <figcaption>The only flows of mass. A body pays for being alive by dropping units into the soil under its head. A dead body becomes food where it lies.</figcaption>
+  </figure>
+
+  <h2><span>02</span>One sun, and what grows under it</h2>
+  <ul>
+    <li><b>Light.</b> A band of light crosses the torus once every 900 ticks, a day. Its contrast breathes over 9,000 ticks, a season. Nothing else comes from outside.</li>
+    <li><b>Growth.</b> In each cell, each tick, one unit of soil becomes food with probability 0.05 times the light times the cell's fertility. Fertility rises with the soil up to four units. A cell holds at most eight units of food.</li>
+    <li><b>Decay and diffusion.</b> A unit of food returns to the soil with probability 0.01. A unit of soil moves to a random neighbouring cell with probability 0.05.</li>
+    <li><b>Rock</b> covers a tenth of the cells. It holds no soil and no body can enter it.</li>
+    <li><b>Mud</b> covers about a fifth. On mud a body keeps 45 per cent of every step.</li>
+    <li><b>Scent.</b> The food field, blurred, is what a head can smell. It reaches about eight cells.</li>
+  </ul>
+  <p>Food follows the sun around the world, and soil gathers where bodies live and die. With no bodies the world settles into a steady drift of green behind the light.</p>
+
+  <h2><span>03</span>A body, and why a shape crawls</h2>
+  <p>A body is a graph of nodes joined by springs. A node holds one unit of mass. Some springs are muscles: a muscle's rest length is its resting length times one plus 0.35 times its activation, and the activation follows the brain's motor command with a lag of a half per tick. Each tick the springs are pulled toward their rest lengths in three small steps, bodies closer than 0.6 cells push each other apart, and rock stops a node where it was.</p>
+  <p>There is no inertia. What moves a body is grip. Every node has a head-ward axis, the direction to its lowest-numbered neighbour. When a node is displaced it keeps a share of the step that depends on the direction:</p>
+  <figure>
+    <svg viewBox="0 0 720 190" role="img" aria-label="A node keeps 90 per cent of a step toward the head, 15 per cent of a step away from it and 10 per cent of a step sideways.">
+      <circle cx="360" cy="95" r="16" fill="#f0c56a"/>
+      <line x1="376" y1="95" x2="560" y2="95" stroke="#b6e264" stroke-width="5"/><polygon points="560,86 580,95 560,104" fill="#b6e264"/>
+      <line x1="344" y1="95" x2="312" y2="95" stroke="#e0679a" stroke-width="5"/><polygon points="312,88 298,95 312,102" fill="#e0679a"/>
+      <line x1="360" y1="79" x2="360" y2="58" stroke="#4a9bd1" stroke-width="5"/><polygon points="353,58 360,46 367,58" fill="#4a9bd1"/>
+      <line x1="360" y1="111" x2="360" y2="132" stroke="#4a9bd1" stroke-width="5"/><polygon points="353,132 360,144 367,132" fill="#4a9bd1"/>
+      <text x="590" y="99" class="svgtitle">toward the head: keeps 0.90</text>
+      <text x="290" y="99" text-anchor="end" class="svgtitle">away: keeps 0.15</text>
+      <text x="372" y="40" class="svgtitle">sideways: keeps 0.10</text>
+      <text x="360" y="176" text-anchor="middle" class="svgtext">the founders' grips; each of the three is a gene of each node</text>
+    </svg>
+    <figcaption>A ratchet. Pull two such nodes together and let them go, and the pair ends up further toward the head than it started.</figcaption>
+  </figure>
+  <p>Two checks pin the physics down. A body of two nodes and one muscle with the same grip in every direction stays exactly where it is, however it pumps: a motion that looks the same played backwards gets nowhere (the scallop theorem). With the ratchet grip the same body crawls 5.7 cells in 300 ticks. Three nodes with two muscles out of phase move even with a symmetric grip, and 10.5 cells with the ratchet. Shape and timing are everything, which is why both can evolve.</p>
+
+  <h2><span>04</span>A life</h2>
+  <ul>
+    <li><b>Birth.</b> A newborn has the first three nodes of its genome, paid out of the energy it was given. It grows one more node for each unit of energy above six, until its body is complete.</li>
+    <li><b>Eating.</b> A head over food takes one unit per tick.</li>
+    <li><b>Splitting.</b> A fully grown body whose energy reaches its split threshold (a gene, 24 to 80) gives half of it to a child that appears behind its tail with a mutated genome.</li>
+    <li><b>Biting.</b> When the mouth port is above a half and another body is just ahead, the bite lands half the time and takes one unit of energy, or a node if the victim has no energy left. A bite attempt costs 0.1.</li>
+    <li><b>Death.</b> A body at zero energy, or with fewer than two nodes, dies. Its nodes become food on the cells under them.</li>
+  </ul>
+  <p>Living has a price. Each tick a body loses one unit to the soil with a probability that is the sum of these:</p>
+  <div class="tablewrap"><table>
+    <tr><th>for</th><th class="num">per tick</th></tr>
+    <tr><td>being alive</td><td class="num">0.035</td></tr>
+    <tr><td>each node</td><td class="num">0.006</td></tr>
+    <tr><td>each unit of muscle work</td><td class="num">0.02</td></tr>
+    <tr><td>each unit of the senses a cortex reads</td><td class="num">0.0001</td></tr>
+    <tr><td>each brain channel</td><td class="num">0.0003</td></tr>
+    <tr><td>each 256 record cells</td><td class="num">0.01</td></tr>
+    <tr><td>writing records (16 active cells)</td><td class="num">0.008</td></tr>
+    <tr><td>each planning replay</td><td class="num">0.001</td></tr>
+    <tr><td>each slow weight, while it learns</td><td class="num">0.000004</td></tr>
+  </table></div>
+  <p class="note">A bigger body or a bigger brain is always possible. It has to pay for itself in food.</p>
+
+  <h2><span>05</span>What a being senses, and what it can do</h2>
+  <p>The reading has twenty units. Twelve senses: the scent of food to the left against the right, the scent ahead, food under the head, rock ahead, another body ahead, its own energy, pain (for three ticks after a bite), the light, the grip of the ground, its speed, its turning, and how much of its body has grown. Then one strain per muscle, for up to eight muscles. The brain also reads a clock, the sine and cosine of a phase that advances at the rate of a gene, and the motor command it gave last tick.</p>
+  <p>It can do one thing: set nine numbers between minus one and one. Eight are muscle commands. The ninth is the mouth.</p>
+
+  <h2><span>06</span>The brain</h2>
+  <p>Every being carries two patches of the same kind, a Cadence <code>RecordPatchNet</code>. A patch keeps a context that fades at a learned rate per channel, reads out linearly from it, and carries a store of records that remember what the readout got wrong at each reading:</p>
+<pre>retention  l = sigmoid(g + G u)             per channel, how much of the past to keep
+context    h = l · h_before + (1 − l) · tanh(B u + b)
+output     y = C h + c + record read        the records patch what C h + c got wrong</pre>
+  <figure>
+    <svg viewBox="0 0 720 210" role="img" aria-label="The reading and the clock feed the policy, which proposes the motor. The planner may repair it under the model. The motor drives the muscles and also feeds the model, which predicts the change of the reading. What actually happened teaches the model, and a repair that paid off teaches the policy.">
+      <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a39f94"/></marker></defs>
+      <rect x="14" y="70" width="120" height="60" fill="#1a1d26" stroke="#f0c56a"/><text x="74" y="96" text-anchor="middle" class="svgtitle">reading</text><text x="74" y="114" text-anchor="middle" class="svgtext">senses · clock</text>
+      <rect x="190" y="30" width="140" height="60" fill="#141a26" stroke="#4a9bd1"/><text x="260" y="56" text-anchor="middle" class="svgtitle">policy</text><text x="260" y="74" text-anchor="middle" class="svgtext">proposes the motor</text>
+      <rect x="190" y="120" width="140" height="60" fill="#141a26" stroke="#4a9bd1"/><text x="260" y="146" text-anchor="middle" class="svgtitle">model</text><text x="260" y="164" text-anchor="middle" class="svgtext">predicts the change</text>
+      <rect x="400" y="30" width="130" height="60" fill="#201a14" stroke="#e08a3c"/><text x="465" y="56" text-anchor="middle" class="svgtitle">motor neurons</text><text x="465" y="74" text-anchor="middle" class="svgtext">8 muscles · mouth</text>
+      <rect x="590" y="70" width="116" height="60" fill="#1d2a14" stroke="#b6e264"/><text x="648" y="96" text-anchor="middle" class="svgtitle">body</text><text x="648" y="114" text-anchor="middle" class="svgtext">and the world</text>
+      <line x1="134" y1="88" x2="188" y2="64" stroke="#a39f94" marker-end="url(#b)"/><line x1="134" y1="112" x2="188" y2="146" stroke="#a39f94" marker-end="url(#b)"/>
+      <line x1="330" y1="60" x2="398" y2="60" stroke="#a39f94" marker-end="url(#b)"/>
+      <line x1="465" y1="90" x2="332" y2="140" stroke="#a39f94" marker-end="url(#b)"/>
+      <line x1="530" y1="60" x2="588" y2="90" stroke="#a39f94" marker-end="url(#b)"/>
+      <path d="M648,130 C648,200 74,200 74,132" fill="none" stroke="#a39f94" stroke-dasharray="4 4" marker-end="url(#b)"/><text x="360" y="204" text-anchor="middle" class="svgtext">what actually happened is the only teacher</text>
+      <line x1="300" y1="118" x2="300" y2="92" stroke="#f0c56a" stroke-dasharray="3 3" marker-end="url(#b)"/><text x="306" y="108" class="svgtext" style="fill:#f0c56a">a repair</text>
+    </svg>
+    <figcaption>The two patches and the motor neurons, as the inspection view draws them. The motor neurons are the muscles' activations.</figcaption>
+  </figure>
+  <ul>
+    <li><b>The policy</b> reads the reading, the clock and the last motor and proposes this tick's motor. At birth it is a reflex: the clock drives the muscles in a rhythm and the scent's side tilts it.</li>
+    <li><b>The model</b> reads the reading, the clock and the motor that is about to be executed and predicts how each unit of the reading, and the energy, will change. One tick later it is taught what actually changed.</li>
+    <li><b>Cortices.</b> Each patch is a list of cortices. A cortex is a block of channels that may read only the groups of the reading its mask names (scent, obstacles, self, motion, muscle strains, clock, last motor), with its own slowest memory (8, 32 or 128 ticks). The whole brain still settles and learns as one patch. Who reads what is what evolves.</li>
+    <li><b>Records</b> live in the model: 0 to 1,024 cells, a gene. Each cell reads eight units of the reading and the context, the sixteen most driven cells are the reading's code, and the residual of the prediction is written into exactly those cells.</li>
+    <li><b>Learning in a life.</b> Every eight ticks each patch takes one step on its slow weights over that window, at a rate that is a gene and may be zero, and writes its records.</li>
+    <li><b>Planning.</b> A being whose horizon gene is 1, 2 or 4 imagines that many ticks ahead through its own model and repairs the motor, within a radius of what the policy proposed, toward its drives. The drives are genes: how much it wants the scent ahead and the food under it to rise, pain to fall, speed to rise and energy to rise. It executes the first repaired motor.</li>
+    <li><b>Readback.</b> An imagined improvement is not a fact. The policy learns a repair one tick later, and only if what actually happened beat what the model had predicted for the unrepaired proposal.</li>
+  </ul>
+  <p>A newborn's records are empty and add nothing, so on its first tick it behaves exactly as its inherited weights say. What it learns is what its own body, on this ground, does differently.</p>
+
+  <h2><span>07</span>What a child inherits, and what a birth changes</h2>
+  <p>A child inherits its parent's genome: the body graph with every node's position and grips, which springs are muscles, the clock's rate, the split threshold, the motor noise, the drives, the planning horizon and radius, the number of record cells, the learning rates, the list of cortices of each patch, and every slow weight. It inherits no records. Then the genome mutates, each change with its own probability:</p>
+  <div class="tablewrap"><table>
+    <tr><th>change</th><th class="num">probability per birth</th></tr>
+    <tr><td>each life gene steps up or down</td><td class="num">0.10 each</td></tr>
+    <tr><td>a node's position jitters by 0.2 cells</td><td class="num">0.20 per node</td></tr>
+    <tr><td>a node's three grips rescale</td><td class="num">0.12 per node</td></tr>
+    <tr><td>a node is added beside an existing one, half the time with a muscle</td><td class="num">0.12</td></tr>
+    <tr><td>a limb is mirrored across the body's axis, with its springs and muscles</td><td class="num">0.05</td></tr>
+    <tr><td>a leaf node is removed</td><td class="num">0.06</td></tr>
+    <tr><td>a spring becomes a muscle, or stops being one</td><td class="num">0.10</td></tr>
+    <tr><td>a cross spring joins two nearby nodes</td><td class="num">0.06</td></tr>
+    <tr><td>a cortex starts or stops reading one group of the reading</td><td class="num">0.05 per patch</td></tr>
+    <tr><td>a cortex of 4 or 8 channels is added</td><td class="num">0.05 per patch</td></tr>
+    <tr><td>a cortex is removed</td><td class="num">0.04 per patch</td></tr>
+    <tr><td>a cortex grows or shrinks by two channels</td><td class="num">0.05 per patch</td></tr>
+    <tr><td>a cortex splits into two that read different groups</td><td class="num">0.03 per patch</td></tr>
+    <tr><td>a slow weight steps by about 0.1</td><td class="num">0.02 per weight</td></tr>
+  </table></div>
+  <p>A new muscle's drive is a copy of the channel that drives the muscle it was copied from, with a shifted clock phase, or with the scent's side reversed for a mirrored limb. New channels read with small random weights and drive nothing until later mutations or learning connect them, so new structure costs before it can help. A body has at most ten nodes and eight muscles, a patch at most 64 channels.</p>
+
+  <h2><span>08</span>What is given</h2>
+  <p>Three things come from outside the world. The physics above. The prices. And the founders: the first bodies come from a search that ran outside the world for a shape and a rhythm that crawl and turn toward food, as an adult and as a three-node newborn, and their model was taught by watching their own body move. After tick zero the world never sees that search again. There is no score and no fitness function.</p>
+
+  <h2><span>09</span>Reading the page</h2>
+  <ul>
+    <li>Click a body to open its card: its shape with the muscles at work, its reading, both patches, its plan, and its prediction against what happened.</li>
+    <li><b>Inspect</b> follows the body beside its whole brain. Every neuron is a sphere sized by its activity. Every weight is a line that shines with the signal it carries this tick. The grid is the record cells, the lit ones are this reading's code. The column in the middle is the motor neurons.</li>
+    <li>Colours follow the lineage, or the shape of body and brain, as you choose. The chart in the world card shows the eight largest lineages over time.</li>
+    <li><b>Export chronicle</b> writes what every lineage did every hundred ticks, the events, and genome samples. The example's <code>why.py</code> reads that file and says why one lineage took the world.</li>
+  </ul>
+  <footer>A Cadence example. Everything runs in the page. MIT. <a href="./">Back to the world</a></footer>
+</main>
+</body>
+</html>

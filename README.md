@@ -9,6 +9,7 @@ that recomputes them.
 | [worm](worm/) | The complete nervous system of *C. elegans*, 302 neurons wired as measured, as one TemporalPatchNet. It learns during its life what the smells around it predict, from food, from pain, and from the treats and pokes you give it; every neuron, synapse and lesson is drawn as it happens | the browser brain reproduces the library's TemporalPatchNet to a relative difference of 8.5e-12 on lessons it lives through | [parity](worm/tests/parity.mjs) |
 | [connect_four](connect_four/) | One life learns what a dropped stone does, which windows of four cells are completed lines and what positions are worth, from the games it plays, and chooses its moves by searching over what it learned | tactical suite 100%; paired score against random 0.995 and against one-ply 0.962; decision latency p95 52 ms | [receipt](connect_four/receipt.json) |
 | [amen](amen/) | A jungle composer in one patch, running in the browser: from silence it computes sixteen bars of drums, bass and texture while the page shows its brain, then plays them | next drum slice 0.84 to 0.86 on held-out tracks (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v10/receipt.json) |
+| [patchworld](patchworld/) | Soft bodies evolve on a world that conserves its mass. Shapes, muscles and brains built from cortices of one RecordPatchNet mutate at every birth, each being learns during its life and can plan its motor through its own model, and the page opens any brain with every neuron, connection and record cell drawn as it works | the browser brain reproduces the library's RecordPatchNet to a relative difference of 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick | [parity](patchworld/sim/parity.js) |
 
 ## The worm
 
@@ -58,6 +59,18 @@ trained brain: it starts from silence, hears each half-beat it plays, computes a
 browser and plays it with its activity in time with the sound. Details, receipts and what it
 does not do: [amen/README.md](amen/README.md).
 
+## Patch World
+
+A torus of soil, food, rock and mud under one moving sun, with mass conserved at every tick.
+A body is a graph of point masses, springs and muscles that crawls by grip alone; it is born
+with three nodes and grows the rest. Its brain is two record patches: a policy that proposes the
+motor and a model that predicts what the motor will change, each a list of cortices that read
+their own part of the senses. Every birth mutates shape, limbs, muscles and cortices; energy and
+death select, and the world has no fitness function. Click any body to open its brain; `Inspect`
+draws every neuron, weight, record cell and motor neuron live beside the moving body. The page
+exports a chronicle of every lineage, and `patchworld/sim/why.py` reads it and says why one
+lineage took the world. Details, evidence and limits: [patchworld/README.md](patchworld/README.md).
+
 ## Run them
 
 Each example pins the Cadence commit its evidence was produced with.
@@ -74,6 +87,12 @@ python -m pytest -q -m "not slow" agent/tests connect_four/tests
 
 # amen: the receipt names its library commit; verify.py also runs the browser parity under node
 python amen/verify.py
+
+# patchworld: cadence 02fec624648d421e02ecb00f52f3d3072e9fe9ae
+python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json && node patchworld/sim/parity.js /tmp/patchworld_fixture.json
+node patchworld/tests/physics.test.js
+python -m http.server -d patchworld/web 8804  # then open http://127.0.0.1:8804
 ```
 
 `agent/`, `web/` and `conftest.py` are the actor, the browser engine and the test import path that

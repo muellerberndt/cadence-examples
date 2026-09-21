@@ -57,3 +57,24 @@ jobs:
           node-version: "22"
       - name: The receipt, the model files and the browser engine against the archived run
         run: python amen/verify.py
+  patchworld:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the library at the commit the twin is checked against
+        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+      - name: The browser brain against the library's RecordPatchNet, on a fresh fixture and on the committed one
+        run: |
+          python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json
+          node patchworld/sim/parity.js /tmp/patchworld_fixture.json
+          node patchworld/sim/parity.js
+      - name: Mass, the scallop theorem, deterministic replay
+        run: node patchworld/tests/physics.test.js
+      - name: The built page is the template with the sources inlined
+        run: python patchworld/web/build.py --check
