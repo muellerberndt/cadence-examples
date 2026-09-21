@@ -1,0 +1,68 @@
+{
+ "format": "cadence-examples.connect4.records-drown/1",
+ "question": "Does writing every schooled position into the record store help the value it reads?",
+ "measure": "share of decided positions whose winner the value names",
+ "school": {
+  "file_sha256": "acceeb8dc607d539561aabffcec692a545efa7b3faa1459e48f45c84015b9d65",
+  "positions": 1114544
+ },
+ "heldout": {
+  "file_sha256": "b03c002e8bdce45310dcbcbc74f4aedb839d3d73b0eca587d553e8dd009ae8ca",
+  "never_seen": 30000,
+  "witnessed": 21458
+ },
+ "sampling_error_never_seen": 0.002460618449591298,
+ "runs": {
+  "w256": {
+   "note": "hidden 256, fixed rate 0.3, one pass",
+   "patch_sha256": "f8eec359325372b4d1a56853ad5dfa725d4f8992c3df83c33a9a325e3a805e35",
+   "hidden": 256,
+   "record_cells": 4096,
+   "records_written": 1114368,
+   "never_seen": {
+    "positions": 26426,
+    "slow_readout_alone": 0.8279346098539317,
+    "with_the_record_read": 0.7928555210777265
+   },
+   "witnessed": {
+    "positions": 19443,
+    "slow_readout_alone": 0.9198683330761713,
+    "with_the_record_read": 0.8965694594455588
+   }
+  },
+  "d256": {
+   "note": "hidden 256, decaying rate, one pass",
+   "patch_sha256": "1e2d5f40505e221a28d3cad92b59c8b2e3a8543a1ee9a1cf8297102ba9769ef5",
+   "hidden": 256,
+   "record_cells": 4096,
+   "records_written": 972800,
+   "never_seen": {
+    "positions": 26426,
+    "slow_readout_alone": 0.8118141224551578,
+    "with_the_record_read": 0.7829410429122834
+   },
+   "witnessed": {
+    "positions": 19443,
+    "slow_readout_alone": 0.900838347991565,
+    "with_the_record_read": 0.8778995011057964
+   }
+  },
+  "w1024": {
+   "note": "hidden 1024, fixed rate 0.075, one pass",
+   "patch_sha256": "6fda92839f32cfc9cf16d68efd7b3f6590ca5572d8712f82165e03f83bb80a76",
+   "hidden": 1024,
+   "record_cells": 4096,
+   "records_written": 1114368,
+   "never_seen": {
+    "positions": 26426,
+    "slow_readout_alone": 0.8031484144403239,
+    "with_the_record_read": 0.7694694618935897
+   },
+   "witnessed": {
+    "positions": 19443,
+    "slow_readout_alone": 0.8792881756930515,
+    "with_the_record_read": 0.8604124877848068
+   }
+  }
+ }
+}

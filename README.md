@@ -30,8 +30,8 @@ One `RecordPatchNet` reads a position right after a stone has landed, as the sid
 sees it, and says how the game ends for that side. It learned that by watching Pascal Pons'
 perfect solver play out set-up positions to the end: it saw the games and how they ended, and
 the solver's scores were never recorded. Its slow parameters carry what it learned; its record
-store is left empty, because writing millions of positions into it drowns it (the slow readout
-alone then scores about 3.5 points higher, on three runs). A supplied search knows the rules,
+store is left empty, because writing millions of positions into it drowns it (on three runs the slow readout alone names the winner 3 points more often on positions it never saw and 2 points more often on positions it witnessed:
+[receipt](connect4/receipts/records_drown.json)). A supplied search knows the rules,
 imagines moves and reads the patch where it stops looking; a line it can follow to the end of
 the game is proven. Measured on the build the page plays, 40 paired games against each
 opponent with every move graded by the solver: what the search alone achieves, what the patch

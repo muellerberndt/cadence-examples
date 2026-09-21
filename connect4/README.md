@@ -25,6 +25,7 @@ with the same arithmetic as the library and draws every sampled read.
 | `bench/` | the solver bridge, the AlphaZero baseline, `measure.py` (every move graded by the solver) |
 | `web/` | the page, its engine (`patch.js`, `brain.js`), parity checks and the arena that produces the receipt |
 | `brain/v1.npz` | the deployed patch the page's `brain.json` is exported from |
+| `receipts/records_drown.json` | three runs schooled with every position written into the records: the slow readout alone against the value with the record read (`tools/records_drown.py`) |
 | `receipts/control_rules_only.json` | the same opponents against the search alone, with no value patch: what the patch adds is the difference |
 | `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v1.npz` |
 | `tools/make_card.py` | draws the social card with the page itself, mid-thought |
@@ -50,8 +51,8 @@ build that is deployed; the page's card renders its table from that file and pla
 search settings recorded in it.
 
 Findings of the build, each with the script that measured it, are collected for the library's
-documentation: bulk writing drowns the record store (the slow readout alone then scores about
-3.5 points higher, on three independent runs), so the school leaves the records empty; a row
+documentation: bulk writing drowns the record store (on three runs the slow readout alone names the winner 3 points more often on positions it never saw and 2 points more often on positions it witnessed;
+`receipts/records_drown.json`), so the school leaves the records empty; a row
 of `imagine` is not bitwise invariant to the size of its batch, so the search reads each
 distinct position once; record addresses are a similarity kernel, so a write also moves the
 sibling moves unless they are anchored at their current values.

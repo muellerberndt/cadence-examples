@@ -10,6 +10,9 @@
 - The brain the page loads is the deployed patch in ``brain/``, exported again with the
   library: the same arrays, number for number, and an empty record store.
 - The receipt names no path of the machine it was made on, and pins the library's commit.
+- The record-drowning receipt holds three runs, and in each the slow readout alone reads better
+  than with the record read, on positions never seen and on positions witnessed. Its numbers are
+  bound to the hashes of the patches and position files; recomputing them needs those files.
 
 Exits non-zero on any failure. The page's arithmetic against the library's is checked by
 ``web/parity.mjs`` and ``web/search_parity.mjs``.
@@ -82,6 +85,14 @@ def main() -> int:
             problems.append(f"{opponent}: the replays count {counted}, the receipt says {entry['win_draw_loss']}")
         if len(entry["games"]) != expected_games:
             problems.append(f"{opponent}: {len(entry['games'])} games, the receipt says {expected_games}")
+
+    drown = json.loads((HERE / "receipts/records_drown.json").read_text())
+    if "/Users/" in json.dumps(drown) or len(drown.get("runs", {})) < 3:
+        problems.append("the record-drowning receipt names a path or holds fewer than three runs")
+    for name, run in drown.get("runs", {}).items():
+        for where in ("never_seen", "witnessed"):
+            if not run[where]["slow_readout_alone"] > run[where]["with_the_record_read"]:
+                problems.append(f"records_drown, {name}, {where}: the slow readout alone does not read better than with the records")
 
     from connect4.patch import ValuePatch
     from connect4.web.export import brain_state
