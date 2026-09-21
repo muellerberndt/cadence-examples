@@ -9,8 +9,12 @@ through the instrument and played, with every note and the brain in time with th
 
 ## What is here
 
-- `web/index.html`: the page. A button, a Departures slider (it scales the probability of
-  leaving the loop at a predicted change point) and a bar count; then the sound, a notes
+- `web/index.html`: the page, in two columns: the studio and the sound on the left, the
+  brain pinned on the right so it stays in view. A button, a Departures slider (it scales
+  the probability of leaving the loop at a predicted change point), a Variation slider (the
+  bass of the first two bars, and of every departure, is drawn from the brain's own scores
+  over notes instead of taking the top one, so each dub gets its own key and line; at 0
+  every dub from silence is the same track) and a bar count; then the sound, a notes
   panel (every slice, bass note, change point and texture band), and the brain: the heard
   event, the 128 context channels with their gates, the strongest synaptic drives, the
   8,192 record cells with the 48 that fire and their push into the output, the output
@@ -22,6 +26,8 @@ through the instrument and played, with every note and the brain in time with th
   tables (float32), the running mean of the record reading, and `model.json` with every
   constant. `web/models/index.json` lists them with what each was trained on and its
   held-out figures; the page offers them as a selector, so checkpoints can be compared by ear.
+- `web/card.png`: the 1200 by 630 social card the page's Open Graph and Twitter tags point
+  to; they carry the absolute URL of the page's current home and must follow it if it moves.
 - `web/kit/`: the instrument: 32 half-beat slices of a drum break and twelve sub-bass notes
   as 16-bit wav, and `kit.json` with gains and the texture bands.
 - `runs/record-composer-v10/receipt.json`: the receipt every number here comes from, and
@@ -64,8 +70,11 @@ Supplied: the transcription of recordings into events (the break's position per 
 the sub-bass semitone, a change point where a half-beat departs from the same position one
 bar earlier, the sustain above 250 Hz with the played slice's own tail removed), the
 instrument, the eight-position clock, the count-in (at the wake the brain hears the break's
-last half-beat), and the two moves a departure may make (a roll repeats the slice just
-heard, a retrigger restarts the break at a bar start). Learned from random parameters and
+last half-beat), and the three moves a departure may make (a roll repeats the slice just
+heard, a retrigger restarts the break at a bar start, a bar jump plays the same position in
+another bar of the break). The moves are declared: among the corpus's change points only
+the roll stands out from chance (0.12 against 0.03); a retrigger occurs at 0.12, its chance
+level, and a bar jump at 0.05. Learned from random parameters and
 empty records: every event the brain plays, the gains, the bass line, when a change point
 is due, and the texture.
 

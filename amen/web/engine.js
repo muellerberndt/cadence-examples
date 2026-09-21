@@ -80,28 +80,43 @@ const argmax = (a, s, e) => { let m = s; for (let i = s + 1; i < e; i++) if (a[i
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
 // The event actually played from an output row. 'argmax' plays the highest-scoring slice; 'sample' draws a change
-// point with the predicted probability times `energy` and there makes a roll or a retrigger from the slice heard before.
-export function executed(out, L, retriggers, mode, random, previous, energy = 1) {
+// point with the predicted probability times `energy` and there makes one of three moves from the slice heard before,
+// with equal probability: a roll (repeat it), a retrigger (restart the break at a bar start) or a bar jump (the same
+// position in another bar of the break); where a move has a choice, the brain's squared scores decide.
+// With `bassPower` set, a new bass note is drawn with probability proportional to its score to that power, the
+// brain's own spread over plausible notes; otherwise the highest-scoring note plays.
+export function executed(out, L, retriggers, mode, random, previous, energy = 1, bassPower = 0) {
   const e = new Array(L.event_ports).fill(0);
   const change = mode === 'sample' ? random() < clamp(out[L.change] * energy, 0, 1) : out[L.change] > 0.5;
   e[L.change] = change ? 1 : 0;
   for (let k = 0; k < L.texture_ports; k++) e[L.texture_start + k] = clamp(out[L.texture_start + k], 0, 1);
   if (out[L.drum_on] > 0.5) {
     const heard = previous && previous[L.drum_on] > 0.5; let crop;
-    if (mode === 'sample' && change && heard && random() < 0.5) crop = argmax(previous, 0, L.crops);
-    else if (mode === 'sample' && change) {
-      const w = retriggers.map(k => Math.pow(Math.max(out[k], 0), 2) + 1e-9), total = w.reduce((a, b) => a + b, 0); let draw = random() * total, pick = retriggers.length - 1;
-      for (let i = 0; i < w.length; i++) { draw -= w[i]; if (draw <= 0) { pick = i; break; } }
-      crop = retriggers[pick];
-    } else crop = argmax(out, 0, L.crops);
+    const pick = options => { const w = options.map(k => Math.pow(Math.max(out[k], 0), 2) + 1e-9), total = w.reduce((a, b) => a + b, 0); let draw = random() * total;
+      for (let i = 0; i < w.length; i++) { draw -= w[i]; if (draw <= 0) return options[i]; } return options[options.length - 1]; };
+    const move = mode === 'sample' && change ? random() : -1;
+    if (move >= 0 && heard && move < 1 / 3) crop = argmax(previous, 0, L.crops);
+    else if (move >= 0 && heard && move >= 2 / 3) { const next = (argmax(previous, 0, L.crops) + 1) % L.crops; crop = pick([8, 16, 24].map(d => (next + d) % L.crops)); }
+    else if (move >= 0) crop = pick(retriggers);
+    else crop = argmax(out, 0, L.crops);
     e[crop] = 1; e[L.drum_on] = 1; e[L.drum_gain] = clamp(out[L.drum_gain], 0, 1);
   }
-  if (out[L.bass_on] > 0.5) { e[argmax(out, L.note_start, L.note_start + L.notes)] = 1; e[L.bass_on] = 1; e[L.bass_hold] = out[L.bass_hold] > 0.5 ? 1 : 0; }
+  if (out[L.bass_on] > 0.5) {
+    const hold = out[L.bass_hold] > 0.5; let note = argmax(out, L.note_start, L.note_start + L.notes);
+    if (bassPower > 0 && !hold) {
+      let total = 0; const w = []; for (let k = 0; k < L.notes; k++) { const v = Math.pow(Math.max(out[L.note_start + k], 0), bassPower); w.push(v); total += v; }
+      if (total > 0) { let draw = random() * total; for (let k = 0; k < L.notes; k++) { draw -= w[k]; if (draw <= 0) { note = L.note_start + k; break; } } }
+    }
+    e[note] = 1; e[L.bass_on] = 1; e[L.bass_hold] = hold ? 1 : 0;
+  }
   return e;
 }
 
 // Sixteen bars (or more) from silence. A generator: each next() computes one half-beat and yields its trace step.
-export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 1} = {}) {
+// `variation` in [0, 1] lets each dub differ: over the first `riffBars` the bass is drawn from the brain's note
+// scores (power 8 at 0+, down to 2 at 1), which sets the key and the riff it then hears and continues; afterwards a
+// note is drawn only where a change point fires. At 0 every choice is the highest score.
+export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 1, variation = 0, riffBars = 2} = {}) {
   const model = brain.model, L = model.layout, random = mulberry(seed), horizon = 8 * bars;
   brain.reset(); let previous = null;
   for (let t = 0; t < horizon; t++) {
@@ -110,7 +125,10 @@ export function* compose(brain, {bars = 16, mode = 'sample', energy = 1, seed = 
     u[L.clock_start + (t % 8)] = 1;
     for (let k = 0; k < L.event_ports; k++) u[L.heard_start + k] = heard[k];
     const step = brain.step(u);
-    previous = executed(step.out, L, model.retriggers, mode, random, mode === 'sample' ? heard : null, energy);
+    const power = variation > 0 && mode === 'sample' ? 8 - 6 * Math.min(1, variation) : 0, riff = t < 8 * riffBars;
+    let event = executed(step.out, L, model.retriggers, mode, random, mode === 'sample' ? heard : null, energy, riff ? power : 0);
+    if (!riff && power > 0 && event[L.change] > 0.5) { const drawn = executed(step.out, L, model.retriggers, 'argmax', random, null, energy, power); for (let k = L.note_start; k < L.note_start + L.notes; k++) event[k] = drawn[k]; }
+    previous = event;
     yield Object.assign(step, {t, phase: 'generated', heard: Array.from(heard), clock: t % 8, played: previous});
   }
 }

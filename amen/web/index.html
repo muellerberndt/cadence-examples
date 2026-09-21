@@ -3,8 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Amen Brain · a jungle composer in one patch</title>
-<meta name="description" content="One record patch learned jungle as events per half-beat. It hears four bars of a track it never trained on, then plays sixteen bars of drums, bass and texture, while the page replays its brain in time with the sound.">
+<title>Amen Brain · a jungle composer that thinks in your browser</title>
+<meta name="description" content="One small brain learned jungle as events per half-beat. Nothing is recorded: it computes a track in your browser, from silence, while you watch it think, then plays it.">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050505'/%3E%3Cpath d='M0 46h64v6H0z' fill='%23e0232b'/%3E%3Cpath d='M0 52h64v6H0z' fill='%23f7c52d'/%3E%3Cpath d='M0 58h64v6H0z' fill='%231faa59'/%3E%3Ctext x='32' y='40' font-family='Impact,Arial Black,sans-serif' font-size='40' text-anchor='middle' fill='%23f7c52d'%3EA%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pragma Research">
+<meta property="og:title" content="Amen Brain: a jungle composer that thinks in your browser">
+<meta property="og:description" content="One small brain learned jungle as events per half-beat. Nothing is recorded: it computes a track from silence while you watch it think, then plays it. 30 thousand parameters, no GPU.">
+<meta property="og:url" content="https://floatingpragma.io/cadence-examples/amen-beats/">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/amen-beats/card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Amen Brain: the brain of a jungle composer, two rings of drum slices around a field of context channels">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Amen Brain: a jungle composer that thinks in your browser">
+<meta name="twitter:description" content="One small brain learned jungle. Nothing is recorded: it computes a track from silence while you watch it think, then plays it.">
+<meta name="twitter:image" content="https://floatingpragma.io/cadence-examples/amen-beats/card.png">
+<meta name="twitter:image:alt" content="Amen Brain: the brain of a jungle composer, two rings of drum slices around a field of context channels">
 <style>
 :root{--bg:#050505;--panel:#09090a;--ink:#f1ead6;--dim:#8d8775;--gold:#f7c52d;--red:#e0232b;--green:#1faa59;--cyan:#4cc9f0;--line:#26241d;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--slab:Impact,Haettenschweiler,"Arial Narrow Bold","Helvetica Neue",Arial,sans-serif}
@@ -12,16 +28,17 @@
 html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--mono)}
 body{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),radial-gradient(1100px 520px at 92% -12%,rgba(224,35,43,.13),transparent 60%),radial-gradient(900px 500px at -5% 0%,rgba(31,170,89,.10),transparent 60%);background-attachment:fixed}
 .hazard{height:12px;background:repeating-linear-gradient(-45deg,var(--gold) 0 16px,#000 16px 32px)}
-header{max-width:1360px;margin:0 auto;padding:20px 24px 6px;position:relative}
+header{max-width:1560px;margin:0 auto;padding:14px 24px 2px;position:relative}
+.titlebar{display:flex;align-items:flex-end;gap:14px 34px;flex-wrap:wrap}
 .crumbs{display:flex;gap:8px;font:700 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 16px}
 .crumbs a{color:var(--dim);text-decoration:none}.crumbs a:hover{color:var(--ink)}
-h1{margin:0;font:900 clamp(58px,11vw,150px)/.8 var(--slab);letter-spacing:-.005em;text-transform:uppercase;transform:skew(-7deg);transform-origin:left bottom;text-shadow:5px 5px 0 var(--red),10px 10px 0 var(--green)}
+h1{margin:0;font:900 clamp(44px,5.4vw,84px)/.82 var(--slab);letter-spacing:-.005em;text-transform:uppercase;transform:skew(-7deg);transform-origin:left bottom;text-shadow:3px 3px 0 var(--red),6px 6px 0 var(--green)}
 h1 span{color:var(--gold)}
-.stripe{display:flex;height:9px;width:min(560px,72vw);margin:26px 0 12px}
+.stripe{display:flex;height:6px;width:100%;margin:14px 0 0}
 .stripe i{flex:1}.stripe i:nth-child(1){background:var(--red)}.stripe i:nth-child(2){background:var(--gold)}.stripe i:nth-child(3){background:var(--green)}
-.stamp{position:absolute;right:30px;top:54px;border:3px solid var(--gold);color:var(--gold);padding:9px 13px;font:800 11.5px/1.35 var(--mono);letter-spacing:.16em;text-transform:uppercase;transform:rotate(8deg);text-align:center;background:rgba(0,0,0,.55)}
+.stamp{margin-left:auto;border:3px solid var(--gold);color:var(--gold);padding:9px 13px;font:800 11.5px/1.35 var(--mono);letter-spacing:.16em;text-transform:uppercase;transform:rotate(8deg);text-align:center;background:rgba(0,0,0,.55)}
 .stamp b{display:block;font:900 22px/1 var(--slab);letter-spacing:.06em;color:var(--ink)}
-.sub{margin:0 0 16px;color:var(--dim);max-width:78ch;font-size:12.5px;letter-spacing:.02em}
+.sub{margin:0 0 4px;color:var(--dim);max-width:62ch;font-size:12.5px;letter-spacing:.02em;flex:1 1 320px}
 .sub b{color:var(--ink);font-weight:700}
 .brains{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 12px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .brains b{background:var(--ink);color:#000;padding:6px 9px;font:900 12px/1 var(--slab);letter-spacing:.14em}
@@ -49,24 +66,33 @@ nav button:hover{border-color:var(--ink);transform:translate(-1px,-1px)}
 nav button.on{background:var(--gold);color:#000;border-color:var(--gold);box-shadow:3px 3px 0 var(--red)}
 #now{margin:12px 0 0;color:var(--dim);font-size:12px;letter-spacing:.05em;min-height:18px}
 #now b{color:#000;background:var(--gold);padding:1px 6px;margin-right:8px;font-weight:800}
-main{max-width:1360px;margin:0 auto;padding:4px 24px 56px}
+main{max-width:1560px;margin:0 auto;padding:4px 24px 40px}
+.deck{display:grid;grid-template-columns:minmax(360px,5fr) 8fr;gap:24px;align-items:start}
+.left{min-width:0}.right{position:sticky;top:10px;min-width:0}
+.right section{margin-top:22px}
+.studiowrap{padding:20px 16px 12px}
+.knobs{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 12px}
+.knobs label{display:flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.knobs input[type=range]{accent-color:var(--gold);width:150px}
+.knobs select{background:#000;color:var(--ink);border:2px solid var(--line);font:800 12px var(--mono);padding:4px 6px}
+.knobs output{color:var(--gold);font-weight:800;min-width:38px}
 section{background:var(--panel);border:2px solid var(--line);margin:22px 0;position:relative;box-shadow:7px 7px 0 #000,8px 8px 0 var(--line)}
 section[data-tape]::before{content:attr(data-tape);position:absolute;top:-12px;left:16px;background:var(--gold);color:#000;font:900 10.5px/1 var(--mono);letter-spacing:.18em;padding:5px 9px;text-transform:uppercase;transform:rotate(-1.6deg);z-index:2}
 section[data-tape="brain"]::before{background:var(--red);color:var(--ink)}
 section[data-tape="notes"]::before{background:var(--green);color:#000}
-#wave canvas{display:block;width:100%;height:120px;cursor:crosshair}
+#wave canvas{display:block;width:100%;height:96px;cursor:crosshair}
 .bar{display:flex;align-items:center;gap:18px;padding:10px 14px;border-top:2px solid var(--line);font-variant-numeric:tabular-nums;font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
 .bar button{background:var(--gold);color:#000;border:0;padding:10px 26px;font:900 17px/1 var(--slab);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 var(--red)}
 .bar button:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--red)}
 .bar b{color:var(--ink)}
 #brain{display:block;width:100%;height:auto}
-#score{display:block;width:100%;height:260px;cursor:crosshair}
+#score{display:block;width:100%;height:230px;cursor:crosshair}
 #err{color:var(--red);font-size:12px;padding:0 18px 10px;white-space:pre-wrap}
-#readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;padding:10px 8px 6px}
+#readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:0;padding:12px 6px 4px}
 #readout div{padding:8px 10px;border-right:2px solid var(--line)}
 #readout div:last-child{border-right:0}
 #readout small{display:block;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;font-size:9.5px}
-#readout b{font:800 17px/1.3 var(--mono);font-variant-numeric:tabular-nums}
+#readout b{font:800 14px/1.3 var(--mono);font-variant-numeric:tabular-nums}
 #readout b.gold{color:var(--gold)}#readout b.red{color:var(--red)}#readout b.green{color:var(--green)}
 #notes{padding:16px 18px 12px;color:var(--dim);font-size:12.5px}
 #notes p{margin:0 0 6px}
@@ -77,51 +103,51 @@ details.card summary{cursor:pointer;color:var(--ink);font:900 15px/1 var(--slab)
 details.card summary small{color:var(--dim);font:400 11.5px var(--mono);letter-spacing:.04em;text-transform:none;margin-left:12px}
 details.card h3{color:var(--gold);font:800 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin:16px 0 4px}
 details.card p,details.card li{max-width:96ch}details.card ul{margin:4px 0;padding-left:18px}
-footer{max-width:1360px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
-@media (max-width:760px){header,main,footer{padding-left:14px;padding-right:14px}.stamp{display:none}#readout b{font-size:14px}h1{text-shadow:3px 3px 0 var(--red),6px 6px 0 var(--green)}}
+footer{max-width:1560px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-width:1020px){.deck{grid-template-columns:1fr}.right{order:-1;top:0;z-index:5;background:var(--bg)}.right section{margin-top:14px}.stamp{display:none}}
+@media (max-width:760px){header,main,footer{padding-left:12px;padding-right:12px}#readout b{font-size:13px}}
 </style>
 </head>
 <body>
 <div class="hazard"></div>
 <header>
   <div class="crumbs"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><span>Amen</span></div>
-  <h1>Amen <span>Brain</span></h1>
-  <div class="stripe"><i></i><i></i><i></i></div>
-  <div class="stamp"><b>Dubplate</b>one patch · no GPU<br>170 bpm · 16 bars</div>
-  <p class="sub"><b>One patch learned jungle as events per half-beat.</b> Nothing here is recorded: press the button and the trained brain computes a track in your browser, from silence, while you watch it think. When it is done the track plays, with every note and the brain in time with the sound.</p>
-  <div class="studio">
-    <button id="cut" disabled>Cut a dub</button>
-    <label>Departures<input type="range" id="energy" min="0" max="3" step="0.1" value="1"><output id="energyOut">1.0×</output></label>
-    <label>Bars<select id="bars"><option value="16" selected>16</option><option value="32">32</option></select></label>
-    <span id="status">waking the brain</span>
+  <div class="titlebar">
+    <h1>Amen <span>Brain</span></h1>
+    <p class="sub"><b>One patch learned jungle.</b> Nothing here is recorded: the trained brain computes a track in your browser, from silence, while you watch it think. Then it plays.</p>
+    <div class="stamp"><b>Dubplate</b>one patch · no GPU<br>170 bpm · live</div>
   </div>
-  <div class="brains" id="brains"></div>
-  <nav id="clips"></nav>
-  <p id="now"></p>
+  <div class="stripe"><i></i><i></i><i></i></div>
 </header>
-<main>
-  <section id="wave" data-tape="sound"><canvas id="waveform"></canvas>
-    <div class="bar"><button id="play">Play</button><span>bar <b id="bar">0</b></span><span>half-beat <b id="hb">0</b></span><span id="phase"></span><span id="time">0.0 s</span></div>
-  </section>
-  <section id="scorewrap" data-tape="notes"><canvas id="score"></canvas></section>
-  <section data-tape="brain"><canvas id="brain"></canvas>
-    <div class="legend">
-      <span><i style="background:var(--gold)"></i>context channel, positive</span>
-      <span><i style="background:var(--cyan)"></i>context channel, negative</span>
-      <span><i style="background:#fff"></i>record cell firing</span>
-      <span><i style="background:var(--red)"></i>change point</span>
-      <span><i style="background:var(--green)"></i>bass</span>
-      <span>fast channels sit at the centre, slow ones at the rim; open gates glow; particles are synaptic drive; the arc at the bottom is the loop through the world</span>
-    </div>
-  </section>
-  <section id="readout" data-tape="numbers"></section>
-  <section id="notes" data-tape="this clip"><p id="clipnote">Choose a clip.</p><div id="err"></div></section>
-  <section data-tape="model card"><details class="card">
+<main class="deck">
+  <div class="left">
+    <section data-tape="studio" class="studiowrap">
+      <div class="studio">
+        <button id="cut" disabled>Cut a dub</button>
+        <span id="status">waking the brain</span>
+      </div>
+      <div class="knobs">
+        <label title="How readily the brain leaves the loop where it predicts a change point">Departures<input type="range" id="energy" min="0" max="3" step="0.1" value="1"><output id="energyOut">1.0×</output></label>
+        <label title="How freely the bass draws from the brain's own spread over plausible notes: it sets a different key and riff for every dub">Variation<input type="range" id="variation" min="0" max="1" step="0.05" value="0.5"><output id="variationOut">0.50</output></label>
+        <label>Bars<select id="bars"><option value="16" selected>16</option><option value="32">32</option></select></label>
+      </div>
+      <div class="brains" id="brains"></div>
+      <nav id="clips"></nav>
+      <p id="now"></p>
+    </section>
+    <section id="wave" data-tape="sound"><canvas id="waveform"></canvas>
+      <div class="bar"><button id="play" title="Space">Play</button><span>bar <b id="bar">0</b></span><span>half-beat <b id="hb">0</b></span><span id="phase"></span><span id="time">0.0 s</span></div>
+    </section>
+    <section id="scorewrap" data-tape="notes"><canvas id="score"></canvas></section>
+    <section id="readout" data-tape="numbers"></section>
+    <section id="notes" data-tape="this dub"><p id="clipnote">Press CUT A DUB.</p><div id="err"></div></section>
+    <section data-tape="model card"><details class="card">
     <summary>Model card<small>what this brain is, what plays here, what was measured</small></summary>
     <h3>The brain</h3>
     <p>One Cadence record patch. 80 input ports (a wake, an eight-position clock, and the 71 ports of the event it played last), 128 context channels whose time constants run from 2 to 128 half-beats, one linear readout to 71 output ports, 29,895 slow parameters, and a record store of 8,192 cells of which 48 fire per reading. The records hold what the slow readout got wrong at each reading, keyed by the event heard and the context; the first four bars of a new track are written into them while the slow parameters stay fixed. Trained in under seven CPU minutes on a laptop, no GPU.</p>
     <h3>What plays here</h3>
-    <p>Nothing is recorded. The page loads the trained brain (30 thousand slow parameters and the record tables, 2.5 MB) and an instrument (32 half-beat slices of a drum break, twelve sub-bass notes, band-passed noise for the texture). When you press the button the brain starts from silence, hears a count-in, and computes the track one half-beat at a time, about 1.7 million multiply-adds each, hearing every half-beat it plays. It leaves the loop only where it predicts a change point, by a roll (the slice just heard repeats) or a retrigger (the break restarts at a bar start); the Departures slider scales that probability. The browser engine is the same arithmetic as the library: on the archived run's generation from silence it reproduces every slice, note and change point, with scores equal to 2e-8.</p>
+    <p>Nothing is recorded. The page loads the trained brain (30 thousand slow parameters and the record tables, 2.5 MB) and an instrument (32 half-beat slices of a drum break, twelve sub-bass notes, band-passed noise for the texture). When you press the button the brain starts from silence, hears a count-in, and computes the track one half-beat at a time, about 1.7 million multiply-adds each, hearing every half-beat it plays. It leaves the loop only where it predicts a change point, by one of three declared moves: a roll (the slice just heard repeats), a retrigger (the break restarts at a bar start) or a bar jump (the same position in another bar of the break). The Departures slider scales that probability. The bass of the first two bars, and of every departure, is drawn from the brain's own scores over notes (the Variation slider sets how freely), so every dub has its own key and line; at zero variation every dub from silence is the same track. The browser engine is the same arithmetic as the library: on the archived run's generation from silence it reproduces every slice, note and change point, with scores equal to 2e-8.</p>
     <h3>Measured on three tracks it never trained on</h3>
     <ul>
       <li>Next drum slice: 0.84 to 0.86 correct; the most frequent slice scores 0.03 to 0.05.</li>
@@ -132,9 +158,23 @@ footer{max-width:1360px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-
     <h3>Supplied, learned, limits</h3>
     <p>Supplied: the transcription of the recordings into events (which slice, which note, where a bar departs from the bar before, the sustain above 250 Hz), the instrument that renders events, the clock, and the two moves a departure may make. Learned: everything the brain plays, from random parameters and empty records. Limits: one mix of sixteen training tracks, one seed, no transformer or recurrent baseline on the same stream yet, and a texture smoother than the real one because a squared-error readout predicts the mean.</p>
   </details></section>
+  </div>
+  <div class="right">
+    <section data-tape="brain" id="brainwrap"><canvas id="brain"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>channel +</span>
+        <span><i style="background:var(--cyan)"></i>channel −</span>
+        <span><i style="background:#fff"></i>record cell</span>
+        <span><i style="background:var(--red)"></i>change point</span>
+        <span><i style="background:var(--green)"></i>bass</span>
+        <span>fast channels at the centre, slow at the rim · halos are open gates · particles are synaptic drive · the arc is the loop through the world</span>
+      </div>
+    </section>
+  </div>
 </main>
-<footer>Every clip is the literal render of what the brain played · receipts beside the page</footer>
+<footer>Every dub is computed in your browser by the trained brain · receipts beside the page</footer>
 <div class="hazard"></div>
+
 <script type="module">
 import {Brain, compose} from './engine.js';
 (() => {
@@ -178,6 +218,7 @@ async function boot() {
   resize(); addEventListener('resize', resize);
   requestAnimationFrame(frame);
   $('energy').oninput = () => $('energyOut').textContent = Number($('energy').value).toFixed(1) + '×';
+  $('variation').oninput = () => $('variationOut').textContent = Number($('variation').value).toFixed(2);
   kit = await (await fetch('kit/kit.json')).json();
   kitBuffers = {raw: await Promise.all([bytes('kit/' + kit.break_file), bytes('kit/' + kit.bass_file)])};
   brains = (await (await fetch('models/index.json')).json()).brains;
@@ -195,18 +236,18 @@ $('cut').onclick = async () => {
   if (computing || !brain) return;
   audio.pause();
   if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const [a, b] = kitBuffers.raw; kitBuffers.drums = await audioCtx.decodeAudioData(a.slice(0)); kitBuffers.bass = await audioCtx.decodeAudioData(b.slice(0)); }
-  const bars = Number($('bars').value), energy = Number($('energy').value), seed = (Math.random() * 4294967296) >>> 0, number = tracks.length + 1;
+  const bars = Number($('bars').value), energy = Number($('energy').value), variation = Number($('variation').value), seed = (Math.random() * 4294967296) >>> 0, number = tracks.length + 1;
   trace = {clip: 'DUB ' + String(number).padStart(2, '0'), title: bars + ' bars from silence', mode: 'sample', hop_seconds: kit.hop_seconds, primer_half_beats: 0, wake_played: true,
-           primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, bars, brain: current.label, weights, layout: model.layout};
+           primer_writes: 0, receipt_sha256: model.run_receipt_sha256, total_steps: 8 * bars, steps: [], seed, energy, variation, bars, brain: current.label, weights, layout: model.layout};
   decoded = null; waveImage = null; scoreImage = null; lastStep = -1; particles = []; flashes.cells.clear(); geo = null;
-  computing = {steps: compose(brain, {bars, mode: 'sample', energy, seed}), perFrame: bars > 16 ? 2 : 1};
+  computing = {steps: compose(brain, {bars, mode: 'sample', energy, seed, variation}), perFrame: bars > 16 ? 2 : 1};
   $('cut').disabled = true; setStatus('computing', true); showNow();
 };
 
 function showNow() {
   const now = $('now'); now.textContent = ''; if (!trace) return;
   const tag = document.createElement('b'); tag.textContent = trace.clip; now.appendChild(tag);
-  now.appendChild(document.createTextNode(trace.title + ' · brain: ' + trace.brain + ' · departures ' + trace.energy.toFixed(1) + '× · seed ' + trace.seed));
+  now.appendChild(document.createTextNode(' ' + trace.title + ' · brain: ' + trace.brain + ' · departures ' + trace.energy.toFixed(1) + '× · variation ' + trace.variation.toFixed(2) + ' · seed ' + trace.seed));
 }
 
 function advanceComputing() {
@@ -232,7 +273,7 @@ function play(item) {
   for (const b of $('clips').querySelectorAll('button')) b.classList.toggle('on', b.dataset.id === item.clip);
   showNow();
   const changes = item.steps.filter(s => s.played[layout.change] > 0.5).length;
-  $('clipnote').textContent = item.clip + ' · computed in your browser just now: ' + item.steps.length + ' half-beats from silence, ' + changes + ' departures (a roll or a retrigger where the brain predicted a change point), bass and texture as predicted. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
+  $('clipnote').textContent = item.clip + ' · computed in your browser just now: ' + item.steps.length + ' half-beats from silence, ' + changes + ' departures (a roll, a retrigger or a bar jump where the brain predicted a change point), bass drawn from its own note scores, texture as predicted. Run receipt ' + model.run_receipt_sha256.slice(0, 8) + '.';
 }
 
 function addToRack(item) {
@@ -307,6 +348,7 @@ function wavBlob(buffer) {
 
 $('play').onclick = () => { if (!trace || computing || !trace.url) return; if (audio.paused) audio.play(); else audio.pause(); };
 audio.addEventListener('ended', () => setStatus('ready'));
+addEventListener('keydown', e => { if (e.code === 'Space' && !/^(INPUT|SELECT|BUTTON|TEXTAREA)$/.test(document.activeElement.tagName)) { e.preventDefault(); $('play').click(); } });
 audio.addEventListener('play', () => $('play').textContent = 'Pause');
 audio.addEventListener('pause', () => $('play').textContent = 'Play');
 const seek = e => { if (!trace) return; const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * clipSeconds(); };
@@ -315,9 +357,10 @@ function clipSeconds() { return decoded ? decoded.duration : (trace.total_steps 
 
 function resize() {
   const dpr = devicePixelRatio || 1;
-  const w = $('waveform'); w.width = w.clientWidth * dpr; w.height = 120 * dpr; waveImage = null;
-  const s = $('score'); s.width = s.clientWidth * dpr; s.height = 260 * dpr; scoreImage = null; geo = null;
-  const b = $('brain'); const width = b.clientWidth; const height = Math.max(420, Math.min(720, width * 0.56));
+  const w = $('waveform'); w.width = w.clientWidth * dpr; w.height = 96 * dpr; waveImage = null;
+  const s = $('score'); s.width = s.clientWidth * dpr; s.height = 230 * dpr; scoreImage = null; geo = null;
+  const b = $('brain'); const width = b.clientWidth, wide = innerWidth > 1020, legend = b.nextElementSibling ? b.nextElementSibling.offsetHeight : 0;
+  const height = wide ? Math.max(440, Math.min(innerHeight - legend - 50, width * 1.05)) : Math.max(280, Math.min(innerHeight * 0.46, width * 0.8));
   b.style.height = height + 'px'; b.width = width * dpr; b.height = height * dpr;
 }
 
@@ -424,7 +467,7 @@ function drawBrain(step) {
   const [rx, ry, rw, rh] = geo.records, [cw, ch, cols] = geo.cell;
   g.fillStyle = '#0c0c11'; g.fillRect(rx, ry, rw, rh);
   for (const [cell, [born, push]] of flashes.cells) { const age = (now - born) / 900; if (age > 1) { flashes.cells.delete(cell); continue; } const [x, y] = cellPos(cell); const a = (1 - age); g.fillStyle = s.phase === 'primer' ? `rgba(242,182,50,${a})` : `rgba(255,255,255,${a})`; g.fillRect(x - cw / 2, y - ch / 2, Math.max(cw, 2 * F), Math.max(ch, 2 * F)); }
-  g.fillStyle = '#8a8776'; g.fillText(`records · ${weights.cells} cells · ${weights.active} fire per half-beat · read ‖m‖ ${norm(s.read).toFixed(2)}` + (s.phase === 'primer' ? ' · writing' : ''), rx + rw / 2, ry + rh + 16 * F);
+  g.fillStyle = '#8a8776'; g.fillText(`${weights.cells} record cells · ${weights.active} fire per half-beat`, rx + rw / 2, ry + rh + 16 * F);
   // heard ring and output ring
   const heard = s.heard ? s.heard : (s.phase === 'primer' ? (s.t > 0 ? trace.steps[s.t - 1].played : null) : null);
   const heardCrop = heard && heard[L.drum_on] > .5 ? argmax(heard, 0, L.crops) : -1;
@@ -438,8 +481,8 @@ function drawBrain(step) {
       if (i === playedMark) { g.strokeStyle = '#fff'; g.lineWidth = 2 * F; g.beginPath(); g.arc(x, y, 8 * F, 0, 2 * Math.PI); g.stroke(); } }
     g.fillStyle = '#8a8776'; g.fillText(label, cx, cy + r + 18 * F);
   };
-  drawRing(geo.heard, heardCrop, null, 'heard: the 32 crops of the break in loop order', -1);
-  drawRing(geo.out, -1, scores, 'output: crop scores; white ring = played', playedCrop);
+  drawRing(geo.heard, heardCrop, null, 'heard', -1);
+  drawRing(geo.out, -1, scores, 'plays · white ring', playedCrop);
   // clock
   for (let i = 0; i < 8; i++) { const [x, y] = ringPos(geo.clock[0], geo.clock[1], geo.clock[2], i, 8); const on = (s.phase === 'primer' ? s.t % 8 : s.clock) === i; g.fillStyle = on ? '#e5383b' : '#2a2822'; g.beginPath(); g.arc(x, y, (on ? 4 : 2.5) * F, 0, 2 * Math.PI); g.fill(); }
   g.fillStyle = '#8a8776'; g.fillText('clock', geo.clock[0], geo.clock[1] + 4 * F);
@@ -448,7 +491,7 @@ function drawBrain(step) {
     g.fillStyle = '#8a8776'; g.fillText(label, x0 + w / 2, y0 + 14 * F); };
   const heardNote = heard && heard[L.bass_on] > .5 ? argmax(heard, L.note_start, L.note_start + L.notes) - L.note_start : -1;
   const playedNote = s.played && s.played[L.bass_on] > .5 ? argmax(s.played, L.note_start, L.note_start + L.notes) - L.note_start : -1;
-  keys(geo.keysL, heard, heardNote, 'heard bass, C1 to B2');
+  keys(geo.keysL, heard, heardNote, 'heard bass');
   keys(geo.keysR, s.out, playedNote, 'bass scores');
   // change lamp and gain
   if (L.change !== null && L.change !== undefined) { const p = clamp(s.out[L.change], 0, 1); const [x, y] = outputPos(L.change); const age = clamp((now - flashes.change) / 700, 0, 1); g.fillStyle = `rgba(229,56,59,${0.15 + 0.85 * Math.max(p, 1 - age)})`; g.beginPath(); g.arc(x, y, (5 + 9 * (1 - age)) * F, 0, 2 * Math.PI); g.fill(); g.fillStyle = '#8a8776'; g.fillText(`change ${p.toFixed(2)}`, x, y + 20 * F); }
@@ -459,7 +502,7 @@ function drawBrain(step) {
   for (let i = 0; i < weights.hidden; i++) { const [x, y] = nPos[i]; const h = s.h[i], open = 1 - s.gate[i]; const a = clamp(Math.abs(h) * 1.4, 0.08, 1);
     if (open > 0.2) { g.fillStyle = `rgba(242,182,50,${0.35 * open})`; g.beginPath(); g.arc(x, y, (5 + 9 * open) * F, 0, 2 * Math.PI); g.fill(); }
     g.fillStyle = h >= 0 ? `rgba(242,182,50,${a})` : `rgba(76,201,240,${a})`; g.beginPath(); g.arc(x, y, (2.5 + 4.5 * Math.min(1, Math.abs(h))) * F, 0, 2 * Math.PI); g.fill(); }
-  g.fillStyle = '#8a8776'; g.fillText(`context · ${weights.hidden} channels · timescales 2 to ${weights.timescales[weights.timescales.length - 1]} half-beats · mean gate ${(s.gate.reduce((a, b) => a + b, 0) / s.gate.length).toFixed(2)}`, bx, by + rOut + 30 * F);
+  g.fillStyle = '#8a8776'; g.fillText(`${weights.hidden} context channels · 2 to ${weights.timescales[weights.timescales.length - 1]} half-beats`, bx, by + rOut + 30 * F);
   // particles
   for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; const age = (now - p.born) / p.life; if (age > 1) { particles.splice(i, 1); continue; } if (age < 0) continue; const e = age < .5 ? 2 * age * age : 1 - Math.pow(-2 * age + 2, 2) / 2;
     let x = p.from[0] + (p.to[0] - p.from[0]) * e, y = p.from[1] + (p.to[1] - p.from[1]) * e; if (p.arc) y += Math.sin(e * Math.PI) * H * 0.42;
@@ -476,10 +519,9 @@ function drawReadout(s) {
   const crop = v => v && v[L.drum_on] > .5 ? argmax(v, 0, L.crops) : '·';
   const note = v => v && v[L.bass_on] > .5 ? ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][(argmax(v, L.note_start, L.note_start + L.notes) - L.note_start) % 12] + (1 + Math.floor((argmax(v, L.note_start, L.note_start + L.notes) - L.note_start) / 12)) : '·';
   const top = s.out.slice(0, L.crops).map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 3).map(([v, i]) => `${i}:${v.toFixed(2)}`).join(' ');
-  const cells = [['step', s.t, ''], ['heard crop', crop(heard), ''], ['played crop', crop(s.played), 'gold'], ['top scores', top, ''], ['bass', note(s.played), 'green'],
+  const cells = [['heard', crop(heard), ''], ['plays', crop(s.played), 'gold'], ['top scores', top, ''], ['bass', note(s.played), 'green'],
     ['change', L.change != null ? `${s.played && s.played[L.change] > .5 ? 'YES' : 'no'} · p ${clamp(s.out[L.change], 0, 1).toFixed(2)}` : 'no port', s.played && L.change != null && s.played[L.change] > .5 ? 'red' : ''],
-    ['record read ‖m‖', norm(s.read).toFixed(3), ''], ['slow readout ‖y‖', norm(s.out.map((v, i) => v - s.read[i])).toFixed(3), ''], ['mean gate', (s.gate.reduce((a, b) => a + b, 0) / s.gate.length).toFixed(3), ''],
-    ['context ‖h‖', norm(s.h).toFixed(3), ''], [s.phase === 'primer' ? 'error' : 'phase', s.phase === 'primer' ? s.error.toFixed(4) : 'playing', '']];
+    ['record read', norm(s.read).toFixed(2), ''], ['mean gate', (s.gate.reduce((a, b) => a + b, 0) / s.gate.length).toFixed(2), '']];
   if (L.texture_start != null && L.texture_ports && s.played) cells.push(['texture level · brightness', clamp(s.played[L.texture_start], 0, 1).toFixed(2) + ' · ' + clamp(s.played[L.texture_start + 1], 0, 1).toFixed(2), '']);
   R.innerHTML = cells.map(([k, v, cls]) => `<div><small>${k}</small><b class="${cls}">${v}</b></div>`).join('');
 }
