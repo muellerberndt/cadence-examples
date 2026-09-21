@@ -92,33 +92,8 @@ change point is due, and the texture.
 
 From silence, the highest score at every port gives one and the same track, and the bass
 settles on the same note every time. Each dub therefore draws the following from its seed,
-scaled by the Variation slider; at zero none of it is drawn.
-
-- The bass of the first two bars, and of every departure, is drawn from the brain's own
-  scores over notes.
-- A drum pattern of the dub's own. The break enters on one of its four bars. Over the first
-  one, two or four bars departures are drawn at a raised probability, with the dub's own
-  shares of the three moves and its preferred targets. That opening is the dub's loop: the
-  slice at the cycle start and at each of the opening's departures returns at the same place
-  in every cycle, unless the brain draws a fresh departure there. Between those places the
-  brain plays on from what it hears, so a fill stays local and the groove comes back. This
-  is a rule of the instrument: the transcription reads every repeating bar as the break in
-  order, so a track's own chop is not in the training data.
-- Instrument settings: a tempo between 165 and 182 bpm, the break's pitch (up to four
-  semitones either way, set apart from the tempo as on a sampler), a
-  key (bass and pad transposed by two semitones down to five up), the pad's waveform, chord, register
-  and detune, how it is played (held, a skank on beats two and four, a dotted stab or a
-  swell per bar), and a filter sweep over 4, 8 or 16 bars. The pad sounds at the bass note each
-  bar plays most; the brain's texture bands shape it over time, and the instrument sets the
-  layer 12 dB under the drums and bass.
-
-The seed is printed under the button. The same seed and settings give the same dub.
-
-## Why two dubs differ
-
-From silence, the highest score at every port gives one and the same track, and the bass
-settles on the same note every time. Each dub therefore draws the following from its seed,
-scaled by the Variation slider; at zero none of it is drawn.
+scaled by the Variation slider; at zero none of it is drawn (departures still are: with both
+sliders at zero every dub is the same track).
 
 - The bass of the first two bars, and of every departure, is drawn from the brain's own
   scores over notes.
