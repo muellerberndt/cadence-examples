@@ -108,7 +108,7 @@ details.card p,details.card li{max-width:96ch}details.card ul{margin:4px 0;paddi
 footer{max-width:1560px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media (max-width:1020px){.deck{grid-template-columns:1fr}.right{order:-1;top:0;z-index:5;background:var(--bg)}.right section{margin-top:14px}.stamp{display:none}}
-@media (max-width:760px){.wip{flex-direction:column;gap:6px}header,main,footer{padding-left:12px;padding-right:12px}#readout b{font-size:13px}}
+@media (max-width:760px){.wip{flex-direction:column;gap:6px}.bar{flex-wrap:wrap;gap:8px 14px}#phase{display:none}header,main,footer{padding-left:12px;padding-right:12px}#readout b{font-size:13px}}
 </style>
 </head>
 <body>
@@ -484,7 +484,14 @@ function cellPos(cell) { const [x0, y0] = geo.records; const [cw, ch, cols] = ge
 function drawBrain(step) {
   const c = $('brain'), g = c.getContext('2d'), W = c.width, H = c.height, dpr = devicePixelRatio || 1;
   g.fillStyle = '#060607'; g.fillRect(0, 0, W, H);
-  if (!trace || !weights || step < 0) return;
+  if (!trace || !weights || step < 0) {
+    // at rest: the three rings of the patch, breathing slowly, until the first dub is cut
+    const F = dpr, cx = W / 2, cy = H * 0.46, breath = 0.5 + 0.5 * Math.sin(performance.now() / 1400);
+    [[0.30, '#f7c52d'], [0.21, '#4cc9f0'], [0.12, '#e0232b']].forEach(([r, colour], i) => { g.strokeStyle = colour; g.globalAlpha = 0.10 + 0.10 * breath * (1 - i * 0.2); g.lineWidth = 1.2 * F; g.setLineDash([2 * F, 7 * F]); g.beginPath(); g.arc(cx, cy, Math.min(W, H) * r * (1 + 0.015 * breath), 0, 2 * Math.PI); g.stroke(); });
+    g.setLineDash([]); g.globalAlpha = 1; g.fillStyle = '#8d8775'; g.font = `${12 * F}px ui-monospace, Menlo, monospace`; g.textAlign = 'center';
+    g.fillText(brain ? 'THE BRAIN IS AWAKE AND SILENT' : 'WAKING THE BRAIN', cx, cy - 8 * F); g.fillStyle = '#f7c52d'; g.fillText(brain ? 'PRESS CUT A DUB' : '', cx, cy + 12 * F); g.textAlign = 'left';
+    return;
+  }
   if (!geo || geo.W !== W || geo.H !== H) computeGeometry(W, H);
   const s = trace.steps[step], L = layout, now = performance.now(), F = dpr;
   g.font = `${11 * F}px Helvetica, Arial, sans-serif`; g.textAlign = 'center';
