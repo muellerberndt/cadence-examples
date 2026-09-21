@@ -63,7 +63,7 @@ DEFAULTS: dict[str, Any] = {
     "actor": {"epsilon": 0.0},
     "drop_records": {"cells": 2000, "active": 20, "rate": 0.5, "habituation": 0.002, "bias": 0.3, "chosen_gain": 1.0},
     "line_records": {"cells": 2000, "active": 20, "rate": 0.5, "value_rate": 0.1, "habituation": 0.002, "bias": 0.3},
-    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False, "threat_weight": 0.0},
+    "planner": {"validity_window": 500, "validity_min": 200, "bootstrap": False, "threat_weight": 0.0, "parity_weight": 0.0},
 }
 
 
@@ -604,6 +604,7 @@ class Brain:
         self.lines = LineRecords(self.layout, cfg["line_records"], brain_seed(seed, 3))
         self.imagination = Imagination(self.layout, self.drop, self.lines)
         self.imagination.threat_weight = float(cfg["planner"].get("threat_weight", 0.0))
+        self.imagination.parity_weight = float(cfg["planner"].get("parity_weight", 0.0))
         self.planner = Planner(self.imagination, np.random.default_rng(brain_seed(seed, 4)))
         planning = config["planning"]
         self.depth, self.budget = int(planning["depth"]), int(planning["budget"])
@@ -747,6 +748,7 @@ class Brain:
         out.drop = copy.deepcopy(self.drop)
         out.lines = copy.deepcopy(self.lines)
         out.imagination = Imagination(self.layout, out.drop, out.lines)
+        out.imagination.threat_weight, out.imagination.parity_weight = self.imagination.threat_weight, self.imagination.parity_weight
         out.planner = Planner(out.imagination, copy.deepcopy(self.planner.rng))
         out.validity = deque(self.validity, maxlen=self.validity.maxlen)
         out.counts = dict.fromkeys(self.counts, 0)
@@ -757,6 +759,7 @@ class Brain:
         """A saved one-step policy of the current records: each legal column's imagined board
         valued by the line records; no search, no learning, unchanged by later learning."""
         imagination = Imagination(self.layout, copy.deepcopy(self.drop), copy.deepcopy(self.lines))
+        imagination.threat_weight, imagination.parity_weight = self.imagination.threat_weight, self.imagination.parity_weight
         rng = np.random.default_rng(brain_seed(self.seed, 5, self.snapshots))
         self.snapshots += 1
 
