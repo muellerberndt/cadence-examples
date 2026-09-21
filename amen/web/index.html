@@ -107,8 +107,8 @@ details.card h3{color:var(--gold);font:800 10.5px var(--mono);letter-spacing:.16
 details.card p,details.card li{max-width:96ch}details.card ul{margin:4px 0;padding-left:18px}
 footer{max-width:1560px;margin:0 auto;padding:0 24px 26px;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-@media (max-width:1020px){.deck{grid-template-columns:1fr}.right{order:-1;top:0;z-index:5;background:var(--bg)}.right section{margin-top:14px}.stamp{display:none}}
-@media (max-width:760px){.wip{flex-direction:column;gap:6px}.bar{flex-wrap:wrap;gap:8px 14px}#phase{display:none}header,main,footer{padding-left:12px;padding-right:12px}#readout b{font-size:13px}}
+@media (max-width:1020px){.deck{grid-template-columns:1fr;gap:0}.left{display:contents}.left>.studiowrap{order:-2}.right{order:-1;top:0;z-index:5;background:var(--bg)}.right section{margin-top:14px}.stamp{display:none}}
+@media (max-width:760px){.wip{flex-direction:column;gap:6px}.right .legend{display:none}.bar{flex-wrap:wrap;gap:8px 14px}#phase{display:none}header,main,footer{padding-left:12px;padding-right:12px}#readout b{font-size:13px}}
 </style>
 </head>
 <body>
@@ -527,28 +527,28 @@ function drawBrain(step) {
   g.fillStyle = '#8a8776'; g.fillText('clock', geo.clock[0], geo.clock[1] + 4 * F);
   // bass keyboards
   const keys = ([x0, y0, w], vec, playedNote, label) => { for (let n = 0; n < L.notes; n++) { const v = vec ? clamp(vec[L.note_start + n], 0, 1) : 0; const black = [1, 3, 6, 8, 10].includes(n % 12); g.fillStyle = `rgba(43,182,115,${0.12 + 0.88 * v})`; const kw = w / L.notes; g.fillRect(x0 + n * kw + F, y0 - (black ? 10 : 14) * F, kw - 2 * F, (black ? 10 : 14) * F); if (n === playedNote) { g.strokeStyle = '#fff'; g.lineWidth = 1.5 * F; g.strokeRect(x0 + n * kw + F, y0 - 16 * F, kw - 2 * F, 18 * F); } }
-    g.fillStyle = '#8a8776'; g.fillText(label, x0 + w / 2, y0 + 14 * F); };
+    if (W / F >= 620) { g.fillStyle = '#8a8776'; g.fillText(label, x0 + w / 2, y0 + 14 * F); } };
   const heardNote = heard && heard[L.bass_on] > .5 ? argmax(heard, L.note_start, L.note_start + L.notes) - L.note_start : -1;
   const playedNote = s.played && s.played[L.bass_on] > .5 ? argmax(s.played, L.note_start, L.note_start + L.notes) - L.note_start : -1;
   keys(geo.keysL, heard, heardNote, 'heard bass');
   keys(geo.keysR, s.out, playedNote, 'bass scores');
   // change lamp and gain
   if (L.change !== null && L.change !== undefined) { const p = clamp(s.out[L.change], 0, 1); const [x, y] = outputPos(L.change); const age = clamp((now - flashes.change) / 700, 0, 1); g.fillStyle = `rgba(229,56,59,${0.15 + 0.85 * Math.max(p, 1 - age)})`; g.beginPath(); g.arc(x, y, (5 + 9 * (1 - age)) * F, 0, 2 * Math.PI); g.fill(); g.fillStyle = '#8a8776'; g.fillText(`change ${p.toFixed(2)}`, x, y + 20 * F); }
-  const [gx, gy] = outputPos(L.drum_gain); const gain = clamp(s.out[L.drum_gain], 0, 1); g.fillStyle = '#2a2822'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F, 8 * F); g.fillStyle = '#ece7d9'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F * gain, 8 * F); g.fillStyle = '#8a8776'; g.fillText('gain', gx, gy + 20 * F);
+  const [gx, gy] = outputPos(L.drum_gain); const gain = clamp(s.out[L.drum_gain], 0, 1); g.fillStyle = '#2a2822'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F, 8 * F); g.fillStyle = '#ece7d9'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F * gain, 8 * F); if (W / F >= 620) { g.fillStyle = '#8a8776'; g.fillText('gain', gx, gy + 20 * F); }
   // context channels: phyllotaxis, fast inside, slow outside
   const [bx, by, rIn, rOut] = geo.brain;
   g.strokeStyle = '#1a1915'; g.lineWidth = 1 * F; g.beginPath(); g.arc(bx, by, rOut + 12 * F, 0, 2 * Math.PI); g.stroke();
   for (let i = 0; i < weights.hidden; i++) { const [x, y] = nPos[i]; const h = s.h[i], open = 1 - s.gate[i]; const a = clamp(Math.abs(h) * 1.4, 0.08, 1);
     if (open > 0.2) { g.fillStyle = `rgba(242,182,50,${0.35 * open})`; g.beginPath(); g.arc(x, y, (5 + 9 * open) * F, 0, 2 * Math.PI); g.fill(); }
     g.fillStyle = h >= 0 ? `rgba(242,182,50,${a})` : `rgba(76,201,240,${a})`; g.beginPath(); g.arc(x, y, (2.5 + 4.5 * Math.min(1, Math.abs(h))) * F, 0, 2 * Math.PI); g.fill(); }
-  g.fillStyle = '#8a8776'; g.fillText(`${weights.hidden} context channels · 2 to ${weights.timescales[weights.timescales.length - 1]} half-beats`, bx, by + rOut + 30 * F);
+  g.fillStyle = '#8a8776'; g.fillText(W / F < 620 ? `${weights.hidden} context channels` : `${weights.hidden} context channels · 2 to ${weights.timescales[weights.timescales.length - 1]} half-beats`, bx, by + rOut + 30 * F);
   // particles
   for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; const age = (now - p.born) / p.life; if (age > 1) { particles.splice(i, 1); continue; } if (age < 0) continue; const e = age < .5 ? 2 * age * age : 1 - Math.pow(-2 * age + 2, 2) / 2;
     let x = p.from[0] + (p.to[0] - p.from[0]) * e, y = p.from[1] + (p.to[1] - p.from[1]) * e; if (p.arc) y += Math.sin(e * Math.PI) * H * 0.42;
     g.fillStyle = p.color + (1 - age * 0.7) + ')'; g.beginPath(); g.arc(x, y, p.size * F, 0, 2 * Math.PI); g.fill(); }
   // the loop through the world, as a standing arc
   g.strokeStyle = 'rgba(242,182,50,0.18)'; g.lineWidth = 1.5 * F; g.beginPath(); g.moveTo(geo.out[0], geo.out[1] + geo.out[2]); g.bezierCurveTo(geo.out[0], H * 0.98, geo.heard[0], H * 0.98, geo.heard[0], geo.heard[1] + geo.heard[2]); g.stroke();
-  g.fillStyle = '#8a8776'; g.textAlign = 'left'; g.fillText(computing ? 'COMPUTING · the brain plays ahead of the sound, half-beat ' + (step + 1) + ' of ' + trace.total_steps : 'PLAYING · closed loop, parameters and records fixed', 16 * F, 20 * F);
+  g.fillStyle = '#8a8776'; g.textAlign = 'left'; g.fillText(computing ? (W / F < 620 ? 'COMPUTING · half-beat ' : 'COMPUTING · the brain plays ahead of the sound, half-beat ') + (step + 1) + ' of ' + trace.total_steps : W / F < 620 ? 'PLAYING' : 'PLAYING · closed loop, parameters and records fixed', 16 * F, 20 * F);
   g.textAlign = 'right'; g.fillText(`${trace.clip} · ${trace.mode}`, W - 16 * F, 20 * F);
 }
 
