@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amen Brain · a jungle composer in one patch</title>
+<meta name="description" content="One record patch learned jungle as events per half-beat. It hears four bars of a track it never trained on, then plays sixteen bars of drums, bass and texture, while the page replays its brain in time with the sound.">
+<style>
+:root{--bg:#07070a;--panel:#0f0f14;--ink:#ece7d9;--dim:#8a8776;--gold:#f2b632;--red:#e5383b;--green:#2bb673;--cyan:#4cc9f0;--line:#1f1f28}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif}
+header{padding:28px 24px 12px;max-width:1360px;margin:0 auto}
+h1{margin:0;font-size:clamp(40px,7vw,86px);line-height:.9;letter-spacing:-.03em;font-weight:900;text-transform:uppercase}
+h1 span{color:var(--gold)}
+.stripe{display:flex;height:4px;width:180px;margin:14px 0 10px}
+.stripe i{flex:1}.stripe i:nth-child(1){background:var(--red)}.stripe i:nth-child(2){background:var(--gold)}.stripe i:nth-child(3){background:var(--green)}
+.sub{margin:0 0 16px;color:var(--dim);max-width:720px}
+.crumbs{display:flex;gap:8px;font:600 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:0 0 14px}
+.crumbs a{color:var(--dim);text-decoration:none}.crumbs a:hover{color:var(--ink)}
+nav{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+nav h2{flex-basis:100%;margin:12px 0 2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+nav h2 small{color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0;margin-left:8px;font-size:12px}
+nav button small{color:var(--dim);margin-left:6px}
+details.card{padding:14px 18px;color:var(--dim);font-size:13.5px}
+details.card summary{cursor:pointer;color:var(--ink);font-weight:700;letter-spacing:.04em}
+details.card summary small{color:var(--dim);font-weight:400;margin-left:10px}
+details.card h3{color:var(--ink);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:14px 0 4px}
+details.card p,details.card li{max-width:92ch}details.card ul{margin:4px 0;padding-left:18px}
+nav button{background:transparent;color:var(--ink);border:1px solid var(--line);padding:6px 12px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;letter-spacing:.04em}
+nav button.on{border-color:var(--gold);color:var(--gold)}
+nav button:hover{border-color:var(--dim)}
+main{max-width:1360px;margin:0 auto;padding:0 24px 48px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden}
+#wave canvas{display:block;width:100%;height:120px;cursor:crosshair}
+.bar{display:flex;align-items:center;gap:16px;padding:10px 14px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:13px;color:var(--dim)}
+.bar button{background:var(--gold);color:#111;border:0;border-radius:999px;padding:8px 18px;font:inherit;font-weight:700;cursor:pointer}
+.bar b{color:var(--ink)}
+#brain{display:block;width:100%;height:auto}
+#score{display:block;width:100%;height:260px;cursor:crosshair}
+#err{color:var(--red);font-size:12px;padding:0 18px 10px;white-space:pre-wrap}
+#readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;padding:6px 8px}
+#readout div{padding:8px 10px;border-right:1px solid var(--line)}
+#readout div:last-child{border-right:0}
+#readout small{display:block;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+#readout b{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+#readout b.gold{color:var(--gold)}#readout b.red{color:var(--red)}#readout b.green{color:var(--green)}
+#notes{padding:14px 18px;color:var(--dim);font-size:13px}
+#notes p{margin:0 0 6px}
+.legend{display:flex;flex-wrap:wrap;gap:14px 22px;padding:10px 18px 14px;font-size:12px;color:var(--dim);border-top:1px solid var(--line)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+@media (max-width:640px){header,main{padding-left:16px;padding-right:16px}#readout b{font-size:15px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="crumbs"><a href="https://floatingpragma.io/">Pragma Research</a><span>/</span><a href="https://floatingpragma.io/cadence/">Cadence</a><span>/</span><span>Amen</span></div>
+  <h1>Amen <span>Brain</span></h1>
+  <div class="stripe"><i></i><i></i><i></i></div>
+  <p class="sub">A jungle composer in one patch: 128 context channels, one readout, 8,192 record cells, and a loop through the world. It learned sixteen tracks as events per half-beat, a drum slice, a sub-bass note, a change flag and a texture. Here it hears four bars of a track it never trained on, or nothing at all, and plays sixteen bars of its own, hearing each half-beat it plays. The page replays its brain in time with the sound.</p>
+  <nav id="clips"></nav>
+</header>
+<main>
+  <section id="wave"><canvas id="waveform"></canvas>
+    <div class="bar"><button id="play">Play</button><span>bar <b id="bar">0</b></span><span>half-beat <b id="hb">0</b></span><span id="phase"></span><span id="time">0.0 s</span></div>
+  </section>
+  <section id="scorewrap"><canvas id="score"></canvas></section>
+  <section><canvas id="brain"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--gold)"></i>context channel, positive</span>
+      <span><i style="background:var(--cyan)"></i>context channel, negative</span>
+      <span><i style="background:#fff"></i>record cell firing</span>
+      <span><i style="background:var(--red)"></i>change point</span>
+      <span><i style="background:var(--green)"></i>bass</span>
+      <span>fast channels sit at the centre, slow ones at the rim; open gates glow; particles are synaptic drive; the arc at the bottom is the loop through the world</span>
+    </div>
+  </section>
+  <section id="readout"></section>
+  <section id="notes"><p id="clipnote">Choose a clip.</p><div id="err"></div></section>
+  <section><details class="card">
+    <summary>Model card<small>what this brain is, what plays here, what was measured</small></summary>
+    <h3>The brain</h3>
+    <p>One Cadence record patch. 80 input ports (a wake, an eight-position clock, and the 71 ports of the event it played last), 128 context channels whose time constants run from 2 to 128 half-beats, one linear readout to 71 output ports, 29,895 slow parameters, and a record store of 8,192 cells of which 48 fire per reading. The records hold what the slow readout got wrong at each reading, keyed by the event heard and the context; the first four bars of a new track are written into them while the slow parameters stay fixed. Trained in under seven CPU minutes on a laptop, no GPU.</p>
+    <h3>What plays here</h3>
+    <p>Every clip is the literal render of what the brain played: one slice of a drum break per half-beat at the predicted gain, sub-bass notes from C1 to B2, and a texture of band-passed noise following eight predicted bands. In the clips marked "the beat held" it plays its highest-scoring event; in the clips "with departures" it leaves the loop only where it predicts a change point, by a roll (the slice just heard repeats) or a retrigger (the break restarts at a bar start). In the shaded first four bars you hear the transcription of the unheard track through the same instrument, not the brain. Every generated bar was checked against the training corpus: none occurs there verbatim.</p>
+    <h3>Measured on three tracks it never trained on</h3>
+    <ul>
+      <li>Next drum slice: 0.84 to 0.86 correct; the most frequent slice scores 0.03 to 0.05.</li>
+      <li>Next bass note: 0.54 to 0.64; repeating the previous note scores 0.14 to 0.48.</li>
+      <li>Texture bands: mean error 0.085 to 0.090; repeating the previous half-beat 0.099 to 0.117.</li>
+      <li>Change points are hard: recall 0.07 to 0.15, with a predicted probability about twice as high at true change points as elsewhere.</li>
+    </ul>
+    <h3>Supplied, learned, limits</h3>
+    <p>Supplied: the transcription of the recordings into events (which slice, which note, where a bar departs from the bar before, the sustain above 250 Hz), the instrument that renders events, the clock, and the two moves a departure may make. Learned: everything the brain plays, from random parameters and empty records. Limits: one mix of sixteen training tracks, one seed, no transformer or recurrent baseline on the same stream yet, and a texture smoother than the real one because a squared-error readout predicts the mean.</p>
+  </details></section>
+</main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const audio = new Audio(); audio.preload = 'auto';
+let trace = null, weights = null, decoded = null, waveImage = null, scoreImage = null, layout = null;
+const report = m => { const e = document.getElementById('err'); e.textContent = (e.textContent + '\n' + m).trim(); };
+addEventListener('error', e => report(e.message + ' @' + e.lineno));
+addEventListener('unhandledrejection', e => report('rejected: ' + (e.reason && e.reason.message || e.reason)));
+let lastStep = -1, particles = [], flashes = {cells: new Map(), change: 0, played: 0, heard: 0, write: 0}, hbHold = 0;
+const clipsIndex = {}; const weightCache = {};
+
+const argmax = (a, s = 0, e = a.length) => { let m = s; for (let i = s; i < e; i++) if (a[i] > a[m]) m = i; return m; };
+const norm = a => Math.sqrt(a.reduce((x, y) => x + y * y, 0));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+async function boot() {
+  const index = await (await fetch('traces/index.json')).json();
+  const ids = Object.keys(index);
+  const nav = $('clips'); let group = null;
+  for (const id of ids) {
+    clipsIndex[id] = index[id];
+    if (index[id].group && index[id].group !== group) { group = index[id].group; const h = document.createElement('h2'); h.textContent = group; if (index[id].blurb) { const s = document.createElement('small'); s.textContent = index[id].blurb; h.appendChild(s); } nav.appendChild(h); }
+    const b = document.createElement('button'); b.dataset.id = id; b.textContent = index[id].label || id; const s = document.createElement('small'); s.textContent = id; b.appendChild(s); b.onclick = () => load(id); nav.appendChild(b);
+  }
+  const wanted = location.hash.slice(1);
+  if (ids.length) load(ids.includes(wanted) ? wanted : ids[0]);
+  resize(); addEventListener('resize', resize);
+  requestAnimationFrame(frame);
+}
+
+async function load(id) {
+  for (const b of $('clips').querySelectorAll('button')) b.classList.toggle('on', b.dataset.id === id);
+  location.hash = id;
+  audio.pause(); lastStep = -1; particles = []; flashes.cells.clear();
+  trace = null; decoded = null; waveImage = null; scoreImage = null; geo = null;
+  const nextTrace = await (await fetch(clipsIndex[id].file)).json();
+  const nextWeights = weightCache[nextTrace.weights] || (weightCache[nextTrace.weights] = await (await fetch(nextTrace.weights)).json());
+  weights = nextWeights; layout = weights.layout; trace = nextTrace;
+  audio.src = trace.audio;
+  const mine = trace;
+  (async () => {
+    try {
+      const buf = await (await fetch(mine.audio)).arrayBuffer();
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const result = await new Promise((ok, no) => { const r = ctx.decodeAudioData(buf, ok, no); if (r && r.then) r.then(ok, no); });
+      ctx.close();
+      if (trace === mine) { decoded = result; waveImage = null; }
+    } catch (e) { report('waveform decode failed: ' + e); }
+  })();
+  waveImage = null;
+  $('clipnote').textContent = trace.clip + ' · ' + (clipsIndex[id].label || trace.title) + '. ' + (trace.primer_half_beats ? 'The first ' + (trace.primer_half_beats / 8) + ' bars are the primer: the brain listens and its records write (' + trace.primer_writes + ' writes). Then it plays alone, hearing each half-beat it plays.' : 'From silence: the brain plays from a wake and the clock, hearing each half-beat it plays.') + ' Run receipt ' + trace.receipt_sha256.slice(0, 8) + '.';
+  drawReadout(null);
+}
+
+$('play').onclick = () => { if (audio.paused) audio.play(); else audio.pause(); };
+audio.addEventListener('play', () => $('play').textContent = 'Pause');
+audio.addEventListener('pause', () => $('play').textContent = 'Play');
+const seek = e => { if (!trace) return; const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * clipSeconds(); };
+$('waveform').addEventListener('click', seek); $('score').addEventListener('click', seek);
+function clipSeconds() { return decoded ? decoded.duration : trace.steps.filter(s => s.t >= 0).length * trace.hop_seconds; }
+
+function resize() {
+  const dpr = devicePixelRatio || 1;
+  const w = $('waveform'); w.width = w.clientWidth * dpr; w.height = 120 * dpr; waveImage = null;
+  const s = $('score'); s.width = s.clientWidth * dpr; s.height = 260 * dpr; scoreImage = null; geo = null;
+  const b = $('brain'); const width = b.clientWidth; const height = Math.max(420, Math.min(720, width * 0.56));
+  b.style.height = height + 'px'; b.width = width * dpr; b.height = height * dpr;
+}
+
+function drawWave() {
+  const c = $('waveform'), g = c.getContext('2d'), W = c.width, H = c.height;
+  if (!decoded) { g.fillStyle = '#0f0f14'; g.fillRect(0, 0, W, H); if (trace) { const x = audio.currentTime / clipSeconds() * W; g.fillStyle = '#f2b632'; g.fillRect(x - 1, 0, 2, H); } return; }
+  if (!waveImage) {
+    waveImage = document.createElement('canvas'); waveImage.width = W; waveImage.height = H;
+    const gg = waveImage.getContext('2d'); gg.fillStyle = '#0f0f14'; gg.fillRect(0, 0, W, H);
+    const data = decoded.getChannelData(0), per = data.length / W;
+    if (trace.primer_half_beats) { gg.fillStyle = 'rgba(242,182,50,0.08)'; gg.fillRect(0, 0, W * trace.primer_half_beats * trace.hop_seconds / decoded.duration, H); }
+    gg.strokeStyle = '#26262f'; gg.lineWidth = 1;
+    const bars = Math.round(decoded.duration / (trace.hop_seconds * 8));
+    for (let k = 0; k <= bars; k++) { const x = Math.round(k * 8 * trace.hop_seconds / decoded.duration * W) + .5; gg.beginPath(); gg.moveTo(x, 0); gg.lineTo(x, H); gg.stroke(); }
+    gg.fillStyle = '#d9d2bf';
+    for (let x = 0; x < W; x++) { let lo = 1, hi = -1; const s = Math.floor(x * per), e = Math.floor((x + 1) * per); for (let i = s; i < e; i += 2) { const v = data[i]; if (v < lo) lo = v; if (v > hi) hi = v; } gg.fillRect(x, (1 - hi) * H / 2, 1, Math.max(1, (hi - lo) * H / 2)); }
+  }
+  g.drawImage(waveImage, 0, 0);
+  const x = audio.currentTime / decoded.duration * W;
+  g.fillStyle = 'rgba(242,182,50,0.25)'; g.fillRect(0, 0, x, H);
+  g.fillStyle = '#f2b632'; g.fillRect(x - 1, 0, 2, H);
+}
+
+function ringPos(cx, cy, r, i, n) { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+function neuronPos(i, cx, cy, rIn, rOut, n) { const a = i * 2.39996; const r = rIn + (rOut - rIn) * Math.sqrt(i / (n - 1)); return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+
+function currentStep() {
+  if (!trace) return -1;
+  const k = Math.floor(audio.currentTime / trace.hop_seconds + 1e-6);
+  const first = trace.steps[0].t < 0 ? 1 : 0;
+  return clamp(k + first, 0, trace.steps.length - 1);
+}
+
+function onStep(step, prev) {
+  const s = trace.steps[step]; const L = layout; const now = performance.now();
+  flashes.played = now; flashes.heard = now;
+  if (s.played && s.played[L.change] > .5) flashes.change = now;
+  if (s.phase === 'primer') flashes.write = now;
+  for (let i = 0; i < s.cells.length; i++) flashes.cells.set(s.cells[i], [now, s.cell_push[i]]);
+  // synaptic drive: input -> channel, the strongest products B_ij * u_j
+  const u = inputVector(s); const drives = [];
+  for (let i = 0; i < weights.hidden; i++) { const row = weights.B[i]; for (let j = 0; j < u.length; j++) if (u[j] !== 0) { const d = row[j] * u[j] * (1 - s.gate[i]); if (Math.abs(d) > 0.05) drives.push([Math.abs(d), j, i, d > 0]); } }
+  drives.sort((a, b) => b[0] - a[0]);
+  for (const [m, j, i, pos] of drives.slice(0, 60)) particles.push({from: inputPos(j), to: nPos[i], born: now, life: 260 + Math.random() * 120, size: 1.2 + 3 * Math.min(1, m), color: pos ? 'rgba(242,182,50,' : 'rgba(76,201,240,'});
+  // channel -> output, the strongest C_kj * h_j
+  const outs = [];
+  for (let k = 0; k < weights.outputs; k++) { const row = weights.C[k]; for (let j = 0; j < weights.hidden; j++) { const d = row[j] * s.h[j]; if (Math.abs(d) > 0.06) outs.push([Math.abs(d), j, k]); } }
+  outs.sort((a, b) => b[0] - a[0]);
+  for (const [m, j, k] of outs.slice(0, 60)) particles.push({from: nPos[j], to: outputPos(k), born: now + 120, life: 260 + Math.random() * 120, size: 1.2 + 3 * Math.min(1, m), color: 'rgba(236,231,217,'});
+  // the loop through the world: what was played travels back to the heard ring
+  if (s.played && s.played[L.drum_on] > .5) { const c = argmax(s.played, 0, L.crops); particles.push({from: outputPos(c), to: inputPos(L.heard_start + c), born: now + 200, life: 420, size: 4, color: 'rgba(242,182,50,', arc: true}); }
+  // repair cascade: record cells push their stored residual into the output ports
+  const pushMax = Math.max(1e-6, ...s.cell_push);
+  s.cells.forEach((cell, i) => { if (s.cell_push[i] > 0.15 * pushMax) { const target = argmax(s.read.map(Math.abs)); particles.push({from: cellPos(cell), to: outputPos(target), born: now + 60, life: 300, size: 1 + 3 * s.cell_push[i] / pushMax, color: 'rgba(255,255,255,'}); } });
+  if (s.phase === 'primer') { const rMax = Math.max(1e-6, ...s.residual.map(Math.abs)); s.cells.forEach((cell, i) => particles.push({from: outputPos(argmax(s.residual.map(Math.abs))), to: cellPos(cell), born: now + 80, life: 320, size: 1 + 2 * s.cell_weights[i], color: 'rgba(242,182,50,'})); }
+  drawReadout(s);
+}
+
+function inputVector(s) {
+  const u = new Array(weights.inputs).fill(0);
+  if (s.phase === 'primer') { if (s.t === 0) u[0] = 1; u[1 + (s.t % 8)] = 1; const p = s.heard ? s.heard : (s.t > 0 ? trace.steps[s.t - 1].played : null); if (p) for (let k = 0; k < p.length; k++) u[layout.heard_start + k] = p[k]; }
+  else { if (s.phase === 'wake' || (trace.wake_played && s.t === 0 && !trace.primer_half_beats)) u[0] = 1; u[1 + s.clock] = 1; if (s.heard) for (let k = 0; k < s.heard.length; k++) u[layout.heard_start + k] = s.heard[k]; }
+  return u;
+}
+
+let geo = null, nPos = [];
+function computeGeometry(W, H) {
+  const L = layout;
+  geo = {W, H, heard: [W * 0.16, H * 0.40, Math.min(W * 0.11, H * 0.24)], brain: [W * 0.5, H * 0.40, Math.min(W * 0.05, H * 0.06), Math.min(W * 0.19, H * 0.33)],
+         out: [W * 0.84, H * 0.40, Math.min(W * 0.11, H * 0.24)], records: [W * 0.30, H * 0.80, W * 0.40, H * 0.11], keysL: [W * 0.06, H * 0.71, W * 0.20], keysR: [W * 0.74, H * 0.71, W * 0.20], clock: [W * 0.16, H * 0.40, Math.min(W * 0.11, H * 0.24) * 0.55]};
+  nPos = []; for (let i = 0; i < weights.hidden; i++) nPos.push(neuronPos(i, geo.brain[0], geo.brain[1], geo.brain[2], geo.brain[3], weights.hidden));
+  const cols = 128, rows = Math.ceil(weights.cells / cols); geo.cell = [geo.records[2] / cols, geo.records[3] / rows, cols];
+}
+function inputPos(j) {
+  const L = layout, [cx, cy, r] = geo.heard;
+  if (j === 0) return [cx, cy];
+  if (j < 9) return ringPos(geo.clock[0], geo.clock[1], geo.clock[2], j - 1, 8);
+  const k = j - L.heard_start;
+  if (k < L.crops) return ringPos(cx, cy, r, k, L.crops);
+  if (k === L.drum_on || k === L.drum_gain) return [cx - r * 0.5, geo.keysL[1] + 30];
+  if (k >= L.note_start && k < L.note_start + L.notes) return [geo.keysL[0] + (k - L.note_start + .5) / L.notes * geo.keysL[2], geo.keysL[1]];
+  if (k === L.change) return [cx + r * 0.6, geo.keysL[1] + 30];
+  return [cx + r * 0.2, geo.keysL[1] + 30];
+}
+function outputPos(k) {
+  const L = layout, [cx, cy, r] = geo.out;
+  if (k < L.crops) return ringPos(cx, cy, r, k, L.crops);
+  if (k === L.drum_on || k === L.drum_gain) return [cx - r * 0.5, geo.keysR[1] + 30];
+  if (k >= L.note_start && k < L.note_start + L.notes) return [geo.keysR[0] + (k - L.note_start + .5) / L.notes * geo.keysR[2], geo.keysR[1]];
+  if (k === L.change) return [cx + r * 0.6, geo.keysR[1] + 30];
+  return [cx + r * 0.2, geo.keysR[1] + 30];
+}
+function cellPos(cell) { const [x0, y0] = geo.records; const [cw, ch, cols] = geo.cell; return [x0 + (cell % cols + .5) * cw, y0 + (Math.floor(cell / cols) + .5) * ch]; }
+
+function drawBrain(step) {
+  const c = $('brain'), g = c.getContext('2d'), W = c.width, H = c.height, dpr = devicePixelRatio || 1;
+  g.fillStyle = '#0f0f14'; g.fillRect(0, 0, W, H);
+  if (!trace || !weights || step < 0) return;
+  if (!geo || geo.W !== W || geo.H !== H) computeGeometry(W, H);
+  const s = trace.steps[step], L = layout, now = performance.now(), F = dpr;
+  g.font = `${11 * F}px Helvetica, Arial, sans-serif`; g.textAlign = 'center';
+  // records field
+  const [rx, ry, rw, rh] = geo.records, [cw, ch, cols] = geo.cell;
+  g.fillStyle = '#131320'; g.fillRect(rx, ry, rw, rh);
+  for (const [cell, [born, push]] of flashes.cells) { const age = (now - born) / 900; if (age > 1) { flashes.cells.delete(cell); continue; } const [x, y] = cellPos(cell); const a = (1 - age); g.fillStyle = s.phase === 'primer' ? `rgba(242,182,50,${a})` : `rgba(255,255,255,${a})`; g.fillRect(x - cw / 2, y - ch / 2, Math.max(cw, 2 * F), Math.max(ch, 2 * F)); }
+  g.fillStyle = '#8a8776'; g.fillText(`records · ${weights.cells} cells · ${weights.active} fire per half-beat · read ‖m‖ ${norm(s.read).toFixed(2)}` + (s.phase === 'primer' ? ' · writing' : ''), rx + rw / 2, ry + rh + 16 * F);
+  // heard ring and output ring
+  const heard = s.heard ? s.heard : (s.phase === 'primer' ? (s.t > 0 ? trace.steps[s.t - 1].played : null) : null);
+  const heardCrop = heard && heard[L.drum_on] > .5 ? argmax(heard, 0, L.crops) : -1;
+  const playedCrop = s.played && s.played[L.drum_on] > .5 ? argmax(s.played, 0, L.crops) : -1;
+  const scores = s.out.slice(0, L.crops).map(v => clamp(v, 0, 1));
+  const drawRing = ([cx, cy, r], hot, lit, label, playedMark) => {
+    g.strokeStyle = '#26262f'; g.lineWidth = 1 * F; g.beginPath(); g.arc(cx, cy, r, 0, 2 * Math.PI); g.stroke();
+    for (let i = 0; i < L.crops; i++) { const [x, y] = ringPos(cx, cy, r, i, L.crops); const v = lit ? lit[i] : 0; const rad = (2.2 + 4 * v) * F;
+      g.fillStyle = i % 8 === 0 ? `rgba(242,182,50,${0.25 + 0.75 * v})` : `rgba(236,231,217,${0.18 + 0.82 * v})`; g.beginPath(); g.arc(x, y, rad, 0, 2 * Math.PI); g.fill();
+      if (i === hot) { const age = clamp((now - flashes.heard) / 400, 0, 1); g.strokeStyle = `rgba(242,182,50,${1 - 0.5 * age})`; g.lineWidth = 2 * F; g.beginPath(); g.arc(x, y, (7 + 6 * (1 - age)) * F, 0, 2 * Math.PI); g.stroke(); }
+      if (i === playedMark) { g.strokeStyle = '#fff'; g.lineWidth = 2 * F; g.beginPath(); g.arc(x, y, 8 * F, 0, 2 * Math.PI); g.stroke(); } }
+    g.fillStyle = '#8a8776'; g.fillText(label, cx, cy + r + 18 * F);
+  };
+  drawRing(geo.heard, heardCrop, null, 'heard: the 32 crops of the break in loop order', -1);
+  drawRing(geo.out, -1, scores, 'output: crop scores; white ring = played', playedCrop);
+  // clock
+  for (let i = 0; i < 8; i++) { const [x, y] = ringPos(geo.clock[0], geo.clock[1], geo.clock[2], i, 8); const on = (s.phase === 'primer' ? s.t % 8 : s.clock) === i; g.fillStyle = on ? '#e5383b' : '#2a2a34'; g.beginPath(); g.arc(x, y, (on ? 4 : 2.5) * F, 0, 2 * Math.PI); g.fill(); }
+  g.fillStyle = '#8a8776'; g.fillText('clock', geo.clock[0], geo.clock[1] + 4 * F);
+  // bass keyboards
+  const keys = ([x0, y0, w], vec, playedNote, label) => { for (let n = 0; n < L.notes; n++) { const v = vec ? clamp(vec[L.note_start + n], 0, 1) : 0; const black = [1, 3, 6, 8, 10].includes(n % 12); g.fillStyle = `rgba(43,182,115,${0.12 + 0.88 * v})`; const kw = w / L.notes; g.fillRect(x0 + n * kw + F, y0 - (black ? 10 : 14) * F, kw - 2 * F, (black ? 10 : 14) * F); if (n === playedNote) { g.strokeStyle = '#fff'; g.lineWidth = 1.5 * F; g.strokeRect(x0 + n * kw + F, y0 - 16 * F, kw - 2 * F, 18 * F); } }
+    g.fillStyle = '#8a8776'; g.fillText(label, x0 + w / 2, y0 + 14 * F); };
+  const heardNote = heard && heard[L.bass_on] > .5 ? argmax(heard, L.note_start, L.note_start + L.notes) - L.note_start : -1;
+  const playedNote = s.played && s.played[L.bass_on] > .5 ? argmax(s.played, L.note_start, L.note_start + L.notes) - L.note_start : -1;
+  keys(geo.keysL, heard, heardNote, 'heard bass, C1 to B2');
+  keys(geo.keysR, s.out, playedNote, 'bass scores');
+  // change lamp and gain
+  if (L.change !== null && L.change !== undefined) { const p = clamp(s.out[L.change], 0, 1); const [x, y] = outputPos(L.change); const age = clamp((now - flashes.change) / 700, 0, 1); g.fillStyle = `rgba(229,56,59,${0.15 + 0.85 * Math.max(p, 1 - age)})`; g.beginPath(); g.arc(x, y, (5 + 9 * (1 - age)) * F, 0, 2 * Math.PI); g.fill(); g.fillStyle = '#8a8776'; g.fillText(`change ${p.toFixed(2)}`, x, y + 20 * F); }
+  const [gx, gy] = outputPos(L.drum_gain); const gain = clamp(s.out[L.drum_gain], 0, 1); g.fillStyle = '#2a2a34'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F, 8 * F); g.fillStyle = '#ece7d9'; g.fillRect(gx - 20 * F, gy - 4 * F, 40 * F * gain, 8 * F); g.fillStyle = '#8a8776'; g.fillText('gain', gx, gy + 20 * F);
+  // context channels: phyllotaxis, fast inside, slow outside
+  const [bx, by, rIn, rOut] = geo.brain;
+  g.strokeStyle = '#1d1d26'; g.lineWidth = 1 * F; g.beginPath(); g.arc(bx, by, rOut + 12 * F, 0, 2 * Math.PI); g.stroke();
+  for (let i = 0; i < weights.hidden; i++) { const [x, y] = nPos[i]; const h = s.h[i], open = 1 - s.gate[i]; const a = clamp(Math.abs(h) * 1.4, 0.08, 1);
+    if (open > 0.2) { g.fillStyle = `rgba(242,182,50,${0.35 * open})`; g.beginPath(); g.arc(x, y, (5 + 9 * open) * F, 0, 2 * Math.PI); g.fill(); }
+    g.fillStyle = h >= 0 ? `rgba(242,182,50,${a})` : `rgba(76,201,240,${a})`; g.beginPath(); g.arc(x, y, (2.5 + 4.5 * Math.min(1, Math.abs(h))) * F, 0, 2 * Math.PI); g.fill(); }
+  g.fillStyle = '#8a8776'; g.fillText(`context · ${weights.hidden} channels · timescales 2 to ${weights.timescales[weights.timescales.length - 1]} half-beats · mean gate ${(s.gate.reduce((a, b) => a + b, 0) / s.gate.length).toFixed(2)}`, bx, by + rOut + 30 * F);
+  // particles
+  for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; const age = (now - p.born) / p.life; if (age > 1) { particles.splice(i, 1); continue; } if (age < 0) continue; const e = age < .5 ? 2 * age * age : 1 - Math.pow(-2 * age + 2, 2) / 2;
+    let x = p.from[0] + (p.to[0] - p.from[0]) * e, y = p.from[1] + (p.to[1] - p.from[1]) * e; if (p.arc) y += Math.sin(e * Math.PI) * H * 0.42;
+    g.fillStyle = p.color + (1 - age * 0.7) + ')'; g.beginPath(); g.arc(x, y, p.size * F, 0, 2 * Math.PI); g.fill(); }
+  // the loop through the world, as a standing arc
+  g.strokeStyle = 'rgba(242,182,50,0.18)'; g.lineWidth = 1.5 * F; g.beginPath(); g.moveTo(geo.out[0], geo.out[1] + geo.out[2]); g.bezierCurveTo(geo.out[0], H * 0.98, geo.heard[0], H * 0.98, geo.heard[0], geo.heard[1] + geo.heard[2]); g.stroke();
+  g.fillStyle = '#8a8776'; g.textAlign = 'left'; g.fillText(s.phase === 'primer' ? 'LISTENING · the primer plays, records write' : 'PLAYING · closed loop, parameters and records fixed', 16 * F, 20 * F);
+  g.textAlign = 'right'; g.fillText(`${trace.clip} · ${trace.mode}`, W - 16 * F, 20 * F);
+}
+
+function drawReadout(s) {
+  const R = $('readout'); if (!s) { R.innerHTML = ''; return; }
+  const L = layout; const heard = s.heard ? s.heard : (s.phase === 'primer' ? (s.t > 0 ? trace.steps[s.t - 1].played : null) : null);
+  const crop = v => v && v[L.drum_on] > .5 ? argmax(v, 0, L.crops) : '·';
+  const note = v => v && v[L.bass_on] > .5 ? ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'][(argmax(v, L.note_start, L.note_start + L.notes) - L.note_start) % 12] + (1 + Math.floor((argmax(v, L.note_start, L.note_start + L.notes) - L.note_start) / 12)) : '·';
+  const top = s.out.slice(0, L.crops).map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 3).map(([v, i]) => `${i}:${v.toFixed(2)}`).join(' ');
+  const cells = [['step', s.t, ''], ['heard crop', crop(heard), ''], ['played crop', crop(s.played), 'gold'], ['top scores', top, ''], ['bass', note(s.played), 'green'],
+    ['change', L.change != null ? `${s.played && s.played[L.change] > .5 ? 'YES' : 'no'} · p ${clamp(s.out[L.change], 0, 1).toFixed(2)}` : 'no port', s.played && L.change != null && s.played[L.change] > .5 ? 'red' : ''],
+    ['record read ‖m‖', norm(s.read).toFixed(3), ''], ['slow readout ‖y‖', norm(s.out.map((v, i) => v - s.read[i])).toFixed(3), ''], ['mean gate', (s.gate.reduce((a, b) => a + b, 0) / s.gate.length).toFixed(3), ''],
+    ['context ‖h‖', norm(s.h).toFixed(3), ''], [s.phase === 'primer' ? 'error' : 'phase', s.phase === 'primer' ? s.error.toFixed(4) : 'playing', '']];
+  if (L.texture_start != null && L.texture_ports && s.played) cells.push(['texture level · brightness', clamp(s.played[L.texture_start], 0, 1).toFixed(2) + ' · ' + clamp(s.played[L.texture_start + 1], 0, 1).toFixed(2), '']);
+  R.innerHTML = cells.map(([k, v, cls]) => `<div><small>${k}</small><b class="${cls}">${v}</b></div>`).join('');
+}
+
+function ensureGeometry() { const c = $('brain'); if (!geo || geo.W !== c.width || geo.H !== c.height) computeGeometry(c.width, c.height); }
+function frame() {
+  let step = -1;
+  try {
+    drawWave();
+    step = currentStep();
+    if (trace && weights && step >= 0) { ensureGeometry(); if (step !== lastStep) { onStep(step, lastStep); lastStep = step; } }
+    drawScore(step);
+    drawBrain(step);
+  } catch (e) { report('frame: ' + (e.stack || e)); }
+  if (trace && step >= 0) { const s = trace.steps[step]; $('hb').textContent = s.t; $('bar').textContent = (1 + Math.floor(s.t / 8)) + '.' + (1 + Math.floor((s.t % 8) / 2)); $('phase').textContent = s.phase === 'primer' ? 'primer' : 'own playing'; $('time').textContent = audio.currentTime.toFixed(1) + ' s'; }
+  requestAnimationFrame(frame);
+}
+
+function drawScore(step) {
+  const c = $('score'), g = c.getContext('2d'), W = c.width, H = c.height, F = devicePixelRatio || 1;
+  if (!trace || !layout) { g.fillStyle = '#0f0f14'; g.fillRect(0, 0, W, H); return; }
+  const L = layout, steps = trace.steps.filter(s => s.t >= 0), n = steps.length, cw = W / n;
+  const hasTexture = L.texture_start != null && L.texture_ports;
+  const left = 40 * F, top = 14 * F, drumH = H * (hasTexture ? 0.40 : 0.55), gap = 12 * F, bassTop = top + drumH + gap, bassH = (hasTexture ? H * 0.20 : H - bassTop - 16 * F);
+  const texTop = bassTop + bassH + gap, texH = H - texTop - 16 * F;
+  if (!scoreImage) {
+    scoreImage = document.createElement('canvas'); scoreImage.width = W; scoreImage.height = H;
+    const s = scoreImage.getContext('2d'); s.fillStyle = '#0f0f14'; s.fillRect(0, 0, W, H);
+    const usable = W - left; const col = usable / n;
+    if (trace.primer_half_beats) { s.fillStyle = 'rgba(242,182,50,0.08)'; s.fillRect(left, 0, col * trace.primer_half_beats, H); }
+    s.strokeStyle = '#26262f'; s.lineWidth = 1;
+    for (let k = 0; k <= n; k += 8) { const x = Math.round(left + k * col) + .5; s.beginPath(); s.moveTo(x, top); s.lineTo(x, H - 14 * F); s.stroke(); }
+    const rowD = drumH / L.crops, rowB = bassH / L.notes;
+    steps.forEach((st, k) => { const p = st.played; if (!p) return; const x = left + k * col;
+      if (p[L.drum_on] > .5) { const crop = argmax(p, 0, L.crops); const gain = clamp(p[L.drum_gain], 0, 1); s.fillStyle = crop % 8 === 0 ? `rgba(242,182,50,${0.35 + 0.65 * gain})` : `rgba(236,231,217,${0.3 + 0.7 * gain})`; s.fillRect(x + .5, top + (L.crops - 1 - crop) * rowD, Math.max(1, col - 1), Math.max(1, rowD - 0.5)); }
+      if (L.change != null && p[L.change] > .5) { s.fillStyle = '#e5383b'; s.fillRect(x, top - 6 * F, Math.max(1, col - 1), 4 * F); }
+      if (p[L.bass_on] > .5) { const note = argmax(p, L.note_start, L.note_start + L.notes) - L.note_start; const hold = p[L.bass_hold] > .5; s.fillStyle = hold ? 'rgba(43,182,115,0.55)' : 'rgba(43,182,115,1)'; s.fillRect(x + (hold ? 0 : .5), bassTop + (L.notes - 1 - note) * rowB, Math.max(1, col - (hold ? 0 : 1)), Math.max(1, rowB - 0.5)); }
+      if (hasTexture) { const bands = L.texture_ports - 2, rowT = texH / bands; for (let b = 0; b < bands; b++) { const v = clamp(p[L.texture_start + 2 + b], 0, 1); if (v > 0.02) { s.fillStyle = `rgba(190,140,255,${0.15 + 0.85 * v})`; s.fillRect(x, texTop + (bands - 1 - b) * rowT, Math.max(1, col), Math.max(1, rowT - 0.5)); } } } });
+    s.fillStyle = '#8a8776'; s.font = `${10 * F}px Helvetica, Arial, sans-serif`; s.textAlign = 'right';
+    for (const [label, y] of [['31', top + 4 * F], ['crop', top + drumH / 2], ['0', top + drumH]]) s.fillText(label, left - 4 * F, y);
+    ['B2', 'bass', 'C1'].forEach((label, i) => s.fillText(label, left - 4 * F, bassTop + [4 * F, bassH / 2, bassH][i]));
+    if (hasTexture) ['high', 'texture', 'low'].forEach((label, i) => s.fillText(label, left - 4 * F, texTop + [4 * F, texH / 2, texH][i]));
+    s.textAlign = 'left'; s.fillText('every half-beat: the crop played (rows in loop order, gold = bar-start crops), red ticks = change points, bass notes below (pale = held)' + (hasTexture ? ', texture bands at the bottom (violet)' : ''), left, H - 3 * F);
+  }
+  g.drawImage(scoreImage, 0, 0);
+  if (step >= 0) { const k = trace.steps[step].t; if (k >= 0) { const x = left + k * (W - left) / n; g.fillStyle = 'rgba(242,182,50,0.9)'; g.fillRect(x - 1, top - 8 * F, 2, H - top - 6 * F); } }
+}
+boot();
+})();
+</script>
+</body>
+</html>

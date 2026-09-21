@@ -1,0 +1,110 @@
+{
+ "D025-A": {
+  "file": "traces/D025-A.json",
+  "label": "After four bars of a track it never heard \u00b7 the beat held",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "argmax",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D025-B": {
+  "file": "traces/D025-B.json",
+  "label": "A second unheard track \u00b7 the beat held",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "argmax",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D025-C": {
+  "file": "traces/D025-C.json",
+  "label": "A third unheard track \u00b7 the beat held",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "argmax",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D025-D": {
+  "file": "traces/D025-D.json",
+  "label": "From silence \u00b7 the beat held",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "argmax",
+  "steps": 128,
+  "seconds": 21.94
+ },
+ "D026-A": {
+  "file": "traces/D026-A.json",
+  "label": "First track \u00b7 departures where it predicts a change",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "sample",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D026-B": {
+  "file": "traces/D026-B.json",
+  "label": "Second track \u00b7 with departures",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "sample",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D026-C": {
+  "file": "traces/D026-C.json",
+  "label": "Third track \u00b7 with departures",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "sample",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D026-D": {
+  "file": "traces/D026-D.json",
+  "label": "From silence \u00b7 with departures",
+  "group": "Drums, bass and texture",
+  "blurb": "The current composer: a drum slice, a sub-bass note and a texture per half-beat.",
+  "mode": "sample",
+  "steps": 128,
+  "seconds": 21.94
+ },
+ "D019-A": {
+  "file": "traces/D019-A.json",
+  "label": "Holds a basic pattern with slight variations",
+  "group": "Earlier rounds the listener liked",
+  "blurb": "Drums and bass only, before the texture and before the record fix.",
+  "mode": "argmax",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D019-B": {
+  "file": "traces/D019-B.json",
+  "label": "A second track, the beat held",
+  "group": "Earlier rounds the listener liked",
+  "blurb": "Drums and bass only, before the texture and before the record fix.",
+  "mode": "argmax",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D018-C": {
+  "file": "traces/D018-C.json",
+  "label": "An earlier composer drawing its departures freely",
+  "group": "Earlier rounds the listener liked",
+  "blurb": "Drums and bass only, before the texture and before the record fix.",
+  "mode": "sample",
+  "steps": 160,
+  "seconds": 27.43
+ },
+ "D018-D": {
+  "file": "traces/D018-D.json",
+  "label": "The same, from silence",
+  "group": "Earlier rounds the listener liked",
+  "blurb": "Drums and bass only, before the texture and before the record fix.",
+  "mode": "sample",
+  "steps": 129,
+  "seconds": 21.94
+ }
+}
