@@ -1,7 +1,7 @@
 // The body under stress: irritants crowded round the worm, pokes and treats at random,
 // several plates. After every physics step the centreline must be one body length, inside
 // the plate, and nowhere bent tighter than the body can bend.
-//   node worm/tests/body.mjs
+//   node worm/tests/body.mjs            add --cases to check only the tracks against the Python body
 import { readFileSync, existsSync } from "node:fs";
 import { Life, mulberry32 } from "../web/life.js";
 
@@ -42,9 +42,9 @@ function check(life, where) {
   return sharpest / DS;               // the tightest curvature along the body, rad/mm
 }
 
-const steps = Math.round(p.tick / p.physics_step);
+const steps = Math.round(p.tick / p.physics_step), casesOnly = process.argv.includes("--cases");     // --cases: only the Python body's tracks
 let worst = 0;
-for (const [seed, scene] of [[1, "ring"], [2, "ring"], [3, "ring"], [4, "corner"], [5, "carpet"], [6, "plain"]]) {
+for (const [seed, scene] of casesOnly ? [] : [[1, "ring"], [2, "ring"], [3, "ring"], [4, "corner"], [5, "carpet"], [6, "plain"]]) {
   const life = new Life(spec, p, seed), hand = mulberry32(1000 + seed);
   if (scene === "ring") for (let k = 0; k < 6; k++) life.place("noxious", life.body.x + 0.9 * Math.cos(k / 6 * 2 * Math.PI), life.body.y + 0.9 * Math.sin(k / 6 * 2 * Math.PI), "B");
   if (scene === "carpet") for (let x = 1; x < life.w; x += 0.7) for (let y = 1; y < life.h; y += 0.7) life.place("noxious", x, y, "B");

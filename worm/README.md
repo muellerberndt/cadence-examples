@@ -78,6 +78,7 @@ python worm/tools/build_connectome.py      # data/connectome.json from the sourc
 python worm/tools/export_web.py            # the newborn brain, web data and parity cases
 node worm/tests/parity.mjs
 node worm/tests/body.mjs
+python worm/tools/check_exports.py         # after a rebuild: identical where nothing is rounded, to 1e-6 elsewhere
 python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
 ```
 
