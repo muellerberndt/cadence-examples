@@ -96,7 +96,8 @@ scaled by the Variation slider; at zero none of it is drawn.
   brain plays on from what it hears, so a fill stays local and the groove comes back. This
   is a rule of the instrument: the transcription reads every repeating bar as the break in
   order, so a track's own chop is not in the training data.
-- Instrument settings: a tempo between 165 and 182 bpm (the slices are pitched with it), a
+- Instrument settings: a tempo between 165 and 182 bpm, the break's pitch (up to four
+  semitones either way, set apart from the tempo as on a sampler), a
   key (bass and pad transposed by two semitones down to five up), the pad's waveform, chord, register
   and detune, how it is played (held, a skank on beats two and four, a dotted stab or a
   swell per bar), and a filter sweep over 4, 8 or 16 bars. The pad sounds at the bass note each
