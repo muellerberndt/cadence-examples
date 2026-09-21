@@ -18,6 +18,7 @@ with the same arithmetic as the library and draws every sampled read.
 | `bench/` | the solver bridge, the AlphaZero baseline, `measure.py` (every move graded by the solver) |
 | `web/` | the page, its engine (`patch.js`, `brain.js`), parity checks and the arena that produces the receipt |
 | `brain/v1.npz` | the deployed patch the page's `brain.json` is exported from |
+| `receipts/control_rules_only.json` | the same opponents against the search alone, with no value patch: what the patch adds is the difference |
 | `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v1.npz` |
 | `tools/make_card.py` | draws the social card with the page itself, mid-thought |
 

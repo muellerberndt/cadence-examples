@@ -4,7 +4,7 @@
     python connect4/verify.py
 
 - The receipt is bound to the page's brain and engine: their hashes are the recorded ones.
-- Every game in the receipt is replayed with the rules: each column was playable, the game
+- Every game in the receipt, and in the receipt of the rules-only control, is replayed with the rules: each column was playable, the game
   ended with its last stone and not before, and it ended as recorded. The table of wins,
   draws and losses is recounted from the replays.
 - The brain the page loads is the deployed patch in ``brain/``, exported again with the
@@ -60,7 +60,12 @@ def main() -> int:
     if len(str(receipt.get("library", {}).get("commit", ""))) != 40:
         problems.append("the library commit is not pinned")
     games = 0
-    for opponent, entry in receipt["opponents"].items():
+    control = json.loads((HERE / "receipts/control_rules_only.json").read_text())
+    if control.get("brain") is not None or "/Users/" in json.dumps(control):
+        problems.append("the control receipt names a brain or a path")
+    entries = [(f"control, {name}", entry, control["games_per_opponent"]) for name, entry in control["opponents"].items()]
+    entries += [(name, entry, receipt["games_per_opponent"]) for name, entry in receipt["opponents"].items()]
+    for opponent, entry, expected_games in entries:
         counted = {"first": [0, 0, 0], "second": [0, 0, 0]}
         for game in entry["games"]:
             games += 1
@@ -75,8 +80,8 @@ def main() -> int:
             counted["first" if game["subject_first"] else "second"][1 if winner == -1 else 0 if winner == mine else 2] += 1
         if counted != entry["win_draw_loss"]:
             problems.append(f"{opponent}: the replays count {counted}, the receipt says {entry['win_draw_loss']}")
-        if len(entry["games"]) != receipt["games_per_opponent"]:
-            problems.append(f"{opponent}: {len(entry['games'])} games, the receipt says {receipt['games_per_opponent']}")
+        if len(entry["games"]) != expected_games:
+            problems.append(f"{opponent}: {len(entry['games'])} games, the receipt says {expected_games}")
 
     from connect4.patch import ValuePatch
     from connect4.web.export import brain_state
@@ -90,7 +95,7 @@ def main() -> int:
     for problem in problems:
         print("FAIL:", problem)
     if not problems:
-        print(f"ok: {games} games replayed over {len(receipt['opponents'])} opponents; the receipt is bound to the page's brain "
+        print(f"ok: {games} games replayed ({len(receipt['opponents'])} opponents of the brain, {len(control['opponents'])} of the rules-only control); the receipt is bound to the page's brain "
               f"and engine; web/brain.json is the export of brain/v1.npz with an empty record store")
     return 1 if problems else 0
 
