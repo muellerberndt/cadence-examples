@@ -79,6 +79,46 @@
    },
    "training_tracks": 26,
    "training_cpu_seconds": 1397
+  },
+  {
+   "name": "three-corpora",
+   "label": "Three corpora",
+   "trained_on": "71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours",
+   "run": "record-composer-v12",
+   "run_receipt_sha256": "3d922b65884a39dc247804032a9734480df96c6ed94124a7ffd3ac088a3c700c",
+   "held_out_tracks": 8,
+   "held_out_ranges": {
+    "drum_identity_accuracy": [
+     0.8467561521252797,
+     0.884065934065934
+    ],
+    "bass_note_accuracy": [
+     0.41471571906354515,
+     0.6420782552918538
+    ],
+    "texture_mae": [
+     0.08014999883490045,
+     0.13441892705651973
+    ],
+    "change_recall": [
+     0.07964601769911504,
+     0.21787709497206703
+    ],
+    "frequency_baseline_drum_identity_accuracy": [
+     0.03131868131868132,
+     0.05145413870246085
+    ],
+    "repeat_previous_bass_note_accuracy": [
+     0.13470173187940987,
+     0.5155210643015521
+    ],
+    "repeat_previous_texture_mae": [
+     0.09888871905821346,
+     0.1733616457069418
+    ]
+   },
+   "training_tracks": 71,
+   "training_cpu_seconds": 1559
   }
  ]
 }
