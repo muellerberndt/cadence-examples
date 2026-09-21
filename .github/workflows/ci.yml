@@ -20,9 +20,11 @@ jobs:
         run: |
           python worm/tools/build_connectome.py
           python worm/tools/export_web.py
-          git diff --exit-code worm/data/connectome.json worm/web/data worm/tests/parity_cases.json
+          git diff --exit-code worm/data/connectome.json worm/web/data worm/tests/parity_cases.json worm/tests/body_cases.json
       - name: The browser brain against the library's TemporalPatchNet
         run: node worm/tests/parity.mjs
+      - name: The body under stress, and the browser body against the Python body
+        run: node worm/tests/body.mjs
   connect_four:
     runs-on: ubuntu-latest
     steps:

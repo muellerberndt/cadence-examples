@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#e8f1fb;--soft:#a9bcd3;--dim:#6f8199;--line:rgba(127,231,255,.16);--glass:rgba(7,15,28,.62);--cyan:#7fe7ff;
-        --A:#2ee6c4;--B:#a78bfa;--food:#d9f99d;--nox:#ff5a4e;--learn:#fff1b8}
-  *{box-sizing:border-box} html,body{margin:0;height:100%;background:#050b16;color:var(--ink);font:13px/1.4 Inter,system-ui,sans-serif;overflow:hidden}
+  :root{--ink:#eaf2fb;--soft:#aec3da;--dim:#7389a6;--line:rgba(168,204,234,.2);--glass:rgba(9,18,34,.74);--cold:#a8cce8;--hot:#ff6228;
+        --A:#2ee6c4;--B:#a78bfa;--food:#d9f99d;--nox:#ff406e;--learn:#7cffa0}
+  *{box-sizing:border-box} html,body{margin:0;height:100%;background:#0c182b;color:var(--ink);font:13px/1.4 Inter,system-ui,sans-serif;overflow:hidden}
   canvas#world{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:default}
   canvas#world.placing{cursor:crosshair}
   .glass{background:var(--glass);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -40,8 +40,8 @@
   #legend b{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
   #toolbar{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:6px}
   #toolbar button{appearance:none;border:0;background:transparent;color:var(--soft);font:500 12.5px Inter,sans-serif;padding:8px 12px;border-radius:9px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap}
-  #toolbar button:hover{background:rgba(127,231,255,.08);color:var(--ink)}
-  #toolbar button.on{background:rgba(127,231,255,.14);color:var(--ink)}
+  #toolbar button:hover{background:rgba(168,204,234,.1);color:var(--ink)}
+  #toolbar button.on{background:rgba(168,204,234,.18);color:var(--ink)}
   #toolbar .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
   .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
   .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 2px}
@@ -54,7 +54,7 @@
   #toast b{color:var(--learn);font-weight:600}
   #hint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--soft);font-size:13px;text-align:center;pointer-events:none;transition:opacity 1.2s;padding:10px 16px}
   #inspect{position:fixed;left:50%;top:24px;transform:translateX(-50%);padding:8px 14px;display:none;align-items:center;gap:10px;font-size:12px;color:var(--soft)}
-  #inspect button{appearance:none;border:1px solid var(--line);background:rgba(127,231,255,.12);color:var(--ink);border-radius:8px;padding:5px 10px;cursor:pointer;font:500 12px Inter}
+  #inspect button{appearance:none;border:1px solid var(--line);background:rgba(168,204,234,.14);color:var(--ink);border-radius:8px;padding:5px 10px;cursor:pointer;font:500 12px Inter}
   @media (max-width:760px){#panel{display:none}#brain{left:12px;right:12px;width:auto;top:66px}#brain canvas{height:170px}#brain .key{display:none}#title{right:16px}#minimap{display:none}#toolbar{bottom:82px;flex-wrap:wrap;justify-content:center;width:calc(100% - 24px)}#title h1{font-size:20px}}
 </style>
 </head>
@@ -63,7 +63,7 @@
 <div id="title"><h1>A worm that learns</h1><p>302 neurons of <i>C. elegans</i>, wired as measured · a Cadence TemporalPatchNet</p></div>
 
 <div id="brain" class="glass">
-  <div class="top"><p class="h">The brain · nerve ring and head ganglia</p><span class="key"><b style="background:#9be7ff"></b>forward<b style="background:#ff8a6e"></b>reverse</span></div>
+  <div class="top"><p class="h">The brain · nerve ring and head ganglia</p><span class="key"><b style="background:#9bd7ff"></b>forward<b style="background:#ff7850"></b>reverse</span></div>
   <canvas></canvas>
   <div id="brainfoot"></div>
 </div>
@@ -75,13 +75,14 @@
   <div class="ends"><span>avoid</span><span>approach</span></div>
   <hr>
   <p class="h">Command neurons now</p>
-  <div class="row"><span>Forward</span><div class="bar"><i id="fwd" style="background:#9be7ff"></i></div></div>
-  <div class="row"><span>Reverse</span><div class="bar"><i id="rev" style="background:#ff8a6e"></i></div></div>
+  <div class="row"><span>Forward</span><div class="bar"><i id="fwd" style="background:#9bd7ff"></i></div></div>
+  <div class="row"><span>Reverse</span><div class="bar"><i id="rev" style="background:#ff7850"></i></div></div>
   <div id="stats">age 0:00 · 0 lessons</div>
   <div id="legend">
-    <span><b style="background:rgb(255,176,80)"></b>glutamate · ACh</span><span><b style="background:rgb(94,200,255)"></b>GABA</span>
-    <span><b style="background:rgb(255,111,216)"></b>dopamine</span><span><b style="background:rgb(184,155,255)"></b>serotonin · other</span>
-    <span><b style="background:rgb(205,240,255)"></b>gap junction</span><span><b style="background:var(--learn)"></b>learning</span>
+    <span><b style="background:transparent;border:1px solid var(--cold)"></b>neuron at rest</span><span><b style="background:linear-gradient(90deg,#78180a,#ff6228,#ffe4b0);width:26px;border-radius:4px"></b>firing</span>
+    <span><b style="background:rgb(255,122,48)"></b>glutamate · ACh</span><span><b style="background:rgb(64,214,255)"></b>GABA</span>
+    <span><b style="background:rgb(255,72,190)"></b>dopamine</span><span><b style="background:rgb(176,128,255)"></b>serotonin · other</span>
+    <span><b style="background:rgb(222,240,255)"></b>gap junction</span><span><b style="background:var(--learn)"></b>learning</span>
   </div>
 </div>
 

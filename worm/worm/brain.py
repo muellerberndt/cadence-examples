@@ -72,7 +72,7 @@ class WormBrain:
 
     def _target(self, kinds: tuple[str, ...]) -> np.ndarray:
         """Correct only the last `teach` ticks before the outcome: the command
-        neuron that should have led there goes to one, its rival to zero.
+        neuron that should have led there goes to `teach_level`, its rival to zero.
         Earlier ticks get the brain's own free prediction, so they carry no
         correction at all."""
         y = self.path.output[0].copy()
@@ -116,6 +116,8 @@ class WormBrain:
         while self.growth(after["A"]) > self.p["stability"] and halvings < 12:
             after = {k: before[k] + 0.5 * (after[k] - before[k]) for k in after}
             halvings += 1
+        if self.growth(after["A"]) > self.p["stability"]:
+            after = before              # no stable share of it: the lesson is not kept
         if halvings:
             self.net.set_parameters(after)
         return halvings

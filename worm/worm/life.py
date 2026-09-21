@@ -102,7 +102,7 @@ class Life:
                 turn = (p["base_turn"] + p["reverse_gain"] * max(0.0, reverse - forward - p["reverse_threshold"])
                         + p["kinesis"] * max(0.0, -dv))
                 if self.rng.random() < turn:
-                    side = 1.0 if self.rng.random() < 0.5 else -1.0
+                    side = -1.0 if self.rng.random() < p["ventral_bias"] else 1.0   # omega turns curl ventrally, mostly
                     hold = p["pirouette_reverse"] * (1.0 + 2.0 * min(1.0, max(0.0, reverse)))
                     world.reverse(hold, side * self.rng.uniform(1.5, 3.0))
         self.tick_count += 1

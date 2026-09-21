@@ -65,7 +65,7 @@ Each example pins the Cadence commit its evidence was produced with.
 ```bash
 # worm: cadence 3d655c84b131388c4ef05d945947fd3e9e786d45
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
-python worm/tools/export_web.py && node worm/tests/parity.mjs
+python worm/tools/export_web.py && node worm/tests/parity.mjs && node worm/tests/body.mjs
 python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
 
 # connect_four: cadence 21a120311e9817e817499318f8125896cd19534d

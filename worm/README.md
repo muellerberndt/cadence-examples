@@ -3,11 +3,14 @@
 The nervous system of the hermaphrodite *C. elegans*, 302 neurons wired as measured, as one
 Cadence `TemporalPatchNet`. It lives on a plate, smells, eats, gets hurt, and learns during its
 life what the smells around it predict. The page draws the whole nervous system inside the
-transparent body at every zoom: every neuron, every active synapse and the transmitter it
-releases, pulses running down the nerve cords, and every lesson as a repair wave spreading out
-from the command neurons. A second view shows the head at scale, straightened: the nerve ring,
-the ganglia around it, and the sensory and command neurons by name. Brightness is activity on a
-log scale from 10⁻⁶ to 1, because a signal fades by orders of magnitude as it spreads.
+transparent body at every zoom, in two tones. Structure is cold: the body, the cords, the wiring
+and every neuron at rest are pale blue on navy. Activity is hot: a firing neuron glows from deep
+red through orange to white, each synapse releases pulses in its transmitter's colour, and the
+nerve cords heat up where the cells along them fire. A lesson is the one green: the connections
+that changed, then a ring arriving at each cell hop by hop from the command neurons. A second
+view shows the head at scale, straightened: the nerve ring, the ganglia around it, and the
+sensory and command neurons by name. Heat follows the logarithm of activity, because a signal
+fades by orders of magnitude as it spreads.
 
 ## The brain is the connectome
 
@@ -22,10 +25,18 @@ log scale from 10⁻⁶ to 1, because a signal fades by orders of magnitude as i
   pain on the ASH nociceptors.
 - Readouts (`C`): the command interneurons. AVB and PVC drive the body forward; AVA, AVD and
   AVE drive it backward. `C` averages each group and is fixed.
-- Body: when backward drive wins, the worm reverses and turns (a pirouette); forward drive
-  sets its speed. It turns more often while forward drive falls and bends toward the side of
+- Behaviour: when backward drive wins, the worm reverses and then makes an omega turn (a
+  pirouette). It does so more often while forward drive falls, and it bends toward the side of
   its head swing on which forward drive rose, so smells steer it only through what the brain
   makes of them.
+- Body: a centreline of exactly one body length. Whichever end leads lays the track and the
+  rest of the body follows it: the head when crawling, the tail when reversing. The leading end
+  can only change direction at a bounded curvature (10 rad/mm, a 0.1 mm radius), so an omega
+  turn is a curl of the head that the body follows through, mostly toward the ventral side, and
+  the plate's edge is met with a turn, not a bounce. The body wave advances with distance
+  travelled (one wave per 0.7 mm). The motor neurons are part of the brain and carry activity,
+  but nothing in the body reads them: the body reads the command interneurons only, and the
+  wave and the manoeuvres are the body's own.
 
 ## How it learns, by the letter
 
@@ -51,13 +62,19 @@ A treat on the page is food arriving; a poke is pain. Both are lessons like any 
 
 `web/` runs the same brain in the browser. `web/brain.js` solves the same energy with Newton-CG
 on the sparse connectome; `tests/parity.mjs` checks it against the library on three lessons of
-5, 8 and 16 ticks (worst relative difference 8.5e-12).
+5, 8 and 16 ticks (worst relative difference 8.5e-12). `tests/body.mjs` runs six lives under
+stress (irritants crowded round the worm, a plate carpeted with them, a corner, random pokes and
+treats) and checks after every physics step that the body is one body length, inside the plate,
+and nowhere bent tighter than it can bend; it also checks that the browser body lays the same
+track as the Python reference (to 1e-15 mm on three scripted crawls with reversals, omega turns
+and wall turns).
 
 ```bash
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
 python worm/tools/build_connectome.py      # data/connectome.json from the sources
 python worm/tools/export_web.py            # the newborn brain, web data and parity cases
 node worm/tests/parity.mjs
+node worm/tests/body.mjs
 python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
 ```
 
@@ -74,8 +91,9 @@ Python reference of the brain loop, the world and the life that the page ports.
 
 - `PartitionedTemporalPatchNet` is on Cadence `main` after 0.11.0, not in the 0.11.0 release;
   the worm pins that commit.
-- Neurons are rate units, not spiking cells; the body is a trail-following curve, not a
-  muscle model.
+- Neurons are rate units, not spiking cells. The body is a follow-the-leader curve, not a
+  muscle model: the motor neurons do not drive it, and the brain has no oscillator or stretch
+  feedback from which a body wave could arise.
 - Food and pain are the only outcomes; a smell learns only by coming before one of them.
 - A receipt of conditioning with paired, unpaired, frozen and lesioned controls across seeds is
   not yet in this directory.

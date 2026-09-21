@@ -78,6 +78,31 @@ def main() -> None:
         })
     (ROOT / "tests").mkdir(exist_ok=True)
     (ROOT / "tests" / "parity_cases.json").write_text(json.dumps(cases))
+
+    # The body: scripted crawls, reversals, omega turns and wall turns; web/life.js must lay the same track.
+    from worm.rng import Rng
+    from worm.world import World
+    bodies = []
+    for seed, script in (
+        (1, [["step", 200], ["reverse", 2.0, -2.4], ["step", 160], ["steer", 0.5], ["step", 120], ["reverse", 1.2, 1.7], ["step", 90]]),
+        (2, [["move", 0.5, 0.6], ["step", 400], ["reverse", 3.0, -3.0], ["step", 300]]),
+        (3, [["move", 11.6, 7.7], ["step", 250], ["reverse", 0.6, 2.9], ["step", 8], ["reverse", 0.6, -2.9], ["step", 200]]),
+    ):
+        w = World(brain.p, Rng(seed * 7919 + 17))
+        for what, *args in script:
+            if what == "step":
+                for _ in range(args[0]):
+                    w.physics(brain.p["physics_step"], False)
+            elif what == "reverse":
+                w.reverse(*args)
+            elif what == "steer":
+                w.body.heading += args[0]
+            elif what == "move":
+                dx, dy = args[0] - w.body.x, args[1] - w.body.y
+                w.body.trail = [(x + dx, y + dy) for x, y in w.body.trail]
+                w.body.x, w.body.y = args
+        bodies.append({"seed": seed, "script": script, "trail": [list(q) for q in w.body.trail]})
+    (ROOT / "tests" / "body_cases.json").write_text(json.dumps(bodies))
     print(f"brain.json: {len(s['A']['vals'])} synapses, prenatal {s['prenatal']}; {len(cases)} parity cases")
 
 

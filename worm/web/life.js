@@ -12,6 +12,9 @@ export function mulberry32(seed) {
 }
 
 const EAT_RATE = 0.05;
+const TAU = 2 * Math.PI;
+const wrap = (a) => { a = (a + Math.PI) % TAU; if (a < 0) a += TAU; return a - Math.PI; };
+const clamp = (v, m) => Math.max(-m, Math.min(m, v));
 
 export class Life {
   constructor(spec, p, seed = 0) {
@@ -25,13 +28,17 @@ export class Life {
     this.stretch = []; this.path = null; this.readout = [0, 0]; this.input = [0, 0, 0, 0];
     this.activity = new Float64Array(spec.H); this.previousActivity = new Float64Array(spec.H);
     this.lessons = 0; this.rejected = 0;
-    const heading = this.uniform(-Math.PI, Math.PI);
-    this.body = { x: this.w / 2, y: this.h / 2, heading, trail: [], mode: "forward", timer: 0, turn_after: 0 };
-    const L = p.body_length;
-    for (let k = 0; k < 60; k++) {
-      const d = 3 * L * k / 60;
-      this.body.trail.push([this.body.x - d * Math.cos(heading), this.body.y - d * Math.sin(heading)]);
-    }
+    // The body is its centreline: points from the head (first) to the tail (last),
+    // always exactly one body length. Whichever end leads lays the track, the rest
+    // follows it, and the leading end can only change direction at a bounded curvature.
+    const heading = this.uniform(-Math.PI, Math.PI), L = p.body_length, crawl = 1.25 * L;
+    const x0 = this.w / 2 - 0.926 * crawl * Math.cos(heading), y0 = this.h / 2 - 0.926 * crawl * Math.sin(heading);
+    this.body = { x: x0, y: y0, heading, theta: heading, phase: 0, tail_heading: 0, tail_theta: 0,
+                  trail: [], mode: "forward", timer: 0, turn: 0, turn_after: 0, walled: false };
+    for (let k = 0; k <= 100; k++) this.body.trail.push([x0 - L * k / 100 * Math.cos(heading), y0 - L * k / 100 * Math.sin(heading)]);
+    // born crawling: a body length and a quarter of travel gives it its wave, and brings it to the middle of the plate
+    for (let k = 0, n = Math.round(crawl / (p.crawl_speed * p.physics_step)); k < n; k++) this.physics(p.physics_step, false);
+    this.t = 0;
   }
 
   // ---- the plate -----------------------------------------------------------------
@@ -66,42 +73,74 @@ export class Life {
   }
 
   // ---- the body --------------------------------------------------------------------
-  reverse(seconds, turn) { Object.assign(this.body, { mode: "reverse", timer: seconds, turn_after: turn }); }
+  // direction of the centreline at one end, pointing out of the body; over `span` mm it is the body's axis there
+  direction(end, span = 0) {
+    const tr = this.body.trail, n = tr.length, step = end === "head" ? 1 : -1, first = end === "head" ? 0 : n - 1;
+    let k = first, acc = 0;
+    while (k + step >= 0 && k + step < n) {
+      acc += Math.hypot(tr[k + step][0] - tr[k][0], tr[k + step][1] - tr[k][1]); k += step;
+      if (acc > Math.max(span, 1e-9)) break;
+    }
+    return Math.atan2(tr[first][1] - tr[k][1], tr[first][0] - tr[k][0]);
+  }
+  // keep the centreline exactly one body length, giving up the excess at the trailing end
+  trim(end) {
+    const tr = this.body.trail;
+    let extra = -this.p.body_length;
+    for (let k = 1; k < tr.length; k++) extra += Math.hypot(tr[k][0] - tr[k - 1][0], tr[k][1] - tr[k - 1][1]);
+    while (extra > 0 && tr.length > 2) {
+      const a = end === "tail" ? tr.length - 1 : 0, b = end === "tail" ? tr.length - 2 : 1;
+      const seg = Math.hypot(tr[b][0] - tr[a][0], tr[b][1] - tr[a][1]);
+      if (seg <= extra) { end === "tail" ? tr.pop() : tr.shift(); extra -= seg; }
+      else { const f = extra / seg; tr[a] = [tr[a][0] + f * (tr[b][0] - tr[a][0]), tr[a][1] + f * (tr[b][1] - tr[a][1])]; extra = 0; }
+    }
+  }
+  // a reversal: the tail leads for `seconds`, then the head curls through `turn` radians (an omega turn)
+  reverse(seconds, turn) {
+    const b = this.body;
+    Object.assign(b, { mode: "reverse", timer: seconds, turn_after: turn, turn: 0,
+                       tail_theta: this.direction("tail"), tail_heading: this.direction("tail", this.p.swing_wavelength) });
+  }
+  resume() {
+    const b = this.body;
+    Object.assign(b, { mode: "forward", theta: this.direction("head"), heading: this.direction("head", this.p.swing_wavelength),
+                       turn: b.turn_after, walled: false });
+  }
 
   physics(dt, onFood) {
-    const b = this.body, p = this.p;
+    const b = this.body, p = this.p, tr = b.trail;
+    const speed = b.mode === "reverse" ? p.reverse_speed : onFood ? p.dwell_speed : p.crawl_speed;
+    const ds = speed * dt, bend = p.max_curvature * ds;
+    b.phase = (b.phase + TAU * ds / p.swing_wavelength) % TAU;
     if (b.mode === "reverse") {
-      let dist = p.reverse_speed * dt;
-      while (dist > 0 && b.trail.length > 2) {
-        const [hx, hy] = b.trail[0], [nx, ny] = b.trail[1];
-        const seg = Math.hypot(nx - hx, ny - hy);
-        if (seg <= dist) { b.trail.shift(); dist -= seg; }
-        else { const f = dist / seg; b.trail[0] = [hx + f * (nx - hx), hy + f * (ny - hy)]; dist = 0; }
-      }
-      [b.x, b.y] = b.trail[0];
+      b.tail_theta += clamp(wrap(b.tail_heading + p.swing_amplitude * Math.sin(b.phase) - b.tail_theta), bend);
+      const [tx, ty] = tr[tr.length - 1], nx = tx + ds * Math.cos(b.tail_theta), ny = ty + ds * Math.sin(b.tail_theta), m = 0.08;
+      if (nx < m || nx > this.w - m || ny < m || ny > this.h - m) b.timer = 0;      // the tail has met the edge of the plate
+      else { tr.push([nx, ny]); this.trim("head"); [b.x, b.y] = tr[0]; }
       b.timer -= dt;
-      if (b.timer <= 0) {
-        b.mode = "forward"; b.heading += b.turn_after;
-        if (b.trail.length > 3) { const [tx, ty] = b.trail[3]; b.heading = Math.atan2(b.y - ty, b.x - tx) + b.turn_after; }
-      }
+      if (b.timer <= 0) this.resume();
     } else {
-      const speed = onFood ? p.dwell_speed : p.crawl_speed;
-      const phase = b.heading + p.swing_amplitude * Math.sin(2 * Math.PI * this.t / p.swing_period);
-      b.x += speed * dt * Math.cos(phase); b.y += speed * dt * Math.sin(phase);
-      const m = 0.25;
-      if (b.x < m || b.x > this.w - m) { b.heading = Math.PI - b.heading; b.x = Math.min(Math.max(b.x, m), this.w - m); }
-      if (b.y < m || b.y > this.h - m) { b.heading = -b.heading; b.y = Math.min(Math.max(b.y, m), this.h - m); }
-      b.trail.unshift([b.x, b.y]);
+      // the edge of the plate: a turn toward the mirrored heading, begun a margin away
+      let rx = Math.cos(b.heading), ry = Math.sin(b.heading), hit = false;
+      if ((b.x < p.wall_margin && rx < 0) || (b.x > this.w - p.wall_margin && rx > 0)) { rx = -rx; hit = true; }
+      if ((b.y < p.wall_margin && ry < 0) || (b.y > this.h - p.wall_margin && ry > 0)) { ry = -ry; hit = true; }
+      if (hit && (!b.walled || b.turn === 0)) b.turn = wrap(Math.atan2(ry, rx) - b.heading);
+      b.walled = hit;
+      let swing = p.swing_amplitude, d = 0;
+      if (b.turn !== 0) {           // a turn under way curls the head round at the turn's curvature
+        d = clamp(b.turn, p.turn_curvature * ds);
+        b.heading = wrap(b.heading + d); b.turn -= d; swing *= p.turn_swing;
+      }
+      // the direction of travel follows the heading and the head swing with what is left of the bend the body allows
+      b.theta = wrap(b.theta + d + clamp(wrap(b.heading + swing * Math.sin(b.phase) - b.theta - d), bend - Math.abs(d)));
+      const e = 0.06;
+      b.x = Math.min(Math.max(b.x + ds * Math.cos(b.theta), e), this.w - e);
+      b.y = Math.min(Math.max(b.y + ds * Math.sin(b.theta), e), this.h - e);
+      tr.unshift([b.x, b.y]); this.trim("tail");
     }
-    let total = 0, keep = 1;
-    for (let k = 1; k < b.trail.length; k++) {
-      total += Math.hypot(b.trail[k][0] - b.trail[k - 1][0], b.trail[k][1] - b.trail[k - 1][1]);
-      keep = k + 1; if (total > 3 * p.body_length) break;
-    }
-    b.trail.length = keep;
     this.t += dt;
   }
-  swingDirection() { return Math.cos(2 * Math.PI * this.t / this.p.swing_period) >= 0 ? 1 : -1; }
+  swingDirection() { return Math.cos(this.body.phase) >= 0 ? 1 : -1; }
 
   // ---- the brain, by cadence's documented calls ------------------------------------------
   sense(u) {
@@ -132,6 +171,7 @@ export class Life {
                   C: r.before.C.map((v, i) => v + 0.5 * (after.C[i] - v)) };
         halvings++;
       }
+      if (this.brain.growth(after.A) > this.p.stability) after = r.before;   // no stable share of it: the lesson is not kept
       if (halvings) this.brain.setParameters(after);
       this.lessons++;
     } else this.rejected++;
@@ -180,7 +220,7 @@ export class Life {
       if (!eating) {
         const turn = p.base_turn + p.reverse_gain * Math.max(0, reverse - forward - p.reverse_threshold) + p.kinesis * Math.max(0, -dv);
         if (this.random() < turn) {
-          const side = this.random() < 0.5 ? 1 : -1;
+          const side = this.random() < p.ventral_bias ? -1 : 1;      // omega turns curl ventrally, mostly
           this.reverse(p.pirouette_reverse * (1 + 2 * Math.min(1, Math.max(0, reverse))), side * this.uniform(1.5, 3.0));
         }
       }
