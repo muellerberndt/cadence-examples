@@ -5,8 +5,6 @@ placed it sees it, and says how the game ends for that side. A supplied search k
 imagines moves and reads the patch where it stops looking. The page plays it in the browser
 with the same arithmetic as the library and draws every sampled read.
 
-Staging page (unlinked): https://floatingpragma.io/cadence-examples/connect4/
-
 ## Layout
 
 | file | what it is |
@@ -19,9 +17,13 @@ Staging page (unlinked): https://floatingpragma.io/cadence-examples/connect4/
 | `brain.py` | the search: iterative deepening, exact wins from the rules, forced blocks, one value per reading |
 | `bench/` | the solver bridge, the AlphaZero baseline, `measure.py` (every move graded by the solver) |
 | `web/` | the page, its engine (`patch.js`, `brain.js`), parity checks and the arena that produces the receipt |
+| `brain/v1.npz` | the deployed patch the page's `brain.json` is exported from |
+| `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v1.npz` |
+| `tools/make_card.py` | draws the social card with the page itself, mid-thought |
 
 ## Reproduce
 
+    python connect4/verify.py                              # the receipt, its games, the page's brain
     connect4/bench/setup_external.sh                       # Pons' solver, its book, alpha-zero-general
     python connect4/school.py --games 50000 --seed 1 --out runs/connect4/school/s1.npz
     python connect4/train.py --school runs/connect4/school/s1.npz --heldout runs/connect4/school/test.npz --out runs/connect4/patch/v1
@@ -52,4 +54,5 @@ sibling moves unless they are anchored at their current values.
   no-degradation test come first.
 - From 16 to 24 stones the search does not always reach the end of the game within its reads;
   a dedicated proof search for the late game is the next step.
-- The receipts are not yet bound by a verifier as the other examples' are.
+- `verify.py` replays the receipt's games and binds it to the deployed files. The solver's grade of each move is stored as
+  rates per stage of the game, not move by move, so the blunder rates are not recomputed without the solver.
