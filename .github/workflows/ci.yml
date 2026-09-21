@@ -50,5 +50,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Every clip, trace and receipt matches its sources
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: The receipt, the model files and the browser engine against the archived run
         run: python amen/verify.py

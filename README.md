@@ -8,7 +8,7 @@ that recomputes them.
 |---|---|---|---|
 | [worm](worm/) | The complete nervous system of *C. elegans*, 302 neurons wired as measured, as one TemporalPatchNet. It learns during its life what the smells around it predict, from food, from pain, and from the treats and pokes you give it; every neuron, synapse and lesson is drawn as it happens | the browser brain reproduces the library's TemporalPatchNet to a relative difference of 8.5e-12 on lessons it lives through | [parity](worm/tests/parity.mjs) |
 | [connect_four](connect_four/) | One life learns what a dropped stone does, which windows of four cells are completed lines and what positions are worth, from the games it plays, and chooses its moves by searching over what it learned | tactical suite 100%; paired score against random 0.995 and against one-ply 0.962; decision latency p95 52 ms | [receipt](connect_four/receipt.json) |
-| [amen](amen/) | A jungle composer in one patch: hears four bars of an unheard track, or silence, then plays sixteen bars of drums, bass and texture while the page replays its brain | next drum slice 0.84 to 0.86 on held-out tracks (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117) | [receipt](amen/runs/record-composer-v10/receipt.json) |
+| [amen](amen/) | A jungle composer in one patch, running in the browser: from silence it computes sixteen bars of drums, bass and texture while the page shows its brain, then plays them | next drum slice 0.84 to 0.86 on held-out tracks (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v10/receipt.json) |
 
 ## The worm
 
@@ -53,9 +53,10 @@ over what it learned: no board object, no terminal oracle, no minimax labels.
 
 ## The composer
 
-A record patch hears the heard stream (the previous event is an input) and continues it; the page
-replays its brain beside the music. Details, receipts and what it does not do:
-[amen/README.md](amen/README.md).
+One record patch learned sixteen jungle tracks as events per half-beat. The page ships the
+trained brain: it starts from silence, hears each half-beat it plays, computes a track in the
+browser and plays it with its activity in time with the sound. Details, receipts and what it
+does not do: [amen/README.md](amen/README.md).
 
 ## Run them
 
@@ -71,7 +72,7 @@ python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
 python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@21a120311e9817e817499318f8125896cd19534d" pytest
 python -m pytest -q -m "not slow" agent/tests connect_four/tests
 
-# amen: each receipt names its library commit
+# amen: the receipt names its library commit; verify.py also runs the browser parity under node
 python amen/verify.py
 ```
 
