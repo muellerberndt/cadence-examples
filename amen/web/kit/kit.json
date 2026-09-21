@@ -101,5 +101,26 @@
    8000,
    11000
   ]
- ]
+ ],
+ "texture_tilt": [
+  0.93,
+  0.946,
+  0.849,
+  0.606,
+  0.496,
+  0.338,
+  0.244
+ ],
+ "texture_floor": 0.08,
+ "texture_pad": {
+  "bands": 5,
+  "intervals": [
+   0,
+   7,
+   12
+  ],
+  "octaves": 3,
+  "detune_cents": 7,
+  "gain": 0.35
+ }
 }

@@ -258,11 +258,12 @@ async function bandVoices(seconds, rate) {
 }
 
 async function renderTrack(item) {
-  const L = layout, hop = kit.hop_seconds, steps = item.steps, rate = audioCtx.sampleRate, seconds = steps.length * hop;
+  const L = item.layout, hop = kit.hop_seconds, steps = item.steps, rate = audioCtx.sampleRate, seconds = steps.length * hop;
+  const solo = new URLSearchParams(location.search).get('solo'), on = layer => !solo || solo === layer;
   const voices = await bandVoices(seconds, rate), ctx = new OfflineAudioContext(2, Math.ceil(seconds * rate), rate);
-  steps.forEach((s, i) => { const p = s.played; if (p[L.drum_on] > 0.5) { const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.drums; g.gain.value = kit.drum_gain * clamp(p[L.drum_gain], 0, 1); src.connect(g); g.connect(ctx.destination); src.start(i * hop, argmax(p, 0, L.crops) * hop, hop); } });
+  if (on('drums')) steps.forEach((s, i) => { const p = s.played; if (p[L.drum_on] > 0.5) { const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = kitBuffers.drums; g.gain.value = kit.drum_gain * clamp(p[L.drum_gain], 0, 1); src.connect(g); g.connect(ctx.destination); src.start(i * hop, argmax(p, 0, L.crops) * hop, hop); } });
   const noteOf = p => argmax(p, L.note_start, L.note_start + L.notes) - L.note_start;
-  for (let i = 0; i < steps.length; i++) {
+  for (let i = 0; on('bass') && i < steps.length; i++) {
     const p = steps[i].played; if (!(p[L.bass_on] > 0.5)) continue;
     const held = p[L.bass_hold] > 0.5 && i > 0 && steps[i - 1].played[L.bass_on] > 0.5 && noteOf(steps[i - 1].played) === noteOf(p); if (held) continue;
     const note = noteOf(p); let j = i + 1; while (j < steps.length && steps[j].played[L.bass_on] > 0.5 && steps[j].played[L.bass_hold] > 0.5 && noteOf(steps[j].played) === note) j++;
@@ -273,10 +274,24 @@ async function renderTrack(item) {
     src.connect(g); g.connect(ctx.destination); src.start(i * hop, sample.start / kit.sample_rate, length * ratio);
   }
   const bands = kit.texture_bands.length, first = L.texture_start + 2 + (L.texture_ports - 2 - bands);
-  voices.forEach((voice, k) => { const src = ctx.createBufferSource(), g = ctx.createGain(), unit = kit.texture_gain / Math.sqrt(bands) / voice.rms; src.buffer = voice.buffer;
-    g.gain.setValueAtTime(clamp(steps[0].played[first + k], 0, 1) * unit, 0);
-    for (let i = 1; i <= steps.length; i++) g.gain.linearRampToValueAtTime(clamp(steps[Math.min(i, steps.length - 1)].played[first + k], 0, 1) * unit, i * hop);
-    src.connect(g); g.connect(ctx.destination); src.start(0); });
+  const floor = kit.texture_floor || 0, tilt = kit.texture_tilt || [], heard = v => Math.max(0, (clamp(v, 0, 1) - floor) / (1 - floor));
+  const ramp = (g, k, unit) => { g.gain.setValueAtTime(heard(steps[0].played[first + k]) * unit, 0); for (let i = 1; i <= steps.length; i++) g.gain.linearRampToValueAtTime(heard(steps[Math.min(i, steps.length - 1)].played[first + k]) * unit, i * hop); };
+  const pad = kit.texture_pad, padBands = pad ? pad.bands : 0;
+  if (on('texture') && pad) {
+    // The harmony of a bar is the bass note it plays most, held through rests; the pad changes pitch at bar lines only.
+    const bus = ctx.createGain(); bus.gain.value = 1; const roots = []; let last = null;
+    for (let b = 0; b * 8 < steps.length; b++) { const count = new Map(); for (const s of steps.slice(b * 8, b * 8 + 8)) if (s.played[L.bass_on] > 0.5) { const n = noteOf(s.played); count.set(n, (count.get(n) || 0) + 1); }
+      if (count.size) last = [...count.entries()].sort((x, y) => y[1] - x[1] || x[0] - y[0])[0][0]; roots.push(last); }
+    const firstRoot = roots.find(r => r !== null);
+    if (firstRoot !== undefined) for (const interval of pad.intervals) for (const cents of [-pad.detune_cents, pad.detune_cents]) {
+      const osc = ctx.createOscillator(); osc.type = 'sawtooth'; const hz = r => 440 * Math.pow(2, (kit.first_midi + r + pad.octaves * 12 + interval - 69) / 12) * Math.pow(2, cents / 1200);
+      osc.frequency.setValueAtTime(hz(firstRoot), 0); roots.forEach((r, b) => { if (r !== null && b > 0) osc.frequency.setTargetAtTime(hz(r), b * 8 * hop, 0.04); });
+      osc.connect(bus); osc.start(0); }
+    for (let k = 0; k < padBands; k++) { const [lo, hi] = kit.texture_bands[k], f = ctx.createBiquadFilter(), g = ctx.createGain(); f.type = 'bandpass'; f.frequency.value = Math.sqrt(lo * hi); f.Q.value = f.frequency.value / (hi - lo);
+      bus.connect(f); f.connect(g); g.connect(ctx.destination); ramp(g, k, kit.texture_gain * pad.gain); }
+  }
+  if (on('texture')) voices.forEach((voice, k) => { if (k < padBands) return; const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = voice.buffer;
+    ramp(g, k, kit.texture_gain * (tilt[k] ?? 1) / Math.sqrt(bands) / voice.rms); src.connect(g); g.connect(ctx.destination); src.start(0); });
   return ctx.startRendering();
 }
 
