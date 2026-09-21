@@ -1,0 +1,3 @@
+# The repository ignores runs/ everywhere; this example keeps its receipts there.
+!runs/
+__pycache__/

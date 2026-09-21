@@ -1,0 +1,88 @@
+{
+  "environment": {
+    "cadence": "0.11.0",
+    "library_commit": "117c43abb17131ee550544ff485930b4728b2fbd",
+    "numpy": "2.5.3",
+    "python": "3.13.0"
+  },
+  "question": "After hearing four bars of a jungle track it never trained on, or from silence, what does one record patch play for the next sixteen bars, and how well does it predict the next half-beat of held-out tracks?",
+  "results": {
+    "active_cells": 48,
+    "clips": [
+      {
+        "departures": 2.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D019-A",
+        "loop_order_fraction": 1.0,
+        "mode": "argmax",
+        "primer_bars": 4
+      },
+      {
+        "departures": 0.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D019-B",
+        "loop_order_fraction": 1.0,
+        "mode": "argmax",
+        "primer_bars": 4
+      }
+    ],
+    "held_out": {
+      "held_out_track_a": {
+        "bass_note_accuracy": 0.6212471131639723,
+        "change_recall": 0.16279069767441862,
+        "drum_gain_mae": 0.1044376472922436,
+        "drum_identity_accuracy": 0.8494152046783626,
+        "drum_kind_accuracy": 0.8640350877192983,
+        "frequency_baseline_drum_identity_accuracy": 0.0445906432748538,
+        "repeat_previous_bass_note_accuracy": 0.4842186297151655,
+        "repeat_previous_texture_mae": null,
+        "texture_mae": null
+      },
+      "held_out_track_b": {
+        "bass_note_accuracy": 0.49926578560939794,
+        "change_recall": 0.10416666666666667,
+        "drum_gain_mae": 0.11160840509273859,
+        "drum_identity_accuracy": 0.8533519553072626,
+        "drum_kind_accuracy": 0.8784916201117319,
+        "frequency_baseline_drum_identity_accuracy": 0.0335195530726257,
+        "repeat_previous_bass_note_accuracy": 0.31057268722466963,
+        "repeat_previous_texture_mae": null,
+        "texture_mae": null
+      },
+      "held_out_track_c": {
+        "bass_note_accuracy": 0.5123216601815823,
+        "change_recall": 0.09183673469387756,
+        "drum_gain_mae": 0.0994813940473603,
+        "drum_identity_accuracy": 0.8445190156599552,
+        "drum_kind_accuracy": 0.8646532438478747,
+        "frequency_baseline_drum_identity_accuracy": 0.05145413870246085,
+        "repeat_previous_bass_note_accuracy": 0.14007782101167315,
+        "repeat_previous_texture_mae": null,
+        "texture_mae": null
+      }
+    },
+    "held_out_tracks": 3,
+    "hidden_channels": 128,
+    "independent_verification_sha256": "e8705167ac666571bcdcd992664511d7ce0aa03aa2cbfc2d299f7d89554377e2",
+    "input_ports": 70,
+    "output_ports": 61,
+    "protocol_schema": "cadence-amen.record-composer-protocol/v5",
+    "record_cells": 8192,
+    "run_receipt_sha256": "cd3c4100436be5edfb6bbacb1a4c2de4db3943306c72ef59f7086137a03ea7fb",
+    "slow_parameters": 26045,
+    "training_cpu_seconds": 410.4,
+    "training_tracks": 16
+  },
+  "schema": "cadence-examples.amen.record-composer-v7/v1",
+  "sources": {
+    "web/audio/D019-A.mp3": "250fde313ce281913ecd32ad0a1d465c7d685b092378cb3d6b64bb8c023777ef",
+    "web/audio/D019-B.mp3": "789f199570db7aefe96c9987a39393cceea7ebb0ca6eaa2093813f777b4c0aff",
+    "web/traces/D019-A.json": "84b8c29fbadf466fc10b949364d2cbc2cd3996227c0a8bd37d309608f7b38dfd",
+    "web/traces/D019-B.json": "84b1632b5995f2e8190fc4a3e2064fa497a3018f782fab9797bcc39e99e959be",
+    "web/traces/index.json": "3704053e24ceeb847cf0a9ea025202286ef88871ddb03f869b86cb336f84e242",
+    "web/weights/cd3c4100436b.json": "9aeede14c8df58c1e7d6171f383a3c23814abc60188cdc7f80abc45ee2409670"
+  },
+  "verified": true
+}

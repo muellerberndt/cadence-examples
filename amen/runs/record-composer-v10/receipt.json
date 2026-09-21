@@ -1,0 +1,154 @@
+{
+  "environment": {
+    "cadence": "0.11.0",
+    "library_commit": "3d655c84b131388c4ef05d945947fd3e9e786d45",
+    "numpy": "2.5.3",
+    "python": "3.13.0"
+  },
+  "question": "After hearing four bars of a jungle track it never trained on, or from silence, what does one record patch play for the next sixteen bars, and how well does it predict the next half-beat of held-out tracks?",
+  "results": {
+    "active_cells": 48,
+    "clips": [
+      {
+        "departures": 0.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D025-A",
+        "loop_order_fraction": 1.0,
+        "mode": "argmax",
+        "primer_bars": 4
+      },
+      {
+        "departures": 0.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 15,
+        "id": "D025-B",
+        "loop_order_fraction": 1.0,
+        "mode": "argmax",
+        "primer_bars": 4
+      },
+      {
+        "departures": 0.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D025-C",
+        "loop_order_fraction": 1.0,
+        "mode": "argmax",
+        "primer_bars": 4
+      },
+      {
+        "departures": 0.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 14,
+        "id": "D025-D",
+        "loop_order_fraction": 1.0,
+        "mode": "argmax",
+        "primer_bars": 0
+      },
+      {
+        "departures": 13.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D026-A",
+        "loop_order_fraction": 0.8582677165354331,
+        "mode": "sample",
+        "primer_bars": 4
+      },
+      {
+        "departures": 6.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D026-B",
+        "loop_order_fraction": 0.952755905511811,
+        "mode": "sample",
+        "primer_bars": 4
+      },
+      {
+        "departures": 11.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 16,
+        "id": "D026-C",
+        "loop_order_fraction": 0.8740157480314961,
+        "mode": "sample",
+        "primer_bars": 4
+      },
+      {
+        "departures": 4.0,
+        "generated_bars": 16,
+        "generated_bars_not_in_training_corpus": 15,
+        "id": "D026-D",
+        "loop_order_fraction": 0.9291338582677166,
+        "mode": "sample",
+        "primer_bars": 0
+      }
+    ],
+    "held_out": {
+      "held_out_track_a": {
+        "bass_note_accuracy": 0.6374133949191686,
+        "change_recall": 0.14728682170542637,
+        "drum_gain_mae": 0.10094373318656116,
+        "drum_identity_accuracy": 0.8523391812865497,
+        "drum_kind_accuracy": 0.8669590643274854,
+        "frequency_baseline_drum_identity_accuracy": 0.0445906432748538,
+        "repeat_previous_bass_note_accuracy": 0.4842186297151655,
+        "repeat_previous_texture_mae": 0.11748001506305664,
+        "texture_mae": 0.08796831457249854
+      },
+      "held_out_track_b": {
+        "bass_note_accuracy": 0.5381791483113069,
+        "change_recall": 0.125,
+        "drum_gain_mae": 0.10539530744514602,
+        "drum_identity_accuracy": 0.8575418994413407,
+        "drum_kind_accuracy": 0.8868715083798883,
+        "frequency_baseline_drum_identity_accuracy": 0.0335195530726257,
+        "repeat_previous_bass_note_accuracy": 0.31057268722466963,
+        "repeat_previous_texture_mae": 0.09888871905821346,
+        "texture_mae": 0.09032771092068605
+      },
+      "held_out_track_c": {
+        "bass_note_accuracy": 0.5395590142671854,
+        "change_recall": 0.07142857142857142,
+        "drum_gain_mae": 0.09198255824339158,
+        "drum_identity_accuracy": 0.8400447427293065,
+        "drum_kind_accuracy": 0.8646532438478747,
+        "frequency_baseline_drum_identity_accuracy": 0.05145413870246085,
+        "repeat_previous_bass_note_accuracy": 0.14007782101167315,
+        "repeat_previous_texture_mae": 0.10578540156584763,
+        "texture_mae": 0.08471865291025253
+      }
+    },
+    "held_out_tracks": 3,
+    "hidden_channels": 128,
+    "independent_verification_sha256": "a9cd3938c5b03a52764d2483c0931504ea40a571004e82cbe3304c34bfc98226",
+    "input_ports": 80,
+    "output_ports": 71,
+    "protocol_schema": "cadence-amen.record-composer-protocol/v8",
+    "record_cells": 8192,
+    "run_receipt_sha256": "69b6e33bf96cadec3db5118b30b2ae20acef6efe3e44c6e6c4c6e98f013290fa",
+    "slow_parameters": 29895,
+    "training_cpu_seconds": 411.5,
+    "training_tracks": 16
+  },
+  "schema": "cadence-examples.amen.record-composer-v10/v1",
+  "sources": {
+    "web/audio/D025-A.mp3": "eaabb9c673b107de7486a0b09c451858352020865396c76e53e2dededa469e19",
+    "web/audio/D025-B.mp3": "55916e1fd51094e3f24aa0fa7fb9dbda1c22a88bb8630347bba2a09bfcac6f6e",
+    "web/audio/D025-C.mp3": "f68551b42b6c1ffa0de3225984ba9c67ec4cadf67d4c251e159441ecdd6799fe",
+    "web/audio/D025-D.mp3": "d7cbe97111017a7398926c0fb733f330489c6c1a7165e1658b45ea683608bbe6",
+    "web/audio/D026-A.mp3": "bfceba15014ea8af75a9ed71a6fa6c3ba04201190baa5720e958d253c3937386",
+    "web/audio/D026-B.mp3": "70f28b1145f2eaadf56f4dead864e6f3bb8b7f8dc2781f58c7653caa34ec49b9",
+    "web/audio/D026-C.mp3": "5600cdce48f594f1cb3c775b9b5d7407d4ed1b8266764e49882264cd7a385952",
+    "web/audio/D026-D.mp3": "8447aeb9c1db87a538a70a14c6284d676dbfc3341e3db2a892fb11ce9273cf26",
+    "web/traces/D025-A.json": "cff6dbe35a00e9d94e65e9b40ac36437357208ecc3712ebc0c0b44f4666215e1",
+    "web/traces/D025-B.json": "75e138bdf84d9f6036ffcae204c04ec811e0da0fec535cced13f07b3bbb0cf02",
+    "web/traces/D025-C.json": "30b6a0ca2436fefab81c25a5fb477ff5bd88981daa6d0fe588d003cd6c417dd1",
+    "web/traces/D025-D.json": "beeb1bab318d389d661fa61173c326a19a7115b0f185e5548674198b4ecba1f6",
+    "web/traces/D026-A.json": "525b1d7b3c13339a761dd91adc2ba8d883aee31026a5a6a44282389be53e6953",
+    "web/traces/D026-B.json": "f24cd3fec510363e551bfe41bbedca93457f575d16f0e69f35eca19b2d1efad5",
+    "web/traces/D026-C.json": "e999facc6fe4e29d389f1df3c5207c74b7b4ae1dd705aca7d7b8ed5852ff4b4f",
+    "web/traces/D026-D.json": "1a4cfbb35ff96df19053dd2e4954bc1dc6d362067806aea1fc128a2d7b9b36d9",
+    "web/traces/index.json": "3704053e24ceeb847cf0a9ea025202286ef88871ddb03f869b86cb336f84e242",
+    "web/weights/69b6e33bf96c.json": "c96bcd6b5882057b56a4e2c924c90879f872465c95dd59849281e8718c3b3280"
+  },
+  "verified": true
+}
