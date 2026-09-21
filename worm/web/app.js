@@ -65,6 +65,28 @@ canvas.addEventListener("contextmenu", (e) => {
   if (near && near[0] < 0.6) life.remove(near[1]);
 });
 canvas.addEventListener("wheel", (e) => { e.preventDefault(); R.zoom = Math.min(2.4, Math.max(0.12, R.zoom * Math.exp(-e.deltaY * 0.0012))); }, { passive: false });
+// ---- sharing ------------------------------------------------------------------------------------
+{
+  const url = document.querySelector('link[rel="canonical"]')?.href ?? location.origin + location.pathname;
+  const text = "A worm that learns: the 302 neurons of C. elegans, wired as measured, learning from food and pain during its life. Live in your browser.";
+  const u = encodeURIComponent(url), s = encodeURIComponent(text), title = encodeURIComponent("A worm that learns");
+  const to = { x: `https://x.com/intent/post?text=${s}&url=${u}`, linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${u}`,
+               reddit: `https://www.reddit.com/submit?url=${u}&title=${title}`, facebook: `https://www.facebook.com/sharer/sharer.php?u=${u}` };
+  const menu = $("sharemenu"), btn = $("sharebtn"), open = (v) => { menu.classList.toggle("open", v); btn.setAttribute("aria-expanded", String(v)); };
+  for (const a of menu.querySelectorAll("a[data-share]")) { a.href = to[a.dataset.share]; a.onclick = () => open(false); }
+  menu.querySelector('[data-share="copy"]').onclick = async () => {
+    try { await navigator.clipboard.writeText(url); toast("<b>Link copied.</b>"); } catch { prompt("Copy this link", url); }
+    open(false);
+  };
+  btn.onclick = async (e) => {
+    e.stopPropagation();
+    if (navigator.share && matchMedia("(pointer:coarse)").matches) { try { await navigator.share({ title: "A worm that learns", text, url }); } catch {} return; }   // a phone's own share sheet
+    open(!menu.classList.contains("open"));
+  };
+  addEventListener("click", (e) => { if (!menu.contains(e.target)) open(false); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape") open(false); });
+}
+
 let hintTimer = setTimeout(hideHint, 9000);
 function hideHint() { $("hint").style.opacity = 0; clearTimeout(hintTimer); }
 

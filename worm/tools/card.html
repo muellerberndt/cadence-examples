@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- The social card, drawn by the page's own renderer. tools/make_card.mjs photographs it into web/card.png. -->
+<html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#0c182b;color:#eaf2fb;font-family:Inter,system-ui,sans-serif}
+  canvas{position:absolute;inset:0;width:1200px;height:630px}
+  #shade{position:absolute;inset:0;background:linear-gradient(100deg,rgba(8,16,30,.92) 0%,rgba(8,16,30,.7) 30%,rgba(8,16,30,0) 56%)}
+  #text{position:absolute;left:64px;bottom:60px;width:600px}
+  .eyebrow{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:#ff7a3c;font-weight:600;margin:0 0 18px}
+  h1{font:400 84px/0.98 "Instrument Serif",Georgia,serif;margin:0 0 22px;letter-spacing:.3px;max-width:440px}
+  p{font-size:23px;line-height:1.38;color:#b9cce0;margin:0}
+  #mark{position:absolute;left:64px;top:52px;font-size:17px;letter-spacing:.04em;color:#a8cce8;font-weight:500}
+  #mark b{color:#eaf2fb;font-weight:600}
+</style></head><body>
+<canvas id="c"></canvas><div id="shade"></div>
+<div id="mark"><b>Cadence</b> · Pragma Research</div>
+<div id="text">
+  <p class="eyebrow">Live in your browser</p>
+  <h1>A worm that learns</h1>
+  <p>302 neurons, wired as measured in <i>C. elegans</i>,<br>learning from food and pain as it lives.</p>
+</div>
+<script type="module">
+import { Life } from "../web/life.js";
+import { Renderer } from "../web/render.js";
+const load = (f) => fetch(`../web/data/${f}`).then((r) => r.json());
+const [spec, connectome, params] = await Promise.all([load("brain.json"), load("connectome.json"), load("params.json")]);
+const steps = Math.round(params.tick / params.physics_step), want = -0.5;      // the body's axis, up and to the right
+let best = null;
+for (let seed = 1; seed <= 80; seed++) {               // the plate whose worm lies along the card's diagonal
+  const life = new Life(spec, params, seed), off = Math.abs(Math.atan2(Math.sin(life.direction("head", 1.0) - want), Math.cos(life.direction("head", 1.0) - want)));
+  if (!best || off < best.off) best = { seed, off };
+}
+const life = new Life(spec, params, best.seed);
+life.place("food", life.body.x + 0.9 * Math.cos(want), life.body.y + 0.9 * Math.sin(want), "A", true);
+for (let k = 0; k < 14; k++) { for (let s = 0; s < steps; s++) life.step(); life.think(); }
+life.treat();
+let lesson = null;
+for (let k = 0; k < 3; k++) { for (let s = 0; s < steps; s++) life.step(); const r = life.think(); if (r.lesson && r.lesson.applied) lesson = r.lesson; }
+const R = new Renderer(document.getElementById("c"), connectome, spec, params, null);
+const f = R.frame(life.body.trail), mid = R.at(f, 0.5, 0), scale = 720;
+R.cam = { x: mid[0] - 215 / scale, y: mid[1] + 28 / scale, scale, ready: true }; R.zoom = scale / R.baseScale();
+const now = performance.now(), view = { now, dt: 0, phase: 0.55, activity: life.activity, effects: [], lesson: null };
+if (lesson) { const top = R.edges.map((e) => [Math.abs(lesson.applied[e.k]), e]).sort((a, b) => b[0] - a[0]).slice(0, 160);
+  view.lesson = { ...lesson, top, max: top[0][0] || 1, creditMax: Math.max(...lesson.credit) || 1, shownAt: now - 1250 }; }
+await document.fonts.ready;
+R.draw(life, view);
+document.title = "ready";
+</script></body></html>

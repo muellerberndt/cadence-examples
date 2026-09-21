@@ -78,6 +78,11 @@ node worm/tests/body.mjs
 python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
 ```
 
+`web/card.png` is the page's social card, drawn by the page's own renderer:
+`node worm/tools/make_card.mjs` (needs Google Chrome) photographs `tools/card.html` into it.
+The page's canonical address and card address are written in `web/index.html`; change both
+when the page moves.
+
 `?seed=N` chooses the plate. `worm/` (`brain.py`, `life.py`, `world.py`, `rng.py`) is the
 Python reference of the brain loop, the world and the life that the page ports.
 
