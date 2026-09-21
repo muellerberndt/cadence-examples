@@ -13,6 +13,9 @@
 - The record-drowning receipt holds three runs, and in each the slow readout alone reads better
   than with the record read, on positions never seen and on positions witnessed. Its numbers are
   bound to the hashes of the patches and position files; recomputing them needs those files.
+- The record-address receipt holds three store sizes; in each, sibling moves share far more
+  cells than chance and anchoring protects them. `tools/record_address.py` recomputes it from
+  this directory and the pinned library alone.
 
 Exits non-zero on any failure. The page's arithmetic against the library's is checked by
 ``web/parity.mjs`` and ``web/search_parity.mjs``.
@@ -93,6 +96,16 @@ def main() -> int:
         for where in ("never_seen", "witnessed"):
             if not run[where]["slow_readout_alone"] > run[where]["with_the_record_read"]:
                 problems.append(f"records_drown, {name}, {where}: the slow readout alone does not read better than with the records")
+
+    address = json.loads((HERE / "receipts/record_address.json").read_text())
+    for store in address.get("stores", []):
+        where = f"record_address, {store['cells']} cells, {store['active']} active"
+        if not store["sibling_cells_shared"] > 10 * store["active"] / store["cells"]:
+            problems.append(f"{where}: sibling moves do not share more cells than chance")
+        if not store["anchored"]["siblings_change_by"] < store["naive"]["siblings_change_by"]:
+            problems.append(f"{where}: anchoring does not protect the sibling moves")
+    if len(address.get("stores", [])) < 3 or "/Users/" in json.dumps(address):
+        problems.append("the record-address receipt holds fewer than three stores or names a path")
 
     from connect4.patch import ValuePatch
     from connect4.web.export import brain_state

@@ -25,6 +25,7 @@ with the same arithmetic as the library and draws every sampled read.
 | `bench/` | the solver bridge, the AlphaZero baseline, `measure.py` (every move graded by the solver) |
 | `web/` | the page, its engine (`patch.js`, `brain.js`), parity checks and the arena that produces the receipt |
 | `brain/v1.npz` | the deployed patch the page's `brain.json` is exported from |
+| `receipts/record_address.json` | what two moves that differ by one stone share in the record store, and what a write to one does to the other, plain and anchored (`tools/record_address.py`, reproduced from this directory alone) |
 | `receipts/records_drown.json` | three runs schooled with every position written into the records: the slow readout alone against the value with the record read (`tools/records_drown.py`) |
 | `receipts/control_rules_only.json` | the same opponents against the search alone, with no value patch: what the patch adds is the difference |
 | `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v1.npz` |
@@ -55,7 +56,7 @@ documentation: bulk writing drowns the record store (on three runs the slow read
 `receipts/records_drown.json`), so the school leaves the records empty; a row
 of `imagine` is not bitwise invariant to the size of its batch, so the search reads each
 distinct position once; record addresses are a similarity kernel, so a write also moves the
-sibling moves unless they are anchored at their current values.
+sibling moves unless they are anchored at their current values (`receipts/record_address.json`: siblings share 51 percent of their active cells; a plain write moves them 0.29 where the written move goes 0.55, an anchored write 0.04 where it goes 0.71).
 
 ## Open
 
@@ -65,3 +66,9 @@ sibling moves unless they are anchored at their current values.
   a dedicated proof search for the late game is the next step.
 - `verify.py` replays the receipt's games and binds it to the deployed files. The solver's grade of each move is stored as
   rates per stage of the game, not move by move, so the blunder rates are not recomputed without the solver.
+
+## Build on it
+
+Fork this directory and make a stronger player. The school, the training, the search, the arena and the page are
+separate files, so one of them can be replaced while the rest keeps measuring. A proof search for the late game, a
+wider school of early positions and learning from the games played on the page are the open ends.

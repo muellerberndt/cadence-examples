@@ -136,3 +136,6 @@ The instrument's drum slices come from a sampled drum break and its bass notes f
 sample pack. Whether they may be redistributed publicly has not been verified; the kit is a
 separate folder with its own description so it can be replaced without touching the brain.
 
+## Build on it
+
+Fork it and train a composer on other material: the engine, the page and the receipt format do not depend on the break.

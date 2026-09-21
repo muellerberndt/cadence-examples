@@ -111,3 +111,7 @@ The founders are found by a search outside the world. The planner is a gradient 
 four ticks of motor, which a periodic gait gives little to work with. A channel, a read and a
 record cell are priced, and the founders' reflex already feeds a body, so the worlds measured so
 far keep small brains. The body is a planar mass-spring model with friction and no inertia.
+
+## Build on it
+
+Fork it and build a world of your own: change a price, add a rule, find the world in which a second cortex pays for itself.

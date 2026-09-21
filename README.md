@@ -14,6 +14,14 @@ Each example shows a different side of the same architecture.
 | [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
 | [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 simulations and 35-0-5 at 100; 36-0-4 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 6-1-13, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
 
+## Build on them
+
+These examples are starting points. Fork the repository, change a rule, swap a sense, grow a different body, school a
+stronger player, train a composer on other music, and see what the same few operations can be made to do. Every brain
+is short enough to read in an evening, every page runs from a static folder, and every check runs from one command, so
+a change shows at once whether it kept the numbers or broke them. The library is
+[Cadence](https://github.com/muellerberndt/cadence); issues and pull requests are welcome in both repositories.
+
 ## The worm
 
 The worm's brain is its connectome: every chemical synapse and gap junction becomes one permitted

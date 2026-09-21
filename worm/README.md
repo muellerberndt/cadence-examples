@@ -117,3 +117,7 @@ Python reference of the brain loop, the world and the life that the page ports.
 - Food and pain are the only outcomes; a smell learns only by coming before one of them.
 - A receipt of conditioning with paired, unpaired, frozen and lesioned controls across seeds is
   not yet in this directory.
+
+## Build on it
+
+Fork it and raise your own worm: other senses, other outcomes, a lesioned connectome, a body the motor neurons drive.

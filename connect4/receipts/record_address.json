@@ -1,0 +1,53 @@
+{
+ "format": "cadence-examples.connect4.record-address/1",
+ "families": 30,
+ "seed": 7,
+ "question": "What do two moves that differ by one stone share in the record store, and what does a write to one do to the other?",
+ "stores": [
+  {
+   "cells": 4096,
+   "active": 32,
+   "sibling_cells_shared": 0.5065104166666666,
+   "naive": {
+    "written_move_changes_by": -0.5489317479169451,
+    "siblings_change_by": 0.2926570720139593,
+    "unrelated_positions_moved": 0.212
+   },
+   "anchored": {
+    "written_move_changes_by": -0.7095635927347536,
+    "siblings_change_by": 0.035514945825777744,
+    "unrelated_positions_moved": 0.19580000000000003
+   }
+  },
+  {
+   "cells": 16384,
+   "active": 32,
+   "sibling_cells_shared": 0.46279761904761907,
+   "naive": {
+    "written_move_changes_by": -0.5489317479169451,
+    "siblings_change_by": 0.267625699882689,
+    "unrelated_positions_moved": 0.10503333333333333
+   },
+   "anchored": {
+    "written_move_changes_by": -0.7493700052984404,
+    "siblings_change_by": 0.03240673029986226,
+    "unrelated_positions_moved": 0.12046666666666667
+   }
+  },
+  {
+   "cells": 16384,
+   "active": 8,
+   "sibling_cells_shared": 0.3787202380952381,
+   "naive": {
+    "written_move_changes_by": -0.5489317479169451,
+    "siblings_change_by": 0.21080993002214896,
+    "unrelated_positions_moved": 0.07170000000000001
+   },
+   "anchored": {
+    "written_move_changes_by": -0.8265682506868832,
+    "siblings_change_by": 0.04020055178460604,
+    "unrelated_positions_moved": 0.10173333333333333
+   }
+  }
+ ]
+}
