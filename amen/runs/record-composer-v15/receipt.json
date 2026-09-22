@@ -1,0 +1,132 @@
+{
+  "environment": {
+    "cadence": "0.12.0",
+    "library_commit": "1efaa12e956c51ac6b848f01bf76147b5c71bee1",
+    "numpy": "2.5.3",
+    "python": "3.13.0"
+  },
+  "question": "What does one record patch, trained on 71 jungle tracks as events per half-beat, play from silence, and how well does it predict the next half-beat of tracks it never trained on?",
+  "results": {
+    "active_cells": 48,
+    "brain": {
+      "label": "Three corpora, on 0.12.0",
+      "name": "three-corpora-0-12",
+      "trained_on": "71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours, on Cadence 0.12.0"
+    },
+    "browser_engine": "web/engine.js recomputes the forward pass and the playing rule; runs/<run>/parity.json holds the archived generation from silence it must reproduce (node amen/parity.mjs).",
+    "held_out": {
+      "held_out_track_a": {
+        "bass_note_accuracy": 0.4518413597733711,
+        "change_recall": 0.18285714285714286,
+        "drum_gain_mae": 0.09236310023060192,
+        "drum_identity_accuracy": 0.853310502283105,
+        "drum_kind_accuracy": 0.8692922374429224,
+        "frequency_baseline_drum_identity_accuracy": 0.0410958904109589,
+        "repeat_previous_bass_note_accuracy": 0.31798866855524077,
+        "repeat_previous_texture_mae": 0.12386086253234732,
+        "texture_mae": 0.1166170961171519
+      },
+      "held_out_track_b": {
+        "bass_note_accuracy": 0.6626042334830019,
+        "change_recall": 0.16216216216216217,
+        "drum_gain_mae": 0.07177149121866536,
+        "drum_identity_accuracy": 0.8603896103896104,
+        "drum_kind_accuracy": 0.8809523809523809,
+        "frequency_baseline_drum_identity_accuracy": 0.038419913419913417,
+        "repeat_previous_bass_note_accuracy": 0.13470173187940987,
+        "repeat_previous_texture_mae": 0.13428036299404747,
+        "texture_mae": 0.08016348942467402
+      },
+      "held_out_track_c": {
+        "bass_note_accuracy": 0.44481605351170567,
+        "change_recall": 0.11504424778761062,
+        "drum_gain_mae": 0.12573856851175966,
+        "drum_identity_accuracy": 0.8577661431064573,
+        "drum_kind_accuracy": 0.8734729493891797,
+        "frequency_baseline_drum_identity_accuracy": 0.03228621291448516,
+        "repeat_previous_bass_note_accuracy": 0.23522853957636566,
+        "repeat_previous_texture_mae": 0.1578695929285213,
+        "texture_mae": 0.1314005705383166
+      },
+      "held_out_track_d": {
+        "bass_note_accuracy": 0.5909090909090909,
+        "change_recall": 0.07792207792207792,
+        "drum_gain_mae": 0.11284096913928215,
+        "drum_identity_accuracy": 0.8659855769230769,
+        "drum_kind_accuracy": 0.8882211538461539,
+        "frequency_baseline_drum_identity_accuracy": 0.045072115384615384,
+        "repeat_previous_bass_note_accuracy": 0.5155210643015521,
+        "repeat_previous_texture_mae": 0.1733616457069418,
+        "texture_mae": 0.13716265039239983
+      },
+      "held_out_track_e": {
+        "bass_note_accuracy": 0.450509461426492,
+        "change_recall": 0.2849162011173184,
+        "drum_gain_mae": 0.1251292022061558,
+        "drum_identity_accuracy": 0.871978021978022,
+        "drum_kind_accuracy": 0.8901098901098901,
+        "frequency_baseline_drum_identity_accuracy": 0.03131868131868132,
+        "repeat_previous_bass_note_accuracy": 0.26055312954876275,
+        "repeat_previous_texture_mae": 0.14378815773484957,
+        "texture_mae": 0.11875786394952138
+      },
+      "held_out_track_f": {
+        "bass_note_accuracy": 0.6420323325635104,
+        "change_recall": 0.17829457364341086,
+        "drum_gain_mae": 0.10885796774735536,
+        "drum_identity_accuracy": 0.8567251461988304,
+        "drum_kind_accuracy": 0.8691520467836257,
+        "frequency_baseline_drum_identity_accuracy": 0.0445906432748538,
+        "repeat_previous_bass_note_accuracy": 0.4842186297151655,
+        "repeat_previous_texture_mae": 0.11748001506305664,
+        "texture_mae": 0.08757795368128117
+      },
+      "held_out_track_g": {
+        "bass_note_accuracy": 0.5234948604992657,
+        "change_recall": 0.125,
+        "drum_gain_mae": 0.12098695513604879,
+        "drum_identity_accuracy": 0.8603351955307262,
+        "drum_kind_accuracy": 0.8833798882681564,
+        "frequency_baseline_drum_identity_accuracy": 0.0335195530726257,
+        "repeat_previous_bass_note_accuracy": 0.31057268722466963,
+        "repeat_previous_texture_mae": 0.09888871905821346,
+        "texture_mae": 0.09414639850986395
+      },
+      "held_out_track_h": {
+        "bass_note_accuracy": 0.5291828793774319,
+        "change_recall": 0.12244897959183673,
+        "drum_gain_mae": 0.10264724620597357,
+        "drum_identity_accuracy": 0.843400447427293,
+        "drum_kind_accuracy": 0.8691275167785235,
+        "frequency_baseline_drum_identity_accuracy": 0.05145413870246085,
+        "repeat_previous_bass_note_accuracy": 0.14007782101167315,
+        "repeat_previous_texture_mae": 0.10578540156584763,
+        "texture_mae": 0.08865183862313707
+      }
+    },
+    "held_out_tracks": 8,
+    "hidden_channels": 128,
+    "independent_verification_sha256": "862b374066966b425427e329f71f2376af025bb39c4b8438377ce4c5dbebd84d",
+    "input_ports": 80,
+    "output_ports": 71,
+    "protocol_schema": "cadence-amen.record-composer-protocol/v9",
+    "record_cells": 8192,
+    "run_receipt_sha256": "9371e1f6733f1ef42d184369ab368a4740e2da36577a15c0858aefa8c410c660",
+    "slow_parameters": 29895,
+    "training_cpu_seconds": 1586.0,
+    "training_tracks": 71
+  },
+  "schema": "cadence-examples.amen.record-composer-v15/v1",
+  "sources": {
+    "runs/record-composer-v15/parity.json": "9cd7bb1aeaea1bae7b16661686b3ded68376374a4ca6cd69dfb3c01ba9cc4b31",
+    "web/engine.js": "7a7bef9ae9005b8338b08921c4fff7e3b1c5d21a160023c227c6b0539bcfea85",
+    "web/kit/bass.wav": "37590125f23b05d1a9bd9eb5343437523876966a8bb8b475b9383638e588aaff",
+    "web/kit/break.wav": "82be2cdd68794040dd85a90f46686664ba610c2967a2f23a9796bf02fa59ff81",
+    "web/kit/kit.json": "83001713dd2f32ff78ae5c814076b0769f4e7f64405bf93e690032c8b265b57d",
+    "web/models/three-corpora-0-12/model.json": "c2d69847e61cf4ca4f2faa0830ffd9ec15ec53826d449b193eaa95b994c00481",
+    "web/models/three-corpora-0-12/params.f64": "cebc74103b5f09f0bc2a2044a0cb3c8661ff38394efb80dc0dc061b076f64888",
+    "web/models/three-corpora-0-12/records_mean.f64": "82859380a71f059a6c27802545e44db47aec39a36900443f3790bebca06ff8b4",
+    "web/models/three-corpora-0-12/records_y.f32": "70f38985820e98b576d473d5ba2949ea0d4602252b4f658df7315e76662ad130"
+  },
+  "verified": true
+}
