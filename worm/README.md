@@ -84,7 +84,7 @@ also checks that the browser body lays the same track as the Python reference (t
 three scripted crawls with reversals, omega turns and wall turns).
 
 ```bash
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
+python -m pip install "cadence-net==0.12.0" scipy
 python worm/tools/build_connectome.py      # data/connectome.json from the sources
 python worm/tools/export_web.py            # the newborn brain, web data and parity cases
 node worm/tests/parity.mjs
@@ -109,8 +109,7 @@ Python reference of the brain loop, the world and the life that the page ports.
 
 ## Limits
 
-- `PartitionedTemporalPatchNet` is on Cadence `main` after 0.11.0, not in the 0.11.0 release;
-  the worm pins that commit.
+- `PartitionedTemporalPatchNet` is in the Cadence release the examples pin, 0.12.0.
 - Neurons are rate units, not spiking cells. The body is a follow-the-leader curve, not a
   muscle model: the motor neurons do not drive it, and the brain has no oscillator or stretch
   feedback from which a body wave could arise.

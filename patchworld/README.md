@@ -70,7 +70,8 @@ planner on the library class.
 ## Evidence
 
 - `node sim/parity.js`: the twin against `ref/fixture.json`, which `ref/make_fixture.py` produces
-  from the library at commit `02fec624648d421e02ecb00f52f3d3072e9fe9ae`. Observation, the window
+  from the library at the release the examples pin, 0.12.0 (first checked at commit
+  `02fec624648d421e02ecb00f52f3d3072e9fe9ae`). Observation, the window
   interface, backtracking admission, learning without writing, and planning with feedback, with
   additive feedback, with bounds per port and with the record read held fixed agree to a relative
   difference of 1e-15.
@@ -86,7 +87,7 @@ planner on the library class.
 ## Run it
 
 ```bash
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+python -m pip install "cadence-net==0.12.0"
 python ref/make_fixture.py --out /tmp/fixture.json && node sim/parity.js /tmp/fixture.json
 node tests/physics.test.js
 python web/build.py --check                 # web/index.html is web/page.html with the sources inlined

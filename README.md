@@ -67,16 +67,16 @@ lineage took the world. Details, evidence and limits: [patchworld/README.md](pat
 
 ## Run them
 
-Each example pins the Cadence commit its evidence was produced with.
+Every example is verified against the current Cadence release, 0.12.0: its receipts are replayed, its exports rebuilt and its browser engine checked against the library at that release. A receipt names the commit its own numbers were produced with.
 
 ```bash
-# worm: cadence 3d655c84b131388c4ef05d945947fd3e9e786d45
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
+python -m pip install "cadence-net==0.12.0" scipy
+
+# worm
 python worm/tools/export_web.py && node worm/tests/parity.mjs && node worm/tests/body.mjs
 python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
 
-# connect4: cadence 02fec624648d421e02ecb00f52f3d3072e9fe9ae
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+# connect4
 python connect4/verify.py
 python connect4/web/export.py --patch connect4/brain/v1.npz --out /tmp/connect4 && node connect4/web/parity.mjs /tmp/connect4
 python -m http.server -d connect4/web 8805     # then open http://127.0.0.1:8805
@@ -84,8 +84,7 @@ python -m http.server -d connect4/web 8805     # then open http://127.0.0.1:8805
 # amen: the receipt names its library commit; verify.py also runs the browser parity under node
 python amen/verify.py
 
-# patchworld: cadence 02fec624648d421e02ecb00f52f3d3072e9fe9ae
-python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+# patchworld
 python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json && node patchworld/sim/parity.js /tmp/patchworld_fixture.json
 node patchworld/tests/physics.test.js
 python -m http.server -d patchworld/web 8804  # then open http://127.0.0.1:8804

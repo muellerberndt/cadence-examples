@@ -14,8 +14,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install the library at the worm's commit
-        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@3d655c84b131388c4ef05d945947fd3e9e786d45" scipy
+      - name: Install the library release the examples are verified against
+        run: python -m pip install "cadence-net==0.12.0" scipy
       - name: The browser brain and body against the committed exports
         run: |
           node worm/tests/parity.mjs
@@ -40,8 +40,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install the library at the commit the record-patch Connect Four was measured with
-        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+      - name: Install the library release the examples are verified against
+        run: python -m pip install "cadence-net==0.12.0"
       - name: The receipt, the games in it and the brain the page plays
         run: python connect4/verify.py
       - name: The page reads what the library reads and searches as the reference searches
@@ -72,8 +72,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install the library at the commit the twin is checked against
-        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence.git@02fec624648d421e02ecb00f52f3d3072e9fe9ae"
+      - name: Install the library release the examples are verified against
+        run: python -m pip install "cadence-net==0.12.0"
       - name: The browser brain against the library's RecordPatchNet, on a fresh fixture and on the committed one
         run: |
           python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json
