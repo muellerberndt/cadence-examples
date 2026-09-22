@@ -1,0 +1,137 @@
+school 4444571 positions; held-out unseen 21403, seen 7983
+    400 batches     21 s  validation sign 0.787 (slow alone 0.787) 3-way 0.526  seen sign 0.832 (slow alone 0.832)  kept
+    800 batches     45 s  validation sign 0.798 (slow alone 0.798) 3-way 0.523  seen sign 0.849 (slow alone 0.849)  kept
+   1200 batches     67 s  validation sign 0.807 (slow alone 0.807) 3-way 0.530  seen sign 0.863 (slow alone 0.863)  kept
+   1600 batches     92 s  validation sign 0.797 (slow alone 0.797) 3-way 0.538  seen sign 0.862 (slow alone 0.862)
+   2000 batches    116 s  validation sign 0.815 (slow alone 0.815) 3-way 0.549  seen sign 0.893 (slow alone 0.893)  kept
+   2400 batches    140 s  validation sign 0.823 (slow alone 0.823) 3-way 0.556  seen sign 0.891 (slow alone 0.891)  kept
+   2800 batches    164 s  validation sign 0.817 (slow alone 0.817) 3-way 0.555  seen sign 0.897 (slow alone 0.897)
+   3200 batches    188 s  validation sign 0.824 (slow alone 0.824) 3-way 0.569  seen sign 0.911 (slow alone 0.911)  kept
+   3600 batches    213 s  validation sign 0.832 (slow alone 0.832) 3-way 0.569  seen sign 0.916 (slow alone 0.916)  kept
+   4000 batches    237 s  validation sign 0.834 (slow alone 0.834) 3-way 0.579  seen sign 0.918 (slow alone 0.918)  kept
+   4400 batches    261 s  validation sign 0.826 (slow alone 0.826) 3-way 0.572  seen sign 0.911 (slow alone 0.911)
+   4800 batches    285 s  validation sign 0.840 (slow alone 0.840) 3-way 0.584  seen sign 0.924 (slow alone 0.924)  kept
+   5200 batches    309 s  validation sign 0.825 (slow alone 0.825) 3-way 0.571  seen sign 0.917 (slow alone 0.917)
+   5600 batches    334 s  validation sign 0.838 (slow alone 0.838) 3-way 0.601  seen sign 0.925 (slow alone 0.925)
+   6000 batches    358 s  validation sign 0.837 (slow alone 0.837) 3-way 0.595  seen sign 0.924 (slow alone 0.924)
+   6400 batches    382 s  validation sign 0.847 (slow alone 0.847) 3-way 0.611  seen sign 0.932 (slow alone 0.932)  kept
+   6800 batches    406 s  validation sign 0.835 (slow alone 0.835) 3-way 0.608  seen sign 0.927 (slow alone 0.927)
+   7200 batches    430 s  validation sign 0.840 (slow alone 0.840) 3-way 0.613  seen sign 0.927 (slow alone 0.927)
+   7600 batches    455 s  validation sign 0.849 (slow alone 0.849) 3-way 0.616  seen sign 0.935 (slow alone 0.935)  kept
+   8000 batches    479 s  validation sign 0.851 (slow alone 0.851) 3-way 0.619  seen sign 0.938 (slow alone 0.938)  kept
+   8400 batches    503 s  validation sign 0.849 (slow alone 0.849) 3-way 0.623  seen sign 0.937 (slow alone 0.937)
+   8800 batches    527 s  validation sign 0.849 (slow alone 0.849) 3-way 0.627  seen sign 0.938 (slow alone 0.938)
+   9200 batches    551 s  validation sign 0.835 (slow alone 0.835) 3-way 0.620  seen sign 0.927 (slow alone 0.927)
+   9600 batches    576 s  validation sign 0.846 (slow alone 0.846) 3-way 0.632  seen sign 0.936 (slow alone 0.936)
+  10000 batches    600 s  validation sign 0.857 (slow alone 0.857) 3-way 0.625  seen sign 0.942 (slow alone 0.942)  kept
+  10400 batches    624 s  validation sign 0.860 (slow alone 0.860) 3-way 0.630  seen sign 0.946 (slow alone 0.946)  kept
+  10800 batches    648 s  validation sign 0.864 (slow alone 0.864) 3-way 0.640  seen sign 0.944 (slow alone 0.944)  kept
+  11200 batches    673 s  validation sign 0.854 (slow alone 0.854) 3-way 0.640  seen sign 0.940 (slow alone 0.940)
+  11600 batches    697 s  validation sign 0.860 (slow alone 0.860) 3-way 0.646  seen sign 0.945 (slow alone 0.945)
+  12000 batches    721 s  validation sign 0.854 (slow alone 0.854) 3-way 0.643  seen sign 0.945 (slow alone 0.945)
+  12400 batches    745 s  validation sign 0.856 (slow alone 0.856) 3-way 0.643  seen sign 0.942 (slow alone 0.942)
+  12800 batches    769 s  validation sign 0.855 (slow alone 0.855) 3-way 0.635  seen sign 0.940 (slow alone 0.940)
+  13200 batches    794 s  validation sign 0.861 (slow alone 0.861) 3-way 0.646  seen sign 0.946 (slow alone 0.946)
+  13600 batches    818 s  validation sign 0.854 (slow alone 0.854) 3-way 0.641  seen sign 0.945 (slow alone 0.945)
+  14000 batches    842 s  validation sign 0.863 (slow alone 0.863) 3-way 0.647  seen sign 0.949 (slow alone 0.949)
+  14400 batches    866 s  validation sign 0.855 (slow alone 0.855) 3-way 0.640  seen sign 0.943 (slow alone 0.943)
+  14800 batches    890 s  validation sign 0.859 (slow alone 0.859) 3-way 0.655  seen sign 0.947 (slow alone 0.947)
+  15200 batches    915 s  validation sign 0.838 (slow alone 0.838) 3-way 0.630  seen sign 0.936 (slow alone 0.936)
+  15600 batches    939 s  validation sign 0.851 (slow alone 0.851) 3-way 0.647  seen sign 0.938 (slow alone 0.938)
+  16000 batches    963 s  validation sign 0.870 (slow alone 0.870) 3-way 0.660  seen sign 0.952 (slow alone 0.952)  kept
+  16400 batches    987 s  validation sign 0.867 (slow alone 0.867) 3-way 0.649  seen sign 0.949 (slow alone 0.949)
+  16800 batches   1012 s  validation sign 0.873 (slow alone 0.873) 3-way 0.656  seen sign 0.956 (slow alone 0.956)  kept
+  17200 batches   1036 s  validation sign 0.867 (slow alone 0.867) 3-way 0.661  seen sign 0.953 (slow alone 0.953)
+  17600 batches   1060 s  validation sign 0.873 (slow alone 0.873) 3-way 0.657  seen sign 0.955 (slow alone 0.955)  kept
+  18000 batches   1085 s  validation sign 0.879 (slow alone 0.879) 3-way 0.668  seen sign 0.957 (slow alone 0.957)  kept
+  18400 batches   1109 s  validation sign 0.869 (slow alone 0.869) 3-way 0.655  seen sign 0.953 (slow alone 0.953)
+  18800 batches   1133 s  validation sign 0.875 (slow alone 0.875) 3-way 0.665  seen sign 0.959 (slow alone 0.959)
+  19200 batches   1157 s  validation sign 0.872 (slow alone 0.872) 3-way 0.654  seen sign 0.954 (slow alone 0.954)
+  19600 batches   1181 s  validation sign 0.850 (slow alone 0.850) 3-way 0.631  seen sign 0.939 (slow alone 0.939)
+  20000 batches   1206 s  validation sign 0.859 (slow alone 0.859) 3-way 0.643  seen sign 0.942 (slow alone 0.942)
+  20400 batches   1230 s  validation sign 0.878 (slow alone 0.878) 3-way 0.668  seen sign 0.958 (slow alone 0.958)
+  20800 batches   1254 s  validation sign 0.860 (slow alone 0.860) 3-way 0.655  seen sign 0.949 (slow alone 0.949)
+  21200 batches   1278 s  validation sign 0.871 (slow alone 0.871) 3-way 0.662  seen sign 0.954 (slow alone 0.954)
+  21600 batches   1302 s  validation sign 0.871 (slow alone 0.871) 3-way 0.663  seen sign 0.956 (slow alone 0.956)
+  22000 batches   1327 s  validation sign 0.858 (slow alone 0.858) 3-way 0.659  seen sign 0.948 (slow alone 0.948)
+  22400 batches   1351 s  validation sign 0.875 (slow alone 0.875) 3-way 0.663  seen sign 0.956 (slow alone 0.956)
+  22800 batches   1375 s  validation sign 0.875 (slow alone 0.875) 3-way 0.672  seen sign 0.959 (slow alone 0.959)
+  23200 batches   1399 s  validation sign 0.879 (slow alone 0.879) 3-way 0.673  seen sign 0.960 (slow alone 0.960)  kept
+  23600 batches   1424 s  validation sign 0.877 (slow alone 0.877) 3-way 0.668  seen sign 0.957 (slow alone 0.957)
+  24000 batches   1448 s  validation sign 0.884 (slow alone 0.884) 3-way 0.676  seen sign 0.965 (slow alone 0.965)  kept
+  24400 batches   1472 s  validation sign 0.851 (slow alone 0.851) 3-way 0.648  seen sign 0.937 (slow alone 0.937)
+  24800 batches   1496 s  validation sign 0.885 (slow alone 0.885) 3-way 0.677  seen sign 0.961 (slow alone 0.961)  kept
+  25200 batches   1520 s  validation sign 0.886 (slow alone 0.886) 3-way 0.673  seen sign 0.961 (slow alone 0.961)  kept
+  25600 batches   1545 s  validation sign 0.884 (slow alone 0.884) 3-way 0.676  seen sign 0.961 (slow alone 0.961)
+  26000 batches   1569 s  validation sign 0.880 (slow alone 0.880) 3-way 0.674  seen sign 0.959 (slow alone 0.959)
+  26400 batches   1593 s  validation sign 0.883 (slow alone 0.883) 3-way 0.682  seen sign 0.961 (slow alone 0.961)
+  26800 batches   1617 s  validation sign 0.881 (slow alone 0.881) 3-way 0.682  seen sign 0.964 (slow alone 0.964)
+  27200 batches   1642 s  validation sign 0.880 (slow alone 0.880) 3-way 0.670  seen sign 0.960 (slow alone 0.960)
+  27600 batches   1666 s  validation sign 0.870 (slow alone 0.870) 3-way 0.651  seen sign 0.949 (slow alone 0.949)
+  28000 batches   1690 s  validation sign 0.874 (slow alone 0.874) 3-way 0.668  seen sign 0.958 (slow alone 0.958)
+  28400 batches   1714 s  validation sign 0.887 (slow alone 0.887) 3-way 0.685  seen sign 0.964 (slow alone 0.964)  kept
+  28800 batches   1738 s  validation sign 0.888 (slow alone 0.888) 3-way 0.677  seen sign 0.966 (slow alone 0.966)  kept
+  29200 batches   1763 s  validation sign 0.888 (slow alone 0.888) 3-way 0.682  seen sign 0.962 (slow alone 0.962)  kept
+  29600 batches   1787 s  validation sign 0.887 (slow alone 0.887) 3-way 0.675  seen sign 0.964 (slow alone 0.964)
+  30000 batches   1811 s  validation sign 0.887 (slow alone 0.887) 3-way 0.681  seen sign 0.963 (slow alone 0.963)
+  30400 batches   1835 s  validation sign 0.889 (slow alone 0.889) 3-way 0.690  seen sign 0.965 (slow alone 0.965)  kept
+  30800 batches   1860 s  validation sign 0.887 (slow alone 0.887) 3-way 0.678  seen sign 0.965 (slow alone 0.965)
+  31200 batches   1884 s  validation sign 0.859 (slow alone 0.859) 3-way 0.648  seen sign 0.950 (slow alone 0.950)
+  31600 batches   1908 s  validation sign 0.888 (slow alone 0.888) 3-way 0.685  seen sign 0.963 (slow alone 0.963)
+  32000 batches   1932 s  validation sign 0.886 (slow alone 0.886) 3-way 0.681  seen sign 0.965 (slow alone 0.965)
+  32400 batches   1957 s  validation sign 0.881 (slow alone 0.881) 3-way 0.673  seen sign 0.962 (slow alone 0.962)
+  32800 batches   1981 s  validation sign 0.884 (slow alone 0.884) 3-way 0.675  seen sign 0.961 (slow alone 0.961)
+  33200 batches   2005 s  validation sign 0.870 (slow alone 0.870) 3-way 0.672  seen sign 0.957 (slow alone 0.957)
+  33600 batches   2029 s  validation sign 0.882 (slow alone 0.882) 3-way 0.678  seen sign 0.964 (slow alone 0.964)
+  34000 batches   2054 s  validation sign 0.889 (slow alone 0.889) 3-way 0.689  seen sign 0.966 (slow alone 0.966)  kept
+  34400 batches   2078 s  validation sign 0.884 (slow alone 0.884) 3-way 0.690  seen sign 0.961 (slow alone 0.961)
+  34800 batches   2102 s  validation sign 0.889 (slow alone 0.889) 3-way 0.681  seen sign 0.967 (slow alone 0.967)  kept
+  35200 batches   2126 s  validation sign 0.890 (slow alone 0.890) 3-way 0.686  seen sign 0.966 (slow alone 0.966)  kept
+  35600 batches   2151 s  validation sign 0.891 (slow alone 0.891) 3-way 0.684  seen sign 0.966 (slow alone 0.966)  kept
+  36000 batches   2175 s  validation sign 0.882 (slow alone 0.882) 3-way 0.685  seen sign 0.962 (slow alone 0.962)
+  36400 batches   2199 s  validation sign 0.888 (slow alone 0.888) 3-way 0.684  seen sign 0.964 (slow alone 0.964)
+  36800 batches   2223 s  validation sign 0.887 (slow alone 0.887) 3-way 0.681  seen sign 0.965 (slow alone 0.965)
+  37200 batches   2248 s  validation sign 0.888 (slow alone 0.888) 3-way 0.688  seen sign 0.967 (slow alone 0.967)
+  37600 batches   2272 s  validation sign 0.893 (slow alone 0.893) 3-way 0.694  seen sign 0.967 (slow alone 0.967)  kept
+  38000 batches   2296 s  validation sign 0.886 (slow alone 0.886) 3-way 0.688  seen sign 0.966 (slow alone 0.966)
+  38400 batches   2320 s  validation sign 0.884 (slow alone 0.884) 3-way 0.691  seen sign 0.965 (slow alone 0.965)
+  38800 batches   2345 s  validation sign 0.891 (slow alone 0.891) 3-way 0.688  seen sign 0.964 (slow alone 0.964)
+  39200 batches   2369 s  validation sign 0.895 (slow alone 0.895) 3-way 0.697  seen sign 0.967 (slow alone 0.967)  kept
+  39600 batches   2393 s  validation sign 0.894 (slow alone 0.894) 3-way 0.690  seen sign 0.969 (slow alone 0.969)
+  40000 batches   2417 s  validation sign 0.891 (slow alone 0.891) 3-way 0.689  seen sign 0.967 (slow alone 0.967)
+  40400 batches   2441 s  validation sign 0.887 (slow alone 0.887) 3-way 0.682  seen sign 0.968 (slow alone 0.968)
+  40800 batches   2466 s  validation sign 0.896 (slow alone 0.896) 3-way 0.697  seen sign 0.969 (slow alone 0.969)  kept
+  41200 batches   2490 s  validation sign 0.892 (slow alone 0.892) 3-way 0.694  seen sign 0.969 (slow alone 0.969)
+  41600 batches   2514 s  validation sign 0.896 (slow alone 0.896) 3-way 0.693  seen sign 0.969 (slow alone 0.969)  kept
+  42000 batches   2538 s  validation sign 0.892 (slow alone 0.892) 3-way 0.696  seen sign 0.967 (slow alone 0.967)
+  42400 batches   2563 s  validation sign 0.890 (slow alone 0.890) 3-way 0.692  seen sign 0.965 (slow alone 0.965)
+  42800 batches   2587 s  validation sign 0.889 (slow alone 0.889) 3-way 0.689  seen sign 0.964 (slow alone 0.964)
+  43200 batches   2611 s  validation sign 0.890 (slow alone 0.890) 3-way 0.693  seen sign 0.968 (slow alone 0.968)
+  43600 batches   2635 s  validation sign 0.893 (slow alone 0.893) 3-way 0.690  seen sign 0.969 (slow alone 0.969)
+  44000 batches   2659 s  validation sign 0.890 (slow alone 0.890) 3-way 0.694  seen sign 0.968 (slow alone 0.968)
+  44400 batches   2684 s  validation sign 0.888 (slow alone 0.888) 3-way 0.692  seen sign 0.966 (slow alone 0.966)
+  44800 batches   2708 s  validation sign 0.887 (slow alone 0.887) 3-way 0.690  seen sign 0.966 (slow alone 0.966)
+  45200 batches   2732 s  validation sign 0.896 (slow alone 0.896) 3-way 0.696  seen sign 0.968 (slow alone 0.968)
+  45600 batches   2756 s  validation sign 0.888 (slow alone 0.888) 3-way 0.682  seen sign 0.963 (slow alone 0.963)
+  46000 batches   2781 s  validation sign 0.889 (slow alone 0.889) 3-way 0.680  seen sign 0.965 (slow alone 0.965)
+  46400 batches   2805 s  validation sign 0.895 (slow alone 0.895) 3-way 0.700  seen sign 0.970 (slow alone 0.970)
+  46800 batches   2829 s  validation sign 0.894 (slow alone 0.894) 3-way 0.688  seen sign 0.968 (slow alone 0.968)
+  47200 batches   2854 s  validation sign 0.895 (slow alone 0.895) 3-way 0.695  seen sign 0.968 (slow alone 0.968)
+  47600 batches   2878 s  validation sign 0.895 (slow alone 0.895) 3-way 0.694  seen sign 0.968 (slow alone 0.968)
+  48000 batches   2902 s  validation sign 0.897 (slow alone 0.897) 3-way 0.696  seen sign 0.969 (slow alone 0.969)  kept
+  48400 batches   2926 s  validation sign 0.900 (slow alone 0.900) 3-way 0.699  seen sign 0.969 (slow alone 0.969)  kept
+  48800 batches   2950 s  validation sign 0.896 (slow alone 0.896) 3-way 0.693  seen sign 0.970 (slow alone 0.970)
+  49200 batches   2975 s  validation sign 0.895 (slow alone 0.895) 3-way 0.694  seen sign 0.967 (slow alone 0.967)
+  49600 batches   2999 s  validation sign 0.896 (slow alone 0.896) 3-way 0.699  seen sign 0.970 (slow alone 0.970)
+  50000 batches   3023 s  validation sign 0.898 (slow alone 0.898) 3-way 0.699  seen sign 0.969 (slow alone 0.969)
+  50400 batches   3047 s  validation sign 0.896 (slow alone 0.896) 3-way 0.702  seen sign 0.970 (slow alone 0.970)
+  50800 batches   3072 s  validation sign 0.895 (slow alone 0.895) 3-way 0.695  seen sign 0.968 (slow alone 0.968)
+  51200 batches   3096 s  validation sign 0.896 (slow alone 0.896) 3-way 0.700  seen sign 0.970 (slow alone 0.970)
+  51600 batches   3120 s  validation sign 0.889 (slow alone 0.889) 3-way 0.687  seen sign 0.967 (slow alone 0.967)
+  52000 batches   3144 s  validation sign 0.899 (slow alone 0.899) 3-way 0.696  seen sign 0.967 (slow alone 0.967)
+  52084 batches   3151 s  validation sign 0.895 (slow alone 0.895) 3-way 0.701  seen sign 0.970 (slow alone 0.970)
+kept batch 48400: reported unseen {'positions': 10702, 'sign': 0.89646627881922, 'slow_sign': 0.89646627881922, 'three_way': 0.7087460287796673, 'mse': 0.2818485503230875}  seen {'positions': 7983, 'sign': 0.9688026981450253, 'slow_sign': 0.9688026981450253, 'three_way': 0.8523111612175873, 'mse': 0.10313041356588869}
+  unseen, 0-8 stones: {'positions': 31, 'sign': 0.9259259259259259, 'slow_sign': 0.9259259259259259, 'three_way': 0.7741935483870968, 'mse': 0.18018031641418977}
+  unseen, 8-16 stones: {'positions': 816, 'sign': 0.8794520547945206, 'slow_sign': 0.8794520547945206, 'three_way': 0.6752450980392157, 'mse': 0.2533642979701703}
+  unseen, 16-24 stones: {'positions': 2501, 'sign': 0.8810058374494836, 'slow_sign': 0.8810058374494836, 'three_way': 0.6849260295881647, 'mse': 0.2831542610296945}
+  unseen, 24-43 stones: {'positions': 7354, 'sign': 0.9037789774531597, 'slow_sign': 0.9037789774531597, 'three_way': 0.7202882784878978, 'mse': 0.2849936798708074}

@@ -1,0 +1,146 @@
+school 4444571 positions; held-out unseen 21403, seen 7983
+start: validation sign off 0.565 on 0.565  input norm 4.831
+night 1 day: 66337 rows written in 11 s; validation sign off 0.565 on 0.720
+night 1: 259 cues, 777 updates in 49 s, dream loss 0.2028 -> 0.0686; validation sign off 0.758 on 0.742  3-way off 0.489  seen sign off 0.816 on 0.824  kept
+night 2 day: 66337 rows written in 11 s; validation sign off 0.758 on 0.737
+night 2: 259 cues, 777 updates in 49 s, dream loss 0.1141 -> 0.0560; validation sign off 0.769 on 0.741  3-way off 0.511  seen sign off 0.832 on 0.830  kept
+night 3 day: 66337 rows written in 11 s; validation sign off 0.769 on 0.733
+night 3: 259 cues, 777 updates in 49 s, dream loss 0.0835 -> 0.0637; validation sign off 0.754 on 0.750  3-way off 0.520  seen sign off 0.830 on 0.814
+night 4 day: 66337 rows written in 11 s; validation sign off 0.754 on 0.742
+night 4: 259 cues, 777 updates in 49 s, dream loss 0.0850 -> 0.0514; validation sign off 0.770 on 0.755  3-way off 0.511  seen sign off 0.851 on 0.845  kept
+night 5 day: 66337 rows written in 11 s; validation sign off 0.770 on 0.746
+night 5: 259 cues, 777 updates in 49 s, dream loss 0.0855 -> 0.0524; validation sign off 0.788 on 0.754  3-way off 0.529  seen sign off 0.865 on 0.843  kept
+night 6 day: 66337 rows written in 11 s; validation sign off 0.788 on 0.757
+night 6: 259 cues, 777 updates in 49 s, dream loss 0.0828 -> 0.0494; validation sign off 0.790 on 0.765  3-way off 0.543  seen sign off 0.868 on 0.852  kept
+night 7 day: 66337 rows written in 11 s; validation sign off 0.790 on 0.754
+night 7: 259 cues, 777 updates in 49 s, dream loss 0.1020 -> 0.0462; validation sign off 0.778 on 0.759  3-way off 0.537  seen sign off 0.856 on 0.843
+night 8 day: 66337 rows written in 11 s; validation sign off 0.778 on 0.762
+night 8: 259 cues, 777 updates in 48 s, dream loss 0.0839 -> 0.0438; validation sign off 0.794 on 0.770  3-way off 0.545  seen sign off 0.875 on 0.859  kept
+night 9 day: 66337 rows written in 11 s; validation sign off 0.794 on 0.769
+night 9: 259 cues, 777 updates in 49 s, dream loss 0.0855 -> 0.0417; validation sign off 0.798 on 0.771  3-way off 0.565  seen sign off 0.883 on 0.860  kept
+night 10 day: 66337 rows written in 11 s; validation sign off 0.798 on 0.750
+night 10: 259 cues, 777 updates in 49 s, dream loss 0.0783 -> 0.0462; validation sign off 0.791 on 0.754  3-way off 0.554  seen sign off 0.886 on 0.861
+night 11 day: 66337 rows written in 11 s; validation sign off 0.791 on 0.775
+night 11: 259 cues, 777 updates in 48 s, dream loss 0.0700 -> 0.0444; validation sign off 0.795 on 0.780  3-way off 0.560  seen sign off 0.871 on 0.857
+night 12 day: 66337 rows written in 11 s; validation sign off 0.795 on 0.759
+night 12: 259 cues, 777 updates in 49 s, dream loss 0.0881 -> 0.0447; validation sign off 0.792 on 0.771  3-way off 0.552  seen sign off 0.886 on 0.859
+night 13 day: 66337 rows written in 11 s; validation sign off 0.792 on 0.762
+night 13: 259 cues, 777 updates in 48 s, dream loss 0.0708 -> 0.0403; validation sign off 0.793 on 0.767  3-way off 0.556  seen sign off 0.889 on 0.877
+night 14 day: 66337 rows written in 11 s; validation sign off 0.793 on 0.759
+night 14: 259 cues, 777 updates in 49 s, dream loss 0.0774 -> 0.0411; validation sign off 0.795 on 0.761  3-way off 0.555  seen sign off 0.883 on 0.848
+night 15 day: 66337 rows written in 11 s; validation sign off 0.795 on 0.764
+night 15: 259 cues, 777 updates in 49 s, dream loss 0.0824 -> 0.0463; validation sign off 0.799 on 0.776  3-way off 0.569  seen sign off 0.886 on 0.852  kept
+night 16 day: 66337 rows written in 11 s; validation sign off 0.799 on 0.765
+night 16: 259 cues, 777 updates in 49 s, dream loss 0.0855 -> 0.0426; validation sign off 0.807 on 0.771  3-way off 0.566  seen sign off 0.904 on 0.872  kept
+night 17 day: 66337 rows written in 11 s; validation sign off 0.807 on 0.779
+night 17: 259 cues, 777 updates in 49 s, dream loss 0.0790 -> 0.0384; validation sign off 0.811 on 0.784  3-way off 0.568  seen sign off 0.897 on 0.869  kept
+night 18 day: 66337 rows written in 11 s; validation sign off 0.811 on 0.777
+night 18: 259 cues, 777 updates in 48 s, dream loss 0.0582 -> 0.0404; validation sign off 0.810 on 0.787  3-way off 0.580  seen sign off 0.901 on 0.880
+night 19 day: 66337 rows written in 11 s; validation sign off 0.810 on 0.762
+night 19: 259 cues, 777 updates in 49 s, dream loss 0.0897 -> 0.0369; validation sign off 0.801 on 0.773  3-way off 0.562  seen sign off 0.872 on 0.857
+night 20 day: 66337 rows written in 11 s; validation sign off 0.801 on 0.778
+night 20: 259 cues, 777 updates in 49 s, dream loss 0.0942 -> 0.0376; validation sign off 0.805 on 0.782  3-way off 0.578  seen sign off 0.896 on 0.881
+night 21 day: 66337 rows written in 11 s; validation sign off 0.805 on 0.775
+night 21: 259 cues, 777 updates in 49 s, dream loss 0.0737 -> 0.0363; validation sign off 0.825 on 0.788  3-way off 0.585  seen sign off 0.897 on 0.875  kept
+night 22 day: 66337 rows written in 11 s; validation sign off 0.825 on 0.788
+night 22: 259 cues, 777 updates in 49 s, dream loss 0.0609 -> 0.0333; validation sign off 0.821 on 0.798  3-way off 0.590  seen sign off 0.907 on 0.887
+night 23 day: 66337 rows written in 11 s; validation sign off 0.821 on 0.781
+night 23: 259 cues, 777 updates in 49 s, dream loss 0.0648 -> 0.0352; validation sign off 0.817 on 0.780  3-way off 0.586  seen sign off 0.900 on 0.872
+night 24 day: 66337 rows written in 11 s; validation sign off 0.817 on 0.770
+night 24: 259 cues, 777 updates in 49 s, dream loss 0.0723 -> 0.0349; validation sign off 0.813 on 0.775  3-way off 0.569  seen sign off 0.898 on 0.870
+night 25 day: 66337 rows written in 11 s; validation sign off 0.813 on 0.771
+night 25: 259 cues, 777 updates in 49 s, dream loss 0.0668 -> 0.0356; validation sign off 0.802 on 0.777  3-way off 0.571  seen sign off 0.898 on 0.884
+night 26 day: 66337 rows written in 11 s; validation sign off 0.802 on 0.781
+night 26: 259 cues, 777 updates in 49 s, dream loss 0.0645 -> 0.0336; validation sign off 0.824 on 0.794  3-way off 0.586  seen sign off 0.903 on 0.876
+night 27 day: 66337 rows written in 11 s; validation sign off 0.824 on 0.778
+night 27: 259 cues, 777 updates in 49 s, dream loss 0.0683 -> 0.0332; validation sign off 0.822 on 0.786  3-way off 0.580  seen sign off 0.902 on 0.871
+night 28 day: 66337 rows written in 11 s; validation sign off 0.822 on 0.786
+night 28: 259 cues, 777 updates in 49 s, dream loss 0.0664 -> 0.0336; validation sign off 0.825 on 0.794  3-way off 0.582  seen sign off 0.906 on 0.882  kept
+night 29 day: 66337 rows written in 11 s; validation sign off 0.825 on 0.775
+night 29: 259 cues, 777 updates in 49 s, dream loss 0.0659 -> 0.0358; validation sign off 0.816 on 0.788  3-way off 0.590  seen sign off 0.899 on 0.881
+night 30 day: 66337 rows written in 11 s; validation sign off 0.816 on 0.774
+night 30: 259 cues, 777 updates in 49 s, dream loss 0.0700 -> 0.0346; validation sign off 0.802 on 0.776  3-way off 0.575  seen sign off 0.890 on 0.875
+night 31 day: 66337 rows written in 11 s; validation sign off 0.802 on 0.791
+night 31: 259 cues, 777 updates in 48 s, dream loss 0.0648 -> 0.0334; validation sign off 0.825 on 0.808  3-way off 0.605  seen sign off 0.900 on 0.877
+night 32 day: 66337 rows written in 11 s; validation sign off 0.825 on 0.786
+night 32: 259 cues, 777 updates in 49 s, dream loss 0.0705 -> 0.0352; validation sign off 0.825 on 0.794  3-way off 0.594  seen sign off 0.906 on 0.872
+night 33 day: 66337 rows written in 11 s; validation sign off 0.825 on 0.789
+night 33: 259 cues, 777 updates in 48 s, dream loss 0.0739 -> 0.0314; validation sign off 0.820 on 0.790  3-way off 0.592  seen sign off 0.906 on 0.883
+night 34 day: 66337 rows written in 11 s; validation sign off 0.820 on 0.776
+night 34: 259 cues, 777 updates in 49 s, dream loss 0.0952 -> 0.0330; validation sign off 0.811 on 0.791  3-way off 0.590  seen sign off 0.903 on 0.872
+night 35 day: 66337 rows written in 11 s; validation sign off 0.811 on 0.784
+night 35: 259 cues, 777 updates in 48 s, dream loss 0.0928 -> 0.0337; validation sign off 0.823 on 0.798  3-way off 0.591  seen sign off 0.893 on 0.872
+night 36 day: 66337 rows written in 11 s; validation sign off 0.823 on 0.793
+night 36: 259 cues, 777 updates in 49 s, dream loss 0.0757 -> 0.0335; validation sign off 0.826 on 0.795  3-way off 0.598  seen sign off 0.910 on 0.881  kept
+night 37 day: 66337 rows written in 11 s; validation sign off 0.826 on 0.777
+night 37: 259 cues, 777 updates in 49 s, dream loss 0.0674 -> 0.0329; validation sign off 0.816 on 0.785  3-way off 0.584  seen sign off 0.902 on 0.866
+night 38 day: 66337 rows written in 11 s; validation sign off 0.816 on 0.782
+night 38: 259 cues, 777 updates in 49 s, dream loss 0.0786 -> 0.0333; validation sign off 0.820 on 0.794  3-way off 0.596  seen sign off 0.911 on 0.890
+night 39 day: 66337 rows written in 11 s; validation sign off 0.820 on 0.788
+night 39: 259 cues, 777 updates in 49 s, dream loss 0.0634 -> 0.0314; validation sign off 0.822 on 0.804  3-way off 0.598  seen sign off 0.909 on 0.886
+night 40 day: 66337 rows written in 11 s; validation sign off 0.822 on 0.792
+night 40: 259 cues, 777 updates in 49 s, dream loss 0.0622 -> 0.0321; validation sign off 0.828 on 0.807  3-way off 0.606  seen sign off 0.914 on 0.897  kept
+night 41 day: 66337 rows written in 11 s; validation sign off 0.828 on 0.786
+night 41: 259 cues, 777 updates in 49 s, dream loss 0.0746 -> 0.0333; validation sign off 0.827 on 0.798  3-way off 0.607  seen sign off 0.907 on 0.880
+night 42 day: 66337 rows written in 11 s; validation sign off 0.827 on 0.792
+night 42: 259 cues, 777 updates in 49 s, dream loss 0.0531 -> 0.0295; validation sign off 0.820 on 0.802  3-way off 0.610  seen sign off 0.903 on 0.887
+night 43 day: 66337 rows written in 11 s; validation sign off 0.820 on 0.780
+night 43: 259 cues, 777 updates in 49 s, dream loss 0.0705 -> 0.0334; validation sign off 0.818 on 0.792  3-way off 0.604  seen sign off 0.910 on 0.894
+night 44 day: 66337 rows written in 11 s; validation sign off 0.818 on 0.779
+night 44: 259 cues, 777 updates in 48 s, dream loss 0.0798 -> 0.0334; validation sign off 0.816 on 0.788  3-way off 0.580  seen sign off 0.902 on 0.876
+night 45 day: 66337 rows written in 11 s; validation sign off 0.816 on 0.784
+night 45: 259 cues, 777 updates in 49 s, dream loss 0.0730 -> 0.0323; validation sign off 0.825 on 0.798  3-way off 0.600  seen sign off 0.908 on 0.885
+night 46 day: 66337 rows written in 11 s; validation sign off 0.825 on 0.786
+night 46: 259 cues, 777 updates in 48 s, dream loss 0.0640 -> 0.0314; validation sign off 0.822 on 0.794  3-way off 0.607  seen sign off 0.909 on 0.889
+night 47 day: 66337 rows written in 11 s; validation sign off 0.822 on 0.788
+night 47: 259 cues, 777 updates in 49 s, dream loss 0.0655 -> 0.0307; validation sign off 0.810 on 0.797  3-way off 0.605  seen sign off 0.911 on 0.891
+night 48 day: 66337 rows written in 11 s; validation sign off 0.810 on 0.782
+night 48: 259 cues, 777 updates in 48 s, dream loss 0.0808 -> 0.0322; validation sign off 0.820 on 0.787  3-way off 0.602  seen sign off 0.902 on 0.871
+night 49 day: 66337 rows written in 11 s; validation sign off 0.820 on 0.796
+night 49: 259 cues, 777 updates in 48 s, dream loss 0.0828 -> 0.0403; validation sign off 0.836 on 0.803  3-way off 0.603  seen sign off 0.905 on 0.881  kept
+night 50 day: 66337 rows written in 11 s; validation sign off 0.836 on 0.798
+night 50: 259 cues, 777 updates in 47 s, dream loss 0.0708 -> 0.0360; validation sign off 0.827 on 0.815  3-way off 0.616  seen sign off 0.912 on 0.893
+night 51 day: 66337 rows written in 11 s; validation sign off 0.827 on 0.799
+night 51: 259 cues, 777 updates in 48 s, dream loss 0.0590 -> 0.0284; validation sign off 0.835 on 0.815  3-way off 0.613  seen sign off 0.918 on 0.904
+night 52 day: 66337 rows written in 11 s; validation sign off 0.835 on 0.799
+night 52: 259 cues, 777 updates in 47 s, dream loss 0.0724 -> 0.0300; validation sign off 0.833 on 0.810  3-way off 0.620  seen sign off 0.911 on 0.894
+night 53 day: 66337 rows written in 11 s; validation sign off 0.833 on 0.797
+night 53: 259 cues, 777 updates in 49 s, dream loss 0.0716 -> 0.0310; validation sign off 0.830 on 0.807  3-way off 0.623  seen sign off 0.915 on 0.894
+night 54 day: 66337 rows written in 11 s; validation sign off 0.830 on 0.801
+night 54: 259 cues, 777 updates in 49 s, dream loss 0.0651 -> 0.0322; validation sign off 0.832 on 0.812  3-way off 0.623  seen sign off 0.908 on 0.887
+night 55 day: 66337 rows written in 12 s; validation sign off 0.832 on 0.796
+night 55: 259 cues, 777 updates in 49 s, dream loss 0.0724 -> 0.0329; validation sign off 0.823 on 0.800  3-way off 0.594  seen sign off 0.901 on 0.888
+night 56 day: 66337 rows written in 11 s; validation sign off 0.823 on 0.808
+night 56: 259 cues, 777 updates in 49 s, dream loss 0.0698 -> 0.0298; validation sign off 0.839 on 0.813  3-way off 0.621  seen sign off 0.916 on 0.898  kept
+night 57 day: 66337 rows written in 11 s; validation sign off 0.839 on 0.814
+night 57: 259 cues, 777 updates in 49 s, dream loss 0.0761 -> 0.0304; validation sign off 0.844 on 0.821  3-way off 0.635  seen sign off 0.915 on 0.891  kept
+night 58 day: 66337 rows written in 11 s; validation sign off 0.844 on 0.784
+night 58: 259 cues, 777 updates in 49 s, dream loss 0.0625 -> 0.0315; validation sign off 0.823 on 0.801  3-way off 0.598  seen sign off 0.906 on 0.885
+night 59 day: 66337 rows written in 11 s; validation sign off 0.823 on 0.790
+night 59: 259 cues, 777 updates in 49 s, dream loss 0.0907 -> 0.0355; validation sign off 0.830 on 0.800  3-way off 0.612  seen sign off 0.910 on 0.882
+night 60 day: 66336 rows written in 11 s; validation sign off 0.830 on 0.800
+night 60: 259 cues, 777 updates in 49 s, dream loss 0.0570 -> 0.0300; validation sign off 0.834 on 0.808  3-way off 0.615  seen sign off 0.911 on 0.883
+night 61 day: 66336 rows written in 11 s; validation sign off 0.834 on 0.798
+night 61: 259 cues, 777 updates in 49 s, dream loss 0.0655 -> 0.0293; validation sign off 0.828 on 0.805  3-way off 0.615  seen sign off 0.913 on 0.896
+night 62 day: 66336 rows written in 11 s; validation sign off 0.828 on 0.795
+night 62: 259 cues, 777 updates in 49 s, dream loss 0.0514 -> 0.0273; validation sign off 0.823 on 0.800  3-way off 0.605  seen sign off 0.917 on 0.895
+night 63 day: 66336 rows written in 11 s; validation sign off 0.823 on 0.796
+night 63: 259 cues, 777 updates in 50 s, dream loss 0.0645 -> 0.0295; validation sign off 0.832 on 0.812  3-way off 0.622  seen sign off 0.914 on 0.894
+night 64 day: 66336 rows written in 11 s; validation sign off 0.832 on 0.805
+night 64: 259 cues, 777 updates in 49 s, dream loss 0.0699 -> 0.0288; validation sign off 0.835 on 0.815  3-way off 0.618  seen sign off 0.908 on 0.888
+night 65 day: 66336 rows written in 11 s; validation sign off 0.835 on 0.800
+night 65: 259 cues, 777 updates in 49 s, dream loss 0.0603 -> 0.0281; validation sign off 0.830 on 0.808  3-way off 0.616  seen sign off 0.919 on 0.898
+night 66 day: 66336 rows written in 11 s; validation sign off 0.830 on 0.799
+night 66: 259 cues, 777 updates in 48 s, dream loss 0.0660 -> 0.0287; validation sign off 0.832 on 0.814  3-way off 0.616  seen sign off 0.918 on 0.885
+night 67 day: 66336 rows written in 11 s; validation sign off 0.832 on 0.804
+night 67: 259 cues, 777 updates in 50 s, dream loss 0.0646 -> 0.0293; validation sign off 0.830 on 0.809  3-way off 0.621  seen sign off 0.921 on 0.898
+kept: reported unseen sign off 0.8380 on 0.8138  3-way off 0.6306 on 0.6070  mse off 0.4011 on 0.4604  seen sign off 0.9151 on 0.8908
+  unseen, 0-8 stones: off 0.741 on 0.593 of 31
+  unseen, 8-16 stones: off 0.818 on 0.792 of 816
+  unseen, 16-24 stones: off 0.828 on 0.806 of 2501
+  unseen, 24-43 stones: off 0.844 on 0.820 of 7354
+last: reported unseen sign off 0.8348 on 0.8149  3-way off 0.6222 on 0.5971  mse off 0.4025 on 0.4512  seen sign off 0.9207 on 0.8983
+  unseen, 0-8 stones: off 0.704 on 0.630 of 31
+  unseen, 8-16 stones: off 0.815 on 0.773 of 816
+  unseen, 16-24 stones: off 0.832 on 0.817 of 2501
+  unseen, 24-43 stones: off 0.839 on 0.820 of 7354
