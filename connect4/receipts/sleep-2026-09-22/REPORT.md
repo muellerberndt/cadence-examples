@@ -123,8 +123,9 @@ The same arms on the school the deployed brain is taught with (seed 0; held-out 
 | school, 6 passes (deployed as `brain/v2.npz`) | 104,169 | 0.906 | 0.906 | 0.926 | 0.884 | 0.895 | 0.912 | 6,299 |
 | sleep, 67 days and nights, one pass a night | 17,353 | 0.819 | 0.789 | 0.778 | 0.821 | 0.812 | 0.820 | 3,340 |
 | sleep, 67 days and nights, three passes a night | 52,059 | 0.838 | 0.814 | 0.704 | 0.815 | 0.832 | 0.839 | 4,010 |
+| sleep, 67 days and nights, three passes a night, averaging store (floor 0.02) | 52,059 | 0.835 | 0.840 | 0.704 | 0.826 | 0.827 | 0.834 | 4,392 |
 
-At the same 52,000 updates the school is 5.8 points ahead of the sleep regime (0.896 against 0.838), where it was one to three points ahead on the 67,399-position school: the gap grows with the school. Each night teaches what its day's store holds, and a day's store of 66,300 writes in 4,096 last-writer cells reads unseen positions at about 0.78 at bedtime, so 67 nights of such dreams do not add up to what 67 days of the outcomes themselves teach. Two arms with an averaging store (floor 0.02, 4,096 and 16,384 cells, three passes a night) were started on the same instance and are reported here when they end.
+At the same 52,000 updates the school is 5.8 points ahead of the sleep regime (0.896 against 0.838), where it was one to three points ahead on the 67,399-position school: the gap grows with the school. Each night teaches what its day's store holds, and a day's store of 66,300 writes in 4,096 last-writer cells reads unseen positions at about 0.78 at bedtime, so 67 nights of such dreams do not add up to what 67 days of the outcomes themselves teach. The averaging store, which read unseen positions at 0.778 after one day on the small school, does not change the outcome here: 0.835 with the store off and 0.840 with it on, against 0.838 and 0.814 for the last-writers store. A 16,384-cell averaging arm was started on the same instance and is reported here when it ends.
 
 ## Where the example's code changed
 
