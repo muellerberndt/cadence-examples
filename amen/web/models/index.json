@@ -159,7 +159,47 @@
    },
    "training_tracks": 71,
    "training_cpu_seconds": 1392
+  },
+  {
+   "name": "three-corpora-0-12",
+   "label": "Three corpora, on 0.12.0",
+   "trained_on": "the same 71 tracks and windows, six epochs, trained on Cadence 0.12.0",
+   "run": "record-composer-v14",
+   "run_receipt_sha256": "5a8de38c1b1bfea2a2f56d8586d5e5e4c325f32fe60e3d289299f2a7ffe6b062",
+   "held_out_tracks": 8,
+   "held_out_ranges": {
+    "drum_identity_accuracy": [
+     0.8411633109619687,
+     0.8725274725274725
+    ],
+    "bass_note_accuracy": [
+     0.443701226309922,
+     0.6440025657472739
+    ],
+    "texture_mae": [
+     0.07996128404966965,
+     0.13680388812587738
+    ],
+    "change_recall": [
+     0.09090909090909091,
+     0.2737430167597765
+    ],
+    "frequency_baseline_drum_identity_accuracy": [
+     0.03131868131868132,
+     0.05145413870246085
+    ],
+    "repeat_previous_bass_note_accuracy": [
+     0.13470173187940987,
+     0.5155210643015521
+    ],
+    "repeat_previous_texture_mae": [
+     0.09888871905821346,
+     0.1733616457069418
+    ]
+   },
+   "training_tracks": 71,
+   "training_cpu_seconds": 4360
   }
  ],
- "default": "three-corpora"
+ "default": "three-corpora-0-12"
 }
