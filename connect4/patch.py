@@ -31,9 +31,9 @@ def value_target(z: np.ndarray, n: np.ndarray) -> np.ndarray:
 
 class ValuePatch:
     def __init__(self, hidden: int = 256, cells: int = 4096, active: int = 32, seed: int = 0,
-                 record_rate: float = 0.5, net: RecordPatchNet | None = None) -> None:
+                 record_rate: float = 0.5, record_averaging: bool = False, net: RecordPatchNet | None = None) -> None:
         self.net = net or RecordPatchNet(READING, hidden, 1, seed=seed, cells=cells, active=active,
-                                         record_rate=record_rate, slowest=2.0)
+                                         record_rate=record_rate, record_averaging=record_averaging, slowest=2.0)
         self.evaluations = 0
 
     @property

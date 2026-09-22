@@ -58,6 +58,18 @@ of `imagine` is not bitwise invariant to the size of its batch, so the search re
 distinct position once; record addresses are a similarity kernel, so a write also moves the
 sibling moves unless they are anchored at their current values (`receipts/record_address.json`: siblings share 51 percent of their active cells; a plain write moves them 0.29 where the written move goes 0.55, an anchored write 0.04 where it goes 0.71).
 
+A second regime was measured and not deployed (`receipts/sleep-2026-09-22/`, `train_sleep.py`):
+records by day, slow parameters by night. A day writes every school position once at slow
+rate zero; a night is `RecordPatchNet.sleep` on the day's cues, so the slow readout learns
+from the store's own dreams with the school closed. One night takes the readout from chance
+to 0.755 (4,096 cells), 0.768 (16,384) and 0.772 (65,536) on the held-out sign, against the
+school's 0.785 from the same 263 updates on the outcomes themselves; at every matched update
+count the school is one to three points ahead, and the dawn readout follows what the store
+read at bedtime. An averaging store (`record_averaging`, floor 0.02) is not drowned by a day
+of 67,399 writes: it reads unseen positions at 0.778 in 4,096 cells and lifts the schooled
+readout from 0.792 to 0.806 when written on top of it, where the last-writers store lowers
+it to 0.765. The deployed brain stays the schooled one.
+
 ## Open
 
 - The page does not yet learn from the games played on it. The write path and its

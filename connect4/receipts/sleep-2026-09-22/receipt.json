@@ -1,0 +1,6411 @@
+{
+ "format": "cadence-examples.connect4.sleep/1",
+ "library": {
+  "name": "cadence",
+  "commit": "390e2e86ec889309ec496a25090a284d1b7c4a2f"
+ },
+ "examples_commit": "8a12fe919060ec27a4cba38381f74dc7d8f27035",
+ "threads": {
+  "OMP_NUM_THREADS": 2
+ },
+ "school": {
+  "file": "runs/connect4/school/s1.npz",
+  "games": 3000,
+  "seed": 1,
+  "positions": 67399
+ },
+ "heldout": {
+  "file": "runs/connect4/school/test.npz",
+  "games": 1500,
+  "seed": 99,
+  "unseen_validation": 13806,
+  "unseen_reported": 13807,
+  "seen": 1887
+ },
+ "timing_per_1000_rows": {
+  "4096": {
+   "table_mb": 0.032768,
+   "projection_mb": 11.14112,
+   "day_s_per_1k": 1.279,
+   "night_s_per_1k": 2.95,
+   "read_s_per_1k": 0.582
+  },
+  "16384": {
+   "table_mb": 0.131072,
+   "projection_mb": 44.56448,
+   "day_s_per_1k": 3.103,
+   "night_s_per_1k": 8.98,
+   "read_s_per_1k": 1.307
+  },
+  "65536": {
+   "table_mb": 0.524288,
+   "projection_mb": 178.25792,
+   "day_s_per_1k": 12.614,
+   "night_s_per_1k": 38.331,
+   "read_s_per_1k": 12.242
+  },
+  "note": "1,024 synthetic board readings, hidden 256, cue batches of 256, passes 1, dawn_passes 2, OMP_NUM_THREADS=2, load average 8.8 before the runs; the 65536 read was one imagine call of 1,024 rows"
+ },
+ "validation_curve": [
+  {
+   "regime": "school",
+   "unit": "pass 1",
+   "updates": 263,
+   "off_sign": 0.7846901579586877,
+   "on_sign": 0.7846901579586877,
+   "off_three_way": 0.5466463856294365,
+   "on_three_way": 0.5466463856294365,
+   "off_mse": 0.46581800894246583,
+   "on_mse": 0.46581800894246583,
+   "seconds": 19.64989995956421,
+   "cost": "no records written"
+  },
+  {
+   "regime": "school",
+   "unit": "pass 2",
+   "updates": 526,
+   "off_sign": 0.7875253138922641,
+   "on_sign": 0.7875253138922641,
+   "off_three_way": 0.548312327973345,
+   "on_three_way": 0.548312327973345,
+   "off_mse": 0.4559806086929925,
+   "on_mse": 0.4559806086929925,
+   "seconds": 43.87149000167847,
+   "cost": "no records written"
+  },
+  {
+   "regime": "school",
+   "unit": "pass 3",
+   "updates": 789,
+   "off_sign": 0.793762656946132,
+   "on_sign": 0.793762656946132,
+   "off_three_way": 0.5401274808054469,
+   "on_three_way": 0.5401274808054469,
+   "off_mse": 0.44656135878782205,
+   "on_mse": 0.44656135878782205,
+   "seconds": 67.27463483810425,
+   "cost": "no records written"
+  },
+  {
+   "regime": "school",
+   "unit": "pass 4",
+   "updates": 1052,
+   "off_sign": 0.8013770757391656,
+   "on_sign": 0.8013770757391656,
+   "off_three_way": 0.5515717803853397,
+   "on_three_way": 0.5515717803853397,
+   "off_mse": 0.43995162481925904,
+   "on_mse": 0.43995162481925904,
+   "seconds": 90.98004698753357,
+   "cost": "no records written"
+  },
+  {
+   "regime": "school",
+   "unit": "pass 5",
+   "updates": 1315,
+   "off_sign": 0.8016200891049008,
+   "on_sign": 0.8016200891049008,
+   "off_three_way": 0.5551209619006229,
+   "on_three_way": 0.5551209619006229,
+   "off_mse": 0.436039988495935,
+   "on_mse": 0.436039988495935,
+   "seconds": 114.24429702758789,
+   "cost": "no records written"
+  },
+  {
+   "regime": "school",
+   "unit": "pass 6",
+   "updates": 1578,
+   "off_sign": 0.8029971648440665,
+   "on_sign": 0.8029971648440665,
+   "off_three_way": 0.568738229755179,
+   "on_three_way": 0.568738229755179,
+   "off_mse": 0.4426233400071333,
+   "on_mse": 0.4426233400071333,
+   "seconds": 139.645849943161,
+   "cost": "no records written"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 24.84963607788086,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.732604293236128,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5196291467477908,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.608986338174703,
+   "seconds": 65.5812451839447,
+   "cost": "day: 67399 rows written in 34 s; store 3646 cells nonzero, rms 0.470"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "night 1 dawn",
+   "updates": 263,
+   "off_sign": 0.7547995139732685,
+   "on_sign": 0.7435398946942082,
+   "off_three_way": 0.5213675213675214,
+   "on_three_way": 0.536723163841808,
+   "off_mse": 0.5087241109628001,
+   "on_mse": 0.5784305355080942,
+   "seconds": 213.35370635986328,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.2048 to 0.0741, 134656 dawn writes, 140 s; store after dawn 3744 cells nonzero, rms 0.382"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "night 2 bedtime",
+   "updates": 263,
+   "off_sign": 0.7547995139732685,
+   "on_sign": 0.7486431753746456,
+   "off_three_way": 0.5213675213675214,
+   "on_three_way": 0.5299145299145299,
+   "off_mse": 0.5087241109628001,
+   "on_mse": 0.5626393176944168,
+   "seconds": 260.7318661212921,
+   "cost": "day: 67399 rows written in 40 s; store 3747 cells nonzero, rms 0.505"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "night 2 dawn",
+   "updates": 526,
+   "off_sign": 0.7592547590117457,
+   "on_sign": 0.7550425273390037,
+   "off_three_way": 0.5145588874402434,
+   "on_three_way": 0.5421555845284659,
+   "off_mse": 0.5023315283727857,
+   "on_mse": 0.5371175353034834,
+   "seconds": 406.1176860332489,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.0980 to 0.0692, 134656 dawn writes, 138 s; store after dawn 3767 cells nonzero, rms 0.430"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "night 3 bedtime",
+   "updates": 526,
+   "off_sign": 0.7592547590117457,
+   "on_sign": 0.7501012555690563,
+   "off_three_way": 0.5145588874402434,
+   "on_three_way": 0.5461393596986818,
+   "off_mse": 0.5023315283727857,
+   "on_mse": 0.5823930845523531,
+   "seconds": 451.5298001766205,
+   "cost": "day: 67399 rows written in 38 s; store 3768 cells nonzero, rms 0.543"
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "unit": "night 3 dawn",
+   "updates": 789,
+   "off_sign": 0.76832725799919,
+   "on_sign": 0.7628189550425274,
+   "off_three_way": 0.5425901781833985,
+   "on_three_way": 0.5557004201071998,
+   "off_mse": 0.5052887473398456,
+   "on_mse": 0.5403466413773339,
+   "seconds": 596.7073230743408,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.1123 to 0.0602, 134656 dawn writes, 138 s; store after dawn 3771 cells nonzero, rms 0.458"
+  },
+  {
+   "regime": "sleep 4,096 cells, 3 passes a night",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 33.44858694076538,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 4,096 cells, 3 passes a night",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.732604293236128,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5196291467477908,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.608986338174703,
+   "seconds": 92.44649887084961,
+   "cost": "day: 67399 rows written in 49 s; store 3646 cells nonzero, rms 0.470"
+  },
+  {
+   "regime": "sleep 4,096 cells, 3 passes a night",
+   "unit": "night 1 dawn",
+   "updates": 789,
+   "off_sign": 0.764277035236938,
+   "on_sign": 0.7444309437019037,
+   "off_three_way": 0.5239026510212951,
+   "on_three_way": 0.5356366797044763,
+   "off_mse": 0.493311188076306,
+   "on_mse": 0.5817186584460212,
+   "seconds": 311.0996391773224,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 789 updates, dream loss 0.2048 to 0.0690, 134656 dawn writes, 210 s; store after dawn 3742 cells nonzero, rms 0.378"
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 33.65987205505371,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.732604293236128,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5196291467477908,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.608986338174703,
+   "seconds": 91.8628830909729,
+   "cost": "day: 67399 rows written in 49 s; store 3646 cells nonzero, rms 0.470"
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "unit": "night 1 dawn",
+   "updates": 263,
+   "off_sign": 0.7547995139732685,
+   "on_sign": 0.7435398946942082,
+   "off_three_way": 0.5213675213675214,
+   "on_three_way": 0.536723163841808,
+   "off_mse": 0.5087241109628001,
+   "on_mse": 0.5784305355080942,
+   "seconds": 267.3343040943146,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.2048 to 0.0741, 134656 dawn writes, 167 s; store after dawn 3744 cells nonzero, rms 0.382"
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "unit": "night 2 dawn",
+   "updates": 526,
+   "off_sign": 0.7543944916970433,
+   "on_sign": 0.7426488456865128,
+   "off_three_way": 0.5355642474286542,
+   "on_three_way": 0.5365058670143416,
+   "off_mse": 0.5273693175532331,
+   "on_mse": 0.5814293370662207,
+   "seconds": 430.14065408706665,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.0574 to 0.0503, 134656 dawn writes, 154 s; store after dawn 3760 cells nonzero, rms 0.375"
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "unit": "night 3 dawn",
+   "updates": 789,
+   "off_sign": 0.7541514783313082,
+   "on_sign": 0.7447549615228838,
+   "off_three_way": 0.5307112849485731,
+   "on_three_way": 0.53266695639577,
+   "off_mse": 0.5348030340210337,
+   "on_mse": 0.5719318021544657,
+   "seconds": 611.071916103363,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.0480 to 0.0442, 134656 dawn writes, 170 s; store after dawn 3768 cells nonzero, rms 0.366"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 29.598318099975586,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.7319562575941677,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5196291467477908,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.609287758264904,
+   "seconds": 75.46261501312256,
+   "cost": "day: 67399 rows written in 39 s; store 3646 cells nonzero, rms 0.481"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "night 1 dawn",
+   "updates": 263,
+   "off_sign": 0.7547995139732685,
+   "on_sign": 0.7438639125151884,
+   "off_three_way": 0.5210777922642329,
+   "on_three_way": 0.5369404606692743,
+   "off_mse": 0.5089200998969448,
+   "on_mse": 0.5785498312003643,
+   "seconds": 214.7409861087799,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.2050 to 0.0741, 134656 dawn writes, 132 s; store after dawn 3744 cells nonzero, rms 0.394"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "night 2 bedtime",
+   "updates": 263,
+   "off_sign": 0.7547995139732685,
+   "on_sign": 0.7492912110166059,
+   "off_three_way": 0.5210777922642329,
+   "on_three_way": 0.5291177748804867,
+   "off_mse": 0.5089200998969448,
+   "on_mse": 0.5629718548008926,
+   "seconds": 258.99120926856995,
+   "cost": "day: 67399 rows written in 37 s; store 3747 cells nonzero, rms 0.518"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "night 2 dawn",
+   "updates": 526,
+   "off_sign": 0.7595787768327258,
+   "on_sign": 0.7554475496152289,
+   "off_three_way": 0.5144140228885992,
+   "on_three_way": 0.5414312617702448,
+   "off_mse": 0.502495491675624,
+   "on_mse": 0.537366686749705,
+   "seconds": 407.41627311706543,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.0983 to 0.0694, 134656 dawn writes, 141 s; store after dawn 3767 cells nonzero, rms 0.443"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "night 3 bedtime",
+   "updates": 526,
+   "off_sign": 0.7595787768327258,
+   "on_sign": 0.749453219927096,
+   "off_three_way": 0.5144140228885992,
+   "on_three_way": 0.5480950311458787,
+   "off_mse": 0.502495491675624,
+   "on_mse": 0.5819154431178599,
+   "seconds": 461.86071014404297,
+   "cost": "day: 67399 rows written in 46 s; store 3768 cells nonzero, rms 0.555"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "unit": "night 3 dawn",
+   "updates": 789,
+   "off_sign": 0.7688942891859052,
+   "on_sign": 0.7624139327663021,
+   "off_three_way": 0.5430247718383312,
+   "on_three_way": 0.5551209619006229,
+   "off_mse": 0.5015211848711252,
+   "on_mse": 0.538797021715899,
+   "seconds": 621.2667429447174,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.1120 to 0.0600, 134656 dawn writes, 151 s; store after dawn 3770 cells nonzero, rms 0.471"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.02)",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 46.31668281555176,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.02)",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.7781287970838396,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5112270027524265,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.47091172875456566,
+   "seconds": 108.32076168060303,
+   "cost": "day: 67399 rows written in 52 s; store 3646 cells nonzero, rms 0.237"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.02)",
+   "unit": "night 1 dawn",
+   "updates": 263,
+   "off_sign": 0.774807614418793,
+   "on_sign": 0.7946537059538274,
+   "off_three_way": 0.5071707953063885,
+   "on_three_way": 0.5375923511516731,
+   "off_mse": 0.47223419668965183,
+   "on_mse": 0.4469656516596757,
+   "seconds": 298.52214074134827,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.1288 to 0.0232, 134656 dawn writes, 181 s; store after dawn 3737 cells nonzero, rms 0.197"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.02)",
+   "unit": "night 2 bedtime",
+   "updates": 263,
+   "off_sign": 0.774807614418793,
+   "on_sign": 0.7970028351559336,
+   "off_three_way": 0.5071707953063885,
+   "on_three_way": 0.5504852962480081,
+   "off_mse": 0.47223419668965183,
+   "on_mse": 0.446031897211422,
+   "seconds": 356.7779278755188,
+   "cost": "day: 67399 rows written in 48 s; store 3739 cells nonzero, rms 0.243"
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.02)",
+   "unit": "night 2 dawn",
+   "updates": 526,
+   "off_sign": 0.7763466990684488,
+   "on_sign": 0.800081004455245,
+   "off_three_way": 0.5205707663334782,
+   "on_three_way": 0.5554831232797335,
+   "off_mse": 0.47733483565436374,
+   "on_mse": 0.4417188588708634,
+   "seconds": 575.4032208919525,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.0213 to 0.0227, 134656 dawn writes, 207 s; store after dawn 3755 cells nonzero, rms 0.230"
+  },
+  {
+   "regime": "sleep 16,384 cells",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 92.66602301597595,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 16,384 cells",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.7532604293236128,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5373026220483847,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.560553434884754,
+   "seconds": 237.7901349067688,
+   "cost": "day: 67399 rows written in 110 s; store 11215 cells nonzero, rms 0.338"
+  },
+  {
+   "regime": "sleep 16,384 cells",
+   "unit": "night 1 dawn",
+   "updates": 263,
+   "off_sign": 0.76832725799919,
+   "on_sign": 0.7715674362089915,
+   "off_three_way": 0.5315080399826162,
+   "on_three_way": 0.5554106910039114,
+   "off_mse": 0.4839745636055354,
+   "on_mse": 0.5177463733753686,
+   "seconds": 724.5491859912872,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.2139 to 0.0825, 134656 dawn writes, 462 s; store after dawn 11898 cells nonzero, rms 0.296"
+  },
+  {
+   "regime": "sleep 16,384 cells",
+   "unit": "night 2 bedtime",
+   "updates": 263,
+   "off_sign": 0.76832725799919,
+   "on_sign": 0.7606318347509113,
+   "off_three_way": 0.5315080399826162,
+   "on_three_way": 0.5424453136317543,
+   "off_mse": 0.4839745636055354,
+   "on_mse": 0.5357465455387462,
+   "seconds": 864.7689709663391,
+   "cost": "day: 67399 rows written in 117 s; store 11955 cells nonzero, rms 0.394"
+  },
+  {
+   "regime": "sleep 16,384 cells",
+   "unit": "night 2 dawn",
+   "updates": 526,
+   "off_sign": 0.7794248683677603,
+   "on_sign": 0.7658161198865938,
+   "off_three_way": 0.5153556424742866,
+   "on_three_way": 0.5523685354193829,
+   "off_mse": 0.4675601136797845,
+   "on_mse": 0.5162280776987954,
+   "seconds": 1377.5808942317963,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.1039 to 0.0787, 134656 dawn writes, 486 s; store after dawn 12117 cells nonzero, rms 0.356"
+  },
+  {
+   "regime": "sleep 16,384 cells, 3 passes a night, averaging (floor 0.02)",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.5496152288375861,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.13921483413008837,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.7109676634466396,
+   "seconds": 133.45703411102295,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 16,384 cells, 3 passes a night, averaging (floor 0.02)",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.5496152288375861,
+   "on_sign": 0.789307411907655,
+   "off_three_way": 0.13921483413008837,
+   "on_three_way": 0.5118788932348254,
+   "off_mse": 0.7109676634466396,
+   "on_mse": 0.4564177408400123,
+   "seconds": 337.05098009109497,
+   "cost": "day: 67399 rows written in 173 s; store 11215 cells nonzero, rms 0.224"
+  },
+  {
+   "regime": "sleep 16,384 cells, 3 passes a night, averaging (floor 0.02)",
+   "unit": "night 1 dawn",
+   "updates": 789,
+   "off_sign": 0.7786958282705548,
+   "on_sign": 0.8006480356419603,
+   "off_three_way": 0.5010140518615095,
+   "on_three_way": 0.544256120527307,
+   "off_mse": 0.4688597759158215,
+   "on_mse": 0.43296174500960494,
+   "seconds": 1002.3777320384979,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 789 updates, dream loss 0.1326 to 0.0223, 134656 dawn writes, 641 s; store after dawn 11903 cells nonzero, rms 0.199"
+  },
+  {
+   "regime": "sleep 65,536 cells",
+   "unit": "start",
+   "updates": 0,
+   "off_sign": 0.554935238945958,
+   "on_sign": 0.554935238945958,
+   "off_three_way": 0.1442,
+   "on_three_way": 0.1442,
+   "off_mse": 0.7081119397186468,
+   "on_mse": 0.7081119397186468,
+   "seconds": 295.9481632709503,
+   "cost": "settled, table empty"
+  },
+  {
+   "regime": "sleep 65,536 cells",
+   "unit": "night 1 bedtime",
+   "updates": 0,
+   "off_sign": 0.554935238945958,
+   "on_sign": 0.7775792764627065,
+   "off_three_way": 0.1442,
+   "on_three_way": 0.559,
+   "off_mse": 0.7081119397186468,
+   "on_mse": 0.5053995764498165,
+   "seconds": 794.1834502220154,
+   "cost": "day: 67399 rows written in 453 s; store 29363 cells nonzero, rms 0.212"
+  },
+  {
+   "regime": "sleep 65,536 cells",
+   "unit": "night 1 dawn",
+   "updates": 263,
+   "off_sign": 0.7722197409557838,
+   "on_sign": 0.7833854399285395,
+   "off_three_way": 0.5302,
+   "on_three_way": 0.5694,
+   "off_mse": 0.47253050908576816,
+   "on_mse": 0.48621921360785464,
+   "seconds": 3063.1870851516724,
+   "cost": "night: 263 cues of 256 (67328 rows dreamed), 263 updates, dream loss 0.2265 to 0.0897, 134656 dawn writes, 2204 s; store after dawn 32068 cells nonzero, rms 0.199"
+  }
+ ],
+ "reported_kept": [
+  {
+   "regime": "school, 3 passes",
+   "kept_at": "batch 789",
+   "updates": 789,
+   "off_sign": 0.7917551020408163,
+   "on_sign": 0.7917551020408163,
+   "off_three_way": 0.5429130151372492,
+   "on_three_way": 0.5429130151372492,
+   "off_mse": 0.44683363508414814,
+   "on_mse": 0.44683363508414814,
+   "positions": 13807,
+   "seen_off_sign": 0.8987194412107101,
+   "seen_on_sign": 0.8987194412107101,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7964071856287425,
+     "on_sign": 0.7964071856287425,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.803448275862069,
+     "on_sign": 0.803448275862069,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7850496277915633,
+     "on_sign": 0.7850496277915633,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7922796598731273,
+     "on_sign": 0.7922796598731273,
+     "positions": 8360
+    }
+   },
+   "seconds": 64.9337809085846
+  },
+  {
+   "regime": "school, 6 passes",
+   "kept_at": "batch 1578",
+   "updates": 1578,
+   "off_sign": 0.8018775510204081,
+   "on_sign": 0.8018775510204081,
+   "off_three_way": 0.5698558702107627,
+   "on_three_way": 0.5698558702107627,
+   "off_mse": 0.44225494758319733,
+   "on_mse": 0.44225494758319733,
+   "positions": 13807,
+   "seen_off_sign": 0.9173457508731082,
+   "seen_on_sign": 0.9173457508731082,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7964071856287425,
+     "on_sign": 0.7964071856287425,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.8096551724137931,
+     "on_sign": 0.8096551724137931,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.8014888337468983,
+     "on_sign": 0.8014888337468983,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.8006478607099473,
+     "on_sign": 0.8006478607099473,
+     "positions": 8360
+    }
+   },
+   "seconds": 144.65091109275818
+  },
+  {
+   "regime": "sleep 4,096 cells",
+   "kept_at": "night 3",
+   "updates": 789,
+   "off_sign": 0.7644081632653061,
+   "on_sign": 0.7678367346938776,
+   "off_three_way": 0.5432027232563192,
+   "on_three_way": 0.5621786050554067,
+   "off_mse": 0.5121738861306054,
+   "on_mse": 0.5361797486290755,
+   "positions": 13807,
+   "seen_off_sign": 0.8667054714784633,
+   "seen_on_sign": 0.8888242142025611,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7425149700598802,
+     "on_sign": 0.718562874251497,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.776551724137931,
+     "on_sign": 0.7620689655172413,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7729528535980149,
+     "on_sign": 0.7704714640198511,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7588068565258469,
+     "on_sign": 0.7689296801187745,
+     "positions": 8360
+    }
+   },
+   "seconds": 604.835999250412
+  },
+  {
+   "regime": "sleep 4,096 cells, 3 passes a night",
+   "kept_at": "night 1",
+   "updates": 789,
+   "off_sign": 0.7622857142857142,
+   "on_sign": 0.7496326530612245,
+   "off_three_way": 0.5235749981893243,
+   "on_three_way": 0.5436372854349243,
+   "off_mse": 0.4914896618437113,
+   "on_mse": 0.5775441962911669,
+   "positions": 13807,
+   "seen_off_sign": 0.8864959254947613,
+   "seen_on_sign": 0.8963911525029103,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.8203592814371258,
+     "on_sign": 0.718562874251497,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.7606896551724138,
+     "on_sign": 0.7496551724137931,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7537220843672456,
+     "on_sign": 0.7521712158808933,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7650155216628425,
+     "on_sign": 0.7492239168578756,
+     "positions": 8360
+    }
+   },
+   "seconds": 321.0303728580475
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "kept_at": "night 1",
+   "updates": 263,
+   "off_sign": 0.752734693877551,
+   "on_sign": 0.7495510204081632,
+   "off_three_way": 0.5232852900702543,
+   "on_three_way": 0.5508799884116753,
+   "off_mse": 0.5036546128155345,
+   "on_mse": 0.5745841971296192,
+   "positions": 13807,
+   "seen_off_sign": 0.8841676367869615,
+   "seen_on_sign": 0.8876600698486612,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.8323353293413174,
+     "on_sign": 0.7425149700598802,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.7475862068965518,
+     "on_sign": 0.7468965517241379,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7512406947890818,
+     "on_sign": 0.7549627791563276,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7525981913888514,
+     "on_sign": 0.7478742070454852,
+     "positions": 8360
+    }
+   },
+   "seconds": 630.7185051441193
+  },
+  {
+   "regime": "sleep 4,096 cells, one day",
+   "kept_at": "night 3 (last)",
+   "updates": 789,
+   "off_sign": 0.7525714285714286,
+   "on_sign": 0.751265306122449,
+   "off_three_way": 0.5372637068153835,
+   "on_three_way": 0.5409574853335265,
+   "off_mse": 0.5306812896808354,
+   "on_mse": 0.5644411024484781,
+   "positions": 13807,
+   "seen_off_sign": 0.8830034924330618,
+   "seen_on_sign": 0.8859138533178114,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7964071856287425,
+     "on_sign": 0.718562874251497,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.763448275862069,
+     "on_sign": 0.743448275862069,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.749379652605459,
+     "on_sign": 0.761166253101737,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7508435686327439,
+     "on_sign": 0.7492239168578756,
+     "positions": 8360
+    }
+   },
+   "seconds": 630.7185051441193
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.5)",
+   "kept_at": "night 3",
+   "updates": 789,
+   "off_sign": 0.7667755102040816,
+   "on_sign": 0.7691428571428571,
+   "off_three_way": 0.5434924313753893,
+   "on_three_way": 0.5632650105019193,
+   "off_mse": 0.5082675804321368,
+   "on_mse": 0.5344350494189394,
+   "positions": 13807,
+   "seen_off_sign": 0.870197904540163,
+   "seen_on_sign": 0.889406286379511,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7365269461077845,
+     "on_sign": 0.718562874251497,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.7813793103448275,
+     "on_sign": 0.766896551724138,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7741935483870968,
+     "on_sign": 0.7720223325062034,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7613713051693886,
+     "on_sign": 0.7694695640437306,
+     "positions": 8360
+    }
+   },
+   "seconds": 629.4628331661224
+  },
+  {
+   "regime": "sleep 4,096 cells, averaging (floor 0.02)",
+   "kept_at": "night 2",
+   "updates": 526,
+   "off_sign": 0.7764897959183673,
+   "on_sign": 0.7973061224489796,
+   "off_three_way": 0.5261099442311871,
+   "on_three_way": 0.5610197725791265,
+   "off_mse": 0.47237371028499825,
+   "on_mse": 0.43992561027981036,
+   "positions": 13807,
+   "seen_off_sign": 0.8917345750873108,
+   "seen_on_sign": 0.9249126891734575,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7904191616766467,
+     "on_sign": 0.7604790419161677,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.7855172413793103,
+     "on_sign": 0.8103448275862069,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7686104218362283,
+     "on_sign": 0.7931141439205955,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7778377648805507,
+     "on_sign": 0.7974085571602105,
+     "positions": 8360
+    }
+   },
+   "seconds": 586.6936819553375
+  },
+  {
+   "regime": "sleep 16,384 cells",
+   "kept_at": "night 2",
+   "updates": 526,
+   "off_sign": 0.7821224489795918,
+   "on_sign": 0.7655510204081633,
+   "off_three_way": 0.5230680089809517,
+   "on_three_way": 0.5547186209893532,
+   "off_mse": 0.4652843025700554,
+   "on_mse": 0.5105381652441544,
+   "positions": 13807,
+   "seen_off_sign": 0.8876600698486612,
+   "seen_on_sign": 0.9051222351571595,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7544910179640718,
+     "on_sign": 0.688622754491018,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.803448275862069,
+     "on_sign": 0.7613793103448275,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7729528535980149,
+     "on_sign": 0.7692307692307693,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7825617492239169,
+     "on_sign": 0.7665002024564719,
+     "positions": 8360
+    }
+   },
+   "seconds": 1405.1281189918518
+  },
+  {
+   "regime": "sleep 16,384 cells, 3 passes a night, averaging (floor 0.02)",
+   "kept_at": "night 1",
+   "updates": 789,
+   "off_sign": 0.7738775510204081,
+   "on_sign": 0.797469387755102,
+   "off_three_way": 0.502209024407909,
+   "on_three_way": 0.5497211559353951,
+   "off_mse": 0.47016776182271935,
+   "on_mse": 0.4337957803811332,
+   "positions": 13807,
+   "seen_off_sign": 0.8969732246798603,
+   "seen_on_sign": 0.9371362048894063,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.7544910179640718,
+     "on_sign": 0.7544910179640718,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.7655172413793103,
+     "on_sign": 0.7889655172413793,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7701612903225806,
+     "on_sign": 0.7946650124069479,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7775678229180726,
+     "on_sign": 0.8013227156161425,
+     "positions": 8360
+    }
+   },
+   "seconds": 1031.9467823505402
+  },
+  {
+   "regime": "sleep 65,536 cells",
+   "kept_at": "night 1",
+   "updates": 263,
+   "off_sign": 0.7681632653061224,
+   "on_sign": 0.7799183673469388,
+   "off_three_way": 0.5382052582023611,
+   "on_three_way": 0.5713044108061128,
+   "off_mse": 0.47316650071177324,
+   "on_mse": 0.49260260194083216,
+   "positions": 13807,
+   "seen_off_sign": 0.8946449359720605,
+   "seen_on_sign": 0.9371362048894063,
+   "by_stones": {
+    "0-8": {
+     "off_sign": 0.6646706586826348,
+     "on_sign": 0.7005988023952096,
+     "positions": 194
+    },
+    "8-16": {
+     "off_sign": 0.7696551724137931,
+     "on_sign": 0.7779310344827586,
+     "positions": 1662
+    },
+    "16-24": {
+     "off_sign": 0.7707816377171216,
+     "on_sign": 0.7748138957816377,
+     "positions": 3591
+    },
+    "24-43": {
+     "off_sign": 0.7690646511000135,
+     "on_sign": 0.7843163719800242,
+     "positions": 8360
+    }
+   },
+   "seconds": 3194.4258091449738
+  }
+ ],
+ "arms": {
+  "school": {
+   "school_p3": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "rate": "0.3",
+     "batch": "256",
+     "passes": "3.0",
+     "report": "263",
+     "sample": "20000",
+     "write": "False",
+     "decay": "1.0",
+     "seed": "0",
+     "resume": "None",
+     "out": "runs/connect4/sleep/school_p3"
+    },
+    "curve": [
+     {
+      "batches": 263,
+      "witnessed": 67328,
+      "seconds": 19.500528812408447,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.7846901579586877,
+       "slow_sign": 0.7846901579586877,
+       "three_way": 0.5466463856294365,
+       "mse": 0.46581800894246583
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9010477299185099,
+       "slow_sign": 0.9010477299185099,
+       "three_way": 0.685214626391097,
+       "mse": 0.19401460085439487
+      }
+     },
+     {
+      "batches": 526,
+      "witnessed": 134656,
+      "seconds": 42.6868417263031,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.7875253138922641,
+       "slow_sign": 0.7875253138922641,
+       "three_way": 0.548312327973345,
+       "mse": 0.4559806086929925
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9010477299185099,
+       "slow_sign": 0.9010477299185099,
+       "three_way": 0.6634870164281929,
+       "mse": 0.20213097857324114
+      }
+     },
+     {
+      "batches": 789,
+      "witnessed": 201984,
+      "seconds": 64.9337809085846,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.793762656946132,
+       "slow_sign": 0.793762656946132,
+       "three_way": 0.5401274808054469,
+       "mse": 0.44656135878782205
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.8987194412107101,
+       "slow_sign": 0.8987194412107101,
+       "three_way": 0.652888182299947,
+       "mse": 0.20421729524142776
+      }
+     }
+    ],
+    "kept": {
+     "kept_at_batch": 789,
+     "validation_sign": 0.793762656946132,
+     "unseen": {
+      "positions": 13807,
+      "sign": 0.7917551020408163,
+      "slow_sign": 0.7917551020408163,
+      "three_way": 0.5429130151372492,
+      "mse": 0.44683363508414814
+     },
+     "seen": {
+      "positions": 1887,
+      "sign": 0.8987194412107101,
+      "slow_sign": 0.8987194412107101,
+      "three_way": 0.652888182299947,
+      "mse": 0.20421729524142776
+     }
+    },
+    "unseen_by_stones": {
+     "0-8": {
+      "positions": 194,
+      "sign": 0.7964071856287425,
+      "slow_sign": 0.7964071856287425,
+      "three_way": 0.41237113402061853,
+      "mse": 0.35019496318003646
+     },
+     "8-16": {
+      "positions": 1662,
+      "sign": 0.803448275862069,
+      "slow_sign": 0.803448275862069,
+      "three_way": 0.5397111913357401,
+      "mse": 0.3435726679599544
+     },
+     "16-24": {
+      "positions": 3591,
+      "sign": 0.7850496277915633,
+      "slow_sign": 0.7850496277915633,
+      "three_way": 0.5619604566972988,
+      "mse": 0.40071147976084304
+     },
+     "24-43": {
+      "positions": 8360,
+      "sign": 0.7922796598731273,
+      "slow_sign": 0.7922796598731273,
+      "three_way": 0.5383971291866029,
+      "mse": 0.4894164448300568
+     }
+    }
+   },
+   "school_p6": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "rate": "0.3",
+     "batch": "256",
+     "passes": "6.0",
+     "report": "263",
+     "sample": "20000",
+     "write": "False",
+     "decay": "1.0",
+     "seed": "0",
+     "resume": "None",
+     "out": "runs/connect4/sleep/school_p6"
+    },
+    "curve": [
+     {
+      "batches": 263,
+      "witnessed": 67328,
+      "seconds": 19.64989995956421,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.7846901579586877,
+       "slow_sign": 0.7846901579586877,
+       "three_way": 0.5466463856294365,
+       "mse": 0.46581800894246583
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9010477299185099,
+       "slow_sign": 0.9010477299185099,
+       "three_way": 0.685214626391097,
+       "mse": 0.19401460085439487
+      }
+     },
+     {
+      "batches": 526,
+      "witnessed": 134656,
+      "seconds": 43.87149000167847,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.7875253138922641,
+       "slow_sign": 0.7875253138922641,
+       "three_way": 0.548312327973345,
+       "mse": 0.4559806086929925
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9010477299185099,
+       "slow_sign": 0.9010477299185099,
+       "three_way": 0.6634870164281929,
+       "mse": 0.20213097857324114
+      }
+     },
+     {
+      "batches": 789,
+      "witnessed": 201984,
+      "seconds": 67.27463483810425,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.793762656946132,
+       "slow_sign": 0.793762656946132,
+       "three_way": 0.5401274808054469,
+       "mse": 0.44656135878782205
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.8987194412107101,
+       "slow_sign": 0.8987194412107101,
+       "three_way": 0.652888182299947,
+       "mse": 0.20421729524142776
+      }
+     },
+     {
+      "batches": 1052,
+      "witnessed": 269312,
+      "seconds": 90.98004698753357,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.8013770757391656,
+       "slow_sign": 0.8013770757391656,
+       "three_way": 0.5515717803853397,
+       "mse": 0.43995162481925904
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9080325960419092,
+       "slow_sign": 0.9080325960419092,
+       "three_way": 0.6899841017488076,
+       "mse": 0.18854068450439587
+      }
+     },
+     {
+      "batches": 1315,
+      "witnessed": 336640,
+      "seconds": 114.24429702758789,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.8016200891049008,
+       "slow_sign": 0.8016200891049008,
+       "three_way": 0.5551209619006229,
+       "mse": 0.436039988495935
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9167636786961583,
+       "slow_sign": 0.9167636786961583,
+       "three_way": 0.6926338102808691,
+       "mse": 0.18385845049851485
+      }
+     },
+     {
+      "batches": 1578,
+      "witnessed": 403968,
+      "seconds": 139.645849943161,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.8029971648440665,
+       "slow_sign": 0.8029971648440665,
+       "three_way": 0.568738229755179,
+       "mse": 0.4426233400071333
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9173457508731082,
+       "slow_sign": 0.9173457508731082,
+       "three_way": 0.7191308956014838,
+       "mse": 0.1682699721134839
+      }
+     },
+     {
+      "batches": 1579,
+      "witnessed": 404224,
+      "seconds": 144.65091109275818,
+      "rate": 0.3,
+      "validation": {
+       "positions": 13806,
+       "sign": 0.8023491292021061,
+       "slow_sign": 0.8023491292021061,
+       "three_way": 0.57359119223526,
+       "mse": 0.4358278998283868
+      },
+      "seen": {
+       "positions": 1887,
+       "sign": 0.9243306169965075,
+       "slow_sign": 0.9243306169965075,
+       "three_way": 0.7175410704822469,
+       "mse": 0.17232566590945342
+      }
+     }
+    ],
+    "kept": {
+     "kept_at_batch": 1578,
+     "validation_sign": 0.8029971648440665,
+     "unseen": {
+      "positions": 13807,
+      "sign": 0.8018775510204081,
+      "slow_sign": 0.8018775510204081,
+      "three_way": 0.5698558702107627,
+      "mse": 0.44225494758319733
+     },
+     "seen": {
+      "positions": 1887,
+      "sign": 0.9173457508731082,
+      "slow_sign": 0.9173457508731082,
+      "three_way": 0.7191308956014838,
+      "mse": 0.1682699721134839
+     }
+    },
+    "unseen_by_stones": {
+     "0-8": {
+      "positions": 194,
+      "sign": 0.7964071856287425,
+      "slow_sign": 0.7964071856287425,
+      "three_way": 0.4690721649484536,
+      "mse": 0.32200113764243893
+     },
+     "8-16": {
+      "positions": 1662,
+      "sign": 0.8096551724137931,
+      "slow_sign": 0.8096551724137931,
+      "three_way": 0.549338146811071,
+      "mse": 0.34005133779398394
+     },
+     "16-24": {
+      "positions": 3591,
+      "sign": 0.8014888337468983,
+      "slow_sign": 0.8014888337468983,
+      "three_way": 0.5864661654135338,
+      "mse": 0.40005098600897365
+     },
+     "24-43": {
+      "positions": 8360,
+      "sign": 0.8006478607099473,
+      "slow_sign": 0.8006478607099473,
+      "three_way": 0.5691387559808613,
+      "mse": 0.4834925151204243
+     }
+    }
+   }
+  },
+  "sleep": {
+   "sleep_c4096": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "seed": "0",
+     "nights": "3",
+     "passes": "1",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "settle": "100",
+     "record_averaging": "False",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c4096"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 789,
+    "net_update_counter": 1681,
+    "kept_at_night": 3,
+    "validation_sign_off": 0.76832725799919,
+    "seconds": 604.835999250412,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.032768
+      },
+      "tag": "start",
+      "seconds": 24.84963607788086
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 34.39952611923218
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.732604293236128,
+         "three_way": 0.5196291467477908,
+         "mse": 0.608986338174703
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8713620488940629,
+         "three_way": 0.6624271330153683,
+         "mse": 0.2742492914824998
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3646,
+        "rms": 0.47043553657180853,
+        "max_abs": 2.0252592543364085,
+        "writes": 92999,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 65.5812451839447
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.20483417203721943,
+       "dream_loss_after": 0.07412488558690958,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 139.74969506263733
+      },
+      "slow_updates": 263,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7435398946942082,
+         "three_way": 0.536723163841808,
+         "mse": 0.5784305355080942
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7547995139732685,
+         "three_way": 0.5213675213675214,
+         "mse": 0.5087241109628001
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8876600698486612,
+         "three_way": 0.685214626391097,
+         "mse": 0.25610252491906105
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8841676367869615,
+         "three_way": 0.6481187069422364,
+         "mse": 0.22185405870225938
+        }
+       },
+       "store": {
+        "cells_nonzero": 3744,
+        "rms": 0.38233438993945545,
+        "max_abs": 1.6599092843571304,
+        "writes": 227655,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 213.35370635986328
+      }
+     },
+     {
+      "night": 2,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 40.04438591003418
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7486431753746456,
+         "three_way": 0.5299145299145299,
+         "mse": 0.5626393176944168
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7547995139732685,
+         "three_way": 0.5213675213675214,
+         "mse": 0.5087241109628001
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8719441210710128,
+         "three_way": 0.6375198728139905,
+         "mse": 0.25074110605803923
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8841676367869615,
+         "three_way": 0.6481187069422364,
+         "mse": 0.22185405870225938
+        }
+       },
+       "store": {
+        "cells_nonzero": 3747,
+        "rms": 0.5053430062885361,
+        "max_abs": 2.31913805515056,
+        "writes": 295054,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 260.7318661212921
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.09795701797908442,
+       "dream_loss_after": 0.0692268422193175,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 137.81578922271729
+      },
+      "slow_updates": 526,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7550425273390037,
+         "three_way": 0.5421555845284659,
+         "mse": 0.5371175353034834
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7592547590117457,
+         "three_way": 0.5145588874402434,
+         "mse": 0.5023315283727857
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8748544819557625,
+         "three_way": 0.6634870164281929,
+         "mse": 0.24054318898175173
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8620488940628638,
+         "three_way": 0.5771065182829889,
+         "mse": 0.2555807472802706
+        }
+       },
+       "store": {
+        "cells_nonzero": 3767,
+        "rms": 0.4302200024198053,
+        "max_abs": 2.0860029152637822,
+        "writes": 429710,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 406.1176860332489
+      }
+     },
+     {
+      "night": 3,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 37.97973704338074
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7501012555690563,
+         "three_way": 0.5461393596986818,
+         "mse": 0.5823930845523531
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7592547590117457,
+         "three_way": 0.5145588874402434,
+         "mse": 0.5023315283727857
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8946449359720605,
+         "three_way": 0.7148913619501854,
+         "mse": 0.23203609431358896
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8620488940628638,
+         "three_way": 0.5771065182829889,
+         "mse": 0.2555807472802706
+        }
+       },
+       "store": {
+        "cells_nonzero": 3768,
+        "rms": 0.5425262490259206,
+        "max_abs": 2.4199370977642465,
+        "writes": 497109,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 451.5298001766205
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.11231615317857267,
+       "dream_loss_after": 0.06019785334893127,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 137.95005321502686
+      },
+      "slow_updates": 789,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7628189550425274,
+         "three_way": 0.5557004201071998,
+         "mse": 0.5403466413773339
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.76832725799919,
+         "three_way": 0.5425901781833985,
+         "mse": 0.5052887473398456
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8888242142025611,
+         "three_way": 0.7021727609962904,
+         "mse": 0.22746340547679073
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8667054714784633,
+         "three_way": 0.6470588235294118,
+         "mse": 0.2467880146796681
+        }
+       },
+       "store": {
+        "cells_nonzero": 3771,
+        "rms": 0.45824600838307583,
+        "max_abs": 2.2910600447715055,
+        "writes": 631765,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 596.7073230743408
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7678367346938776,
+       "three_way": 0.5621786050554067,
+       "mse": 0.5361797486290755
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7644081632653061,
+       "three_way": 0.5432027232563192,
+       "mse": 0.5121738861306054
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.8888242142025611,
+       "three_way": 0.7021727609962904,
+       "mse": 0.22746340547679075
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8667054714784633,
+       "three_way": 0.6470588235294118,
+       "mse": 0.24678801467966807
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.4690721649484536,
+        "mse": 0.4666612933276143
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7425149700598802,
+        "three_way": 0.38144329896907214,
+        "mse": 0.41320543866874854
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7620689655172413,
+        "three_way": 0.5354993983152828,
+        "mse": 0.4512165094678131
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.776551724137931,
+        "three_way": 0.54632972322503,
+        "mse": 0.3982445795642982
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7704714640198511,
+        "three_way": 0.580339738234475,
+        "mse": 0.4941279247884139
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7729528535980149,
+        "three_way": 0.5675299359509886,
+        "mse": 0.4603130185006014
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7689296801187745,
+        "three_way": 0.5618421052631579,
+        "mse": 0.5727471628905966
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7588068565258469,
+        "three_way": 0.5358851674641149,
+        "mse": 0.5593967045492833
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7678367346938776,
+       "three_way": 0.5621786050554067,
+       "mse": 0.5361797486290755
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7644081632653061,
+       "three_way": 0.5432027232563192,
+       "mse": 0.5121738861306054
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.8888242142025611,
+       "three_way": 0.7021727609962904,
+       "mse": 0.22746340547679075
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8667054714784633,
+       "three_way": 0.6470588235294118,
+       "mse": 0.24678801467966807
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.4690721649484536,
+        "mse": 0.4666612933276143
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7425149700598802,
+        "three_way": 0.38144329896907214,
+        "mse": 0.41320543866874854
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7620689655172413,
+        "three_way": 0.5354993983152828,
+        "mse": 0.4512165094678131
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.776551724137931,
+        "three_way": 0.54632972322503,
+        "mse": 0.3982445795642982
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7704714640198511,
+        "three_way": 0.580339738234475,
+        "mse": 0.4941279247884139
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7729528535980149,
+        "three_way": 0.5675299359509886,
+        "mse": 0.4603130185006014
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7689296801187745,
+        "three_way": 0.5618421052631579,
+        "mse": 0.5727471628905966
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7588068565258469,
+        "three_way": 0.5358851674641149,
+        "mse": 0.5593967045492833
+       }
+      }
+     }
+    }
+   },
+   "sleep_c4096_p3": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "seed": "0",
+     "nights": "1",
+     "passes": "3",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "settle": "100",
+     "record_rate": "0.5",
+     "record_averaging": "False",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c4096_p3"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 789,
+    "net_update_counter": 1153,
+    "kept_at_night": 1,
+    "validation_sign_off": 0.764277035236938,
+    "seconds": 321.0303728580475,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.032768
+      },
+      "tag": "start",
+      "seconds": 33.44858694076538
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 49.281712770462036
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.732604293236128,
+         "three_way": 0.5196291467477908,
+         "mse": 0.608986338174703
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8713620488940629,
+         "three_way": 0.6624271330153683,
+         "mse": 0.2742492914824998
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3646,
+        "rms": 0.47043553657180853,
+        "max_abs": 2.0252592543364085,
+        "writes": 92999,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 92.44649887084961
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 789.0,
+       "dream_loss_before": 0.20483417203721943,
+       "dream_loss_after": 0.06896557054149291,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 209.55915069580078
+      },
+      "slow_updates": 789,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7444309437019037,
+         "three_way": 0.5356366797044763,
+         "mse": 0.5817186584460212
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.764277035236938,
+         "three_way": 0.5239026510212951,
+         "mse": 0.493311188076306
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8963911525029103,
+         "three_way": 0.6846846846846847,
+         "mse": 0.2563309647914538
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8864959254947613,
+         "three_way": 0.6465288818229995,
+         "mse": 0.22165909387333682
+        }
+       },
+       "store": {
+        "cells_nonzero": 3742,
+        "rms": 0.377905323207683,
+        "max_abs": 1.694168275276334,
+        "writes": 227655,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 311.0996391773224
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7496326530612245,
+       "three_way": 0.5436372854349243,
+       "mse": 0.5775441962911669
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7622857142857142,
+       "three_way": 0.5235749981893243,
+       "mse": 0.4914896618437113
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.8963911525029103,
+       "three_way": 0.6846846846846847,
+       "mse": 0.25633096479145384
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8864959254947613,
+       "three_way": 0.6465288818229995,
+       "mse": 0.22165909387333685
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.44329896907216493,
+        "mse": 0.4187046914264389
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.8203592814371258,
+        "three_way": 0.35051546391752575,
+        "mse": 0.3375784415851709
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7496551724137931,
+        "three_way": 0.5270758122743683,
+        "mse": 0.4601245115187308
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7606896551724138,
+        "three_way": 0.5042117930204573,
+        "mse": 0.3930113494876404
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7521712158808933,
+        "three_way": 0.5396825396825397,
+        "mse": 0.5229532914380361
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7537220843672456,
+        "three_way": 0.5299359509885826,
+        "mse": 0.44859786181251804
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7492239168578756,
+        "three_way": 0.5509569377990431,
+        "mse": 0.6280229426264707
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7650155216628425,
+        "three_way": 0.5287081339712919,
+        "mse": 0.533063129042032
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7496326530612245,
+       "three_way": 0.5436372854349243,
+       "mse": 0.5775441962911669
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7622857142857142,
+       "three_way": 0.5235749981893243,
+       "mse": 0.4914896618437113
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.8963911525029103,
+       "three_way": 0.6846846846846847,
+       "mse": 0.25633096479145384
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8864959254947613,
+       "three_way": 0.6465288818229995,
+       "mse": 0.22165909387333685
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.44329896907216493,
+        "mse": 0.4187046914264389
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.8203592814371258,
+        "three_way": 0.35051546391752575,
+        "mse": 0.3375784415851709
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7496551724137931,
+        "three_way": 0.5270758122743683,
+        "mse": 0.4601245115187308
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7606896551724138,
+        "three_way": 0.5042117930204573,
+        "mse": 0.3930113494876404
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7521712158808933,
+        "three_way": 0.5396825396825397,
+        "mse": 0.5229532914380361
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7537220843672456,
+        "three_way": 0.5299359509885826,
+        "mse": 0.44859786181251804
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7492239168578756,
+        "three_way": 0.5509569377990431,
+        "mse": 0.6280229426264707
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7650155216628425,
+        "three_way": 0.5287081339712919,
+        "mse": 0.533063129042032
+       }
+      }
+     }
+    }
+   },
+   "sleep_c4096_first": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "seed": "0",
+     "nights": "3",
+     "passes": "1",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "first",
+     "settle": "100",
+     "record_rate": "0.5",
+     "record_averaging": "False",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c4096_first"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 789,
+    "net_update_counter": 1153,
+    "kept_at_night": 1,
+    "validation_sign_off": 0.7547995139732685,
+    "seconds": 630.7185051441193,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.032768
+      },
+      "tag": "start",
+      "seconds": 33.65987205505371
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 49.316120862960815
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.732604293236128,
+         "three_way": 0.5196291467477908,
+         "mse": 0.608986338174703
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8713620488940629,
+         "three_way": 0.6624271330153683,
+         "mse": 0.2742492914824998
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3646,
+        "rms": 0.47043553657180853,
+        "max_abs": 2.0252592543364085,
+        "writes": 92999,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 91.8628830909729
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.20483417203721943,
+       "dream_loss_after": 0.07412488558690958,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 166.95545101165771
+      },
+      "slow_updates": 263,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7435398946942082,
+         "three_way": 0.536723163841808,
+         "mse": 0.5784305355080942
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7547995139732685,
+         "three_way": 0.5213675213675214,
+         "mse": 0.5087241109628001
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8876600698486612,
+         "three_way": 0.685214626391097,
+         "mse": 0.25610252491906105
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8841676367869615,
+         "three_way": 0.6481187069422364,
+         "mse": 0.22185405870225938
+        }
+       },
+       "store": {
+        "cells_nonzero": 3744,
+        "rms": 0.38233438993945545,
+        "max_abs": 1.6599092843571304,
+        "writes": 227655,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 267.3343040943146
+      }
+     },
+     {
+      "night": 2,
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.0573675540991485,
+       "dream_loss_after": 0.050289013608534425,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 153.94190907478333
+      },
+      "slow_updates": 526,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7426488456865128,
+         "three_way": 0.5365058670143416,
+         "mse": 0.5814293370662207
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7543944916970433,
+         "three_way": 0.5355642474286542,
+         "mse": 0.5273693175532331
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8882421420256111,
+         "three_way": 0.6815050344462109,
+         "mse": 0.26250764183718434
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8864959254947613,
+         "three_way": 0.6772655007949125,
+         "mse": 0.2283899668332914
+        }
+       },
+       "store": {
+        "cells_nonzero": 3760,
+        "rms": 0.3749653026195243,
+        "max_abs": 1.740788810930053,
+        "writes": 362311,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 430.14065408706665
+      }
+     },
+     {
+      "night": 3,
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.047977595279509615,
+       "dream_loss_after": 0.04417847864891809,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 169.9769790172577
+      },
+      "slow_updates": 789,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7447549615228838,
+         "three_way": 0.53266695639577,
+         "mse": 0.5719318021544657
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7541514783313082,
+         "three_way": 0.5307112849485731,
+         "mse": 0.5348030340210337
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8859138533178114,
+         "three_way": 0.6756756756756757,
+         "mse": 0.26193789755515956
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8830034924330618,
+         "three_way": 0.676205617382088,
+         "mse": 0.2397650198298515
+        }
+       },
+       "store": {
+        "cells_nonzero": 3768,
+        "rms": 0.3659893448767022,
+        "max_abs": 1.7467058831623665,
+        "writes": 496967,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 611.071916103363
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7495510204081632,
+       "three_way": 0.5508799884116753,
+       "mse": 0.5745841971296192
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.752734693877551,
+       "three_way": 0.5232852900702543,
+       "mse": 0.5036546128155345
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.8876600698486612,
+       "three_way": 0.685214626391097,
+       "mse": 0.25610252491906105
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8841676367869615,
+       "three_way": 0.6481187069422364,
+       "mse": 0.22185405870225935
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7425149700598802,
+        "three_way": 0.4381443298969072,
+        "mse": 0.41934311782992084
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.8323353293413174,
+        "three_way": 0.3556701030927835,
+        "mse": 0.3376533120597963
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7468965517241379,
+        "three_way": 0.5397111913357401,
+        "mse": 0.45636104143540707
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7475862068965518,
+        "three_way": 0.5006016847172082,
+        "mse": 0.40104736095856147
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7549627791563276,
+        "three_way": 0.5477582846003899,
+        "mse": 0.522536805903848
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7512406947890818,
+        "three_way": 0.5265942634363687,
+        "mse": 0.4614042557191126
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7478742070454852,
+        "three_way": 0.5570574162679426,
+        "mse": 0.6240466177085264
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7525981913888514,
+        "three_way": 0.5302631578947369,
+        "mse": 0.5460539593784712
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.751265306122449,
+       "three_way": 0.5409574853335265,
+       "mse": 0.5644411024484781
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7525714285714286,
+       "three_way": 0.5372637068153835,
+       "mse": 0.5306812896808354
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.8859138533178114,
+       "three_way": 0.6756756756756757,
+       "mse": 0.26193789755515956
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8830034924330618,
+       "three_way": 0.676205617382088,
+       "mse": 0.2397650198298515
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.44329896907216493,
+        "mse": 0.4229035126622217
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7964071856287425,
+        "three_way": 0.4536082474226804,
+        "mse": 0.34386802385359155
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.743448275862069,
+        "three_way": 0.5312876052948255,
+        "mse": 0.44386918149306903
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.763448275862069,
+        "three_way": 0.5336943441636582,
+        "mse": 0.41479365779105115
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.761166253101737,
+        "three_way": 0.5377332219437483,
+        "mse": 0.5065135033159128
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.749379652605459,
+        "three_way": 0.5416318574213311,
+        "mse": 0.47597264520981136
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7492239168578756,
+        "three_way": 0.5465311004784689,
+        "mse": 0.6165782834929118
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7508435686327439,
+        "three_way": 0.5380382775119618,
+        "mse": 0.5815551844256625
+       }
+      }
+     }
+    }
+   },
+   "sleep_c4096_avg": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "seed": "0",
+     "nights": "3",
+     "passes": "1",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "settle": "100",
+     "record_averaging": "True",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c4096_avg"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 789,
+    "net_update_counter": 1681,
+    "kept_at_night": 3,
+    "validation_sign_off": 0.7688942891859052,
+    "seconds": 629.4628331661224,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.032768
+      },
+      "tag": "start",
+      "seconds": 29.598318099975586
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 38.92609882354736
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7319562575941677,
+         "three_way": 0.5196291467477908,
+         "mse": 0.609287758264904
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8719441210710128,
+         "three_way": 0.661897191308956,
+         "mse": 0.27441340993354063
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3646,
+        "rms": 0.4805491804078722,
+        "max_abs": 2.0216835407218725,
+        "writes": 92999,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 75.46261501312256
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.20496165737758068,
+       "dream_loss_after": 0.07413726452126447,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 132.08509707450867
+      },
+      "slow_updates": 263,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7438639125151884,
+         "three_way": 0.5369404606692743,
+         "mse": 0.5785498312003643
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7547995139732685,
+         "three_way": 0.5210777922642329,
+         "mse": 0.5089200998969448
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8870779976717112,
+         "three_way": 0.6857445680975093,
+         "mse": 0.25649019451716426
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8835855646100116,
+         "three_way": 0.649178590355061,
+         "mse": 0.22201559671837018
+        }
+       },
+       "store": {
+        "cells_nonzero": 3744,
+        "rms": 0.3939118216453815,
+        "max_abs": 1.6528637605121088,
+        "writes": 227655,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 214.7409861087799
+      }
+     },
+     {
+      "night": 2,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 36.78643298149109
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7492912110166059,
+         "three_way": 0.5291177748804867,
+         "mse": 0.5629718548008926
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7547995139732685,
+         "three_way": 0.5210777922642329,
+         "mse": 0.5089200998969448
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8736903376018627,
+         "three_way": 0.6375198728139905,
+         "mse": 0.2509788995759208
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8835855646100116,
+         "three_way": 0.649178590355061,
+         "mse": 0.22201559671837018
+        }
+       },
+       "store": {
+        "cells_nonzero": 3747,
+        "rms": 0.5180198299599704,
+        "max_abs": 2.316482112755773,
+        "writes": 295054,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 258.99120926856995
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.09832110470719478,
+       "dream_loss_after": 0.06937240993597722,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 141.06978917121887
+      },
+      "slow_updates": 526,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7554475496152289,
+         "three_way": 0.5414312617702448,
+         "mse": 0.537366686749705
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7595787768327258,
+         "three_way": 0.5144140228885992,
+         "mse": 0.502495491675624
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8771827706635623,
+         "three_way": 0.6629570747217806,
+         "mse": 0.24126838969244063
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8608847497089639,
+         "three_way": 0.5765765765765766,
+         "mse": 0.2555767187672688
+        }
+       },
+       "store": {
+        "cells_nonzero": 3767,
+        "rms": 0.44343038772618193,
+        "max_abs": 2.0633341777710226,
+        "writes": 429710,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 407.41627311706543
+      }
+     },
+     {
+      "night": 3,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 46.33873510360718
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.749453219927096,
+         "three_way": 0.5480950311458787,
+         "mse": 0.5819154431178599
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7595787768327258,
+         "three_way": 0.5144140228885992,
+         "mse": 0.502495491675624
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8975552968568102,
+         "three_way": 0.7180710121886592,
+         "mse": 0.23137258780473072
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8608847497089639,
+         "three_way": 0.5765765765765766,
+         "mse": 0.2555767187672688
+        }
+       },
+       "store": {
+        "cells_nonzero": 3768,
+        "rms": 0.5546459228785393,
+        "max_abs": 2.4207381980538143,
+        "writes": 497109,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 461.86071014404297
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.11196195915462351,
+       "dream_loss_after": 0.06000257664842307,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 151.36170172691345
+      },
+      "slow_updates": 789,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7624139327663021,
+         "three_way": 0.5551209619006229,
+         "mse": 0.538797021715899
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7688942891859052,
+         "three_way": 0.5430247718383312,
+         "mse": 0.5015211848711252
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.889406286379511,
+         "three_way": 0.699523052464229,
+         "mse": 0.2276964805892808
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.870197904540163,
+         "three_way": 0.6444091149973503,
+         "mse": 0.244727457393594
+        }
+       },
+       "store": {
+        "cells_nonzero": 3770,
+        "rms": 0.47084294104274715,
+        "max_abs": 2.3177341077757316,
+        "writes": 631765,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 621.2667429447174
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7691428571428571,
+       "three_way": 0.5632650105019193,
+       "mse": 0.5344350494189394
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7667755102040816,
+       "three_way": 0.5434924313753893,
+       "mse": 0.5082675804321368
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.889406286379511,
+       "three_way": 0.699523052464229,
+       "mse": 0.2276964805892808
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.870197904540163,
+       "three_way": 0.6444091149973503,
+       "mse": 0.24472745739359403
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.4639175257731959,
+        "mse": 0.4700902936069657
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7365269461077845,
+        "three_way": 0.3711340206185567,
+        "mse": 0.41318892796449663
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.766896551724138,
+        "three_way": 0.5379061371841155,
+        "mse": 0.44916736777577676
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7813793103448275,
+        "three_way": 0.5499398315282792,
+        "mse": 0.39661377542677007
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7720223325062034,
+        "three_way": 0.580896686159844,
+        "mse": 0.4926313100395966
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7741935483870968,
+        "three_way": 0.5683653578390421,
+        "mse": 0.45686631903361546
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7694695640437306,
+        "three_way": 0.5630382775119617,
+        "mse": 0.5708363649248819
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7613713051693886,
+        "three_way": 0.5355263157894737,
+        "mse": 0.5547503330852147
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7691428571428571,
+       "three_way": 0.5632650105019193,
+       "mse": 0.5344350494189394
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7667755102040816,
+       "three_way": 0.5434924313753893,
+       "mse": 0.5082675804321368
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.889406286379511,
+       "three_way": 0.699523052464229,
+       "mse": 0.2276964805892808
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.870197904540163,
+       "three_way": 0.6444091149973503,
+       "mse": 0.24472745739359403
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.718562874251497,
+        "three_way": 0.4639175257731959,
+        "mse": 0.4700902936069657
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7365269461077845,
+        "three_way": 0.3711340206185567,
+        "mse": 0.41318892796449663
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.766896551724138,
+        "three_way": 0.5379061371841155,
+        "mse": 0.44916736777577676
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7813793103448275,
+        "three_way": 0.5499398315282792,
+        "mse": 0.39661377542677007
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7720223325062034,
+        "three_way": 0.580896686159844,
+        "mse": 0.4926313100395966
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7741935483870968,
+        "three_way": 0.5683653578390421,
+        "mse": 0.45686631903361546
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7694695640437306,
+        "three_way": 0.5630382775119617,
+        "mse": 0.5708363649248819
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7613713051693886,
+        "three_way": 0.5355263157894737,
+        "mse": 0.5547503330852147
+       }
+      }
+     }
+    }
+   },
+   "sleep_c4096_avg_low": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "4096",
+     "active": "32",
+     "seed": "0",
+     "nights": "2",
+     "passes": "1",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "settle": "100",
+     "record_rate": "0.02",
+     "record_averaging": "True",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c4096_avg_low"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 526,
+    "net_update_counter": 1154,
+    "kept_at_night": 2,
+    "validation_sign_off": 0.7763466990684488,
+    "seconds": 586.6936819553375,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.032768
+      },
+      "tag": "start",
+      "seconds": 46.31668281555176
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 51.86145734786987
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7781287970838396,
+         "three_way": 0.5112270027524265,
+         "mse": 0.47091172875456566
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9022118742724098,
+         "three_way": 0.6592474827768945,
+         "mse": 0.19711774526549738
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3646,
+        "rms": 0.23668030523481867,
+        "max_abs": 1.148962437232877,
+        "writes": 92999,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 108.32076168060303
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.12883594007961,
+       "dream_loss_after": 0.02323359779486182,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 181.1874339580536
+      },
+      "slow_updates": 263,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7946537059538274,
+         "three_way": 0.5375923511516731,
+         "mse": 0.4469656516596757
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.774807614418793,
+         "three_way": 0.5071707953063885,
+         "mse": 0.47223419668965183
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9144353899883586,
+         "three_way": 0.685214626391097,
+         "mse": 0.18143655502710418
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8940628637951106,
+         "three_way": 0.6454689984101749,
+         "mse": 0.20844335630475253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3737,
+        "rms": 0.1968582388237707,
+        "max_abs": 1.0485349990140045,
+        "writes": 227655,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 298.52214074134827
+      }
+     },
+     {
+      "night": 2,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 47.86669874191284
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7970028351559336,
+         "three_way": 0.5504852962480081,
+         "mse": 0.446031897211422
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.774807614418793,
+         "three_way": 0.5071707953063885,
+         "mse": 0.47223419668965183
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.930151338766007,
+         "three_way": 0.7011128775834659,
+         "mse": 0.1720771792301311
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8940628637951106,
+         "three_way": 0.6454689984101749,
+         "mse": 0.20844335630475253
+        }
+       },
+       "store": {
+        "cells_nonzero": 3739,
+        "rms": 0.24259974498541148,
+        "max_abs": 1.2191607917473963,
+        "writes": 295054,
+        "table_mb": 0.032768
+       },
+       "tag": "bedtime",
+       "seconds": 356.7779278755188
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.021291148687576707,
+       "dream_loss_after": 0.02265010485632879,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 207.21265840530396
+      },
+      "slow_updates": 526,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.800081004455245,
+         "three_way": 0.5554831232797335,
+         "mse": 0.4417188588708634
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7763466990684488,
+         "three_way": 0.5205707663334782,
+         "mse": 0.47733483565436374
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9249126891734575,
+         "three_way": 0.7037625861155273,
+         "mse": 0.16977370066848815
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8917345750873108,
+         "three_way": 0.6380498145204028,
+         "mse": 0.21680119744732235
+        }
+       },
+       "store": {
+        "cells_nonzero": 3755,
+        "rms": 0.23048774568584057,
+        "max_abs": 1.2090575360749238,
+        "writes": 429710,
+        "table_mb": 0.032768
+       },
+       "tag": "dawn",
+       "seconds": 575.4032208919525
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7973061224489796,
+       "three_way": 0.5610197725791265,
+       "mse": 0.43992561027981036
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7764897959183673,
+       "three_way": 0.5261099442311871,
+       "mse": 0.47237371028499825
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9249126891734575,
+       "three_way": 0.7037625861155273,
+       "mse": 0.16977370066848813
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8917345750873108,
+       "three_way": 0.6380498145204028,
+       "mse": 0.21680119744732232
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7604790419161677,
+        "three_way": 0.38144329896907214,
+        "mse": 0.36669096456385103
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7904191616766467,
+        "three_way": 0.3556701030927835,
+        "mse": 0.3491786656168454
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.8103448275862069,
+        "three_way": 0.5342960288808665,
+        "mse": 0.34466508885613617
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7855172413793103,
+        "three_way": 0.5150421179302046,
+        "mse": 0.3683954810133198
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7931141439205955,
+        "three_way": 0.5644667223614592,
+        "mse": 0.40785374417497594
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7686104218362283,
+        "three_way": 0.5388471177944862,
+        "mse": 0.4330580229214192
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7974085571602105,
+        "three_way": 0.5690191387559809,
+        "mse": 0.47433955514314813
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7778377648805507,
+        "three_way": 0.5267942583732057,
+        "mse": 0.5127916874426255
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7973061224489796,
+       "three_way": 0.5610197725791265,
+       "mse": 0.43992561027981036
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7764897959183673,
+       "three_way": 0.5261099442311871,
+       "mse": 0.47237371028499825
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9249126891734575,
+       "three_way": 0.7037625861155273,
+       "mse": 0.16977370066848813
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8917345750873108,
+       "three_way": 0.6380498145204028,
+       "mse": 0.21680119744732232
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7604790419161677,
+        "three_way": 0.38144329896907214,
+        "mse": 0.36669096456385103
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7904191616766467,
+        "three_way": 0.3556701030927835,
+        "mse": 0.3491786656168454
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.8103448275862069,
+        "three_way": 0.5342960288808665,
+        "mse": 0.34466508885613617
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7855172413793103,
+        "three_way": 0.5150421179302046,
+        "mse": 0.3683954810133198
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7931141439205955,
+        "three_way": 0.5644667223614592,
+        "mse": 0.40785374417497594
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7686104218362283,
+        "three_way": 0.5388471177944862,
+        "mse": 0.4330580229214192
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7974085571602105,
+        "three_way": 0.5690191387559809,
+        "mse": 0.47433955514314813
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7778377648805507,
+        "three_way": 0.5267942583732057,
+        "mse": 0.5127916874426255
+       }
+      }
+     }
+    }
+   },
+   "sleep_c16384": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "16384",
+     "active": "32",
+     "seed": "0",
+     "nights": "2",
+     "passes": "1",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "settle": "100",
+     "record_averaging": "False",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c16384"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 526,
+    "net_update_counter": 1154,
+    "kept_at_night": 2,
+    "validation_sign_off": 0.7794248683677603,
+    "seconds": 1405.1281189918518,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.131072
+      },
+      "tag": "start",
+      "seconds": 92.66602301597595
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 110.384761095047
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7532604293236128,
+         "three_way": 0.5373026220483847,
+         "mse": 0.560553434884754
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9121071012805588,
+         "three_way": 0.7297297297297297,
+         "mse": 0.20615934665415794
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 11215,
+        "rms": 0.33775307900474,
+        "max_abs": 2.2126924276860502,
+        "writes": 92999,
+        "table_mb": 0.131072
+       },
+       "tag": "bedtime",
+       "seconds": 237.7901349067688
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.21391219453095026,
+       "dream_loss_after": 0.08251728283157639,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 461.7750668525696
+      },
+      "slow_updates": 263,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7715674362089915,
+         "three_way": 0.5554106910039114,
+         "mse": 0.5177463733753686
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.76832725799919,
+         "three_way": 0.5315080399826162,
+         "mse": 0.4839745636055354
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9126891734575088,
+         "three_way": 0.724960254372019,
+         "mse": 0.19515586346544558
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.9033760186263097,
+         "three_way": 0.6873343932167462,
+         "mse": 0.19523204201496183
+        }
+       },
+       "store": {
+        "cells_nonzero": 11898,
+        "rms": 0.29631205718664566,
+        "max_abs": 1.899944631630275,
+        "writes": 227655,
+        "table_mb": 0.131072
+       },
+       "tag": "dawn",
+       "seconds": 724.5491859912872
+      }
+     },
+     {
+      "night": 2,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 116.90286207199097
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7606318347509113,
+         "three_way": 0.5424453136317543,
+         "mse": 0.5357465455387462
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.76832725799919,
+         "three_way": 0.5315080399826162,
+         "mse": 0.4839745636055354
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.8981373690337602,
+         "three_way": 0.6746157922628511,
+         "mse": 0.21772279907420256
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.9033760186263097,
+         "three_way": 0.6873343932167462,
+         "mse": 0.19523204201496183
+        }
+       },
+       "store": {
+        "cells_nonzero": 11955,
+        "rms": 0.3942258140581609,
+        "max_abs": 2.1518761567424507,
+        "writes": 295054,
+        "table_mb": 0.131072
+       },
+       "tag": "bedtime",
+       "seconds": 864.7689709663391
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.10385146070415625,
+       "dream_loss_after": 0.07868386220398085,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 485.82825684547424
+      },
+      "slow_updates": 526,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.7658161198865938,
+         "three_way": 0.5523685354193829,
+         "mse": 0.5162280776987954
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7794248683677603,
+         "three_way": 0.5153556424742866,
+         "mse": 0.4675601136797845
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9051222351571595,
+         "three_way": 0.7048224695283519,
+         "mse": 0.20376724899801987
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8876600698486612,
+         "three_way": 0.5903550609432963,
+         "mse": 0.23110002241560176
+        }
+       },
+       "store": {
+        "cells_nonzero": 12117,
+        "rms": 0.35615578367870704,
+        "max_abs": 2.246460305253072,
+        "writes": 429710,
+        "table_mb": 0.131072
+       },
+       "tag": "dawn",
+       "seconds": 1377.5808942317963
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7655510204081633,
+       "three_way": 0.5547186209893532,
+       "mse": 0.5105381652441544
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7821224489795918,
+       "three_way": 0.5230680089809517,
+       "mse": 0.4652843025700554
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9051222351571595,
+       "three_way": 0.7048224695283519,
+       "mse": 0.20376724899801987
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8876600698486612,
+       "three_way": 0.5903550609432963,
+       "mse": 0.2311000224156018
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.688622754491018,
+        "three_way": 0.4381443298969072,
+        "mse": 0.44005061830491
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7544910179640718,
+        "three_way": 0.35051546391752575,
+        "mse": 0.3796723303593227
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7613793103448275,
+        "three_way": 0.5270758122743683,
+        "mse": 0.4130877497720475
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.803448275862069,
+        "three_way": 0.5114320096269555,
+        "mse": 0.3536012130378892
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7692307692307693,
+        "three_way": 0.5524923419660261,
+        "mse": 0.4740905133635568
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7729528535980149,
+        "three_way": 0.5413533834586466,
+        "mse": 0.42353788053369856
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7665002024564719,
+        "three_way": 0.5638755980861244,
+        "mse": 0.5472033198522978
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7825617492239169,
+        "three_way": 0.5215311004784688,
+        "mse": 0.5074060034006654
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7655510204081633,
+       "three_way": 0.5547186209893532,
+       "mse": 0.5105381652441544
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7821224489795918,
+       "three_way": 0.5230680089809517,
+       "mse": 0.4652843025700554
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9051222351571595,
+       "three_way": 0.7048224695283519,
+       "mse": 0.20376724899801987
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8876600698486612,
+       "three_way": 0.5903550609432963,
+       "mse": 0.2311000224156018
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.688622754491018,
+        "three_way": 0.4381443298969072,
+        "mse": 0.44005061830491
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7544910179640718,
+        "three_way": 0.35051546391752575,
+        "mse": 0.3796723303593227
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7613793103448275,
+        "three_way": 0.5270758122743683,
+        "mse": 0.4130877497720475
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.803448275862069,
+        "three_way": 0.5114320096269555,
+        "mse": 0.3536012130378892
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7692307692307693,
+        "three_way": 0.5524923419660261,
+        "mse": 0.4740905133635568
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7729528535980149,
+        "three_way": 0.5413533834586466,
+        "mse": 0.42353788053369856
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7665002024564719,
+        "three_way": 0.5638755980861244,
+        "mse": 0.5472033198522978
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7825617492239169,
+        "three_way": 0.5215311004784688,
+        "mse": 0.5074060034006654
+       }
+      }
+     }
+    }
+   },
+   "sleep_c16384_avg_low_p3": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "16384",
+     "active": "32",
+     "seed": "0",
+     "nights": "1",
+     "passes": "3",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "shards": "0",
+     "settle": "100",
+     "record_rate": "0.02",
+     "record_averaging": "True",
+     "sample": "20000",
+     "chunk": "512",
+     "out": "runs/connect4/sleep/sleep_c16384_avg_low_p3"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "shards": 1,
+    "slow_updates": 789,
+    "net_update_counter": 1153,
+    "kept_at_night": 1,
+    "validation_sign_off": 0.7786958282705548,
+    "seconds": 1031.9467823505402,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       },
+       "off": {
+        "positions": 13806,
+        "sign": 0.5496152288375861,
+        "three_way": 0.13921483413008837,
+        "mse": 0.7109676634466396
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.131072
+      },
+      "tag": "start",
+      "seconds": 133.45703411102295
+     },
+     {
+      "night": 1,
+      "shard": 0,
+      "shard_rows": 67399,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 172.94303703308105
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.789307411907655,
+         "three_way": 0.5118788932348254,
+         "mse": 0.4564177408400123
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.5496152288375861,
+         "three_way": 0.13921483413008837,
+         "mse": 0.7109676634466396
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.930151338766007,
+         "three_way": 0.6952835188129306,
+         "mse": 0.16969267376364355
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 11215,
+        "rms": 0.22366296550210465,
+        "max_abs": 1.3543678927624376,
+        "writes": 92999,
+        "table_mb": 0.131072
+       },
+       "tag": "bedtime",
+       "seconds": 337.05098009109497
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 789.0,
+       "dream_loss_before": 0.13255492399292995,
+       "dream_loss_after": 0.022286838932014386,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 640.9718170166016
+      },
+      "slow_updates": 789,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 13806,
+         "sign": 0.8006480356419603,
+         "three_way": 0.544256120527307,
+         "mse": 0.43296174500960494
+        },
+        "off": {
+         "positions": 13806,
+         "sign": 0.7786958282705548,
+         "three_way": 0.5010140518615095,
+         "mse": 0.4688597759158215
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9371362048894063,
+         "three_way": 0.7196608373078961,
+         "mse": 0.15704353046034528
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8969732246798603,
+         "three_way": 0.6459989401165872,
+         "mse": 0.21312684139959148
+        }
+       },
+       "store": {
+        "cells_nonzero": 11903,
+        "rms": 0.19898614310921037,
+        "max_abs": 1.3890320488203196,
+        "writes": 227655,
+        "table_mb": 0.131072
+       },
+       "tag": "dawn",
+       "seconds": 1002.3777320384979
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.797469387755102,
+       "three_way": 0.5497211559353951,
+       "mse": 0.4337957803811332
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7738775510204081,
+       "three_way": 0.502209024407909,
+       "mse": 0.47016776182271935
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9371362048894063,
+       "three_way": 0.7196608373078961,
+       "mse": 0.1570435304603453
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8969732246798603,
+       "three_way": 0.6459989401165872,
+       "mse": 0.21312684139959148
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7544910179640718,
+        "three_way": 0.42783505154639173,
+        "mse": 0.34371254588225963
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7544910179640718,
+        "three_way": 0.32989690721649484,
+        "mse": 0.3834106580341069
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7889655172413793,
+        "three_way": 0.5204572803850782,
+        "mse": 0.3502876486645837
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7655172413793103,
+        "three_way": 0.47713598074608904,
+        "mse": 0.3779406586834003
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7946650124069479,
+        "three_way": 0.556947925368978,
+        "mse": 0.3980799641796262
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7701612903225806,
+        "three_way": 0.5093288777499304,
+        "mse": 0.43248401588006324
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.8013227156161425,
+        "three_way": 0.5552631578947368,
+        "mse": 0.46782953138415934
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7775678229180726,
+        "three_way": 0.508133971291866,
+        "mse": 0.5067030076639415
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.797469387755102,
+       "three_way": 0.5497211559353951,
+       "mse": 0.4337957803811332
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7738775510204081,
+       "three_way": 0.502209024407909,
+       "mse": 0.47016776182271935
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9371362048894063,
+       "three_way": 0.7196608373078961,
+       "mse": 0.1570435304603453
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8969732246798603,
+       "three_way": 0.6459989401165872,
+       "mse": 0.21312684139959148
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7544910179640718,
+        "three_way": 0.42783505154639173,
+        "mse": 0.34371254588225963
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.7544910179640718,
+        "three_way": 0.32989690721649484,
+        "mse": 0.3834106580341069
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7889655172413793,
+        "three_way": 0.5204572803850782,
+        "mse": 0.3502876486645837
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7655172413793103,
+        "three_way": 0.47713598074608904,
+        "mse": 0.3779406586834003
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7946650124069479,
+        "three_way": 0.556947925368978,
+        "mse": 0.3980799641796262
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7701612903225806,
+        "three_way": 0.5093288777499304,
+        "mse": 0.43248401588006324
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.8013227156161425,
+        "three_way": 0.5552631578947368,
+        "mse": 0.46782953138415934
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7775678229180726,
+        "three_way": 0.508133971291866,
+        "mse": 0.5067030076639415
+       }
+      }
+     }
+    }
+   },
+   "sleep_c65536": {
+    "arguments": {
+     "school": "[PosixPath('runs/connect4/school/s1.npz')]",
+     "heldout": "runs/connect4/school/test.npz",
+     "hidden": "256",
+     "cells": "65536",
+     "active": "32",
+     "seed": "0",
+     "nights": "1",
+     "passes": "1",
+     "rate": "0.3",
+     "backtrack": "False",
+     "dawn_passes": "2",
+     "batch": "256",
+     "cues": "0",
+     "cue_sampling": "banded",
+     "days": "each",
+     "settle": "100",
+     "record_averaging": "False",
+     "sample": "5000",
+     "chunk": "256",
+     "out": "runs/connect4/sleep/sleep_c65536"
+    },
+    "school_positions": 67399,
+    "heldout": {
+     "unseen_validation": 13806,
+     "unseen_reported": 13807,
+     "seen": 1887
+    },
+    "rate": 0.3,
+    "cues_per_night": 67328,
+    "slow_updates": 263,
+    "net_update_counter": 627,
+    "kept_at_night": 1,
+    "validation_sign_off": 0.7722197409557838,
+    "seconds": 3194.4258091449738,
+    "curve": [
+     {
+      "validation": {
+       "on": {
+        "positions": 5000,
+        "sign": 0.554935238945958,
+        "three_way": 0.1442,
+        "mse": 0.7081119397186468
+       },
+       "off": {
+        "positions": 5000,
+        "sign": 0.554935238945958,
+        "three_way": 0.1442,
+        "mse": 0.7081119397186468
+       }
+      },
+      "seen": {
+       "on": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       },
+       "off": {
+        "positions": 1887,
+        "sign": 0.5448195576251456,
+        "three_way": 0.1293057763645999,
+        "mse": 0.5486410479072253
+       }
+      },
+      "store": {
+       "cells_nonzero": 0,
+       "rms": 0.0,
+       "max_abs": 0.0,
+       "writes": 25600,
+       "table_mb": 0.524288
+      },
+      "tag": "start",
+      "seconds": 295.9481632709503
+     },
+     {
+      "night": 1,
+      "day": {
+       "rows_written": 67399,
+       "seconds": 453.071270942688
+      },
+      "bedtime": {
+       "validation": {
+        "on": {
+         "positions": 5000,
+         "sign": 0.7775792764627065,
+         "three_way": 0.559,
+         "mse": 0.5053995764498165
+        },
+        "off": {
+         "positions": 5000,
+         "sign": 0.554935238945958,
+         "three_way": 0.1442,
+         "mse": 0.7081119397186468
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9377182770663562,
+         "three_way": 0.7731849496555379,
+         "mse": 0.17322794560122964
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.5448195576251456,
+         "three_way": 0.1293057763645999,
+         "mse": 0.5486410479072253
+        }
+       },
+       "store": {
+        "cells_nonzero": 29363,
+        "rms": 0.21182854509783514,
+        "max_abs": 2.0571072746075756,
+        "writes": 92999,
+        "table_mb": 0.524288
+       },
+       "tag": "bedtime",
+       "seconds": 794.1834502220154
+      },
+      "sleep": {
+       "cues": 263.0,
+       "updates": 263.0,
+       "dream_loss_before": 0.2265052174286478,
+       "dream_loss_after": 0.08973529432684649,
+       "dawn_writes": 134656.0,
+       "cue_batches": 263,
+       "rows_dreamed": 67328,
+       "rate": 0.3,
+       "seconds": 2204.407241821289
+      },
+      "slow_updates": 263,
+      "dawn": {
+       "validation": {
+        "on": {
+         "positions": 5000,
+         "sign": 0.7833854399285395,
+         "three_way": 0.5694,
+         "mse": 0.48621921360785464
+        },
+        "off": {
+         "positions": 5000,
+         "sign": 0.7722197409557838,
+         "three_way": 0.5302,
+         "mse": 0.47253050908576816
+        }
+       },
+       "seen": {
+        "on": {
+         "positions": 1887,
+         "sign": 0.9371362048894063,
+         "three_way": 0.7827239003709592,
+         "mse": 0.17141766294349958
+        },
+        "off": {
+         "positions": 1887,
+         "sign": 0.8946449359720605,
+         "three_way": 0.6936936936936937,
+         "mse": 0.19836678366392094
+        }
+       },
+       "store": {
+        "cells_nonzero": 32068,
+        "rms": 0.19943428984741235,
+        "max_abs": 1.8643921658623497,
+        "writes": 227655,
+        "table_mb": 0.524288
+       },
+       "tag": "dawn",
+       "seconds": 3063.1870851516724
+      }
+     }
+    ],
+    "kept": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7799183673469388,
+       "three_way": 0.5713044108061128,
+       "mse": 0.49260260194083216
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7681632653061224,
+       "three_way": 0.5382052582023611,
+       "mse": 0.47316650071177324
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9371362048894063,
+       "three_way": 0.7827239003709592,
+       "mse": 0.1714176629434996
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8946449359720605,
+       "three_way": 0.6936936936936937,
+       "mse": 0.19836678366392094
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7005988023952096,
+        "three_way": 0.42783505154639173,
+        "mse": 0.45879109845465826
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.6646706586826348,
+        "three_way": 0.39690721649484534,
+        "mse": 0.40968838518012723
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7779310344827586,
+        "three_way": 0.5439229843561973,
+        "mse": 0.4299160001663919
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7696551724137931,
+        "three_way": 0.5210589651022864,
+        "mse": 0.37729327398975143
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7748138957816377,
+        "three_way": 0.5675299359509886,
+        "mse": 0.4737875865514391
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7707816377171216,
+        "three_way": 0.5491506544138123,
+        "mse": 0.43219460462677506
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7843163719800242,
+        "three_way": 0.5816985645933014,
+        "mse": 0.5139314636739359
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7690646511000135,
+        "three_way": 0.5401913875598087,
+        "mse": 0.5112988136383723
+       }
+      }
+     }
+    },
+    "last": {
+     "unseen": {
+      "on": {
+       "positions": 13807,
+       "sign": 0.7799183673469388,
+       "three_way": 0.5713044108061128,
+       "mse": 0.49260260194083216
+      },
+      "off": {
+       "positions": 13807,
+       "sign": 0.7681632653061224,
+       "three_way": 0.5382052582023611,
+       "mse": 0.47316650071177324
+      }
+     },
+     "seen": {
+      "on": {
+       "positions": 1887,
+       "sign": 0.9371362048894063,
+       "three_way": 0.7827239003709592,
+       "mse": 0.1714176629434996
+      },
+      "off": {
+       "positions": 1887,
+       "sign": 0.8946449359720605,
+       "three_way": 0.6936936936936937,
+       "mse": 0.19836678366392094
+      }
+     },
+     "unseen_by_stones": {
+      "0-8": {
+       "on": {
+        "positions": 194,
+        "sign": 0.7005988023952096,
+        "three_way": 0.42783505154639173,
+        "mse": 0.45879109845465826
+       },
+       "off": {
+        "positions": 194,
+        "sign": 0.6646706586826348,
+        "three_way": 0.39690721649484534,
+        "mse": 0.40968838518012723
+       }
+      },
+      "8-16": {
+       "on": {
+        "positions": 1662,
+        "sign": 0.7779310344827586,
+        "three_way": 0.5439229843561973,
+        "mse": 0.4299160001663919
+       },
+       "off": {
+        "positions": 1662,
+        "sign": 0.7696551724137931,
+        "three_way": 0.5210589651022864,
+        "mse": 0.37729327398975143
+       }
+      },
+      "16-24": {
+       "on": {
+        "positions": 3591,
+        "sign": 0.7748138957816377,
+        "three_way": 0.5675299359509886,
+        "mse": 0.4737875865514391
+       },
+       "off": {
+        "positions": 3591,
+        "sign": 0.7707816377171216,
+        "three_way": 0.5491506544138123,
+        "mse": 0.43219460462677506
+       }
+      },
+      "24-43": {
+       "on": {
+        "positions": 8360,
+        "sign": 0.7843163719800242,
+        "three_way": 0.5816985645933014,
+        "mse": 0.5139314636739359
+       },
+       "off": {
+        "positions": 8360,
+        "sign": 0.7690646511000135,
+        "three_way": 0.5401913875598087,
+        "mse": 0.5112988136383723
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "bench": {
+  "school_p3": {
+   "format": "cadence-examples.connect4.bench/1",
+   "subject": "runs/connect4/deployed/school_p3.npz",
+   "games_per_opponent": 20,
+   "search": {
+    "budget": 2000,
+    "late_stones": 18,
+    "late_budget": 20000
+   },
+   "opponents": {
+    "one_ply": {
+     "win_draw_loss": {
+      "first": [
+       10,
+       0,
+       0
+      ],
+      "second": [
+       10,
+       0,
+       0
+      ]
+     },
+     "all": {
+      "moves": 162,
+      "optimal": 0.7530864197530864,
+      "not_lost_moves": 160,
+      "blunder_when_not_lost": 0.04375
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.6625,
+       "not_lost_moves": 78,
+       "blunder_when_not_lost": 0.07692307692307693
+      },
+      "8-16": {
+       "moves": 54,
+       "optimal": 0.7962962962962963,
+       "not_lost_moves": 54,
+       "blunder_when_not_lost": 0.018518518518518517
+      },
+      "16-24": {
+       "moves": 25,
+       "optimal": 0.92,
+       "not_lost_moves": 25,
+       "blunder_when_not_lost": 0.0
+      },
+      "24-42": {
+       "moves": 3,
+       "optimal": 1.0,
+       "not_lost_moves": 3,
+       "blunder_when_not_lost": 0.0
+      }
+     },
+     "seconds": 237.81238389015198,
+     "games": [
+      {
+       "columns": "3251465035462",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "2311035333031244",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3625104",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "635505355313233202622444",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "35545044554636333035466",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "53450544655323340366",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3412154222313346565",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "432252242351133414",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3043215",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "03353426",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "311336161161623433402624202",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "13356363133144145566",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "31141225343300204",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "134121525343300240",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3313204",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32330505555335244462111224",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3412111031240",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "4322120313322455",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3043251",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "03355426",
+       "subject_first": false,
+       "winner": 1
+      }
+     ]
+    },
+    "solver_070": {
+     "win_draw_loss": {
+      "first": [
+       6,
+       0,
+       4
+      ],
+      "second": [
+       7,
+       1,
+       2
+      ]
+     },
+     "all": {
+      "moves": 247,
+      "optimal": 0.7530364372469636,
+      "not_lost_moves": 98,
+      "blunder_when_not_lost": 0.16326530612244897
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.5125,
+       "not_lost_moves": 41,
+       "blunder_when_not_lost": 0.2682926829268293
+      },
+      "8-16": {
+       "moves": 71,
+       "optimal": 0.7323943661971831,
+       "not_lost_moves": 24,
+       "blunder_when_not_lost": 0.20833333333333334
+      },
+      "16-24": {
+       "moves": 49,
+       "optimal": 0.9387755102040817,
+       "not_lost_moves": 17,
+       "blunder_when_not_lost": 0.0
+      },
+      "24-42": {
+       "moves": 47,
+       "optimal": 1.0,
+       "not_lost_moves": 16,
+       "blunder_when_not_lost": 0.0
+      }
+     },
+     "seconds": 685.7309739589691,
+     "games": [
+      {
+       "columns": "33123221112156225336166553556644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32542424421511013341",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3410151153365532335615100066600622",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "430454333464",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "331236221661133160032122555650556044",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32546544255222244556406666000010131",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3313240",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32333345020414444252",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33123222313312126654444546605",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325442242244335553666335",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33123221121332263115566556556644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225533632644354613",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "362113333615161",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "633143320155535534621114444522212066660000",
+       "subject_first": false,
+       "winner": -1
+      },
+      {
+       "columns": "33123223311515131",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325442331252",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33123221133220001106266616644444430555505",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32544242225533636",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3312322631303",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32544262240411656604423331",
+       "subject_first": false,
+       "winner": 1
+      }
+     ]
+    },
+    "solver_100": {
+     "win_draw_loss": {
+      "first": [
+       0,
+       0,
+       10
+      ],
+      "second": [
+       0,
+       0,
+       10
+      ]
+     },
+     "all": {
+      "moves": 230,
+      "optimal": 0.7521739130434782,
+      "not_lost_moves": 20,
+      "blunder_when_not_lost": 0.5
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.5,
+       "not_lost_moves": 20,
+       "blunder_when_not_lost": 0.5
+      },
+      "8-16": {
+       "moves": 80,
+       "optimal": 0.7875,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      },
+      "16-24": {
+       "moves": 40,
+       "optimal": 1.0,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      },
+      "24-42": {
+       "moves": 30,
+       "optimal": 1.0,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      }
+     },
+     "seconds": 362.71146392822266,
+     "games": [
+      {
+       "columns": "331232211612112332636666555444",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565633",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33123221151331522216366555566644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565633",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "331232211332261211636666555444",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565336",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "331232211332261211636666555444",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565336",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "331232211612112333266666555444",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565633",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "331232211512553533112424",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565633",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "331232211213361122636666555444",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225533336",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "331232211213361126662663555444",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225533336",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33123221151331513666525526662544",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225565333",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33123221112322351513565655666644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242225533636",
+       "subject_first": false,
+       "winner": 0
+      }
+     ]
+    }
+   }
+  },
+  "sleep_c16384": {
+   "format": "cadence-examples.connect4.bench/1",
+   "subject": "runs/connect4/deployed/sleep_c16384.npz",
+   "games_per_opponent": 20,
+   "search": {
+    "budget": 2000,
+    "late_stones": 18,
+    "late_budget": 20000
+   },
+   "opponents": {
+    "one_ply": {
+     "win_draw_loss": {
+      "first": [
+       10,
+       0,
+       0
+      ],
+      "second": [
+       10,
+       0,
+       0
+      ]
+     },
+     "all": {
+      "moves": 178,
+      "optimal": 0.6797752808988764,
+      "not_lost_moves": 174,
+      "blunder_when_not_lost": 0.10919540229885058
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.5875,
+       "not_lost_moves": 79,
+       "blunder_when_not_lost": 0.21518987341772153
+      },
+      "8-16": {
+       "moves": 51,
+       "optimal": 0.6078431372549019,
+       "not_lost_moves": 48,
+       "blunder_when_not_lost": 0.020833333333333332
+      },
+      "16-24": {
+       "moves": 32,
+       "optimal": 0.875,
+       "not_lost_moves": 32,
+       "blunder_when_not_lost": 0.03125
+      },
+      "24-42": {
+       "moves": 15,
+       "optimal": 1.0,
+       "not_lost_moves": 15,
+       "blunder_when_not_lost": 0.0
+      }
+     },
+     "seconds": 467.3447690010071,
+     "games": [
+      {
+       "columns": "32411035204",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "2311035333031244",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3625104",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "63520533152551026323322454410044",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "352410303334462422555",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "53450544655323340366",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3422251022323331100",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "4321552522155364666343",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3043215",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "03343215",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3143562",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "13336164114444550566033551631425622222",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3144526",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "13412154532334224344",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "333320451",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "323305055555332244241113226444",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "342221202235333443555",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "43211404132443323252236556",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3043251",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "033453442234144255",
+       "subject_first": false,
+       "winner": 1
+      }
+     ]
+    },
+    "solver_070": {
+     "win_draw_loss": {
+      "first": [
+       10,
+       0,
+       0
+      ],
+      "second": [
+       7,
+       0,
+       3
+      ]
+     },
+     "all": {
+      "moves": 236,
+      "optimal": 0.7372881355932204,
+      "not_lost_moves": 158,
+      "blunder_when_not_lost": 0.16455696202531644
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.4875,
+       "not_lost_moves": 51,
+       "blunder_when_not_lost": 0.3333333333333333
+      },
+      "8-16": {
+       "moves": 70,
+       "optimal": 0.7142857142857143,
+       "not_lost_moves": 42,
+       "blunder_when_not_lost": 0.19047619047619047
+      },
+      "16-24": {
+       "moves": 51,
+       "optimal": 0.9803921568627451,
+       "not_lost_moves": 36,
+       "blunder_when_not_lost": 0.027777777777777776
+      },
+      "24-42": {
+       "moves": 35,
+       "optimal": 1.0,
+       "not_lost_moves": 29,
+       "blunder_when_not_lost": 0.0
+      }
+     },
+     "seconds": 747.6698760986328,
+     "games": [
+      {
+       "columns": "333322401",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "3256222233333562556645044504441111000166",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "342055225336424225441",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "4305553333660555300006666111222",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "333326421",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32566525255522160616634444131",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "333324351013515155140144422",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32333343655555624",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332134144011155645434",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325655222552335263003366001111004414",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "333321322551121255265110040",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325655332225020552334434",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "362145141635161",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "633213336155664544522311145544210022",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33332436140",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "3256553315513361223244422000",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3333243422444510152326655541151",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325655336535534464443466",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "333324342245114",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325655653505",
+       "subject_first": false,
+       "winner": 1
+      }
+     ]
+    },
+    "solver_100": {
+     "win_draw_loss": {
+      "first": [
+       0,
+       0,
+       10
+      ],
+      "second": [
+       0,
+       0,
+       10
+      ]
+     },
+     "all": {
+      "moves": 310,
+      "optimal": 0.7548387096774194,
+      "not_lost_moves": 30,
+      "blunder_when_not_lost": 0.3333333333333333
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.45,
+       "not_lost_moves": 30,
+       "blunder_when_not_lost": 0.3333333333333333
+      },
+      "8-16": {
+       "moves": 80,
+       "optimal": 0.6,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      },
+      "16-24": {
+       "moves": 80,
+       "optimal": 1.0,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      },
+      "24-42": {
+       "moves": 70,
+       "optimal": 1.0,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      }
+     },
+     "seconds": 723.9622411727905,
+     "games": [
+      {
+       "columns": "3333243422411422442300006660066611",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3333243422411422442300006666660011",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332131122511565255212356666644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332134114116366166622220205445",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332131122515112322565556666644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3333243422411422442300006666600611",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332134144114224143221255555050000066",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3333243422411422442300006660066611",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332134144114224143221255555500000066",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33332131122512112562555656636644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32565533653553032206666222444",
+       "subject_first": false,
+       "winner": 0
+      }
+     ]
+    }
+   }
+  },
+  "sleep_c16384_avg_low_p3": {
+   "format": "cadence-examples.connect4.bench/1",
+   "subject": "runs/connect4/deployed/sleep_c16384_avg_low_p3.npz",
+   "games_per_opponent": 20,
+   "search": {
+    "budget": 2000,
+    "late_stones": 18,
+    "late_budget": 20000
+   },
+   "opponents": {
+    "one_ply": {
+     "win_draw_loss": {
+      "first": [
+       10,
+       0,
+       0
+      ],
+      "second": [
+       10,
+       0,
+       0
+      ]
+     },
+     "all": {
+      "moves": 168,
+      "optimal": 0.7678571428571429,
+      "not_lost_moves": 166,
+      "blunder_when_not_lost": 0.060240963855421686
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.6625,
+       "not_lost_moves": 79,
+       "blunder_when_not_lost": 0.10126582278481013
+      },
+      "8-16": {
+       "moves": 56,
+       "optimal": 0.8035714285714286,
+       "not_lost_moves": 56,
+       "blunder_when_not_lost": 0.017857142857142856
+      },
+      "16-24": {
+       "moves": 24,
+       "optimal": 0.9583333333333334,
+       "not_lost_moves": 23,
+       "blunder_when_not_lost": 0.043478260869565216
+      },
+      "24-42": {
+       "moves": 8,
+       "optimal": 1.0,
+       "not_lost_moves": 8,
+       "blunder_when_not_lost": 0.0
+      }
+     },
+     "seconds": 241.11306977272034,
+     "games": [
+      {
+       "columns": "3251463025104",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "2311035333031244",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3625104",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "635505355313233202622444",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3554503433554246366",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "53450544655323340366",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "34122532415",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "432252232451133414",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3043215",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "03343215",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "311346361144255455403013222",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "1333616113433114046664452555",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "31141225343300204",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "1341235332445215",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33333040251",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32330505525225332544132666661104",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "34122120313322455",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "4322130104",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3043251",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "033453442234144255",
+       "subject_first": false,
+       "winner": 1
+      }
+     ]
+    },
+    "solver_070": {
+     "win_draw_loss": {
+      "first": [
+       9,
+       0,
+       1
+      ],
+      "second": [
+       8,
+       0,
+       2
+      ]
+     },
+     "all": {
+      "moves": 290,
+      "optimal": 0.7965517241379311,
+      "not_lost_moves": 170,
+      "blunder_when_not_lost": 0.12352941176470589
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.7,
+       "not_lost_moves": 55,
+       "blunder_when_not_lost": 0.07272727272727272
+      },
+      "8-16": {
+       "moves": 76,
+       "optimal": 0.618421052631579,
+       "not_lost_moves": 39,
+       "blunder_when_not_lost": 0.3333333333333333
+      },
+      "16-24": {
+       "moves": 66,
+       "optimal": 0.9090909090909091,
+       "not_lost_moves": 27,
+       "blunder_when_not_lost": 0.14814814814814814
+      },
+      "24-42": {
+       "moves": 68,
+       "optimal": 1.0,
+       "not_lost_moves": 49,
+       "blunder_when_not_lost": 0.0
+      }
+     },
+     "seconds": 703.9307839870453,
+     "games": [
+      {
+       "columns": "3333325222555444253251104441111666600",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325424244214120133430",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3410155333361155625310150000644",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "430454333364421111143066062255",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "333336212254424104432062646661111000055",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325464233565665202422433436401006101",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33333415201321221546464",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32333345020414444555535600001212",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "3333311156156554155660144640424",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325442224412340455660550660011205133",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33333042565545442436400000566522",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242242555652441516000000111133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "36212322362566143045444",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "633213336151664445561422232642401100",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33333326451",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "325442331252",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "333336212254442",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32544242240400605002113323",
+       "subject_first": false,
+       "winner": 1
+      },
+      {
+       "columns": "33333414441115455053554110066602222200266",
+       "subject_first": true,
+       "winner": 0
+      },
+      {
+       "columns": "32544262240411656604423331",
+       "subject_first": false,
+       "winner": 1
+      }
+     ]
+    },
+    "solver_100": {
+     "win_draw_loss": {
+      "first": [
+       0,
+       0,
+       10
+      ],
+      "second": [
+       0,
+       0,
+       10
+      ]
+     },
+     "all": {
+      "moves": 340,
+      "optimal": 0.8794117647058823,
+      "not_lost_moves": 57,
+      "blunder_when_not_lost": 0.22807017543859648
+     },
+     "by_stones": {
+      "0-8": {
+       "moves": 80,
+       "optimal": 0.75,
+       "not_lost_moves": 40,
+       "blunder_when_not_lost": 0.0
+      },
+      "8-16": {
+       "moves": 80,
+       "optimal": 0.7625,
+       "not_lost_moves": 17,
+       "blunder_when_not_lost": 0.7647058823529411
+      },
+      "16-24": {
+       "moves": 75,
+       "optimal": 0.9733333333333334,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      },
+      "24-42": {
+       "moves": 105,
+       "optimal": 1.0,
+       "not_lost_moves": 0,
+       "blunder_when_not_lost": null
+      }
+     },
+     "seconds": 893.6315639019012,
+     "games": [
+      {
+       "columns": "333333215422122524444400000011",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "325442422404125433336",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33333410111444414132022202002660666655",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242246555420551142600000111133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33333111561564115655644440406003600522",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242246555024500201451611001133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3333304544122426544223100110101260666655",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242240465556205512100004111133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33333252225555244436254446066006600011",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242244201015466552000055111133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "333333215422122524444400000011",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242244201515500500045211116633",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3333304544122426522301420111001046666655",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242246555250400204110065111133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33333555105101125513100220202266666644",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242240425555151042060006111133",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "3333304544122426522443100111621000666655",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "32544242245115252554400111001006633",
+       "subject_first": false,
+       "winner": 0
+      },
+      {
+       "columns": "33333252225553252546444446166116611100",
+       "subject_first": true,
+       "winner": 1
+      },
+      {
+       "columns": "3254424224125433336",
+       "subject_first": false,
+       "winner": 0
+      }
+     ]
+    }
+   }
+  }
+ },
+ "control_school_plus_day": {
+  "source": "school_p3",
+  "day": "one pass of the school written at slow rate 0 after 100 settling batches",
+  "arms": {
+   "4096_0.5_last": {
+    "cells": 4096,
+    "record_rate": 0.5,
+    "record_averaging": false,
+    "validation": {
+     "on": {
+      "positions": 13806,
+      "sign": 0.7653300931551236,
+      "three_way": 0.5595393307257714,
+      "mse": 0.5467381840685721
+     },
+     "off": {
+      "positions": 13806,
+      "sign": 0.793762656946132,
+      "three_way": 0.5401274808054469,
+      "mse": 0.44656135878782205
+     }
+    },
+    "reported": {
+     "on": {
+      "positions": 13807,
+      "sign": 0.7652244897959184,
+      "three_way": 0.5602230752516839,
+      "mse": 0.5423630457582792
+     },
+     "off": {
+      "positions": 13807,
+      "sign": 0.7917551020408163,
+      "three_way": 0.5429130151372492,
+      "mse": 0.44683363508414814
+     }
+    },
+    "seen": {
+     "on": {
+      "positions": 1887,
+      "sign": 0.9057043073341094,
+      "three_way": 0.7042925278219396,
+      "mse": 0.21235983344506118
+     },
+     "off": {
+      "positions": 1887,
+      "sign": 0.8987194412107101,
+      "three_way": 0.652888182299947,
+      "mse": 0.20421729524142776
+     }
+    },
+    "seconds": 85.22727608680725
+   },
+   "4096_0.02_avg": {
+    "cells": 4096,
+    "record_rate": 0.02,
+    "record_averaging": true,
+    "validation": {
+     "on": {
+      "positions": 13806,
+      "sign": 0.8072093965168085,
+      "three_way": 0.5732290308561495,
+      "mse": 0.4287549290994544
+     },
+     "off": {
+      "positions": 13806,
+      "sign": 0.793762656946132,
+      "three_way": 0.5401274808054469,
+      "mse": 0.44656135878782205
+     }
+    },
+    "reported": {
+     "on": {
+      "positions": 13807,
+      "sign": 0.8055510204081633,
+      "three_way": 0.5722459621930904,
+      "mse": 0.42845916058461064
+     },
+     "off": {
+      "positions": 13807,
+      "sign": 0.7917551020408163,
+      "three_way": 0.5429130151372492,
+      "mse": 0.44683363508414814
+     }
+    },
+    "seen": {
+     "on": {
+      "positions": 1887,
+      "sign": 0.9278230500582072,
+      "three_way": 0.7233704292527822,
+      "mse": 0.16246664891826304
+     },
+     "off": {
+      "positions": 1887,
+      "sign": 0.8987194412107101,
+      "three_way": 0.652888182299947,
+      "mse": 0.20421729524142776
+     }
+    },
+    "seconds": 82.6611578464508
+   },
+   "16384_0.02_avg": {
+    "cells": 16384,
+    "record_rate": 0.02,
+    "record_averaging": true,
+    "validation": {
+     "on": {
+      "positions": 13806,
+      "sign": 0.8113406237343054,
+      "three_way": 0.5754744314066348,
+      "mse": 0.41918372793451203
+     },
+     "off": {
+      "positions": 13806,
+      "sign": 0.793762656946132,
+      "three_way": 0.5401274808054469,
+      "mse": 0.44656135878782205
+     }
+    },
+    "reported": {
+     "on": {
+      "positions": 13807,
+      "sign": 0.812,
+      "three_way": 0.576446729919606,
+      "mse": 0.4157516368904298
+     },
+     "off": {
+      "positions": 13807,
+      "sign": 0.7917551020408163,
+      "three_way": 0.5429130151372492,
+      "mse": 0.44683363508414814
+     }
+    },
+    "seen": {
+     "on": {
+      "positions": 1887,
+      "sign": 0.9447031431897556,
+      "three_way": 0.7450980392156863,
+      "mse": 0.14536609806959508
+     },
+     "off": {
+      "positions": 1887,
+      "sign": 0.8987194412107101,
+      "three_way": 0.652888182299947,
+      "mse": 0.20421729524142776
+     }
+    },
+    "seconds": 289.26872992515564
+   }
+  }
+ }
+}
