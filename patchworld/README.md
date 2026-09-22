@@ -25,6 +25,10 @@ group, cortex and port carries its name.
 - **Direct motor control.** The policy patch drives eight muscle ports and the mouth of a soft body that crawls by grip alone.
 - **Drives.** Energy and pain are among the senses, and the inherited drives say what the planner steers toward.
 - **Computation has a price.** Every unit read, channel, record cell, write and planning replay costs mass, so a brain has to pay for itself.
+- **Sleep is a closed-corpus mechanism.** A gene lets a being keep the day's windows and dream them
+  through its records in the dark, moving its slow weights on the dreams (the library's `sleep`).
+  Under selection the gene loses in every run: the awake learner has the world at every tick, the
+  sleeper trades its actions for second-hand presentations of what it holds.
 
 ## The brain is two record patches
 
@@ -81,7 +85,13 @@ planner on the library class.
 - `sim/founder.json`: the founders' model predicts the next reading on a held-out stream with a
   mean squared error of 0.0099, against 0.0179 for predicting no change and 0.151 for the
   running mean.
-- `receipts/`: two base worlds of 20,000 ticks on this code. The population's mean speed rises
+- `receipts/sleep_*.jsonl`: the night and the sleep gene over 20,000 ticks, two seeds, three worlds
+  (`sim/summarize_sleep.py receipts`): founders that all sleep are down to 6 and 1 percent of the
+  living by tick 5,000 and 3 and 1 percent at the end; a gene that mutates on in an awake world
+  stays between 2 and 6 percent; sleepers' late-life model error is 0.056 to 0.058 against 0.035
+  to 0.049 for beings that learn by day, and they live no longer. The page runs with the night
+  and the gene on, half the founders sleeping, so the loss can be watched.
+- `receipts/`: two base worlds of 20,000 ticks on this code, before the night. The population's mean speed rises
   from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick, with mass drift zero in both.
 
 ## Run it

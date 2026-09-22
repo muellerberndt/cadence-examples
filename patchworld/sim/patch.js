@@ -234,6 +234,24 @@ class RecordPatch {
     return { updated: false, reason: 'no_decreasing_parameter_step', finalLoss: initial, acceptedRate: 0, replayLosses: losses, replays };
   }
 
+  // ---------- sleep: dream a cue from rest, teach the fixed dream to the slow weights, re-reference the store at dawn ----------
+  dream(U, T, out) { // the store's completion of a cue from rest, as the patch would answer awake; nothing changes
+    const f = this.forward(U, T, new Float64Array(this.H)); out.set(f.output.subarray(0, T * this.O)); return f; }
+  consolidate(U, T, dreamOut, rate, opts) { // the slow weights learn a fixed dream: the adjoint step from rest, no write
+    const saved = Float64Array.from(this.h); this.h.fill(0);
+    const boundary = new Float64Array(this.H), f = this.forward(U, T, boundary), known = opts && opts.known;
+    const g = this._gradient(U, T, boundary, f.hidden, f.gate, f.port, f.slow, dreamOut, known, this.grad);
+    let scale = rate; const clip = opts && opts.clip;
+    if (clip) { let n2 = 0; for (const k of PARAMS) { const d = g[k]; for (let i = 0; i < d.length; i++) n2 += d[i] * d[i]; } const n = Math.sqrt(n2); if (n > clip) scale = rate * clip / n; }
+    let updated = false;
+    if (rate > 0) { if (opts && opts.backtrack) updated = this._admit(U, T, boundary, dreamOut, known, this.loss(f.slow, dreamOut, T, known), rate, true).updated;
+      else { for (const k of PARAMS) { const p = this[k], d = g[k]; for (let i = 0; i < p.length; i++) p[i] -= scale * d[i]; } this._applyMask(); this.updates++; this.revision++; updated = true; } }
+    this.h.set(saved); return updated; }
+  reference(U, T, dreamOut, known) { // dawn: write the dream back against the moved weights, so the store holds what they did not take
+    if (this.D === 0) return 0; const saved = Float64Array.from(this.h);
+    const f = this.forward(U, T, new Float64Array(this.H)), n = this._writePath(U, T, f.hidden, f.slow, dreamOut, known || null);
+    this.h.set(saved); return n; }
+
   // ---------- the continuing actor: one tick at a time, learning over a window ----------
   step(u, out) { // advance the live context by one moment; the prediction (slow readout plus record read) goes to `out`
     const I = this.I, H = this.H, O = this.O, w = this.w, ho = w * H;

@@ -151,19 +151,19 @@
     <div class="ticker wide" id="ticker"></div>
   </div>
   <aside id="aside">
+    <div class="board">
+      <h2>The world <small id="worldSub"></small></h2>
+      <dl class="counters" id="counters"></dl>
+      <canvas id="shares" width="336" height="90" title="the share of the population held by each lineage over time"></canvas>
+      <div class="lineages" id="lineages"></div>
+      <p class="chartnote">One lineage usually takes the world within 10,000 to 20,000 ticks. Set ticks/s to max to watch it happen, then export the chronicle to see why.</p>
+    </div>
     <div class="board" id="beingBoard">
       <h2>One being <small id="beingSub">click a body</small></h2>
       <div class="who" id="who"><i></i><span>Nobody chosen. The director follows the leading lineage.</span></div>
       <div class="genes" id="genes"></div>
       <canvas id="body" width="336" height="120"></canvas>
       <canvas id="brain" width="336" height="420"></canvas>
-    </div>
-    <div class="board">
-      <h2>The world <small id="worldSub"></small></h2>
-      <dl class="counters" id="counters"></dl>
-      <canvas id="shares" width="336" height="90" title="the share of the population held by each lineage over time"></canvas>
-      <p class="chartnote">One lineage usually takes the world within 10,000 to 20,000 ticks. Set ticks/s to max to watch it happen, then export the chronicle to see why.</p>
-      <div class="lineages" id="lineages"></div>
     </div>
     <details class="board">
       <summary>The rules of the next world</summary>
@@ -176,6 +176,7 @@
         <p><b>Physics.</b> Mass in integer units, conserved at every tick between soil, food and bodies. One sun crosses the torus; food grows in its light where the soil is rich and decays back to soil; its scent diffuses a few cells. Rock cannot be entered; mud keeps less than half of every step. A body is a graph of point masses and springs; muscles are springs whose rest length follows a motor port; each node keeps a share of its displacement along its head-ward axis, less against it and less across it, which is how a shape crawls. Bodies push each other, a mouth can bite the body ahead, and a bitten body with no energy left loses a node. The dead become food where they lie.</p>
         <p><b>Inherited.</b> The body graph with its grips, the clock's frequency, the split threshold, the drives, the size of the records, the learning rates, the planning horizon, and the slow weights of two record patches: a policy that proposes the motor from the reading, the clock and the previous motor, and a model that predicts the change of the reading and the energy change from the reading, the clock and the motor. A child is born with three nodes and grows the rest one unit of mass at a time. Every genome is mutated at birth: node positions, grips, nodes added or removed, muscles gained or lost, and small steps on the slow weights.</p>
         <p><b>Learned in one life.</b> The records of both patches: what the slow readout got wrong at each reading, written after every window of eight ticks. The slow weights move by the adjoint of the same window at the inherited rate, which may be zero. The planner repairs the motor ports of a private path under the model toward the drives, executes the first repaired motor, and the policy is taught that repair. Records are never inherited.</p>
+        <p><b>Night and sleep.</b> Where the sun is not, scent is gone. A being whose genome says sleep writes its records by day and keeps the day's windows; in the dark it stops moving, dreams one kept window per tick through its store, moves its slow weights on the dream, and at dawn writes the dreams back so the store holds what the weights did not take. Half the founders sleep. Measured over 20,000 ticks and two seeds, the gene loses: sleepers fall from 37 to 1 or 3 percent of the living, their model's late-life error is higher, and a gene that mutates on stays under 6 percent. The world never closes; the awake learner has it at every tick, and the sleeper trades its actions for second-hand presentations of what it holds.</p>
         <p><b>Price.</b> A base rate, per node, per unit of muscle work, per unit read, per record cell, per write, per planning replay, and per slow weight while learning, each paid as the probability of losing one unit of mass to the soil. Nothing else selects.</p>
         <p><b>More.</b> Every rule with its numbers is on <a href="rules.html">the rules page</a>.</p>
         <p><b>Brain.</b> The patches are the JavaScript twin of <code>cadence.RecordPatchNet</code>, checked against the library to 1e-15 on observation, windows, backtracking and planning. The records here use a sparse projection with eight inputs per cell; the library's dense projection is the reference. In the inspection view every line is a slow weight and shines with the signal it carries this tick; the grid is the record cells, the lit ones are the reading's code. The founders come from the gait lab, an explicit search outside the world that the world never sees again.</p>
@@ -190,8 +191,8 @@
 const { CFG, POP, N, SENSES, NS, SN, NM, NI, NOUT, HP, HM, CLOCK, MOTOR, MAXN, MAXM, S, GENE, G, Substrate, Population, wrap, ddx, FEEDBACK } = CB;
 function deserialize(j) { const th = { policy: {}, model: {} }; for (const p of ['policy', 'model']) for (const k in j.theta[p]) th[p][k] = Float64Array.from(j.theta[p][k]); return CB.cloneGenome(Object.assign({}, j, { theta: th })); }
 const FOUNDER = typeof CB_FOUNDER !== 'undefined' && CB_FOUNDER ? deserialize(CB_FOUNDER) : null;
-const RULE_NAMES = { rock: 'rock', mud: 'mud', bite: 'biting', injury: 'injury by bites', growth: 'bodies grow', devnoise: 'developmental noise', records: 'records allowed', slow: 'slow learning allowed', plan: 'planning allowed', noise: 'motor noise allowed' };
-const DEFAULT_RULES = { rock: true, mud: true, bite: true, injury: true, growth: true, devnoise: true, records: true, slow: true, plan: true, noise: true };
+const RULE_NAMES = { night: 'night: no scent in the dark', sleep: 'sleep: a gene may express a sleeping night', rock: 'rock', mud: 'mud', bite: 'biting', injury: 'injury by bites', growth: 'bodies grow', devnoise: 'developmental noise', records: 'records allowed', slow: 'slow learning allowed', plan: 'planning allowed', noise: 'motor noise allowed' };
+const DEFAULT_RULES = { night: true, sleep: true, rock: true, mud: true, bite: true, injury: true, growth: true, devnoise: true, records: true, slow: true, plan: true, noise: true };
 const Q = new URLSearchParams(location.search), CARD = Q.has('card'), SMALL = matchMedia('(max-width: 900px)').matches || (navigator.hardwareConcurrency || 8) <= 4;
 const LITE = Q.has('lite') || (SMALL && !Q.has('full')), SHOT = Q.has('shot') ? +Q.get('shot') : 0; if (CARD) document.body.classList.add('card');
 const SIZES = { small: 140, normal: 420, large: 640 }; let worldSize = Q.get('pop') ? +Q.get('pop') : (LITE ? SIZES.small : SIZES.normal);
@@ -286,7 +287,7 @@ function say(e) {
   $('ticker').innerHTML = ticker.map(t => `<div class="${t.cls}">${t.line}</div>`).join('');
 }
 function newWorld(rules) {
-  seed = (firstWorld && Q.has('seed')) ? +Q.get('seed') : (Math.random() * 1e9) | 0; firstWorld = false; sub = new Substrate(seed, rules); pop = new Population(sub, seed + 1, FOUNDER); mass0 = pop.mass; chosen = null; anims.length = 0; ticker.length = 0; $('ticker').innerHTML = '';
+  seed = (firstWorld && Q.has('seed')) ? +Q.get('seed') : (Math.random() * 1e9) | 0; firstWorld = false; sub = new Substrate(seed, rules); pop = new Population(sub, seed + 1, FOUNDER); if (rules.sleep) pop.beings.forEach((b, k) => { b.g.sleep = k % 2; b.sleeper = !!(k % 2 && b.slowRate > 0); }); mass0 = pop.mass; chosen = null; anims.length = 0; ticker.length = 0; $('ticker').innerHTML = '';
   buildRock(); paintGround(); directorNext = 0; netFor = null;
 }
 function buildRock() { let k = 0; const rng = new CB.Mulberry(seed); for (let i = 0; i < N; i++) { if (!sub.rock[i]) continue; const x = i % CFG.w, z = (i / CFG.w) | 0, h = 0.55 + rng.random() * 0.35; _m.compose(_p.set(x, h / 2 - 0.02, z), _q.identity(), _s.set(1, h, 1)); rockMesh.setMatrixAt(k++, _m); } rockMesh.count = k; rockMesh.instanceMatrix.needsUpdate = true; }
@@ -319,7 +320,7 @@ function render(now) {
   let nk = 0, sk = 0, hk = 0;
   for (const b of pop.beings) {
     const hx = b.x[0], hy = b.y[0], hue = hueOf(b), n = b.n; const rx = x => hx + ddx(hx, x, CFG.w), rz = y => hy + ddx(hy, y, CFG.h);
-    for (let i = 0; i < n; i++) { const r = i === 0 ? 0.3 : 0.22; _m.compose(_p.set(rx(b.x[i]), r, rz(b.y[i])), _q.identity(), _s.set(r, r, r)); nodeMesh.setMatrixAt(nk, _m); nodeMesh.setColorAt(nk, _c.setHSL(hue, i === 0 ? 0.6 : 0.5, i === 0 ? 0.62 : 0.5)); nk++; }
+    for (let i = 0; i < n; i++) { const r = i === 0 ? 0.3 : 0.22; _m.compose(_p.set(rx(b.x[i]), r, rz(b.y[i])), _q.identity(), _s.set(r, r, r)); nodeMesh.setMatrixAt(nk, _m); nodeMesh.setColorAt(nk, (b.sleeping ? _c.setHSL(0.62, 0.35, 0.2 + 0.06 * Math.sin(b.dreams * 0.9)) : _c.setHSL(hue, i === 0 ? 0.6 : 0.5, i === 0 ? 0.62 : 0.5))); nk++; }
     for (let s = 0; s < b.nS; s++) {
       const a = b.sa[s], c = b.sb[s]; if (a >= n || c >= n) continue;
       const ax = rx(b.x[a]), az = rz(b.y[a]), bx = rx(b.x[c]), bz = rz(b.y[c]); _d.set(bx - ax, 0, bz - az); const len = _d.length() || 1e-3; _d.divideScalar(len);
@@ -501,7 +502,7 @@ function panels() {
   const mean = f => n ? bs.reduce((s, b) => s + f(b), 0) / n : 0;
   $('counters').innerHTML = [['alive', n], ['births', pop.births], ['deaths', pop.deaths], ['kills', pop.kills], ['mass', pop.mass === mass0 ? 'conserved' : 'drift ' + (pop.mass - mass0), pop.mass === mass0 ? 'ok' : 'bad'],
     ['nodes, mean', mean(b => b.n).toFixed(1)], ['muscles, mean', mean(b => b.g.springs.filter(s => s.muscle).length).toFixed(1)], ['speed, mean', mean(b => Math.abs(b.speed)).toFixed(3)],
-    ['with records', n ? Math.round(100 * withR / n) + '%' : '-'], ['planning', n ? Math.round(100 * withP / n) + '%' : '-'], ['slow learning', n ? Math.round(100 * withS / n) + '%' : '-']]
+    ['with records', n ? Math.round(100 * withR / n) + '%' : '-'], ['planning', n ? Math.round(100 * withP / n) + '%' : '-'], ['slow learning', n ? Math.round(100 * withS / n) + '%' : '-'], ['sleepers', n ? Math.round(100 * bs.filter(b => b.sleeper).length / n) + '%' : '-'], ['asleep now', bs.filter(b => b.sleeping).length], ['dreams, mean', mean(b => b.dreams).toFixed(0)]]
     .map(([k, v, c]) => `<dt>${k}</dt><dd class="${c || ''}">${v}</dd>`).join('');
   $('worldSub').textContent = `seed ${seed}`;
   const counts = new Map(); for (const b of bs) counts.set(b.lineage, (counts.get(b.lineage) || 0) + 1);
@@ -525,7 +526,7 @@ function drawShares() { // the population as stacked shares of its eight largest
 }
 function beingPanel(b) {
   const g = b.g; $('beingSub').textContent = `#${b.id} · lineage ${b.lineage} · age ${b.age}`;
-  $('who').innerHTML = `<i style="background:${hsl(hueOf(b), 0.55, 0.55).getStyle()}"></i><span><b>#${b.id}</b> energy ${b.energy} · ${b.n} of ${b.nGenome} nodes · ${g.springs.filter(s => s.muscle).length} muscles · ate ${b.eats} · bit ${b.bites} · ${b.speed >= 0 ? 'ahead' : 'back'} ${Math.abs(b.speed).toFixed(3)}/tick</span>`;
+  $('who').innerHTML = `<i style="background:${hsl(hueOf(b), 0.55, 0.55).getStyle()}"></i><span><b>#${b.id}</b> energy ${b.energy} · ${b.n} of ${b.nGenome} nodes · ${g.springs.filter(s => s.muscle).length} muscles · ate ${b.eats} · bit ${b.bites} · ${b.speed >= 0 ? 'ahead' : 'back'} ${Math.abs(b.speed).toFixed(3)}/tick · ${b.sleeping ? 'asleep, dreaming from ' + b.dayU.length + ' windows' : b.sleeper ? 'sleeps at night, ' + b.dreams + ' dreams so far' : 'never sleeps'}</span>`;
   $('genes').innerHTML = [['records', b.policy.D ? b.policy.D + ' cells' : 'none'], ['horizon', b.horizon], ['slow rate', b.slowRate], ['noise', b.noise], ['clock', G(g, 'freq')], ['split at', G(g, 'splitAt')], ['drives', `food ${G(g, 'dFood')} energy ${G(g, 'dEnergy')} pain ${G(g, 'dPain')} speed ${G(g, 'dSpeed')}`], ['plans', b.plans ? `${b.plans}, ${Math.round(100 * b.planAccepted / b.plans)}% repaired, ${Math.round(100 * b.planConfirmed / b.plans)}% confirmed by readback` : '0'], ['brain', `policy ${b.g.brain.policy.map(c => c.channels).join('+')} ch in ${b.g.brain.policy.length} · model ${b.g.brain.model.map(c => c.channels).join('+')} ch in ${b.g.brain.model.length}`], ['learned', `${b.model.updates + b.policy.updates} steps, ${b.model.writes + b.policy.writes} writes`]]
     .map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join('');
   if (traceFor !== b) { traceFor = b; trace.pred.length = trace.actual.length = 0; }

@@ -86,6 +86,14 @@ def main() -> None:
     out["plan_fixed"] = {"inputs": p5.inputs.tolist(), "output": p5.output.tolist(), "losses": list(p5.losses), "steps": list(p5.step_sizes), "replays": p5.replays, "reason": p5.reason}
     p2 = plan(net4, U3, goal, weights, controls=[1, 4], lower=-1.0, upper=1.0, rate=0.5, max_steps=6, max_backtracks=8)
     out["plan_nofeedback"] = {"inputs": p2.inputs.tolist(), "losses": list(p2.losses), "steps": list(p2.step_sizes), "replays": p2.replays, "reason": p2.reason}
+    # sleep: after one observation, dream a cue from rest, teach the fixed dream once, re-reference the store once
+    net5 = fresh()
+    net5.observe(U1[None], Y1[None], rate=0.3)
+    dream = net5.dream(U3[None])
+    night = net5.sleep([U3[None]], passes=1, rate=0.3, dawn_passes=1)
+    out["sleep"] = {"dream": dream[0].tolist(), "params": params(net5), "table": net5.records.tables["y"].ravel().tolist(),
+                    "mean": net5.records.mean.tolist(), "seen": net5.records.seen, "report": night}
+
     target = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else Path(__file__).with_name("fixture.json")
     target.write_text(json.dumps(out))
     print("fixture written:", {k: (v if not isinstance(v, (dict, list)) else "...") for k, v in out["plan"].items() if k in ("losses", "reason", "replays")})
