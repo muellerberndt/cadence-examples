@@ -5,6 +5,11 @@ placed it sees it, and says how the game ends for that side. A supplied search k
 imagines moves and reads the patch where it stops looking. The page plays it in the browser
 with the same arithmetic as the library and draws every sampled read.
 
+[![A game in progress: the board, and beside it the brain mid-thought, its reading, context channels and record cells lit](screenshot.png)](https://floatingpragma.io/cadence-examples/connect4/)
+
+Live page: [floatingpragma.io/cadence-examples/connect4](https://floatingpragma.io/cadence-examples/connect4/).
+The same page runs from this directory; see [Run it locally](#run-it-locally).
+
 ## What this example shows
 
 - **Planning.** The brain chooses a move by imagining boards and reading a learned value where it stops looking. A line it can follow to the end of the game is proven and outranks anything it reads.
@@ -28,12 +33,29 @@ with the same arithmetic as the library and draws every sampled read.
 | `receipts/record_address.json` | what two moves that differ by one stone share in the record store, and what a write to one does to the other, plain and anchored (`tools/record_address.py`, reproduced from this directory alone) |
 | `receipts/records_drown.json` | three runs schooled with every position written into the records: the slow readout alone against the value with the record read (`tools/records_drown.py`) |
 | `receipts/control_rules_only.json` | the same opponents against the search alone, with no value patch: what the patch adds is the difference |
-| `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v1.npz` |
+| `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v2.npz` |
 | `tools/make_card.py` | draws the social card with the page itself, mid-thought |
 
-## Reproduce
+## Run it locally
 
-    python connect4/verify.py                              # the receipt, its games, the page's brain
+From the root of this repository, with Python 3 and node installed. The page is static and
+plays the brain in `web/brain.json`:
+
+```bash
+python -m http.server -d connect4/web 8802     # then open http://127.0.0.1:8802
+```
+
+To check that brain and the receipt beside it against the library:
+
+```bash
+python -m pip install "cadence-net==0.12.0"
+python connect4/verify.py                                                          # the receipt, its games, the page's brain
+python connect4/web/export.py --patch connect4/brain/v2.npz --out /tmp/connect4    # what the page reads,
+node connect4/web/parity.mjs /tmp/connect4                                         # against what the library reads
+```
+
+## Reproduce the brain
+
     connect4/bench/setup_external.sh                       # Pons' solver, its book, alpha-zero-general
     python connect4/school.py --games 1500 --seed 99 --out runs/connect4/school/big_test.npz
     python connect4/school.py --games 200000 --seed 0 --out runs/connect4/school/big_s0.npz   # 4,444,571 positions; 10 minutes on 94 cores

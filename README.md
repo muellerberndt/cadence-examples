@@ -3,14 +3,26 @@
 Four worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each is one directory
 with its own README, its page, the receipts behind every number it states, and a check that
 recomputes them. Each page runs its brain in the browser with the arithmetic of the library, and a
-parity test holds the two together.
+parity test holds the two together. The pages are live on
+[floatingpragma.io](https://floatingpragma.io/cadence/) and run from a static folder.
+
+<table>
+<tr>
+<td width="50%"><a href="https://floatingpragma.io/cadence-examples/celegans/"><img src="worm/screenshot.png" alt="The worm: 302 neurons drawn inside a crawling body"></a><br><b>The worm</b> · <a href="https://floatingpragma.io/cadence-examples/celegans/">live</a> · <a href="worm/">source</a></td>
+<td width="50%"><a href="https://floatingpragma.io/cadence-examples/amen-beats/"><img src="amen/screenshot.png" alt="Amen: one record patch computes a jungle track from silence"></a><br><b>Amen</b> · <a href="https://floatingpragma.io/cadence-examples/amen-beats/">live</a> · <a href="amen/">source</a></td>
+</tr>
+<tr>
+<td><a href="https://floatingpragma.io/cadence-examples/patchworld/"><img src="patchworld/screenshot.png" alt="Patch World: soft bodies evolving on a torus"></a><br><b>Patch World</b> · <a href="https://floatingpragma.io/cadence-examples/patchworld/">live</a> · <a href="patchworld/">source</a></td>
+<td><a href="https://floatingpragma.io/cadence-examples/connect4/"><img src="connect4/screenshot.png" alt="Connect Four: a search over imagined boards reads a learned value"></a><br><b>Connect Four</b> · <a href="https://floatingpragma.io/cadence-examples/connect4/">live</a> · <a href="connect4/">source</a></td>
+</tr>
+</table>
 
 Each example shows a different side of the same architecture.
 
 | Example | What it shows | The brain | Evidence | Check |
 |---|---|---|---|---|
 | [worm](worm/) | Learning from experience in one life, simple affect (food and pain), direct motor control, a measured connectome as the only wiring | The 302 neurons of *C. elegans* as one `PartitionedTemporalPatchNet` masked by the connectome | the browser brain reproduces the library to a relative difference of 8.5e-12 on lessons it lives through; the body holds its invariants under stress | [parity](worm/tests/parity.mjs), [body](worm/tests/body.mjs) |
-| [amen](amen/) | Creation: from silence it computes sixteen bars of drums, bass and texture, hearing each half-beat it plays | One `RecordPatchNet`: 128 context channels, 8,192 record cells | on held-out tracks, next drum slice 0.84 to 0.86 (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v10/receipt.json), [verify](amen/verify.py) |
+| [amen](amen/) | Creation: from silence it computes sixteen bars of drums, bass and texture, hearing each half-beat it plays | One `RecordPatchNet`: 128 context channels, 8,192 record cells | on held-out tracks, next drum slice 0.84 to 0.86 (most frequent slice 0.03 to 0.05), next bass note 0.54 to 0.64 (repeat previous 0.14 to 0.48), texture error 0.085 to 0.090 (repeat previous 0.099 to 0.117); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v15/receipt.json), [verify](amen/verify.py) |
 | [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
 | [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 simulations and 35-0-5 at 100; 36-0-4 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 6-1-13, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
 
@@ -65,21 +77,28 @@ draws every neuron, weight, record cell and motor neuron live beside the moving 
 exports a chronicle of every lineage, and `patchworld/sim/why.py` reads it and says why one
 lineage took the world. Details, evidence and limits: [patchworld/README.md](patchworld/README.md).
 
-## Run them
+## Run them locally
 
-Every example is verified against the current Cadence release, 0.12.0: its receipts are replayed, its exports rebuilt and its browser engine checked against the library at that release. A receipt names the commit its own numbers were produced with.
+Every page is a static folder: serve it and open it. Each README has the details for its example.
+
+```bash
+python -m http.server -d worm/web 8801          # then open http://127.0.0.1:8801
+python -m http.server -d connect4/web 8802      # then open http://127.0.0.1:8802
+python -m http.server -d amen/web 8803          # then open http://127.0.0.1:8803
+python -m http.server -d patchworld/web 8804    # then open http://127.0.0.1:8804
+```
+
+Every example is verified against Cadence 0.12.0, the release its checks pin: its receipts are replayed, its exports rebuilt and its browser engine checked against the library at that release. A receipt names the commit its own numbers were produced with. The same checks run in CI on every push.
 
 ```bash
 python -m pip install "cadence-net==0.12.0" scipy
 
 # worm
 python worm/tools/export_web.py && node worm/tests/parity.mjs && node worm/tests/body.mjs
-python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
 
 # connect4
 python connect4/verify.py
 python connect4/web/export.py --patch connect4/brain/v2.npz --out /tmp/connect4 && node connect4/web/parity.mjs /tmp/connect4
-python -m http.server -d connect4/web 8805     # then open http://127.0.0.1:8805
 
 # amen: the receipt names its library commit; verify.py also runs the browser parity under node
 python amen/verify.py
@@ -87,7 +106,9 @@ python amen/verify.py
 # patchworld
 python patchworld/ref/make_fixture.py --out /tmp/patchworld_fixture.json && node patchworld/sim/parity.js /tmp/patchworld_fixture.json
 node patchworld/tests/physics.test.js
-python -m http.server -d patchworld/web 8804  # then open http://127.0.0.1:8804
 ```
+
+`python tools/screenshots.py` photographs the four pages in action into each example's
+`screenshot.png` (needs `playwright` with its Chromium and `pillow`).
 
 Made with ♥ by [Pragma Research](https://floatingpragma.io).

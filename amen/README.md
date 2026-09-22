@@ -9,6 +9,11 @@ hearing each half-beat it plays, while the page shows its activity. When the tra
 computed it is rendered through the instrument and played, with every note and the brain
 in time with the sound. The page says on its face that the brain is still training.
 
+[![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](https://floatingpragma.io/cadence-examples/amen-beats/)
+
+Live page: [floatingpragma.io/cadence-examples/amen-beats](https://floatingpragma.io/cadence-examples/amen-beats/).
+The same page runs from this directory; see [Run it locally](#run-it-locally).
+
 ## What this example shows
 
 - **Creation.** The brain starts from silence and computes a track of its own, one half-beat at a time. Nothing on the page is recorded.
@@ -47,11 +52,21 @@ in time with the sound. The page says on its face that the brain is still traini
 The development project (training sources, transcription, fixtures, listening rounds) is
 kept elsewhere and is not part of this repository.
 
-## Run it
+## Run it locally
 
-    python -m http.server --directory amen/web 8000     # then open http://127.0.0.1:8000/
-    python amen/verify.py
-    node amen/parity.mjs
+From the root of this repository, with Python 3 and node installed. The page is static, needs
+no install and no build step, and computes the track in the browser:
+
+```bash
+python -m http.server -d amen/web 8803     # then open http://127.0.0.1:8803 and press Cut a dub
+```
+
+To check the receipts, the model files and the browser engine against the archived runs:
+
+```bash
+python amen/verify.py                      # the receipts and model files; runs the parity test when node is installed
+node amen/parity.mjs                       # the browser engine alone
+```
 
 ## What the receipt says
 

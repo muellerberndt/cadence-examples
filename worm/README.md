@@ -15,6 +15,11 @@ sensory and command neurons by name, and what each cell is by the tint and shape
 (sensory, interneuron, command, motor, pharyngeal). Heat follows the logarithm of activity, because a signal
 fades by orders of magnitude as it spreads.
 
+[![The worm on its plate, the nervous system drawn inside the body, a lesson arriving from food](screenshot.png)](https://floatingpragma.io/cadence-examples/celegans/)
+
+Live page: [floatingpragma.io/cadence-examples/celegans](https://floatingpragma.io/cadence-examples/celegans/).
+The same page runs from this directory; see [Run it locally](#run-it-locally).
+
 ## What this example shows
 
 - **Learning from experience in one life.** Apart from twelve reflex lessons before birth, nothing is trained in advance. What a smell means is learned from the food or the pain it came before, while the worm lives on the plate.
@@ -83,16 +88,6 @@ lives a brain leads differ between machines in the last digit of a float; the 30
 also checks that the browser body lays the same track as the Python reference (to 1e-15 mm on
 three scripted crawls with reversals, omega turns and wall turns).
 
-```bash
-python -m pip install "cadence-net==0.12.0" scipy
-python worm/tools/build_connectome.py      # data/connectome.json from the sources
-python worm/tools/export_web.py            # the newborn brain, web data and parity cases
-node worm/tests/parity.mjs
-node worm/tests/body.mjs
-python worm/tools/check_exports.py         # after a rebuild: identical where nothing is rounded, to 1e-6 elsewhere
-python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
-```
-
 `web/card.jpg` is the page's social card, drawn by the page's own renderer:
 `node worm/tools/make_card.mjs` (needs Google Chrome) photographs `tools/card.html` into it.
 The page's canonical address and card address are written in `web/index.html`; change both
@@ -100,6 +95,26 @@ when the page moves.
 
 `?seed=N` chooses the plate. `worm/` (`brain.py`, `life.py`, `world.py`, `rng.py`) is the
 Python reference of the brain loop, the world and the life that the page ports.
+
+## Run it locally
+
+From the root of this repository, with Python 3 and node installed. The page is static and
+needs no build step:
+
+```bash
+python -m http.server -d worm/web 8801     # then open http://127.0.0.1:8801
+```
+
+To rebuild the page's data from the sources and check it against the library:
+
+```bash
+python -m pip install "cadence-net==0.12.0" scipy
+python worm/tools/build_connectome.py      # data/connectome.json from the sources
+python worm/tools/export_web.py            # the newborn brain, web data and parity cases
+python worm/tools/check_exports.py         # identical to the committed files where nothing is rounded, to 1e-6 elsewhere
+node worm/tests/parity.mjs                 # the browser brain against the library
+node worm/tests/body.mjs                   # the body's invariants under stress
+```
 
 ## Supplied and learned
 

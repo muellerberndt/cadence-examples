@@ -17,6 +17,11 @@ line that shines with the signal it carries this tick, the record cells a grid w
 reading's code lit, and the muscles a column of motor neurons between the two halves. Every
 group, cortex and port carries its name.
 
+[![A world in its first day: soft bodies on the torus, the world's counters and lineages beside it](screenshot.png)](https://floatingpragma.io/cadence-examples/patchworld/)
+
+Live page: [floatingpragma.io/cadence-examples/patchworld](https://floatingpragma.io/cadence-examples/patchworld/).
+The same page runs from this directory; see [Run it locally](#run-it-locally).
+
 ## What this example shows
 
 - **Evolution of bodies and wiring.** Shape, muscles and each patch's list of cortices with their reading masks mutate at every birth. Energy and death select; the world has no fitness function.
@@ -94,17 +99,29 @@ planner on the library class.
 - `receipts/`: two base worlds of 20,000 ticks on this code, before the night. The population's mean speed rises
   from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick, with mass drift zero in both.
 
-## Run it
+## Run it locally
+
+From the root of this repository, with Python 3 and node installed. The page is one static
+file, `web/index.html`, built from `web/page.html` with the sources inlined:
+
+```bash
+python -m http.server -d patchworld/web 8804     # then open http://127.0.0.1:8804 (the rules: /rules.html)
+```
+
+To check the browser brain against the library, the physics, and the build:
 
 ```bash
 python -m pip install "cadence-net==0.12.0"
-python ref/make_fixture.py --out /tmp/fixture.json && node sim/parity.js /tmp/fixture.json
-node tests/physics.test.js
-python web/build.py --check                 # web/index.html is web/page.html with the sources inlined
-python -m http.server -d web 8804           # then open http://127.0.0.1:8804 (the rules: /rules.html)
+python patchworld/ref/make_fixture.py --out /tmp/fixture.json && node patchworld/sim/parity.js /tmp/fixture.json
+node patchworld/tests/physics.test.js
+python patchworld/web/build.py --check           # web/index.html is web/page.html with the sources inlined
+```
 
-node sim/probe.js '{}' 20000 3 '{"chronicle":"run.chronicle.json"}' > run.jsonl   # a world, headless
-python sim/why.py run.chronicle.json        # why one lineage took the world
+A world without a browser, and why its winner won:
+
+```bash
+node patchworld/sim/probe.js '{}' 20000 3 '{"chronicle":"run.chronicle.json"}' > run.jsonl
+python patchworld/sim/why.py run.chronicle.json
 ```
 
 The page's `Export chronicle` button writes the same file: every lineage every hundred ticks
