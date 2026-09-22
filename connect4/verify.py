@@ -110,9 +110,9 @@ def main() -> int:
     from connect4.patch import ValuePatch
     from connect4.web.export import brain_state
 
-    patch = ValuePatch.load(HERE / "brain/v1.npz")
+    patch = ValuePatch.load(HERE / "brain/v2.npz")
     if brain_state(patch) != json.loads((HERE / "web/brain.json").read_text()):
-        problems.append("web/brain.json is not the export of brain/v1.npz")
+        problems.append("web/brain.json is not the export of brain/v2.npz")
     if any(patch.net.records.tables["y"].reshape(-1)):
         problems.append("the deployed record store is not empty")
 
@@ -120,7 +120,7 @@ def main() -> int:
         print("FAIL:", problem)
     if not problems:
         print(f"ok: {games} games replayed ({len(receipt['opponents'])} opponents of the brain, {len(control['opponents'])} of the rules-only control); the receipt is bound to the page's brain "
-              f"and engine; web/brain.json is the export of brain/v1.npz with an empty record store")
+              f"and engine; web/brain.json is the export of brain/v2.npz with an empty record store")
     return 1 if problems else 0
 
 

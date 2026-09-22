@@ -78,7 +78,7 @@ python -m http.server -d worm/web 8801        # then open http://127.0.0.1:8801
 
 # connect4
 python connect4/verify.py
-python connect4/web/export.py --patch connect4/brain/v1.npz --out /tmp/connect4 && node connect4/web/parity.mjs /tmp/connect4
+python connect4/web/export.py --patch connect4/brain/v2.npz --out /tmp/connect4 && node connect4/web/parity.mjs /tmp/connect4
 python -m http.server -d connect4/web 8805     # then open http://127.0.0.1:8805
 
 # amen: the receipt names its library commit; verify.py also runs the browser parity under node
