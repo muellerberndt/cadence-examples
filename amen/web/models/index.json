@@ -1,89 +1,9 @@
 {
  "brains": [
   {
-   "name": "one-mix",
-   "label": "One mix",
-   "trained_on": "16 tracks of one DJ mix, 70 minutes",
-   "run": "record-composer-v10",
-   "run_receipt_sha256": "69b6e33bf96cadec3db5118b30b2ae20acef6efe3e44c6e6c4c6e98f013290fa",
-   "held_out_tracks": 3,
-   "held_out_ranges": {
-    "drum_identity_accuracy": [
-     0.8400447427293065,
-     0.8575418994413407
-    ],
-    "bass_note_accuracy": [
-     0.5381791483113069,
-     0.6374133949191686
-    ],
-    "texture_mae": [
-     0.08471865291025253,
-     0.09032771092068605
-    ],
-    "change_recall": [
-     0.07142857142857142,
-     0.14728682170542637
-    ],
-    "frequency_baseline_drum_identity_accuracy": [
-     0.0335195530726257,
-     0.05145413870246085
-    ],
-    "repeat_previous_bass_note_accuracy": [
-     0.14007782101167315,
-     0.4842186297151655
-    ],
-    "repeat_previous_texture_mae": [
-     0.09888871905821346,
-     0.11748001506305664
-    ]
-   },
-   "training_tracks": 16,
-   "training_cpu_seconds": 412
-  },
-  {
-   "name": "two-mixes",
-   "label": "Two mixes",
-   "trained_on": "26 tracks and windows of two DJ mixes, 133 minutes",
-   "run": "record-composer-v11",
-   "run_receipt_sha256": "c904f78b34b416762d83b3b0431c401be3aa1f6d799384fcd06faa119d0c0ff2",
-   "held_out_tracks": 5,
-   "held_out_ranges": {
-    "drum_identity_accuracy": [
-     0.843400447427293,
-     0.8610335195530726
-    ],
-    "bass_note_accuracy": [
-     0.438385269121813,
-     0.6472097498396407
-    ],
-    "texture_mae": [
-     0.0825049240198199,
-     0.11721595394018718
-    ],
-    "change_recall": [
-     0.1111111111111111,
-     0.19428571428571428
-    ],
-    "frequency_baseline_drum_identity_accuracy": [
-     0.0335195530726257,
-     0.05145413870246085
-    ],
-    "repeat_previous_bass_note_accuracy": [
-     0.13470173187940987,
-     0.4842186297151655
-    ],
-    "repeat_previous_texture_mae": [
-     0.09888871905821346,
-     0.13428036299404747
-    ]
-   },
-   "training_tracks": 26,
-   "training_cpu_seconds": 1397
-  },
-  {
    "name": "three-corpora",
-   "label": "Three corpora",
-   "trained_on": "71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours",
+   "label": "Three corpora, on 0.11.0",
+   "trained_on": "71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours, on Cadence 0.11.0",
    "run": "record-composer-v12",
    "run_receipt_sha256": "3d922b65884a39dc247804032a9734480df96c6ed94124a7ffd3ac088a3c700c",
    "held_out_tracks": 8,
@@ -119,46 +39,6 @@
    },
    "training_tracks": 71,
    "training_cpu_seconds": 1559
-  },
-  {
-   "name": "three-corpora-longer",
-   "label": "Three corpora, longer",
-   "trained_on": "the same 71 tracks and windows, six epochs in all",
-   "run": "record-composer-v13",
-   "run_receipt_sha256": "d3da5b538fd36a034651a0a2f47086d44296fdc62812edbc5d7540da277c237d",
-   "held_out_tracks": 8,
-   "held_out_ranges": {
-    "drum_identity_accuracy": [
-     0.8411633109619687,
-     0.8730769230769231
-    ],
-    "bass_note_accuracy": [
-     0.42251950947603123,
-     0.6510583707504811
-    ],
-    "texture_mae": [
-     0.081742956523274,
-     0.13669418426170932
-    ],
-    "change_recall": [
-     0.06493506493506493,
-     0.2905027932960894
-    ],
-    "frequency_baseline_drum_identity_accuracy": [
-     0.03131868131868132,
-     0.05145413870246085
-    ],
-    "repeat_previous_bass_note_accuracy": [
-     0.13470173187940987,
-     0.5155210643015521
-    ],
-    "repeat_previous_texture_mae": [
-     0.09888871905821346,
-     0.1733616457069418
-    ]
-   },
-   "training_tracks": 71,
-   "training_cpu_seconds": 1392
   }
  ],
  "default": "three-corpora"
