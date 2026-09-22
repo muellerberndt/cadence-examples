@@ -55,7 +55,7 @@ kept elsewhere and is not part of this repository.
 
 ## What the receipt says
 
-Each brain has a receipt under `runs/record-composer-v10/`, `runs/record-composer-v11/`, `runs/record-composer-v12/`, `runs/record-composer-v13/`. A receipt names the composer run's own sealed receipt
+Each brain has a receipt under `runs/record-composer-v10/`, `runs/record-composer-v11/`, `runs/record-composer-v12/`, `runs/record-composer-v13/`, `runs/record-composer-v14/`. A receipt names the composer run's own sealed receipt
 and its independent verification, the Cadence commit it trained with, the size of the brain
 (80 input ports, 128 context channels, 71 output ports, 29,895 slow parameters, 8,192 record
 cells of which 48 fire), the training cost (CPU minutes on a laptop, no GPU), and next-event
@@ -68,8 +68,9 @@ rows (in brackets):
 | Two mixes | 26 tracks and windows of two DJ mixes, 133 minutes | 5 | 0.84 to 0.86 (0.03 to 0.05) | 0.44 to 0.65 (0.13 to 0.48) | 0.083 to 0.117 (0.099 to 0.134) | 0.11 to 0.19 |
 | Three corpora | 71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours | 8 | 0.85 to 0.88 (0.03 to 0.05) | 0.41 to 0.64 (0.13 to 0.52) | 0.080 to 0.134 (0.099 to 0.173) | 0.08 to 0.22 |
 | Three corpora, longer | the same 71 tracks and windows, six epochs in all | 8 | 0.84 to 0.87 (0.03 to 0.05) | 0.42 to 0.65 (0.13 to 0.52) | 0.082 to 0.137 (0.099 to 0.173) | 0.06 to 0.29 |
+| Three corpora, on 0.12.0 | the same 71 tracks and windows, six epochs, trained on Cadence 0.12.0 | 8 | 0.84 to 0.87 (0.03 to 0.05) | 0.44 to 0.64 (0.13 to 0.52) | 0.080 to 0.137 (0.099 to 0.173) | 0.09 to 0.27 |
 
-The page opens with Three corpora (`default` in `web/models/index.json`). Three times the
+The page opens with Three corpora, on 0.12.0 (`default` in `web/models/index.json`): the same recipe as Three corpora, longer, trained from scratch on the current library release. Three times the
 material did not move the held-out scores, and neither did three more epochs on it (the
 fourth brain): the instrument and the transcription set the ceiling. What changes is the
 playing from silence. The three-corpora brains leave the break's order by themselves and
