@@ -70,7 +70,7 @@ node amen/parity.mjs                       # the browser engine alone
 
 ## What the receipt says
 
-The page carries the brains trained on the full corpus, one per Cadence release; each has a receipt under `runs/record-composer-v12/` (0.11.0) and `runs/record-composer-v15/` (0.12.0). A receipt names the composer run's own sealed receipt
+The page carries the brain trained on the full corpus on Cadence 0.11.0; its receipt is under `runs/record-composer-v12/`. A receipt names the composer run's own sealed receipt
 and its independent verification, the Cadence commit it trained with, the size of the brain
 (80 input ports, 128 context channels, 71 output ports, 29,895 slow parameters, 8,192 record
 cells of which 48 fire), the training cost (CPU minutes on a laptop, no GPU), and next-event
@@ -80,9 +80,8 @@ rows (in brackets):
 | Brain | Heard | Held-out tracks | Next drum slice (most frequent slice) | Next bass note (repeat the previous) | Texture error (repeat the previous) | Change points recalled |
 |---|---|---|---|---|---|---|
 | Three corpora, on 0.11.0 | 71 tracks and windows: two DJ mixes and 45 full tracks, 6.2 hours | 8 | 0.85 to 0.88 (0.03 to 0.05) | 0.41 to 0.64 (0.13 to 0.52) | 0.080 to 0.134 (0.099 to 0.173) | 0.08 to 0.22 |
-| Three corpora, on 0.12.0 | the same 71 tracks and windows, three epochs, trained on Cadence 0.12.0 | 8 | 0.84 to 0.87 (0.03 to 0.05) | 0.44 to 0.66 (0.13 to 0.52) | 0.080 to 0.137 (0.099 to 0.173) | 0.08 to 0.28 |
 
-The page opens with Three corpora, on 0.12.0 (`default` in `web/models/index.json`), the same recipe trained from scratch on the current release; a six-epoch run of that recipe scored the same under teacher forcing and played nothing from silence, and is not on the page (the export tool now refuses a brain whose free run plays no drums or bass). Earlier
+The page opens with that brain (`default` in `web/models/index.json`). A brain trained with the same recipe on Cadence 0.12.0 scored the same on the held-out tracks, but from silence its dubs repeated notes and lost the rhythm, so it left the page; its receipt is in this repository's history. Earlier
 brains that heard one mix or two, and one trained three more epochs, are in this repository's
 history: more material and more epochs did not move the held-out scores, so the instrument and
 the transcription set the ceiling, and what changes between brains is the playing from silence.
