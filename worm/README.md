@@ -20,6 +20,26 @@ fades by orders of magnitude as it spreads.
 Live page: [floatingpragma.io/cadence-examples/celegans](https://floatingpragma.io/cadence-examples/celegans/).
 The same page runs from this directory; see [Run it locally](#run-it-locally).
 
+## Card
+
+- **Name:** The worm
+- **Author:** Bernhard Mueller, Pragma Research
+- **Description:** The 302 neurons of the hermaphrodite *C. elegans*, wired as measured, as one temporal patch. The worm lives on a plate, smells, eats, gets hurt, and learns during its life what the smells around it predict. The page draws the whole nervous system inside the crawling body.
+- **Cadence version:** 0.12.0. The newborn brain in `web/data/brain.json` is exported under that release, and CI rebuilds it under the same pin.
+- **Hardware for initial training:** None. The twelve reflex lessons before birth run inside `worm/tools/export_web.py`, 41 seconds on an Apple M4 laptop, CPU only. Everything else is learned in the browser while the worm lives.
+- **Cadence features showcased:** `cadence.experimental.PartitionedTemporalPatchNet` with the connectome as its mask; `imagine`, `advance` and `observe` used as the library documents them; learning by centred equilibrium detuning with backtracking; `set_parameters` and `growth` for the stability bound on every lesson; a browser port of the same energy solve, held to the library by a parity test.
+- **Problems encountered during development:**
+  - The first body rewound a trail of past head positions when reversing. Repeated reversals in an irritant field used the trail up and the worm shrank to a point, and omega turns and wall bounces turned the head in one step and folded the body. The body is a centreline of exactly one body length whose leading end bends at a bounded curvature, and a turn rotates the direction of travel directly.
+  - The same seed leads a different life on another machine, because the last digit of a float changes a decision. The CI runner's life found a wall-clamp kink that never occurred locally. Coverage therefore rests on a brain-free fuzz of 300 bodies that is identical on every machine, and the wall rule turns an end inward before it reaches the edge.
+  - Float exports differ between the Linux runner and a Mac at 1e-12, so a byte-for-byte gate on `brain.json` failed. `check_exports.py` compares exactly where nothing is rounded and to 1e-6 elsewhere.
+  - The network has no spontaneous activity. Away from every smell it goes cold, and the page shows that instead of adding noise.
+  - The committed export carried the version string of an earlier release while CI rebuilt under the pin, and the export check compares that string exactly. The export was rebuilt under 0.12.0.
+  - A 1.7 MB social card made X fall back to a card without an image. The card is a 1200 by 630 JPEG of about 100 kB.
+- **Hosted at:** https://floatingpragma.io/cadence-examples/celegans/
+- **Receipts and checks:** `tests/parity.mjs` (the browser brain against the library, worst relative difference 8.5e-12), `tests/body.mjs` (the body's invariants under stress), `tools/check_exports.py` (the committed exports against a rebuild). `node worm/tests/parity.mjs && node worm/tests/body.mjs` from the repository root.
+- **Data and rights:** The connectome and the cell classes come from openworm's c302 and ConnectomeToolbox (MIT); the soma positions from Kaiser and Hilgetag (2006). Sources, hashes and citations are in `data/SOURCES.md`.
+- **Work in progress:** a conditioning receipt with paired, unpaired, frozen and lesioned controls across seeds; a body the motor neurons drive.
+
 ## What this example shows
 
 - **Learning from experience in one life.** Apart from twelve reflex lessons before birth, nothing is trained in advance. What a smell means is learned from the food or the pain it came before, while the worm lives on the plate.

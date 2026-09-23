@@ -22,6 +22,31 @@ group, cortex and port carries its name.
 Live page: [floatingpragma.io/cadence-examples/patchworld](https://floatingpragma.io/cadence-examples/patchworld/).
 The same page runs from this directory; see [Run it locally](#run-it-locally).
 
+## Card
+
+- **Name:** Patch World
+- **Author:** Bernhard Mueller, Pragma Research
+- **Description:** Soft bodies of point masses, springs and muscles live on a torus that conserves its mass under one moving sun. Each being carries two record patches, a policy and a model, built from inherited cortices; it is born with three nodes, grows, learns during its life, splits and dies. Every birth mutates body and brain. Energy and death select, and the world has no fitness function.
+- **Cadence version:** 0.12.0. `ref/make_fixture.py` produces the parity fixture from the library at that release (first checked at commit `02fec624`).
+- **Hardware for initial training:** CPU only, one node process on an Apple M4 laptop. The founders come from a gait search outside the world (`sim/gaitlab.js`) and their model is taught by observation on their own stream. A world of 20,000 ticks with up to 500 beings takes 13 minutes, 20 with the night and the sleep gene on.
+- **Cadence features showcased:** `cadence.RecordPatchNet` twice per being, a policy and a model; cortices as masked blocks of context channels with their own slowest timescale, which is what evolves; adjoint steps over windows and record writes of each moment's residual during a life; planning by gradient repair of the motor under the model with the record read held fixed; `RecordPatchNet.sleep` as a gene; every read, channel, cell and write priced in mass; a JavaScript twin held to the library at 1e-15 on observation, windows, backtracking and planning.
+- **Problems encountered during development:**
+  - All-zero slow weights are a saddle from which only the bias learns, and a model that predicts the next reading learns nothing beyond persistence. The model predicts the change of the reading and starts from taught weights.
+  - `observe` cannot learn a window an actor has advanced through, so the twin carries a window interface (`step`, `teach`, `flush`) for an actor that acts every tick.
+  - A planner over a record-augmented model exploits the records off the data; on the lab course the score fell from 89 to between 24 and 34. Replays hold the record read fixed.
+  - A policy that learns every repair one-shot drifts off its gait. The policy learns a repair only when what followed beat the model's prediction for the unrepaired motor, and records stay out of the policy.
+  - In the first sweeps carriers of records died 5 to 30 percent younger in every world, and planners died younger too: the per-tick gradient plan could not cash in the pressure to learn. Cortices, body mutation and priced structure came out of that.
+  - A body bitten to zero energy paid its price in the same tick and left one unit of mass at its death. Conservation checks over short runs miss rare leaks; the leaking seed was bisected tick by tick, and every receipt made before the fix was rerun.
+  - The library changed the scaling of the record reading while the twin was being built; the committed fixture kept passing and a fresh one failed 24 of 86 cases. The fixture is regenerated before anything is published.
+  - At the population cap the oldest beings split first, a selection bias. Candidates are shuffled, and food limits the population instead of the cap.
+  - The sleep gene loses in every run: the awake learner has the world at every tick, and the sleeper trades its actions for second-hand presentations of what it holds.
+  - Under the prices the measured worlds keep small brains; a second cortex that pays for itself is the open question.
+  - Headless Chromium renders the page slowly, so every number comes from the node probe and the browser gives the screenshot.
+- **Hosted at:** https://floatingpragma.io/cadence-examples/patchworld/
+- **Receipts and checks:** `receipts/*.jsonl` (worlds of 20,000 ticks, base and sleep), `sim/founder.json`, `sim/parity.js` against `ref/fixture.json`, `tests/physics.test.js`, `web/build.py --check`. `node patchworld/sim/parity.js patchworld/ref/fixture.json && node patchworld/tests/physics.test.js` from the repository root.
+- **Data and rights:** No external data. Every world is generated from its seed.
+- **Work in progress:** a world in which a second cortex pays for itself; planning over whole-gait alternatives with the policy in the loop; per-patch record-cell genes.
+
 ## What this example shows
 
 - **Evolution of bodies and wiring.** Shape, muscles and each patch's list of cortices with their reading masks mutate at every birth. Energy and death select; the world has no fitness function.

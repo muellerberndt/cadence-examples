@@ -14,6 +14,27 @@ in time with the sound. The page says on its face that the brain is still traini
 Live page: [floatingpragma.io/cadence-examples/amen-beats](https://floatingpragma.io/cadence-examples/amen-beats/).
 The same page runs from this directory; see [Run it locally](#run-it-locally).
 
+## Card
+
+- **Name:** Amen
+- **Author:** Bernhard Mueller, Pragma Research
+- **Description:** One record patch learned jungle tracks as events per half-beat: a slice of a drum break, a sub-bass note, a change flag and a texture. The page ships the trained brain, starts from silence, computes a track in the browser while hearing each half-beat it plays, and renders it through the instrument.
+- **Cadence version:** The brain on the page was trained on 0.11.0 (library commit `02fec624`, as its receipt records). The browser engine is checked under the examples' 0.12.0 pin against the archived run of that brain.
+- **Hardware for initial training:** 1,559 CPU seconds on a laptop, no GPU, over 71 tracks and windows (6.2 hours of audio), with Python 3.13 and NumPy 2.5.
+- **Cadence features showcased:** `cadence.RecordPatchNet` with 128 context channels and 8,192 record cells, 48 of which fire per reading; slow parameters that carry the corpus and records that carry particular readings; held-out prediction measured with the records writing online; a loop through the world, where the patch hears what it played; the record writes reproduced in the browser to 4e-8 (`memorize`, `forget`) and kept off on the page.
+- **Problems encountered during development:**
+  - Every dub sounded the same. From silence the highest score at every port gives one track, the bass settled on one note, and the transcription reads every repeating bar as the break in order, so a track's own chop is absent from the training data. The pad sat 18 to 30 dB under the mix. Each dub draws its bass, its opening pattern and its instrument settings from its seed.
+  - Three times the material and three more epochs did not move the held-out scores. The instrument and the transcription set the ceiling; what changes between brains is the playing from silence.
+  - A brain trained from scratch under 0.12.0 for six epochs scored normally under teacher forcing and played nothing from silence: the closed loop predicted silence and heard it back. The export tool refuses a brain whose free run plays drums on fewer than half of the half-beats or bass on fewer than a quarter.
+  - A three-epoch 0.12.0 brain matched the held-out scores, and its dubs repeated notes and lost the rhythm. Neither the scores nor the export gate detect that, so a brain goes on the page after its dubs have been listened to. The page carries the 0.11.0 brain.
+  - Records the brain wrote during a dub did not bring the opening back: record recall is by content, with a code overlap of 0.91 where the stream recurs and 0.16 after a phase shift. The page keeps the writes off.
+  - A training run lost its receipt because the library's source changed mid-run and the run's source-freeze check failed. The run was repeated.
+  - Headless Chrome under a virtual time budget never resolves audio decoding, so the browser tests drive Chrome over the DevTools protocol in real time.
+- **Hosted at:** https://floatingpragma.io/cadence-examples/amen-beats/
+- **Receipts and checks:** `runs/record-composer-v12/receipt.json` (the sealed run, its independent verification and its held-out figures), `verify.py`, `parity.mjs` (the browser engine against the archived generation from silence). `python amen/verify.py` from the repository root.
+- **Data and rights:** The training material is two DJ mixes and 45 full tracks from the owner's library and is not part of this repository. The instrument is 32 half-beat slices of a sampled drum break and twelve sub-bass notes from a sample pack; whether they may be redistributed has not been verified, and the kit is a separate folder so it can be replaced.
+- **Work in progress:** a phrase clock for the placement of departures; a transformer or recurrent baseline on the same stream; a second training seed; a brain for a later Cadence release, admitted after listening.
+
 ## What this example shows
 
 - **Creation.** The brain starts from silence and computes a track of its own, one half-beat at a time. Nothing on the page is recorded.

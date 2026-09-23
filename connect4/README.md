@@ -10,6 +10,29 @@ with the same arithmetic as the library and draws every sampled read.
 Live page: [floatingpragma.io/cadence-examples/connect4](https://floatingpragma.io/cadence-examples/connect4/).
 The same page runs from this directory; see [Run it locally](#run-it-locally).
 
+## Card
+
+- **Name:** Connect Four
+- **Author:** Bernhard Mueller, Pragma Research
+- **Description:** One record patch reads a position right after a stone has landed and says how the game ends for the side that placed it. A supplied search imagines moves and reads the patch where it stops looking. The page plays it in the browser with the library's arithmetic and draws every sampled read.
+- **Cadence version:** 0.12.0. The receipt names library commit `742c6b0b`, the 0.12.0 release.
+- **Hardware for initial training:** CPU only. The school of 200,000 solver games (4,444,571 positions) takes about 10 minutes on 94 cores. Six passes over it took 1 hour 45 minutes on an AWS c7i.4xlarge (16 vCPUs) shared with five other training arms. The arena, 200 games with every move graded by the solver, took 18 minutes.
+- **Cadence features showcased:** `cadence.RecordPatchNet` as a value function; the two jobs of the slow parameters and the record store, with the store left empty by the school (`observe` with `write=False`); one-moment paths from rest through `imagine` and `observe`; `record_averaging` and `RecordPatchNet.sleep`, measured and left out of the deployed brain; a browser engine that selects the library's record cells and agrees with its values to 1e-15.
+- **Problems encountered during development:**
+  - Bulk writes drown the record store. On three runs the slow readout alone names the winner 3 points more often on unseen positions than the readout with the record read. The school writes no records.
+  - A row of `imagine` is not bitwise invariant to the size of its batch, so the Python search disagreed with itself between runs. The search reads each distinct position once.
+  - Record addresses are a similarity kernel. Two moves that differ by one stone share 51 percent of their active cells, and a plain write to one moves the other; an anchored write keeps the sibling in place. Learning from the games played on the page waits on a write path with a no-degradation gate.
+  - A fixed slow rate of 0.3 trains 256 context channels and diverges silently at 1,024.
+  - The first build (2,229,254 positions, three passes) lost 13 of 20 games going first against perfect play. The deployed build is schooled on twice the positions for six passes and loses 1 of 20.
+  - From 16 to 24 stones the search does not always reach the end of the game within its reads, and the blunders concentrate there. A tenfold read budget did not help.
+  - Records by day and slow parameters by night were measured. At every matched update count the school is one to three points ahead, so the deployed brain is the schooled one.
+  - alpha-zero-general's game package is also named `connect4`, which shadows this directory on import. The AlphaZero bridge is launched by path and loads the wrapper under another name.
+  - Social-card tags copied from another page produced no card on X. The page carries explicit Twitter tags, a canonical link and a baseline JPEG.
+- **Hosted at:** https://floatingpragma.io/cadence-examples/connect4/
+- **Receipts and checks:** `web/receipt.json` (every game and every graded move of the deployed build, bound to the page's files), `receipts/` (records drown, record addresses, the rules-only control, the sleep regime), `verify.py`, `web/parity.mjs`. `python connect4/verify.py` from the repository root.
+- **Data and rights:** The school is generated from Pascal Pons' perfect solver and its opening book, and the AlphaZero baseline is trained with alpha-zero-general; `bench/setup_external.sh` fetches both, and neither is redistributed here. School files are regenerated from their seed and are not stored.
+- **Work in progress:** learning from the games played on the page; a proof search for the late game; the solver's grade of each move stored move by move in the receipt.
+
 ## What this example shows
 
 - **Planning.** The brain chooses a move by imagining boards and reading a learned value where it stops looking. A line it can follow to the end of the game is proven and outranks anything it reads.

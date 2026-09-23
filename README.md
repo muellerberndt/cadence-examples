@@ -26,13 +26,21 @@ Each example shows a different side of the same architecture.
 | [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
 | [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 simulations and 35-0-5 at 100; 36-0-4 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 6-1-13, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
 
-## Build on them
+## Build your own
 
-These examples are starting points. Fork the repository, change a rule, swap a sense, grow a different body, school a
-stronger player, train a composer on other music, and see what the same few operations can be made to do. Every brain
-is short enough to read in an evening, every page runs from a static folder, and every check runs from one command, so
-a change shows at once whether it kept the numbers or broke them. The library is
-[Cadence](https://github.com/muellerberndt/cadence); issues and pull requests are welcome in both repositories.
+These four are starting points, and the best thing you can do with them is break them. Fork the
+repository, change a rule, swap a sense, grow a different body, school a stronger player, train a
+composer on other music, wire two of the brains together, and see what the same few operations can be
+made to do. Every brain is short enough to read in an evening, every page runs from a static folder,
+and every check runs from one command, so a change shows at once whether it kept the numbers or
+broke them.
+
+Then build an example of your own. Every example, finished or half-working, is data for us: it says
+what the architecture does with a body, a sense or a task that nobody has put in front of it, and
+that is what scales this work toward the full humanoid simulation. Hack things. Be crazy. Chaos is
+how we learn. The library is [Cadence](https://github.com/muellerberndt/cadence); open an issue or a
+pull request in either repository, and when your example carries a card (see
+[Contributing](#contributing)) it can live here beside these four.
 
 ## The worm
 
@@ -110,5 +118,41 @@ node patchworld/tests/physics.test.js
 
 `python tools/screenshots.py` photographs the four pages in action into each example's
 `screenshot.png` (needs `playwright` with its Chromium and `pillow`).
+
+## Contributing
+
+Issues and pull requests are welcome, and so is a new example. An example lives in one directory with:
+
+- a README that opens with a title paragraph, a screenshot linking to the live page, a "Live page"
+  line and the card below;
+- a static page under `web/` that runs the brain in the browser with the library's arithmetic, and
+  a parity test that holds it to the library;
+- the receipts behind every number the README states, and a check that recomputes them from the
+  repository root against the release the checks pin;
+- a `Run it locally` section with the commands, from the repository root.
+
+Every example README carries a card: the same rows in the same order, so that a reader can compare
+examples at a glance and a contributor knows what to write down. Copy it and fill in every row. Write
+"none" where a row does not apply, and update the card whenever the brain is retrained or the page
+moves.
+
+```markdown
+## Card
+
+- **Name:** the demonstration's name
+- **Author:** who built it, and the organisation if any
+- **Description:** two or three sentences on what the brain does and what the page shows
+- **Cadence version:** the release the brain was trained on, and the release the checks pin
+- **Hardware for initial training:** machine, CPU or GPU, wall-clock time, and the size of the data
+- **Cadence features showcased:** the classes, calls and mechanisms of the library the example exercises
+- **Problems encountered during development:** what went wrong, what it showed, and what changed because of it
+- **Hosted at:** the live URL, or "none"
+- **Receipts and checks:** the files every stated number comes from, and the command that rechecks them
+- **Data and rights:** what the brain was trained on, where it came from, and whether it may be redistributed
+- **Work in progress:** what a contributor can pick up
+```
+
+A half-working example with a filled card and a clear "Work in progress" row is welcome. The card is
+what tells us what you found, and the problems row is often the most useful part of it.
 
 Made with ♥ by [Pragma Research](https://floatingpragma.io).
