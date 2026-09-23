@@ -25,7 +25,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 ## Card
 
 - **Name:** Patch World
-- **Author:** Bernhard Mueller, Pragma Research
+- **Author:** Bernhard Mueller
 - **Description:** Soft bodies of point masses, springs and muscles live on a torus that conserves its mass under one moving sun. Each being carries two record patches, a policy and a model, built from inherited cortices; it is born with three nodes, grows, learns during its life, splits and dies. Every birth mutates body and brain. Energy and death select, and the world has no fitness function.
 - **Cadence version:** 0.12.0. `ref/make_fixture.py` produces the parity fixture from the library at that release (first checked at commit `02fec624`).
 - **Hardware for initial training:** CPU only, one node process on an Apple M4 laptop. The founders come from a gait search outside the world (`sim/gaitlab.js`) and their model is taught by observation on their own stream. A world of 20,000 ticks with up to 500 beings takes 13 minutes, 20 with the night and the sleep gene on.

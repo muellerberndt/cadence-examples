@@ -13,7 +13,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 ## Card
 
 - **Name:** Connect Four
-- **Author:** Bernhard Mueller, Pragma Research
+- **Author:** Bernhard Mueller
 - **Description:** One record patch reads a position right after a stone has landed and says how the game ends for the side that placed it. A supplied search imagines moves and reads the patch where it stops looking. The page plays it in the browser with the library's arithmetic and draws every sampled read.
 - **Cadence version:** 0.12.0. The receipt names library commit `742c6b0b`, the 0.12.0 release.
 - **Hardware for initial training:** CPU only. The school of 200,000 solver games (4,444,571 positions) takes about 10 minutes on 94 cores. Six passes over it took 1 hour 45 minutes on an AWS c7i.4xlarge (16 vCPUs) shared with five other training arms. The arena, 200 games with every move graded by the solver, took 18 minutes.

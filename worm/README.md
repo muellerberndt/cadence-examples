@@ -23,7 +23,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 ## Card
 
 - **Name:** The worm
-- **Author:** Bernhard Mueller, Pragma Research
+- **Author:** Bernhard Mueller
 - **Description:** The 302 neurons of the hermaphrodite *C. elegans*, wired as measured, as one temporal patch. The worm lives on a plate, smells, eats, gets hurt, and learns during its life what the smells around it predict. The page draws the whole nervous system inside the crawling body.
 - **Cadence version:** 0.12.0. The newborn brain in `web/data/brain.json` is exported under that release, and CI rebuilds it under the same pin.
 - **Hardware for initial training:** None. The twelve reflex lessons before birth run inside `worm/tools/export_web.py`, 41 seconds on an Apple M4 laptop, CPU only. Everything else is learned in the browser while the worm lives.

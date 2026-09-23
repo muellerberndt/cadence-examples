@@ -121,7 +121,8 @@ node patchworld/tests/physics.test.js
 
 ## Contributing
 
-Issues and pull requests are welcome, and so is a new example. An example lives in one directory with:
+Issues and pull requests are welcome, and so is a new example. The repository is MIT licensed, and a
+contribution is accepted under that licence. An example lives in one directory with:
 
 - a README that opens with a title paragraph, a screenshot linking to the live page, a "Live page"
   line and the card below;
@@ -140,7 +141,7 @@ moves.
 ## Card
 
 - **Name:** the demonstration's name
-- **Author:** who built it, and the organisation if any
+- **Author:** who built it
 - **Description:** two or three sentences on what the brain does and what the page shows
 - **Cadence version:** the release the brain was trained on, and the release the checks pin
 - **Hardware for initial training:** machine, CPU or GPU, wall-clock time, and the size of the data

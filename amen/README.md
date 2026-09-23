@@ -17,7 +17,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 ## Card
 
 - **Name:** Amen
-- **Author:** Bernhard Mueller, Pragma Research
+- **Author:** Bernhard Mueller
 - **Description:** One record patch learned jungle tracks as events per half-beat: a slice of a drum break, a sub-bass note, a change flag and a texture. The page ships the trained brain, starts from silence, computes a track in the browser while hearing each half-beat it plays, and renders it through the instrument.
 - **Cadence version:** The brain on the page was trained on 0.11.0 (library commit `02fec624`, as its receipt records). The browser engine is checked under the examples' 0.12.0 pin against the archived run of that brain.
 - **Hardware for initial training:** 1,559 CPU seconds on a laptop, no GPU, over 71 tracks and windows (6.2 hours of audio), with Python 3.13 and NumPy 2.5.
