@@ -1,0 +1,87 @@
+{
+ "copied": {
+  "note": "the experiment's receipt with the paths of the machine it was made on replaced by paths relative to this directory, the digest re-sealed",
+  "original_receipt_sha256": "fcab919ad84461cb61d102f4901f1435015d524ec0503c389c567a1eb975c2f9"
+ },
+ "kind": "cadence-life/dozing-cat-timing/v1",
+ "machine": {
+  "cpus": 10,
+  "load_average": [
+   23.1,
+   20.0,
+   14.1
+  ],
+  "note": "wall-clock numbers are valid only when the load average stayed under the core count; the moment counts are exact",
+  "threads": {
+   "OMP_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "timing_valid": false
+ },
+ "pieces": {
+  "governor_steps_median": 20.0,
+  "governor_synapses": 23,
+  "imagination_moments": 60,
+  "learn_calls": [
+   {
+    "kept": false,
+    "moments": 1824,
+    "passes_kept": 6,
+    "window": 96
+   },
+   {
+    "kept": false,
+    "moments": 1824,
+    "passes_kept": 6,
+    "window": 96
+   },
+   {
+    "kept": false,
+    "moments": 1824,
+    "passes_kept": 6,
+    "window": 96
+   }
+  ],
+  "moment_macs": 96488,
+  "one_governor_settle_ms": 0.36550000368151814,
+  "one_habit_refit_ms": 322.272499994142,
+  "one_imagination_call_ms": 2.502000003005378,
+  "one_learn_call_ms": 308.81604200112633,
+  "one_moment_of_the_patch_ms": 0.2923540014307946
+ },
+ "receipt_sha256": "e52776a2e9403ec5408e55219b6409802dbe3b17e5cd7f6881d054c5f4ad16d6",
+ "revision": {
+  "cat_py_sha256": "1aea17ca41a9cc551ab9fb76ec39e69415122aa40463e68dd56c8740b6665441",
+  "library": {
+   "belief_py_sha256": "4dcad319d5c6f9cfb6d8fbd4fa67a2aeb2a05527aaf947237ffb9f6dec5665a4",
+   "commit": "22354475f31038cabfccd8c2a5217a5a9b1b12f9",
+   "path": "cadence",
+   "version": "0.13.0"
+  },
+  "python": "Python 3.13.0"
+ },
+ "schedule": {
+  "change": "gravity",
+  "change_at": 2400,
+  "decisions": 4000,
+  "dot_gap": [
+   40,
+   140
+  ],
+  "dot_speed": 0.015,
+  "dot_timeout": 150,
+  "jitter_length": [
+   8,
+   20
+  ],
+  "kinds": {
+   "curve": 0.3,
+   "jitter": 0.2,
+   "walk": 0.5
+  },
+  "turn": 0.35
+ },
+ "single_process": true,
+ "written": "2026-09-23T14:45:57"
+}

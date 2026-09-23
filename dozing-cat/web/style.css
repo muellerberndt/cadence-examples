@@ -1,0 +1,102 @@
+/* The dozing cat: the sill beside the whole brain, in the gallery's visual language. */
+:root {
+  color-scheme: dark;
+  --bg: #060b11; --panel: #0b141d; --sunk: #050a0f; --line: #17242f; --line2: #22364a;
+  --text: #e3ecf4; --muted: #92a6ba; --faint: #63788d;
+  --accent: #59e5cb; --warm: #ff8c5a; --hot: #ff5c8a;
+  --habit: #4cc38a; --imagine: #59b7ff; --learn: #ff5c8a;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 var(--sans); overflow-x: hidden; max-width: 100%; }
+body { padding: 0 clamp(12px, 1.6vw, 22px) 28px; min-height: 100vh;
+  background: radial-gradient(1100px 520px at 16% -8%, rgba(89, 229, 203, 0.075), transparent 62%), radial-gradient(900px 480px at 90% -6%, rgba(96, 165, 250, 0.07), transparent 60%), var(--bg); }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(89, 229, 203, 0.3); }
+a:hover { border-bottom-color: var(--accent); }
+code { font: 12px var(--mono); color: #cfe0ee; background: #0a1620; border: 1px solid var(--line); border-radius: 5px; padding: 0 4px; }
+
+.masthead { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 28px; flex-wrap: wrap; padding: 16px 2px 12px; }
+.headline { flex: 1 1 520px; min-width: 0; }
+h1 { margin: 0; font-size: clamp(20px, 1.8vw, 25px); font-weight: 650; letter-spacing: -0.012em; }
+.guide { margin: 4px 0 0; color: #adbdcc; font-size: 14px; max-width: 96ch; }
+.guide span { display: block; color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+.facts { flex: 0 1 auto; min-width: 0; color: var(--muted); font: 11.5px/1.55 var(--mono); text-align: right; white-space: pre-line; }
+
+:root { --sill: 540px; }
+.row { display: grid; grid-template-columns: calc(var(--sill) + 28px) minmax(0, 1fr); gap: 12px; align-items: stretch; }
+.panel { background: linear-gradient(180deg, #0c1620, var(--panel) 120px); border: 1px solid var(--line); border-radius: 16px; padding: 13px; min-width: 0; display: flex; flex-direction: column;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 28px 56px -34px rgba(0, 0, 0, 0.85); }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; min-height: 28px; }
+.panel-head h2 { margin: 0; font-size: 11.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.state { font: 600 11px var(--mono); color: var(--muted); background: #0a1620; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; white-space: nowrap; transition: color 0.25s, border-color 0.25s; }
+.state.habit { color: var(--habit); border-color: rgba(76, 195, 138, 0.35); }
+.state.imagine { color: var(--imagine); border-color: rgba(89, 183, 255, 0.4); }
+.state.learn { color: var(--learn); border-color: rgba(255, 92, 138, 0.4); }
+.state.habit::before, .state.imagine::before, .state.learn::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 9px currentColor; margin-right: 7px; vertical-align: 1px; }
+.state.imagine::before, .state.learn::before { animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.25; transform: scale(0.7); } }
+.sub { color: var(--faint); font: 11.5px var(--mono); font-weight: 400; }
+
+.stage.sill { position: relative; width: var(--sill); height: var(--sill); border-radius: 12px; overflow: hidden; background: #0a1119; border: 1px solid #13202c; }
+#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
+.mind .stage.scan { position: relative; flex: 1 1 auto; height: calc(var(--sill) - 122px); border-radius: 12px; overflow: hidden; background: radial-gradient(120% 90% at 50% 40%, #071019, var(--sunk)); border: 1px solid #13202c; }
+canvas#scan { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#strip { width: 100%; height: 72px; display: block; margin-top: 8px; background: #0a1119; border-radius: 8px; border: 1px solid #13202c; }
+.legend { display: flex; flex-wrap: wrap; gap: 3px 12px; padding-top: 8px; font: 11px var(--mono); color: var(--faint); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+
+.brainline { margin: 12px 2px 0; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 14px; }
+.brainline b { color: var(--muted); font-weight: 600; margin-right: 4px; }
+.brainline button { background: none; border: 1px solid transparent; color: var(--muted); font: inherit; font-size: 14px; padding: 2px 9px; border-radius: 8px; cursor: pointer; }
+.brainline button:hover { color: var(--text); border-color: var(--line2); }
+.brainline button.on { color: var(--text); background: #132030; border-color: #3a5673; }
+.brainline i { color: #3a4656; font-style: normal; }
+.brainline small { color: var(--faint); font-size: 12px; margin-left: 4px; }
+.tiles { margin: 8px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.stat { background: #0a1119; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; min-width: 0; overflow: hidden; }
+.stat b { display: block; font: 600 16px/1.25 var(--mono); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 11px; }
+.stat.habit b { color: var(--habit); } .stat.imagine b { color: var(--imagine); } .stat.learn b { color: var(--learn); }
+.line { margin: 8px 2px 0; color: var(--muted); font-size: 13px; min-height: 1.5em; }
+.line b { color: var(--text); }
+
+footer { margin-top: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+.card summary { cursor: pointer; padding: 11px 15px; font-weight: 600; font-size: 13px; list-style: none; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.card summary::-webkit-details-marker { display: none; }
+.card summary::before { content: "+"; font: 14px var(--mono); color: var(--accent); width: 10px; }
+.card[open] summary::before { content: "−"; }
+.card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 34px; padding: 2px 17px 16px; border-top: 1px solid var(--line); }
+.card-body h3 { margin: 15px 0 5px; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.card-body h4 { margin: 8px 0 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.card-body p { margin: 0 0 6px; color: #b9c8d6; font-size: 13px; }
+.card-body p b { color: var(--text); }
+.genes { font: 12px var(--mono); color: var(--muted); line-height: 1.7; }
+.charts { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.charts canvas { width: 100%; height: 150px; display: block; background: #0a1119; border-radius: 8px; }
+.charts p { color: var(--faint); font-size: 12px; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 6px 0; }
+button.plain, select { background: #111e2b; color: var(--text); border: 1px solid var(--line2); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+button.plain:hover, select:hover { background: #172a3b; border-color: #2e4a66; }
+label { color: var(--muted); font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; margin-top: 4px; }
+.stats .stat b { font-size: 13.5px; }
+.colophon { margin: 12px 4px 0; color: var(--faint); font: 11.5px var(--mono); }
+.colophon a { color: var(--muted); border-bottom-color: rgba(146, 166, 186, 0.35); }
+.colophon a:hover { color: var(--text); }
+.heart { color: #f0596b; }
+
+@media (max-width: 900px) {
+  :root { --sill: min(540px, 100vw - 54px); }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .stage.sill { margin: 0 auto; }
+  .mind .stage.scan { height: var(--sill); }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts { text-align: left; white-space: normal; }
+  .card-body { grid-template-columns: 1fr; }
+  .tiles { gap: 6px; } .stat { padding: 6px 8px; } .stat b { font-size: 14px; }
+  .guide { font-size: 13.5px; }
+}
+@media (prefers-reduced-motion: reduce) { .state::before { animation: none; } }

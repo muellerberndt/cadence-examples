@@ -1,0 +1,410 @@
+{
+ "seed": 0,
+ "episodes": 120,
+ "length": 32,
+ "batch": 32,
+ "rate": 0.3,
+ "epochs": 60,
+ "belief": 32,
+ "encoded": 24,
+ "clip": 4.0,
+ "fill_store": false,
+ "scale": [
+  0.02,
+  0.02,
+  0.02,
+  0.05465515939288264,
+  0.05494660302338941
+ ],
+ "curve": [
+  {
+   "epoch": 5,
+   "train_loss": 0.1828933214859537,
+   "explained_one_step": {
+    "position": 0.31061892001602875,
+    "mass": 0.0040720478162104,
+    "paw": 0.7745101355921369,
+    "position_motion": 0.4957962845079974,
+    "position_motion_mse": 0.7497969640921278,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.02499838503142482,
+    "position_jump_mse": 15.542723445178506,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -74190845411194.28,
+    "quiet_mse": 0.004877126308913705,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.43505302275613467,
+   "imagination": {
+    "1": 0.22471727880612324,
+    "2": 0.2727330623836328,
+    "4": 0.28110935832859807,
+    "8": 0.2085373640389384
+   },
+   "loss": null,
+   "seconds": 13.022142416011775
+  },
+  {
+   "epoch": 10,
+   "train_loss": 0.1718394819599984,
+   "explained_one_step": {
+    "position": 0.34333238901835395,
+    "mass": 0.006721696268119581,
+    "paw": 0.8976131598414324,
+    "position_motion": 0.5461356481607935,
+    "position_motion_mse": 0.6749377338217496,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.026213872070471433,
+    "position_jump_mse": 15.561154673144316,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -69582057565242.77,
+    "quiet_mse": 0.004574155769474347,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.4977889395159716,
+   "imagination": {
+    "1": 0.2778610906316621,
+    "2": 0.3550506653576184,
+    "4": 0.39440524803401755,
+    "8": 0.3226196563810063
+   },
+   "loss": null,
+   "seconds": 29.897487000009278
+  },
+  {
+   "epoch": 15,
+   "train_loss": 0.1326144226308056,
+   "explained_one_step": {
+    "position": 0.35374821411921864,
+    "mass": 0.008361647832189067,
+    "paw": 0.9171393712268118,
+    "position_motion": 0.5573620839377339,
+    "position_motion_mse": 0.6582429987285912,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.023717753515337225,
+    "position_jump_mse": 15.523304388738609,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -31955037729939.43,
+    "quiet_mse": 0.002100646708515674,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5100902046699598,
+   "imagination": {
+    "1": 0.2808391249295342,
+    "2": 0.3598370555905561,
+    "4": 0.4031518703229764,
+    "8": 0.33622375772562185
+   },
+   "loss": null,
+   "seconds": 46.10040195801412
+  },
+  {
+   "epoch": 20,
+   "train_loss": 0.15383475825443385,
+   "explained_one_step": {
+    "position": 0.3546665224046922,
+    "mass": 0.009784457718849726,
+    "paw": 0.9161017699696664,
+    "position_motion": 0.5592957395475783,
+    "position_motion_mse": 0.6553674762734536,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.024305269070345137,
+    "position_jump_mse": 15.532213272815483,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -34329286600660.918,
+    "quiet_mse": 0.0022567240731436967,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5103302082663703,
+   "imagination": {
+    "1": 0.2868335766871738,
+    "2": 0.37121329026143135,
+    "4": 0.4237407970311903,
+    "8": 0.3616081078181743
+   },
+   "loss": null,
+   "seconds": 58.235908875009045
+  },
+  {
+   "epoch": 25,
+   "train_loss": 0.1307957822985987,
+   "explained_one_step": {
+    "position": 0.35900761970867645,
+    "mass": 0.011478223974154877,
+    "paw": 0.9199088323357062,
+    "position_motion": 0.5641808799911292,
+    "position_motion_mse": 0.6481028263686748,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.02296174084152125,
+    "position_jump_mse": 15.511840472227355,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -22712363934889.2,
+    "quiet_mse": 0.0014930557411839468,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5139249752854302,
+   "imagination": {
+    "1": 0.28735977853035666,
+    "2": 0.3714486162880879,
+    "4": 0.42352837856878234,
+    "8": 0.3612792791801934
+   },
+   "loss": null,
+   "seconds": 71.38790487500955
+  },
+  {
+   "epoch": 30,
+   "train_loss": 0.1479278166797811,
+   "explained_one_step": {
+    "position": 0.3602042443842086,
+    "mass": 0.012744910173444368,
+    "paw": 0.9214455155601832,
+    "position_motion": 0.5666668122024927,
+    "position_motion_mse": 0.6444060181783575,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.024220592542815833,
+    "position_jump_mse": 15.530929267036639,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -22530417957316.41,
+    "quiet_mse": 0.001481095053728465,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5152702120726249,
+   "imagination": {
+    "1": 0.29017226920898587,
+    "2": 0.3774855015873462,
+    "4": 0.4338223105569743,
+    "8": 0.37218140598850447
+   },
+   "loss": null,
+   "seconds": 82.7397857500182
+  },
+  {
+   "epoch": 35,
+   "train_loss": 0.12901561564230477,
+   "explained_one_step": {
+    "position": 0.3634412365183566,
+    "mass": 0.014213251951260997,
+    "paw": 0.9267680525568526,
+    "position_motion": 0.5699008358495836,
+    "position_motion_mse": 0.6395967297144184,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.021526299063042043,
+    "position_jump_mse": 15.490073926142626,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -19304607893332.434,
+    "quiet_mse": 0.0012690381207818454,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5189664435016783,
+   "imagination": {
+    "1": 0.2910840299239158,
+    "2": 0.3771842916438709,
+    "4": 0.43177716198833327,
+    "8": 0.3697132655591997
+   },
+   "loss": null,
+   "seconds": 93.26135995800723
+  },
+  {
+   "epoch": 40,
+   "train_loss": 0.14544212899488443,
+   "explained_one_step": {
+    "position": 0.36414207118547426,
+    "mass": 0.01488114938239904,
+    "paw": 0.9291634911621998,
+    "position_motion": 0.5714764412564747,
+    "position_motion_mse": 0.6372536606048598,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.022259269074681898,
+    "position_jump_mse": 15.501188431639314,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -20547247792901.71,
+    "quiet_mse": 0.0013507262551211352,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5203301564936564,
+   "imagination": {
+    "1": 0.29295886679299554,
+    "2": 0.37992153539141893,
+    "4": 0.43744617607057246,
+    "8": 0.37659819372479275
+   },
+   "loss": null,
+   "seconds": 101.59437954099849
+  },
+  {
+   "epoch": 45,
+   "train_loss": 0.1272453090877324,
+   "explained_one_step": {
+    "position": 0.3667745797166002,
+    "mass": 0.015620134824650078,
+    "paw": 0.9330701272247215,
+    "position_motion": 0.5737233632488188,
+    "position_motion_mse": 0.6339122824343963,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.020083211213353547,
+    "position_jump_mse": 15.468191437660344,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -13595607065367.662,
+    "quiet_mse": 0.0008937422472632567,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5230753195703728,
+   "imagination": {
+    "1": 0.2940750219653333,
+    "2": 0.3816477911563855,
+    "4": 0.43880894465049725,
+    "8": 0.3777796947779356
+   },
+   "loss": null,
+   "seconds": 112.71106341600535
+  },
+  {
+   "epoch": 50,
+   "train_loss": 0.14337333247016248,
+   "explained_one_step": {
+    "position": 0.36733825406028353,
+    "mass": 0.01601522327963123,
+    "paw": 0.9338041813031686,
+    "position_motion": 0.5749317479298637,
+    "position_motion_mse": 0.6321153040753245,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.020616589873485136,
+    "position_jump_mse": 15.476279408458204,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -14274146076309.637,
+    "quiet_mse": 0.0009383477567913907,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5236755018166965,
+   "imagination": {
+    "1": 0.2955799161143905,
+    "2": 0.38489991988700345,
+    "4": 0.4445236847860229,
+    "8": 0.38471839426165766
+   },
+   "loss": null,
+   "seconds": 124.55435937500442
+  },
+  {
+   "epoch": 55,
+   "train_loss": 0.12621404878705983,
+   "explained_one_step": {
+    "position": 0.36935633306297355,
+    "mass": 0.016340667983820945,
+    "paw": 0.9363181878251309,
+    "position_motion": 0.5771545484752199,
+    "position_motion_mse": 0.6288097966990766,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.01901912409209272,
+    "position_jump_mse": 15.452055986045144,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -14064499549268.695,
+    "quiet_mse": 0.0009245661023711343,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5255452275371078,
+   "imagination": {
+    "1": 0.2958893147241868,
+    "2": 0.38541571493076854,
+    "4": 0.4443970415553181,
+    "8": 0.3830125615818757
+   },
+   "loss": null,
+   "seconds": 139.442218125012
+  },
+  {
+   "epoch": 60,
+   "train_loss": 0.1406902638490604,
+   "explained_one_step": {
+    "position": 0.37048238385613674,
+    "mass": 0.016551393034258455,
+    "paw": 0.9380317289565562,
+    "position_motion": 0.5788272666280085,
+    "position_motion_mse": 0.6263223120689426,
+    "position_motion_share": 0.3229166666666667,
+    "position_jump": -0.019094938050100208,
+    "position_jump_mse": 15.453205602863868,
+    "position_jump_share": 0.016840277777777777,
+    "quiet": -13041635257435.42,
+    "quiet_mse": 0.0008573254836600328,
+    "quiet_share": 0.6602430555555555
+   },
+   "explained_per_channel_mean": 0.5267279503504934,
+   "imagination": {
+    "1": 0.2982781915028959,
+    "2": 0.3891461884038554,
+    "4": 0.4501803302412952,
+    "8": 0.3900915092822965
+   },
+   "loss": null,
+   "seconds": 153.89007683302043
+  }
+ ],
+ "without_store": {
+  "explained_one_step": {
+   "position": 0.37048238385613674,
+   "mass": 0.016551393034258455,
+   "paw": 0.9380317289565562,
+   "position_motion": 0.5788272666280085,
+   "position_motion_mse": 0.6263223120689426,
+   "position_motion_share": 0.3229166666666667,
+   "position_jump": -0.019094938050100208,
+   "position_jump_mse": 15.453205602863868,
+   "position_jump_share": 0.016840277777777777,
+   "quiet": -13041635257435.42,
+   "quiet_mse": 0.0008573254836600328,
+   "quiet_share": 0.6602430555555555
+  },
+  "explained_per_channel_mean": 0.5267279503504934,
+  "imagination": {
+   "1": 0.2982781915028959,
+   "2": 0.3891461884038554,
+   "4": 0.4501803302412952,
+   "8": 0.3900915092822965
+  },
+  "loss": null
+ },
+ "with_store": {
+  "explained_one_step": {
+   "position": 0.37048238385613674,
+   "mass": 0.016551393034258455,
+   "paw": 0.9380317289565562,
+   "position_motion": 0.5788272666280085,
+   "position_motion_mse": 0.6263223120689426,
+   "position_motion_share": 0.3229166666666667,
+   "position_jump": -0.019094938050100208,
+   "position_jump_mse": 15.453205602863868,
+   "position_jump_share": 0.016840277777777777,
+   "quiet": -13041635257435.42,
+   "quiet_mse": 0.0008573254836600328,
+   "quiet_share": 0.6602430555555555
+  },
+  "explained_per_channel_mean": 0.5267279503504934,
+  "imagination": {
+   "1": 0.2982781915028959,
+   "2": 0.3891461884038554,
+   "4": 0.4501803302412952,
+   "8": 0.3900915092822965
+  },
+  "loss": null
+ },
+ "routine": {
+  "median": 0.01589665387476437,
+  "mean": 0.26255341575776486,
+  "quiet_median": 0.008217464925912785,
+  "dot_median": 0.049076216697229634,
+  "residual_median": 0.23314014587608947,
+  "present_share": 0.33098958333333334
+ },
+ "parameters": 6853,
+ "moment_macs": 96488,
+ "habit_fitted": {
+  "home_x": 0.6484375,
+  "home_y": 0.546875,
+  "drift": 2.0
+ },
+ "habit_imagined_cost": 0.055101362999286134,
+ "habit_fit_moments": 41856
+}

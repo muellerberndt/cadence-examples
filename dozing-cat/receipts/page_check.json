@@ -1,0 +1,353 @@
+{
+ "kind": "cadence-examples/dozing-cat-page-check/v1",
+ "written": "2026-09-23T17:03:08",
+ "url": "web/ served locally",
+ "problems": [],
+ "before_click": {
+  "width": 538,
+  "height": 538,
+  "bright": 3562,
+  "red": 14,
+  "laser": false,
+  "decisions": 33,
+  "catches": 0,
+  "mode": "habit",
+  "arm": "patch",
+  "awake_share": 0,
+  "moments": 1.0151314153055297,
+  "learn_calls": 0,
+  "kept": 0,
+  "viewer": {
+   "renderer": "WebGL2",
+   "software": true,
+   "version": "cadence.brain-scan/v3",
+   "style": "brain",
+   "neurons": 634,
+   "synapses": 7835,
+   "regions": 9,
+   "steps": 32,
+   "zoom": 1,
+   "scale": 0.13508517176729928,
+   "frameMs": 87.66744717846842,
+   "view": {
+    "yaw": 0.5,
+    "pitch": 0.25
+   },
+   "allEdgesSubmitted": true
+  },
+  "regions": [
+   "senses",
+   "evidence",
+   "belief",
+   "records",
+   "prediction",
+   "habit",
+   "readback",
+   "governor cortex",
+   "governor motor"
+  ],
+  "life": {
+   "decisions": {
+    "habit": 33,
+    "imagine": 0,
+    "learn": 0
+   },
+   "awake_share": 0
+  }
+ },
+ "scroll_width": {
+  "1280": 1280,
+  "390": 390
+ },
+ "arms": {
+  "patch": {
+   "width": 538,
+   "height": 538,
+   "bright": 3702,
+   "red": 41,
+   "laser": true,
+   "decisions": 627,
+   "catches": 3,
+   "mode": "habit",
+   "arm": "patch",
+   "awake_share": 0.2833333333333333,
+   "moments": 1.6151566343310293,
+   "learn_calls": 0,
+   "kept": 0,
+   "viewer": {
+    "renderer": "WebGL2",
+    "software": true,
+    "version": "cadence.brain-scan/v3",
+    "style": "brain",
+    "neurons": 634,
+    "synapses": 7835,
+    "regions": 9,
+    "steps": 592,
+    "zoom": 1,
+    "scale": 8.351914584636688e-05,
+    "frameMs": 3.5979960058309524,
+    "view": {
+     "yaw": 0.5,
+     "pitch": 0.25
+    },
+    "allEdgesSubmitted": true
+   },
+   "regions": [
+    "senses",
+    "evidence",
+    "belief",
+    "records",
+    "prediction",
+    "habit",
+    "readback",
+    "governor cortex",
+    "governor motor"
+   ],
+   "life": {
+    "decisions": {
+     "habit": 422,
+     "imagine": 170,
+     "learn": 0
+    },
+    "awake_share": 0.28716216216216217
+   },
+   "brain_canvas_lit": 2792,
+   "tiles": [
+    "habitmode",
+    "0.14awake share, last 600 decisions",
+    "3catches",
+    "1.0moments per decision, last 300",
+    "25decisions per second, measured"
+   ],
+   "account": "Dozing (the governor patch). The habit holds the paw: one moment of the belief patch per decision (the transition, two repair iterations, the store read, the re"
+  },
+  "threshold": {
+   "width": 538,
+   "height": 538,
+   "bright": 3003,
+   "red": 35,
+   "laser": true,
+   "decisions": 1366,
+   "catches": 8,
+   "mode": "habit",
+   "arm": "threshold",
+   "awake_share": 0.26666666666666666,
+   "moments": 20,
+   "learn_calls": 0,
+   "kept": 0,
+   "viewer": {
+    "renderer": "WebGL2",
+    "software": true,
+    "version": "cadence.brain-scan/v3",
+    "style": "brain",
+    "neurons": 620,
+    "synapses": 7717,
+    "regions": 6,
+    "steps": 485,
+    "zoom": 1,
+    "scale": 0.0005639208733960181,
+    "frameMs": 0.5480355822430755,
+    "view": {
+     "yaw": 0.5,
+     "pitch": 0.25
+    },
+    "allEdgesSubmitted": true
+   },
+   "regions": [
+    "senses",
+    "evidence",
+    "belief",
+    "records",
+    "prediction",
+    "habit"
+   ],
+   "life": {
+    "decisions": {
+     "habit": 325,
+     "imagine": 160,
+     "learn": 0
+    },
+    "awake_share": 0.3298969072164949
+   },
+   "brain_canvas_lit": 2702,
+   "tiles": [
+    "habitmode",
+    "0.27awake share, last 600 decisions",
+    "8catches",
+    "6.6moments per decision, last 300",
+    "26decisions per second, measured"
+   ],
+   "account": "Dozing (the hand-set thresholds). The habit holds the paw: one moment of the belief patch per decision (the transition, two repair iterations, the store read, t"
+  },
+  "never_wakes": {
+   "width": 538,
+   "height": 538,
+   "bright": 3001,
+   "red": 35,
+   "laser": true,
+   "decisions": 1963,
+   "catches": 10,
+   "mode": "habit",
+   "arm": "never_wakes",
+   "awake_share": 0,
+   "moments": 1,
+   "learn_calls": 0,
+   "kept": 0,
+   "viewer": {
+    "renderer": "WebGL2",
+    "software": true,
+    "version": "cadence.brain-scan/v3",
+    "style": "brain",
+    "neurons": 620,
+    "synapses": 7717,
+    "regions": 6,
+    "steps": 484,
+    "zoom": 1,
+    "scale": 1e-09,
+    "frameMs": 0.5308496406631187,
+    "view": {
+     "yaw": 0.5,
+     "pitch": 0.25
+    },
+    "allEdgesSubmitted": true
+   },
+   "regions": [
+    "senses",
+    "evidence",
+    "belief",
+    "records",
+    "prediction",
+    "habit"
+   ],
+   "life": {
+    "decisions": {
+     "habit": 484,
+     "imagine": 0,
+     "learn": 0
+    },
+    "awake_share": 0
+   },
+   "brain_canvas_lit": 2701,
+   "tiles": [
+    "habitmode",
+    "0awake share, last 600 decisions",
+    "10catches",
+    "1moments per decision, last 300",
+    "25decisions per second, measured"
+   ],
+   "account": "Never wakes (no governor). The habit alone: one moment of the belief patch per decision and the drift home. Nothing reads the surprise, so a dot is never chased"
+  },
+  "always_awake": {
+   "width": 538,
+   "height": 538,
+   "bright": 3058,
+   "red": 35,
+   "laser": true,
+   "decisions": 2608,
+   "catches": 13,
+   "mode": "imagine",
+   "arm": "always_awake",
+   "awake_share": 0.76,
+   "moments": 61,
+   "learn_calls": 0,
+   "kept": 0,
+   "viewer": {
+    "renderer": "WebGL2",
+    "software": true,
+    "version": "cadence.brain-scan/v3",
+    "style": "brain",
+    "neurons": 620,
+    "synapses": 7717,
+    "regions": 6,
+    "steps": 456,
+    "zoom": 1,
+    "scale": 1e-09,
+    "frameMs": 0.5240115023280016,
+    "view": {
+     "yaw": 0.5,
+     "pitch": 0.25
+    },
+    "allEdgesSubmitted": true
+   },
+   "regions": [
+    "senses",
+    "evidence",
+    "belief",
+    "records",
+    "prediction",
+    "habit"
+   ],
+   "life": {
+    "decisions": {
+     "habit": 0,
+     "imagine": 456,
+     "learn": 0
+    },
+    "awake_share": 1
+   },
+   "brain_canvas_lit": 2711,
+   "tiles": [
+    "imaginemode",
+    "0.97awake share, last 600 decisions",
+    "13catches",
+    "61moments per decision, last 300",
+    "26decisions per second, measured"
+   ],
+   "account": "Always awake (no governor, the other way). Imagination every decision: ten candidate pushes are imagined for six decisions each, sixty moments of the patch per "
+  }
+ },
+ "laser_after_second_click": false,
+ "phone_390": {
+  "width": 668,
+  "height": 668,
+  "bright": 16065,
+  "red": 43,
+  "laser": true,
+  "decisions": 356,
+  "catches": 1,
+  "mode": "imagine",
+  "arm": "patch",
+  "awake_share": 0.598314606741573,
+  "moments": 36.4241850454633,
+  "learn_calls": 0,
+  "kept": 0,
+  "viewer": {
+   "renderer": "WebGL2",
+   "software": true,
+   "version": "cadence.brain-scan/v3",
+   "style": "brain",
+   "neurons": 634,
+   "synapses": 7835,
+   "regions": 9,
+   "steps": 355,
+   "zoom": 1,
+   "scale": 3.386746644973755,
+   "frameMs": 1.436739542928325,
+   "view": {
+    "yaw": 0.5,
+    "pitch": 0.25
+   },
+   "allEdgesSubmitted": true
+  },
+  "regions": [
+   "senses",
+   "evidence",
+   "belief",
+   "records",
+   "prediction",
+   "habit",
+   "readback",
+   "governor cortex",
+   "governor motor"
+  ],
+  "life": {
+   "decisions": {
+    "habit": 143,
+    "imagine": 213,
+    "learn": 0
+   },
+   "awake_share": 0.598314606741573
+  }
+ },
+ "console_errors": []
+}

@@ -83,3 +83,27 @@ jobs:
         run: node patchworld/tests/physics.test.js
       - name: The built page is the template with the sources inlined
         run: python patchworld/web/build.py --check
+  dozing-cat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install the library at the commit the receipts name (the belief patch's boundary state landed after the 0.13.0 release)
+        run: python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence@f06eab065803a61e92fc2f578f24e91eaee48e79"
+      - name: The browser brain against the committed recording of the library's decisions, and the sill under chaos
+        run: |
+          node dozing-cat/tests/parity.mjs
+          node dozing-cat/tests/chaos.mjs
+      - name: The receipts, the numbers the README states, and the export the page runs
+        run: python dozing-cat/verify.py
+      - name: Rebuild the export and the recording on this machine, and hold the browser brain to them
+        run: |
+          python dozing-cat/export.py --out /tmp/dozing-cat --no-viewer
+          python dozing-cat/export.py --check
+          python dozing-cat/tests/record_parity.py --data /tmp/dozing-cat/brain.json --out /tmp/dozing-cat/parity_cases.json
+          node dozing-cat/tests/parity.mjs --data /tmp/dozing-cat/brain.json --cases /tmp/dozing-cat/parity_cases.json

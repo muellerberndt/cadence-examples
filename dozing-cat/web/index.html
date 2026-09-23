@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The dozing cat · a Cadence brain that notices its own surprise</title>
+<meta name="description" content="A cat dozes on a sill on one cheap moment of its belief patch per decision; a laser dot it did not expect wakes it, it chases, and it dozes again. The whole brain runs in your browser with the library's arithmetic.">
+<link rel="canonical" href="https://floatingpragma.io/cadence-examples/dozing-cat/">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header class="masthead">
+  <div class="headline">
+    <h1>The dozing cat</h1>
+    <p class="guide" id="guide">A cat dozes on the sill, eyes half closed, its brain running on one cheap moment per decision; a dot where it expected nothing surprises it, it wakes, chases with its paw, and dozes again when the sill is quiet.<span>Click the sill to switch the laser on, move the mouse to lead the cat, hold still for a moment to let it catch the dot, click again to switch the laser off.</span></p>
+  </div>
+  <div class="facts" id="facts">loading the brain</div>
+</header>
+
+<main class="row">
+  <section class="panel sillpanel">
+    <div class="panel-head"><h2>The sill</h2><span class="state" id="state">loading</span></div>
+    <div class="stage sill"><canvas id="view" aria-label="The sill: the cat, its paw and the laser dot"></canvas></div>
+  </section>
+  <section class="panel mind">
+    <div class="panel-head"><h2>The whole brain, live</h2><span class="sub" id="counts"></span></div>
+    <div class="stage scan"><canvas id="scan"></canvas><div id="labels"></div></div>
+    <canvas id="strip" aria-label="Activity and change per region, the last 320 decisions"></canvas>
+    <div class="legend" id="legend"></div>
+  </section>
+</main>
+
+<div class="brainline" id="brainline"><b>Brain:</b></div>
+<div class="tiles" id="tiles"></div>
+<p class="line" id="what"></p>
+
+<footer>
+  <details class="card" id="card">
+    <summary>What this brain is, its genes, the curves, the instruments and the viewer's controls <span class="sub" id="cardFacts"></span></summary>
+    <div class="card-body">
+      <div>
+        <h3>The task</h3>
+        <p id="task"></p>
+        <h3>What this brain is</h3>
+        <p id="note"></p>
+        <h3>What runs here</h3>
+        <p id="here"></p>
+        <h3>The genes of the selected governor</h3>
+        <p class="tools"><label>Genome <select id="genome"></select></label></p>
+        <p id="genes" class="genes"></p>
+        <p class="sub">The source on GitHub, with the experiment, its receipts and the parity test that holds this page to the library: <a href="https://github.com/muellerberndt/cadence-examples/tree/main/dozing-cat">cadence-examples/dozing-cat</a>.</p>
+      </div>
+      <div>
+        <h3>The curves</h3>
+        <div class="charts">
+          <div><h4 id="chartATitle">The awake share, the mode as the band</h4><canvas id="chartA"></canvas><p id="chartANote"></p></div>
+          <div><h4 id="chartBTitle">The surprise and its baseline</h4><canvas id="chartB"></canvas><p id="chartBNote"></p></div>
+          <div><h4 id="chartCTitle">Catches and misses</h4><canvas id="chartC"></canvas><p id="chartCNote"></p></div>
+        </div>
+        <h3>The viewer</h3>
+        <div class="tools">
+          <label>Neurons <select id="mode"><option value="activity">activation</option><option value="heat">distance from equilibrium</option></select></label>
+          <label>Synapses <select id="synapses"><option value="weights">weights</option><option value="change">last change</option></select></label>
+          <label>Style <select id="style"><option value="brain">brain</option><option value="scan">scan</option></select></label>
+          <button class="plain" id="pause">Pause the viewer</button>
+          <button class="plain" id="fit">Fit</button>
+        </div>
+        <h3>The instruments</h3>
+        <div class="stats" id="stats"></div>
+      </div>
+    </div>
+  </details>
+  <p class="colophon"><a href="https://github.com/muellerberndt/cadence-examples/tree/main/dozing-cat" target="_blank" rel="noopener">The source on GitHub</a>: fork it and give the cat a new sill · Made with <span class="heart" aria-label="love">♥</span> by <a href="https://floatingpragma.io" target="_blank" rel="noopener">Pragma Research</a></p>
+</footer>
+<script type="module" src="page.js"></script>
+</body></html>
