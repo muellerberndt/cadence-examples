@@ -42,7 +42,7 @@ function buildLife(arm) {
   S.life = new Life(S.patch, S.world, genomeFor(arm), spec.scale, spec.floors, { arm, rng: S.rng, machinery: spec.machinery });
   S.connectome = buildConnectome(S.patch, S.life.habit, S.life.governor);
   const atlas = viewer.layoutAtlas({ n: S.connectome.n, pre: S.connectome.pre, post: S.connectome.post, weight: S.connectome.weight, groups: S.connectome.groups, roles: ROLES, seed: 0 });
-  if (S.scan) { S.scan.setAtlas(atlas); S.scan.fit(); } else makeScan(atlas);
+  if (S.scan) S.scan.setAtlas(atlas); else makeScan(atlas); // framed once at load; on a switch the view stays where the user left it
   S.previousWeights = weightsOf(S.connectome, S.patch, S.life.habit, S.life.governor);
   S.change = null;
   loadWeights();
@@ -205,6 +205,8 @@ function drawView() {
   const shown = S.laser && S.pointer && !(S.world && S.world.mouseCaught && S.world.dot === null) ? S.pointer : v.dot;
   if (shown) { const dx = X(shown[0]), dy = Y(shown[1]); const R = 18 * Math.max(0.7, scale); const grad = g.createRadialGradient(dx, dy, 0, dx, dy, R); grad.addColorStop(0, "rgba(255,80,80,0.9)"); grad.addColorStop(0.3, "rgba(255,40,40,0.35)"); grad.addColorStop(1, "rgba(255,40,40,0)"); g.fillStyle = grad; g.beginPath(); g.arc(dx, dy, R, 0, Math.PI * 2); g.fill(); g.fillStyle = "#fff0f0"; g.beginPath(); g.arc(dx, dy, 3, 0, Math.PI * 2); g.fill(); }
   else if (S.laser && S.pointer) { g.fillStyle = "rgba(255,80,80,0.35)"; g.beginPath(); g.arc(X(S.pointer[0]), Y(S.pointer[1]), 4, 0, Math.PI * 2); g.fill(); } // the laser is on and the dot was caught: it returns when the mouse moves
+  // the dot the cat saw at its last decision, as a faint ring when it is not yet where the pointer is
+  if (v.dot && shown && shown !== v.dot && Math.hypot(v.dot[0] - shown[0], v.dot[1] - shown[1]) > 0.01) { g.strokeStyle = "rgba(255,120,120,0.45)"; g.lineWidth = 1; g.beginPath(); g.arc(X(v.dot[0]), Y(v.dot[1]), 5, 0, Math.PI * 2); g.stroke(); }
   if (S.catchFlash && performance.now() - S.catchFlash.t < 700 && S.catchFlash.at) { const k = (performance.now() - S.catchFlash.t) / 700; g.strokeStyle = `rgba(255,230,128,${(1 - k).toFixed(2)})`; g.lineWidth = 2; g.beginPath(); g.arc(X(S.catchFlash.at[0]), Y(S.catchFlash.at[1]), 8 + 30 * k, 0, Math.PI * 2); g.stroke(); g.lineWidth = 1; }
   // the cat sits at the sill's lower right corner, looking at the dot or at its paw
   const r = Math.max(26, Math.min(56, B.s * 0.12)), cx = B.x + B.s - r * 1.4, cy = B.y + B.s - r * 0.35;
