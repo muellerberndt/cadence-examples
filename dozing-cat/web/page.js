@@ -126,7 +126,7 @@ function whatText() {
 // ------------------------------------------------------------------ the tiles and the instruments
 const DIGITS = { awake_share: 2, moments: 1, total_moments: 1, ms_per_decision: 2 };
 function tile(k, label, v, cls = "") {
-  const txt = typeof v === "number" ? (Number.isInteger(v) ? v : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(2) : v.toFixed(DIGITS[k] ?? 4))) : (v === "" || v === undefined || v === null ? "–" : v);
+  const txt = typeof v === "number" ? (k in DIGITS ? v.toFixed(DIGITS[k]) : Number.isInteger(v) ? v : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(2) : v.toFixed(4))) : (v === "" || v === undefined || v === null ? "–" : v);
   return `<div class="stat${cls}"><b>${txt}</b><span>${label}</span></div>`;
 }
 const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
