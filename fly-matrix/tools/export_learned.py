@@ -52,7 +52,8 @@ def main() -> None:
     run_json = Path(args.checkpoint).with_suffix(".json")
     if run_json.exists():
         r = json.loads(run_json.read_text()); a = r["args"]; sm = r["summary"]
-        config = {"outputs": sm["outputs"], "actions": sm.get("output_action", [0, 1]), "plastic": a["plastic"], "critic": "kc", "beta": a["beta"], "temperature": a["temperature"], "nudgedSteps": 10, "tolerance": a["tolerance"],
+        plastic = {"kc>mbon": {"pre": ["kc"], "post": ["mbon"]}, "mb": {"post": ["mbon"]}, "all": "all"}[a["plastic"]]
+        config = {"outputs": sm["outputs"], "actions": sm.get("output_action", [0, 1]), "plastic": plastic, "critic": "kc", "beta": a["beta"], "temperature": a["temperature"], "nudgedSteps": 10, "tolerance": a["tolerance"],
                   "gamma": a["gamma"], "lam": a["lam"], "eta": a["eta"], "etaCritic": a["eta_critic"], "cap": a["scale_cap"], "dopamineCap": 1.0, "tonic": ({sm["outputs"][1]: sm["tonic_avoid"]} if sm.get("tonic_avoid") else {})}
         lessons = ROOT / "web" / "data" / "lessons.json"
         lessons.write_text(json.dumps({"format": "cadence-fruitfly.lessons/1", "run": run_json.name, "gain": a["gain"], "config": config, "held_out": r["held_out"].get("none"), "probe": r.get("probe"), "naive_probe": r.get("naive_probe")}, indent=1))

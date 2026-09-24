@@ -119,3 +119,21 @@ jobs:
           node fly-matrix/tests/parity.mjs
           node fly-matrix/tests/body.mjs
           node fly-matrix/tests/learner_smoke.mjs
+  engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install the library the engine is held to
+        run: python -m pip install "cadence-net==0.14.0"
+      - name: A fresh brain, its settle cases and a recorded run of the library's actor-critic, replayed through the engine
+        run: |
+          python engine/make_fixture.py --out /tmp/engine_fixture
+          node engine/parity.mjs /tmp/engine_fixture/brain.json /tmp/engine_fixture/cases.json /tmp/engine_fixture/lessons.json
+      - name: The examples' copies of the engine are exact
+        run: node engine/check_copies.mjs

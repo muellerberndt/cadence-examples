@@ -2,16 +2,16 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { FlyBrain } from "../web/brain.js";
+import { SettlingBrain } from "../web/brain.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 globalThis.atob ??= (b) => Buffer.from(b, "base64").toString("binary");
 const payload = JSON.parse(readFileSync(join(here, "..", "web", "data", "brain.json"), "utf8"));
 const cases = JSON.parse(readFileSync(join(here, "parity_cases.json"), "utf8"));
-const brain = new FlyBrain(payload);
+const brain = new SettlingBrain(payload);
 let worst = 0;
 for (const c of cases.cases) {
-  brain.reset();
+  brain.reset(); brain.clearStimuli();   // the state to rest, and the senses of the previous case off
   for (const [pop, level] of Object.entries(c.stimulus)) brain.stimulate(pop, level);
   for (let t = 0; t < c.per_step_means.length; t++) {
     brain.step();

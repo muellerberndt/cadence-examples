@@ -1,12 +1,12 @@
 // A smoke test of the browser learner on the page's payload: decisions and rewards change the
 // plastic synapses, nothing is NaN, and the cost per decision is printed.
 import { readFileSync } from "node:fs";
-import { FlyBrain } from "../web/brain.js";
-import { FlyLearner } from "../web/learner.js";
+import { SettlingBrain } from "../web/brain.js";
+import { ActorCriticLearner } from "../web/learner.js";
 globalThis.atob = globalThis.atob || ((b) => Buffer.from(b, "base64").toString("binary"));
 const payload = JSON.parse(readFileSync(new URL("../web/data/brain.json", import.meta.url)));
-const brain = new FlyBrain(payload);
-const learner = new FlyLearner(brain, { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0, 1], plastic: "kc>mbon", critic: "kc", nudgedSteps: 10, tonic: {} });
+const brain = new SettlingBrain(payload);
+const learner = new ActorCriticLearner(brain, { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0, 1], plastic: { pre: ["kc"], post: ["mbon"] }, critic: "kc", beta: 0.1, temperature: 0.3, nudgedSteps: 10, tolerance: 1e-3, gamma: 0.95, lam: 0.9, eta: 10, etaCritic: 0.5, cap: 3, tonic: {} });
 let seed = 7; learner.rng = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
 console.log(`payload ${brain.n} neurons, plastic ${learner.edges.length} KC>MBON synapses, critic ${learner.criticIndex.length} KCs`);
 const odours = [["orn:decaying_fruit:left", "orn:decaying_fruit:right"], ["orn:yeasty:left", "orn:yeasty:right"]];

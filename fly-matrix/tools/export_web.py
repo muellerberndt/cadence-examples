@@ -8,7 +8,6 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import sys
 from pathlib import Path
@@ -17,15 +16,13 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-import cadence  # noqa: E402
 from cadence import Brain, NeuronModel  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
 from fruitfly.brain import load_fly  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
 
-
-def b64(a: np.ndarray) -> str:
-    return base64.b64encode(np.ascontiguousarray(a).tobytes()).decode("ascii")
+sys.path.insert(0, str(ROOT / "tools"))
+from brain_payload import payload_of  # noqa: E402  (a copy of cadence-examples/engine/export.py)
 
 
 def main() -> None:
@@ -44,21 +41,11 @@ def main() -> None:
     C = sub.connectome
     model = NeuronModel(gain=gain)
     brain = Brain(C, model)
-    weights = brain.weights  # gain * count * exp(log_gain[pre]) * sign, in (post, pre) order
-    row_ptr = np.zeros(C.n + 1, dtype=np.int32)
-    np.cumsum(np.bincount(C.post, minlength=C.n), out=row_ptr[1:])
-    payload = {
-        "format": "cadence-fruitfly.brain/1",
-        "library": {"version": cadence.__version__},
+    payload = payload_of(brain, members=sub.members, extra={
         "manifest": json.loads(MANIFEST_PATH.read_text())["fixture_sha256"],
-        "n": int(C.n), "edges": int(C.synapses), "synapses": int(C.count.sum()),
         "whole": {"neurons": int(fly.connectome.n), "edges": int(fly.connectome.synapses)},
         "recruitment": {"budget": args.budget, "hops": args.hops, "min_count": args.min_count, "hop_counts": np.bincount(sub.hops).tolist()},
-        "model": model.to_dict() | {"gain": gain},
-        "populations": {k: list(v) for k, v in C.populations.items()},
-        "arrays": {"row_ptr": b64(row_ptr), "pre": b64(C.pre.astype(np.int32)), "weight": b64(weights.astype(np.float64)), "members": b64(sub.members.astype(np.int32)),
-                   "count": b64(np.minimum(C.count, 65535).astype(np.uint16)), "sign": b64(C.sign.astype(np.int8))},
-    }
+    })
     (ROOT / "web" / "data").mkdir(parents=True, exist_ok=True)
     out = ROOT / "web" / "data" / "brain.json"
     out.write_text(json.dumps(payload, separators=(",", ":")))

@@ -2,8 +2,8 @@
 // Messages in: {type:"init", url} then {type:"run", stimuli:{channelSet: level}, steps:K}.
 // Messages out: {type:"ready", n, edges, members, populations} then, per run,
 // {type:"state", readouts:{group:mean}, active, s: Float32Array (transferred), steps}.
-import { FlyBrain } from "./brain.js";
-import { FlyLearner } from "./learner.js";
+import { SettlingBrain } from "./brain.js";
+import { ActorCriticLearner } from "./learner.js";
 import { GROUPS } from "./motor.js";
 
 let brain = null, readoutNames = [], learner = null, learnConfig = null, seedState = 1;
@@ -11,7 +11,7 @@ const rnd = () => { seedState = (seedState + 0x6d2b79f5) >>> 0; let t = seedStat
 
 function makeLearner(keep) { // the learner on the brain's current wiring; `keep` carries efficacies across a rewire
   if (!learnConfig) return;
-  learner = new FlyLearner(brain, learnConfig); learner.rng = rnd;
+  learner = new ActorCriticLearner(brain, learnConfig); learner.rng = rnd;
   if (keep && keep.length === learner.efficacy.length) { learner.efficacy.set(keep); learner.applyWeights(); }
   self.postMessage({ type: "learn:ready", plastic: learner.edges.length, outputs: learner.outputs, critic: learner.criticIndex.length, ...learner.stats() });
 }
@@ -26,7 +26,7 @@ self.onmessage = async (e) => {
   const m = e.data;
   if (m.type === "init") {
     const payload = await (await fetch(m.url)).json();
-    brain = new FlyBrain(payload);
+    brain = new SettlingBrain(payload);
     readoutNames = [];
     for (const g of GROUPS) for (const side of ["left", "right"]) if (brain.sets[`${g}:${side}`]) readoutNames.push(`${g}:${side}`);
     for (const extra of ["steering:left", "steering:right", "neck_mn", "dn", "mn:haltere:left", "mn:haltere:right", "haltere:left", "haltere:right", "ocelli:left", "ocelli:right",
@@ -54,13 +54,12 @@ self.onmessage = async (e) => {
     brain.learnedOnOriginal = keep;
     brain.rowPtr = rowPtr; brain.pre = pre; brain.w = w; brain.reset(); makeLearner(null); return;
   }
-  if (m.type === "learned") { // learned efficacies on some synapses (data/learned_*.json): weight = gain * count * efficacy; off restores the signs
-    if (!brain.count) return;
+  if (m.type === "learned") { // learned efficacies on some synapses (data/learned.json); off restores the signs
     if (!brain.original) brain.original = { rowPtr: brain.rowPtr, pre: brain.pre, w: brain.w };
     const w = Float64Array.from(brain.original.w);
     brain.w = w;
     if (learner) learner.reset();
-    if (m.on && m.edges) { if (learner) learner.load(m.edges, m.efficacy); else for (let k = 0; k < m.edges.length; k++) { const e = m.edges[k]; w[e] = brain.gain * brain.count[e] * m.efficacy[k]; } }
+    if (m.on && m.edges) { if (learner) learner.load(m.edges, m.efficacy); else for (let k = 0; k < m.edges.length; k++) brain.setEfficacy(m.edges[k], m.efficacy[k]); }
     brain.reset(); if (learner) self.postMessage({ type: "lesson", ...learner.stats(), loaded: !!m.on }); return;
   }
   if (m.type === "learn:init") { // the actor-critic on this wiring: outputs, actions, plastic set, critic, constants

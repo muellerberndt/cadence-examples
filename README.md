@@ -41,6 +41,10 @@ made to do. Every brain is short enough to read in an evening, every page runs f
 and every check runs from one command, so a change shows at once whether it kept the numbers or
 broke them.
 
+The browser engine every settling-brain page shares, with a guide for building your own example
+(the payload, the settle loop, the viewer, the lessons, the parity test, the page conventions),
+is in [engine/](engine/README.md).
+
 Then build an example of your own. Every example, finished or half-working, is data for us: it says
 what the architecture does with a body, a sense or a task that nobody has put in front of it, and
 that is what scales this work toward the full humanoid simulation. Hack things. Be crazy. Chaos is

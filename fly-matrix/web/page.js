@@ -19,7 +19,7 @@ const params = new URLSearchParams(location.search);
 const BRAIN_MS = 2.0;                      // ms of simulated time per settling step (declared timescale)
 const STEPS_PER_MESSAGE = 12;
 // The lessons: the constants of tools/learn_odour.py; data/lessons.json (written with the receipt) overrides them.
-let LESSONS = { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0, 1], plastic: "kc>mbon", critic: "kc", beta: 0.1, temperature: 0.3, nudgedSteps: 10, tolerance: 1e-3, gamma: 0.95, lam: 0.9, eta: 10, etaCritic: 0.5, cap: 3, dopamineCap: 1, tonic: {} };
+let LESSONS = { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0, 1], plastic: { pre: ["kc"], post: ["mbon"] }, critic: "kc", beta: 0.1, temperature: 0.3, nudgedSteps: 10, tolerance: 1e-3, gamma: 0.95, lam: 0.9, eta: 10, etaBias: 0, etaCritic: 0.5, cap: 3, dopamineCap: 1, tonic: {} };
 
 // ---- the room ------------------------------------------------------------------------------
 const canvas = $("world");
