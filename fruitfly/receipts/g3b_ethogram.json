@@ -1,0 +1,29 @@
+{
+ "tool": "tools/ethogram.py",
+ "seconds": 150.0,
+ "speed": 1.0,
+ "real": {
+  "saccade_rate_per_s": [
+   0.4,
+   1.0
+  ],
+  "bout_s": [
+   30,
+   90
+  ],
+  "sit_s": [
+   2,
+   60
+  ],
+  "sitting_fraction": [
+   0.3,
+   0.9
+  ],
+  "sources": "docs/REAL_FLY.md"
+ },
+ "conditions": {
+  "brain": {
+   "error": "Page.evaluate: Target page, context or browser has been closed"
+  }
+ }
+}

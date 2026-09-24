@@ -2,18 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A fly in the Matrix · Cadence</title>
-<meta name="description" content="The whole nervous system of an adult fruit fly, brain and nerve cord wired as measured, as one Cadence brain flying a body through a room. Live in your browser.">
-<link rel="canonical" href="https://floatingpragma.io/cadence-examples/fruitfly/">
+<meta name="description" content="The whole nervous system of an adult fruit fly, brain and nerve cord wired as measured, as one Cadence brain flying a body with physics through a wireframe room, learning which smell means sugar at its mushroom body's synapses. Live in your browser.">
+<link rel="canonical" href="https://floatingpragma.io/cadence-examples/fly-matrix/">
 <link rel="icon" href="data:,">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pragma Research">
 <meta property="og:title" content="A fly in the Matrix">
-<meta property="og:description" content="150,802 neurons of an adult fruit fly, brain and nerve cord wired as measured, as one Cadence brain flying a body through a room with physics. Every neuron drawn where it sits.">
-<meta property="og:url" content="https://floatingpragma.io/cadence-examples/fruitfly/">
-<meta property="og:image" content="https://floatingpragma.io/cadence-examples/fruitfly/card.jpg">
+<meta property="og:description" content="150,802 neurons of an adult fruit fly, brain and nerve cord wired as measured, as one Cadence brain flying a body with physics through a wireframe room and learning which smell means sugar. Every neuron drawn where it sits, the fly in close-up, its compound eyes' view.">
+<meta property="og:url" content="https://floatingpragma.io/cadence-examples/fly-matrix/">
+<meta property="og:image" content="https://floatingpragma.io/cadence-examples/fly-matrix/card.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@muellerberndt">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +25,7 @@
   body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;opacity:.6}
   h1,h3,.h1{text-shadow:0 0 12px rgba(57,255,106,.55)}
   b{color:var(--ink)}
+  body.card::after{display:none}
   body.glitch #title h1{animation:glitch .12s steps(2) infinite}
   body.glitch .glass{animation:glitchbox .16s steps(3) infinite}
   @keyframes glitch{0%{transform:translate(0,0);text-shadow:0 0 12px rgba(57,255,106,.55)}50%{transform:translate(3px,-1px) skewX(-6deg);text-shadow:-3px 0 #ff3b5c,3px 0 #39ff6a}100%{transform:translate(-2px,1px)}}
@@ -49,9 +49,9 @@
   #panel hr{border:0;border-top:1px solid var(--line);margin:12px 0 10px}
   #stats{color:var(--dim);font-size:11px;margin-top:8px;line-height:1.5}
   #stats b{color:var(--ink);font-weight:600}
-  #brain{position:fixed;right:24px;top:22px;width:640px;padding:11px 12px 9px;transition:width .25s,height .25s}
-  #brain canvas#scan{width:100%;height:380px;display:block;cursor:grab;border-radius:8px}
-  #brain.big{width:calc(100vw - 48px)} #brain.big canvas#scan{height:calc(100vh - 150px)}
+  #brain{position:fixed;right:24px;top:22px;width:392px;padding:10px 12px 8px;transition:width .25s,height .25s}
+  #brain canvas#scan{width:100%;height:540px;display:block;cursor:grab;border-radius:8px}
+  #brain.big{width:calc(100vw - 48px)} #brain.big canvas#scan{height:calc(100vh - 170px)}
   #brain .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
   #brain .top .h{margin:0}
   #brain .top .tools{display:flex;gap:4px}
@@ -60,7 +60,7 @@
   #legend{display:none;flex-wrap:wrap;gap:3px 12px;margin:6px 0 2px;color:var(--dim);font-size:10.5px}
   #brain.big #legend{display:flex}
   #legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
-  #brainfoot{color:var(--dim);font-size:11px;min-height:15px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #brainfoot{color:var(--dim);font-size:10.5px;min-height:15px;margin-top:4px;line-height:1.4}
   #brainfoot b{color:var(--ink);font-weight:600}
   #labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
   #labels span{position:absolute;font-size:10px;color:var(--soft);white-space:nowrap;text-shadow:0 0 4px #000}
@@ -86,8 +86,7 @@
   #card p,#card li{color:var(--soft);font-size:12px;line-height:1.5;margin:6px 0}
   #card ul{padding-left:16px;margin:4px 0}
   #card code{font:11px ui-monospace,Menlo,monospace;color:var(--cold)}
-  #hint{position:fixed;left:24px;bottom:192px;max-width:760px;color:var(--dim);font-size:11px;pointer-events:none;text-align:left;transition:opacity 1s}
-  #hint.gone{opacity:0}
+  #hint{position:fixed;left:24px;bottom:192px;max-width:760px;color:var(--soft);font-size:11.5px;line-height:1.45;pointer-events:none;text-align:left;text-shadow:0 0 8px #000}
   #credit{position:fixed;left:0;right:0;bottom:2px;margin:0;text-align:center;color:var(--dim);font-size:10.5px;line-height:14px;pointer-events:none}
   #credit b{color:var(--soft);font-weight:600}
   #credit a{color:inherit;pointer-events:auto;text-underline-offset:3px}
@@ -114,8 +113,9 @@
   .tools button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--soft);font:500 11px "IBM Plex Mono",monospace;padding:3px 8px;border-radius:7px;cursor:pointer}
   .tools button.on,.tools button:hover{background:rgba(57,255,106,.14);color:var(--ink)}
   .sugar{color:#ffe9a8}
-  @media (max-height:900px){#brain canvas#scan{height:260px}#inset{width:340px;height:212px}#eye{width:300px;height:212px;right:380px}}
-  @media (max-width:1100px){#brain{width:420px}#brain canvas#scan{height:240px}#inset{width:320px;height:200px}}
+  @media (max-height:900px){#brain canvas#scan{height:400px}#inset{width:340px;height:212px}#eye{width:300px;height:212px;right:380px}}
+  @media (max-height:780px){#brain canvas#scan{height:300px}}
+  @media (max-width:1100px){#brain{width:320px}#brain canvas#scan{height:360px}#inset{width:320px;height:200px}}
   @media (max-width:760px){#panel{display:none}#brain{left:12px;right:12px;top:auto;bottom:80px;width:auto}#brain canvas#scan{height:200px}#title{left:16px;top:16px}#card{display:none}#inset,#status{display:none}}
 </style>
 </head>
@@ -135,9 +135,9 @@
 </div>
 
 <div id="brain" class="glass">
-  <div class="top"><p class="h">The nervous system, every neuron where it sits</p>
-    <div class="tools"><button id="style-brain" class="on" title="the 3D view">3D</button><button id="style-scan" title="the flat scan">scan</button><button id="brain-fit">fit</button><button id="brain-big">expand</button></div></div>
-  <div style="position:relative"><canvas id="scan" width="1080" height="680"></canvas><div id="labels"></div></div>
+  <div class="top"><p class="h">Nervous system</p>
+    <div class="tools"><button id="style-brain" class="on" title="every neuron where it sits, in three dimensions">3D</button><button id="style-scan" title="the flat scan">scan</button><button id="brain-fit" title="fit the view">fit</button><button id="brain-big" title="the whole screen, every region labelled">expand</button></div></div>
+  <div style="position:relative"><canvas id="scan" width="784" height="1080"></canvas><div id="labels"></div></div>
   <div id="legend"></div>
   <canvas id="strip" width="1080" height="112"></canvas>
   <div id="brainfoot"></div>
@@ -163,7 +163,7 @@
   <button id="instruments" title="the senses and the motor neurons, live">instruments</button>
   <button id="about">about</button>
 </div>
-<div id="hint">click a fruit to pick it up, click the table to put it down · click the fly while it sits on a fruit to strike it (a punishment) · click the close-up to swap views · drag the brain to turn it · space pauses</div>
+<div id="hint">The fly learns from what it finds: choose in the toolbar whether the sugar sits on the banana or the bread, move a fruit by clicking it and then the table, and click the fly while it sits on a fruit to strike it, which punishes that smell.</div>
 
 <div id="card" class="glass">
   <h3>What is running here</h3>

@@ -92,6 +92,7 @@ export class Life {
     this.reward = 0; this.punish = 0;     // s left of the dopaminergic display
     this.lastP = { banana: null, bread: null };
     this.takeoffAt = -1; this.groomTarget = "head";
+    this.perch = null;                    // [x, y, z of the surface] while the legs hold the body on a table or a fruit (the physics knows only the room's walls)
     // the ethogram: counts and durations for the G3b measurement against docs/REAL_FLY.md
     this.ethogram = { saccades: 0, microSaccades: 0, bouts: [], sits: [], grooms: 0, feeds: 0, landings: 0, flying_s: 0, sitting_s: 0, boutStart: 0, sitStart: null, decisions: 0 };
     this.visits = { banana: 0, bread: 0, sweet: 0, punished: 0 };
@@ -267,7 +268,14 @@ export class Life {
   startGrooming() { this.mode = "grooming"; this.episode = GROOM_S; this.ethogram.grooms++; this.groomTarget = ["head", "head", "wings", "legs"][Math.floor(this.rng() * 4)]; this.log(`grooms its ${this.groomTarget}`); }
   /** What the body shows: the pose the fly model draws. */
   pose() { return { mode: this.takeoffAt >= 0 && this.clock - this.takeoffAt < 0.15 ? "takeoff" : this.mode, t: this.clock, groom: this.mode === "grooming" ? this.groomTarget : null, feed: this.mode === "feeding" ? Math.min(1, (FEED_S - this.episode) / 0.6) : 0, hunger: this.hunger }; }
-  takeoff(why) { if (this.ethogram.sitStart !== null) { this.ethogram.sits.push(this.clock - this.ethogram.sitStart); this.ethogram.sitStart = null; } this.ethogram.boutStart = this.clock; this.takeoffAt = this.clock; this.mode = "flying"; this.wingsOff = false; this.landing = null; this.bout = expo(this.rng, BOUT_MEAN_S); this.altitude = Math.max(0.6, this.flight.p[2] + 0.4); this.speed = CRUISE; this.heading = this.flight.euler()[2]; this.flight.v[2] += 0.28; this.log(why); }
+  /** The body held on its perch: level, still, the surface under its feet. */
+  hold() {
+    const f = this.flight, P = this.perch; if (!P) return;
+    const yaw = f.euler()[2];
+    f.p = [P[0], P[1], P[2] + RADIUS]; f.v = [0, 0, 0]; f.w = [0, 0, 0]; f.q = [Math.cos(yaw / 2), 0, 0, Math.sin(yaw / 2)];
+    f.landed = true; f.touching = 1; f.onFloor = P[2] < 0.001;
+  }
+  takeoff(why) { this.perch = null; if (this.ethogram.sitStart !== null) { this.ethogram.sits.push(this.clock - this.ethogram.sitStart); this.ethogram.sitStart = null; } this.ethogram.boutStart = this.clock; this.takeoffAt = this.clock; this.mode = "flying"; this.wingsOff = false; this.landing = null; this.bout = expo(this.rng, BOUT_MEAN_S); this.altitude = Math.max(0.6, this.flight.p[2] + 0.4); this.speed = CRUISE; this.heading = this.flight.euler()[2]; this.flight.v[2] += 0.28; this.log(why); }
 
   // ---- every physics step: the course into the pilot, the pilot into the wings ---------------
   step(dt) {
@@ -283,9 +291,11 @@ export class Life {
         const L = this.landing, dxy = Math.hypot(L[0] - f.p[0], L[1] - f.p[1]);
         p.target = [L[0], L[1], dxy > 0.15 ? Math.max(L[2] + 0.12, f.p[2] - 0.05) : L[2] + RADIUS + 0.0008];
         p.heading = dxy > 0.05 ? Math.atan2(L[1] - f.p[1], L[0] - f.p[0]) : p.heading; p.speed = Math.max(0.05, Math.min(CRUISE, dxy));
-        if (f.p[2] - L[2] < RADIUS + 0.0025 && f.speed() < 0.08) { this.wingsOff = true; }
-        if (f.landed || (this.wingsOff && f.touching > 0 && f.speed() < 0.02)) {
+        const settled = dxy < 0.03 && Math.abs(f.p[2] - (L[2] + RADIUS)) < 0.004 && f.speed() < 0.1;
+        if (settled || f.landed || (this.wingsOff && f.touching > 0 && f.speed() < 0.02)) {
           this.mode = "landed"; this.landing = null; this.sit = expo(this.rng, SIT_MEAN_S); this.fatigue = 0;
+          this.perch = [f.p[0], f.p[1], settled ? L[2] : Math.max(0, f.p[2] - RADIUS)];
+          this.hold();
           this.ethogram.landings++; this.ethogram.bouts.push(this.clock - this.ethogram.boutStart); this.ethogram.sitStart = this.clock;
           const on = this.fruitAt(f.p);
           if (on) { this.visits[on]++; if (on === this.sugar) { this.visits.sweet++; this.log(`lands on the ${on}: sugar`); this.closeSearch(1, `sugar on the ${on}`); } else { this.log(`lands on the ${on}: nothing`); this.closeSearch(0, `nothing on the ${on}`); } }
@@ -300,9 +310,9 @@ export class Life {
     } else {
       this.fatigue = Math.max(0, this.fatigue - dt / 20);
       this.controls = { aL: 0, aR: 0, betaL: 0, betaR: 0, sL: 0, sR: 0, f: 0 };
-      f.v[0] *= 0.5; f.v[1] *= 0.5; // the legs hold the body still on the surface
     }
-    f.step(dt, this.controls);
+    if (this.perch && this.mode !== "flying") this.hold();  // the legs hold the body: no physics step while it stands
+    else f.step(dt, this.controls);
     if (this.since >= DECISION_S) { this.since -= DECISION_S; return true; }
     return false;
   }

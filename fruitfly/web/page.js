@@ -93,6 +93,8 @@ fetch("./data/atlas.json").then((r) => r.json()).then((raw) => {
   $("style-scan").onclick = () => { scan.setStyle("scan"); styleButtons("scan"); };
   $("brain-fit").onclick = () => scan.fit();
   $("brain-big").onclick = () => { const big = $("brain").classList.toggle("big"); $("brain-big").textContent = big ? "shrink" : "expand"; scan.options.labelTop = big ? 12 : 4; scan.options.labelCount = big ? 0 : 5; scan.options.exposure = big ? 0.85 : 0.62; setTimeout(() => { scan.resize && scan.resize(); scan.fit(); }, 300); };
+  setTimeout(() => { scan.resize && scan.resize(); scan.fit(); }, 50);
+  addEventListener("resize", () => { scan.resize && scan.resize(); scan.fit(); });
   styleButtons(scan.brain ? "brain" : "scan");
 });
 function styleButtons(which) { $("style-brain").classList.toggle("on", which === "brain"); $("style-scan").classList.toggle("on", which === "scan"); }
@@ -188,7 +190,7 @@ $("lessons").onclick = () => { if (!learned) return; const on = !$("lessons").cl
 function togglePause() { S.paused = !S.paused; life.log(S.paused ? "paused" : "resumed"); }
 $("about").onclick = () => { $("card").classList.toggle("open"); };
 $("instruments").onclick = () => { const on = document.body.classList.toggle("instruments"); $("instruments").classList.toggle("on", on); };
-setTimeout(() => $("hint").classList.add("gone"), 25000);
+
 $("inset").addEventListener("click", () => { S.swapViews = !S.swapViews; if (renderPass) renderPass.camera = mainCamera(); $("inset-mode").textContent = S.swapViews ? "the room" : ""; });
 $("inset").addEventListener("wheel", (e) => { if (rig.closeupZoom) rig.closeupZoom(e.deltaY); e.preventDefault(); }, { passive: false });
 addEventListener("keydown", (e) => { if (e.key === "1") setCam("follow"); if (e.key === "2") setCam("room"); if (e.key === "3") setCam("eye"); if (e.key === " ") { e.preventDefault(); togglePause(); } if (e.key === "i") $("instruments").onclick(); if (e.key === "g") { const [w, x, y, z] = flight.q, c = cos_(-0.175), sn = sin_(-0.175); flight.q = [w * c - y * sn, x * c + z * sn, y * c + w * sn, z * c - x * sn]; flight.kick(0, -25, 0); if (life.mode !== "flying") life.takeoff("a gust"); life.log("a gust"); } });
@@ -214,7 +216,7 @@ function hud() {
   const ev = life.events.slice(-3).map(([t, x]) => `<b>${t.toFixed(0)} s</b> ${x}`).join(' <span class="sep">·</span> ');
   $("events").innerHTML = ev;
   $("stats").innerHTML = "";
-  const info = payloadInfo ? `<b>${payloadInfo.n.toLocaleString()}</b> of ${whole.toLocaleString()} neurons settle here (${payloadInfo.edges.toLocaleString()} synapse classes) · step ${S.brainSteps.toLocaleString()} · ${S.brainMs.toFixed(1)} ms per step · ${S.active} active` : "loading the brain";
+  const info = payloadInfo ? `<b>${payloadInfo.n.toLocaleString()}</b> of ${whole.toLocaleString()} neurons settle live (${(payloadInfo.edges / 1e6).toFixed(2)} M synapse classes) · ${S.brainMs.toFixed(1)} ms per step · ${S.active} active` : "loading the brain";
   $("brainfoot").innerHTML = info + (scan ? ` · ${S.fps.toFixed(0)} fps` : "");
 }
 
@@ -290,7 +292,8 @@ function frame(now) {
   requestAnimationFrame(frame);
   const dtWall = Math.min(0.05, (now - last) / 1000); last = now;
   const useBrain = S.pilot !== "instincts" && !!life.baseline;
-  if (S.ready && !S.paused) {
+  if (S.freeze) { life.clock += dtWall * S.speed; }
+  else if (S.ready && !S.paused) {
     const simDt = dtWall * S.speed;
     let n = Math.round(simDt / DT), k = 0;
     while (k < n && k < 120) {
@@ -327,4 +330,17 @@ function frame(now) {
   window.__frames = (window.__frames || 0) + 1;
 }
 requestAnimationFrame(frame);
+// the social card: nothing but the fly in close-up (index.html?card=1), shot by tools/card.py
+if (params.get("card")) {
+  for (const id of ["panel", "status", "toolbar", "hint", "brain", "eye", "inset", "title", "credit", "card"]) { const el = $(id); if (el) el.style.display = "none"; }
+  document.body.classList.add("card");
+  S.swapViews = true; if (renderPass) renderPass.camera = mainCamera();
+  if (rig.cu) rig.cu.d = Number(params.get("d") || 0.0065);
+  if (params.get("card") === "sit") { // the fly standing on the banana, the clock running for its fidgets, the physics frozen
+    S.freeze = true;
+    const B = life.fruits.banana.pos; flight.p = [B[0], B[1], B[2] + 0.0012]; flight.v = [0, 0, 0]; flight.w = [0, 0, 0];
+    const yaw = Number(params.get("yaw") || 0.6); flight.q = [Math.cos(yaw / 2), 0, 0, Math.sin(yaw / 2)];
+    life.mode = params.get("pose") || "grooming"; life.groomTarget = "head"; life.episode = 1e9; life.controls = { aL: 0, aR: 0, betaL: 0, betaR: 0, sL: 0, sR: 0, f: 0 };
+  }
+}
 window.__app = { S, life: () => life, flight: () => flight, scan: () => scan, setCam, setPilot, setSugar, worker, eye, renderer, rig, room };

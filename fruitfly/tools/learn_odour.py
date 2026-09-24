@@ -234,7 +234,7 @@ def run_fly(args) -> dict:
     cadence.learning.SCALE_CAP = args.scale_cap  # the magnitude a plastic synapse may not exceed (the library's default is 8)
     cfg = LearnerConfig(beta=args.beta, temperature=args.temperature, tolerance=args.tolerance, free_steps=args.free_steps, nudged_steps=args.nudged_steps)
     agent = FlyAgent(args.kind, args.seed, args.gain, args.plastic, cfg, args.budget, args.hops, args.min_count, args.backend)
-    ac = ActorCritic(agent.learner, agent.critic, ActorCriticConfig(gamma=args.gamma, lam=args.lam, eta=args.eta, eta_bias=0.0, eta_critic=args.eta_critic), seed=args.seed)
+    ac = ActorCritic(agent.learner, agent.critic, ActorCriticConfig(gamma=args.gamma, lam=args.lam, eta=0.0 if args.warm_critic else args.eta, eta_bias=0.0, eta_critic=args.eta_critic, dopamine_center=args.dopamine_center, critic_signal=args.critic_signal), seed=args.seed)
     if args.balance:
         print(f"[{args.kind} s{args.seed}] tonic drive on the avoidance cell: {agent.balance(args.balance_to):.3f} (naive approach {args.balance_to})", flush=True)
     print(f"[{args.kind} s{args.seed}] sub-net {agent.C.n} neurons, {agent.C.synapses} classes, plastic {int(agent.plastic.sum())} ({args.plastic}), gain {args.gain}, KC classes fruit/yeast/both/neither {[int((agent.kc_class[agent.kc] == c).sum()) for c in range(4)]}", flush=True)
@@ -251,6 +251,9 @@ def run_fly(args) -> dict:
         if args.swap_at and t == args.swap_at:
             arena.meaning, swapped_at = 1, t
             print(f"[{args.kind} s{args.seed}] the sugar moves to the {ODOURS[1]} source", flush=True)
+        if args.warm_critic and t == args.warm_critic:  # the critic has learned what a search is worth; now the actor moves
+            ac.config.eta = args.eta
+            print(f"[{args.kind} s{args.seed}] the critic is warm (value {report.get('value', float('nan')):.2f}); the synapses may move", flush=True)
         smelled = arena.smelled()
         if frozen:
             action = frozen_policy(obs)
@@ -319,12 +322,12 @@ def main() -> None:
     p.add_argument("--decisions", type=int, default=4000); p.add_argument("--batch", type=int, default=16); p.add_argument("--gain", type=float, default=None)
     p.add_argument("--plastic", default="kc>mbon", help="kc>mbon, mb or all"); p.add_argument("--budget", type=int, default=12000); p.add_argument("--hops", type=int, default=2); p.add_argument("--min-count", type=float, default=5.0); p.add_argument("--backend", default="torch")
     p.add_argument("--beta", type=float, default=0.1); p.add_argument("--temperature", type=float, default=0.05); p.add_argument("--tolerance", type=float, default=1e-3); p.add_argument("--free-steps", type=int, default=40); p.add_argument("--nudged-steps", type=int, default=20)
-    p.add_argument("--gamma", type=float, default=0.95); p.add_argument("--lam", type=float, default=0.9); p.add_argument("--eta", type=float, default=10.0); p.add_argument("--eta-critic", type=float, default=0.5)
+    p.add_argument("--gamma", type=float, default=0.95); p.add_argument("--lam", type=float, default=0.9); p.add_argument("--eta", type=float, default=10.0); p.add_argument("--eta-critic", type=float, default=0.5); p.add_argument("--dopamine-center", type=float, default=0.0, help=">0: the dopamine is the deviation of the error from its running mean (this forgetting factor)"); p.add_argument("--critic-signal", choices=["modulated", "td"], default="modulated"); p.add_argument("--warm-critic", type=int, default=0, help="decisions during which only the critic learns")
     p.add_argument("--scale-cap", type=float, default=3.0); p.add_argument("--balance", action="store_true", help="a declared tonic drive on the avoidance cell setting the naive approach probability"); p.add_argument("--balance-to", type=float, default=0.8); p.add_argument("--shaping", type=float, default=0.0); p.add_argument("--swap-at", type=int, default=0)
     p.add_argument("--eval", type=int, default=128); p.add_argument("--eval-batch", type=int, default=64); p.add_argument("--report", type=int, default=250)
-    p.add_argument("--task", choices=["tmaze", "valence", "steer"], default="tmaze"); p.add_argument("--hidden", type=int, default=32); p.add_argument("--mlp-lr", type=float, default=3e-3); p.add_argument("--checkpoint", default=""); p.add_argument("--out", default="")
+    p.add_argument("--task", choices=["tmaze", "valence", "steer"], default="tmaze"); p.add_argument("--empty-reward", type=float, default=0.0); p.add_argument("--step-cost", type=float, default=0.0); p.add_argument("--hidden", type=int, default=32); p.add_argument("--mlp-lr", type=float, default=3e-3); p.add_argument("--checkpoint", default=""); p.add_argument("--out", default="")
     args = p.parse_args()
-    args.arena = ArenaConfig(task=args.task, limit=40 if args.task == "tmaze" else 120)
+    args.arena = ArenaConfig(task=args.task, limit=40 if args.task == "tmaze" else 120, empty_reward=args.empty_reward, step_cost=args.step_cost)
     if args.gain is None:
         args.gain = float(json.loads((ROOT / "receipts" / "g3_instinct_facts.json").read_text())["body"]["connectome"]["gain"])
     result = run_mlp(args) if args.kind == "mlp" else run_fly(args)

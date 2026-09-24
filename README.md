@@ -17,7 +17,7 @@ parity test holds the two together. The pages are live on
 </tr>
 <tr>
 <td><a href="https://floatingpragma.io/cadence-examples/dozing-cat/"><img src="dozing-cat/screenshot.png" alt="The dozing cat: a belief patch chases a laser dot while a settling governor reads its surprise"></a><br><b>The dozing cat</b> · <a href="https://floatingpragma.io/cadence-examples/dozing-cat/">live</a> · <a href="dozing-cat/">source</a></td>
-<td><a href="https://floatingpragma.io/cadence-examples/fruitfly/"><img src="fruitfly/screenshot.png" alt="A fly in the Matrix: the whole nervous system of a fruit fly flying a body through a wireframe room"></a><br><b>A fly in the Matrix</b> · <a href="https://floatingpragma.io/cadence-examples/fruitfly/">live</a> · <a href="fruitfly/">source</a></td>
+<td><a href="https://floatingpragma.io/cadence-examples/fly-matrix/"><img src="fruitfly/screenshot.png" alt="A fly in the Matrix: the whole nervous system of a fruit fly flying a body through a wireframe room"></a><br><b>A fly in the Matrix</b> · <a href="https://floatingpragma.io/cadence-examples/fly-matrix/">live</a> · <a href="fruitfly/">source</a></td>
 </tr>
 </table>
 

@@ -49,6 +49,8 @@ class ArenaConfig:
     arm_floor: float = 0.3  # the odour concentration of the arm the fly faces at the junction (rising to one at its end)
     arm_other: float = 0.05  # the concentration of the other arm's odour, at the junction
     smell_floor: float = 0.02  # concentration below which nothing is smelled and the fly wanders
+    empty_reward: float = 0.0  # the outcome at the other source: 0 for nothing, -1 for quinine on it (the differential assay)
+    step_cost: float = 0.0  # the cost of every decision: hunger and effort, so a long search pays
     wander: float = 0.15  # rad, the standard deviation of the heading noise every decision (casting, declared)
 
     def to_dict(self) -> dict:
@@ -159,7 +161,7 @@ class Arena:
         empty = (np.linalg.norm(self.sources[:, 1 - self.meaning] - self.p, axis=1) < c.reach) & ~food
         timeout = (self.steps >= c.limit) & ~food & ~empty
         done = food | empty | timeout
-        reward = food.astype(float)
+        reward = food.astype(float) + c.empty_reward * empty.astype(float) - c.step_cost
         info = {"food": food, "empty": empty, "timeout": timeout, "steps": self.steps.copy(), "approach": approach, "smelled": self.smelled() if c.task != "valence" else k}
         for i in np.flatnonzero(done):
             self._new(i)
@@ -183,7 +185,7 @@ class Arena:
         empty = at_end & ~food
         timeout = (self.steps >= c.limit) & ~at_end
         done = food | empty | timeout
-        reward = food.astype(float)
+        reward = food.astype(float) + c.empty_reward * empty.astype(float) - c.step_cost
         info = {"food": food, "empty": empty, "timeout": timeout, "steps": self.steps.copy(), "approach": gain, "smelled": smelled}
         for i in np.flatnonzero(done):
             self._new(i)

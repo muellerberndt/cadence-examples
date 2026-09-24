@@ -29,9 +29,9 @@ output neurons, the site of the animal's olfactory memory. The same rule, wiring
 run in the browser (`web/learner.js`) and in the receipted experiment (`tools/learn_odour.py`,
 the T-maze of Tully and Quinn 1985) against shuffled, frozen and MLP controls.
 
-[![A fly in the Matrix: the green wireframe room, the nervous system drawn where it sits, the close-up and the compound-eye view](screenshot.png)](https://floatingpragma.io/cadence-examples/fruitfly/)
+[![A fly in the Matrix: the green wireframe room, the nervous system drawn where it sits, the close-up and the compound-eye view](screenshot.png)](https://floatingpragma.io/cadence-examples/fly-matrix/)
 
-Live page: [floatingpragma.io/cadence-examples/fruitfly](https://floatingpragma.io/cadence-examples/fruitfly/).
+Live page: [floatingpragma.io/cadence-examples/fly-matrix](https://floatingpragma.io/cadence-examples/fly-matrix/).
 The same page runs from this directory; see [Run](#run).
 
 ## Card
@@ -48,7 +48,7 @@ The same page runs from this directory; see [Run](#run).
   - In the rate model the antennal lobe is bistable: below a receptor level near 0.15 nothing reaches the Kenyon cells, above it the lobe ignites through its cholinergic local neurons and 22 to 57 percent of the Kenyon cells answer, almost all to every odour (cosine 0.98 between the codes of fruit and yeast at every gain; the animal's code is sparse and specific). Neuron adaptation does not sparsen it. The odour identity survives as a graded difference on about 180 Kenyon cells and as a naive preference of MBON05, and the lessons work on that residue.
   - Three traps of the readout were measured in pilots: at the worm's softmax temperature (0.05) two cells in [0, 1] make a certain choice and the nudge has nothing to push; balancing the pair at one half in an open field leaves a fly that avoids every smell and is never rewarded; and with approach paying half the time the rule first silences the avoidance cell for both smells before the value catches up. The arena is therefore the animal's T-maze, where avoiding one smell means taking the other.
   - A first design read the actions from descending neurons (DNa02 left and right, DNp09); inside the olfactory sub-net those neurons receive almost no lateralized odour input, so the wiring could not express a left-right policy. The actions are read from the mushroom body's own output neurons by Aso's transmitter rule.
-- **Hosted at:** https://floatingpragma.io/cadence-examples/fruitfly/
+- **Hosted at:** https://floatingpragma.io/cadence-examples/fly-matrix/
 - **Receipts and checks:** `fruitfly/fixtures/banc_888_manifest.json` (custody), `receipts/g2_reflex_facts.json` and `receipts/g2_reflex_loop.json` (the steering circuit), `receipts/g3_instinct_facts.json`, `receipts/subnet_closure.json`, `receipts/odour_code.json`, `receipts/g4_lessons.json` (the lessons against the controls), `receipts/g3b_ethogram.json`, `tests/parity.mjs` (the browser brain against the library, 4e-16), `tests/body.mjs` (the body's twins bit-identical over 71,000 steps), `tests/learner_smoke.mjs`. `node fruitfly/tests/parity.mjs && node fruitfly/tests/body.mjs && node fruitfly/tests/learner_smoke.mjs` from the repository root.
 - **Data and rights:** BANC release 888 (the Lee lab and the BANC community, CC BY): `meta.feather`, `edgelist_simple_v3.feather`, `neurotransmitter_prediction_v2.csv` from the public bucket, pinned by SHA-256 in `fruitfly/banc.py`. The ethogram's reference numbers and their sources are in `docs/REAL_FLY.md`.
 - **Work in progress:** the gate-4 receipt across seeds and controls; the ethogram against the real fly's numbers; a parity test of the browser learner against the library's actor-critic on recorded decisions; the optic lobe as a sense.
