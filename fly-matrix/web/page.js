@@ -36,6 +36,9 @@ const eye = createFlyEye(renderer, scene, { hide: [fly.group, fly.shadow, fly.lo
 const renderPass = composer.passes && composer.passes[0];
 // a rare glitch in the Matrix: the screen tears for a moment every so often, and the room's own elements jitter
 const glitch = new GlitchPass(); glitch.goWild = false; glitch.enabled = false; composer.addPass(glitch);
+// debug switches for the frame budget: ?nobloom=1 ?noscan=1 ?noviews=1 ?lines=60000 ?particles=40000 ?scanrate=2 (draw the brain every n-th frame)
+const DEBUG = { nobloom: !!params.get("nobloom"), noscan: !!params.get("noscan"), noviews: !!params.get("noviews"), scanrate: Number(params.get("scanrate") || 1) };
+if (DEBUG.nobloom) bloom.enabled = false;
 let nextGlitch = 12 + 30 * Math.random(), glitchLeft = 0;
 function glitches(dt) {
   nextGlitch -= dt;
@@ -87,7 +90,8 @@ fetch("./data/atlas.json").then((r) => r.json()).then((raw) => {
     r.color = [Math.round(255 * c.r), Math.round(255 * c.g), Math.round(255 * c.b)];
   });
   activation = new Float32Array(atlas.n);
-  scan = new BrainScan($("scan"), atlas, { style: params.get("style") === "scan" ? "scan" : "brain", labels: $("labels"), strip: $("strip"), shell: false, spin: true, spinRate: 0.06, montageRows: 9, restAlpha: 0.06, lineBudget: 200000, particleBudget: 150000, background: [0, 0.012, 0.004], hot: [0.85, 1.0, 0.88], cool: [0.2, 0.75, 0.45], exposure: 0.62, glow: 2.4, bloom: 0.9, labelTop: 4, labelCount: 5, heatDecay: 0.93, dpr: Number(params.get("dpr") || 1.25) });
+  if (DEBUG.noscan) { S.atlasReady = true; loadingStep("the nervous system is drawn", 0.6); return; }
+  scan = new BrainScan($("scan"), atlas, { style: params.get("style") === "scan" ? "scan" : "brain", labels: $("labels"), strip: $("strip"), shell: false, spin: true, spinRate: 0.06, montageRows: 9, restAlpha: 0.06, lineBudget: Number(params.get("lines") || 60000), particleBudget: Number(params.get("particles") || 40000), background: [0, 0.012, 0.004], hot: [0.85, 1.0, 0.88], cool: [0.2, 0.75, 0.45], exposure: 0.62, glow: 2.4, bloom: 0.9, labelTop: 4, labelCount: 5, heatDecay: 0.93, dpr: Number(params.get("dpr") || 1.25) });
   scan.set(activation);
   $("legend").innerHTML = atlas.regions.map((r) => `<span><i style="background:rgb(${r.color.join(",")})"></i>${r.name}</span>`).join("");
   S.atlasReady = true; loadingStep("the nervous system is drawn", 0.6);
@@ -321,11 +325,10 @@ function frame(now) {
   if (cam.aspect !== innerWidth / innerHeight) { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }
   glitches(dtWall);
   composer.render();
-  drawInset();
-  drawEye(now);
+  if (!DEBUG.noviews) { drawInset(); drawEye(now); }
   if (scan) {
     if (S.newState && now - S.lastScan > 33) { scan.step(activation, { draw: false }); S.newState = false; S.lastScan = now; }
-    scan.draw(now);
+    if (DEBUG.scanrate <= 1 || (S.frames % DEBUG.scanrate) === 0) scan.draw(now);
   }
   S.frames++; S.fpsClock += dtWall;
   if (S.fpsClock >= 1) { S.fps = S.frames / S.fpsClock; S.frames = 0; S.fpsClock = 0; window.__fps = S.fps; }
