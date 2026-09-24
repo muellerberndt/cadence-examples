@@ -282,7 +282,7 @@ function drawEye(now) { // the rect in CSS pixels from the bottom-left: three.js
   if (r.width < 8 || r.height < 8) return;
   eye.render(flight, Math.round(r.left), Math.round(innerHeight - r.bottom), Math.round(r.width), Math.round(r.height), now);
 }
-function setEyeMain(on) { S.eyeMain = on; $("eye").style.visibility = on ? "hidden" : ""; $("inset").style.visibility = on ? "hidden" : ""; }
+function setEyeMain(on) { S.eyeMain = on; $("eye").style.visibility = on ? "hidden" : ""; }  // the close-up stays in its corner: the fly and its view together
 
 // ---- the second view -----------------------------------------------------------------------------
 function drawInset() {
@@ -327,7 +327,7 @@ function frame(now) {
   if (cam.aspect !== innerWidth / innerHeight) { cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }
   glitches(dtWall);
   composer.render();
-  if (!DEBUG.noviews) { drawInset(); drawEye(now); }
+  if (!DEBUG.noviews) { if (S.eyeMain) { drawEye(now); drawInset(); } else { drawInset(); drawEye(now); } }
   if (scan) {
     if (S.newState && now - S.lastScan > 33) { scan.step(activation, { draw: false }); S.newState = false; S.lastScan = now; }
     if (DEBUG.scanrate <= 1 || (S.frames % DEBUG.scanrate) === 0) scan.draw(now);

@@ -33,12 +33,15 @@ def main() -> None:
         b = p.chromium.launch(headless=False, args=["--use-angle=metal", f"--window-size={args.w},{args.h}", "--window-position=0,0"])
         ctx = b.new_context(viewport={"width": args.w, "height": args.h}, device_scale_factor=1, record_video_dir=str(vdir), record_video_size={"width": args.w, "height": args.h})
         pg = ctx.new_page()
+        t_open = time.time()
         pg.goto(f"{args.url}?seed={args.seed}&dpr=1")
-        for _ in range(120):
+        for _ in range(240):
             if pg.evaluate("window.__app && window.__app.S && window.__app.S.ready"):
                 break
-            time.sleep(0.5)
+            time.sleep(0.25)
+        t_ready = time.time() - t_open + 1.2                  # the loading screen fades out over the next second
         t0 = time.time()
+        fly = "(() => { const l = window.__app.life(); if (l.mode !== 'flying') l.takeoff('the tour'); l.bout = 90; })()"  # airborne for a scene
         def until(t: float) -> None:
             while time.time() - t0 < t:
                 time.sleep(0.2)
@@ -46,9 +49,9 @@ def main() -> None:
         until(15)                                             # the whole page
         pg.click("#brain-big"); until(26)                     # the nervous system, every region labelled
         pg.click("#brain-big"); time.sleep(0.6)
-        pg.click("#inset"); until(40)                         # the close-up as the main view
+        pg.evaluate(fly); pg.click("#inset"); until(40)       # the close-up as the main view, the fly in flight
         pg.click("#inset"); time.sleep(0.4)
-        pg.evaluate("window.__app.setEyeMain(true)"); until(49)   # the compound eye as the whole screen
+        pg.evaluate(fly); pg.evaluate("window.__app.setEyeMain(true)"); until(49)   # the compound eye as the whole screen, in flight
         pg.evaluate("window.__app.setEyeMain(false); window.__app.setCam('room')"); until(55)
         pg.evaluate("window.__app.setCam('follow')")
         pg.evaluate(f"""() => {{ const d = document.createElement('div'); d.id = 'endcard';
@@ -61,7 +64,7 @@ def main() -> None:
         until(66)
         pg.close(); ctx.close(); time.sleep(1.0); b.close()   # the page first, so the screencast is flushed to its file
     webm = sorted(glob.glob(str(vdir / "*.webm")), key=os.path.getmtime)[-1]
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", webm, "-ss", "2.0", "-vf", f"fps=30,scale={args.w}:{args.h},fade=t=in:st=0:d=0.8,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-movflags", "+faststart", "-an", str(out)], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", webm, "-ss", f"{t_ready:.2f}", "-vf", f"fps=30,scale={args.w}:{args.h},fade=t=in:st=0:d=0.8,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-movflags", "+faststart", "-an", str(out)], check=True)
     probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration:stream=width,height,r_frame_rate", "-of", "default=nw=1", str(out)], capture_output=True, text=True).stdout.replace("\n", " ")
     print(f"{out}: {out.stat().st_size / 1e6:.1f} MB {probe}")
 
