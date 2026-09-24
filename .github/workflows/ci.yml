@@ -116,6 +116,6 @@ jobs:
           node-version: "22"
       - name: The browser brain against the library's settling, the body's twins, and the learner on the committed exports
         run: |
-          node fruitfly/tests/parity.mjs
-          node fruitfly/tests/body.mjs
-          node fruitfly/tests/learner_smoke.mjs
+          node fly-matrix/tests/parity.mjs
+          node fly-matrix/tests/body.mjs
+          node fly-matrix/tests/learner_smoke.mjs
