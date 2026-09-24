@@ -199,7 +199,7 @@ $("instruments").onclick = () => { const on = document.body.classList.toggle("in
 
 $("inset").addEventListener("click", () => { S.swapViews = !S.swapViews; if (renderPass) renderPass.camera = mainCamera(); $("inset-mode").textContent = S.swapViews ? "the room" : ""; });
 $("inset").addEventListener("wheel", (e) => { if (rig.closeupZoom) rig.closeupZoom(e.deltaY); e.preventDefault(); }, { passive: false });
-addEventListener("keydown", (e) => { if (e.key === "1") setCam("follow"); if (e.key === "2") setCam("room"); if (e.key === "3") setCam("eye"); if (e.key === " ") { e.preventDefault(); togglePause(); } if (e.key === "i") $("instruments").onclick(); if (e.key === "g") { const [w, x, y, z] = flight.q, c = cos_(-0.175), sn = sin_(-0.175); flight.q = [w * c - y * sn, x * c + z * sn, y * c + w * sn, z * c - x * sn]; flight.kick(0, -25, 0); if (life.mode !== "flying") life.takeoff("a gust"); life.log("a gust"); } });
+addEventListener("keydown", (e) => { if (e.key === "1") setCam("follow"); if (e.key === "2") setCam("room"); if (e.key === "3") setCam("eye"); if (e.key === " ") { e.preventDefault(); togglePause(); } if (e.key === "i") $("instruments").onclick(); if (e.key === "e") setEyeMain(!S.eyeMain); if (e.key === "g") { const [w, x, y, z] = flight.q, c = cos_(-0.175), sn = sin_(-0.175); flight.q = [w * c - y * sn, x * c + z * sn, y * c + w * sn, z * c - x * sn]; flight.kick(0, -25, 0); if (life.mode !== "flying") life.takeoff("a gust"); life.log("a gust"); } });
 
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h); composer.setSize(w, h); bloom.resolution.set(w / 2, h / 2); rig.camera.aspect = w / h; rig.camera.updateProjectionMatrix(); }
 addEventListener("resize", resize); resize();
@@ -276,11 +276,13 @@ function fillCard() {
 
 // ---- the fly's view ----------------------------------------------------------------------------------
 function drawEye(now) { // the rect in CSS pixels from the bottom-left: three.js applies the pixel ratio itself
+  if (S.eyeMain) { eye.render(flight, 0, 0, innerWidth, innerHeight, now); return; }  // the compound eye as the whole screen (key e)
   const box = $("eye"); if (!box) return;
   const r = box.getBoundingClientRect();
   if (r.width < 8 || r.height < 8) return;
   eye.render(flight, Math.round(r.left), Math.round(innerHeight - r.bottom), Math.round(r.width), Math.round(r.height), now);
 }
+function setEyeMain(on) { S.eyeMain = on; $("eye").style.visibility = on ? "hidden" : ""; $("inset").style.visibility = on ? "hidden" : ""; }
 
 // ---- the second view -----------------------------------------------------------------------------
 function drawInset() {
@@ -349,4 +351,4 @@ if (params.get("card")) {
     life.mode = params.get("pose") || "grooming"; life.groomTarget = "head"; life.episode = 1e9; life.controls = { aL: 0, aR: 0, betaL: 0, betaR: 0, sL: 0, sR: 0, f: 0 };
   }
 }
-window.__app = { S, life: () => life, flight: () => flight, scan: () => scan, setCam, setPilot, setSugar, worker, eye, renderer, rig, room };
+window.__app = { S, life: () => life, flight: () => flight, scan: () => scan, setCam, setPilot, setSugar, setEyeMain, worker, eye, renderer, rig, room };
