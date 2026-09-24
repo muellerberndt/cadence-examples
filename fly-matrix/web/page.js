@@ -24,6 +24,8 @@ let LESSONS = { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0,
 // ---- the room ------------------------------------------------------------------------------
 const canvas = $("world");
 const renderer = createRenderer(canvas);
+// the pixel ratio decides the cost of the bloom pass and of every extra view: 1.25 keeps a Retina laptop at a high frame rate (?dpr=2 for the full density)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, Number(params.get("dpr") || 1.25)));
 const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
 const world = new THREE.Group(); world.rotation.x = -Math.PI / 2; scene.add(world);
 const room = createRoom(world);
@@ -85,7 +87,7 @@ fetch("./data/atlas.json").then((r) => r.json()).then((raw) => {
     r.color = [Math.round(255 * c.r), Math.round(255 * c.g), Math.round(255 * c.b)];
   });
   activation = new Float32Array(atlas.n);
-  scan = new BrainScan($("scan"), atlas, { style: params.get("style") === "scan" ? "scan" : "brain", labels: $("labels"), strip: $("strip"), shell: false, spin: true, spinRate: 0.06, montageRows: 9, restAlpha: 0.06, lineBudget: 200000, particleBudget: 150000, background: [0, 0.012, 0.004], hot: [0.85, 1.0, 0.88], cool: [0.2, 0.75, 0.45], exposure: 0.62, glow: 2.4, bloom: 0.9, labelTop: 4, labelCount: 5, heatDecay: 0.93 });
+  scan = new BrainScan($("scan"), atlas, { style: params.get("style") === "scan" ? "scan" : "brain", labels: $("labels"), strip: $("strip"), shell: false, spin: true, spinRate: 0.06, montageRows: 9, restAlpha: 0.06, lineBudget: 200000, particleBudget: 150000, background: [0, 0.012, 0.004], hot: [0.85, 1.0, 0.88], cool: [0.2, 0.75, 0.45], exposure: 0.62, glow: 2.4, bloom: 0.9, labelTop: 4, labelCount: 5, heatDecay: 0.93, dpr: Number(params.get("dpr") || 1.25) });
   scan.set(activation);
   $("legend").innerHTML = atlas.regions.map((r) => `<span><i style="background:rgb(${r.color.join(",")})"></i>${r.name}</span>`).join("");
   S.atlasReady = true; loadingStep("the nervous system is drawn", 0.6);
@@ -269,18 +271,19 @@ function fillCard() {
 }
 
 // ---- the fly's view ----------------------------------------------------------------------------------
-function drawEye(now) {
+function drawEye(now) { // the rect in CSS pixels from the bottom-left: three.js applies the pixel ratio itself
   const box = $("eye"); if (!box) return;
-  const r = box.getBoundingClientRect(), dpr = renderer.getPixelRatio();
+  const r = box.getBoundingClientRect();
   if (r.width < 8 || r.height < 8) return;
-  eye.render(flight, Math.round(r.left * dpr), Math.round((innerHeight - r.bottom) * dpr), Math.round(r.width * dpr), Math.round(r.height * dpr), now);
+  eye.render(flight, Math.round(r.left), Math.round(innerHeight - r.bottom), Math.round(r.width), Math.round(r.height), now);
 }
 
 // ---- the second view -----------------------------------------------------------------------------
 function drawInset() {
   if (!ROOM.renderInset || !rig.closeup) return;
-  const box = $("inset"), r = box.getBoundingClientRect(), dpr = renderer.getPixelRatio();
-  const x = Math.round(r.left * dpr), y = Math.round((innerHeight - r.bottom) * dpr), w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+  const box = $("inset"), r = box.getBoundingClientRect();
+  const x = Math.round(r.left), y = Math.round(innerHeight - r.bottom), w = Math.round(r.width), h = Math.round(r.height);  // CSS pixels: three.js applies the pixel ratio
+  if (w < 8 || h < 8) return;
   const cam = insetCamera();
   if (cam.aspect !== r.width / r.height) { cam.aspect = r.width / r.height; cam.updateProjectionMatrix(); }
   ROOM.renderInset(renderer, scene, cam, x, y, w, h);

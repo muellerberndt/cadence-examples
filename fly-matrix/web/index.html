@@ -113,6 +113,7 @@
   .tools button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--soft);font:500 11px "IBM Plex Mono",monospace;padding:3px 8px;border-radius:7px;cursor:pointer}
   .tools button.on,.tools button:hover{background:rgba(57,255,106,.14);color:var(--ink)}
   .sugar{color:#ffe9a8}
+  @media (max-width:1500px){#status{width:560px;max-width:none;bottom:118px}#toolbar{max-width:580px}#hint{max-width:560px;bottom:200px}#eye{width:300px;height:212px;right:380px}#inset{width:340px;height:212px}}
   @media (max-height:900px){#brain canvas#scan{height:400px}#inset{width:340px;height:212px}#eye{width:300px;height:212px;right:380px}}
   @media (max-height:780px){#brain canvas#scan{height:300px}}
   @media (max-width:1100px){#brain{width:320px}#brain canvas#scan{height:360px}#inset{width:320px;height:200px}}
@@ -172,10 +173,11 @@
   <p id="card-senses"></p>
   <p id="card-claim"></p>
   <ul id="card-sources"></ul>
+  <p>The source, the experiments, their receipts and the parity tests that hold this page to the library: <a href="https://github.com/muellerberndt/cadence-examples/tree/main/fly-matrix" style="color:var(--matrix)">cadence-examples/fly-matrix</a>.</p>
 </div>
 
 <div id="loading"><div class="h1">A fly in the Matrix</div><div id="loading-text">loading the nervous system</div><div class="bar"><i id="loading-bar" style="width:0%"></i></div></div>
-<p id="credit">powered by <a href="https://github.com/muellerberndt/cadence"><b>Cadence</b></a> · made with <span style="color:#ff7850">♥</span> by <a href="https://floatingpragma.io">Pragma Research</a> · connectome: BANC release 888 (CC BY)</p>
+<p id="credit">powered by <a href="https://github.com/muellerberndt/cadence"><b>Cadence</b></a> · <a href="https://github.com/muellerberndt/cadence-examples/tree/main/fly-matrix">source, receipts and checks</a> · made with <span style="color:#ff7850">♥</span> by <a href="https://floatingpragma.io">Pragma Research</a> · connectome: BANC release 888 (CC BY)</p>
 
 <script type="module" src="./page.js"></script>
 </body>

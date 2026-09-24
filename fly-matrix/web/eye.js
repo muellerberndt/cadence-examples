@@ -38,7 +38,7 @@ export function createFlyEye(renderer, scene, options = {}) {
   const quadCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   const hidden = options.hide || [];
 
-  /** Render the fly's view into the pixel rect (x, y from the bottom-left, as WebGL counts). */
+  /** Render the fly's view into the rect (x, y from the bottom-left, in CSS pixels; three.js applies the pixel ratio). */
   function render(flight, x, y, w, h, now = 0) {
     const [px, py, pz] = flight.p, R = flight.rotation();
     const fwd = [R[0], R[3], R[6]], up = [R[2], R[5], R[8]];
@@ -58,8 +58,8 @@ export function createFlyEye(renderer, scene, options = {}) {
     renderer.clear(true, true, false);
     renderer.render(quadScene, quadCamera);
     renderer.setScissorTest(false);
-    const size = renderer.getSize(new THREE.Vector2()), dpr = renderer.getPixelRatio();
-    renderer.setViewport(0, 0, size.x * dpr, size.y * dpr);
+    const size = renderer.getSize(new THREE.Vector2());
+    renderer.setViewport(0, 0, size.x, size.y);
     renderer.autoClear = autoClear;
   }
   return { render, camera, target };

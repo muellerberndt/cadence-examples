@@ -1,6 +1,7 @@
 // Cadence brain scan: the standard whole-brain view.
 // Every neuron is a point, every synapse a line, laid out by the atlas the library exports.
-// Option `labelCount` (0: all) labels only the largest regions, for a small card.
+// Option `labelCount` (0: all) labels only the largest regions, for a small card; `dpr` caps the
+// device pixel ratio the canvases draw at (2 by default; 1 halves the cost of every pass twice over).
 // Options `hot` and `cool` (RGB in 0..1) recolour the glow of neurons that changed and of
 // inhibitory messages; a page in another palette (green on black, say) sets them with the
 // region colours of its atlas.
@@ -23,7 +24,7 @@
 // local density in three dimensions). `layoutAtlas({positions3: {'*': array}})` builds such
 // an atlas in the browser and the atlas exporter writes one; `decodeAtlas` reads both keys
 // when present, so every earlier payload still draws as before.
-export const VERSION = "cadence.brain-scan/v4.1";  // v4.1: the glow colours (`hot`, `cool`) are options
+export const VERSION = "cadence.brain-scan/v4.2";  // v4.1: the glow colours (`hot`, `cool`) are options; v4.2: `labelCount`, `dpr`
 
 const TYPES = { f4: Float32Array, f8: Float64Array, u4: Uint32Array, i4: Int32Array, u2: Uint16Array, i2: Int16Array, u1: Uint8Array, i1: Int8Array };
 const FIT = 0.94; // world span shown at zoom 1
@@ -533,7 +534,7 @@ void main(){
 export class BrainScan {
   constructor(canvas, atlas, options = {}) {
     this.canvas = canvas;
-    this.options = { style: "scan", particles: true, edges: true, field: true, glow: 2.2, heatDecay: 0.86, background: [0.03, 0.055, 0.085], hot: [1.0, 0.93, 0.78], cool: [0.45, 0.7, 1.0], mode: "activity", montageRows: 16, particleBudget: 300000, lineBudget: 400000, labelTop: 9, labelCount: 0, restAlpha: 0.025, bloom: 0.5, shell: true, spin: true, spinRate: 0.12, exposure: null, ...options };
+    this.options = { style: "scan", particles: true, edges: true, field: true, glow: 2.2, heatDecay: 0.86, background: [0.03, 0.055, 0.085], hot: [1.0, 0.93, 0.78], cool: [0.45, 0.7, 1.0], mode: "activity", montageRows: 16, particleBudget: 300000, lineBudget: 400000, labelTop: 9, labelCount: 0, dpr: 2, restAlpha: 0.025, bloom: 0.5, shell: true, spin: true, spinRate: 0.12, exposure: null, ...options };
     this.given = options; // the options the page set itself: a measured anatomy drops the shell unless the page asked for it
     this.brain = this.options.style === "brain";
     this.anatomical = false; // set by setAtlas: the atlas carries measured positions
@@ -1008,7 +1009,7 @@ export class BrainScan {
     this._drawLabels();
     this._drawStrip();
     if (!this.enabled) return this._drawFallback();
-    const gl = this.gl, r = this.canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    const gl = this.gl, r = this.canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, this.options.dpr || 2);
     const width = Math.max(1, Math.round(r.width * dpr)), height = Math.max(1, Math.round(r.height * dpr));
     if (!this.sized || this.canvas.width !== width || this.canvas.height !== height) {
       this.canvas.width = width; this.canvas.height = height; this.dirty = true; this.sized = true;
@@ -1305,7 +1306,7 @@ export class BrainScan {
   }
 
   _drawFallback() {
-    const ctx = this.ctx, r = this.canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    const ctx = this.ctx, r = this.canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, this.options.dpr || 2);
     this.canvas.width = Math.max(1, r.width * dpr); this.canvas.height = Math.max(1, r.height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const [bg0, bg1, bg2] = this.options.background.map((v) => Math.round(v * 255));
@@ -1370,7 +1371,7 @@ export class BrainScan {
 
   _drawStrip() {
     if (!this.strip) return;
-    const canvas = this.strip, r = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    const canvas = this.strip, r = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, this.options.dpr || 2);
     if (!r.width) return;
     canvas.width = r.width * dpr; canvas.height = r.height * dpr;
     const ctx = canvas.getContext("2d");
