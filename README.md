@@ -1,6 +1,6 @@
 # Cadence examples
 
-Five worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each is one directory
+Six worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each is one directory
 with its own README, its page, the receipts behind every number it states, and a check that
 recomputes them. Each page runs its brain in the browser with the arithmetic of the library, and a
 parity test holds the two together. The pages are live on
@@ -17,7 +17,7 @@ parity test holds the two together. The pages are live on
 </tr>
 <tr>
 <td><a href="https://floatingpragma.io/cadence-examples/dozing-cat/"><img src="dozing-cat/screenshot.png" alt="The dozing cat: a belief patch chases a laser dot while a settling governor reads its surprise"></a><br><b>The dozing cat</b> · <a href="https://floatingpragma.io/cadence-examples/dozing-cat/">live</a> · <a href="dozing-cat/">source</a></td>
-<td></td>
+<td><a href="https://floatingpragma.io/cadence-examples/fruitfly/"><img src="fruitfly/screenshot.png" alt="A fly in the Matrix: the whole nervous system of a fruit fly flying a body through a wireframe room"></a><br><b>A fly in the Matrix</b> · <a href="https://floatingpragma.io/cadence-examples/fruitfly/">live</a> · <a href="fruitfly/">source</a></td>
 </tr>
 </table>
 
@@ -29,11 +29,12 @@ Each example shows a different side of the same architecture.
 | [amen](amen/) | Creation: from silence it computes sixteen bars of drums, bass and texture, hearing each half-beat it plays | One `RecordPatchNet`: 128 context channels, 8,192 record cells | on held-out tracks, next drum slice 0.85 to 0.88 (most frequent slice 0.03 to 0.05), next bass note 0.41 to 0.64 (repeat previous 0.13 to 0.52), texture error 0.080 to 0.134 (repeat previous 0.099 to 0.173); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v12/receipt.json), [verify](amen/verify.py) |
 | [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
 | [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 simulations and 35-0-5 at 100; 36-0-4 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 6-1-13, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
+| [fruitfly](fruitfly/) | A whole nervous system as one brain: 150,802 neurons of an adult fruit fly wired as measured fly a body with physics; the physiology of the steering circuit and of the instincts measured against shuffled wirings; learning which smell means sugar at the mushroom body's own synapses, in the browser and in the animal's T-maze | `cadence.Brain` on the BANC connectome (1.86 million synapse classes), the library's actor-critic on the Kenyon-cell-to-MBON seam | 7 of 13 steering facts against 4, 3 and 0 shuffled; 7 of 14 instinct facts against 2; the browser brain reproduces the library to 4e-16 and the body's twins are bit-identical over 71,000 steps; the lessons' receipt is in progress | [receipts](fruitfly/receipts/), [parity](fruitfly/tests/parity.mjs), [body](fruitfly/tests/body.mjs) |
 | [dozing-cat](dozing-cat/) | Metacognition: a brain that reads its own surprise and returns its mode (doze, chase, learn), the governor a settling patch whose every synapse is a gene, selected against hand-set thresholds and a random search at a priced compute | One `BeliefPatch` (32 units, a 512-cell store left empty) and one `Brain` of 14 neurons as the governor | the evolved governor catches 0.961 of its dots awake 0.24 of the time at 15.3 moments per decision, against 0.977 at 37.3 hand-set, 0.931 for the thresholds and 0.249 for a cat that never wakes; the browser brain reproduces the library's decisions, imagination and learning to 4.8e-12 on the committed recording | [receipts](dozing-cat/receipts/), [parity](dozing-cat/tests/parity.mjs), [verify](dozing-cat/verify.py) |
 
 ## Build your own
 
-These five are starting points, and the best thing you can do with them is break them. Fork the
+These six are starting points, and the best thing you can do with them is break them. Fork the
 repository, change a rule, swap a sense, grow a different body, school a stronger player, train a
 composer on other music, wire two of the brains together, and see what the same few operations can be
 made to do. Every brain is short enough to read in an evening, every page runs from a static folder,
@@ -45,7 +46,22 @@ what the architecture does with a body, a sense or a task that nobody has put in
 that is what scales this work toward the full humanoid simulation. Hack things. Be crazy. Chaos is
 how we learn. The library is [Cadence](https://github.com/muellerberndt/cadence); open an issue or a
 pull request in either repository, and when your example carries a card (see
-[Contributing](#contributing)) it can live here beside these five.
+[Contributing](#contributing)) it can live here beside these six.
+
+## A fly in the Matrix
+
+The nervous system of an adult female fruit fly, brain and nerve cord wired as measured, is one
+`cadence.Brain` of 150,802 neurons. It flies a rigid body with stroke-averaged aerodynamics through
+a green wireframe room, the whole nervous system drawn at its soma positions with the settling
+live, the fly in permanent close-up, its compound eyes' view beside it. Two physiology gates hold
+the wiring to the literature against shuffled wirings; the wingbeat reflex, which rests on spike
+timing, is supplied and declared. The fly lives (bouts, saccades at the animal's rates, landings,
+grooming, feeding) and learns which smell means sugar: the mushroom body's own output neurons
+choose to approach or avoid a smell, and the library's actor-critic moves the Kenyon-cell-to-MBON
+synapses on sugar, on an empty fruit and on a blow, in the browser and in the animal's T-maze
+against shuffled, frozen and MLP controls. The antennal lobe's ignition in the rate model and what
+it leaves of the odour code are measured and stated. Details, receipts and what it does not do:
+[fruitfly/README.md](fruitfly/README.md).
 
 ## The dozing cat
 

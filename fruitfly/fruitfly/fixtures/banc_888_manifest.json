@@ -1,0 +1,43 @@
+{
+  "edges_in_release": 1990874,
+  "excluded_super_classes": [
+    "glia",
+    "not_a_neuron",
+    "trachea"
+  ],
+  "fixture": "banc_888_min5_v2.npz",
+  "fixture_sha256": "aace6a370571fd41ca00df698775a950c7634cf4682763f53252dca3c9065319",
+  "format": "cadence-fruitfly.banc-fixture/2",
+  "min_synapses": 5,
+  "neurons": 150802,
+  "neurons_in_release": 188508,
+  "sign_of": {
+    "acetylcholine": 1.0,
+    "dopamine": 0.0,
+    "gaba": -1.0,
+    "glutamate": -1.0,
+    "histamine": -1.0,
+    "octopamine": 0.0,
+    "serotonin": 0.0,
+    "tyramine": 0.0
+  },
+  "sources": {
+    "edges": {
+      "file": "banc_888_edgelist_simple_v3.feather",
+      "sha256": "8c296e946f3c69a8c7222f30ad75fa8a98eeb189124fec6df829c9125f4be64b",
+      "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_edgelist_simple_v3.feather"
+    },
+    "meta": {
+      "file": "banc_888_meta.feather",
+      "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+      "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather"
+    },
+    "transmitters": {
+      "file": "banc_888_neurotransmitter_prediction_v2.csv",
+      "sha256": "bb0f4afa48a05d90008c6d801e053ff2667fb1ba68e29501c92f49514540da1d",
+      "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_neurotransmitter_prediction_v2.csv"
+    }
+  },
+  "synapse_classes": 1861418,
+  "synapses": 23104740
+}

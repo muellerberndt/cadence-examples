@@ -1,0 +1,7 @@
+/data/
+/runs/
+__pycache__/
+*.pyc
+.DS_Store
+web/data/*.bin
+node_modules/

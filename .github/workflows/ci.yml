@@ -107,3 +107,15 @@ jobs:
           python dozing-cat/export.py --check
           python dozing-cat/tests/record_parity.py --data /tmp/dozing-cat/brain.json --out /tmp/dozing-cat/parity_cases.json
           node dozing-cat/tests/parity.mjs --data /tmp/dozing-cat/brain.json --cases /tmp/dozing-cat/parity_cases.json
+  fruitfly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: The browser brain against the library's settling, the body's twins, and the learner on the committed exports
+        run: |
+          node fruitfly/tests/parity.mjs
+          node fruitfly/tests/body.mjs
+          node fruitfly/tests/learner_smoke.mjs
