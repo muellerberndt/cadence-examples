@@ -17,7 +17,24 @@ from cadence import Brain, Connectome, NeuronModel
 
 from .banc import DEFAULT_ROOT, Neurons, load_fixture
 
-__all__ = ["FlyNet", "load_fly", "STEERING", "POWER", "TENSION", "WING_MUSCLES"]
+__all__ = ["FlyNet", "load_fly", "log_gain_for", "GAIN", "CLASS_LOG_GAIN", "STEERING", "POWER", "TENSION", "WING_MUSCLES"]
+
+# The dictionary's numbers. GAIN is the one global gain, selected on two physiology facts of the
+# steering circuit (tools/reflex.py, receipts/g2_reflex_facts.json). CLASS_LOG_GAIN is the gain of
+# one cell class relative to it, selected by protocol on the animal's facts about the code downstream
+# (tools/class_gains.py, receipts/class_gains.json): the antennal lobe's local neurons, whose mutual
+# excitation ignites the lobe at the global gain so that every odour makes the same Kenyon cell code.
+GAIN = 0.02
+CLASS_LOG_GAIN: dict[str, float] = {"ln": -3.0}
+
+
+def log_gain_for(connectome: Connectome, class_log_gain: dict[str, float] | None = None) -> np.ndarray:
+    """The per-neuron log gain of a connectome (the whole brain or a sub-net with its populations) from the class gains."""
+    gains = CLASS_LOG_GAIN if class_log_gain is None else class_log_gain
+    out = np.zeros(connectome.n)
+    for name, value in gains.items():
+        out[list(connectome.populations.get(name, ()))] = value
+    return out
 
 # Wing muscles by group, as the release names their motor neurons (cell_type).
 STEERING: tuple[str, ...] = ("b1", "b2", "b3", "i1", "i2", "iii1", "iii3", "iii4", "iv1", "iv2", "iv3", "iv4", "tp1", "tp2", "tpn")
@@ -101,6 +118,10 @@ def populations(neurons: Neurons) -> dict[str, tuple[int, ...]]:
     put("dan", np.flatnonzero(np.char.startswith(types, "PAM") | np.char.startswith(types, "PPL1")))
     put("apl", where(cell_type="APL"))
     put("pn", where(cell_class="antennal_lobe_projection_neuron"))
+    put("ln", where(cell_class="antennal_lobe_local_neuron"))
+    put("ln:acetylcholine", where(cell_class="antennal_lobe_local_neuron", neurotransmitter_predicted="acetylcholine"))
+    put("ln:gaba", where(cell_class="antennal_lobe_local_neuron", neurotransmitter_predicted="gaba"))
+    put("ln:glutamate", where(cell_class="antennal_lobe_local_neuron", neurotransmitter_predicted="glutamate"))
     put("orn", where(cell_class="olfactory_receptor_neuron"))
     detail = F["cell_function_detailed"].astype(str)
     orn_mask = F["cell_class"] == "olfactory_receptor_neuron"
@@ -138,8 +159,9 @@ class FlyNet:
     neurons: Neurons
     connectome: Connectome
 
-    def brain(self, gain: float = 0.02, *, backend: str = "cpu", **model: Any) -> Brain:
-        return Brain(self.connectome, NeuronModel(gain=gain, **model), backend=backend)
+    def brain(self, gain: float = GAIN, *, backend: str = "cpu", class_log_gain: dict[str, float] | None = None, **model: Any) -> Brain:
+        """The whole brain at the dictionary's gains: one global gain, and the class gains as per-neuron log gains."""
+        return Brain(self.connectome, NeuronModel(gain=gain, **model), log_gain=log_gain_for(self.connectome, class_log_gain), backend=backend)
 
     def side(self) -> np.ndarray:
         return self.neurons.fields["side"]

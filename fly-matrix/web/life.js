@@ -39,6 +39,8 @@ export const FEED_LEVEL = 0.2;          // MN9 activation that feeds when on sug
 export const GROOM_LEVEL = 0.15;        // aDN deviation that grooms when sitting
 export const ODOUR_DECISION_REACH = 0.06;  // m, the mushroom body decides once per search when the fly hovers within this of the fruit it is drawn to: there the antennal lobe of the rate model is in its odour state for either smell (below a receptor drive of about 0.4 it answers no odour, and between 0.6 and 0.8 the bread's code sits in a third state) and both output cells are inside their range
 export const HOVER_HEIGHT = 0.05;       // m above the fruit at which the drawn fly hovers until the decision
+export const DECISION_WAIT_S = 3;       // s of hovering after the brain was asked before the instinct lands anyway (a lost reply never leaves the fly hanging)
+export const SIT_MAX_S = 15;            // s, the longest sit: the exponential's tail at half speed looked like a freeze
 export const SMELL_FLOOR = 0.04;        // concentration at the head below which nothing is smelled
 export const ODOUR_TURN = Math.PI / 4;  // rad, the largest supplied turn toward or away from a smell per decision (the arena's)
 export const APPETITE = 0.2;            // hunger below which smells do not call
@@ -199,7 +201,8 @@ export class Life {
       }
       this.altitude = Math.min(H - 0.4, Math.max(0.3, this.altitude + (rng() - 0.5) * 2 * ALTITUDE_JITTER));
       this.bout -= DECISION_S;
-      if (this.bout <= 0) land = true;
+      const hovering = this.search && !this.search.landed && this.valence && this.valence.innate && useBrain;  // over the fruit, waiting for the brain
+      if (this.bout <= 0 && !hovering) land = true;
       // the brain layer overrides
       if (useBrain && this.baseline) {
         const asym = this.dev("dn:DNa02:right") - this.dev("dn:DNa02:left");
@@ -221,7 +224,8 @@ export class Life {
         if (this.valence.action === 0) {
           this.altitude = Math.max(F[2] + HOVER_HEIGHT, this.altitude - 0.25 * DECISION_S / 0.1 * 0.1);
           if (this.valence.innate && useBrain) speed = Math.max(0.05, Math.min(speed, dxy));  // slows to a hover over the fruit until the brain has decided
-          if (dxy < LAND_REACH && (!this.valence.innate || !useBrain)) { land = true; }
+          const waited = this.search.asked && this.clock - this.search.askedAt > DECISION_WAIT_S;  // no answer: the instinct lands
+          if (dxy < LAND_REACH && (!this.valence.innate || !useBrain || waited)) { land = true; }
         }
         else { this.altitude = Math.min(H - 0.4, this.altitude + 0.05); land = false; }
       }
@@ -239,7 +243,7 @@ export class Life {
     } else if (this.mode === "grooming" || this.mode === "feeding") {
       this.episode -= DECISION_S;
       if (useBrain && (this.readouts["gf"] || 0) > ESCAPE_LEVEL) { this.takeoff("escape takeoff"); return; }
-      if (this.episode <= 0) { this.mode = "landed"; this.sit = expo(rng, SIT_MEAN_S) * 0.5; this.log("sits"); }
+      if (this.episode <= 0) { this.mode = "landed"; this.sit = Math.min(SIT_MAX_S, expo(rng, SIT_MEAN_S)) * 0.5; this.log("sits"); }
     }
   }
 
@@ -275,7 +279,7 @@ export class Life {
     if (this.smelled !== this.search.fruit) { this.dropSearch(`the ${this.smelled} smells stronger than the ${this.search.fruit}`); return false; }
     const F = this.fruits[this.search.fruit].pos;
     if (Math.hypot(F[0] - this.flight.p[0], F[1] - this.flight.p[1]) >= ODOUR_DECISION_REACH) return false;
-    this.search.asked = true;
+    this.search.asked = true; this.search.askedAt = this.clock;
     return true;
   }
   /** A search that ends before the brain was asked: nothing to learn from, nothing queued. */
@@ -345,7 +349,7 @@ export class Life {
         p.heading = dxy > 0.05 ? Math.atan2(L[1] - f.p[1], L[0] - f.p[0]) : p.heading; p.speed = Math.max(0.05, Math.min(CRUISE, dxy));
         const settled = dxy < 0.03 && Math.abs(f.p[2] - (L[2] + RADIUS)) < 0.004 && f.speed() < 0.1;
         if (settled || f.landed || (this.wingsOff && f.touching > 0 && f.speed() < 0.02)) {
-          this.mode = "landed"; this.landing = null; this.landingFruit = null; this.sit = expo(this.rng, SIT_MEAN_S); this.fatigue = 0;
+          this.mode = "landed"; this.landing = null; this.landingFruit = null; this.sit = Math.min(SIT_MAX_S, expo(this.rng, SIT_MEAN_S)); this.fatigue = 0;
           this.perch = [f.p[0], f.p[1], settled ? L[2] : Math.max(0, f.p[2] - RADIUS)];
           this.hold();
           this.ethogram.landings++; this.ethogram.bouts.push(this.clock - this.ethogram.boutStart); this.ethogram.sitStart = this.clock;

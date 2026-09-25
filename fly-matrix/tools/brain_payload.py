@@ -52,11 +52,21 @@ def payload_of(brain: Any, *, members: np.ndarray | None = None, extra: dict | N
         "sign": _b64(sign.astype(np.int8) if integral_sign else sign), "sign_dtype": "int8" if integral_sign else "float64",
         "bias": _b64(np.asarray(brain.bias, dtype=np.float64)),
     }
-    # the two arrays the engine can derive are left out when it can (a brain without per-neuron gains, no lesson yet)
-    if np.any(np.asarray(brain.log_gain) != 0.0) or np.any(C.count > 65535):
+    # the arrays the engine can derive are left out when it can: a brain without per-neuron gains and no lesson yet
+    # carries neither; per-neuron gains travel as one number per neuron (log_gain), and only a count beyond
+    # uint16 forces the per-synapse factor gain * count * exp(log_gain[pre]) itself
+    log_gain = np.asarray(brain.log_gain, dtype=np.float64)
+    if np.any(C.count > 65535):
         arrays["gain_pre"] = _b64(gain_pre)  # the factor a synapse's efficacy is multiplied by: gain * count * exp(log_gain[pre])
-    if not np.array_equal(np.asarray(brain.efficacy, dtype=np.float64), sign):
-        arrays["efficacy"] = _b64(np.asarray(brain.efficacy, dtype=np.float64))  # signed, the connectome's sign until a lesson moves it
+    elif np.any(log_gain != 0.0):
+        arrays["log_gain"] = _b64(log_gain)  # per neuron: the engine composes gain * count * exp(log_gain[pre]) itself
+    efficacy = np.asarray(brain.efficacy, dtype=np.float64)
+    changed = np.flatnonzero(efficacy != sign)
+    if len(changed) and len(changed) * 3 < C.synapses:  # a few synapses off their sign (a naive seam, a checkpoint): index and value
+        arrays["efficacy_index"] = _b64(changed.astype(np.int32))
+        arrays["efficacy_value"] = _b64(efficacy[changed])
+    elif len(changed):
+        arrays["efficacy"] = _b64(efficacy)  # signed, the connectome's sign until a lesson moves it
     if members is not None:
         arrays["members"] = _b64(np.asarray(members, dtype=np.int32))
     return {

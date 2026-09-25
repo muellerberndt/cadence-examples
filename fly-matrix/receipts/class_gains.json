@@ -1,0 +1,647 @@
+{
+ "tool": "tools/class_gains.py",
+ "library": "0.15.0",
+ "fixture": "9bc04c96610916fd1cd9ad6a2e8aa11490ced3fbd60a07e91d12f2e226a8fda6",
+ "population": "ln",
+ "global_gain": 0.02,
+ "attenuations": [
+  0.0,
+  0.7,
+  1.4,
+  2.1,
+  3.0,
+  4.6
+ ],
+ "levels": {
+  "active": 0.5,
+  "inactive": 0.2,
+  "margin": 0.15,
+  "sparse_min": 0.02,
+  "sparse_max": 0.15,
+  "densify_margin": 0.05,
+  "specific_max": 0.25,
+  "code_level": 0.05
+ },
+ "brain": {
+  "neurons": 150802,
+  "classes": 1877099
+ },
+ "protocol": {
+  "stimuli": {
+   "fruit": [
+    "orn:decaying_fruit:left",
+    "orn:decaying_fruit:right"
+   ],
+   "yeast": [
+    "orn:yeasty:left",
+    "orn:yeasty:right"
+   ]
+  },
+  "training": [
+   [
+    "fruit",
+    "kc",
+    "sparse"
+   ],
+   [
+    "yeast",
+    "kc",
+    "sparse"
+   ],
+   [
+    "fruit",
+    "kc",
+    "specific",
+    "yeast"
+   ]
+  ],
+  "rows": [
+   {
+    "id": "fruit recruits a sparse Kenyon cell code",
+    "stimulus": "fruit",
+    "readout": "kc",
+    "predicate": "sparse",
+    "reference": "",
+    "ablate": [],
+    "relative_to": "",
+    "tier": "physiology",
+    "versus": ""
+   },
+   {
+    "id": "yeast recruits a sparse Kenyon cell code",
+    "stimulus": "yeast",
+    "readout": "kc",
+    "predicate": "sparse",
+    "reference": "",
+    "ablate": [],
+    "relative_to": "",
+    "tier": "physiology",
+    "versus": ""
+   },
+   {
+    "id": "the two codes are specific",
+    "stimulus": "fruit",
+    "readout": "kc",
+    "predicate": "specific",
+    "reference": "",
+    "ablate": [],
+    "relative_to": "",
+    "tier": "physiology",
+    "versus": "yeast"
+   }
+  ],
+  "levels": {
+   "active": 0.5,
+   "inactive": 0.2,
+   "margin": 0.15,
+   "sparse_min": 0.02,
+   "sparse_max": 0.15,
+   "densify_margin": 0.05,
+   "specific_max": 0.25,
+   "code_level": 0.05
+  },
+  "steps": 100,
+  "predicates": {
+   "active": "mean(readout) >= active_level",
+   "inactive": "mean(readout) <= inactive_level",
+   "reduced": "reference active; mean(readout) <= mean(reference) - margin",
+   "retained": "reference active; mean(readout) >= active_level",
+   "released": "reference inactive; mean(readout) >= mean(reference) + margin",
+   "exceeds": "mean(readout) >= active_level and mean(readout) >= mean(other) + margin",
+   "lateralized": "max(readout, other) >= inactive_level and |mean(readout) - mean(other)| >= margin",
+   "sparse": "fraction >= sparse_min; fraction(readout) <= sparse_max",
+   "densified": "reference sparse; fraction(readout) >= fraction(reference) + densify_margin",
+   "specific": "both codes non-empty at code_level; the readout's codes under stimulus and versus share at most specific_max of their union"
+  }
+ },
+ "wirings": {
+  "measured": {
+   "selected_attenuation": 3.0,
+   "selected_log_gain": -3.0,
+   "table": [
+    {
+     "gain": 0.0,
+     "facts_passed": 0,
+     "fraction_active": 0.010855293696370075,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.1314,
+      "yeast->kc": 0.145,
+      "fruit->kc vs yeast": 0.9261
+     }
+    },
+    {
+     "gain": 0.7,
+     "facts_passed": 0,
+     "fraction_active": 0.009747881327833849,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0946,
+      "yeast->kc": 0.124,
+      "fruit->kc vs yeast": 0.8257
+     }
+    },
+    {
+     "gain": 1.4,
+     "facts_passed": 0,
+     "fraction_active": 0.007884510815506425,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0477,
+      "yeast->kc": 0.0766,
+      "fruit->kc vs yeast": 0.5872
+     }
+    },
+    {
+     "gain": 2.1,
+     "facts_passed": 1,
+     "fraction_active": 0.006670999058367926,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0217,
+      "yeast->kc": 0.0441,
+      "fruit->kc vs yeast": 0.3852
+     }
+    },
+    {
+     "gain": 3.0,
+     "facts_passed": 3,
+     "fraction_active": 0.0051789764061484595,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0091,
+      "yeast->kc": 0.0278,
+      "fruit->kc vs yeast": 0.1277
+     }
+    },
+    {
+     "gain": 4.6,
+     "facts_passed": 3,
+     "fraction_active": 0.0048872030874922085,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0057,
+      "yeast->kc": 0.0196,
+      "fruit->kc vs yeast": 0.0641
+     }
+    }
+   ],
+   "score": {
+    "training": [
+     {
+      "stimulus": "fruit",
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "reading": {
+       "mean": 0.009147785822299328,
+       "fraction": 0.03559322033898305
+      },
+      "passed": true
+     },
+     {
+      "stimulus": "yeast",
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "reading": {
+       "mean": 0.027849391817426107,
+       "fraction": 0.10556900726392252
+      },
+      "passed": true
+     },
+     {
+      "stimulus": "fruit",
+      "readout": "kc",
+      "predicate": "specific",
+      "versus": "yeast",
+      "reading": {
+       "mean": 0.009147785822299328,
+       "fraction": 0.03559322033898305,
+       "code": 0.03559322033898305,
+       "shared": 0.1276595744680851
+      },
+      "passed": true
+     }
+    ],
+    "training_passed": 3,
+    "rows": [
+     {
+      "id": "fruit recruits a sparse Kenyon cell code",
+      "stimulus": "fruit",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.009147785822299328,
+       "fraction": 0.03559322033898305
+      },
+      "reference": {
+       "mean": 0.009147785822299328,
+       "fraction": 0.03559322033898305
+      },
+      "passed": true
+     },
+     {
+      "id": "yeast recruits a sparse Kenyon cell code",
+      "stimulus": "yeast",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.027849391817426107,
+       "fraction": 0.10556900726392252
+      },
+      "reference": {
+       "mean": 0.027849391817426107,
+       "fraction": 0.10556900726392252
+      },
+      "passed": true
+     },
+     {
+      "id": "the two codes are specific",
+      "stimulus": "fruit",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "specific",
+      "versus": "yeast",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.009147785822299328,
+       "fraction": 0.03559322033898305,
+       "code": 0.03559322033898305,
+       "shared": 0.1276595744680851
+      },
+      "reference": {
+       "mean": 0.027849391817426107,
+       "fraction": 0.10556900726392252,
+       "code": 0.10556900726392252
+      },
+      "passed": true
+     }
+    ],
+    "passed": 3,
+    "total": 3,
+    "passed_by_tier": {
+     "physiology": 3
+    }
+   }
+  },
+  "shuffled:1": {
+   "selected_attenuation": 0.0,
+   "selected_log_gain": -0.0,
+   "table": [
+    {
+     "gain": 0.0,
+     "facts_passed": 0,
+     "fraction_active": 0.0027320592565085343,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0002,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 0.7,
+     "facts_passed": 0,
+     "fraction_active": 0.002692271985782682,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0002,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 1.4,
+     "facts_passed": 0,
+     "fraction_active": 0.002692271985782682,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0002,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 2.1,
+     "facts_passed": 0,
+     "fraction_active": 0.002692271985782682,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0002,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 3.0,
+     "facts_passed": 0,
+     "fraction_active": 0.00268564077399504,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0002,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 4.6,
+     "facts_passed": 0,
+     "fraction_active": 0.00268564077399504,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0002,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    }
+   ],
+   "score": {
+    "training": [
+     {
+      "stimulus": "fruit",
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "reading": {
+       "mean": 0.00018083786261878455,
+       "fraction": 0.0007263922518159806
+      },
+      "passed": false
+     },
+     {
+      "stimulus": "yeast",
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "reading": {
+       "mean": 0.00010526691383733541,
+       "fraction": 0.00048426150121065375
+      },
+      "passed": false
+     },
+     {
+      "stimulus": "fruit",
+      "readout": "kc",
+      "predicate": "specific",
+      "versus": "yeast",
+      "reading": {
+       "mean": 0.00018083786261878455,
+       "fraction": 0.0007263922518159806,
+       "code": 0.0007263922518159806,
+       "shared": 0.0
+      },
+      "passed": false
+     }
+    ],
+    "training_passed": 0,
+    "rows": [
+     {
+      "id": "fruit recruits a sparse Kenyon cell code",
+      "stimulus": "fruit",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.00018083786261878455,
+       "fraction": 0.0007263922518159806
+      },
+      "reference": {
+       "mean": 0.00018083786261878455,
+       "fraction": 0.0007263922518159806
+      },
+      "passed": false
+     },
+     {
+      "id": "yeast recruits a sparse Kenyon cell code",
+      "stimulus": "yeast",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.00010526691383733541,
+       "fraction": 0.00048426150121065375
+      },
+      "reference": {
+       "mean": 0.00010526691383733541,
+       "fraction": 0.00048426150121065375
+      },
+      "passed": false
+     },
+     {
+      "id": "the two codes are specific",
+      "stimulus": "fruit",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "specific",
+      "versus": "yeast",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.00018083786261878455,
+       "fraction": 0.0007263922518159806,
+       "code": 0.0007263922518159806,
+       "shared": 0.0
+      },
+      "reference": {
+       "mean": 0.00010526691383733541,
+       "fraction": 0.00048426150121065375,
+       "code": 0.00048426150121065375
+      },
+      "passed": false
+     }
+    ],
+    "passed": 0,
+    "total": 3,
+    "passed_by_tier": {
+     "physiology": 0
+    }
+   }
+  },
+  "shuffled:2": {
+   "selected_attenuation": 0.0,
+   "selected_log_gain": -0.0,
+   "table": [
+    {
+     "gain": 0.0,
+     "facts_passed": 0,
+     "fraction_active": 0.0024668107850028516,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0001,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 0.7,
+     "facts_passed": 0,
+     "fraction_active": 0.0024535483614275674,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0001,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 1.4,
+     "facts_passed": 0,
+     "fraction_active": 0.0024535483614275674,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0001,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 2.1,
+     "facts_passed": 0,
+     "fraction_active": 0.0024535483614275674,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0001,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 3.0,
+     "facts_passed": 0,
+     "fraction_active": 0.0024535483614275674,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0001,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    },
+    {
+     "gain": 4.6,
+     "facts_passed": 0,
+     "fraction_active": 0.0024535483614275674,
+     "admissible": true,
+     "readings": {
+      "fruit->kc": 0.0001,
+      "yeast->kc": 0.0001,
+      "fruit->kc vs yeast": 0.0
+     }
+    }
+   ],
+   "score": {
+    "training": [
+     {
+      "stimulus": "fruit",
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "reading": {
+       "mean": 0.00010587294195998139,
+       "fraction": 0.00048426150121065375
+      },
+      "passed": false
+     },
+     {
+      "stimulus": "yeast",
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "reading": {
+       "mean": 0.00010881455499230392,
+       "fraction": 0.0007263922518159806
+      },
+      "passed": false
+     },
+     {
+      "stimulus": "fruit",
+      "readout": "kc",
+      "predicate": "specific",
+      "versus": "yeast",
+      "reading": {
+       "mean": 0.00010587294195998139,
+       "fraction": 0.00048426150121065375,
+       "code": 0.00048426150121065375,
+       "shared": 0.0
+      },
+      "passed": false
+     }
+    ],
+    "training_passed": 0,
+    "rows": [
+     {
+      "id": "fruit recruits a sparse Kenyon cell code",
+      "stimulus": "fruit",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.00010587294195998139,
+       "fraction": 0.00048426150121065375
+      },
+      "reference": {
+       "mean": 0.00010587294195998139,
+       "fraction": 0.00048426150121065375
+      },
+      "passed": false
+     },
+     {
+      "id": "yeast recruits a sparse Kenyon cell code",
+      "stimulus": "yeast",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "sparse",
+      "versus": "",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.00010881455499230392,
+       "fraction": 0.0007263922518159806
+      },
+      "reference": {
+       "mean": 0.00010881455499230392,
+       "fraction": 0.0007263922518159806
+      },
+      "passed": false
+     },
+     {
+      "id": "the two codes are specific",
+      "stimulus": "fruit",
+      "ablate": [],
+      "readout": "kc",
+      "predicate": "specific",
+      "versus": "yeast",
+      "tier": "physiology",
+      "reading": {
+       "mean": 0.00010587294195998139,
+       "fraction": 0.00048426150121065375,
+       "code": 0.00048426150121065375,
+       "shared": 0.0
+      },
+      "reference": {
+       "mean": 0.00010881455499230392,
+       "fraction": 0.0007263922518159806,
+       "code": 0.0007263922518159806
+      },
+      "passed": false
+     }
+    ],
+    "passed": 0,
+    "total": 3,
+    "passed_by_tier": {
+     "physiology": 0
+    }
+   }
+  }
+ }
+}

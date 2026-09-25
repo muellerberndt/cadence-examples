@@ -1,0 +1,359 @@
+{
+ "tool": "tools/tmaze.py",
+ "library": "0.15.0",
+ "fixture": "9bc04c96610916fd1cd9ad6a2e8aa11490ced3fbd60a07e91d12f2e226a8fda6",
+ "class_log_gain": {
+  "ln": -3.0
+ },
+ "outputs": [
+  "mbon:MBON11:right",
+  "mbon:MBON05:left"
+ ],
+ "subnet": {
+  "neurons": 12000,
+  "classes": 166869,
+  "budget": 12000,
+  "hops": 2,
+  "min_count": 5.0,
+  "seeds": [
+   "orn:decaying_fruit",
+   "orn:yeasty",
+   "orn:aversive",
+   "orn:fruity",
+   "pn",
+   "kc",
+   "apl",
+   "dan:pam",
+   "dan:ppl1",
+   "mbon",
+   "mbon:MBON11",
+   "mbon:MBON05"
+  ]
+ },
+ "constants": {
+  "eta": 1.0,
+  "eta_critic": 0.05,
+  "gamma": 0.95,
+  "lam": 0.9,
+  "temperature": 0.3,
+  "beta": 0.1,
+  "nudged_steps": 10,
+  "scale_cap": 3.0,
+  "seed": 3
+ },
+ "phases": [
+  {
+   "outcome": "sugar",
+   "odour": "first",
+   "trials": 4
+  },
+  {
+   "outcome": "blows",
+   "odour": "first",
+   "trials": 12
+  },
+  {
+   "outcome": "sugar",
+   "odour": "second",
+   "trials": 16
+  },
+  {
+   "outcome": "blows",
+   "odour": "first",
+   "trials": 6
+  }
+ ],
+ "wirings": {
+  "measured": {
+   "setup": {
+    "outputs": {
+     "mbon:MBON11:right": 3852,
+     "mbon:MBON05:left": 1467
+    },
+    "seam": {
+     "classes": 16795,
+     "synapses": 33441.0,
+     "coverage_pre": 0.8276029055690073,
+     "median_count": 1.0,
+     "classes_onto_outputs": {
+      "mbon:MBON11:right": 1079,
+      "mbon:MBON05:left": 336
+     }
+    },
+    "naive_seam": true,
+    "readout_target": 0.5,
+    "readout_bias": {
+     "mbon:MBON11:right": 1.602447509765625,
+     "mbon:MBON05:left": 1.383636474609375
+    },
+    "naive_outputs": {
+     "decaying_fruit": {
+      "mbon:MBON11:right": 0.2740715444087982,
+      "mbon:MBON05:left": 0.5159003734588623
+     },
+     "yeasty": {
+      "mbon:MBON11:right": 0.7259257435798645,
+      "mbon:MBON05:left": 0.48391759395599365
+     }
+    },
+    "decision_senses": {
+     "haltere:left": 0.5,
+     "haltere:right": 0.5,
+     "ocelli:left": 0.71,
+     "ocelli:right": 0.71,
+     "lptc:hs:left": 0.5,
+     "lptc:vs:left": 0.5,
+     "lptc:hs:right": 0.5,
+     "lptc:vs:right": 0.5
+    },
+    "other_level": 0.16
+   },
+   "directions": {
+    "fruit first": {
+     "trace": [
+      {
+       "phase": "naive",
+       "p_approach": [
+        0.3087231655182511,
+        0.6913333526682476
+       ]
+      },
+      {
+       "phase": "sugar at fruit x4",
+       "landed": 3,
+       "p_approach": [
+        0.7620127916281046,
+        0.8011672438915768
+       ]
+      },
+      {
+       "phase": "blows at fruit x12",
+       "landed": 5,
+       "p_approach": [
+        0.18824724019258576,
+        0.5954957053448819
+       ]
+      },
+      {
+       "phase": "sugar at yeast x16",
+       "landed": 14,
+       "p_approach": [
+        0.26722223386030397,
+        0.8542586164119871
+       ]
+      },
+      {
+       "phase": "blows at fruit x6",
+       "landed": 1,
+       "p_approach": [
+        0.17342695754486118,
+        0.8451415709780468
+       ]
+      }
+     ],
+     "final": {
+      "first": 0.17342695754486118,
+      "second": 0.8451415709780468
+     },
+     "reversed": true,
+     "seconds": 33.2
+    },
+    "yeast first": {
+     "trace": [
+      {
+       "phase": "naive",
+       "p_approach": [
+        0.30872322912033645,
+        0.6913334798595072
+       ]
+      },
+      {
+       "phase": "sugar at yeast x4",
+       "landed": 3,
+       "p_approach": [
+        0.3817334685097546,
+        0.8184863891202081
+       ]
+      },
+      {
+       "phase": "blows at yeast x12",
+       "landed": 7,
+       "p_approach": [
+        0.2261274680964385,
+        0.24629958520692408
+       ]
+      },
+      {
+       "phase": "sugar at fruit x16",
+       "landed": 10,
+       "p_approach": [
+        0.8618454670545435,
+        0.5827601193908712
+       ]
+      },
+      {
+       "phase": "blows at yeast x6",
+       "landed": 2,
+       "p_approach": [
+        0.8463583163654198,
+        0.36898236612112556
+       ]
+      }
+     ],
+     "final": {
+      "first": 0.36898236612112556,
+      "second": 0.8463583163654198
+     },
+     "reversed": true,
+     "seconds": 29.0
+    }
+   }
+  },
+  "shuffled:1": {
+   "setup": {
+    "outputs": {
+     "mbon:MBON11:right": 3852,
+     "mbon:MBON05:left": 1467
+    },
+    "seam": {
+     "classes": 2379,
+     "synapses": 7172.0,
+     "coverage_pre": 0.3990314769975787,
+     "median_count": 2.0,
+     "classes_onto_outputs": {
+      "mbon:MBON11:right": 138,
+      "mbon:MBON05:left": 43
+     }
+    },
+    "naive_seam": true,
+    "readout_target": 0.5,
+    "readout_bias": {
+     "mbon:MBON11:right": -5.999908447265625,
+     "mbon:MBON05:left": -5.999908447265625
+    },
+    "naive_outputs": {
+     "decaying_fruit": {
+      "mbon:MBON11:right": 1.0,
+      "mbon:MBON05:left": 1.0
+     },
+     "yeasty": {
+      "mbon:MBON11:right": 1.0,
+      "mbon:MBON05:left": 1.0
+     }
+    },
+    "decision_senses": {
+     "haltere:left": 0.5,
+     "haltere:right": 0.5,
+     "ocelli:left": 0.71,
+     "ocelli:right": 0.71,
+     "lptc:hs:left": 0.5,
+     "lptc:vs:left": 0.5,
+     "lptc:hs:right": 0.5,
+     "lptc:vs:right": 0.5
+    },
+    "other_level": 0.16
+   },
+   "directions": {
+    "fruit first": {
+     "trace": [
+      {
+       "phase": "naive",
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "sugar at fruit x4",
+       "landed": 2,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "blows at fruit x12",
+       "landed": 7,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "sugar at yeast x16",
+       "landed": 9,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "blows at fruit x6",
+       "landed": 2,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      }
+     ],
+     "final": {
+      "first": 0.5,
+      "second": 0.5
+     },
+     "reversed": false,
+     "seconds": 18.2
+    },
+    "yeast first": {
+     "trace": [
+      {
+       "phase": "naive",
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "sugar at yeast x4",
+       "landed": 2,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "blows at yeast x12",
+       "landed": 7,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "sugar at fruit x16",
+       "landed": 9,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "phase": "blows at yeast x6",
+       "landed": 2,
+       "p_approach": [
+        0.5,
+        0.5
+       ]
+      }
+     ],
+     "final": {
+      "first": 0.5,
+      "second": 0.5
+     },
+     "reversed": false,
+     "seconds": 17.9
+    }
+   }
+  }
+ },
+ "both_directions_reversed": true
+}

@@ -66,7 +66,15 @@ EXCLUDED_SUPER_CLASSES: Final = ("glia", "not_a_neuron", "trachea")
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT: Final = ROOT / "data" / "banc"
 MANIFEST_PATH: Final = Path(__file__).resolve().parent / "fixtures" / "banc_888_manifest.json"
-FIXTURE_NAME: Final = "banc_888_min5_v2.npz"
+FIXTURE_NAME: Final = "banc_888_min5_seam_v3.npz"
+# The seams kept at every count, whatever the floor: (a substring of the presynaptic cell type, a
+# prefix of the postsynaptic cell type). The Kenyon cell to mushroom body output neuron synapses are
+# the site of the animal's olfactory memory (Aso et al. 2014; Hige et al. 2015): each Kenyon cell
+# makes a few synapses on each output neuron of its compartment, so a floor of five synapses keeps
+# 1,114 of the 16,795 classes and 231 of the 1,079 onto MBON11 right, 14 of the 336 onto MBON05 left,
+# and what plasticity there could then express was measured to be nothing. A distributed memory is
+# many weak synapses; the floor that cuts noise elsewhere cuts the memory here.
+SEAMS: Final[tuple[tuple[str, str], ...]] = (("KC", "MBON"),)
 
 TEXT_FIELDS: Final = (
     "banc_888_id", "side", "region", "super_class", "cell_class", "cell_sub_class",
@@ -134,8 +142,12 @@ class Neurons:
         return np.flatnonzero(np.char.find(column.astype(str), needle) >= 0)
 
 
-def build_fixture(root: Path = DEFAULT_ROOT, *, min_synapses: int = MIN_SYNAPSES) -> Path:
-    """Derive the fixture from the pinned sources; returns its path and writes the manifest."""
+def build_fixture(root: Path = DEFAULT_ROOT, *, min_synapses: int = MIN_SYNAPSES, seams: tuple[tuple[str, str], ...] = SEAMS) -> Path:
+    """Derive the fixture from the pinned sources; returns its path and writes the manifest.
+
+    Classes below ``min_synapses`` are dropped, except those of a seam in ``seams``, which are kept
+    at any count (see ``SEAMS``).
+    """
     import pyarrow.feather as feather
 
     verify_sources(root)
@@ -152,7 +164,15 @@ def build_fixture(root: Path = DEFAULT_ROOT, *, min_synapses: int = MIN_SYNAPSES
     sign_by_neuron = np.array([SIGN_OF.get(t, 0.0) for t in nt], dtype=np.float32)
 
     edges = feather.read_table(root / SOURCES["edges"]["file"]).to_pandas()
-    edges = edges[edges["count"] >= min_synapses]
+    cell_type = kept["cell_type"].to_numpy().astype(str)
+    type_of = dict(zip(ids.tolist(), cell_type.tolist(), strict=True))
+    pre_type = edges["pre"].map(type_of).fillna("").to_numpy().astype(str)
+    post_type = edges["post"].map(type_of).fillna("").to_numpy().astype(str)
+    in_seam = np.zeros(len(edges), dtype=bool)
+    for pre_sub, post_prefix in seams:
+        in_seam |= (np.char.find(pre_type, pre_sub) >= 0) & np.char.startswith(post_type, post_prefix)
+    seam_classes = int(in_seam.sum())
+    edges = edges[(edges["count"] >= min_synapses) | in_seam]
     pre = edges["pre"].map(index_of)
     post = edges["post"].map(index_of)
     ok = pre.notna() & post.notna()
@@ -178,10 +198,12 @@ def build_fixture(root: Path = DEFAULT_ROOT, *, min_synapses: int = MIN_SYNAPSES
     np.savez_compressed(path, **arrays)
 
     manifest = {
-        "format": "cadence-fruitfly.banc-fixture/2",
+        "format": "cadence-fruitfly.banc-fixture/3",
         "fixture": FIXTURE_NAME,
         "fixture_sha256": _digest(path),
         "min_synapses": min_synapses,
+        "seams": [{"pre_cell_type_contains": a, "post_cell_type_starts_with": b} for a, b in seams],
+        "seam_classes": seam_classes,
         "excluded_super_classes": list(EXCLUDED_SUPER_CLASSES),
         "sign_of": SIGN_OF,
         "neurons": int(len(kept)),

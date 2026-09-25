@@ -28,8 +28,9 @@ write_payload(brain, "web/data/brain.json")     # or members=sub.members for a s
 | `arrays.row_ptr`, `arrays.pre` | the synapses by receiving neuron (CSR), senders in the library's order |
 | `arrays.weight` | the weight the library settles with: gain, count, sign and any per-neuron gain folded in |
 | `arrays.count`, `arrays.sign` | per synapse class (the sign as int8 when integral, `sign_dtype` says) |
-| `arrays.gain_pre` | the factor a synapse's efficacy is multiplied by, `gain * count * exp(log_gain[pre])`; left out when it is `gain * count` |
-| `arrays.efficacy` | the brain's signed efficacies; left out while they are the connectome's signs |
+| `arrays.log_gain` | one number per neuron, a gain per cell class the connectome's dictionary declares (`Brain(log_gain=...)`); left out when every neuron's is zero. The engine composes each synapse's factor `gain * count * exp(log_gain[pre])` from it |
+| `arrays.gain_pre` | that factor per synapse, written only when a count exceeds `uint16` |
+| `arrays.efficacy_index`, `arrays.efficacy_value` | the synapses whose efficacy is off the connectome's sign, as index and value (a seam started naive, a checkpoint); `arrays.efficacy` holds the whole array instead when more than a third differ; both left out while every efficacy is its sign |
 | `arrays.bias` | the constant input per neuron |
 | `arrays.members` | this brain's indices in a larger one, when it is a sub-net |
 

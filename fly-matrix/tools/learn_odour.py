@@ -45,6 +45,7 @@ from cadence.protocol import shuffled  # noqa: E402
 from fruitfly.arena import ACTIONS, ODOURS, Arena, ArenaConfig  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
 from fruitfly.brain import load_fly  # noqa: E402
+from fruitfly.lessons import setup_lessons  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
 
 SEEDS = ("orn:decaying_fruit", "orn:yeasty", "orn:aversive", "orn:fruity", "pn", "kc", "apl", "dan:pam", "dan:ppl1", "mbon", "mbon:MBON11", "mbon:MBON05")
@@ -89,7 +90,9 @@ class FlyAgent:
         sub = recruit(fly.connectome, budget=budget, hops=hops, min_count=min_count, seeds=SEEDS)
         C = sub.connectome if kind != "shuffled" else shuffled(sub.connectome, seed)
         self.sub, self.C, self.kind, self.fly = sub, C, kind, fly
-        self.brain = Brain(C, NeuronModel(gain=gain), backend=backend)
+        # the lesson's setup: the dictionary's class gains, the seam started naive, the two readouts calibrated (fruitfly/lessons.py)
+        self.setup = setup_lessons(C, backend=backend, gain=gain)
+        self.brain = self.setup.brain(C, backend=backend, gain=gain)
         P = C.populations
         for name in OUTPUTS:
             if len(P.get(name, ())) != 1:
@@ -113,7 +116,7 @@ class FlyAgent:
         self.critic = np.array(P["kc"])
         self.sense_sets = [[list(P[f"orn:{o}:{side}"]) for side in ("left", "right")] for o in ODOURS]
         self.amp = self.brain.neuron_model.stimulus_amplitude
-        self.summary = {"kind": kind, "seed": seed, "gain": gain, "plastic": plastic, "plastic_synapses": int(mask.sum()), "neurons": int(C.n), "synapse_classes": int(C.synapses), "outputs": list(OUTPUTS), "output_action": list(OUTPUT_ACTION),
+        self.summary = {"kind": kind, "seed": seed, "gain": gain, "plastic": plastic, "plastic_synapses": int(mask.sum()), "neurons": int(C.n), "synapse_classes": int(C.synapses), "outputs": list(OUTPUTS), "output_action": list(OUTPUT_ACTION), "setup": self.setup.report,
                         "output_ids": [int(sub.members[i]) for i in self.outputs], "actions": list(ACTIONS), "critic": "kc", "critic_neurons": int(len(self.critic)), "seeds": list(SEEDS), "budget": budget, "hops": hops, "min_count": min_count}
         self.kc_class = self.classify_kenyon_cells()
         self.tonic = 0.0

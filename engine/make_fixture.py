@@ -24,7 +24,9 @@ def main() -> None:
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     connectome = cd.layered(4, 24, 2, density=0.6, seed=args.seed)  # populations input, hidden, output
-    brain = cd.Brain(connectome, cd.learning_neuron_model(dt=1.0))
+    log_gain = np.zeros(connectome.n); log_gain[list(connectome.populations["hidden"])] = -0.3  # a gain per cell class, as a connectome's dictionary may declare
+    efficacy = np.array(connectome.sign, float); efficacy[[0, 5]] *= 0.7  # a few synapses off their sign, as a seam started naive has them
+    brain = cd.Brain(connectome, cd.learning_neuron_model(dt=1.0), log_gain=log_gain, efficacy=efficacy)
     write_payload(brain, out / "brain.json")
     settle_cases(brain, {"first pair": {"input": 0.6}, "half": {"output": 0.3}}, ["input", "hidden", "output"], steps=30, out=out / "cases.json")
     # a contextual bandit, one stream: action k pays in context k
@@ -38,7 +40,7 @@ def main() -> None:
     rewards, dones = [], []
     from cadence.plasticity import ActorCritic, ActorCriticConfig
     from engine.export import _Replay
-    probe = ActorCritic(cd.Learner(cd.Brain(connectome, cd.learning_neuron_model(dt=1.0)), connectome.populations["output"], learner.config, reciprocal=False), connectome.populations["hidden"], ActorCriticConfig(gamma=0.0, lam=0.0, eta=1.0, eta_critic=0.3), seed=args.seed)
+    probe = ActorCritic(cd.Learner(cd.Brain(connectome, cd.learning_neuron_model(dt=1.0), log_gain=log_gain, efficacy=efficacy), connectome.populations["output"], learner.config, reciprocal=False), connectome.populations["hidden"], ActorCriticConfig(gamma=0.0, lam=0.0, eta=1.0, eta_critic=0.3), seed=args.seed)
     probe.rng = _Replay(args.seed)
     amp = brain.neuron_model.stimulus_amplitude
     for t in range(args.decisions):

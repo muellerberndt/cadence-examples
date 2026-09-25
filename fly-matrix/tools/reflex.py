@@ -16,7 +16,7 @@ from cadence import Brain, NeuronModel  # noqa: E402
 from cadence.protocol import select_gain, shuffled  # noqa: E402
 from cadence.receipts import Receipt  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
-from fruitfly.brain import load_fly  # noqa: E402
+from fruitfly.brain import load_fly, log_gain_for  # noqa: E402
 from fruitfly.protocol import SOURCES, reflex_protocol  # noqa: E402
 
 GRID = (0.005, 0.0075, 0.01, 0.0125, 0.015, 0.02, 0.025, 0.03, 0.04)
@@ -24,8 +24,9 @@ GRID = (0.005, 0.0075, 0.01, 0.0125, 0.015, 0.02, 0.025, 0.03, 0.04)
 
 def run(connectome, protocol, label):
     t = time.time()
-    gain, table = select_gain(lambda g: Brain(connectome, NeuronModel(gain=g)), protocol, GRID, sparsity_cap=0.05)
-    score = protocol.score(Brain(connectome, NeuronModel(gain=gain)))
+    make = lambda g: Brain(connectome, NeuronModel(gain=g), log_gain=log_gain_for(connectome))  # the dictionary's class gains on the measured and the shuffled wiring alike
+    gain, table = select_gain(make, protocol, GRID, sparsity_cap=0.05)
+    score = protocol.score(make(gain))
     print(f"{label}: gain {gain}, training {score['training_passed']}/{len(score['training'])}, rows {score['passed']}/{score['total']} in {time.time()-t:.1f} s")
     for r in score["rows"]:
         print(f"   {r['id']} {'pass' if r['passed'] else 'FAIL'} {r['stimulus']} -> {r['readout']} {r['predicate']} mean {r['reading']['mean']:.3f} ref {r['reference']['mean']:.3f}")

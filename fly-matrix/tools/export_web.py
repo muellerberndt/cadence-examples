@@ -2,7 +2,11 @@
 """Export the flight sub-net for the browser and the parity cases that bind web/brain.js to cadence.
 
   web/data/brain.json    the sub-net: CSR by receiving neuron, weights, populations, member indices,
-                         the neuron model and the gain from the gate-2 receipt
+                         the neuron model and the gain from the gate-2 receipt, the dictionary's class
+                         gains (log_gain), the plastic seam started naive (efficacy) and the two
+                         readouts calibrated (bias): fruitfly/lessons.py
+  web/data/lessons.json  the lesson setup's report for the page
+  receipts/lessons_setup.json  the same, with the sub-net and the fixture it was made on
   tests/parity_cases.json  stimuli and the library's per-step readouts on the same sub-net
 """
 from __future__ import annotations
@@ -18,7 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from cadence import Brain, NeuronModel  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
-from fruitfly.brain import load_fly  # noqa: E402
+from fruitfly.brain import CLASS_LOG_GAIN, load_fly  # noqa: E402
+from fruitfly.lessons import setup_lessons  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
 
 sys.path.insert(0, str(ROOT / "tools"))
@@ -40,12 +45,20 @@ def main() -> None:
     sub = recruit(fly.connectome, budget=args.budget, hops=args.hops, min_count=args.min_count)
     C = sub.connectome
     model = NeuronModel(gain=gain)
-    brain = Brain(C, model)
+    setup = setup_lessons(C, gain=gain)
+    brain = setup.brain(C, gain=gain)
+    manifest = json.loads(MANIFEST_PATH.read_text())["fixture_sha256"]
     payload = payload_of(brain, members=sub.members, extra={
-        "manifest": json.loads(MANIFEST_PATH.read_text())["fixture_sha256"],
+        "manifest": manifest,
         "whole": {"neurons": int(fly.connectome.n), "edges": int(fly.connectome.synapses)},
         "recruitment": {"budget": args.budget, "hops": args.hops, "min_count": args.min_count, "hop_counts": np.bincount(sub.hops).tolist()},
+        "class_log_gain": CLASS_LOG_GAIN, "lessons_setup": setup.report,
     })
+    (ROOT / "receipts").mkdir(exist_ok=True)
+    (ROOT / "receipts" / "lessons_setup.json").write_text(json.dumps({"tool": "tools/export_web.py", "fixture": manifest, "gain": gain, "class_log_gain": CLASS_LOG_GAIN,
+        "subnet": {"neurons": int(C.n), "classes": int(C.synapses), "budget": args.budget, "hops": args.hops, "min_count": args.min_count}, **setup.report}, indent=1))
+    (ROOT / "web" / "data").mkdir(parents=True, exist_ok=True)
+    (ROOT / "web" / "data" / "lessons.json").write_text(json.dumps({"config": {}, "setup": setup.report}, indent=1))
     (ROOT / "web" / "data").mkdir(parents=True, exist_ok=True)
     out = ROOT / "web" / "data" / "brain.json"
     out.write_text(json.dumps(payload, separators=(",", ":")))
@@ -62,7 +75,8 @@ def main() -> None:
         cases.append({"name": name, "stimulus": stimulus, "readouts": readouts, "per_step_means": per_step, "final_active": int((state.activation[0] >= 0.5).sum())})
     (ROOT / "tests").mkdir(exist_ok=True)
     (ROOT / "tests" / "parity_cases.json").write_text(json.dumps({"gain": gain, "cases": cases}, indent=1))
-    print(f"sub-net {C.n} neurons, {C.synapses} synapse classes, gain {gain}; payload {out.stat().st_size/1e6:.1f} MB; parity cases {len(cases)}")
+    print(f"sub-net {C.n} neurons, {C.synapses} synapse classes, gain {gain}, class gains {CLASS_LOG_GAIN}; payload {out.stat().st_size/1e6:.1f} MB; parity cases {len(cases)}")
+    print("lesson setup:", json.dumps(setup.report["seam"]), json.dumps(setup.report["readout_bias"]), json.dumps(setup.report["naive_outputs"]))
 
 
 if __name__ == "__main__":

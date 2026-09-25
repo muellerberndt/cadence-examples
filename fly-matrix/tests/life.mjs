@@ -48,7 +48,7 @@ function move(room, life, name, xy) { const from = room.fruits[name].pos.slice()
 {
   const room = stubRoom(), B = room.fruits.banana.pos;
   const flight = new Flight([B[0] - 0.5, B[1], B[2] + 0.05], 0.0), life = new Life(flight, room, 7);
-  life.hunger = 0.8; life.senses(null, 0);
+  life.hunger = 0.8; life.bout = 100; life.senses(null, 0);
   if (life.smelled !== "banana") fail(`half a metre from the banana the fly smells ${life.smelled}`);
   if (life.odourTick()) fail("the brain was asked at the first whiff");
   if (!life.search || life.search.fruit !== "banana" || life.search.asked) fail(`no search opened at the first whiff: ${JSON.stringify(life.search)}`);
@@ -60,6 +60,10 @@ function move(room, life, name, xy) { const from = room.fruits[name].pos.slice()
   flight.p = [B[0] - 0.04, B[1], B[2] + 0.05]; life.senses(null, 0);
   if (!life.odourTick()) fail("the brain was not asked 4 cm from the fruit");
   if (life.odourTick()) fail("the brain was asked twice in one search");
+  // no answer from the brain: the instinct hovers for DECISION_WAIT_S (a bout ending meanwhile does not land it), then lands anyway
+  life.bout = 0.05; life.decide(true); if (life.landing) fail("the instinct landed before the decision wait had passed"); life.bout = 100;
+  life.clock += 3.5; life.decide(true); if (!life.landing) fail("the instinct did not land after waiting 3.5 s for the brain");
+  life.landing = null; life.landingFruit = null;
   life.applyDecision({ action: 1, p: [0.3, 0.7] });
   if (!life.valence || life.valence.action !== 1 || life.lastP.banana !== 0.3) fail(`the decision was not applied: ${JSON.stringify(life.valence)}`);
   life.decide(true); // the avoid steers away, no landing

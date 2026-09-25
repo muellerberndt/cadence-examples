@@ -1,16 +1,23 @@
 {
-  "edges_in_release": 1990874,
+  "edges_in_release": 2006555,
   "excluded_super_classes": [
     "glia",
     "not_a_neuron",
     "trachea"
   ],
-  "fixture": "banc_888_min5_v2.npz",
-  "fixture_sha256": "aace6a370571fd41ca00df698775a950c7634cf4682763f53252dca3c9065319",
-  "format": "cadence-fruitfly.banc-fixture/2",
+  "fixture": "banc_888_min5_seam_v3.npz",
+  "fixture_sha256": "9bc04c96610916fd1cd9ad6a2e8aa11490ced3fbd60a07e91d12f2e226a8fda6",
+  "format": "cadence-fruitfly.banc-fixture/3",
   "min_synapses": 5,
   "neurons": 150802,
   "neurons_in_release": 188508,
+  "seam_classes": 16795,
+  "seams": [
+    {
+      "post_cell_type_starts_with": "MBON",
+      "pre_cell_type_contains": "KC"
+    }
+  ],
   "sign_of": {
     "acetylcholine": 1.0,
     "dopamine": 0.0,
@@ -38,6 +45,6 @@
       "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_neurotransmitter_prediction_v2.csv"
     }
   },
-  "synapse_classes": 1861418,
-  "synapses": 23104740
+  "synapse_classes": 1877099,
+  "synapses": 23131051
 }

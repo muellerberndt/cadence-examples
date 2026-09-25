@@ -30,9 +30,19 @@ export class SettlingBrain {
     this.pre = decodeArray(payload.arrays.pre, Int32Array);
     this.w = decodeArray(payload.arrays.weight, Float64Array);
     this.count = payload.arrays.count ? decodeArray(payload.arrays.count, Uint16Array) : null;  // synapses per class
-    this.gainPre = payload.arrays.gain_pre ? decodeArray(payload.arrays.gain_pre, Float64Array) : null;  // weight = gainPre * efficacy
-    this.efficacy0 = payload.arrays.efficacy ? decodeArray(payload.arrays.efficacy, Float64Array) : null;  // the efficacies the brain was exported with (signed)
+    this.logGain = payload.arrays.log_gain ? decodeArray(payload.arrays.log_gain, Float64Array) : null;  // per neuron: a gain per cell class, selected by protocol
+    this.gainPre = payload.arrays.gain_pre ? decodeArray(payload.arrays.gain_pre, Float64Array) : null;  // weight = gainPre * efficacy, when the payload carries the factor itself
+    if (!this.gainPre && this.logGain) {  // the factor composed as the library does: gain * count * exp(log_gain[pre])
+      this.gainPre = new Float64Array(this.edges);
+      for (let e = 0; e < this.edges; e++) this.gainPre[e] = this.gain * (this.count ? this.count[e] : 1) * Math.exp(this.logGain[this.pre[e]]);
+    }
     this.sign = payload.arrays.sign ? decodeArray(payload.arrays.sign, payload.arrays.sign_dtype === "int8" ? Int8Array : Float64Array) : null;
+    this.efficacy0 = payload.arrays.efficacy ? decodeArray(payload.arrays.efficacy, Float64Array) : null;  // the efficacies the brain was exported with (signed)
+    if (!this.efficacy0 && payload.arrays.efficacy_index) {  // the few synapses off their sign, as index and value
+      this.efficacy0 = Float64Array.from(this.sign);
+      const idx = decodeArray(payload.arrays.efficacy_index, Int32Array), val = decodeArray(payload.arrays.efficacy_value, Float64Array);
+      for (let k = 0; k < idx.length; k++) this.efficacy0[idx[k]] = val[k];
+    }
     this.bias = payload.arrays.bias ? decodeArray(payload.arrays.bias, Float64Array) : new Float64Array(this.n);
     this.members = payload.arrays.members ? decodeArray(payload.arrays.members, Int32Array) : null;  // indices into a larger brain, when this is a sub-net
     this.sets = payload.populations || {};

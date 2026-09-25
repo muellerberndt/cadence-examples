@@ -1,0 +1,46 @@
+{
+ "config": {},
+ "setup": {
+  "outputs": {
+   "mbon:MBON11:right": 15595,
+   "mbon:MBON05:left": 8181
+  },
+  "seam": {
+   "classes": 16795,
+   "synapses": 33441.0,
+   "coverage_pre": 0.8276029055690073,
+   "median_count": 1.0,
+   "classes_onto_outputs": {
+    "mbon:MBON11:right": 1079,
+    "mbon:MBON05:left": 336
+   }
+  },
+  "naive_seam": true,
+  "readout_target": 0.5,
+  "readout_bias": {
+   "mbon:MBON11:right": 1.602264404296875,
+   "mbon:MBON05:left": 1.383453369140625
+  },
+  "naive_outputs": {
+   "decaying_fruit": {
+    "mbon:MBON11:right": 0.2733170004764227,
+    "mbon:MBON05:left": 0.515776502743463
+   },
+   "yeasty": {
+    "mbon:MBON11:right": 0.7267619137921206,
+    "mbon:MBON05:left": 0.4841338772744655
+   }
+  },
+  "decision_senses": {
+   "haltere:left": 0.5,
+   "haltere:right": 0.5,
+   "ocelli:left": 0.71,
+   "ocelli:right": 0.71,
+   "lptc:hs:left": 0.5,
+   "lptc:vs:left": 0.5,
+   "lptc:hs:right": 0.5,
+   "lptc:vs:right": 0.5
+  },
+  "other_level": 0.16
+ }
+}

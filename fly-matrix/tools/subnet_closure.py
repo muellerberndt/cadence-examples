@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from cadence import Brain, NeuronModel  # noqa: E402
 from cadence.receipts import Receipt  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
-from fruitfly.brain import load_fly  # noqa: E402
+from fruitfly.brain import load_fly, log_gain_for  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
 
 STIMULI = {"haltere_both": {"haltere:left": 0.5, "haltere:right": 0.5}, "wing_left": {"wing_sense:left": 1.0}, "ocelli": {"ocelli": 1.0}, "vs_left": {"lptc:vs:left": 1.0}, "hs_left": {"lptc:hs:left": 1.0},
@@ -31,7 +31,7 @@ def main() -> None:
     gain = float(json.loads((ROOT / "receipts" / "g2_reflex_facts.json").read_text())["body"]["connectome"]["gain"])
     fly = load_fly(); W = fly.connectome
     sub = recruit(W, budget=args.budget, hops=args.hops, min_count=args.min_count); S = sub.connectome
-    model = NeuronModel(gain=gain); whole, part = Brain(W, model), Brain(S, model)
+    model = NeuronModel(gain=gain); whole, part = Brain(W, model, log_gain=log_gain_for(W)), Brain(S, model, log_gain=log_gain_for(S))
     rows = []; worst_read = 0.0; worst_member = 0.0; worst_outsider = 0.0
     for name, stim in STIMULI.items():
         dw = np.zeros(W.n); ds = np.zeros(S.n)

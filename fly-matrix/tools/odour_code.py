@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from cadence import Brain, NeuronModel  # noqa: E402
 from cadence.learning import LearnerConfig  # noqa: E402
-from fruitfly.brain import load_fly  # noqa: E402
+from fruitfly.brain import load_fly, log_gain_for  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
 from tools.learn_odour import OUTPUTS, SEEDS  # noqa: E402
 
@@ -39,7 +39,7 @@ def main() -> None:
     sets = [[list(P[f"orn:{o}:{s}"]) for s in ("left", "right")] for o in ("decaying_fruit", "yeasty")]
     rows = []
     for gain in GAINS:
-        brain = Brain(C, NeuronModel(gain=gain), backend="torch")
+        brain = Brain(C, NeuronModel(gain=gain), log_gain=log_gain_for(C), backend="torch")
         for level in LEVELS:
             act = []
             for k in range(2):

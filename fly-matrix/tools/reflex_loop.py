@@ -31,7 +31,7 @@ from cadence.protocol import shuffled  # noqa: E402
 from cadence.receipts import Receipt  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
 from fruitfly.body import DT, Flight, HandPilot, hover_trim  # noqa: E402
-from fruitfly.brain import load_fly  # noqa: E402
+from fruitfly.brain import load_fly, log_gain_for  # noqa: E402
 from fruitfly.motor import GROUPS_PER_SIDE, wing_controls  # noqa: E402
 from fruitfly.senses import haltere_tone, ocelli_lr, optic_flow_drive  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
@@ -143,11 +143,11 @@ def main() -> None:
     gain = float(json.loads((ROOT / "receipts" / "g2_reflex_facts.json").read_text())["body"]["connectome"]["gain"])
     fly = load_fly(); sub = recruit(fly.connectome, budget=args.budget, hops=args.hops, min_count=args.min_count)
     model = NeuronModel(gain=gain)
-    measured = Brain(sub.connectome, model)
+    measured = Brain(sub.connectome, model, log_gain=log_gain_for(sub.connectome))
     conditions = [("open", None), ("hand", None), ("brain", BrainPilot(measured, sub)),
                   ("brain:no_vision", BrainPilot(measured, sub, vision=False)), ("brain:no_halteres", BrainPilot(measured, sub, halteres=False))]
     for seed in range(args.seeds):
-        conditions.append((f"shuffled:{seed}", BrainPilot(Brain(shuffled(sub.connectome, seed), model), sub)))
+        conditions.append((f"shuffled:{seed}", BrainPilot(Brain(shuffled(sub.connectome, seed), model, log_gain=log_gain_for(sub.connectome)), sub)))
     results = []
     for name, pilot in conditions:
         for brain_ms in (args.timescales if pilot is not None else [args.timescales[0]]):
