@@ -23,7 +23,9 @@ export const SIT_MEAN_S = 6;            // s, mean sit before a voluntary takeof
 export const GROOM_S = 2.5;             // s, a grooming episode (Mueller 2019: bouts of 0.15 to 2 s in longer events)
 export const FEED_S = 4;                // s, a feeding burst on the fruit
 export const WALL_MARGIN = 0.35;        // m, the fly turns away from a wall inside this band
-export const ODOUR_SIGMA = 0.5;         // m, the odour field's width
+export const ODOUR_SIGMA = 0.5;         // m, the faint plume's width: the smell is noticed from across the table
+export const ODOUR_CORE = 0.1;          // m, the core's width: at a fruit its own smell dominates the other's (25 cm away) by 5 to 1
+export const ODOUR_CORE_WEIGHT = 0.85;  // the core's share of the concentration at the source; one wide Gaussian put both smells near saturation at either fruit
 export const ODOUR_BASELINE = 0.05;     // m, the bilateral sampling baseline (declared, stands in for casting)
 export const ODOUR_COMPARISON = 1.5;    // drive per unit of log concentration ratio between the antennae
 export const HUNGER_RATE = 1 / 60;      // per s, hunger rises from fed to starved in a minute (compressed)
@@ -35,7 +37,8 @@ export const LAND_LEVEL = 0.15;         // DNp07/DNp10 deviation that asks for a
 export const ESCAPE_LEVEL = 0.5;        // giant fibre activation that fires an escape
 export const FEED_LEVEL = 0.2;          // MN9 activation that feeds when on sugar
 export const GROOM_LEVEL = 0.15;        // aDN deviation that grooms when sitting
-export const ODOUR_DECISION_S = 0.3;    // s of simulated time between odour decisions (approach or avoid the smell)
+export const ODOUR_DECISION_REACH = 0.06;  // m, the mushroom body decides once per search when the fly hovers within this of the fruit it is drawn to: there the antennal lobe of the rate model is in its odour state for either smell (below a receptor drive of about 0.4 it answers no odour, and between 0.6 and 0.8 the bread's code sits in a third state) and both output cells are inside their range
+export const HOVER_HEIGHT = 0.05;       // m above the fruit at which the drawn fly hovers until the decision
 export const SMELL_FLOOR = 0.04;        // concentration at the head below which nothing is smelled
 export const ODOUR_TURN = Math.PI / 4;  // rad, the largest supplied turn toward or away from a smell per decision (the arena's)
 export const APPETITE = 0.2;            // hunger below which smells do not call
@@ -88,10 +91,9 @@ export class Life {
     this.landingFruit = null;             // { name, dx, dy } while the descent is to a fruit: the target follows the fruit
     // the lessons: odour decisions, the search in progress, rewards and punishments
     this.smelled = null;                  // the fruit whose odour is strongest at the head, or null
-    this.smellC = 0;
-    this.odourClock = 0;                  // s since the last odour decision
-    this.valence = null;                  // the last decision: { fruit, action: 0 approach | 1 avoid, p }
-    this.search = null;                   // { since, fruit } while an odour search is open
+    this.smellC = 0; this.smellDrive = 0;   // the concentration at the head, and the receptor drive, of the fruit smelled most
+    this.valence = null;                  // what the fly does about the search's smell: { fruit, action: 0 approach | 1 avoid, p, innate }
+    this.search = null;                   // { since, fruit, asked, landed } while an odour search is open: one mushroom-body decision per search
     this.wantDecision = false;            // the page reads this at the brain tick and asks the worker
     this.pendingReward = null;            // { reward, done, why } for the page to hand to the worker
     this.reward = 0; this.punish = 0;     // s left of the dopaminergic display
@@ -125,7 +127,8 @@ export class Life {
   odour(source, sigma = ODOUR_SIGMA) {
     const [x, y, z] = this.flight.p, R = this.flight.rotation();
     const nl = [R[1], R[4], R[7]]; // the body's y axis (left) in the world
-    const at = (px, py, pz) => Math.exp(-((px - source[0]) ** 2 + (py - source[1]) ** 2 + (pz - source[2]) ** 2) / (2 * sigma * sigma));
+    // a narrow core in a wide faint plume: 1 at the source, 0.17 at the other fruit, 0.09 at half a metre, 0.02 at a metre
+    const at = (px, py, pz) => { const d2 = (px - source[0]) ** 2 + (py - source[1]) ** 2 + (pz - source[2]) ** 2; return ODOUR_CORE_WEIGHT * Math.exp(-d2 / (2 * ODOUR_CORE * ODOUR_CORE)) + (1 - ODOUR_CORE_WEIGHT) * Math.exp(-d2 / (2 * sigma * sigma)); };
     const c = at(x, y, z), cl = at(x + ODOUR_BASELINE * nl[0], y + ODOUR_BASELINE * nl[1], z + ODOUR_BASELINE * nl[2]), cr = at(x - ODOUR_BASELINE * nl[0], y - ODOUR_BASELINE * nl[1], z - ODOUR_BASELINE * nl[2]);
     const ratio = Math.log(cl + 1e-9) - Math.log(cr + 1e-9);
     const gain = 0.5 + this.hunger;      // hunger raises the olfactory drive (Root 2011: sNPF gates ORN sensitivity)
@@ -154,6 +157,7 @@ export class Life {
     // what is smelled most at the head
     const cb = banana.c, cr = bread.c;
     this.smellC = Math.max(cb, cr); this.smelled = this.smellC < SMELL_FLOOR ? null : (cb >= cr ? "banana" : "bread");
+    this.smellDrive = this.smelled ? Math.max((this.smelled === "banana" ? banana : bread).left, (this.smelled === "banana" ? banana : bread).right) : 0;
     const s = {
       "haltere:left": hl, "haltere:right": hr, "ocelli:left": ol, "ocelli:right": or_,
       "lptc:hs:left": opticFlowDrive(flow[0], flow[1], flow[2], "left"), "lptc:vs:left": opticFlowDrive(flow[0], flow[1], flow[2], "left"),
@@ -205,16 +209,20 @@ export class Life {
         if (this.dev("dn:landing") > LAND_LEVEL) land = true;
         if ((this.readouts["gf"] || 0) > ESCAPE_LEVEL) this.startEscape("the giant fibre fired");
       }
-      // the smell: the mushroom body's last decision steers the course toward or away from the fruit
-      // smelled most (the turn itself is supplied, as in the arena); an approached fruit is landed on.
-      // Without the brain the instinct layer approaches every smell it is hungry for and learns nothing.
-      if (!useBrain && this.smelled && this.hunger > APPETITE) this.valence = { fruit: this.smelled, action: 0, p: [1, 0], innate: true };
-      if (this.valence && this.smelled === this.valence.fruit && this.hunger > APPETITE) {
-        const F = this.fruits[this.smelled].pos, dxy = Math.hypot(F[0] - x, F[1] - y);
+      // the smell: the open search steers the course toward its fruit by instinct until the mushroom
+      // body has decided, then toward or away from it by that decision (the turn itself is supplied,
+      // as in the arena); an approached fruit is landed on. Without the brain the instinct layer
+      // approaches every smell it is hungry for and learns nothing.
+      if (this.search && this.valence && !this.search.landed && this.hunger > APPETITE) {
+        const F = this.fruits[this.valence.fruit].pos, dxy = Math.hypot(F[0] - x, F[1] - y);
         const bearing = wrap_(Math.atan2(F[1] - y, F[0] - x) - this.heading);
         const want = this.valence.action === 0 ? bearing : wrap_(bearing + Math.PI);
         turn = Math.max(-ODOUR_TURN, Math.min(ODOUR_TURN, want)) + (rng() - 0.5) * 0.3;
-        if (this.valence.action === 0) { this.altitude = Math.max(F[2] + 0.1, this.altitude - 0.25 * DECISION_S / 0.1 * 0.1); if (dxy < LAND_REACH) { land = true; } }
+        if (this.valence.action === 0) {
+          this.altitude = Math.max(F[2] + HOVER_HEIGHT, this.altitude - 0.25 * DECISION_S / 0.1 * 0.1);
+          if (this.valence.innate && useBrain) speed = Math.max(0.05, Math.min(speed, dxy));  // slows to a hover over the fruit until the brain has decided
+          if (dxy < LAND_REACH && (!this.valence.innate || !useBrain)) { land = true; }
+        }
         else { this.altitude = Math.min(H - 0.4, this.altitude + 0.05); land = false; }
       }
       this.heading = wrap_(this.heading + turn); this.speed = speed;
@@ -238,38 +246,60 @@ export class Life {
   chooseLanding() {
     const f = this.flight, t = this.room.table, [x, y] = f.p;
     const nearTable = x > t.x0 - 0.4 && x < t.x1 + 0.4 && y > t.y0 - 0.4 && y < t.y1 + 0.4;
-    const drawn = this.valence && this.valence.action === 0 && this.smelled === this.valence.fruit && this.hunger > APPETITE ? this.fruits[this.smelled] : null;
+    const drawn = this.search && !this.search.landed && this.valence && this.valence.action === 0 && this.hunger > APPETITE ? this.valence.fruit : null;
     this.landingFruit = null;
-    if (drawn) { this.landingFruit = { name: this.smelled, dx: (this.rng() - 0.5) * 0.03, dy: (this.rng() - 0.5) * 0.03 }; this.landing = this.landingPoint(); }
+    if (drawn) { this.landingFruit = { name: drawn, dx: (this.rng() - 0.5) * 0.03, dy: (this.rng() - 0.5) * 0.03 }; this.landing = this.landingPoint(); }
     else if (nearTable) { const lx = Math.min(t.x1 - 0.05, Math.max(t.x0 + 0.05, x)), ly = Math.min(t.y1 - 0.05, Math.max(t.y0 + 0.05, y)); this.landing = [lx, ly, this.room.surfaceZ ? this.room.surfaceZ(lx, ly) : t.z]; }
     else this.landing = [x, y, 0.0];
-    this.log(drawn ? `descends to the ${this.smelled}` : "descends to land");
+    this.log(drawn ? `descends to the ${drawn}` : "descends to land");
   }
   /** The landing spot on the fruit the descent is to, where the fruit stands now. */
   landingPoint() { const L = this.landingFruit, F = this.fruits[L.name].pos; return [F[0] + L.dx, F[1] + L.dy, F[2]]; }
 
   // ---- the lessons: what the page asks the worker, and what the outcome was ------------------
-  /** Called at every life decision: whether the brain should take an odour decision now. */
+  /** Called at every life decision: whether the brain should take the search's decision now.
+   *  A search opens when a hungry fly notices a smell; the instinct orients it toward the fruit; at
+   *  ODOUR_DECISION_LEVEL the mushroom body decides once, approach or avoid (the T-maze's one choice
+   *  per trial: a decision every 0.3 s mixed the eligibility of approach and avoid nudges along one
+   *  flight, and sugar then taught whichever nudge was larger); the outcome ends the search. */
   odourTick() {
-    this.odourClock += DECISION_S;
-    if (this.search && this.clock - this.search.since > EPISODE_S) this.closeSearch(0, "the search ran out of time");
-    if (this.mode !== "flying" || this.escape > 0 || !this.smelled || this.hunger <= APPETITE) return false;
-    if (this.odourClock < ODOUR_DECISION_S) return false;
-    this.odourClock = 0;
-    if (!this.search) { this.search = { since: this.clock, fruit: this.smelled }; this.log(`smells the ${this.smelled}`); }
+    const S = this.search;
+    if (S && !S.landed) {
+      if (this.clock - S.since > EPISODE_S) { this.closeSearch(0, `the search for the ${S.fruit} ran out of time`); return false; }
+      if (S.asked && this.valence && this.valence.action === 1 && this.smellC < SMELL_FLOOR) { this.closeSearch(0, `avoided the ${S.fruit}`); return false; }
+    }
+    if (this.mode !== "flying" || this.escape > 0 || this.hunger <= APPETITE) return false;
+    if (!this.smelled) { if (S && !S.asked) this.dropSearch(`lost the ${S.fruit}`); return false; }
+    if (!this.search) { this.search = { since: this.clock, fruit: this.smelled, asked: false, landed: null }; this.valence = { fruit: this.smelled, action: 0, p: null, innate: true }; this.log(`smells the ${this.smelled}`); return false; }
+    if (this.search.landed || this.search.asked) return false;
+    if (this.smelled !== this.search.fruit) { this.dropSearch(`the ${this.smelled} smells stronger than the ${this.search.fruit}`); return false; }
+    const F = this.fruits[this.search.fruit].pos;
+    if (Math.hypot(F[0] - this.flight.p[0], F[1] - this.flight.p[1]) >= ODOUR_DECISION_REACH) return false;
+    this.search.asked = true;
     return true;
   }
-  /** The worker's decision for the odour smelled at the last tick. */
+  /** A search that ends before the brain was asked: nothing to learn from, nothing queued. */
+  dropSearch(why) { this.search = null; this.valence = null; this.log(why); }
+  /** The worker's decision for the open search. */
   applyDecision(d) {
-    if (!d || !this.smelled) return;
-    this.valence = { fruit: this.smelled, action: d.action, p: d.p };
-    this.lastP[this.smelled] = d.p[0];
-    if (this.search) this.search.decisions = (this.search.decisions || 0) + 1;
+    if (!d || !this.search || this.search.landed) return;
+    const fruit = this.search.fruit;
+    this.valence = { fruit, action: d.action, p: d.p }; this.search.action = d.action;
+    this.lastP[fruit] = d.p[0];
+    this.log(`${d.action === 0 ? "approaches" : "avoids"} the ${fruit} (${(100 * d.p[0]).toFixed(0)} % for approach)`);
   }
-  /** The outcome that ends a search: sugar (+1), an empty fruit (0), a blow (-1); queued for the worker. */
-  closeSearch(reward, why) {
-    if (!this.search) return;
-    this.pendingReward = { reward, done: true, why };
+  /** The outcome that ends a search: sugar (+1), an empty fruit (0), a blow (-1); queued for the worker.
+   *  A search that reaches a fruit without sugar stays open while the fly sits there (search.landed): it
+   *  ends with nothing when the fly leaves, or with a blow. Closing it at the landing cleared the
+   *  learner's eligibility before a blow could arrive, and the blow taught nothing. */
+  closeSearch(reward, why) { if (this.search) this.outcome(reward, why); }
+  /** An outcome at a fruit, search or no search. With no approach decision about that fruit to credit
+   *  (no search open: the fly came to the fruit by chance, or fed there already; or the search was for
+   *  the other fruit, or it had decided to avoid) it is marked fresh: the page then asks the brain for
+   *  the approach decision the outcome is credited to, before handing the outcome over. */
+  outcome(reward, why, on = null) {
+    const S = this.search, fresh = !S || !S.asked || (on !== null && (S.action !== 0 || S.fruit !== on));  // an outcome at a fruit needs the approach decision about that fruit; a search ending on its own is credited to its decision
+    this.pendingReward = { reward, done: true, why, fresh };
     this.search = null; this.valence = null;
     if (reward > 0) this.reward = DOPAMINE_S; if (reward < 0) this.punish = DOPAMINE_S;
   }
@@ -278,8 +308,7 @@ export class Life {
     const near = this.onWhich || this.fruitAt(this.flight.p, 0.2) || (this.smelled && this.smellC > 0.3 ? this.smelled : null);
     if (!near) return false;
     this.visits.punished++;
-    if (!this.search) this.search = { since: this.clock, fruit: near };
-    this.closeSearch(-1, `struck at the ${near}`);
+    this.outcome(-1, `struck at the ${near}`, near);
     this.log(`struck at the ${near}`);
     return true;
   }
@@ -296,7 +325,7 @@ export class Life {
     f.p = [P[0], P[1], P[2] + RADIUS]; f.v = [0, 0, 0]; f.w = [0, 0, 0]; f.q = [Math.cos(yaw / 2), 0, 0, Math.sin(yaw / 2)];
     f.landed = true; f.touching = 1; f.onFloor = P[2] < 0.001;
   }
-  takeoff(why) { this.perch = null; if (this.ethogram.sitStart !== null) { this.ethogram.sits.push(this.clock - this.ethogram.sitStart); this.ethogram.sitStart = null; } this.ethogram.boutStart = this.clock; this.takeoffAt = this.clock; this.mode = "flying"; this.wingsOff = false; this.landing = null; this.landingFruit = null; this.bout = expo(this.rng, BOUT_MEAN_S); this.altitude = Math.max(0.6, this.flight.p[2] + 0.4); this.speed = CRUISE; this.heading = this.flight.euler()[2]; this.flight.v[2] += 0.28; this.log(why); }
+  takeoff(why) { if (this.search && this.search.landed) this.closeSearch(0, `left the ${this.search.landed} with nothing`); this.perch = null; if (this.ethogram.sitStart !== null) { this.ethogram.sits.push(this.clock - this.ethogram.sitStart); this.ethogram.sitStart = null; } this.ethogram.boutStart = this.clock; this.takeoffAt = this.clock; this.mode = "flying"; this.wingsOff = false; this.landing = null; this.landingFruit = null; this.bout = expo(this.rng, BOUT_MEAN_S); this.altitude = Math.max(0.6, this.flight.p[2] + 0.4); this.speed = CRUISE; this.heading = this.flight.euler()[2]; this.flight.v[2] += 0.28; this.log(why); }
 
   // ---- every physics step: the course into the pilot, the pilot into the wings ---------------
   step(dt) {
@@ -321,7 +350,7 @@ export class Life {
           this.hold();
           this.ethogram.landings++; this.ethogram.bouts.push(this.clock - this.ethogram.boutStart); this.ethogram.sitStart = this.clock;
           const on = this.fruitAt(f.p);
-          if (on) { this.visits[on]++; if (on === this.sugar) { this.visits.sweet++; this.log(`lands on the ${on}: sugar`); this.closeSearch(1, `sugar on the ${on}`); } else { this.log(`lands on the ${on}: nothing`); this.closeSearch(0, `nothing on the ${on}`); } }
+          if (on) { this.visits[on]++; if (on === this.sugar) { this.visits.sweet++; this.log(`lands on the ${on}: sugar`); this.outcome(1, `sugar on the ${on}`, on); } else { this.log(`lands on the ${on}: nothing`); if (this.search) { this.search.landed = on; this.valence = null; } } }
           else this.log("lands");
         }
       } else {

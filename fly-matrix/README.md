@@ -18,16 +18,19 @@ hand-written inner loop, the way the worm's undulation is supplied. The brain do
 wiring carries at the timescale of a rate model: looming to the giant fibre and escape, sugar to
 the proboscis, odour through the mushroom body to a choice, landing, grooming, and learning.
 
-The lessons are the mushroom body's. Every 0.3 s in a smell the brain decides whether to
-approach it or to avoid it: a softmax over two mushroom body output neurons of declared valence,
-MBON11 (γ1pedc>α/β, GABAergic, approach) and MBON05 (γ4>γ1γ2, glutamatergic, avoidance), by the
-transmitter rule of Aso et al. 2014. The turn toward or away from the smell is supplied. Sugar
-where the fly lands is a reward of one, an empty fruit nothing, a blow minus one; the library's
-actor-critic (eligibility traces on the nudged contrast, dopamine as the temporal-difference
-error, a critic on the Kenyon cells) moves the synapses from Kenyon cells onto the mushroom body
-output neurons, the site of the animal's olfactory memory. The same rule, wiring and constants
-run in the browser (`web/learner.js`) and in the receipted experiment (`tools/learn_odour.py`,
-the T-maze of Tully and Quinn 1985) against shuffled, frozen and MLP controls.
+The lessons are the mushroom body's. A hungry fly that notices a smell turns toward it by
+instinct and hovers over the fruit; there, once per search, the brain decides whether to land on
+it or to leave it: a softmax over two mushroom body output neurons of declared valence, MBON11 (γ1pedc>α/β, GABAergic, approach) and MBON05
+(γ4>γ1γ2, glutamatergic, avoidance), by the transmitter rule of Aso et al. 2014. The turn toward
+or away from the smell is supplied. Each fruit's smell is a narrow core in a faint wide plume, so
+at a fruit its own smell dominates the other's five to one. Sugar where the fly lands is a reward
+of one, an empty fruit nothing when the fly leaves it, a blow while it sits there minus one; the
+library's actor-critic (eligibility traces on the nudged contrast, dopamine as the
+temporal-difference error, a critic on the Kenyon cells) moves the synapses from Kenyon cells onto
+the mushroom body output neurons, the site of the animal's olfactory memory. The same rule and
+wiring run in the browser (`web/learner.js`) and in the receipted experiment
+(`tools/learn_odour.py`, the T-maze of Tully and Quinn 1985) against shuffled, frozen and MLP
+controls; the page's constants are the ones `web/page.js` declares.
 
 [![A fly in the Matrix: the green wireframe room, the nervous system drawn where it sits, the close-up and the compound-eye view](screenshot.png)](https://floatingpragma.io/cadence-examples/fly-matrix/)
 
@@ -111,7 +114,8 @@ $PY tools/export_web.py && node tests/parity.mjs && $PY tools/subnet_closure.py
 $PY tools/export_atlas.py            # every neuron at its position, for the page
 node tests/body.mjs                  # the body's parity and invariants
 node tests/learner_smoke.mjs         # the browser learner on the page's payload
-node tests/life.mjs                  # the fly's life follows the fruits the visitor moves
+node tests/life.mjs                  # the fly's life: fruits the visitor moves, one decision per search, outcomes
+$PY tools/reversal_scenario.py       # the visitor's reversal on the real page in a headless browser (10 to 20 min)
 $PY tools/odour_code.py              # the Kenyon cell code across gain and level
 python3 -m http.server 8813 --directory web   # then open http://127.0.0.1:8813/
 GAIN=0.02 TEMP=0.3 CAP=3 BALANCE=1 ./tools/campaign_odour.sh   # gate 4, hours; then:

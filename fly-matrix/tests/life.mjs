@@ -26,20 +26,96 @@ function stubRoom() {
 }
 function move(room, life, name, xy) { const from = room.fruits[name].pos.slice(); room.placeFruit(name, xy); return life.fruitMoved(name, from); }
 
-// -- the smell follows the fruit ---------------------------------------------------------------
+// -- the smell follows the fruit, and at a fruit its own smell dominates ------------------------
 {
   const room = stubRoom(), B = room.fruits.banana.pos;
-  const flight = new Flight([B[0], B[1], B[2] + 0.1], 0.0), life = new Life(flight, room, 1);
+  const flight = new Flight([B[0], B[1], B[2] + 0.02], 0.0), life = new Life(flight, room, 1);
   if (life.fruits.banana.pos !== room.fruits.banana.pos || life.fruits.bread.pos !== room.fruits.bread.pos) fail("the life holds copies of the fruit positions");
-  const before = life.odour(life.fruits.banana.pos).c;
-  life.senses(null, 0); const smelledBefore = life.smelled;
+  const before = life.odour(life.fruits.banana.pos).c, other = life.odour(life.fruits.bread.pos).c;
+  const s0 = life.senses(null, 0); const smelledBefore = life.smelled;
   room.placeFruit("banana", [3.45, 2.05]);
   const after = life.odour(life.fruits.banana.pos).c;
   life.senses(null, 0);
   if (before < 0.9) fail(`the banana under the fly smells ${before.toFixed(2)}, expected near 1`);
-  if (after > 0.6) fail(`the banana moved away still smells ${after.toFixed(2)} where it stood`);
+  if (other > 0.3) fail(`at the banana the bread (25 cm away) smells ${other.toFixed(2)}: the two smells are not separable`);
+  if (s0["orn:decaying_fruit:left"] < 0.9 || s0["orn:yeasty:left"] > 0.35) fail(`at the banana the receptor drives are ${s0["orn:decaying_fruit:left"].toFixed(2)} (decaying fruit) and ${s0["orn:yeasty:left"].toFixed(2)} (yeast)`);
+  if (after > 0.3) fail(`the banana moved away still smells ${after.toFixed(2)} where it stood`);
   if (smelledBefore !== "banana") fail(`smelled ${smelledBefore} over the banana`);
-  if (failures === 0) ok(`the smell follows the fruit: ${before.toFixed(2)} over the banana, ${after.toFixed(2)} after it is moved 0.6 m`);
+  if (failures === 0) ok(`the smell follows the fruit and is separable: banana ${before.toFixed(2)}, bread ${other.toFixed(2)} at the banana; ${after.toFixed(2)} after the banana is moved 0.6 m`);
+}
+
+// -- one mushroom-body decision per search, at the decision level; an avoided smell ends with nothing
+{
+  const room = stubRoom(), B = room.fruits.banana.pos;
+  const flight = new Flight([B[0] - 0.5, B[1], B[2] + 0.05], 0.0), life = new Life(flight, room, 7);
+  life.hunger = 0.8; life.senses(null, 0);
+  if (life.smelled !== "banana") fail(`half a metre from the banana the fly smells ${life.smelled}`);
+  if (life.odourTick()) fail("the brain was asked at the first whiff");
+  if (!life.search || life.search.fruit !== "banana" || life.search.asked) fail(`no search opened at the first whiff: ${JSON.stringify(life.search)}`);
+  if (!life.valence || life.valence.action !== 0 || !life.valence.innate) fail("the instinct does not orient the fly toward the smell before the decision");
+  flight.p = [B[0] - 0.1, B[1], B[2] + 0.05]; life.senses(null, 0);
+  if (life.odourTick()) fail("the brain was asked 10 cm from the fruit, outside the decision reach");
+  life.decide(true); if (life.landing) fail("the instinct landed on the fruit before the brain had decided");
+  if (life.speed > 0.11) fail(`the drawn fly does not slow to a hover over the fruit (speed ${life.speed.toFixed(2)})`);
+  flight.p = [B[0] - 0.04, B[1], B[2] + 0.05]; life.senses(null, 0);
+  if (!life.odourTick()) fail("the brain was not asked 4 cm from the fruit");
+  if (life.odourTick()) fail("the brain was asked twice in one search");
+  life.applyDecision({ action: 1, p: [0.3, 0.7] });
+  if (!life.valence || life.valence.action !== 1 || life.lastP.banana !== 0.3) fail(`the decision was not applied: ${JSON.stringify(life.valence)}`);
+  life.decide(true); // the avoid steers away, no landing
+  if (life.landing) fail("an avoided smell was landed on");
+  flight.p = [B[0] - 1.5, B[1], B[2] + 0.5]; life.senses(null, 0);
+  life.odourTick();
+  if (life.search) fail("the search did not end when the avoided smell was lost");
+  if (!life.pendingReward || life.pendingReward.reward !== 0 || life.pendingReward.fresh) fail(`avoided: ${JSON.stringify(life.pendingReward)}`);
+  // a smell lost before the brain was asked is dropped, nothing queued
+  life.pendingReward = null; flight.p = [B[0] - 0.5, B[1], B[2] + 0.05]; life.senses(null, 0); life.odourTick();
+  if (!life.search) fail("no new search on the next whiff");
+  flight.p = [B[0] - 1.5, B[1], B[2] + 0.5]; life.senses(null, 0); life.odourTick();
+  if (life.search || life.pendingReward) fail("a search lost before the decision was not dropped silently");
+  // sugar reached after an avoid decision, or on the other fruit, is not credited to that decision
+  life.pendingReward = null; life.search = { since: 0, fruit: "banana", asked: true, action: 1, landed: null };
+  life.outcome(1, "sugar on the banana", "banana");
+  if (!life.pendingReward || !life.pendingReward.fresh) fail("sugar after an avoid decision was credited to it");
+  life.pendingReward = null; life.search = { since: 0, fruit: "banana", asked: true, action: 0, landed: null };
+  life.outcome(1, "sugar on the bread", "bread");
+  if (!life.pendingReward || !life.pendingReward.fresh) fail("sugar on the other fruit was credited to the banana's decision");
+  life.pendingReward = null; life.search = { since: 0, fruit: "banana", asked: true, action: 0, landed: null };
+  life.outcome(1, "sugar on the banana", "banana");
+  if (!life.pendingReward || life.pendingReward.fresh) fail("sugar on the approached fruit was not credited to its decision");
+  if (failures === 0) ok("one decision per search, at the fruit; an avoided smell ends with nothing, a lost one is dropped; chance sugar is credited afresh");
+}
+
+// -- a search that reaches a fruit without sugar stays open until the fly leaves or is struck ----
+{
+  const room = stubRoom(), Br = room.fruits.bread.pos;
+  // landed on the bread by a search, no sugar there
+  const flight = new Flight([Br[0], Br[1], Br[2] + 1.2e-3], 0.0), life = new Life(flight, room, 6);
+  life.sugar = "banana"; life.hunger = 0.8;
+  life.search = { since: 0, fruit: "bread", asked: true, action: 0, landed: null }; life.valence = { fruit: "bread", action: 0, p: [1, 0] };
+  life.mode = "landed"; life.perch = Br.slice(); life.hold(); life.sit = 100; life.ethogram.sitStart = 0;
+  // the landing bookkeeping as step() does it when the fly settles on a fruit
+  const on = life.fruitAt(flight.p); if (on !== "bread") fail(`the fly is on ${on}`);
+  if (life.search) { life.search.landed = on; life.valence = null; }
+  // the search is not timed out while the fly sits
+  life.clock = 60; life.odourTick();
+  if (!life.search || life.search.landed !== "bread") fail("the open search on the bread was closed while the fly sat there");
+  if (life.pendingReward) fail(`an outcome was queued while the fly sat: ${JSON.stringify(life.pendingReward)}`);
+  // a blow: the search ends with -1, not fresh (a search was open)
+  if (!life.punished()) fail("the blow on the bread did not count");
+  if (!life.pendingReward || life.pendingReward.reward !== -1 || life.pendingReward.fresh) fail(`after the blow: ${JSON.stringify(life.pendingReward)}`);
+  if (life.search) fail("the search is still open after the blow");
+  life.pendingReward = null;
+  // leaving the bread ends an open search with nothing
+  life.search = { since: life.clock, fruit: "bread", asked: true, action: 0, landed: "bread" };
+  life.takeoff("voluntary takeoff");
+  if (!life.pendingReward || life.pendingReward.reward !== 0) fail(`after leaving: ${JSON.stringify(life.pendingReward)}`);
+  if (life.search) fail("the search is still open after the takeoff");
+  // a blow with no search open is a fresh outcome: the page asks for the approach decision it blames
+  life.pendingReward = null; life.mode = "landed"; life.perch = Br.slice(); life.hold(); life.senses(null, 0);
+  if (!life.punished()) fail("the blow on the bread with no search did not count");
+  if (!life.pendingReward || life.pendingReward.reward !== -1 || !life.pendingReward.fresh) fail(`fresh blow: ${JSON.stringify(life.pendingReward)}`);
+  if (failures === 0) ok("a sugarless landing keeps the search open: a blow ends it with -1, leaving ends it with 0, a blow with no search is fresh");
 }
 
 // -- a descent to the banana ends on the banana where it was set down during the descent ---------
@@ -47,7 +123,7 @@ function move(room, life, name, xy) { const from = room.fruits[name].pos.slice()
   const room = stubRoom(), B0 = room.fruits.banana.pos.slice();
   const flight = new Flight([B0[0] - 0.08, B0[1], B0[2] + 0.25], 0.0), life = new Life(flight, room, 2);
   life.hunger = 0.8; life.senses(null, 0);
-  life.valence = { fruit: "banana", action: 0, p: [1, 0] };
+  life.search = { since: 0, fruit: "banana", asked: true, landed: null }; life.valence = { fruit: "banana", action: 0, p: [1, 0] };
   life.chooseLanding();
   if (!life.landingFruit || life.landingFruit.name !== "banana") fail("the descent is not to the banana");
   if (!near(life.landing, B0, 0.03)) fail("the landing spot is not on the banana");

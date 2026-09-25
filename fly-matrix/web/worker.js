@@ -74,7 +74,9 @@ self.onmessage = async (e) => {
     for (const [set, level] of Object.entries(m.stimuli || {})) brain.stimulate(set, level);
     const t0 = performance.now();
     for (let k = 0; k < (m.steps || 1); k++) brain.step();
-    const decision = learner ? learner.act(!!m.greedy) : null;
+    // m.u replays a uniform draw (0 forces the first action): the page blames a blow on the approach that brought the fly to the fruit
+    const decision = learner ? learner.act(!!m.greedy, typeof m.u === "number" ? m.u : undefined) : null;
+    if (decision && m.blame) decision.blame = true;
     stateMessage({ ms: performance.now() - t0, ran: m.steps || 1, decision, learnMs: performance.now() - t0 });
     return;
   }

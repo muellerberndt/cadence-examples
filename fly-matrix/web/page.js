@@ -19,7 +19,10 @@ const params = new URLSearchParams(location.search);
 const BRAIN_MS = 2.0;                      // ms of simulated time per settling step (declared timescale)
 const STEPS_PER_MESSAGE = 12;
 // The lessons: the constants of tools/learn_odour.py; data/lessons.json (written with the receipt) overrides them.
-let LESSONS = { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0, 1], plastic: { pre: ["kc"], post: ["mbon"] }, critic: "kc", beta: 0.1, temperature: 0.3, nudgedSteps: 10, tolerance: 1e-3, gamma: 0.95, lam: 0.9, eta: 10, etaBias: 0, etaCritic: 0.5, cap: 3, dopamineCap: 1, tonic: {} };
+// eta 0.25 and etaCritic 0.05 (measured 2026-09-25 on this payload, one decision per search at the fruit): eta 10 put an output cell on its rail
+// after one lesson, where the nudge has no slope and nothing moves again, and a critic at 0.5 learned the outcome in four trials and cancelled
+// the dopamine before the actor had moved; the gentle pair keeps both cells inside their range across a dozen blows.
+let LESSONS = { outputs: ["mbon:MBON11:right", "mbon:MBON05:left"], actions: [0, 1], plastic: { pre: ["kc"], post: ["mbon"] }, critic: "kc", beta: 0.1, temperature: 0.3, nudgedSteps: 10, tolerance: 1e-3, gamma: 0.95, lam: 0.9, eta: 0.25, etaBias: 0, etaCritic: 0.05, cap: 3, dopamineCap: 1, tonic: {} };
 
 // ---- the room ------------------------------------------------------------------------------
 const canvas = $("world");
@@ -72,7 +75,7 @@ worker.onmessage = (e) => {
     S.pending = false; S.brainSteps = m.steps; S.brainMs = m.ms / Math.max(1, m.ran || 1); S.active = m.active;
     life.readouts = m.readouts;
     if (m.baseline) { life.setBaseline(m.readouts); finishLoading(); }
-    if (m.decision) { life.applyDecision(m.decision); S.decisions++; drawValence(); }
+    if (m.decision && !m.decision.blame) { life.applyDecision(m.decision); S.decisions++; drawValence(); }
     if (activation && members) { for (let i = 0; i < members.length; i++) activation[members[i]] = m.s[i]; S.newState = true; }
   }
 };
@@ -167,7 +170,11 @@ function strike() { // a blow at the sitting fly: a punishment for the smell it 
 function queueReward() { // the outcome of the open search goes to the worker before its next step
   const r = life.pendingReward; if (!r) return;
   life.pendingReward = null;
-  if (S.learnReady && S.pilot !== "instincts") worker.postMessage({ type: "reward", reward: r.reward, done: r.done, why: r.why });
+  if (!S.learnReady || S.pilot === "instincts") return;
+  // no decision was taken about this fruit (a chance landing, a second outcome on the same visit): the brain first takes the
+  // approach decision that brought the fly here, its eligibility, and the outcome is credited to it
+  if (r.fresh) { worker.postMessage({ type: "decide", stimuli: life.senses(null, 0), steps: 4, u: 0, blame: true }); S.pending = true; }
+  worker.postMessage({ type: "reward", reward: r.reward, done: r.done, why: r.why });
 }
 
 // ---- controls on screen ----------------------------------------------------------------------
@@ -269,8 +276,8 @@ function fillCard() {
   const m = payloadInfo;
   $("card-brain").innerHTML = `<b>The brain.</b> The nervous system of an adult female <i>Drosophila melanogaster</i>, brain and nerve cord wired as measured (BANC release 888: ${whole.toLocaleString()} neurons, 1,861,418 synapse classes at five or more synapses), as one Cadence brain with the library's graded rate model at one global gain selected on two physiology facts. The page draws every neuron at its soma position and settles the ${m.n.toLocaleString()}-neuron sub-net recruited from the flight, looming, odour, taste and mushroom-body populations, one step per ${BRAIN_MS} ms of simulated time; the sub-net's settled populations agree with the whole brain's under the page's stimuli to a readout deviation below 1e-3 (receipts/subnet_closure.json).`;
   $("card-body").innerHTML = `<b>The body.</b> A rigid body with stroke-averaged aerodynamics, unstable in pitch open loop as the animal is; its wingbeat-timescale equilibrium reflex is a hand-written inner loop, supplied like the worm's undulation, because haltere afferents encode rotation in spike timing that a rate model cannot carry. The browser body is bit-identical to the Python reference over 71,000 steps.`;
-  $("card-senses").innerHTML = `<b>Senses and muscles.</b> Halteres as a flight tone, the two ocelli by attitude, HS and VS by rotational flow, the antennae by airspeed, the banana's and the bread's odours on the receptor neurons of their classes (decaying fruit, yeast) with a 5 cm bilateral baseline, sugar on the labellar and leg receptors when standing on the sweet fruit, leg touch when landed, the PAM and PPL1 dopaminergic neurons at a reward and at a blow. The descending neurons DNa02 (turns), DNp09 (forward flight), DNp07 and DNp10 (landing), the giant fibre (escape), MN9 (feeding) and aDN1/2 (grooming) are read as deviations from their level-flight rest and override a hand-written instinct layer (bouts, saccades at 0.4 per second, landings, sitting, grooming); the switch below the room replaces the measured wiring by a shuffled one, or removes the brain.`;
-  $("card-claim").innerHTML = `<b>The lessons.</b> Every 0.3 s in a smell the mushroom body decides whether to approach it or to avoid it: the choice is a softmax over two output neurons of declared valence, MBON11 (γ1pedc>α/β, GABAergic, approach) and MBON05 (γ4>γ1γ2, glutamatergic, avoidance), by the transmitter rule of Aso et al. 2014. The turn toward or away from the smell is supplied, as the worm's undulation was. Sugar on the fruit it lands on is a reward of one, an empty fruit nothing, a blow from the hand minus one; the library's actor-critic (eligibility traces on the nudged contrast, dopamine as the temporal-difference error, a critic on the Kenyon cells) moves the ${(S.lessonStats && S.lessonStats.plastic) || "Kenyon-cell-to-MBON"} synapses onto the MBONs, the site of the animal's olfactory memory. The same rule, wiring and constants run the receipted experiment (tools/learn_odour.py) against shuffled, frozen and MLP controls. Gate 2: 7 of 13 held-out physiology facts about the wing steering circuit pass on the measured wiring against 4, 3 and 0 on shuffled wirings. Gate 3: 7 of 14 instinct facts against 2 on each shuffled wiring.`;
+  $("card-senses").innerHTML = `<b>Senses and muscles.</b> Halteres as a flight tone, the two ocelli by attitude, HS and VS by rotational flow, the antennae by airspeed, the banana's and the bread's odours on the receptor neurons of their classes (decaying fruit, yeast), each a narrow core in a faint wide plume so that at a fruit its own smell dominates the other's five to one, with a 5 cm bilateral baseline, sugar on the labellar and leg receptors when standing on the sweet fruit, leg touch when landed, the PAM and PPL1 dopaminergic neurons at a reward and at a blow. The descending neurons DNa02 (turns), DNp09 (forward flight), DNp07 and DNp10 (landing), the giant fibre (escape), MN9 (feeding) and aDN1/2 (grooming) are read as deviations from their level-flight rest and override a hand-written instinct layer (bouts, saccades at 0.4 per second, landings, sitting, grooming); the switch below the room replaces the measured wiring by a shuffled one, or removes the brain.`;
+  $("card-claim").innerHTML = `<b>The lessons.</b> A hungry fly that notices a smell turns toward it by instinct and hovers over the fruit; there, once per search, the mushroom body decides whether to land on it or to leave it: the choice is a softmax over two output neurons of declared valence, MBON11 (γ1pedc>α/β, GABAergic, approach) and MBON05 (γ4>γ1γ2, glutamatergic, avoidance), by the transmitter rule of Aso et al. 2014. The turn toward or away from the smell is supplied, as the worm's undulation was. Sugar on the fruit it lands on is a reward of one, an empty fruit nothing when the fly leaves it, a blow from the hand while it sits there minus one; the library's actor-critic (eligibility traces on the nudged contrast, dopamine as the temporal-difference error, a critic on the Kenyon cells) moves the ${(S.lessonStats && S.lessonStats.plastic) || "Kenyon-cell-to-MBON"} synapses onto the MBONs, the site of the animal's olfactory memory. The same rule and wiring run the receipted experiment (tools/learn_odour.py) against shuffled, frozen and MLP controls; the page's constants are the ones its source declares. Gate 2: 7 of 13 held-out physiology facts about the wing steering circuit pass on the measured wiring against 4, 3 and 0 on shuffled wirings. Gate 3: 7 of 14 instinct facts against 2 on each shuffled wiring.`;
   $("card-sources").innerHTML = ["BANC: the Lee lab and the BANC community, release 888 (CC BY).", "Aso et al. 2014 eLife 3:e04580 (MBON valence by transmitter); Perisse et al. 2016; Owald et al. 2015 (the Kenyon-cell-to-MBON synapse as the memory site).", "Burke et al. 2012; Liu et al. 2012 (sugar through PAM neurons); Claridge-Chang et al. 2009; Aso et al. 2010 (punishment through PPL1 neurons).", "Fayyazuddin and Dickinson 1996, 1999; Dickinson 1999 (the haltere and wing steering circuit).", "von Reyn et al. 2014; Klapoetke et al. 2017; Ache et al. 2019 (looming, escape, landing).", "Censi et al. 2013; Muijres et al. 2015; van Breugel and Dickinson 2012, 2014 (the ethogram)."].map((s) => `<li>${s}</li>`).join("");
 }
 
@@ -351,4 +358,4 @@ if (params.get("card")) {
     life.mode = params.get("pose") || "grooming"; life.groomTarget = "head"; life.episode = 1e9; life.controls = { aL: 0, aR: 0, betaL: 0, betaR: 0, sL: 0, sR: 0, f: 0 };
   }
 }
-window.__app = { S, life: () => life, flight: () => flight, scan: () => scan, setCam, setPilot, setSugar, setEyeMain, worker, eye, renderer, rig, room };
+window.__app = { S, life: () => life, flight: () => flight, scan: () => scan, setCam, setPilot, setSugar, setEyeMain, strike, worker, eye, renderer, rig, room };
