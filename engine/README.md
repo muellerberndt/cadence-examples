@@ -106,6 +106,11 @@ outputs that sit at 0.7 to 1.0 under their drive. `load(edges, efficacies)` puts
 checkpoint's efficacies on the brain (`tools/export_learned.py` in the fly maps a checkpoint
 onto the page's sub-net by whole-brain synapse), `reset()` returns to the measured signs.
 
+An outcome handed to `learn` with no decision pending teaches nothing; the learner counts it in
+`dropped` (in `stats()`), and a page shows that count, because the fly's blows were lost exactly
+this way for a day: the search had been closed at the landing, the blow found nothing to credit,
+and the screen still counted the blow.
+
 ## Parity
 
 Every example keeps two recordings of the library beside its payload and replays them through
@@ -142,6 +147,23 @@ page.
 - The page deploys as a copy of `web/` (minus dev pages) into the site's
   `cadence-examples/<name>/` folder, with a 1200 by 630 social card under 200 kB.
 
+The page contract, from the fly's three visitor reports of one day:
+
+- One owner per fact. What the visitor can change (a fruit's place, the sugar) lives in one
+  object and every other layer reads it there; a copy taken at construction is the fly landing
+  on a fruit that was moved an hour ago.
+- Every wait is bounded and every modal state is visible. A brain reply that never comes gets a
+  watchdog; a hover for a decision lands after a few seconds anyway; a sit has a longest; a
+  paused simulation says so on screen (the space key froze the fly in silence).
+- Every outcome finds its decision. A search stays open until its outcome; an outcome with no
+  decision pending is counted (`dropped`) and shown, not swallowed.
+- One decision per episode, credited to that decision; a decision every few hundred
+  milliseconds along an approach mixes the eligibility of both actions.
+- A scenario test of the page's promise, scripted against the real page in a headless browser
+  (the fly's `tools/reversal_scenario.py`: sugar on one fruit, the sugar moved, blows at the old
+  one, the other found, in both directions), runs before every deploy. A page ships what its
+  sentence promises, and the test is the receipt.
+
 ## A checklist for a new example
 
 1. The brain: a `cadence.Brain`, its populations named, the gain selected by a protocol with
@@ -149,6 +171,8 @@ page.
 2. `write_payload`, `settle_cases`; the page settles and its readouts match the library.
 3. The body and the senses as declared dictionaries; what the brain cannot carry, supplied and
    said so.
-4. The lessons: the readout, the plastic set and the constants from the experiment;
+4. The lessons: `preflight` under the situations the page decides in, with no warnings, before
+   the readout, the plastic set and the constants are fixed from the experiment;
    `record_lessons`; the parity replay.
-5. The three views, the sentence, the card, the deploy, the video tour.
+5. The three views, the sentence, the card, the scenario test of the promise, the deploy, the
+   video tour.

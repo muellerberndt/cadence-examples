@@ -85,6 +85,7 @@ self.onmessage = async (e) => {
     const t0 = performance.now();
     const lesson = learner.learn(m.reward || 0, !!m.done);
     if (lesson) self.postMessage({ type: "lesson", ...lesson, ms: performance.now() - t0, why: m.why || "" });
+    else self.postMessage({ type: "lesson", ...learner.stats(), dropped: learner.dropped, why: m.why || "", lost: true });  // an outcome with no decision: the page shows it
     return;
   }
   if (m.type === "run") {

@@ -71,7 +71,7 @@ worker.onmessage = (e) => {
     return;
   }
   if (m.type === "learn:ready") { S.learnReady = true; S.lessonStats = m; lessonsFoot(); return; }
-  if (m.type === "lesson") { S.lessonStats = m; if (m.delta !== undefined) { S.lastLesson = m; S.lessons.push(m.delta); if (S.lessons.length > 60) S.lessons.shift(); life.log(`dopamine ${m.delta >= 0 ? "+" : ""}${m.delta.toFixed(2)}: ${m.why || "a lesson"}`); } lessonsFoot(); drawDopamine(); return; }
+  if (m.type === "lesson") { S.lessonStats = m; if (m.delta !== undefined) { S.lastLesson = m; S.lessons.push(m.delta); if (S.lessons.length > 60) S.lessons.shift(); life.log(`dopamine ${m.delta >= 0 ? "+" : ""}${m.delta.toFixed(2)}: ${m.why || "a lesson"}`); } else if (m.lost) life.log(`no decision to credit: ${m.why || "an outcome"} taught nothing`); lessonsFoot(); drawDopamine(); return; }
   if (m.type === "state") {
     S.pending = false; S.pendingSince = 0; S.brainSteps = m.steps; S.brainMs = m.ms / Math.max(1, m.ran || 1); S.active = m.active;
     life.readouts = m.readouts;
@@ -264,7 +264,7 @@ function lessonsFoot() {
   const last = S.lastLesson;
   const who = S.pilot === "instincts" ? "no lessons" : `${(st.plastic || 0).toLocaleString()} plastic${st.changed ? `, <b>${st.changed.toLocaleString()}</b> changed` : ""}`;
   const tail = last ? ` · dopamine <b>${last.delta >= 0 ? "+" : ""}${last.delta.toFixed(2)}</b>` : "";
-  lessonsFootEl.innerHTML = who + tail + ` · ${life.visits.sweet} sugar · ${life.visits.punished} blows`;
+  lessonsFootEl.innerHTML = who + tail + ` · ${life.visits.sweet} sugar · ${life.visits.punished} blows` + (st.dropped ? ` · <b>${st.dropped}</b> outcome${st.dropped > 1 ? "s" : ""} found no decision` : "");
 }
 function drawDopamine() {
   const c = dopamineBox.querySelector("canvas"), g = c.getContext("2d"), W = c.width, H = c.height;

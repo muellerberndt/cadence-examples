@@ -64,7 +64,7 @@ export class ActorCriticLearner {
     this.traceBias = new Float64Array(this.neurons.length);
     this.wCritic = new Float64Array(this.criticIndex.length); this.bCritic = 0.0;
     this.traceCritic = new Float64Array(this.criticIndex.length + 1);
-    this.pending = null; this.updates = 0; this.rng = Math.random;
+    this.pending = null; this.updates = 0; this.dropped = 0; this.rng = Math.random;  // dropped: outcomes that found no decision to credit
     this.tonic = c.tonic || {};
     for (const [name, level] of Object.entries(this.tonic)) { const idx = brain.sets[name]; if (idx) for (const i of idx) brain.bias[i] += level; }
   }
@@ -117,9 +117,11 @@ export class ActorCriticLearner {
     return { choice, action: this.actions[choice], p: Array.from(p), value, greedy };
   }
 
-  /** Dopamine from the reward and the live state's value (the next state), then the three-factor step. */
+  /** Dopamine from the reward and the live state's value (the next state), then the three-factor step.
+   *  An outcome with no decision pending teaches nothing and is counted in `dropped`: a page that hands
+   *  outcomes over must see that count (the fly's blows were lost this way for a day). */
   learn(reward, done) {
-    if (!this.pending) return null;
+    if (!this.pending) { this.dropped++; return null; }
     const c = this.cfg;
     const nextValue = done ? 0.0 : this.value();
     const tdError = reward + c.gamma * nextValue - this.pending.value;
@@ -150,11 +152,11 @@ export class ActorCriticLearner {
   stats() {
     let changed = 0, sumAbs = 0, maxAbs = 0;
     for (let k = 0; k < this.edges.length; k++) { const d = Math.abs(this.efficacy[k] - this.sign[k]); if (d > 1e-9) { changed++; sumAbs += d; if (d > maxAbs) maxAbs = d; } }
-    return { plastic: this.edges.length, changed, meanAbsChange: changed ? sumAbs / changed : 0, maxAbsChange: maxAbs };
+    return { plastic: this.edges.length, changed, meanAbsChange: changed ? sumAbs / changed : 0, maxAbsChange: maxAbs, dropped: this.dropped };
   }
 
   /** Efficacies back to the measured signs, traces and critic to nothing. */
-  reset() { this.efficacy.set(this.sign); this.trace.fill(0); this.traceBias.fill(0); this.traceCritic.fill(0); this.wCritic.fill(0); this.bCritic = 0; this.pending = null; this.updates = 0; this.applyWeights(); }
+  reset() { this.efficacy.set(this.sign); this.trace.fill(0); this.traceBias.fill(0); this.traceCritic.fill(0); this.wCritic.fill(0); this.bCritic = 0; this.pending = null; this.updates = 0; this.dropped = 0; this.applyWeights(); }
 
   /** Efficacies from a checkpoint (payload synapse ids -> efficacy); ids outside the plastic set are set on the brain directly. */
   load(edges, values) {
