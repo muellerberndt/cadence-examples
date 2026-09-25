@@ -1,7 +1,16 @@
 {
  "tool": "tools/ethogram.py",
- "seconds": 150.0,
+ "page": "b2676872b8e1abc2c4f22cb4fd79e3a2d4c76073",
+ "payload": {
+  "atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+  "brain.json": "f43f50887302467132a0205ec7f9b0da3e32247f39678fe0d03b9f1a527b5657",
+  "lessons.json": "78b037212f8f7149d30fb1a88a48f076dda7e2edee04ed13d787f95432378471"
+ },
+ "seed": 7,
  "speed": 1.0,
+ "seconds": 240.0,
+ "warmup_s": 10,
+ "headless": true,
  "real": {
   "saccade_rate_per_s": [
    0.4,
@@ -23,7 +32,736 @@
  },
  "conditions": {
   "brain": {
-   "error": "Page.evaluate: Target page, context or browser has been closed"
+   "mode_at_reset": "flying",
+   "seconds": 240.0829999975409,
+   "wall_s": 1827.8674099445343,
+   "summary": {
+    "saccade_rate_per_s": 0.45350460051745284,
+    "micro_saccade_rate_per_s": 1.4435498551682302,
+    "bout_s": 14.375299999889899,
+    "sit_s": 7.59313636353049,
+    "bouts": 10,
+    "sits": 11,
+    "landings": 11,
+    "grooms": 5,
+    "feeds": 2,
+    "sitting_fraction": 0.347898435125465,
+    "flying_s": 156.55849999975382,
+    "sitting_s": 83.52450000021679,
+    "odour_decisions": 3,
+    "visits": {
+     "banana": 1,
+     "bread": 1,
+     "sweet": 1,
+     "punished": 0
+    },
+    "p_approach": {
+     "banana": 0.6928952333305557,
+     "bread": 0.840253513306464
+    },
+    "fps": 19.999999999999996,
+    "brain_ms_per_step": 5.308333337306976,
+    "in_band": {
+     "saccade_rate_per_s": true,
+     "bout_s": false,
+     "sit_s": true,
+     "sitting_fraction": true
+    }
+   },
+   "raw": {
+    "saccades": 71,
+    "microSaccades": 226,
+    "bouts": [
+     4.397500000005374,
+     40.617000000149176,
+     12.820500000061216,
+     19.627000000093716,
+     3.2750000000156376,
+     17.279499999764752,
+     21.64299999948821,
+     1.9639999999535576,
+     13.214999999687507,
+     8.437999999800468,
+     4.873999999884745
+    ],
+    "sits": [
+     11.27749999997932,
+     0.08300000000039631,
+     4.679500000022344,
+     11.373000000054304,
+     3.7250000000177863,
+     10.720499999746494,
+     13.356999999684149,
+     11.135999999736669,
+     7.484999999823003,
+     9.461999999776253,
+     0.2259999999946558
+    ],
+    "grooms": 5,
+    "feeds": 2,
+    "landings": 11,
+    "flying_s": 156.55849999975382,
+    "sitting_s": 83.52450000021679,
+    "boutStart": 241.6999999977405,
+    "sitStart": null,
+    "decisions": 3,
+    "mode": "flying",
+    "sugar": "banana",
+    "hunger": 1,
+    "visits": {
+     "banana": 1,
+     "bread": 1,
+     "sweet": 1,
+     "punished": 0
+    },
+    "lastP": {
+     "banana": 0.6928952333305557,
+     "bread": 0.840253513306464
+    },
+    "lessons": {
+     "type": "lesson",
+     "delta": -0.04029074801132506,
+     "tdError": -0.04029074801132506,
+     "reward": 0,
+     "value": 0.04029074801132506,
+     "nextValue": 0,
+     "moved": 11025,
+     "meanAbsStep": 8.953392593686745e-05,
+     "trace": 0.001458750062930077,
+     "saturation": 0,
+     "updates": 3,
+     "plastic": 16795,
+     "changed": 8529,
+     "meanAbsChange": 0.001953662856230322,
+     "maxAbsChange": 0.4998230266462269,
+     "dropped": 0,
+     "ms": 3.800000011920929,
+     "why": "avoided the bread"
+    },
+    "fps": 19.999999999999996,
+    "brainMs": 5.308333337306976,
+    "active": 679
+   },
+   "brain_timeouts": 0,
+   "page_errors": [],
+   "events_tail": [
+    [
+     225.99999999811175,
+     "descends to land"
+    ],
+    [
+     226.09999999810938,
+     "descends to land"
+    ],
+    [
+     226.19999999810702,
+     "descends to land"
+    ],
+    [
+     226.29999999810465,
+     "saccade"
+    ],
+    [
+     226.29999999810465,
+     "descends to land"
+    ],
+    [
+     226.3999999981023,
+     "descends to land"
+    ],
+    [
+     226.49999999809992,
+     "descends to land"
+    ],
+    [
+     226.59999999809756,
+     "descends to land"
+    ],
+    [
+     226.6999999980952,
+     "descends to land"
+    ],
+    [
+     226.79999999809283,
+     "descends to land"
+    ],
+    [
+     226.89999999809046,
+     "descends to land"
+    ],
+    [
+     226.9999999980881,
+     "descends to land"
+    ],
+    [
+     227.09999999808574,
+     "descends to land"
+    ],
+    [
+     227.13799999808484,
+     "lands"
+    ],
+    [
+     236.5999999978611,
+     "voluntary takeoff"
+    ],
+    [
+     237.59999999783744,
+     "saccade"
+    ],
+    [
+     240.49999999776887,
+     "descends to land"
+    ],
+    [
+     240.5999999977665,
+     "descends to land"
+    ],
+    [
+     240.69999999776414,
+     "descends to land"
+    ],
+    [
+     240.79999999776177,
+     "descends to land"
+    ],
+    [
+     240.8999999977594,
+     "descends to land"
+    ],
+    [
+     240.99999999775704,
+     "descends to land"
+    ],
+    [
+     241.09999999775468,
+     "descends to land"
+    ],
+    [
+     241.19999999775231,
+     "descends to land"
+    ],
+    [
+     241.29999999774995,
+     "descends to land"
+    ],
+    [
+     241.39999999774759,
+     "descends to land"
+    ],
+    [
+     241.47399999774584,
+     "lands"
+    ],
+    [
+     241.6999999977405,
+     "voluntary takeoff"
+    ],
+    [
+     242.39999999772394,
+     "saccade"
+    ],
+    [
+     247.79999999759625,
+     "saccade"
+    ]
+   ]
+  },
+  "shuffled": {
+   "mode_at_reset": "flying",
+   "seconds": 240.58399999752658,
+   "wall_s": 1849.1512777805328,
+   "summary": {
+    "saccade_rate_per_s": 0.5799768566952747,
+    "micro_saccade_rate_per_s": 1.4834023450090679,
+    "bout_s": 10.953781249881251,
+    "sit_s": 3.603911764673336,
+    "bouts": 16,
+    "sits": 17,
+    "landings": 17,
+    "grooms": 5,
+    "feeds": 1,
+    "sitting_fraction": 0.2546574169532559,
+    "flying_s": 179.31749999921564,
+    "sitting_s": 61.26650000011051,
+    "odour_decisions": 13,
+    "visits": {
+     "banana": 1,
+     "bread": 5,
+     "sweet": 1,
+     "punished": 0
+    },
+    "p_approach": {
+     "banana": 0.18564797145806664,
+     "bread": 0.6172465107567598
+    },
+    "fps": 19.999999999999996,
+    "brain_ms_per_step": 5.024999996026357,
+    "in_band": {
+     "saccade_rate_per_s": true,
+     "bout_s": false,
+     "sit_s": true,
+     "sitting_fraction": false
+    }
+   },
+   "raw": {
+    "saccades": 104,
+    "microSaccades": 266,
+    "bouts": [
+     3.048000000003725,
+     5.413999999987382,
+     0.8554999999980062,
+     35.09650000010363,
+     10.00050000004775,
+     14.835500000070837,
+     1.959000000009354,
+     11.023500000052636,
+     6.90299999993907,
+     8.155999999807136,
+     3.2809999999224146,
+     6.126999999855116,
+     40.31749999904662,
+     5.972999999858757,
+     2.3314999999448673,
+     16.576999999608006,
+     6.409999999848424
+    ],
+    "sits": [
+     3.227000000002521,
+     0.1859999999995665,
+     0.14449999999966323,
+     2.103500000010044,
+     0.19950000000095258,
+     3.8645000000184524,
+     7.341000000035052,
+     14.97650000007151,
+     4.396999999896025,
+     3.8439999999091015,
+     0.21899999999482134,
+     0.8729999999793563,
+     1.7824999999578495,
+     12.126999999713235,
+     0.1684999999960155,
+     3.422999999919057,
+     2.389999999943484
+    ],
+    "grooms": 5,
+    "feeds": 1,
+    "landings": 17,
+    "flying_s": 179.31749999921564,
+    "sitting_s": 61.26650000011051,
+    "boutStart": 249.69999999755132,
+    "sitStart": null,
+    "decisions": 13,
+    "mode": "flying",
+    "sugar": "banana",
+    "hunger": 1,
+    "visits": {
+     "banana": 1,
+     "bread": 5,
+     "sweet": 1,
+     "punished": 0
+    },
+    "lastP": {
+     "banana": 0.18564797145806664,
+     "bread": 0.6172465107567598
+    },
+    "lessons": {
+     "type": "lesson",
+     "delta": -0.023135170770296556,
+     "tdError": -0.023135170770296556,
+     "reward": 0,
+     "value": 0.023135170770296556,
+     "nextValue": 0,
+     "moved": 108,
+     "meanAbsStep": 1.6248703490479886e-07,
+     "trace": 2.2575141555961344e-06,
+     "saturation": 0,
+     "updates": 14,
+     "plastic": 336,
+     "changed": 30,
+     "meanAbsChange": 2.5749881365028094e-06,
+     "maxAbsChange": 7.037395060854879e-05,
+     "dropped": 0,
+     "ms": 0.800000011920929,
+     "why": "avoided the bread"
+    },
+    "fps": 19.999999999999996,
+    "brainMs": 5.024999996026357,
+    "active": 116
+   },
+   "brain_timeouts": 0,
+   "page_errors": [],
+   "events_tail": [
+    [
+     236.5999999978611,
+     "descends to land"
+    ],
+    [
+     236.69999999785873,
+     "descends to land"
+    ],
+    [
+     236.79999999785636,
+     "descends to land"
+    ],
+    [
+     236.899999997854,
+     "descends to land"
+    ],
+    [
+     236.99999999785163,
+     "descends to land"
+    ],
+    [
+     237.09999999784927,
+     "descends to land"
+    ],
+    [
+     237.1999999978469,
+     "descends to land"
+    ],
+    [
+     237.29999999784454,
+     "descends to land"
+    ],
+    [
+     237.39999999784217,
+     "descends to land"
+    ],
+    [
+     237.47699999784035,
+     "lands"
+    ],
+    [
+     240.8999999977594,
+     "voluntary takeoff"
+    ],
+    [
+     241.59999999774286,
+     "saccade"
+    ],
+    [
+     245.79999999764354,
+     "saccade"
+    ],
+    [
+     245.9999999976388,
+     "descends to land"
+    ],
+    [
+     246.09999999763644,
+     "descends to land"
+    ],
+    [
+     246.19999999763408,
+     "descends to land"
+    ],
+    [
+     246.29999999763172,
+     "descends to land"
+    ],
+    [
+     246.39999999762935,
+     "descends to land"
+    ],
+    [
+     246.499999997627,
+     "descends to land"
+    ],
+    [
+     246.59999999762462,
+     "descends to land"
+    ],
+    [
+     246.69999999762226,
+     "descends to land"
+    ],
+    [
+     246.7999999976199,
+     "descends to land"
+    ],
+    [
+     246.89999999761753,
+     "descends to land"
+    ],
+    [
+     246.99999999761516,
+     "descends to land"
+    ],
+    [
+     247.0999999976128,
+     "descends to land"
+    ],
+    [
+     247.19999999761043,
+     "descends to land"
+    ],
+    [
+     247.29999999760807,
+     "descends to land"
+    ],
+    [
+     247.30999999760783,
+     "lands"
+    ],
+    [
+     247.79999999759625,
+     "grooms its wings"
+    ],
+    [
+     249.69999999755132,
+     "escape takeoff"
+    ]
+   ]
+  },
+  "instincts": {
+   "mode_at_reset": "flying",
+   "seconds": 240.1829999975373,
+   "wall_s": 1865.168995141983,
+   "summary": {
+    "saccade_rate_per_s": 0.7247427163354273,
+    "micro_saccade_rate_per_s": 1.4253273421263404,
+    "bout_s": 1.913424999993977,
+    "sit_s": 9.49782499989314,
+    "bouts": 20,
+    "sits": 20,
+    "landings": 21,
+    "grooms": 9,
+    "feeds": 3,
+    "sitting_fraction": 0.8276564119849138,
+    "flying_s": 41.39400000001562,
+    "sitting_s": 198.7889999987552,
+    "odour_decisions": 0,
+    "visits": {
+     "banana": 2,
+     "bread": 18,
+     "sweet": 2,
+     "punished": 0
+    },
+    "p_approach": {
+     "banana": null,
+     "bread": null
+    },
+    "fps": 19.999999999999996,
+    "brain_ms_per_step": 4.175000001986821,
+    "in_band": {
+     "saccade_rate_per_s": true,
+     "bout_s": false,
+     "sit_s": true,
+     "sitting_fraction": true
+    }
+   },
+   "raw": {
+    "saccades": 30,
+    "microSaccades": 59,
+    "bouts": [
+     3.12550000000382,
+     21.70050000004535,
+     3.395500000016213,
+     0.9885000000047199,
+     0.7255000000034642,
+     0.7255000000034642,
+     0.7255000000034642,
+     0.7255000000034642,
+     0.6645000000031729,
+     0.7254999999828442,
+     0.7254999999828442,
+     0.6619999999843458,
+     0.7254999999828442,
+     0.7254999999828442,
+     0.7254999999828442,
+     0.7254999999828442,
+     0.7254999999828442,
+     0.7004999999834354,
+     0.7254999999828442,
+     0.7254999999828442,
+     0.7254999999828442
+    ],
+    "sits": [
+     10.599499999985241,
+     21.099500000100747,
+     10.104500000048247,
+     18.51150000008839,
+     1.6745000000079955,
+     5.47450000002614,
+     14.774500000070546,
+     2.2745000000108604,
+     2.13549999996755,
+     12.174499999712111,
+     8.174499999806699,
+     5.937999999859585,
+     13.374499999683735,
+     11.174499999735758,
+     4.774499999887098,
+     6.674499999842169,
+     18.274499999567865,
+     7.799499999815566,
+     12.274499999709747,
+     2.6744999999367565
+    ],
+    "grooms": 9,
+    "feeds": 3,
+    "landings": 21,
+    "flying_s": 41.39400000001562,
+    "sitting_s": 198.7889999987552,
+    "boutStart": 240.69999999776414,
+    "sitStart": 241.42549999774698,
+    "decisions": 0,
+    "mode": "landed",
+    "sugar": "banana",
+    "hunger": 1,
+    "visits": {
+     "banana": 2,
+     "bread": 18,
+     "sweet": 2,
+     "punished": 0
+    },
+    "lastP": {
+     "banana": null,
+     "bread": null
+    },
+    "lessons": {
+     "type": "learn:ready",
+     "plastic": 16795,
+     "outputs": [
+      15595,
+      8181
+     ],
+     "critic": 4130,
+     "changed": 0,
+     "meanAbsChange": 0,
+     "maxAbsChange": 0,
+     "dropped": 0
+    },
+    "fps": 19.999999999999996,
+    "brainMs": 4.175000001986821,
+    "active": 3496
+   },
+   "brain_timeouts": 0,
+   "page_errors": [],
+   "events_tail": [
+    [
+     224.59999999814485,
+     "descends to the bread"
+    ],
+    [
+     224.6999999981425,
+     "descends to the bread"
+    ],
+    [
+     224.79999999814012,
+     "descends to the bread"
+    ],
+    [
+     224.89999999813776,
+     "descends to the bread"
+    ],
+    [
+     224.9999999981354,
+     "descends to the bread"
+    ],
+    [
+     225.0254999981348,
+     "lands on the bread: nothing"
+    ],
+    [
+     227.19999999808337,
+     "grooms its head"
+    ],
+    [
+     229.69999999802425,
+     "sits"
+    ],
+    [
+     237.29999999784454,
+     "voluntary takeoff"
+    ],
+    [
+     237.29999999784454,
+     "smells the bread"
+    ],
+    [
+     237.39999999784217,
+     "descends to the bread"
+    ],
+    [
+     237.4999999978398,
+     "descends to the bread"
+    ],
+    [
+     237.59999999783744,
+     "descends to the bread"
+    ],
+    [
+     237.69999999783508,
+     "descends to the bread"
+    ],
+    [
+     237.7999999978327,
+     "descends to the bread"
+    ],
+    [
+     237.89999999783035,
+     "descends to the bread"
+    ],
+    [
+     237.99999999782798,
+     "descends to the bread"
+    ],
+    [
+     238.02549999782738,
+     "lands on the bread: nothing"
+    ],
+    [
+     240.69999999776414,
+     "voluntary takeoff"
+    ],
+    [
+     240.69999999776414,
+     "smells the bread"
+    ],
+    [
+     240.79999999776177,
+     "saccade"
+    ],
+    [
+     240.79999999776177,
+     "descends to the bread"
+    ],
+    [
+     240.8999999977594,
+     "descends to the bread"
+    ],
+    [
+     240.99999999775704,
+     "descends to the bread"
+    ],
+    [
+     241.09999999775468,
+     "descends to the bread"
+    ],
+    [
+     241.19999999775231,
+     "saccade"
+    ],
+    [
+     241.19999999775231,
+     "descends to the bread"
+    ],
+    [
+     241.29999999774995,
+     "descends to the bread"
+    ],
+    [
+     241.39999999774759,
+     "descends to the bread"
+    ],
+    [
+     241.42549999774698,
+     "lands on the bread: nothing"
+    ]
+   ]
   }
  }
 }
