@@ -9,9 +9,12 @@ Three declared, generic steps (cadence: ``Brain(log_gain=...)``, ``naive_efficac
 - the plastic seam started naive: every Kenyon-cell-to-MBON class at the same weight, because a
   specimen's counts at its memory site are that specimen's memories (on the measured counts the
   naive fly avoided the fruit odour and approached the yeast before any lesson);
-- the two output cells calibrated to one half, jointly, over the situations the fly decides in
-  (hovering over a fruit: that fruit's odour full on its receptor class, the other's at its plume
-  level, the flight tone), so a nudge has a slope on each.
+- the two output cells calibrated jointly over the situations the fly decides in (hovering over
+  a fruit: that fruit's odour full on its receptor class, the other's at its plume level, the
+  flight tone), so a nudge has a slope on each: the approach cell to 0.6 and the avoidance cell
+  to 0.4, the naive fly's attraction to food smells (a fly that never reaches a source is never
+  rewarded; Root et al. 2011 for the animal's; at one half each the naive fly made eleven
+  fruitless searches before its first sugar on the page).
 """
 from __future__ import annotations
 
@@ -32,7 +35,7 @@ OTHER_LEVEL = 0.16  # the other fruit's smell at a fruit (the page's plume, 25 c
 # what the fly senses while it hovers over a fruit and decides, the page's senses.js at that moment
 DECISION_SENSES = {"haltere:left": 0.5, "haltere:right": 0.5, "ocelli:left": 0.71, "ocelli:right": 0.71,
                    "lptc:hs:left": 0.5, "lptc:vs:left": 0.5, "lptc:hs:right": 0.5, "lptc:vs:right": 0.5}
-READOUT_TARGET = 0.5
+READOUT_TARGETS = (0.6, 0.4)  # the approach cell, the avoidance cell: the naive attraction to food smells
 
 
 def decision_drives(connectome: Connectome, amplitude: float, level: float = 1.0) -> np.ndarray:
@@ -76,7 +79,7 @@ def setup_lessons(connectome: Connectome, *, backend: str = "cpu", gain: float =
     model = NeuronModel(gain=gain)
     base = Brain(connectome, model, log_gain=log_gain, efficacy=efficacy, backend=backend)
     drives = decision_drives(connectome, model.stimulus_amplitude)
-    bias = calibrate_bias(base, drives, {outputs: READOUT_TARGET}, per_neuron=True, steps=steps, tolerance=tolerance) if calibrate else np.zeros(connectome.n)
+    bias = calibrate_bias(base, drives, {(i,): t for i, t in zip(outputs, READOUT_TARGETS, strict=True)}, per_neuron=True, steps=steps, tolerance=tolerance) if calibrate else np.zeros(connectome.n)
     brain = base.with_parameters(bias=bias) if backend == "cpu" else Brain(connectome, model, log_gain=log_gain, efficacy=efficacy, bias=bias, backend=backend)
     state = brain.settle_batch(drives, steps=steps, tolerance=tolerance).activation
     seam = seam_report(connectome, SEAM[0], SEAM[1])
@@ -84,7 +87,7 @@ def setup_lessons(connectome: Connectome, *, backend: str = "cpu", gain: float =
         "outputs": {name: int(i) for name, i in zip(OUTPUTS, outputs, strict=True)},
         "seam": {"classes": seam["classes"], "synapses": seam["synapses"], "coverage_pre": seam["coverage_pre"], "median_count": seam["median_count"],
                  "classes_onto_outputs": {name: seam["classes_per_post"][i] for name, i in zip(OUTPUTS, outputs, strict=True)}},
-        "naive_seam": bool(naive), "readout_target": READOUT_TARGET if calibrate else None,
+        "naive_seam": bool(naive), "readout_targets": {name: t for name, t in zip(OUTPUTS, READOUT_TARGETS, strict=True)} if calibrate else None,
         "readout_bias": {name: float(bias[i]) for name, i in zip(OUTPUTS, outputs, strict=True)},
         "naive_outputs": {odour: {name: float(state[k, i]) for name, i in zip(OUTPUTS, outputs, strict=True)} for k, odour in enumerate(ODOURS)},
         "decision_senses": DECISION_SENSES, "other_level": OTHER_LEVEL,

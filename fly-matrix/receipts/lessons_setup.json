@@ -27,19 +27,22 @@
   }
  },
  "naive_seam": true,
- "readout_target": 0.5,
+ "readout_targets": {
+  "mbon:MBON11:right": 0.6,
+  "mbon:MBON05:left": 0.4
+ },
  "readout_bias": {
-  "mbon:MBON11:right": 1.602264404296875,
-  "mbon:MBON05:left": 1.383453369140625
+  "mbon:MBON11:right": 1.528472900390625,
+  "mbon:MBON05:left": 1.282379150390625
  },
  "naive_outputs": {
   "decaying_fruit": {
-   "mbon:MBON11:right": 0.2733170004764227,
-   "mbon:MBON05:left": 0.515776502743463
+   "mbon:MBON11:right": 0.3847658729128605,
+   "mbon:MBON05:left": 0.4153879685503201
   },
   "yeasty": {
-   "mbon:MBON11:right": 0.7267619137921206,
-   "mbon:MBON05:left": 0.4841338772744655
+   "mbon:MBON11:right": 0.815153209547187,
+   "mbon:MBON05:left": 0.3845469534459956
   }
  },
  "decision_senses": {

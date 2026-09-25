@@ -81,19 +81,22 @@
      }
     },
     "naive_seam": true,
-    "readout_target": 0.5,
+    "readout_targets": {
+     "mbon:MBON11:right": 0.6,
+     "mbon:MBON05:left": 0.4
+    },
     "readout_bias": {
-     "mbon:MBON11:right": 1.602447509765625,
-     "mbon:MBON05:left": 1.383636474609375
+     "mbon:MBON11:right": 1.528472900390625,
+     "mbon:MBON05:left": 1.282562255859375
     },
     "naive_outputs": {
      "decaying_fruit": {
-      "mbon:MBON11:right": 0.2740715444087982,
-      "mbon:MBON05:left": 0.5159003734588623
+      "mbon:MBON11:right": 0.3854857385158539,
+      "mbon:MBON05:left": 0.41551074385643005
      },
      "yeasty": {
-      "mbon:MBON11:right": 0.7259257435798645,
-      "mbon:MBON05:left": 0.48391759395599365
+      "mbon:MBON11:right": 0.8143733739852905,
+      "mbon:MBON05:left": 0.3843531310558319
      }
     },
     "decision_senses": {
@@ -114,98 +117,98 @@
       {
        "phase": "naive",
        "p_approach": [
-        0.3087231655182511,
-        0.6913333526682476
+        0.475000200200561,
+        0.8073930495254021
        ]
       },
       {
        "phase": "sugar at fruit x4",
        "landed": 3,
        "p_approach": [
-        0.7620127916281046,
-        0.8011672438915768
+        0.8074578012727469,
+        0.8571980448202087
        ]
       },
       {
        "phase": "blows at fruit x12",
        "landed": 5,
        "p_approach": [
-        0.18824724019258576,
-        0.5954957053448819
+        0.3101791919241912,
+        0.7618770006878205
        ]
       },
       {
        "phase": "sugar at yeast x16",
        "landed": 14,
        "p_approach": [
-        0.26722223386030397,
-        0.8542586164119871
+        0.40723991112724106,
+        0.8823020210453539
        ]
       },
       {
        "phase": "blows at fruit x6",
        "landed": 1,
        "p_approach": [
-        0.17342695754486118,
-        0.8451415709780468
+        0.27336462114151383,
+        0.8738779948661957
        ]
       }
      ],
      "final": {
-      "first": 0.17342695754486118,
-      "second": 0.8451415709780468
+      "first": 0.27336462114151383,
+      "second": 0.8738779948661957
      },
      "reversed": true,
-     "seconds": 33.2
+     "seconds": 34.8
     },
     "yeast first": {
      "trace": [
       {
        "phase": "naive",
        "p_approach": [
-        0.30872322912033645,
-        0.6913334798595072
+        0.4750003736128344,
+        0.8073930804223646
        ]
       },
       {
        "phase": "sugar at yeast x4",
-       "landed": 3,
+       "landed": 4,
        "p_approach": [
-        0.3817334685097546,
-        0.8184863891202081
+        0.5305472371860083,
+        0.8588506938967544
        ]
       },
       {
        "phase": "blows at yeast x12",
-       "landed": 7,
+       "landed": 9,
        "p_approach": [
-        0.2261274680964385,
-        0.24629958520692408
+        0.32538115590590333,
+        0.31082629219191493
        ]
       },
       {
        "phase": "sugar at fruit x16",
-       "landed": 10,
+       "landed": 12,
        "p_approach": [
-        0.8618454670545435,
-        0.5827601193908712
+        0.8871488228113337,
+        0.6307214740878048
        ]
       },
       {
        "phase": "blows at yeast x6",
-       "landed": 2,
+       "landed": 3,
        "p_approach": [
-        0.8463583163654198,
-        0.36898236612112556
+        0.848145573563099,
+        0.2534438139659482
        ]
       }
      ],
      "final": {
-      "first": 0.36898236612112556,
-      "second": 0.8463583163654198
+      "first": 0.2534438139659482,
+      "second": 0.848145573563099
      },
      "reversed": true,
-     "seconds": 29.0
+     "seconds": 34.3
     }
    }
   },
@@ -226,7 +229,10 @@
      }
     },
     "naive_seam": true,
-    "readout_target": 0.5,
+    "readout_targets": {
+     "mbon:MBON11:right": 0.6,
+     "mbon:MBON05:left": 0.4
+    },
     "readout_bias": {
      "mbon:MBON11:right": -5.999908447265625,
      "mbon:MBON05:left": -5.999908447265625
@@ -301,7 +307,7 @@
       "second": 0.5
      },
      "reversed": false,
-     "seconds": 18.2
+     "seconds": 19.1
     },
     "yeast first": {
      "trace": [
@@ -350,7 +356,7 @@
       "second": 0.5
      },
      "reversed": false,
-     "seconds": 17.9
+     "seconds": 19.0
     }
    }
   }
