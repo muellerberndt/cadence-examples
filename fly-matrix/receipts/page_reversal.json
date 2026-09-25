@@ -1,0 +1,245 @@
+{
+ "tool": "tools/reversal_scenario.py",
+ "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7",
+ "payload": {
+  "atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+  "brain.json": "f43f50887302467132a0205ec7f9b0da3e32247f39678fe0d03b9f1a527b5657",
+  "lessons.json": "78b037212f8f7149d30fb1a88a48f076dda7e2edee04ed13d787f95432378471"
+ },
+ "directions": {
+  "banana first, seed 1": {
+   "seed": 1,
+   "speed": 2.0,
+   "pilot": "brain",
+   "first": "banana",
+   "other": "bread",
+   "phase1": {
+    "fed": true,
+    "at_s": 41.12500000001434,
+    "wall_s": 122.10547184944153,
+    "lessons": 1
+   },
+   "phase2": {
+    "found": true,
+    "blows": 4,
+    "seconds": 252.06699999650857,
+    "wall_s": 836.1444628238678,
+    "first_landings": 3,
+    "other_landings": 1
+   },
+   "after": {
+    "seconds": 240,
+    "first_landings": 1,
+    "blows": 1,
+    "other_landings": 3,
+    "sugar_found": 3
+   },
+   "p_approach": {
+    "banana": 0.22487256212217926,
+    "bread": 0.8028459827372773
+   },
+   "lessons": 18,
+   "brain_timeouts": 0,
+   "fps": 19.999999999999996,
+   "wall_s": 1727.1879007816315,
+   "page_errors": [],
+   "result": "PASS",
+   "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7"
+  },
+  "bread first, seed 1": {
+   "seed": 1,
+   "speed": 2.0,
+   "pilot": "brain",
+   "first": "bread",
+   "other": "banana",
+   "phase1": {
+    "fed": false,
+    "at_s": 600.0299999892671,
+    "wall_s": 1915.0804388523102,
+    "lessons": 44
+   },
+   "phase2": {
+    "found": true,
+    "blows": 0,
+    "seconds": 5.159999999877982,
+    "wall_s": 16.408764123916626,
+    "first_landings": 0,
+    "other_landings": 1
+   },
+   "after": {
+    "seconds": 240,
+    "first_landings": 0,
+    "blows": 0,
+    "other_landings": 5,
+    "sugar_found": 5
+   },
+   "p_approach": {
+    "banana": 0.3633284162067713,
+    "bread": 0.3716082648803622
+   },
+   "lessons": 54,
+   "brain_timeouts": 0,
+   "fps": 19.999999999999996,
+   "wall_s": 3072.434017896652,
+   "page_errors": [],
+   "result": "PASS",
+   "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7"
+  },
+  "banana first, seed 2": {
+   "seed": 2,
+   "speed": 2.0,
+   "pilot": "brain",
+   "first": "banana",
+   "other": "bread",
+   "phase1": {
+    "fed": true,
+    "at_s": 38.85150000000348,
+    "wall_s": 385.9278042316437,
+    "lessons": 2
+   },
+   "phase2": {
+    "found": true,
+    "blows": 5,
+    "seconds": 244.73999999674643,
+    "wall_s": 2100.9399240016937,
+    "first_landings": 4,
+    "other_landings": 1
+   },
+   "after": {
+    "seconds": 240,
+    "first_landings": 2,
+    "blows": 2,
+    "other_landings": 2,
+    "sugar_found": 2
+   },
+   "p_approach": {
+    "banana": 0.10777932177792153,
+    "bread": 0.7324867297069979
+   },
+   "lessons": 21,
+   "brain_timeouts": 0,
+   "fps": 19.999999999999996,
+   "wall_s": 3624.141986131668,
+   "page_errors": [],
+   "result": "PASS",
+   "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7"
+  },
+  "banana first, seed 3": {
+   "seed": 3,
+   "speed": 2.0,
+   "pilot": "brain",
+   "first": "banana",
+   "other": "bread",
+   "phase1": {
+    "fed": true,
+    "at_s": 83.85200000021835,
+    "wall_s": 794.3262112140656,
+    "lessons": 2
+   },
+   "phase2": {
+    "found": false,
+    "blows": 9,
+    "seconds": 900.1199999799697,
+    "wall_s": 3737.4522018432617,
+    "first_landings": 8,
+    "other_landings": 0
+   },
+   "after": {
+    "seconds": 240,
+    "first_landings": 0,
+    "blows": 0,
+    "other_landings": 1,
+    "sugar_found": 1
+   },
+   "p_approach": {
+    "banana": 0.08719148337683168,
+    "bread": 0.2884673028522148
+   },
+   "lessons": 48,
+   "brain_timeouts": 0,
+   "fps": 19.999999999999996,
+   "wall_s": 4808.593338251114,
+   "page_errors": [],
+   "result": "FAIL",
+   "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7"
+  },
+  "bread first, seed 2": {
+   "seed": 2,
+   "speed": 2.0,
+   "pilot": "brain",
+   "first": "bread",
+   "other": "banana",
+   "phase1": {
+    "fed": true,
+    "at_s": 181.97849999915272,
+    "wall_s": 1552.4660949707031,
+    "lessons": 6
+   },
+   "phase2": {
+    "found": true,
+    "blows": 3,
+    "seconds": 17.939999999575775,
+    "wall_s": 132.43511199951172,
+    "first_landings": 2,
+    "other_landings": 1
+   },
+   "after": {
+    "seconds": 240,
+    "first_landings": 3,
+    "blows": 3,
+    "other_landings": 2,
+    "sugar_found": 2
+   },
+   "p_approach": {
+    "banana": 0.6540940455088858,
+    "bread": 0.6431029814312936
+   },
+   "lessons": 20,
+   "brain_timeouts": 0,
+   "fps": 19.999999999999996,
+   "wall_s": 3338.69748878479,
+   "page_errors": [],
+   "result": "PASS",
+   "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7"
+  },
+  "bread first, seed 3": {
+   "seed": 3,
+   "speed": 2.0,
+   "pilot": "brain",
+   "first": "bread",
+   "other": "banana",
+   "phase1": {
+    "fed": false,
+    "at_s": 600.0319999892671,
+    "wall_s": 3846.660959005356,
+    "lessons": 25
+   },
+   "phase2": {
+    "found": true,
+    "blows": 0,
+    "seconds": 35.159999999168576,
+    "wall_s": 64.98975205421448,
+    "first_landings": 0,
+    "other_landings": 1
+   },
+   "after": {
+    "seconds": 240,
+    "first_landings": 5,
+    "blows": 5,
+    "other_landings": 3,
+    "sugar_found": 3
+   },
+   "p_approach": {
+    "banana": 0.7530511120817119,
+    "bread": 0.8207963818415416
+   },
+   "lessons": 38,
+   "brain_timeouts": 0,
+   "fps": 19.999999999999996,
+   "wall_s": 4385.197751998901,
+   "page_errors": [],
+   "result": "PASS",
+   "page": "90fda8e7f12e11ec17fa0c0bbd3609edbf0e9eb7"
+  }
+ }
+}
