@@ -44,6 +44,34 @@
    "lptc:hs:right": 0.5,
    "lptc:vs:right": 0.5
   },
-  "other_level": 0.16
+  "other_level": 0.16,
+  "preflight": {
+   "warnings": [],
+   "outputs": {
+    "mbon:MBON11:right": {
+     "min": 0.3847658729128605,
+     "max": 0.815153209547187,
+     "saturated": false
+    },
+    "mbon:MBON05:left": {
+     "min": 0.3845469534459956,
+     "max": 0.4153879685503201,
+     "saturated": false
+    }
+   },
+   "shared_senders_code": {
+    "0-1": 0.22511848341232227
+   },
+   "active_plastic_input": {
+    "mbon:MBON11:right": [
+     75,
+     121
+    ],
+    "mbon:MBON05:left": [
+     13,
+     12
+    ]
+   }
+  }
  }
 }

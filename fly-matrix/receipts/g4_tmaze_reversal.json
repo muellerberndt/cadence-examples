@@ -91,12 +91,12 @@
     },
     "naive_outputs": {
      "decaying_fruit": {
-      "mbon:MBON11:right": 0.3854857385158539,
+      "mbon:MBON11:right": 0.3854861557483673,
       "mbon:MBON05:left": 0.41551074385643005
      },
      "yeasty": {
       "mbon:MBON11:right": 0.8143733739852905,
-      "mbon:MBON05:left": 0.3843531310558319
+      "mbon:MBON05:left": 0.38435325026512146
      }
     },
     "decision_senses": {
@@ -109,7 +109,35 @@
      "lptc:hs:right": 0.5,
      "lptc:vs:right": 0.5
     },
-    "other_level": 0.16
+    "other_level": 0.16,
+    "preflight": {
+     "warnings": [],
+     "outputs": {
+      "mbon:MBON11:right": {
+       "min": 0.3854859471321106,
+       "max": 0.8143731951713562,
+       "saturated": false
+      },
+      "mbon:MBON05:left": {
+       "min": 0.38435325026512146,
+       "max": 0.41551074385643005,
+       "saturated": false
+      }
+     },
+     "shared_senders_code": {
+      "0-1": 0.22511848341232227
+     },
+     "active_plastic_input": {
+      "mbon:MBON11:right": [
+       75,
+       121
+      ],
+      "mbon:MBON05:left": [
+       13,
+       12
+      ]
+     }
+    }
    },
    "directions": {
     "fruit first": {
@@ -133,82 +161,82 @@
        "phase": "blows at fruit x12",
        "landed": 5,
        "p_approach": [
-        0.3101791919241912,
-        0.7618770006878205
+        0.31017945762196747,
+        0.7618766762826483
        ]
       },
       {
        "phase": "sugar at yeast x16",
        "landed": 14,
        "p_approach": [
-        0.40723991112724106,
-        0.8823020210453539
+        0.40723974326378737,
+        0.8823020623097086
        ]
       },
       {
        "phase": "blows at fruit x6",
        "landed": 1,
        "p_approach": [
-        0.27336462114151383,
+        0.27336464087426826,
         0.8738779948661957
        ]
       }
      ],
      "final": {
-      "first": 0.27336462114151383,
+      "first": 0.27336464087426826,
       "second": 0.8738779948661957
      },
      "reversed": true,
-     "seconds": 34.8
+     "seconds": 46.4
     },
     "yeast first": {
      "trace": [
       {
        "phase": "naive",
        "p_approach": [
-        0.4750003736128344,
-        0.8073930804223646
+        0.47500002678829367,
+        0.8073930495254021
        ]
       },
       {
        "phase": "sugar at yeast x4",
        "landed": 4,
        "p_approach": [
-        0.5305472371860083,
-        0.8588506938967544
+        0.5305473361562877,
+        0.8588506457257917
        ]
       },
       {
        "phase": "blows at yeast x12",
        "landed": 9,
        "p_approach": [
-        0.32538115590590333,
-        0.31082629219191493
+        0.32538127583993975,
+        0.31082638795273415
        ]
       },
       {
        "phase": "sugar at fruit x16",
        "landed": 12,
        "p_approach": [
-        0.8871488228113337,
-        0.6307214740878048
+        0.8871488327569435,
+        0.6307215666386722
        ]
       },
       {
        "phase": "blows at yeast x6",
        "landed": 3,
        "p_approach": [
-        0.848145573563099,
-        0.2534438139659482
+        0.8481457398928229,
+        0.2534440395219674
        ]
       }
      ],
      "final": {
-      "first": 0.2534438139659482,
-      "second": 0.848145573563099
+      "first": 0.2534440395219674,
+      "second": 0.8481457398928229
      },
      "reversed": true,
-     "seconds": 34.3
+     "seconds": 44.1
     }
    }
   },
@@ -257,7 +285,40 @@
      "lptc:hs:right": 0.5,
      "lptc:vs:right": 0.5
     },
-    "other_level": 0.16
+    "other_level": 0.16,
+    "preflight": {
+     "warnings": [
+      "output 3852 sits within 0.02 of 0 or 1 under every drive (from 1.00 to 1.00): no slope for a nudge; calibrate_bias",
+      "output 1467 sits within 0.02 of 0 or 1 under every drive (from 1.00 to 1.00): no slope for a nudge; calibrate_bias",
+      "the plastic senders' code is 0.82 shared between drives 0 and 1 (at most 0.25): a population upstream ignites at the global gain; select its gain by protocol on the specific fact (Brain(log_gain=...))",
+      "output 1467 has 43 plastic classes and under drive 1 fewer than 10 come from active senders: the seam is thin; seam_report, and keep it whole in custody"
+     ],
+     "outputs": {
+      "mbon:MBON11:right": {
+       "min": 1.0,
+       "max": 1.0,
+       "saturated": true
+      },
+      "mbon:MBON05:left": {
+       "min": 1.0,
+       "max": 1.0,
+       "saturated": true
+      }
+     },
+     "shared_senders_code": {
+      "0-1": 0.8159722222222222
+     },
+     "active_plastic_input": {
+      "mbon:MBON11:right": [
+       19,
+       21
+      ],
+      "mbon:MBON05:left": [
+       10,
+       9
+      ]
+     }
+    }
    },
    "directions": {
     "fruit first": {
@@ -307,7 +368,7 @@
       "second": 0.5
      },
      "reversed": false,
-     "seconds": 19.1
+     "seconds": 26.1
     },
     "yeast first": {
      "trace": [
@@ -356,7 +417,7 @@
       "second": 0.5
      },
      "reversed": false,
-     "seconds": 19.0
+     "seconds": 24.3
     }
    }
   }

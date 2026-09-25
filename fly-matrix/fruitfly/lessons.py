@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
-from cadence import Brain, Connectome, NeuronModel, calibrate_bias, naive_efficacy, seam_report
+from cadence import Brain, Connectome, NeuronModel, calibrate_bias, naive_efficacy, preflight, seam_report
 
 from .brain import GAIN, log_gain_for
 
@@ -83,6 +83,8 @@ def setup_lessons(connectome: Connectome, *, backend: str = "cpu", gain: float =
     brain = base.with_parameters(bias=bias) if backend == "cpu" else Brain(connectome, model, log_gain=log_gain, efficacy=efficacy, bias=bias, backend=backend)
     state = brain.settle_batch(drives, steps=steps, tolerance=tolerance).activation
     seam = seam_report(connectome, SEAM[0], SEAM[1])
+    # the library's check before the first lesson: an empty list of warnings is what the receipt should show
+    check = preflight(brain, outputs, plastic, drives, level=0.05, steps=steps, tolerance=tolerance)
     report = {
         "outputs": {name: int(i) for name, i in zip(OUTPUTS, outputs, strict=True)},
         "seam": {"classes": seam["classes"], "synapses": seam["synapses"], "coverage_pre": seam["coverage_pre"], "median_count": seam["median_count"],
@@ -91,5 +93,7 @@ def setup_lessons(connectome: Connectome, *, backend: str = "cpu", gain: float =
         "readout_bias": {name: float(bias[i]) for name, i in zip(OUTPUTS, outputs, strict=True)},
         "naive_outputs": {odour: {name: float(state[k, i]) for name, i in zip(OUTPUTS, outputs, strict=True)} for k, odour in enumerate(ODOURS)},
         "decision_senses": DECISION_SENSES, "other_level": OTHER_LEVEL,
+        "preflight": {"warnings": check["warnings"], "outputs": {name: check["outputs"][i] for name, i in zip(OUTPUTS, outputs, strict=True)},
+                      "shared_senders_code": {f"{a}-{b}": v for (a, b), v in check["shared"].items()}, "active_plastic_input": {name: check["eligibility"][i] for name, i in zip(OUTPUTS, outputs, strict=True)}},
     }
     return LessonSetup(log_gain=log_gain, efficacy=efficacy, bias=bias, plastic=plastic, outputs=outputs, report=report)
