@@ -40,6 +40,7 @@ export const SMELL_FLOOR = 0.04;        // concentration at the head below which
 export const ODOUR_TURN = Math.PI / 4;  // rad, the largest supplied turn toward or away from a smell per decision (the arena's)
 export const APPETITE = 0.2;            // hunger below which smells do not call
 export const LAND_REACH = 0.14;         // m, an approached fruit is landed on inside this distance
+export const FRUIT_FOOTPRINT = 0.14;    // m, a fruit with its saucer: a standing fly inside this is on it
 export const EPISODE_S = 15;            // s, an odour search that reaches no fruit ends here (the arena's time limit)
 export const DOPAMINE_S = 0.8;          // s, how long the dopaminergic neurons show a reward or a punishment
 // The fidgets of a real fly's flight, declared with their sources: body saccades come in bursts and
@@ -73,14 +74,18 @@ export class Life {
     this.controls = hoverTrim();
     this.wingsOff = false;
     this.readouts = {}; this.baseline = null; this.source = "instincts";
-    // the two fruits and their odour classes; the sugar sits on one of them (the visitor moves it)
+    // the two fruits and their odour classes; the sugar sits on one of them (the visitor moves it).
+    // The positions are the room's own arrays, which placeFruit mutates in place, so the smell, the
+    // descent and the perch follow a fruit wherever the visitor sets it down; a copy here left the
+    // fly landing and feeding at the fruit's first place after a move.
     const fr = room.fruits || {};
     this.fruits = {
-      banana: { pos: fr.banana ? fr.banana.pos.slice() : [room.table.x0 + (room.table.x1 - room.table.x0) / 2 - 0.12, room.table.y0 + (room.table.y1 - room.table.y0) / 2, room.table.z + 0.03], odour: "decaying_fruit", sigma: ODOUR_SIGMA },
-      bread: { pos: fr.bread ? fr.bread.pos.slice() : [room.table.x0 + (room.table.x1 - room.table.x0) / 2 + 0.13, room.table.y0 + (room.table.y1 - room.table.y0) / 2, room.table.z + 0.03], odour: "yeasty", sigma: ODOUR_SIGMA },
+      banana: { pos: fr.banana ? fr.banana.pos : [room.table.x0 + (room.table.x1 - room.table.x0) / 2 - 0.12, room.table.y0 + (room.table.y1 - room.table.y0) / 2, room.table.z + 0.03], odour: "decaying_fruit", sigma: ODOUR_SIGMA },
+      bread: { pos: fr.bread ? fr.bread.pos : [room.table.x0 + (room.table.x1 - room.table.x0) / 2 + 0.13, room.table.y0 + (room.table.y1 - room.table.y0) / 2, room.table.z + 0.03], odour: "yeasty", sigma: ODOUR_SIGMA },
     };
     this.sugar = "banana";
     this.fruit = this.fruits.banana.pos;   // kept for older callers
+    this.landingFruit = null;             // { name, dx, dy } while the descent is to a fruit: the target follows the fruit
     // the lessons: odour decisions, the search in progress, rewards and punishments
     this.smelled = null;                  // the fruit whose odour is strongest at the head, or null
     this.smellC = 0;
@@ -99,6 +104,19 @@ export class Life {
   }
 
   setSugar(name) { this.sugar = name; this.log(name ? `sugar on the ${name}` : "no sugar anywhere"); }
+  /** The visitor set a fruit down elsewhere (`from` is where it stood). A fly standing on it, or
+   *  where it now lands, is shaken off; a descent to it follows it (see step). */
+  fruitMoved(name, from) {
+    const F = this.fruits[name]; if (!F) return false;
+    this.log(`the ${name} is moved`);
+    if (this.mode === "flying") return false;
+    const [x, y] = this.flight.p, reach = FRUIT_FOOTPRINT;
+    const wasOn = from && Math.hypot(x - from[0], y - from[1]) < reach, isUnder = Math.hypot(x - F.pos[0], y - F.pos[1]) < reach;
+    if (!wasOn && !isUnder) return false;
+    if (this.search) this.closeSearch(0, `the ${name} is taken away`);
+    this.takeoff(wasOn ? `shaken off the ${name}` : `startled by the ${name}`);
+    return true;
+  }
   fruitAt(p, reach = 0.09) { for (const [name, f] of Object.entries(this.fruits)) if (Math.hypot(p[0] - f.pos[0], p[1] - f.pos[1]) < reach && Math.abs(p[2] - f.pos[2]) < 0.03) return name; return null; }
 
   log(text) { this.events.push([this.clock, text]); if (this.events.length > 40) this.events.shift(); }
@@ -221,11 +239,14 @@ export class Life {
     const f = this.flight, t = this.room.table, [x, y] = f.p;
     const nearTable = x > t.x0 - 0.4 && x < t.x1 + 0.4 && y > t.y0 - 0.4 && y < t.y1 + 0.4;
     const drawn = this.valence && this.valence.action === 0 && this.smelled === this.valence.fruit && this.hunger > APPETITE ? this.fruits[this.smelled] : null;
-    if (drawn) this.landing = [drawn.pos[0] + (this.rng() - 0.5) * 0.03, drawn.pos[1] + (this.rng() - 0.5) * 0.03, drawn.pos[2]];
-    else if (nearTable) this.landing = [Math.min(t.x1 - 0.05, Math.max(t.x0 + 0.05, x)), Math.min(t.y1 - 0.05, Math.max(t.y0 + 0.05, y)), t.z];
+    this.landingFruit = null;
+    if (drawn) { this.landingFruit = { name: this.smelled, dx: (this.rng() - 0.5) * 0.03, dy: (this.rng() - 0.5) * 0.03 }; this.landing = this.landingPoint(); }
+    else if (nearTable) { const lx = Math.min(t.x1 - 0.05, Math.max(t.x0 + 0.05, x)), ly = Math.min(t.y1 - 0.05, Math.max(t.y0 + 0.05, y)); this.landing = [lx, ly, this.room.surfaceZ ? this.room.surfaceZ(lx, ly) : t.z]; }
     else this.landing = [x, y, 0.0];
     this.log(drawn ? `descends to the ${this.smelled}` : "descends to land");
   }
+  /** The landing spot on the fruit the descent is to, where the fruit stands now. */
+  landingPoint() { const L = this.landingFruit, F = this.fruits[L.name].pos; return [F[0] + L.dx, F[1] + L.dy, F[2]]; }
 
   // ---- the lessons: what the page asks the worker, and what the outcome was ------------------
   /** Called at every life decision: whether the brain should take an odour decision now. */
@@ -263,7 +284,7 @@ export class Life {
     return true;
   }
 
-  startEscape(why) { this.escape = 0.25; this.heading = wrap_(this.heading + (this.rng() < 0.5 ? 1 : -1) * Math.PI / 2); this.speed = 1.0; this.altitude = Math.min(2.2, this.altitude + 0.4); this.landing = null; this.log("escape: " + why); }
+  startEscape(why) { this.escape = 0.25; this.heading = wrap_(this.heading + (this.rng() < 0.5 ? 1 : -1) * Math.PI / 2); this.speed = 1.0; this.altitude = Math.min(2.2, this.altitude + 0.4); this.landing = null; this.landingFruit = null; this.log("escape: " + why); }
   startFeeding() { this.mode = "feeding"; this.episode = FEED_S; this.ethogram.feeds++; this.log("feeds on the fruit"); }
   startGrooming() { this.mode = "grooming"; this.episode = GROOM_S; this.ethogram.grooms++; this.groomTarget = ["head", "head", "wings", "legs"][Math.floor(this.rng() * 4)]; this.log(`grooms its ${this.groomTarget}`); }
   /** What the body shows: the pose the fly model draws. */
@@ -275,7 +296,7 @@ export class Life {
     f.p = [P[0], P[1], P[2] + RADIUS]; f.v = [0, 0, 0]; f.w = [0, 0, 0]; f.q = [Math.cos(yaw / 2), 0, 0, Math.sin(yaw / 2)];
     f.landed = true; f.touching = 1; f.onFloor = P[2] < 0.001;
   }
-  takeoff(why) { this.perch = null; if (this.ethogram.sitStart !== null) { this.ethogram.sits.push(this.clock - this.ethogram.sitStart); this.ethogram.sitStart = null; } this.ethogram.boutStart = this.clock; this.takeoffAt = this.clock; this.mode = "flying"; this.wingsOff = false; this.landing = null; this.bout = expo(this.rng, BOUT_MEAN_S); this.altitude = Math.max(0.6, this.flight.p[2] + 0.4); this.speed = CRUISE; this.heading = this.flight.euler()[2]; this.flight.v[2] += 0.28; this.log(why); }
+  takeoff(why) { this.perch = null; if (this.ethogram.sitStart !== null) { this.ethogram.sits.push(this.clock - this.ethogram.sitStart); this.ethogram.sitStart = null; } this.ethogram.boutStart = this.clock; this.takeoffAt = this.clock; this.mode = "flying"; this.wingsOff = false; this.landing = null; this.landingFruit = null; this.bout = expo(this.rng, BOUT_MEAN_S); this.altitude = Math.max(0.6, this.flight.p[2] + 0.4); this.speed = CRUISE; this.heading = this.flight.euler()[2]; this.flight.v[2] += 0.28; this.log(why); }
 
   // ---- every physics step: the course into the pilot, the pilot into the wings ---------------
   step(dt) {
@@ -288,12 +309,14 @@ export class Life {
       if (this.escape > 0) this.escape -= dt;
       const p = this.pilot;
       if (this.landing) {
+        if (this.landingFruit) this.landing = this.landingPoint();  // the fruit may have been moved during the descent
+        else if (this.room.surfaceZ) this.landing[2] = this.room.surfaceZ(this.landing[0], this.landing[1]);  // a fruit may have been set down on the spot
         const L = this.landing, dxy = Math.hypot(L[0] - f.p[0], L[1] - f.p[1]);
         p.target = [L[0], L[1], dxy > 0.15 ? Math.max(L[2] + 0.12, f.p[2] - 0.05) : L[2] + RADIUS + 0.0008];
         p.heading = dxy > 0.05 ? Math.atan2(L[1] - f.p[1], L[0] - f.p[0]) : p.heading; p.speed = Math.max(0.05, Math.min(CRUISE, dxy));
         const settled = dxy < 0.03 && Math.abs(f.p[2] - (L[2] + RADIUS)) < 0.004 && f.speed() < 0.1;
         if (settled || f.landed || (this.wingsOff && f.touching > 0 && f.speed() < 0.02)) {
-          this.mode = "landed"; this.landing = null; this.sit = expo(this.rng, SIT_MEAN_S); this.fatigue = 0;
+          this.mode = "landed"; this.landing = null; this.landingFruit = null; this.sit = expo(this.rng, SIT_MEAN_S); this.fatigue = 0;
           this.perch = [f.p[0], f.p[1], settled ? L[2] : Math.max(0, f.p[2] - RADIUS)];
           this.hold();
           this.ethogram.landings++; this.ethogram.bouts.push(this.clock - this.ethogram.boutStart); this.ethogram.sitStart = this.clock;

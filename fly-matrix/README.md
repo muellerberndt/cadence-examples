@@ -111,6 +111,7 @@ $PY tools/export_web.py && node tests/parity.mjs && $PY tools/subnet_closure.py
 $PY tools/export_atlas.py            # every neuron at its position, for the page
 node tests/body.mjs                  # the body's parity and invariants
 node tests/learner_smoke.mjs         # the browser learner on the page's payload
+node tests/life.mjs                  # the fly's life follows the fruits the visitor moves
 $PY tools/odour_code.py              # the Kenyon cell code across gain and level
 python3 -m http.server 8813 --directory web   # then open http://127.0.0.1:8813/
 GAIN=0.02 TEMP=0.3 CAP=3 BALANCE=1 ./tools/campaign_odour.sh   # gate 4, hours; then:

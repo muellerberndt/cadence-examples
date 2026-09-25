@@ -149,7 +149,7 @@ canvas.addEventListener("pointermove", (e) => { const f = fruitUnder(e); if (f !
 canvas.addEventListener("pointerdown", (e) => {
   if (carrying) { // put the fruit down where the table was clicked
     const p = tableUnder(e);
-    if (p && room.placeFruit) { const t = room.table, x = Math.min(t.x1 - 0.08, Math.max(t.x0 + 0.08, p[0])), y = Math.min(t.y1 - 0.08, Math.max(t.y0 + 0.08, p[1])); room.placeFruit(carrying, [x, y]); life.log(`the ${carrying} is moved`); }
+    if (p && room.placeFruit) { const t = room.table, x = Math.min(t.x1 - 0.08, Math.max(t.x0 + 0.08, p[0])), y = Math.min(t.y1 - 0.08, Math.max(t.y0 + 0.08, p[1])), from = room.fruits[carrying].pos.slice(); room.placeFruit(carrying, [x, y]); if (life.fruitMoved(carrying, from)) queueReward(); }
     carrying = null; if (room.highlightFruit) room.highlightFruit(null); return;
   }
   if (flyUnder(e) && life.mode !== "flying") { strike(); return; }

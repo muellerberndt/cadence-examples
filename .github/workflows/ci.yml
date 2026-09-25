@@ -119,6 +119,7 @@ jobs:
           node fly-matrix/tests/parity.mjs
           node fly-matrix/tests/body.mjs
           node fly-matrix/tests/learner_smoke.mjs
+          node fly-matrix/tests/life.mjs
   engine:
     runs-on: ubuntu-latest
     steps:
