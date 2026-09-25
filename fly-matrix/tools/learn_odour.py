@@ -46,7 +46,7 @@ from cadence.protocol import shuffled  # noqa: E402
 from fruitfly.arena import ACTIONS, ODOURS, Arena, ArenaConfig  # noqa: E402
 from fruitfly.banc import MANIFEST_PATH  # noqa: E402
 from fruitfly.brain import load_fly  # noqa: E402
-from fruitfly.lessons import setup_lessons  # noqa: E402
+from fruitfly.lessons import DECISION_SENSES, setup_lessons  # noqa: E402
 from fruitfly.subnet import recruit  # noqa: E402
 
 SEEDS = ("orn:decaying_fruit", "orn:yeasty", "orn:aversive", "orn:fruity", "pn", "kc", "apl", "dan:pam", "dan:ppl1", "mbon", "mbon:MBON11", "mbon:MBON05")
@@ -121,6 +121,7 @@ class FlyAgent:
                         "output_ids": [int(sub.members[i]) for i in self.outputs], "actions": list(ACTIONS), "critic": "kc", "critic_neurons": int(len(self.critic)), "seeds": list(SEEDS), "budget": budget, "hops": hops, "min_count": min_count}
         self.kc_class = self.classify_kenyon_cells()
         self.tonic = 0.0
+        self.senses = False
 
     def balance(self, approach: float = 0.5) -> float:
         """A declared tonic drive on the avoidance cell so that, before any lesson, the naive fly approaches
@@ -148,6 +149,9 @@ class FlyAgent:
 
     def drive(self, obs: np.ndarray) -> np.ndarray:
         d = np.zeros((len(obs), self.C.n))
+        if self.senses:  # the flight senses the readouts were calibrated under (fruitfly/lessons.py DECISION_SENSES)
+            for name, value in DECISION_SENSES.items():
+                d[:, list(self.C.populations.get(name, ()))] = self.amp * value
         for k in range(2):
             for j, idx in enumerate(self.sense_sets[k]):
                 d[:, idx] = self.amp * obs[:, 3 * k + j][:, None]
@@ -238,6 +242,9 @@ def run_fly(args) -> dict:
     cadence.learning.SCALE_CAP = args.scale_cap  # the magnitude a plastic synapse may not exceed (the library's default is 8)
     cfg = LearnerConfig(beta=args.beta, temperature=args.temperature, tolerance=args.tolerance, free_steps=args.free_steps, nudged_steps=args.nudged_steps)
     agent = FlyAgent(args.kind, args.seed, args.gain, args.plastic, cfg, args.budget, args.hops, args.min_count, args.backend)
+    agent.senses = args.decision_senses
+    if agent.senses:
+        agent.kc_class = agent.classify_kenyon_cells()  # under the same drive the decisions are made in
     ac = ActorCritic(agent.learner, agent.critic, ActorCriticConfig(gamma=args.gamma, lam=args.lam, eta=0.0 if args.warm_critic else args.eta, eta_bias=0.0, eta_critic=args.eta_critic, dopamine_center=args.dopamine_center, critic_signal=args.critic_signal), seed=args.seed)
     if args.balance:
         print(f"[{args.kind} s{args.seed}] warning: --balance adds a tonic drive on top of the calibrated readouts (fruitfly/lessons.py) and can put MBON05 back on a rail", flush=True)
@@ -330,11 +337,11 @@ def main() -> None:
     p.add_argument("--plastic", default="kc>mbon", help="kc>mbon, mb or all"); p.add_argument("--budget", type=int, default=12000); p.add_argument("--hops", type=int, default=2); p.add_argument("--min-count", type=float, default=5.0); p.add_argument("--backend", default="torch")
     p.add_argument("--beta", type=float, default=0.1); p.add_argument("--temperature", type=float, default=0.05); p.add_argument("--tolerance", type=float, default=1e-3); p.add_argument("--free-steps", type=int, default=40); p.add_argument("--nudged-steps", type=int, default=20)
     p.add_argument("--gamma", type=float, default=0.95); p.add_argument("--lam", type=float, default=0.9); p.add_argument("--eta", type=float, default=10.0); p.add_argument("--eta-critic", type=float, default=0.5); p.add_argument("--dopamine-center", type=float, default=0.0, help=">0: the dopamine is the deviation of the error from its running mean (this forgetting factor)"); p.add_argument("--critic-signal", choices=["modulated", "td"], default="modulated"); p.add_argument("--warm-critic", type=int, default=0, help="decisions during which only the critic learns")
-    p.add_argument("--scale-cap", type=float, default=3.0); p.add_argument("--balance", action="store_true", help="a declared tonic drive on the avoidance cell setting the naive approach probability"); p.add_argument("--balance-to", type=float, default=0.8); p.add_argument("--shaping", type=float, default=0.0); p.add_argument("--swap-at", type=int, default=0); p.add_argument("--swap-empty-reward", type=float, default=None, help="the outcome at the old sugar source from the swap on (-1: blows); the first lesson keeps --empty-reward")
+    p.add_argument("--scale-cap", type=float, default=3.0); p.add_argument("--balance", action="store_true", help="a declared tonic drive on the avoidance cell setting the naive approach probability"); p.add_argument("--balance-to", type=float, default=0.8); p.add_argument("--shaping", type=float, default=0.0); p.add_argument("--swap-at", type=int, default=0); p.add_argument("--arm", type=float, default=0.0, help="T-maze arm length in m (0: the arena default, 0.3 = ten approach steps; 0.03 = one decision per trial, as tools/tmaze.py)"); p.add_argument("--arm-floor", type=float, default=None, help="odour level of the faced arm at the junction (arena default 0.3)"); p.add_argument("--decision-senses", action="store_true", help="add the flight senses the readouts are calibrated under to every drive"); p.add_argument("--swap-empty-reward", type=float, default=None, help="the outcome at the old sugar source from the swap on (-1: blows); the first lesson keeps --empty-reward")
     p.add_argument("--eval", type=int, default=128); p.add_argument("--eval-batch", type=int, default=64); p.add_argument("--report", type=int, default=250)
     p.add_argument("--task", choices=["tmaze", "valence", "steer"], default="tmaze"); p.add_argument("--empty-reward", type=float, default=0.0); p.add_argument("--step-cost", type=float, default=0.0); p.add_argument("--hidden", type=int, default=32); p.add_argument("--mlp-lr", type=float, default=3e-3); p.add_argument("--checkpoint", default=""); p.add_argument("--out", default="")
     args = p.parse_args()
-    args.arena = ArenaConfig(task=args.task, limit=40 if args.task == "tmaze" else 120, empty_reward=args.empty_reward, step_cost=args.step_cost)
+    args.arena = ArenaConfig(task=args.task, limit=40 if args.task == "tmaze" else 120, empty_reward=args.empty_reward, step_cost=args.step_cost, **({"arm": args.arm} if args.arm else {}), **({"arm_floor": args.arm_floor} if args.arm_floor is not None else {}))
     if args.gain is None:
         args.gain = float(json.loads((ROOT / "receipts" / "g3_instinct_facts.json").read_text())["body"]["connectome"]["gain"])
     result = run_mlp(args) if args.kind == "mlp" else run_fly(args)
