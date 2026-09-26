@@ -149,7 +149,7 @@ class FlyAgent:
 
     def drive(self, obs: np.ndarray) -> np.ndarray:
         d = np.zeros((len(obs), self.C.n))
-        if self.senses:  # the flight senses the readouts were calibrated under (fruitfly/lessons.py DECISION_SENSES)
+        if getattr(self, "senses", False):  # the flight senses the readouts were calibrated under (fruitfly/lessons.py DECISION_SENSES)
             for name, value in DECISION_SENSES.items():
                 d[:, list(self.C.populations.get(name, ()))] = self.amp * value
         for k in range(2):
@@ -201,7 +201,7 @@ class FlyAgent:
 
     def change_by_class(self) -> dict:
         """Mean efficacy change of the plastic synapses by Kenyon cell class and target neuron."""
-        change = self.learner.brain.efficacy - self.C.sign
+        change = self.learner.brain.efficacy - self.setup.efficacy
         names = ("fruit KCs", "yeast KCs", "both", "neither")
         out: dict[str, Any] = {}
         for j, target in enumerate(OUTPUTS):
@@ -290,7 +290,7 @@ def run_fly(args) -> dict:
             print(f"[{args.kind} s{args.seed}] decision {t + 1}: food {w.get('food', float('nan')):.2f} empty {w.get('empty', float('nan')):.2f} timeout {w.get('timeout', float('nan')):.2f} steps {w.get('steps_to_food', float('nan')):.1f} | p(approach) fruit {pa[0]:.2f} yeast {pa[1]:.2f} | delta {report.get('delta', float('nan')):.3f} value {report.get('value', float('nan')):.2f} | {time.perf_counter() - t0:.0f}s ({(time.perf_counter() - t0) / (t + 1):.2f} s/decision)", flush=True)
     wall = time.perf_counter() - t0
     held = evaluate(agent, arena.meaning, args, lesions=not frozen)
-    change = agent.learner.brain.efficacy - agent.C.sign
+    change = agent.learner.brain.efficacy - agent.setup.efficacy
     result = {"summary": agent.summary, "naive": naive, "naive_probe": naive_probe, "curve": curve.windows(args.report), "preference": pref_curve, "wall_seconds": wall, "held_out": held, "probe": agent.probe(), "swapped_at": swapped_at,
               "final_meaning": ODOURS[arena.meaning], "change_by_class": agent.change_by_class() if not frozen else None,
               "mean_abs_scale_change": float(np.abs(change[agent.plastic]).mean()) if agent.plastic.any() else 0.0, "max_abs_scale_change": float(np.abs(change).max()), "synapses_moved": int((np.abs(change) > 1e-6).sum())}
