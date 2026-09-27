@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence demo</title>
+<style>
+  :root { color-scheme: dark; --bg: #070d13; --panel: #0e151d; --line: #182430; --ink: #dbe6f0; --muted: #8fa3b8;
+          --accent: #59e5cb; --sense: #8fe19d; --vision: #59b7ff; --motor: #ffbf70; --memory: #ab99ff; --hot: #ff5c8a; --good: #4cc38a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header .crumbs { color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+  header .crumbs b { color: var(--ink); font-weight: 600; letter-spacing: 0; text-transform: none; font-size: 15px; }
+  #status { color: var(--muted); font-family: ui-monospace, monospace; font-size: 12px; }
+  #bar { height: 3px; background: var(--line); } #bar > div { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+  main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr); gap: 14px; padding: 14px 18px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0; }
+  .panel h2 { font-size: 12px; font-weight: 600; margin: 0 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .panel h2 span { text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .stage { position: relative; height: 480px; }
+  #scan { width: 100%; height: 100%; display: block; background: #000; border-radius: 6px; }
+  #labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  #strip { width: 100%; height: 120px; display: block; margin-top: 6px; background: #000; border-radius: 6px; }
+  #view { width: 100%; height: 300px; display: block; background: #0a1119; border-radius: 6px; }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  button, select { background: #132030; color: var(--ink); border: 1px solid #24364a; border-radius: 6px; padding: 5px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  button:hover { border-color: var(--accent); } label { color: var(--muted); font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .stat { background: #0a1119; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+  .stat b { display: block; font: 600 16px/1.2 ui-monospace, monospace; color: var(--ink); }
+  .stat span { color: var(--muted); font-size: 11px; }
+  .charts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .charts canvas { width: 100%; height: 170px; display: block; }
+  .charts p, .what p { margin: 6px 0 0; color: var(--muted); font-size: 12.5px; }
+  .what { grid-column: 1 / -1; }
+  .what p b { color: var(--ink); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+  details.card { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+  details.card summary { cursor: pointer; color: var(--ink); }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } .charts { grid-template-columns: 1fr; } .stage { height: 340px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="crumbs">Cadence · quickstart · <b id="title"></b></div>
+  <div id="status">starting</div>
+</header>
+<div id="bar"><div id="fill"></div></div>
+<main>
+  <section class="panel">
+    <h2>The whole brain <span id="counts"></span></h2>
+    <div class="stage"><canvas id="scan"></canvas><div id="labels"></div></div>
+    <canvas id="strip"></canvas>
+    <div class="tools">
+      <label>Neurons <select id="mode"><option value="activity">activation</option><option value="heat">distance from equilibrium</option></select></label>
+      <label>Synapses <select id="synapses"><option value="weights">weights</option><option value="change">last change</option></select></label>
+      <label>Speed <select id="speed"><option value="10">10 frames/s</option><option value="30" selected>30 frames/s</option><option value="90">90 frames/s</option></select></label>
+      <button id="pause">Pause</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </section>
+  <section class="panel">
+    <h2>The task <span id="viewTitle"></span></h2>
+    <canvas id="view"></canvas>
+    <div class="stats" id="stats" style="margin-top:10px"></div>
+  </section>
+  <section class="panel what">
+    <h2>The task, and what is going on</h2>
+    <p id="task"></p>
+    <p id="what"></p>
+  </section>
+  <section class="charts">
+    <div class="panel"><h2 id="chartATitle">Learning</h2><canvas id="chartA"></canvas><p id="chartANote"></p></div>
+    <div class="panel"><h2 id="chartBTitle">Equilibrium</h2><canvas id="chartB"></canvas><p id="chartBNote"></p></div>
+  </section>
+  <details class="card"><summary>What this brain is</summary><p id="note"></p></details>
+</main>
+<script>
+__SCRIPT__
+</script>
+<script>
+const ATLAS = __ATLAS__;
+const DEMO = __DEMO__;
+const el = id => document.getElementById(id);
+const scan = new BrainScan(el("scan"), ATLAS, { labels: el("labels"), strip: el("strip") });
+scan.fit();
+el("title").textContent = DEMO.title; document.title = DEMO.title;
+el("note").textContent = DEMO.note;
+el("task").innerHTML = "<b>The task.</b> " + DEMO.task;
+el("counts").textContent = `${scan.n.toLocaleString()} neurons · ${scan.edges.toLocaleString()} synapses`;
+el("legend").innerHTML = ATLAS.regions.map(r => `<span><i style="background:rgb(${(ATLAS.palette[r.role] || ATLAS.palette.other).join(",")})"></i>${r.name}</span>`).join("")
+  + `<span><i style="background:var(--hot)"></i>distance from equilibrium, when selected</span>`;
+
+const S = { since: 0, queue: [], frame: null, frames: [], curves: {}, stats: {}, phase: "start", progress: 0, status: "", result: null, done: false,
+            revision: -1, paused: false, last: 0, mode: "activity", synapses: "weights" };
+
+const TEXT = {
+  stream: {
+    day: "<b>By day</b> the three streams play. At each moment the context settles: the gate equation holds exactly, the seam defect is zero, and the reading of input and context is coded by sixteen of the 2,048 record cells. The outcome of the moment is written once into those cells; the slow weights do not move. The records recall the stream after a single pass.",
+    night: "<b>By night</b> the stream is closed. The store completes each cue from rest, those completions are fixed as dreams, and the slow weights learn them: the teaching loss pulls on the outcome ports (the heat you can select on the neurons), and the pull travels back along the settled path. On this quadratic path that adjoint equals the centered detuning contrast, so the update is the difference of two detuned equilibria. The store's records are left alone.",
+    dawn: "<b>At dawn</b> each dream is written back into the store, so it holds only what the slow weights did not take. The weights alone, with an empty store, now know the rule.",
+    done: "<b>Done.</b> The store took the stream in one pass by day; the slow weights took the rule by night from the store's own dreams. The equilibrium is the settled context path; learning detuned it and moved the weights on the contrast."
+  },
+  decide: {
+    calibrate: "<b>Calibration</b> picks the gain that puts the free motor activity in its responsive range, on the inputs alone, before any label is seen.",
+    learn: "<b>Each learning step</b> is two equilibria and one update. The brain settles freely on a sense: every neuron's potential moves until no neuron moves (the heat is how far each still moves), and the state it stops in is the brain's own answer. Then it settles again with the chosen action nudged, and the synapses move on the contrast of the two settled states. Nothing is propagated backward; the difference between two equilibria is the signal. Switch the synapses to <i>last change</i> to see where it landed.",
+    done: "<b>Done.</b> Every sense now settles onto its action. The decision is an equilibrium; learning was the detuning of that equilibrium by a nudge on the motor neurons."
+  },
+  body: {
+    learn: "<b>Learning the body.</b> Each executed path settles freely: the causal recurrence with zero defect at every seam is the equilibrium of the patch's energy. The observed positions then pull on the output by plus and minus beta, the path settles twice more, and the synapses move on the difference of the two detuned paths, after a check that they sit symmetrically around the free one. The heat is how far the plus phase displaced each unit from the free equilibrium.",
+    act: "<b>Acting.</b> The synapses are frozen. From the measured position the patch repairs an action path toward the goal with the same contrast on the action port, accepts a step only when a target-free replay lowers the cost, executes the first action, and reads what actually happened. Halfway through, an unannounced disturbance moves the body; the next plan starts from where it really is.",
+    done: "<b>Done.</b> The last positions sit near the goal; without the actions they would not. The free path is the equilibrium; detuning it taught the body and repaired the actions."
+  }
+};
+
+function whatText() { const t = TEXT[DEMO.name] || {}; return t[S.phase] || t.learn || ""; }
+
+function statTiles() {
+  const s = S.stats, spec = {
+    stream: [["pass_", "pass"], ["record_entries", "record entries"], ["writes", "writes"], ["updates", "night updates"], ["slow_loss", "slow loss"], ["accepted_rate", "accepted rate"], ["seam_defect", "seam defect"], ["dawn_writes", "dawn writes"]],
+    decide: [["step", "step"], ["settle_steps", "settle steps"], ["last_movement", "last movement"], ["nudged_steps", "nudged settle"], ["displacement", "nudge displacement"], ["contrast", "synapse change"], ["accuracy", "accuracy"]],
+    body: [["batch", "batch"], ["forecast_mse", "held-out MSE"], ["residual", "free residual"], ["energy", "free energy"], ["plus_iterations", "+β solves"], ["minus_iterations", "−β solves"], ["asymmetry", "asymmetry"], ["beta", "β"], ["halvings", "halvings"], ["update", "update size"], ["decision", "decision"], ["plan_iterations", "plan iterations"], ["plan_initial_cost", "plan cost before"], ["plan_cost", "plan cost after"], ["projected_residual", "plan residual"], ["reason", "stopped by"]],
+  }[DEMO.name] || [];
+  el("stats").innerHTML = spec.filter(([k]) => k in s).map(([k, label]) => { const v = s[k]; const txt = typeof v === "number" ? (Number.isInteger(v) ? v : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(2) : v.toFixed(4))) : v; return `<div class="stat"><b>${txt}</b><span>${label}</span></div>`; }).join("");
+}
+
+async function poll() {
+  try {
+    const d = await (await fetch(`/state?since=${S.since}`)).json();
+    S.phase = d.phase; S.progress = d.progress; S.status = d.status; S.curves = d.curves; S.stats = d.stats; S.result = d.result; S.done = d.done;
+    if (d.frames.length) { S.queue.push(...d.frames); S.since = d.first + d.frames.length; }
+    if (d.weights_revision !== S.revision) { S.revision = d.weights_revision; await loadWeights(); }
+    el("status").textContent = `${S.phase}${S.status ? " · " + S.status : ""}`;
+    el("fill").style.width = `${Math.round((S.done ? 1 : S.progress) * 100)}%`;
+    el("what").innerHTML = whatText() + (S.done && S.result ? " <br><span style='color:var(--good)'>" + Object.entries(S.result).map(([k, v]) => `${k.replace(/_/g, " ")} ${typeof v === "number" ? +v.toFixed(4) : v}`).join(" · ") + "</span>" : "");
+    statTiles(); drawCharts();
+  } catch (e) { el("status").textContent = "the server is gone"; }
+  setTimeout(poll, S.done && !S.queue.length ? 1000 : 120);
+}
+async function loadWeights() { const w = await (await fetch(`/weights?what=${S.synapses}`)).json(); scan.setWeights(w.weights); }
+
+function consume(now) {
+  if (S.paused) return;
+  const gap = 1000 / Number(el("speed").value);
+  if (S.queue.length && now - S.last >= gap / Math.max(1, Math.min(4, S.queue.length / 120))) {
+    const f = S.queue.shift(); S.frame = f; S.last = now; S.frames.push(f); if (S.frames.length > 4000) S.frames.shift();
+    const activity = Float32Array.from(f.activity);
+    if (S.mode === "heat" && f.heat) scan.show(activity, Float32Array.from(f.heat.map(h => Math.min(1, h * 4))));
+    else if (S.frames.length === 1) scan.reset(activity); else scan.step(activity);
+    drawView();
+  }
+}
+
+function drawView() {
+  const c = el("view"), dpr = devicePixelRatio || 1;
+  if (c.width !== c.clientWidth * dpr) { c.width = c.clientWidth * dpr; c.height = c.clientHeight * dpr; }
+  const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const W = c.clientWidth, H = c.clientHeight; g.clearRect(0, 0, W, H);
+  const f = S.frame; if (!f) return; const v = f.view;
+  g.font = "12px sans-serif"; g.textBaseline = "middle";
+  if (DEMO.name === "stream") {
+    el("viewTitle").textContent = v.kind === "day" ? `day, pass ${v.x}` : v.kind === "night" ? `night, pass ${v.x - 8}, slow weights alone` : "dawn, slow weights alone";
+    const cell = Math.min(34, (W - 90) / 8), left = 70, top = 24, hue = k => `hsl(${(k * 137) % 360} 60% 55%)`;
+    for (let s = 0; s < 3; s++) {
+      g.fillStyle = "#8fa3b8"; g.textAlign = "left"; g.fillText(`stream ${s + 1}`, 8, top + s * (cell * 2.4) + cell / 2);
+      for (let t = 0; t < 8; t++) {
+        const x = left + t * cell, y = top + s * (cell * 2.4);
+        const known = S.frames.filter(q => q.view.kind === v.kind && q.view.x === v.x && q.view.stream === s && q.view.moment === t).pop();
+        const current = v.stream === s && v.moment === t;
+        g.fillStyle = known ? hue(known.view.symbol) : "#132030"; g.fillRect(x, y, cell - 3, cell - 3);
+        if (known) { g.fillStyle = "#0a1119"; g.textAlign = "center"; g.fillText(known.view.symbol, x + cell / 2 - 1, y + cell / 2 - 1);
+          const ok = known.view.predicted === known.view.target; g.fillStyle = ok ? "#4cc38a" : "#ff5c8a"; g.fillRect(x, y + cell + 2, cell - 3, 6);
+          g.fillStyle = "#8fa3b8"; g.fillText(`${known.view.predicted}`, x + cell / 2 - 1, y + cell + 16); }
+        if (current) { g.strokeStyle = "#fff"; g.lineWidth = 2; g.strokeRect(x - 1, y - 1, cell - 1, cell - 1); }
+      }
+    }
+    g.fillStyle = "#8fa3b8"; g.textAlign = "left"; g.fillText("symbols above; the outcome the brain says below (green: last two symbols' sum mod 5)", 8, H - 14);
+  } else if (DEMO.name === "decide") {
+    el("viewTitle").textContent = `step ${v.step}, ${v.kind === "free" ? `free settle ${v.settle}/${v.of}` : `nudged equilibrium`}`;
+    const cols = 3, rows = 5, cw = Math.min(90, (W - 120) / cols), rh = Math.min(40, (H - 60) / rows), left = 100, top = 30;
+    g.fillStyle = "#8fa3b8"; g.textAlign = "center"; for (let a = 0; a < cols; a++) g.fillText(`action ${a}`, left + a * cw + cw / 2, top - 14);
+    const acc = (S.curves.accuracy || []).slice(-1)[0];
+    for (let r = 0; r < rows; r++) {
+      const y = top + r * rh; g.fillStyle = r === v.sense ? "#dbe6f0" : "#8fa3b8"; g.textAlign = "right"; g.fillText(`sense ${r}`, left - 10, y + rh / 2);
+      const known = S.frames.filter(q => q.view.sense === r).pop();
+      for (let a = 0; a < cols; a++) {
+        const x = left + a * cw; const target = (r % 3) === a; const chosen = known && known.view.chosen === a;
+        g.fillStyle = chosen ? (target ? "#4cc38a" : "#ff5c8a") : "#132030"; g.fillRect(x, y + 4, cw - 6, rh - 8);
+        if (target) { g.strokeStyle = "#ffbf70"; g.lineWidth = 2; g.strokeRect(x + 1, y + 5, cw - 8, rh - 10); }
+      }
+    }
+    g.fillStyle = "#8fa3b8"; g.textAlign = "left"; g.fillText(`orange frame: the action asked for · filled: the action chosen` + (acc ? ` · accuracy ${acc[1].toFixed(2)}` : ""), 8, H - 14);
+  } else if (DEMO.name === "body") {
+    el("viewTitle").textContent = v.kind === "learn" ? `learning, batch ${v.batch}, moment ${v.moment + 1}` : `acting, decision ${v.decision}, imagined moment ${v.moment + 1}`;
+    const X = p => 40 + (p + 1) / 2 * (W - 80), mid = H * 0.45;
+    g.strokeStyle = "#24364a"; g.lineWidth = 2; g.beginPath(); g.moveTo(40, mid); g.lineTo(W - 40, mid); g.stroke();
+    g.fillStyle = "#8fa3b8"; g.textAlign = "center"; for (const p of [-1, -0.5, 0, 0.5, 1]) g.fillText(p, X(p), mid + 18);
+    if (v.kind === "learn") {
+      g.fillStyle = "#59b7ff"; g.beginPath(); g.arc(X(v.predicted), mid - 24, 7, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#8fe19d"; g.beginPath(); g.arc(X(v.measured), mid, 7, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#8fa3b8"; g.textAlign = "left"; g.fillText("green: the measured position · blue: the patch's prediction for it", 8, H - 14);
+    } else {
+      g.strokeStyle = "#ffbf70"; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(v.goal), mid - 40); g.lineTo(X(v.goal), mid + 6); g.stroke(); g.setLineDash([]);
+      g.fillStyle = "#ffbf70"; g.textAlign = "center"; g.fillText("goal", X(v.goal), mid - 50);
+      v.predicted.forEach((p, i) => { g.fillStyle = i <= v.moment ? "#59b7ff" : "#24364a"; g.beginPath(); g.arc(X(p), mid - 24 - i * 3, 4, 0, Math.PI * 2); g.fill(); });
+      g.fillStyle = "#8fe19d"; g.beginPath(); g.arc(X(v.position), mid, 8, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "#5b6b7c"; g.beginPath(); g.arc(X(v.without), mid + 28, 5, 0, Math.PI * 2); g.fill();
+      if (v.shove) { g.fillStyle = "#ff5c8a"; g.textAlign = "center"; g.fillText("shoved", X(v.position), mid + 46); }
+      g.fillStyle = "#8fa3b8"; g.textAlign = "left"; g.fillText(`green: the body · blue: this plan's imagined path (${v.iterations} steps) · grey: with no action`, 8, H - 14);
+    }
+  }
+}
+
+function chart(id, series, opts) {
+  const c = el(id), dpr = devicePixelRatio || 1;
+  if (c.width !== c.clientWidth * dpr) { c.width = c.clientWidth * dpr; c.height = c.clientHeight * dpr; }
+  const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const W = c.clientWidth, H = c.clientHeight, m = { l: 48, r: 10, t: 10, b: 24 }; g.clearRect(0, 0, W, H);
+  const all = series.flatMap(s => s.points); if (!all.length) { g.fillStyle = "#8fa3b8"; g.font = "12px sans-serif"; g.fillText("waiting", m.l, H / 2); return; }
+  const tr = y => opts.log ? Math.log10(Math.max(y, 1e-9)) : y;
+  const xs = all.map(p => p[0]), ys = all.map(p => tr(p[1]));
+  const x0 = Math.min(...xs), x1 = Math.max(...xs, x0 + 1), y0 = opts.zero && !opts.log ? 0 : Math.min(...ys), y1 = Math.max(...ys, y0 + 1e-9);
+  const X = x => m.l + (x - x0) / (x1 - x0) * (W - m.l - m.r), Y = y => H - m.b - (y - y0) / (y1 - y0) * (H - m.t - m.b);
+  g.strokeStyle = "#182430"; g.lineWidth = 1; g.font = "11px sans-serif"; g.fillStyle = "#8fa3b8"; g.textAlign = "right";
+  for (let i = 0; i <= 3; i++) { const v = y0 + (y1 - y0) * i / 3, y = Y(v); g.beginPath(); g.moveTo(m.l, y); g.lineTo(W - m.r, y); g.stroke(); g.fillText(opts.log ? Math.pow(10, v).toPrecision(2) : v.toPrecision(2), m.l - 6, y + 4); }
+  g.textAlign = "center"; g.fillText(opts.xlabel, (m.l + W - m.r) / 2, H - 6);
+  if (opts.marks) for (const x of opts.marks) { g.strokeStyle = "#ff5c8a"; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(x), m.t); g.lineTo(X(x), H - m.b); g.stroke(); g.setLineDash([]); }
+  series.forEach((s, k) => {
+    g.strokeStyle = s.color; g.lineWidth = 2; g.lineJoin = "round"; g.beginPath();
+    s.points.forEach((p, i) => { i ? g.lineTo(X(p[0]), Y(tr(p[1]))) : g.moveTo(X(p[0]), Y(tr(p[1]))); }); g.stroke();
+    const last = s.points[s.points.length - 1]; g.fillStyle = s.color; g.textAlign = "left"; g.fillText(`${s.name} ${Number(last[1]).toPrecision(3)}`, m.l + 4, m.t + 12 + 14 * k);
+  });
+}
+function drawCharts() {
+  const C = S.curves;
+  if (DEMO.name === "stream") {
+    el("chartATitle").textContent = "What the brain knows"; el("chartANote").textContent = "Accuracy on the three streams: with the records, and with the slow weights alone (an empty store). The day fills the records; the night moves the rule into the weights.";
+    chart("chartA", [{ name: "with records", points: C.records || [], color: "#ab99ff" }, { name: "slow weights alone", points: C.slow || [], color: "#59e5cb" }], { zero: true, xlabel: "passes (8 by day, then the night)", marks: [8.5] });
+    el("chartBTitle").textContent = "The teaching pull"; el("chartBNote").textContent = "The cross-entropy of the slow weights alone on the stream: the pull on the outcome ports that the settled path carries back to the weights. It falls over the night.";
+    chart("chartB", [{ name: "slow loss", points: C.slow_loss || [], color: "#ff5c8a" }], { log: true, xlabel: "passes (8 by day, then the night)", marks: [8.5] });
+  } else if (DEMO.name === "decide") {
+    el("chartATitle").textContent = "Learning"; el("chartANote").textContent = "Accuracy over the five senses after each step: which action the settled brain chooses.";
+    chart("chartA", [{ name: "accuracy", points: C.accuracy || [], color: "#59e5cb" }], { zero: true, xlabel: "learning steps" });
+    el("chartBTitle").textContent = "Detuning"; el("chartBNote").textContent = "The size of the synapse change each step, the contrast of the free and the nudged equilibrium. It falls as the two equilibria agree.";
+    chart("chartB", [{ name: "synapse change", points: C.contrast || [], color: "#ff5c8a" }], { log: true, xlabel: "learning steps" });
+  } else {
+    el("chartATitle").textContent = S.phase === "act" || S.phase === "done" ? "Acting" : "Learning the body";
+    if (S.phase === "act" || S.phase === "done") { el("chartANote").textContent = "The measured position after each decision against the goal, and where the body would be with no action. The disturbance arrives halfway.";
+      const goalPts = (C.position || []).map(p => [p[0], 0.35]);
+      chart("chartA", [{ name: "position", points: C.position || [], color: "#8fe19d" }, { name: "no action", points: C.without || [], color: "#5b6b7c" }, { name: "goal", points: goalPts, color: "#ffbf70" }], { xlabel: "decisions", marks: [(C.position || []).length ? 6.5 : -1] });
+    } else { el("chartANote").textContent = "Held-out forecast error over six moments on paths the patch never learned from.";
+      chart("chartA", [{ name: "held-out MSE", points: C.forecast || [], color: "#59e5cb" }], { log: true, xlabel: "batches of executed paths" }); }
+    el("chartBTitle").textContent = "Detuning"; el("chartBNote").textContent = "The size of each synapse update, the difference of the plus and minus detuned paths divided by two beta. Each is accepted only after both phases settled symmetrically around the free path.";
+    chart("chartB", [{ name: "update size", points: C.update || [], color: "#ff5c8a" }], { log: true, xlabel: "batches" });
+  }
+}
+
+el("mode").onchange = e => { S.mode = e.target.value; };
+el("synapses").onchange = async e => { S.synapses = e.target.value; await loadWeights(); };
+el("pause").onclick = () => { S.paused = !S.paused; el("pause").textContent = S.paused ? "Play" : "Pause"; };
+window.addEventListener("resize", () => { scan.fit(); drawCharts(); drawView(); });
+function tick(now) { consume(now); scan.draw(now); requestAnimationFrame(tick); }
+requestAnimationFrame(tick);
+poll();
+</script>
+</body>
+</html>

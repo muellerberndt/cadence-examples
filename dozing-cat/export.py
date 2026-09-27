@@ -31,11 +31,12 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent))
 
 import cadence  # noqa: E402
 import cat  # noqa: E402
 from cadence import BeliefPatch  # noqa: E402
-from cadence.atlas import brain_scan_script  # noqa: E402
+from viewer.atlas import brain_scan_script  # noqa: E402
 
 FORMAT = "cadence-examples.dozing-cat.brain/1"
 PROVENANCE = ("library", "viewer")  # the fields a rebuild on another machine may differ in

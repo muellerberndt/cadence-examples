@@ -63,7 +63,7 @@ payload, device and browser; a legacy subset timing is not a full-graph guarante
 
 ## The viewer
 
-`brain_scan.js` from the library draws every neuron where it sits (the anatomical mode on an
+`brain_scan.js` from [`../viewer`](../viewer/README.md) draws every neuron where it sits (the anatomical mode on an
 atlas with `positions3`) or wrapped into a stylised brain, with the activity live and the recent
 change glowing; [pages.md](https://github.com/muellerberndt/cadence/blob/main/docs/pages.md)
 documents the atlas export and every option. Copy the file into `web/`. Budget it first: it is

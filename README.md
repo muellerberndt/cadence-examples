@@ -45,6 +45,10 @@ The browser engine every settling-brain page shares, with a guide for building y
 (the payload, the settle loop, the viewer, the lessons, the parity test, the page conventions),
 is in [engine/](engine/README.md).
 
+The whole-brain viewer every page draws with (the atlas layout and `brain_scan.js`) is in
+[viewer/](viewer/README.md), and the three smallest demos, the library quickstart's brains behind a
+local page, are in [quickstart/](quickstart/README.md); the library ships the brains alone.
+
 Then build an example of your own. Every example, finished or half-working, is data for us: it says
 what the architecture does with a body, a sense or a task that nobody has put in front of it, and
 that is what scales this work toward the full humanoid simulation. Hack things. Be crazy. Chaos is

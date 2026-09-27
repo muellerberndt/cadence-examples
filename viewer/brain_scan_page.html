@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__</title>
+<style>
+:root{color-scheme:dark} body{margin:0;background:#070d13;color:#dbe6f0;font:14px system-ui,sans-serif}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 16px;border-bottom:1px solid #16222e}
+header b{font-size:16px} header span{color:#8fa3b8;font-family:ui-monospace,monospace;font-size:12px;text-align:right}
+.stage{position:relative;height:min(70vh,760px);margin:12px 12px 0} canvas#scan{width:100%;height:100%;display:block;border-radius:8px;background:#070d13}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#inspector{position:absolute;left:12px;bottom:10px;font:12px ui-monospace,monospace;color:#c9d6e2;background:rgba(7,13,19,.75);padding:6px 8px;border-radius:6px;white-space:pre}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px}
+button,select{background:#132030;color:#dbe6f0;border:1px solid #24364a;border-radius:6px;padding:6px 10px;font:inherit} button.primary{background:#1e3a55}
+#status{color:#8fa3b8;font-family:ui-monospace,monospace;font-size:12px}
+canvas#strip{width:calc(100% - 24px);height:150px;display:block;margin:0 12px 12px;border-radius:8px;background:#0a1119}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 16px 14px;color:#8fa3b8;font-size:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.note{padding:0 16px 16px;color:#8fa3b8;font-size:12px;max-width:90ch}
+</style></head><body>
+<header><b>__TITLE__</b><span id="counts"></span></header>
+<div class="stage"><canvas id="scan" aria-label="Every neuron and synapse of the brain"></canvas><div id="labels"></div><div id="inspector">hover a neuron · scroll to zoom · drag to pan</div></div>
+<div class="tools"><button id="play" class="primary">Play</button><button id="step">Step</button><button id="detune">Detune</button><button id="fit">Fit brain</button>
+<label>Show <select id="mode"><option value="activity">Activation</option><option value="potential">Potential</option><option value="change">Change</option></select></label>
+<label>Speed <select id="speed"><option value="8">8 steps/s</option><option value="30" selected>30 steps/s</option><option value="120">120 steps/s</option></select></label>
+<span id="status"></span></div>
+<canvas id="strip" aria-label="Activity and change of every region over the last steps"></canvas>
+<div class="legend">__LEGEND__</div>
+<p class="note">__NOTE__</p>
+<script type="module">
+__SCRIPT__
+const ATLAS = __ATLAS__;
+const FRAMES = __FRAMES__;
+const BRAIN = __BRAIN__;
+const $ = (id) => document.getElementById(id);
+const scan = new BrainScan($("scan"), ATLAS, { labels: $("labels"), strip: $("strip") });
+$("strip").style.height = `${Math.min(340, 30 + 19 * scan.montage().length)}px`;
+$("counts").textContent = `${scan.n.toLocaleString()} neurons · ${scan.edges.toLocaleString()} synapses · ${scan.atlas.regions.length} regions`;
+scan.onhover = (hit) => { if (hit) $("inspector").textContent = `${hit.region} · neuron ${hit.neuron}\\nactivation ${hit.activation.toFixed(4)} · change ${hit.change.toExponential(2)}` + (hit.potential === null ? "" : ` · potential ${hit.potential.toFixed(4)}`); };
+$("fit").onclick = () => scan.fit();
+$("mode").onchange = () => { scan.options.mode = $("mode").value; scan.draw(); };
+let playing = false, last = 0, frames = FRAMES ? decodeFrames(FRAMES) : null, at = 0;
+let live = null;
+if (BRAIN) {
+  const n = BRAIN.n, W = decodeArray(BRAIN.W), bias = decodeArray(BRAIN.bias), N = BRAIN.neuron;
+  const v = new Float64Array(n), s = new Float64Array(n), input = new Float64Array(n), drive = new Float64Array(n);
+  const act = (x) => { const r = 1 / (1 + Math.exp(-N.slope * (x - N.threshold))) - N.rest; return r > 0 ? r / (1 - N.rest) : N.leak * r / N.rest; };
+  const rng = (() => { let seed = 12345; return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; })();
+  live = {
+    settled: true,
+    detune() {
+      for (const i of BRAIN.inputs) drive[i] = N.amplitude * (rng() < 0.5 ? 0 : rng());
+      this.settled = false; this.steps = 0; this.moved = 1;
+      scan.reset(Float32Array.from(s));
+    },
+    step() {
+      input.fill(0);
+      for (let i = 0; i < n; i++) { const si = s[i]; if (si === 0) continue; const row = i * n; for (let j = 0; j < n; j++) input[j] += si * W[row + j]; }
+      let moved = 0;
+      for (let j = 0; j < n; j++) { v[j] += N.dt * (-v[j] + input[j] + drive[j] + bias[j]); const ns = act(v[j]); moved = Math.max(moved, Math.abs(ns - s[j])); s[j] = ns; }
+      this.steps++; this.moved = moved;
+      if (moved < 1e-4) this.settled = true;
+      scan.step(Float32Array.from(s), { potential: Float32Array.from(v) });
+      const bound = BRAIN.certificate && BRAIN.certificate.certified ? ` · error bound ${(moved / (1 - BRAIN.certificate.rate)).toExponential(2)}` : "";
+      $("status").textContent = `step ${this.steps} · largest movement ${moved.toExponential(2)}${bound}${this.settled ? " · settled" : ""}`;
+    },
+  };
+  live.detune();
+}
+function advance() {
+  if (live) { if (live.settled) { live.detune(); } live.step(); return; }
+  if (!frames) return;
+  at = (at + 1) % frames.steps;
+  if (at === 0) { scan.set(frames.activation[0]); scan.reset(); } else scan.step(frames.activation[at]);
+  $("status").textContent = `recorded step ${at} / ${frames.steps - 1}`;
+}
+if (frames && !live) { scan.set(frames.activation[0]); scan.reset(); $("detune").disabled = true; $("status").textContent = `recorded step 0 / ${frames.steps - 1}`; }
+$("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pause" : "Play"; };
+$("step").onclick = () => { playing = false; $("play").textContent = "Play"; advance(); };
+$("detune").onclick = () => { if (live) { live.detune(); live.step(); } };
+function tick(now) { if (playing && now - last >= 1000 / Number($("speed").value)) { last = now; advance(); } else scan.draw(now); requestAnimationFrame(tick); }
+window.__brainScan = scan;
+scan.fit();
+requestAnimationFrame(tick);
+</script></body></html>
