@@ -132,6 +132,18 @@ jobs:
         run: |
           python -m pytest -q worm/tests/test_learning_accounting.py
           node worm/tests/learning-accounting.mjs
+  fruitfly-historical-exact:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "25.8.1"
+      - name: Frozen checkpoint bitwise replay on the producer runtime family
+        working-directory: fly-matrix
+        run: |
+          node tests/assisted-evidence.mjs --exact
+          node tests/assisted-evidence.mjs --1024 --exact
   engine:
     runs-on: ubuntu-latest
     steps:
