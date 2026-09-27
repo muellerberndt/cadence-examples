@@ -1,0 +1,4523 @@
+{
+  "schema": "cadence.neural-path-view-check/1",
+  "passed": false,
+  "started": "2026-09-27T07:58:54.281746+00:00",
+  "sha256": {
+    "web/index.html": "44fadf97af3c4919e43e5c8311e6c179561ea96fd418f24519e2a57dbd824e13",
+    "web/page.js": "08a9c8ef63e688394056842b9a3de738420db5b4a4fa6dfc8f1583001fd8033f",
+    "web/worker.js": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+    "web/settled-life.js": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+    "web/path-history.js": "50e059c20543d25b13a3cc8caa592b94f4f1683ecd20dc32c1f8a5350c6a8951",
+    "web/path-view.js": "9dbe440597c80ed1e5c62b947994516bedff611860c0a0bdc2f0da1c6d918e8e",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "e4ab7a42923de3e6812ea45d85dd62aeae79a7ddccb8d62682d7b81e18d15cd4",
+    "tools/check_neural_paths.py": "b5260346fb8e53a12e5da5dc02194a00e01bc8c3b2f3502ca67c8e92f5fec378"
+  },
+  "checks": [
+    "measured history follows physics; current command matches authority; guide matches independent kinematic integration; accepted probabilities and draws retained exactly"
+  ],
+  "page_errors": [],
+  "protocol": {
+    "seed": 1,
+    "measured_window_simulation_seconds": 0.4,
+    "brain_off_window_simulation_seconds": 0.25,
+    "reduced_views": false,
+    "retinal_positive_control": "Temporary bright camera-facing annotation, then same marker outside excluded group; synchronous capture and unconditional cleanup."
+  },
+  "claim": "Viewer faithfully separates measured body history from a held-command kinematic projection and cannot supply retinal cues or change control state.",
+  "limits": "One bounded UI run. Projection is not planned navigation or a physical trajectory prediction. This does not establish learned navigation or a new brain-level result.",
+  "runtime": {
+    "python": "3.13.0",
+    "browser": "151.0.7922.34"
+  },
+  "initial_active": {
+    "wall": 30187.399999976158,
+    "time": 0.4920000000000004,
+    "clock": 0.4920000000000004,
+    "generation": 0,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "paused": false,
+    "p": [
+      1.1993603758977525,
+      0.9997977168732277,
+      1.1999967374910852
+    ],
+    "v": [
+      -0.023133942517589576,
+      -0.0072799330834087935,
+      -0.00011353248794334793
+    ],
+    "heading": 0.3023190050285227,
+    "paths": {
+      "history": {
+        "generation": 0,
+        "interval": 0.05,
+        "maxPoints": 1200,
+        "maxEvents": 256,
+        "points": [
+          {
+            "generation": 0,
+            "time": 0,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.05000000000000004,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.10000000000000007,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.1500000000000001,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.20000000000000015,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.25000000000000017,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.3000000000000002,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.35000000000000026,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.4000000000000003,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.30000000000000004,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.45000000000000034,
+            "position": [
+              1.199979752172921,
+              0.999993684660791,
+              1.1999998441344903
+            ],
+            "heading": 0.30037104080456367,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003
+          }
+        ],
+        "events": [
+          {
+            "generation": 0,
+            "time": 0,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "start"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.44250000000000034,
+            "position": [
+              1.1999998454973224,
+              0.9999999522067212,
+              1.1999999983960938
+            ],
+            "heading": 0.30002319005028527,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          }
+        ],
+        "current": {
+          "generation": 0,
+          "time": 0.4920000000000004,
+          "position": [
+            1.1993603758977525,
+            0.9997977168732277,
+            1.1999967374910852
+          ],
+          "heading": 0.3023190050285227,
+          "command": {
+            "forwardSpeed": -0.04977809084226999,
+            "yawRate": 0.04638010057040579,
+            "verticalSpeed": 8.000722448504135e-06
+          },
+          "active": true,
+          "attention": "bread",
+          "action": 0,
+          "observationId": 2,
+          "deadline": 1.3585000000000003
+        }
+      },
+      "projection": [
+        {
+          "time": 0.4920000000000004,
+          "position": [
+            1.1993603758977525,
+            0.9997977168732277,
+            1.1999967374910852
+          ],
+          "heading": 0.3023190050285227
+        },
+        {
+          "time": 0.5401388888888893,
+          "position": [
+            1.1970735860860198,
+            0.9990817130545413,
+            1.1999971226369741
+          ],
+          "heading": 0.304551691536537
+        },
+        {
+          "time": 0.5882777777777781,
+          "position": [
+            1.1947884005847191,
+            0.9983606053399364,
+            1.199997507782863
+          ],
+          "heading": 0.3067843780445512
+        },
+        {
+          "time": 0.6364166666666671,
+          "position": [
+            1.1925048307852417,
+            0.9976343973240537,
+            1.199997892928752
+          ],
+          "heading": 0.3090170645525655
+        },
+        {
+          "time": 0.6845555555555559,
+          "position": [
+            1.1902228880709251,
+            0.9969030926269579,
+            1.199998278074641
+          ],
+          "heading": 0.3112497510605797
+        },
+        {
+          "time": 0.7326944444444448,
+          "position": [
+            1.1879425838169955,
+            0.9961666948941204,
+            1.19999866322053
+          ],
+          "heading": 0.313482437568594
+        },
+        {
+          "time": 0.7808333333333337,
+          "position": [
+            1.185663929390512,
+            0.9954252077964003,
+            1.1999990483664191
+          ],
+          "heading": 0.31571512407660823
+        },
+        {
+          "time": 0.8289722222222224,
+          "position": [
+            1.1833869361503095,
+            0.9946786350300274,
+            1.199999433512308
+          ],
+          "heading": 0.3179478105846225
+        },
+        {
+          "time": 0.8771111111111114,
+          "position": [
+            1.1811116154469419,
+            0.9939269803165824,
+            1.199999818658197
+          ],
+          "heading": 0.32018049709263674
+        },
+        {
+          "time": 0.9252500000000003,
+          "position": [
+            1.1788379786226257,
+            0.9931702474029791,
+            1.200000203804086
+          ],
+          "heading": 0.322413183600651
+        },
+        {
+          "time": 0.9733888888888893,
+          "position": [
+            1.1765660370111832,
+            0.9924084400614455,
+            1.200000588949975
+          ],
+          "heading": 0.3246458701086653
+        },
+        {
+          "time": 1.021527777777778,
+          "position": [
+            1.1742958019379872,
+            0.991641562089505,
+            1.200000974095864
+          ],
+          "heading": 0.3268785566166795
+        },
+        {
+          "time": 1.069666666666667,
+          "position": [
+            1.1720272847199023,
+            0.9908696173099579,
+            1.2000013592417529
+          ],
+          "heading": 0.3291112431246938
+        },
+        {
+          "time": 1.117805555555556,
+          "position": [
+            1.1697604966652306,
+            0.9900926095708614,
+            1.2000017443876418
+          ],
+          "heading": 0.33134392963270803
+        },
+        {
+          "time": 1.1659444444444447,
+          "position": [
+            1.1674954490736547,
+            0.9893105427455114,
+            1.2000021295335308
+          ],
+          "heading": 0.3335766161407223
+        },
+        {
+          "time": 1.2140833333333336,
+          "position": [
+            1.1652321532361802,
+            0.9885234207324227,
+            1.2000025146794198
+          ],
+          "heading": 0.33580930264873654
+        },
+        {
+          "time": 1.2622222222222224,
+          "position": [
+            1.1629706204350816,
+            0.9877312474553093,
+            1.2000028998253087
+          ],
+          "heading": 0.3380419891567508
+        },
+        {
+          "time": 1.3103611111111113,
+          "position": [
+            1.160710861943844,
+            0.9869340268630656,
+            1.200003284971198
+          ],
+          "heading": 0.34027467566476505
+        },
+        {
+          "time": 1.3585000000000003,
+          "position": [
+            1.1584528890271082,
+            0.9861317629297462,
+            1.2000036701170869
+          ],
+          "heading": 0.34250736217277933
+        }
+      ],
+      "enabled": true,
+      "decision": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867805,
+            0.6579969533132195
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689410444706e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570740319073e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        }
+      },
+      "decisionCurrent": true,
+      "executed": true,
+      "mode": "assisted",
+      "paused": false,
+      "grounded": false
+    },
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 100
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.001057317515305,
+        "aR": 1.0008092147539203,
+        "betaL": -0.03181603975108823,
+        "betaR": 0.021501666648238528,
+        "sL": 1.104447354678503e-05,
+        "sR": 1.104447354678503e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120837687952736,
+        "betaR": -0.031272803080817556,
+        "sL": -4.809546845262932e-06,
+        "sR": -6.505958403454358e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120837687952736,
+        "betaR": -0.031272803080817556,
+        "sL": -4.809546845262932e-06,
+        "sR": -6.505958403454358e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.001057317515305,
+        "aR": 1.0008092147539203,
+        "betaL": -0.010695202063135494,
+        "betaR": -0.009771136432579028,
+        "sL": 6.234926701522098e-06,
+        "sR": 4.538515143330672e-06,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867805,
+          0.6579969533132195
+        ],
+        "executedAt": 0.44250000000000034
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.04638010057040579,
+          "forwardSpeed": -0.04977809084226999,
+          "verticalSpeed": 8.000722448504135e-06,
+          "feed": 9.771727142226248e-06
+        },
+        "active": true,
+        "framesApplied": 100,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7616841996028604,
+        "min": 0.498134583234787,
+        "max": 0.9990102648735046
+      }
+    },
+    "controls": {
+      "aL": 1.001057317515305,
+      "aR": 1.0008092147539203,
+      "betaL": -0.010695202063135494,
+      "betaR": -0.009771136432579028,
+      "sL": 6.234926701522098e-06,
+      "sR": 4.538515143330672e-06,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867805,
+          0.6579969533132195
+        ]
+      },
+      "action": 0
+    },
+    "annotationsVisible": true,
+    "rendered": {
+      "LineSegments": {
+        "visible": true,
+        "positions": [
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.1999797821044922,
+          0.9999936819076538,
+          1.1999998092651367,
+          1.1999797821044922,
+          0.9999936819076538,
+          1.1999998092651367,
+          1.1993603706359863,
+          0.9997977018356323,
+          1.1999967098236084
+        ]
+      },
+      "Line": {
+        "visible": true,
+        "positions": [
+          1.1993603706359863,
+          0.9997977018356323,
+          1.1999967098236084,
+          1.1970735788345337,
+          0.9990817308425903,
+          1.199997067451477,
+          1.1947884559631348,
+          0.9983606338500977,
+          1.1999975442886353,
+          1.1925048828125,
+          0.9976344108581543,
+          1.199997901916504,
+          1.1902228593826294,
+          0.996903121471405,
+          1.1999982595443726,
+          1.187942624092102,
+          0.9961667060852051,
+          1.1999986171722412,
+          1.1856639385223389,
+          0.9954252243041992,
+          1.1999990940093994,
+          1.1833869218826294,
+          0.9946786165237427,
+          1.199999451637268,
+          1.1811115741729736,
+          0.993927001953125,
+          1.1999998092651367,
+          1.1788380146026611,
+          0.9931702613830566,
+          1.2000001668930054,
+          1.1765660047531128,
+          0.9924084544181824,
+          1.2000006437301636,
+          1.1742957830429077,
+          0.9916415810585022,
+          1.2000010013580322,
+          1.1720272302627563,
+          0.9908696413040161,
+          1.2000013589859009,
+          1.1697604656219482,
+          0.9900926351547241,
+          1.2000017166137695,
+          1.1674954891204834,
+          0.9893105626106262,
+          1.2000020742416382,
+          1.1652321815490723,
+          0.9885234236717224,
+          1.2000025510787964,
+          1.1629706621170044,
+          0.9877312183380127,
+          1.200002908706665,
+          1.1607108116149902,
+          0.9869340062141418,
+          1.2000032663345337,
+          1.1584528684616089,
+          0.9861317873001099,
+          1.2000036239624023
+        ]
+      }
+    },
+    "panel": {
+      "path-panel": {
+        "text": "WHAT THE BRAIN COMMANDS\n\nNeural command active \u00b7 observation #2\n\nTurn 2.66\u00b0/s left \u00b7 4.98 cm/s backward \u00b7 0.00 cm/s climb\n\n0.49 s simulated \u00b7 0.5 s of trail\n\nSolid cyan: measured path with neural command active.\nGrey: no active neural command.\nGold projection: if this command were held for 0.87 s\n\nLocal commands, not a planned route. The pilot and physics determine the actual movement.\n\nCurrent odor attention: bread. Near tie \u2014 no clear preference.\n\nbanana: 50.0% \u00b7 score -1.963e-1\nbread: 50.0% \u00b7 score -1.963e-1\n\nOdor draw 0.6271 \u00b7 approach 34.2% / avoid 65.8%\nAction draw 0.0027 \u2192 approach intent \u00b7 enacted",
+        "visible": true,
+        "rect": {
+          "x": 24,
+          "y": 84,
+          "width": 340,
+          "height": 509.5
+        }
+      },
+      "path-status": {
+        "text": "Neural command active \u00b7 observation #2",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 124,
+          "width": 310,
+          "height": 16.5
+        }
+      },
+      "path-command": {
+        "text": "Turn 2.66\u00b0/s left \u00b7 4.98 cm/s backward \u00b7 0.00 cm/s climb",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 146.5,
+          "width": 310,
+          "height": 34
+        }
+      },
+      "path-choice": {
+        "text": "Current odor attention: bread. Near tie \u2014 no clear preference.",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 457.5,
+          "width": 310,
+          "height": 42
+        }
+      },
+      "path-legend": {
+        "text": "Solid cyan: measured path with neural command active.\nGrey: no active neural command.\nGold projection: if this command were held for 0.87 s",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 340.5,
+          "width": 310,
+          "height": 75
+        }
+      },
+      "path-note": {
+        "text": "Local commands, not a planned route. The pilot and physics determine the actual movement.",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 421.5,
+          "width": 310,
+          "height": 30
+        }
+      },
+      "path-candidates": {
+        "text": "banana: 50.0% \u00b7 score -1.963e-1\nbread: 50.0% \u00b7 score -1.963e-1",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 505.5,
+          "width": 310,
+          "height": 33
+        }
+      },
+      "path-sampling": {
+        "text": "Odor draw 0.6271 \u00b7 approach 34.2% / avoid 65.8%\nAction draw 0.0027 \u2192 approach intent \u00b7 enacted",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 544.5,
+          "width": 310,
+          "height": 30
+        }
+      },
+      "path-duration": {
+        "text": "Gold projection: if this command were held for 0.87 s",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 386.5,
+          "width": 306,
+          "height": 28
+        }
+      }
+    },
+    "decisions": [
+      {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867805,
+            0.6579969533132195
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689410444706e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570740319073e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "active": {
+    "wall": 39751,
+    "time": 0.9344999999999525,
+    "clock": 0.9344999999999525,
+    "generation": 0,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "paused": false,
+    "p": [
+      1.180608248853456,
+      0.9937720283305271,
+      1.1998856613000581
+    ],
+    "v": [
+      -0.0487764736607591,
+      -0.016192257822184843,
+      -0.00030794630132066836
+    ],
+    "heading": 0.32577600364912007,
+    "paths": {
+      "history": {
+        "generation": 0,
+        "interval": 0.05,
+        "maxPoints": 1200,
+        "maxEvents": 256,
+        "points": [
+          {
+            "generation": 0,
+            "time": 0,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.05000000000000004,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.10000000000000007,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.1500000000000001,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.20000000000000015,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.25000000000000017,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.3000000000000002,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.35000000000000026,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.4000000000000003,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.30000000000000004,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.45000000000000034,
+            "position": [
+              1.199979752172921,
+              0.999993684660791,
+              1.1999998441344903
+            ],
+            "heading": 0.30037104080456367,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.5000000000000003,
+            "position": [
+              1.1991640694871364,
+              0.9997360217264225,
+              1.1999957728300248
+            ],
+            "heading": 0.30269004583308634,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.5504999999999948,
+            "position": [
+              1.1975589316342492,
+              0.9992335974795071,
+              1.1999877974003614
+            ],
+            "heading": 0.305378834049693,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.6004999999999893,
+            "position": [
+              1.1957990705691426,
+              0.9986816182139209,
+              1.1999785498757056
+            ],
+            "heading": 0.30874812131396956,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.6504999999999838,
+            "position": [
+              1.194012939821218,
+              0.998119206089523,
+              1.1999687738162448
+            ],
+            "heading": 0.3121174085782461,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.7004999999999783,
+            "position": [
+              1.1922055436615624,
+              0.9975461196597466,
+              1.199958645741636
+            ],
+            "heading": 0.3153060067304163,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912
+          },
+          {
+            "generation": 0,
+            "time": 0.7504999999999727,
+            "position": [
+              1.1900859009939933,
+              0.9968688829411126,
+              1.1999460003670752
+            ],
+            "heading": 0.31754598704402826,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912
+          },
+          {
+            "generation": 0,
+            "time": 0.8004999999999672,
+            "position": [
+              1.1876592013116047,
+              0.9960853387428085,
+              1.199930858601346
+            ],
+            "heading": 0.3197859673576402,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912
+          },
+          {
+            "generation": 0,
+            "time": 0.8504999999999617,
+            "position": [
+              1.1850656290614288,
+              0.9952402949823712,
+              1.1999143323710544
+            ],
+            "heading": 0.3220206049850547,
+            "command": {
+              "forwardSpeed": -0.05431159075814378,
+              "yawRate": 0.044691673217790516,
+              "verticalSpeed": -4.878162473536035e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 5,
+            "deadline": 1.692499999999979
+          },
+          {
+            "generation": 0,
+            "time": 0.9004999999999562,
+            "position": [
+              1.1823821131703478,
+              0.9943588874880812,
+              1.1998970444726709
+            ],
+            "heading": 0.32425518864594194,
+            "command": {
+              "forwardSpeed": -0.05431159075814378,
+              "yawRate": 0.044691673217790516,
+              "verticalSpeed": -4.878162473536035e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 5,
+            "deadline": 1.692499999999979
+          }
+        ],
+        "events": [
+          {
+            "generation": 0,
+            "time": 0,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "start"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.44250000000000034,
+            "position": [
+              1.1999998454973224,
+              0.9999999522067212,
+              1.1999999983960938
+            ],
+            "heading": 0.30002319005028527,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.5339999999999966,
+            "position": [
+              1.1981297266688757,
+              0.999412232747327,
+              1.1999906680914105
+            ],
+            "heading": 0.30426696925248176,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.5344999999999965,
+            "position": [
+              1.1981125266831523,
+              0.9994068562991186,
+              1.199990582936354
+            ],
+            "heading": 0.3043006621251245,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.6924999999999791,
+            "position": [
+              1.1925018421121831,
+              0.997640347576657,
+              1.1999603313786023
+            ],
+            "heading": 0.3149476098802384,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.6929999999999791,
+            "position": [
+              1.1924837560533539,
+              0.9976345962077537,
+              1.1999602295459093
+            ],
+            "heading": 0.3149700096833745,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.8009999999999672,
+            "position": [
+              1.187633920609757,
+              0.9960771369906385,
+              1.199930698828864
+            ],
+            "heading": 0.3198083671607763,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.8014999999999671,
+            "position": [
+              1.1876086239148471,
+              0.9960689293114654,
+              1.199930538922912
+            ],
+            "heading": 0.3198307129973852,
+            "command": {
+              "forwardSpeed": -0.05431159075814378,
+              "yawRate": 0.044691673217790516,
+              "verticalSpeed": -4.878162473536035e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 5,
+            "deadline": 1.692499999999979,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.9094999999999552,
+            "position": [
+              1.1818930999731132,
+              0.9941975415402906,
+              1.1998938811152093
+            ],
+            "heading": 0.32465741370490164,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.9099999999999552,
+            "position": [
+              1.1818659614274976,
+              0.9941885802854203,
+              1.1998937055325516
+            ],
+            "heading": 0.324679785503786,
+            "command": {
+              "forwardSpeed": -0.031636690973372586,
+              "yawRate": 0.04474359776878729,
+              "verticalSpeed": -8.159381929946248e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 6,
+            "deadline": 1.8009999999999673,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          }
+        ],
+        "current": {
+          "generation": 0,
+          "time": 0.9344999999999525,
+          "position": [
+            1.180608248853456,
+            0.9937720283305271,
+            1.1998856613000581
+          ],
+          "heading": 0.32577600364912007,
+          "command": {
+            "forwardSpeed": -0.031636690973372586,
+            "yawRate": 0.04474359776878729,
+            "verticalSpeed": -8.159381929946248e-05
+          },
+          "active": true,
+          "attention": "bread",
+          "action": 0,
+          "observationId": 6,
+          "deadline": 1.8009999999999673
+        }
+      },
+      "projection": [
+        {
+          "time": 0.9344999999999525,
+          "position": [
+            1.180608248853456,
+            0.9937720283305271,
+            1.1998856613000581
+          ],
+          "heading": 0.32577600364912007
+        },
+        {
+          "time": 0.9826388888888422,
+          "position": [
+            1.1791659231337226,
+            0.9932830620584608,
+            1.1998817334642569
+          ],
+          "heading": 0.3279299107306009
+        },
+        {
+          "time": 1.0307777777777318,
+          "position": [
+            1.1777246539467918,
+            0.9927909902874491,
+            1.1998778056284556
+          ],
+          "heading": 0.33008381781208174
+        },
+        {
+          "time": 1.0789166666666217,
+          "position": [
+            1.1762844479791639,
+            0.9922958153003674,
+            1.1998738777926543
+          ],
+          "heading": 0.33223772489356257
+        },
+        {
+          "time": 1.1270555555555113,
+          "position": [
+            1.1748453119124063,
+            0.9917975393944879,
+            1.199869949956853
+          ],
+          "heading": 0.33439163197504335
+        },
+        {
+          "time": 1.1751944444444011,
+          "position": [
+            1.173407252423123,
+            0.991296164881469,
+            1.1998660221210518
+          ],
+          "heading": 0.3365455390565242
+        },
+        {
+          "time": 1.2233333333332908,
+          "position": [
+            1.1719702761829234,
+            0.9907916940873445,
+            1.1998620942852505
+          ],
+          "heading": 0.338699446138005
+        },
+        {
+          "time": 1.2714722222221804,
+          "position": [
+            1.1705343898583915,
+            0.9902841293525125,
+            1.1998581664494492
+          ],
+          "heading": 0.34085335321948584
+        },
+        {
+          "time": 1.3196111111110702,
+          "position": [
+            1.1690996001110547,
+            0.9897734730317255,
+            1.199854238613648
+          ],
+          "heading": 0.3430072603009667
+        },
+        {
+          "time": 1.3677499999999598,
+          "position": [
+            1.1676659135973528,
+            0.9892597274940783,
+            1.1998503107778467
+          ],
+          "heading": 0.3451611673824475
+        },
+        {
+          "time": 1.4158888888888497,
+          "position": [
+            1.166233336968608,
+            0.9887428951229977,
+            1.1998463829420454
+          ],
+          "heading": 0.34731507446392834
+        },
+        {
+          "time": 1.4640277777777393,
+          "position": [
+            1.164801876870993,
+            0.9882229783162314,
+            1.199842455106244
+          ],
+          "heading": 0.3494689815454091
+        },
+        {
+          "time": 1.5121666666666291,
+          "position": [
+            1.1633715399455,
+            0.9876999794858367,
+            1.1998385272704428
+          ],
+          "heading": 0.35162288862688995
+        },
+        {
+          "time": 1.5603055555555185,
+          "position": [
+            1.1619423328279115,
+            0.9871739010581692,
+            1.1998345994346415
+          ],
+          "heading": 0.3537767957083708
+        },
+        {
+          "time": 1.6084444444444084,
+          "position": [
+            1.1605142621487679,
+            0.986644745473872,
+            1.1998306715988403
+          ],
+          "heading": 0.3559307027898516
+        },
+        {
+          "time": 1.6565833333332982,
+          "position": [
+            1.1590873345333372,
+            0.9861125151878639,
+            1.199826743763039
+          ],
+          "heading": 0.35808460987133245
+        },
+        {
+          "time": 1.7047222222221878,
+          "position": [
+            1.1576615566015849,
+            0.9855772126693284,
+            1.1998228159272377
+          ],
+          "heading": 0.3602385169528133
+        },
+        {
+          "time": 1.7528611111110775,
+          "position": [
+            1.156236934968142,
+            0.9850388404017019,
+            1.1998188880914364
+          ],
+          "heading": 0.3623924240342941
+        },
+        {
+          "time": 1.8009999999999673,
+          "position": [
+            1.1548134762422757,
+            0.9844974008826621,
+            1.1998149602556352
+          ],
+          "heading": 0.36454633111577495
+        }
+      ],
+      "enabled": true,
+      "decision": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867805,
+            0.6579969533132195
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689410444706e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570740319073e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        }
+      },
+      "decisionCurrent": true,
+      "executed": true,
+      "mode": "assisted",
+      "paused": false,
+      "grounded": false
+    },
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 985
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0004899868829458,
+        "aR": 1.0001700644077185,
+        "betaL": -0.03408830429671382,
+        "betaR": 0.026319092731821685,
+        "sL": 2.6569234063715214e-05,
+        "sR": 2.6569234063715214e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.026524149754474594,
+        "betaR": -0.03297690240880791,
+        "sL": -6.836677327574808e-06,
+        "sR": -6.524374234709456e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.026524149754474594,
+        "betaR": -0.03297690240880791,
+        "sL": -6.836677327574809e-06,
+        "sR": -6.524374234709455e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0004899868829458,
+        "aR": 1.0001700644077185,
+        "betaL": -0.007564154542239226,
+        "betaR": -0.006657809676986221,
+        "sL": 1.9732556736140405e-05,
+        "sR": 2.0044859829005758e-05,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867805,
+          0.6579969533132195
+        ],
+        "executedAt": 0.44250000000000034
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.04474359776878729,
+          "forwardSpeed": -0.031636690973372586,
+          "verticalSpeed": -8.159381929946248e-05,
+          "feed": 1.0418429504590836e-05
+        },
+        "active": true,
+        "framesApplied": 985,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7493335837584776,
+        "min": 0.4316156804561615,
+        "max": 0.9932956099510193
+      }
+    },
+    "controls": {
+      "aL": 1.0004899868829458,
+      "aR": 1.0001700644077185,
+      "betaL": -0.007564154542239226,
+      "betaR": -0.006657809676986221,
+      "sL": 1.9732556736140405e-05,
+      "sR": 2.0044859829005758e-05,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867805,
+          0.6579969533132195
+        ]
+      },
+      "action": 0
+    },
+    "annotationsVisible": true,
+    "rendered": {
+      "LineSegments": {
+        "visible": true,
+        "positions": [
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.1999797821044922,
+          0.9999936819076538,
+          1.1999998092651367,
+          1.1999797821044922,
+          0.9999936819076538,
+          1.1999998092651367,
+          1.1991640329360962,
+          0.9997360110282898,
+          1.199995756149292,
+          1.1991640329360962,
+          0.9997360110282898,
+          1.199995756149292,
+          1.197558879852295,
+          0.999233603477478,
+          1.199987769126892,
+          1.197558879852295,
+          0.999233603477478,
+          1.199987769126892,
+          1.1957991123199463,
+          0.9986816048622131,
+          1.1999785900115967,
+          1.1957991123199463,
+          0.9986816048622131,
+          1.1999785900115967,
+          1.1940128803253174,
+          0.9981192350387573,
+          1.1999688148498535,
+          1.1940128803253174,
+          0.9981192350387573,
+          1.1999688148498535,
+          1.192205548286438,
+          0.9975461363792419,
+          1.1999586820602417,
+          1.192205548286438,
+          0.9975461363792419,
+          1.1999586820602417,
+          1.1900858879089355,
+          0.996868908405304,
+          1.1999460458755493,
+          1.1900858879089355,
+          0.996868908405304,
+          1.1999460458755493,
+          1.1876591444015503,
+          0.9960853457450867,
+          1.1999309062957764,
+          1.1876591444015503,
+          0.9960853457450867,
+          1.1999309062957764,
+          1.1850656270980835,
+          0.9952402710914612,
+          1.1999143362045288,
+          1.1850656270980835,
+          0.9952402710914612,
+          1.1999143362045288,
+          1.1823821067810059,
+          0.9943588972091675,
+          1.199897050857544,
+          1.1823821067810059,
+          0.9943588972091675,
+          1.199897050857544,
+          1.1806082725524902,
+          0.993772029876709,
+          1.199885606765747
+        ]
+      },
+      "Line": {
+        "visible": true,
+        "positions": [
+          1.1806082725524902,
+          0.993772029876709,
+          1.199885606765747,
+          1.1791659593582153,
+          0.9932830333709717,
+          1.1998817920684814,
+          1.1777245998382568,
+          0.9927909970283508,
+          1.1998778581619263,
+          1.1762844324111938,
+          0.9922958016395569,
+          1.199873924255371,
+          1.1748453378677368,
+          0.9917975664138794,
+          1.199869990348816,
+          1.1734071969985962,
+          0.9912961721420288,
+          1.1998660564422607,
+          1.171970248222351,
+          0.9907916784286499,
+          1.1998621225357056,
+          1.170534372329712,
+          0.9902841448783875,
+          1.1998581886291504,
+          1.1690995693206787,
+          0.9897734522819519,
+          1.1998542547225952,
+          1.167665958404541,
+          0.9892597198486328,
+          1.19985032081604,
+          1.1662333011627197,
+          0.9887428879737854,
+          1.1998463869094849,
+          1.164801836013794,
+          0.9882229566574097,
+          1.1998424530029297,
+          1.1633715629577637,
+          0.9876999855041504,
+          1.1998385190963745,
+          1.1619423627853394,
+          0.9871739149093628,
+          1.1998345851898193,
+          1.160514235496521,
+          0.9866447448730469,
+          1.1998306512832642,
+          1.1590873003005981,
+          0.9861125349998474,
+          1.199826717376709,
+          1.1576615571975708,
+          0.9855772256851196,
+          1.1998227834701538,
+          1.1562368869781494,
+          0.9850388169288635,
+          1.1998188495635986,
+          1.154813528060913,
+          0.9844974279403687,
+          1.1998149156570435
+        ]
+      }
+    },
+    "panel": {
+      "path-panel": {
+        "text": "WHAT THE BRAIN COMMANDS\n\nNeural command active \u00b7 observation #6\n\nTurn 2.56\u00b0/s left \u00b7 3.16 cm/s backward \u00b7 0.01 cm/s descend\n\n0.93 s simulated \u00b7 0.9 s of trail\n\nSolid cyan: measured path with neural command active.\nGrey: no active neural command.\nGold projection: if this command were held for 0.87 s\n\nLocal commands, not a planned route. The pilot and physics determine the actual movement.\n\nCurrent odor attention: bread. Near tie \u2014 no clear preference.\n\nbanana: 50.0% \u00b7 score -1.963e-1\nbread: 50.0% \u00b7 score -1.963e-1\n\nOdor draw 0.6271 \u00b7 approach 34.2% / avoid 65.8%\nAction draw 0.0027 \u2192 approach intent \u00b7 enacted",
+        "visible": true,
+        "rect": {
+          "x": 24,
+          "y": 84,
+          "width": 340,
+          "height": 509.5
+        }
+      },
+      "path-status": {
+        "text": "Neural command active \u00b7 observation #6",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 124,
+          "width": 310,
+          "height": 16.5
+        }
+      },
+      "path-command": {
+        "text": "Turn 2.56\u00b0/s left \u00b7 3.16 cm/s backward \u00b7 0.01 cm/s descend",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 146.5,
+          "width": 310,
+          "height": 34
+        }
+      },
+      "path-choice": {
+        "text": "Current odor attention: bread. Near tie \u2014 no clear preference.",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 457.5,
+          "width": 310,
+          "height": 42
+        }
+      },
+      "path-legend": {
+        "text": "Solid cyan: measured path with neural command active.\nGrey: no active neural command.\nGold projection: if this command were held for 0.87 s",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 340.5,
+          "width": 310,
+          "height": 75
+        }
+      },
+      "path-note": {
+        "text": "Local commands, not a planned route. The pilot and physics determine the actual movement.",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 421.5,
+          "width": 310,
+          "height": 30
+        }
+      },
+      "path-candidates": {
+        "text": "banana: 50.0% \u00b7 score -1.963e-1\nbread: 50.0% \u00b7 score -1.963e-1",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 505.5,
+          "width": 310,
+          "height": 33
+        }
+      },
+      "path-sampling": {
+        "text": "Odor draw 0.6271 \u00b7 approach 34.2% / avoid 65.8%\nAction draw 0.0027 \u2192 approach intent \u00b7 enacted",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 544.5,
+          "width": 310,
+          "height": 30
+        }
+      },
+      "path-duration": {
+        "text": "Gold projection: if this command were held for 0.87 s",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 386.5,
+          "width": 306,
+          "height": 28
+        }
+      }
+    },
+    "decisions": [
+      {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867805,
+            0.6579969533132195
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689410444706e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570740319073e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "retinal_isolation": {
+    "bytes": 8192,
+    "excludedChangedBytes": 153,
+    "positiveChangedBytes": 4120,
+    "restoredChangedBytes": 1118,
+    "toggleChangedBytes": 229,
+    "toggleHidesAnnotations": true,
+    "togglePreservesPhysicalAndNeuralState": true,
+    "rendererRestored": true,
+    "baseline_sha256": "690193a06b993667ddacdb8e61381e4412aa24bdfccf0f0ff93c08aa7b54ab2b",
+    "positive_sha256": "3a3d44b30b85e2a11ca2b98e487e18b240a024685b5c7265d96f6426f14dcf89"
+  },
+  "error": "",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_neural_paths.py\", line 258, in run\n    assert all(isolation[k] == 0 for k in (\"excludedChangedBytes\", \"restoredChangedBytes\", \"toggleChangedBytes\"))\n           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "failure_state": {
+    "wall": 41791.5,
+    "time": 1.0094999999999443,
+    "clock": 1.0094999999999443,
+    "generation": 0,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "paused": false,
+    "p": [
+      1.1773693689450722,
+      0.9926921870214673,
+      1.1998656563093228
+    ],
+    "v": [
+      -0.03906381404843066,
+      -0.01308187762480408,
+      -0.00023671940749821652
+    ],
+    "heading": 0.32913156227450185,
+    "paths": {
+      "history": {
+        "generation": 0,
+        "interval": 0.05,
+        "maxPoints": 1200,
+        "maxEvents": 256,
+        "points": [
+          {
+            "generation": 0,
+            "time": 0,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.05000000000000004,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.10000000000000007,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.1500000000000001,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.20000000000000015,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.25000000000000017,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.3000000000000002,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.35000000000000026,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.4000000000000003,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.30000000000000004,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null
+          },
+          {
+            "generation": 0,
+            "time": 0.45000000000000034,
+            "position": [
+              1.199979752172921,
+              0.999993684660791,
+              1.1999998441344903
+            ],
+            "heading": 0.30037104080456367,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.5000000000000003,
+            "position": [
+              1.1991640694871364,
+              0.9997360217264225,
+              1.1999957728300248
+            ],
+            "heading": 0.30269004583308634,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.5504999999999948,
+            "position": [
+              1.1975589316342492,
+              0.9992335974795071,
+              1.1999877974003614
+            ],
+            "heading": 0.305378834049693,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.6004999999999893,
+            "position": [
+              1.1957990705691426,
+              0.9986816182139209,
+              1.1999785498757056
+            ],
+            "heading": 0.30874812131396956,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.6504999999999838,
+            "position": [
+              1.194012939821218,
+              0.998119206089523,
+              1.1999687738162448
+            ],
+            "heading": 0.3121174085782461,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003
+          },
+          {
+            "generation": 0,
+            "time": 0.7004999999999783,
+            "position": [
+              1.1922055436615624,
+              0.9975461196597466,
+              1.199958645741636
+            ],
+            "heading": 0.3153060067304163,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912
+          },
+          {
+            "generation": 0,
+            "time": 0.7504999999999727,
+            "position": [
+              1.1900859009939933,
+              0.9968688829411126,
+              1.1999460003670752
+            ],
+            "heading": 0.31754598704402826,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912
+          },
+          {
+            "generation": 0,
+            "time": 0.8004999999999672,
+            "position": [
+              1.1876592013116047,
+              0.9960853387428085,
+              1.199930858601346
+            ],
+            "heading": 0.3197859673576402,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912
+          },
+          {
+            "generation": 0,
+            "time": 0.8504999999999617,
+            "position": [
+              1.1850656290614288,
+              0.9952402949823712,
+              1.1999143323710544
+            ],
+            "heading": 0.3220206049850547,
+            "command": {
+              "forwardSpeed": -0.05431159075814378,
+              "yawRate": 0.044691673217790516,
+              "verticalSpeed": -4.878162473536035e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 5,
+            "deadline": 1.692499999999979
+          },
+          {
+            "generation": 0,
+            "time": 0.9004999999999562,
+            "position": [
+              1.1823821131703478,
+              0.9943588874880812,
+              1.1998970444726709
+            ],
+            "heading": 0.32425518864594194,
+            "command": {
+              "forwardSpeed": -0.05431159075814378,
+              "yawRate": 0.044691673217790516,
+              "verticalSpeed": -4.878162473536035e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 5,
+            "deadline": 1.692499999999979
+          },
+          {
+            "generation": 0,
+            "time": 0.9504999999999507,
+            "position": [
+              1.179851968776537,
+              0.9935206914087114,
+              1.1998809160008834
+            ],
+            "heading": 0.32649190121341987,
+            "command": {
+              "forwardSpeed": -0.031636690973372586,
+              "yawRate": 0.04474359776878729,
+              "verticalSpeed": -8.159381929946248e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 6,
+            "deadline": 1.8009999999999673
+          },
+          {
+            "generation": 0,
+            "time": 1.0004999999999453,
+            "position": [
+              1.1777241568730998,
+              0.9928109380774239,
+              1.1998678101192088
+            ],
+            "heading": 0.3287289850985506,
+            "command": {
+              "forwardSpeed": -0.03150448010527041,
+              "yawRate": 0.044730797327947415,
+              "verticalSpeed": -8.172531647129173e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 7,
+            "deadline": 1.9094999999999551
+          }
+        ],
+        "events": [
+          {
+            "generation": 0,
+            "time": 0,
+            "position": [
+              1.2,
+              1,
+              1.2
+            ],
+            "heading": 0.29999999999999993,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "start"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.44250000000000034,
+            "position": [
+              1.1999998454973224,
+              0.9999999522067212,
+              1.1999999983960938
+            ],
+            "heading": 0.30002319005028527,
+            "command": {
+              "forwardSpeed": -0.04977809084226999,
+              "yawRate": 0.04638010057040579,
+              "verticalSpeed": 8.000722448504135e-06
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 2,
+            "deadline": 1.3585000000000003,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.5339999999999966,
+            "position": [
+              1.1981297266688757,
+              0.999412232747327,
+              1.1999906680914105
+            ],
+            "heading": 0.30426696925248176,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.5344999999999965,
+            "position": [
+              1.1981125266831523,
+              0.9994068562991186,
+              1.199990582936354
+            ],
+            "heading": 0.3043006621251245,
+            "command": {
+              "forwardSpeed": -0.03519759056544132,
+              "yawRate": 0.0673857452855044,
+              "verticalSpeed": -7.604182651807914e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 3,
+            "deadline": 1.4670000000000003,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.6924999999999791,
+            "position": [
+              1.1925018421121831,
+              0.997640347576657,
+              1.1999603313786023
+            ],
+            "heading": 0.3149476098802384,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.6929999999999791,
+            "position": [
+              1.1924837560533539,
+              0.9976345962077537,
+              1.1999602295459093
+            ],
+            "heading": 0.3149700096833745,
+            "command": {
+              "forwardSpeed": -0.05436141121005063,
+              "yawRate": 0.04479960627219788,
+              "verticalSpeed": -4.826468600697338e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 4,
+            "deadline": 1.5839999999999912,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.8009999999999672,
+            "position": [
+              1.187633920609757,
+              0.9960771369906385,
+              1.199930698828864
+            ],
+            "heading": 0.3198083671607763,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.8014999999999671,
+            "position": [
+              1.1876086239148471,
+              0.9960689293114654,
+              1.199930538922912
+            ],
+            "heading": 0.3198307129973852,
+            "command": {
+              "forwardSpeed": -0.05431159075814378,
+              "yawRate": 0.044691673217790516,
+              "verticalSpeed": -4.878162473536035e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 5,
+            "deadline": 1.692499999999979,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.9094999999999552,
+            "position": [
+              1.1818930999731132,
+              0.9941975415402906,
+              1.1998938811152093
+            ],
+            "heading": 0.32465741370490164,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.9099999999999552,
+            "position": [
+              1.1818659614274976,
+              0.9941885802854203,
+              1.1998937055325516
+            ],
+            "heading": 0.324679785503786,
+            "command": {
+              "forwardSpeed": -0.031636690973372586,
+              "yawRate": 0.04474359776878729,
+              "verticalSpeed": -8.159381929946248e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 6,
+            "deadline": 1.8009999999999673,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.992999999999946,
+            "position": [
+              1.1780253577329722,
+              0.9929116529633609,
+              1.1998696452218527
+            ],
+            "heading": 0.3283935041185912,
+            "command": {
+              "forwardSpeed": 0,
+              "yawRate": 0,
+              "verticalSpeed": 0
+            },
+            "active": false,
+            "attention": null,
+            "action": null,
+            "observationId": null,
+            "deadline": null,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          },
+          {
+            "generation": 0,
+            "time": 0.993499999999946,
+            "position": [
+              1.178005110602096,
+              0.9929048855658257,
+              1.1998695216687183
+            ],
+            "heading": 0.32841586951725515,
+            "command": {
+              "forwardSpeed": -0.03150448010527041,
+              "yawRate": 0.044730797327947415,
+              "verticalSpeed": -8.172531647129173e-05
+            },
+            "active": true,
+            "attention": "bread",
+            "action": 0,
+            "observationId": 7,
+            "deadline": 1.9094999999999551,
+            "changes": [
+              "command",
+              "active",
+              "attention",
+              "action",
+              "observationId",
+              "deadline"
+            ]
+          }
+        ],
+        "current": {
+          "generation": 0,
+          "time": 1.0094999999999443,
+          "position": [
+            1.1773693689450722,
+            0.9926921870214673,
+            1.1998656563093228
+          ],
+          "heading": 0.32913156227450185,
+          "command": {
+            "forwardSpeed": -0.03150448010527041,
+            "yawRate": 0.044730797327947415,
+            "verticalSpeed": -8.172531647129173e-05
+          },
+          "active": true,
+          "attention": "bread",
+          "action": 0,
+          "observationId": 7,
+          "deadline": 1.9094999999999551
+        }
+      },
+      "projection": [
+        {
+          "time": 1.0094999999999443,
+          "position": [
+            1.1773693689450722,
+            0.9926921870214673,
+            1.1998656563093228
+          ],
+          "heading": 0.32913156227450185
+        },
+        {
+          "time": 1.0568684210525765,
+          "position": [
+            1.1759576660612625,
+            0.9922083424267656,
+            1.1998617851101216
+          ],
+          "heading": 0.331250389516352
+        },
+        {
+          "time": 1.1042368421052087,
+          "position": [
+            1.1745469915286624,
+            0.9917215077658669,
+            1.1998579139109202
+          ],
+          "heading": 0.3333692167582022
+        },
+        {
+          "time": 1.1516052631578408,
+          "position": [
+            1.1731373516803925,
+            0.99123168522438,
+            1.199854042711719
+          ],
+          "heading": 0.33548804400005233
+        },
+        {
+          "time": 1.198973684210473,
+          "position": [
+            1.1717287528449285,
+            0.9907388770013275,
+            1.1998501715125178
+          ],
+          "heading": 0.33760687124190253
+        },
+        {
+          "time": 1.2463421052631052,
+          "position": [
+            1.1703212013460722,
+            0.9902430853091361,
+            1.1998463003133164
+          ],
+          "heading": 0.33972569848375267
+        },
+        {
+          "time": 1.2937105263157371,
+          "position": [
+            1.1689147035029235,
+            0.9897443123736264,
+            1.1998424291141152
+          ],
+          "heading": 0.34184452572560287
+        },
+        {
+          "time": 1.3410789473683693,
+          "position": [
+            1.1675092656298522,
+            0.9892425604340033,
+            1.199838557914914
+          ],
+          "heading": 0.343963352967453
+        },
+        {
+          "time": 1.3884473684210015,
+          "position": [
+            1.166104894036469,
+            0.9887378317428457,
+            1.1998346867157126
+          ],
+          "heading": 0.3460821802093032
+        },
+        {
+          "time": 1.4358157894736336,
+          "position": [
+            1.1647015950275985,
+            0.988230128566096,
+            1.1998308155165114
+          ],
+          "heading": 0.34820100745115334
+        },
+        {
+          "time": 1.4831842105262658,
+          "position": [
+            1.1632993749032492,
+            0.987719453183051,
+            1.1998269443173102
+          ],
+          "heading": 0.35031983469300354
+        },
+        {
+          "time": 1.530552631578898,
+          "position": [
+            1.161898239958586,
+            0.9872058078863504,
+            1.1998230731181088
+          ],
+          "heading": 0.3524386619348537
+        },
+        {
+          "time": 1.5779210526315302,
+          "position": [
+            1.1604981964839025,
+            0.9866891949819675,
+            1.1998192019189076
+          ],
+          "heading": 0.3545574891767038
+        },
+        {
+          "time": 1.625289473684162,
+          "position": [
+            1.1590992507645919,
+            0.9861696167891983,
+            1.1998153307197064
+          ],
+          "heading": 0.356676316418554
+        },
+        {
+          "time": 1.6726578947367945,
+          "position": [
+            1.157701409081119,
+            0.9856470756406512,
+            1.199811459520505
+          ],
+          "heading": 0.35879514366040416
+        },
+        {
+          "time": 1.7200263157894264,
+          "position": [
+            1.1563046777089927,
+            0.9851215738822368,
+            1.1998075883213037
+          ],
+          "heading": 0.36091397090225436
+        },
+        {
+          "time": 1.7673947368420588,
+          "position": [
+            1.1549090629187364,
+            0.9845931138731568,
+            1.1998037171221025
+          ],
+          "heading": 0.3630327981441045
+        },
+        {
+          "time": 1.8147631578946908,
+          "position": [
+            1.1535145709758614,
+            0.9840616979858942,
+            1.1997998459229011
+          ],
+          "heading": 0.3651516253859547
+        },
+        {
+          "time": 1.862131578947323,
+          "position": [
+            1.1521212081408374,
+            0.9835273286062016,
+            1.1997959747237
+          ],
+          "heading": 0.36727045262780483
+        },
+        {
+          "time": 1.9094999999999551,
+          "position": [
+            1.1507289806690657,
+            0.9829900081330917,
+            1.1997921035244987
+          ],
+          "heading": 0.36938927986965503
+        }
+      ],
+      "enabled": true,
+      "decision": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867805,
+            0.6579969533132195
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689410444706e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570740319073e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        }
+      },
+      "decisionCurrent": true,
+      "executed": true,
+      "mode": "assisted",
+      "paused": false,
+      "grounded": false
+    },
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 7,
+        "accepted": 6,
+        "discarded": 0,
+        "framesApplied": 1135
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0004502820792156,
+        "aR": 1.0001993516934269,
+        "betaL": -0.03812762264474164,
+        "betaR": 0.022213859916172474,
+        "sL": 1.8487465155937546e-05,
+        "sR": 1.8487465155937546e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.02655143957373416,
+        "betaR": -0.03297722849100645,
+        "sL": -6.838855989020763e-06,
+        "sR": -6.524178974633574e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.02655143957373416,
+        "betaR": -0.03297722849100645,
+        "sL": -6.838855989020762e-06,
+        "sR": -6.524178974633574e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0004502820792156,
+        "aR": 1.0001993516934269,
+        "betaL": -0.011576183071007481,
+        "betaR": -0.010763368574833974,
+        "sL": 1.1648609166916784e-05,
+        "sR": 1.1963286181303971e-05,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867805,
+          0.6579969533132195
+        ],
+        "executedAt": 0.44250000000000034
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.044730797327947415,
+          "forwardSpeed": -0.03150448010527041,
+          "verticalSpeed": -8.172531647129173e-05,
+          "feed": 1.0419621771416876e-05
+        },
+        "active": true,
+        "framesApplied": 1135,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7448630731558943,
+        "min": 0.3965017795562744,
+        "max": 0.9931407570838928
+      }
+    },
+    "controls": {
+      "aL": 1.0004502820792156,
+      "aR": 1.0001993516934269,
+      "betaL": -0.011576183071007481,
+      "betaR": -0.010763368574833974,
+      "sL": 1.1648609166916784e-05,
+      "sR": 1.1963286181303971e-05,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867805,
+          0.6579969533132195
+        ]
+      },
+      "action": 0
+    },
+    "annotationsVisible": true,
+    "rendered": {
+      "LineSegments": {
+        "visible": true,
+        "positions": [
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.2000000476837158,
+          1,
+          1.2000000476837158,
+          1.1999797821044922,
+          0.9999936819076538,
+          1.1999998092651367,
+          1.1999797821044922,
+          0.9999936819076538,
+          1.1999998092651367,
+          1.1991640329360962,
+          0.9997360110282898,
+          1.199995756149292,
+          1.1991640329360962,
+          0.9997360110282898,
+          1.199995756149292,
+          1.197558879852295,
+          0.999233603477478,
+          1.199987769126892,
+          1.197558879852295,
+          0.999233603477478,
+          1.199987769126892,
+          1.1957991123199463,
+          0.9986816048622131,
+          1.1999785900115967,
+          1.1957991123199463,
+          0.9986816048622131,
+          1.1999785900115967,
+          1.1940128803253174,
+          0.9981192350387573,
+          1.1999688148498535,
+          1.1940128803253174,
+          0.9981192350387573,
+          1.1999688148498535,
+          1.192205548286438,
+          0.9975461363792419,
+          1.1999586820602417,
+          1.192205548286438,
+          0.9975461363792419,
+          1.1999586820602417,
+          1.1900858879089355,
+          0.996868908405304,
+          1.1999460458755493,
+          1.1900858879089355,
+          0.996868908405304,
+          1.1999460458755493,
+          1.1876591444015503,
+          0.9960853457450867,
+          1.1999309062957764,
+          1.1876591444015503,
+          0.9960853457450867,
+          1.1999309062957764,
+          1.1850656270980835,
+          0.9952402710914612,
+          1.1999143362045288,
+          1.1850656270980835,
+          0.9952402710914612,
+          1.1999143362045288,
+          1.1823821067810059,
+          0.9943588972091675,
+          1.199897050857544,
+          1.1823821067810059,
+          0.9943588972091675,
+          1.199897050857544,
+          1.17985200881958,
+          0.9935206770896912,
+          1.1998809576034546,
+          1.17985200881958,
+          0.9935206770896912,
+          1.1998809576034546,
+          1.1777241230010986,
+          0.9928109645843506,
+          1.199867844581604,
+          1.1777241230010986,
+          0.9928109645843506,
+          1.199867844581604,
+          1.1773693561553955,
+          0.9926921725273132,
+          1.199865698814392
+        ]
+      },
+      "Line": {
+        "visible": true,
+        "positions": [
+          1.1773693561553955,
+          0.9926921725273132,
+          1.199865698814392,
+          1.1759576797485352,
+          0.9922083616256714,
+          1.199861764907837,
+          1.1745469570159912,
+          0.991721510887146,
+          1.1998579502105713,
+          1.1731373071670532,
+          0.9912316799163818,
+          1.1998540163040161,
+          1.1717287302017212,
+          0.9907388687133789,
+          1.1998502016067505,
+          1.1703212261199951,
+          0.9902430772781372,
+          1.1998462677001953,
+          1.1689146757125854,
+          0.9897443056106567,
+          1.1998424530029297,
+          1.1675093173980713,
+          0.9892425537109375,
+          1.1998385190963745,
+          1.1661049127578735,
+          0.9887378215789795,
+          1.1998347043991089,
+          1.1647015810012817,
+          0.9882301092147827,
+          1.1998307704925537,
+          1.163299322128296,
+          0.9877194762229919,
+          1.199826955795288,
+          1.1618982553482056,
+          0.9872058033943176,
+          1.199823021888733,
+          1.1604981422424316,
+          0.9866892099380493,
+          1.1998192071914673,
+          1.1590992212295532,
+          0.9861696362495422,
+          1.199815273284912,
+          1.1577013731002808,
+          0.9856470823287964,
+          1.1998114585876465,
+          1.1563047170639038,
+          0.9851215481758118,
+          1.1998076438903809,
+          1.1549090147018433,
+          0.9845930933952332,
+          1.1998037099838257,
+          1.1535146236419678,
+          0.9840617179870605,
+          1.19979989528656,
+          1.1521211862564087,
+          0.9835273027420044,
+          1.1997959613800049,
+          1.1507289409637451,
+          0.982990026473999,
+          1.1997921466827393
+        ]
+      }
+    },
+    "panel": {
+      "path-panel": {
+        "text": "WHAT THE BRAIN COMMANDS\n\nNeural command active \u00b7 observation #7\n\nTurn 2.56\u00b0/s left \u00b7 3.15 cm/s backward \u00b7 0.01 cm/s descend\n\n1.01 s simulated \u00b7 1.0 s of trail\n\nSolid cyan: measured path with neural command active.\nGrey: no active neural command.\nGold projection: if this command were held for 0.90 s\n\nLocal commands, not a planned route. The pilot and physics determine the actual movement.\n\nCurrent odor attention: bread. Near tie \u2014 no clear preference.\n\nbanana: 50.0% \u00b7 score -1.963e-1\nbread: 50.0% \u00b7 score -1.963e-1\n\nOdor draw 0.6271 \u00b7 approach 34.2% / avoid 65.8%\nAction draw 0.0027 \u2192 approach intent \u00b7 enacted",
+        "visible": true,
+        "rect": {
+          "x": 24,
+          "y": 84,
+          "width": 340,
+          "height": 509.5
+        }
+      },
+      "path-status": {
+        "text": "Neural command active \u00b7 observation #7",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 124,
+          "width": 310,
+          "height": 16.5
+        }
+      },
+      "path-command": {
+        "text": "Turn 2.56\u00b0/s left \u00b7 3.15 cm/s backward \u00b7 0.01 cm/s descend",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 146.5,
+          "width": 310,
+          "height": 34
+        }
+      },
+      "path-choice": {
+        "text": "Current odor attention: bread. Near tie \u2014 no clear preference.",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 457.5,
+          "width": 310,
+          "height": 42
+        }
+      },
+      "path-legend": {
+        "text": "Solid cyan: measured path with neural command active.\nGrey: no active neural command.\nGold projection: if this command were held for 0.90 s",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 340.5,
+          "width": 310,
+          "height": 75
+        }
+      },
+      "path-note": {
+        "text": "Local commands, not a planned route. The pilot and physics determine the actual movement.",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 421.5,
+          "width": 310,
+          "height": 30
+        }
+      },
+      "path-candidates": {
+        "text": "banana: 50.0% \u00b7 score -1.963e-1\nbread: 50.0% \u00b7 score -1.963e-1",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 505.5,
+          "width": 310,
+          "height": 33
+        }
+      },
+      "path-sampling": {
+        "text": "Odor draw 0.6271 \u00b7 approach 34.2% / avoid 65.8%\nAction draw 0.0027 \u2192 approach intent \u00b7 enacted",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 544.5,
+          "width": 310,
+          "height": 30
+        }
+      },
+      "path-duration": {
+        "text": "Gold projection: if this command were held for 0.90 s",
+        "visible": true,
+        "rect": {
+          "x": 39,
+          "y": 386.5,
+          "width": 306,
+          "height": 28
+        }
+      }
+    },
+    "decisions": [
+      {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689062771427e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026981592,
+                "mbon:MBON05:left": 0.2935595675096407
+              },
+              "score": -0.19631419723982477
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689410444706e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046139808,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.1963141966883169
+            }
+          ],
+          "p": [
+            0.49999999954041013,
+            0.5000000004595899
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867805,
+            0.6579969533132195
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689410444706e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570740319073e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "served_sources": {
+    "scope": "Local page and dedicated-worker response bodies; external CDN/font bytes are not pinned.",
+    "instrumentation": "Only brain_full.json is intercepted: route.fetch (30s, no redirects), SHA256 verification, then fulfill with the same decoded body; transfer/content encoding headers are removed and decoded content-length is set. Other local responses are read after download. Routing disables the context HTTP cache.",
+    "assets": {
+      "web/index.html": {
+        "sha256": "44fadf97af3c4919e43e5c8311e6c179561ea96fd418f24519e2a57dbd824e13",
+        "bytes": 19323,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/?controller=assisted&seed=1"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/page.js": {
+        "sha256": "08a9c8ef63e688394056842b9a3de738420db5b4a4fa6dfc8f1583001fd8033f",
+        "bytes": 50543,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/page.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/room.js": {
+        "sha256": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+        "bytes": 36801,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/room.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/body.js": {
+        "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+        "bytes": 22149,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/body.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/fly.js": {
+        "sha256": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+        "bytes": 22736,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/fly.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/eye.js": {
+        "sha256": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+        "bytes": 5647,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/eye.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/life.js": {
+        "sha256": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+        "bytes": 30929,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settled-life.js": {
+        "sha256": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+        "bytes": 13340,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settled-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-life.js": {
+        "sha256": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+        "bytes": 14845,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/physics-clock.js": {
+        "sha256": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+        "bytes": 1067,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/physics-clock.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/path-history.js": {
+        "sha256": "50e059c20543d25b13a3cc8caa592b94f4f1683ecd20dc32c1f8a5350c6a8951",
+        "bytes": 7510,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/path-history.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/path-view.js": {
+        "sha256": "9dbe440597c80ed1e5c62b947994516bedff611860c0a0bdc2f0da1c6d918e8e",
+        "bytes": 7433,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/path-view.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain_scan.js": {
+        "sha256": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+        "bytes": 96646,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain_scan.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/retina.js": {
+        "sha256": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+        "bytes": 4316,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/retina.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/senses.js": {
+        "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+        "bytes": 3706,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/senses.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motor.js": {
+        "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+        "bytes": 3204,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/motor.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/assisted-life.js": {
+        "sha256": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+        "bytes": 15154,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/assisted-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-policy.js": {
+        "sha256": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+        "bytes": 4578,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/neural-policy.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/lessons_full.json": {
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+        "bytes": 1709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/lessons_full.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/worker.js": {
+        "sha256": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+        "bytes": 23543,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/worker.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain.js": {
+        "sha256": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+        "bytes": 17894,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/learner.js": {
+        "sha256": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+        "bytes": 19709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/learner.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/atlas.json": {
+        "sha256": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+        "bytes": 11633781,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/atlas.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/brain_full.json": {
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+        "bytes": 42913998,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/brain_full.json"
+        ],
+        "binding": "intercepted request: fetch, hash, fulfill identical body"
+      }
+    }
+  },
+  "sources_unchanged": true,
+  "completed": "2026-09-27T07:59:36.953051+00:00",
+  "body_sha256": "5541ec108cc5d4bdbb9b138fe7ef05dc01cfeafb63950ced69ba9c947f17385e"
+}

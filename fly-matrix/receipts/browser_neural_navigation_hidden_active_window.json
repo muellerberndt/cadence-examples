@@ -1,0 +1,3402 @@
+{
+  "schema": "cadence.neural-page-check/3",
+  "passed": true,
+  "started": "2026-09-27T07:49:28.437643+00:00",
+  "full_views": false,
+  "checks": [
+    "rendered pixel packets, checked candidate competition, matching attended observation and actual route execution",
+    "pause preserves physical position and immediately revokes route and trim",
+    "brain-off has no target/search/yaw/translation command and remains in stabilized hover"
+  ],
+  "sha256": {
+    "web/index.html": "fa7b27f2e3b4ed9dcc8ba4d4f89ecf116f9ee925d37225d63e7d54c37c655892",
+    "web/page.js": "90423df8b011533e1a5847eca5cfee7267d918a83abfd7c9f2db6ebd9bab11cd",
+    "web/worker.js": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+    "web/settled-life.js": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "68f846d664bc8d9d6a638b2c3decc1b2b11229b23579dcd4ed9e3f2bb52f6e81",
+    "tools/check_neural_page.py": "3ba661958793ad8e4266b8e9baeffeeb984f122419929c997142527e6db5f6b8"
+  },
+  "page_errors": [],
+  "protocol": {
+    "seed": 1,
+    "minimum_active_simulation_seconds": 2,
+    "window_origin": "first_executed_neural_route",
+    "minimum_horizontal_displacement_metres": 0.05,
+    "maximum_brain_off_horizontal_drift_metres": 0.01,
+    "followup": "Separate validation after the initial 6.6mm-motion diagnostic and addition of supplied hover-thrust projection; no claim of independent navigation confirmation or learning improvement.",
+    "startup_interpretation": "With --after-active, startup is measured separately; passing the active window does not erase the earlier hidden-view startup-window failure."
+  },
+  "claim": "Actual rendered pixels enter the full recurrent graph; qualified neural readouts supply route requests and odor attention; brain-off retains only stabilization.",
+  "limits": "One seed and bounded start; supplied retinal mapping, attention protocol, decoders and HandPilot stabilization; no biological retinotopy, learned navigation, flight competence or whole-mind claim.",
+  "runtime": {
+    "python": "3.13.0",
+    "browser": "151.0.7922.34"
+  },
+  "initial": {
+    "wall": 17275.400000035763,
+    "time": 0.02500000000000002,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "p": [
+      1.2,
+      1,
+      1.2
+    ],
+    "v": [
+      0,
+      0,
+      0
+    ],
+    "w": [
+      0,
+      0,
+      -9.004176991828461e-15
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 8.347749056216938e-17,
+        "betaR": -8.347749056216938e-17,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 8.347749056216938e-17,
+        "betaR": -8.347749056216938e-17,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 0,
+        "accepted": 0,
+        "last": null
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "active": false,
+        "framesApplied": 0,
+        "attention": null
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller"
+    },
+    "controls": {
+      "aL": 1,
+      "aR": 1,
+      "betaL": 8.347749056216938e-17,
+      "betaR": -8.347749056216938e-17,
+      "sL": 0,
+      "sR": 0,
+      "f": 200
+    },
+    "search": null,
+    "pilotState": {
+      "speed": 0,
+      "heading": 0.29999999999999993,
+      "target": [
+        1.2,
+        1,
+        1.2
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": false,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 0,
+      "failed": 0,
+      "accepted": 0
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [],
+    "packets": [],
+    "messages": [],
+    "firstRetinal": null
+  },
+  "activation_baseline": {
+    "wall": 22770.100000023842,
+    "time": 1.5994999999998794,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "p": [
+      1.1997024325170027,
+      0.9999056774191568,
+      1.199998412045653
+    ],
+    "v": [
+      -0.0167053128182776,
+      -0.005293221208940226,
+      -8.174380664459664e-05
+    ],
+    "w": [
+      -0.015128968559001,
+      -0.43606494268584023,
+      -0.002871506910007946
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 66
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0010305079550685,
+        "aR": 1.0008337790555677,
+        "betaL": -0.03455708246889888,
+        "betaR": 0.0194508533549978,
+        "sL": 4.7993382832056384e-06,
+        "sR": 4.7993382832056384e-06,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120839071858476,
+        "betaR": -0.031272806419988954,
+        "sL": -4.809547192797177e-06,
+        "sR": -6.5059600980192445e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120839071858476,
+        "betaR": -0.031272806419988954,
+        "sL": -4.809547192797177e-06,
+        "sR": -6.5059600980192445e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0010305079550685,
+        "aR": 1.0008337790555677,
+        "betaL": -0.013436243397040405,
+        "betaR": -0.011821953064991154,
+        "sL": -1.0208909591538531e-08,
+        "sR": -1.706621814813606e-06,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867704,
+          0.6579969533132297
+        ],
+        "executedAt": 1.566999999999883
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688774009357e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026980237,
+                "mbon:MBON05:left": 0.293559567509641
+              },
+              "score": -0.19631419723983864
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689119913218e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046138457,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668833042
+            }
+          ],
+          "p": [
+            0.4999999995404098,
+            0.5000000004595903
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.046380101965583544,
+          "forwardSpeed": -0.04977810042635363,
+          "verticalSpeed": 7.951776199604834e-06,
+          "feed": 9.771727861042017e-06
+        },
+        "active": true,
+        "framesApplied": 66,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.755672003062679,
+        "min": 0.40425369143486023,
+        "max": 0.9989917874336243
+      }
+    },
+    "controls": {
+      "aL": 1.0010305079550685,
+      "aR": 1.0008337790555677,
+      "betaL": -0.013436243397040405,
+      "betaR": -0.011821953064991154,
+      "sL": -1.0208909591538531e-08,
+      "sR": -1.706621814813606e-06,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867704,
+          0.6579969533132297
+        ]
+      },
+      "action": 0
+    },
+    "pilotState": {
+      "speed": 0.04977810042635363,
+      "heading": 0.3015305433648635,
+      "target": [
+        1.187827718911562,
+        0.9962125235285177,
+        1.2000004408616063
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": true,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 629.5,
+      "failed": 0,
+      "accepted": 2
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [
+      [
+        1.3414999999999078,
+        "approaches the bread (34 % for approach)"
+      ]
+    ],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "5af09535",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 123.50390625
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "f60d3a56",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 122.03792317708333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "2af70590",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 121.71240234375
+        }
+      }
+    ],
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "accepted": true,
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.493689119913218e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_qualified",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7612468417976022,
+          "min": 0.49162575602531433,
+          "max": 0.9990012645721436
+        },
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688774009357e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026980237,
+                "mbon:MBON05:left": 0.293559567509641
+              },
+              "score": -0.19631419723983864
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689119913218e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046138457,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668833042
+            }
+          ],
+          "p": [
+            0.4999999995404098,
+            0.5000000004595903
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867704,
+            0.6579969533132297
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689119913218e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.69757074045785e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.000687614667237734,
+          "dn:DNa02:left": 0.0019945532426266506,
+          "dn:DNa02:right": 0.009724569181969704,
+          "dn:DNp09": 0,
+          "mn9": 9.771761050989703e-06,
+          "mbon:MBON11:right": 0.09724537046138457,
+          "mbon:MBON05:left": 0.293559567149715,
+          "dn:DNp03": 0.0007544339291312211
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 89,
+        "residual": 8.872238815849087e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.755672003062679,
+          "min": 0.40425369143486023,
+          "max": 0.9989917874336243
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876167046034401,
+          "dn:DNa02:left": 0.001994552922439327,
+          "dn:DNa02:right": 0.00972456991670325,
+          "dn:DNp09": 0,
+          "mn9": 9.771727861042017e-06,
+          "mbon:MBON11:right": 0.09724537046576569,
+          "mbon:MBON05:left": 0.2935595671551978,
+          "dn:DNp03": 0.0007538815062668137
+        }
+      }
+    ],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "5af09535",
+      "minRGB": 6,
+      "maxRGB": 255,
+      "meanRGB": 123.50390625,
+      "rgba_base64": "Gf9Y/xn/Vv8Z/1T/F/9T/xf/UP8W/0v/Ff9H/xP/Qv8Q/z3/EP84/w//M/8N/y7/DP8q/wr/J/8K+CT/Cekh/wnfIP8J3CD/CNYf/wnUHf8I2R//Cu0j/wr/Jv8L/y3/Dv8y/w//N/8S/zz/Ef9A/xL/Qf8T/0L/Ef9C/xL/Qf8S/0L/Ef9B/xL/QP8T/0H/Ev87/xH/Ov8P/zv/E/9C/xP/Q/8S/z3/Ev88/xL/P/8S/z7/D/82/w//M/8O/zH/Df8t/w7/Lv8S/zH/Df8s/wz/Kf8M/yn/DP8q/wz/Kf8M/yr/DP8q/w3/Kv8N/yv/Df8r/w3/LP8M/y3/DP8t/xr/V/8Y/1b/GP9U/xj/U/8X/1H/F/9O/xX/SP8V/0T/Ev8//xD/Ov8O/zX/Dv8x/w3/Lf8L/yr/Cv8n/wr5JP8J8iL/Cuwi/wjmIP8J5CD/COoj/wr9I/8L/yv/Dv8x/xD/Nv8R/z7/E/9F/xP/Rv8U/0j/E/9K/xT/Sv8W/0n/Ff9J/xP/Sf8U/03/FP9C/xL/Qf8R/0H/Ff9H/xL/Q/8T/0L/Ev9D/xX/R/8R/z//EP89/xD/O/8Q/zf/D/82/w//M/8U/zX/EP8w/w7/LP8N/yz/DP8q/wz/K/8M/yz/DP8q/wz/Kv8N/yr/Df8s/w3/LP8N/y3/DP8t/wz/Lv8Z/1X/Gf9T/xf/U/8Y/1T/Fv9R/xb/Tf8U/0j/E/9F/xL/P/8S/zr/EP82/w7/M/8O/y//DP8s/wv/Kv8K/yn/Cv8m/wr/Jf8J+yX/Cfck/wr/Jv8L/yv/Df8w/xH/N/8R/zz/E/9E/xP/S/8V/0z/F/9Q/xb/T/8X/1H/Fv9R/xb/Uf8X/1X/FP9N/xX/Sv8V/0z/Ff9N/xP/R/8T/0r/GP9Q/xb/T/8T/0n/Ev9G/xT/Sv8R/z//Ef89/xH/O/8Y/z//EP8z/w//Mf8O/y//Dv8s/w7/LP8M/y3/DP8s/wz/Lf8M/yv/Df8r/w3/LP8N/y3/Df8t/wz/Lv8M/y7/F/9T/xj/UP8X/1H/F/9R/xf/UP8W/03/FP9H/xP/RP8T/0D/EP89/xL/Pv8R/zj/EP82/w3/Mf8O/zD/DP8u/wz/K/8L/yn/C/8o/wn/Kf8M/yv/DP8v/xD/Nv8T/z3/EP9E/xT/R/8V/07/GP9U/xn/Wf8Y/1v/GP9a/xj/Wv8Z/17/F/9W/xj/VP8Z/1X/Fv9M/xb/T/8Y/1b/GP9Y/xf/Uv8X/1L/GP9W/xf/UP8T/0j/Ef9F/xP/Qf8X/0T/Ev87/w//N/8P/zP/D/8w/w7/L/8O/y3/Dv8u/w3/L/8M/y3/Df8u/w3/LP8N/yz/Df8t/w3/Lf8M/y//Df8v/xj/UP8X/0//GP9O/xf/T/8W/0z/Ff9K/xT/SP8U/0X/E/9C/xH/Pv8S/0L/Ef89/xD/PP8Q/zj/Dv81/w7/M/8M/zH/Df8v/w3/Mv8M/zH/Dv80/xD/Ov8R/z//FP9G/xT/S/8X/1H/Gf9Y/xz/YP8b/2T/Hf9m/yD/Zv8e/2n/G/9c/xr/Wv8c/13/F/9T/xj/Uf8Z/1r/GP9V/xj/Vv8c/17/G/9f/xj/Vv8X/1H/Ff9M/xb/Rv8Y/0j/E/9B/xL/Pv8Q/zj/D/80/w7/Mv8O/zD/Dv8v/w7/MP8O/y//Dv8v/wz/L/8N/y3/Df8u/w3/Lv8N/y7/Df8v/wz/L/8X/03/Fv9K/xf/Tf8U/0v/FP9J/xT/SP8V/0b/FP9D/xL/Qf8R/z7/E/9F/xP/QP8S/z7/Ev88/xD/Ov8Q/zj/Dv81/w7/Nf8Q/zn/Ef88/xD/Pv8T/0P/FP9H/xf/TP8Y/1T/Gf9b/xv/Yv8f/2v/IP9x/yL/df8j/3T/Hv9t/x7/a/8f/2X/Gv9f/x3/Yv8Z/1//F/9W/xr/Xv8b/2D/Gv9c/x//bv8g/3D/F/9W/xb/T/8W/0n/Fv9H/xb/Rf8U/z7/Ef85/w//Nf8O/zP/Dv8y/w7/Mf8O/zD/Dv8x/w7/Mf8O/zH/Df8v/w3/L/8N/y7/Df8u/w3/Lv8N/y//Ff9I/xT/Rv8V/0n/Ff9I/xX/Rf8T/0b/FP9E/xH/Q/8T/z//Ev9A/xT/SP8S/0P/E/9C/xL/QP8Q/z7/Ef8+/xD/Pf8S/z//Ev9C/xP/Q/8T/0n/E/9K/xb/UP8Z/1P/Gf9a/x3/Zf8g/2z/If90/yb/gP8h/3v/H/94/yX/ef8f/3H/IP9w/x//bP8c/2P/HP9m/x3/Yv8e/3D/H/9w/yD/cv8a/1//G/9g/xn/Vv8X/0//Fv9M/xn/S/8W/0X/E/8//xH/O/8P/zT/Df80/w7/Mv8O/zH/Dv8z/w7/Mv8O/zL/Dv8x/w//MP8N/zD/Dv8v/w7/MP8O/y//Df8v/xP/RP8U/0L/E/9E/xT/RP8U/0T/FP9E/xP/Qf8R/z//Ev8//xP/Qf8U/0j/FP9D/xT/RP8U/0T/E/9D/xL/Q/8T/0P/Ev9F/xT/Sv8V/0v/Ff9N/xf/VP8Y/1j/Gv9a/xv/Yv8e/2n/Iv90/yX/gv8k/4L/J/+L/yj/if8k/37/Jf+B/yH/dP8g/3P/If9v/yD/d/8g/3b/Hf9u/x3/a/8d/2v/G/9k/xr/Zv8Z/1j/F/9S/xz/Uv8Z/0v/Ff9D/xL/P/8Q/zr/EP83/w//NP8P/zL/Dv80/w7/NP8O/zP/Dv8z/w//Mv8P/zL/D/8x/w7/Mf8O/zD/Dv8v/w3/L/8S/z//Ev89/xL/P/8T/z//EP8//xH/QP8S/z3/Ev8+/xH/Pv8T/0L/Ff9J/xP/RP8U/0b/Ff9I/xP/SP8V/0n/Ff9K/xX/TP8X/0//Fv9U/xj/Vv8Z/1j/Hf9e/xv/YP8f/2b/If9y/yP/gP8k/4T/Kf+Q/yr/k/8s/5n/K/+T/yn/i/8n/4f/Jv+O/yj/if8h/3j/Iv95/yT/e/8i/3n/Hv9v/x7/bf8d/2r/G/9f/x3/Wv8Z/1H/FP9I/xP/Qv8S/z3/EP85/xD/N/8P/zX/D/80/w//Nf8O/zT/Dv80/w//NP8P/zT/D/8y/w//Mv8P/zH/Dv8x/w7/MP8N/y7/Ev84/xL/OP8Q/zn/EP86/xD/O/8R/zv/Ef86/xH/O/8S/z3/Ev9A/xT/Sf8U/0X/FP9J/xX/Tf8X/0//F/9P/xb/Uf8W/1P/GP9Z/xv/Xv8Z/17/HP9e/x7/ZP8d/2f/IP9t/yL/fv8h/37/J/+M/yz/mf8v/6P/Mf+o/y//ov8y/6T/Lv+l/yj/kf8r/5L/KP+P/yv/lP8r/5T/Jv+C/yH/fv8i/3f/Iv9y/yH/Zv8d/1v/Ff9Q/xT/Rv8T/0L/EP8+/xD/Of8P/zj/D/81/w//Nv8Q/zX/EP81/w//Nv8P/zX/D/80/w//M/8P/zH/D/8y/w//Mf8O/zD/Df8v/w//M/8P/zP/Dv8z/w//Nf8Q/zj/D/84/xD/N/8Q/zr/Ef8+/xL/Qf8V/0n/FP9K/xX/S/8X/1H/GP9S/xf/U/8Z/1f/Gf9b/xj/X/8b/2P/Hv9k/x3/Zf8c/2b/Hf9t/yT/ev8k/4L/KP+G/yr/kf8u/6X/OP/F/zj/xf83/8f/Mv+u/y7/pP8u/6T/Mf+k/zb/uv8z/7T/K/+X/yn/j/8l/4n/J/+A/yL/ev8f/2f/HP9c/xf/UP8V/0b/Ev9A/xD/Pf8Q/zn/D/85/w//N/8P/zb/EP82/xH/Nv8Q/zb/D/82/w//Nf8P/zT/D/80/w//Mv8P/zH/Dv8x/wz/MP8N/y//Dv8v/w7/Mv8P/zH/D/80/w//Nf8P/zf/Ef85/xH/Pv8S/0H/FP9J/xP/S/8V/07/GP9R/xj/Vf8Y/1b/G/9f/xn/ZP8c/2X/Hf9l/xv/Zf8d/2f/IP9x/yL/eP8l/4L/J/+H/yz/l/81/7b/OP/G/zv/zf8+/9j/Ov/G/zX/u/84/8j/PP/N/zz/0f87/8T/Nf+2/y7/pf8r/5//Kf+U/yb/iP8k/4L/H/9p/xz/Xf8Z/1P/E/9I/xL/QP8S/zz/EP87/w//Of8P/zf/EP83/xD/N/8Q/zf/Ef82/xD/Nv8P/zb/D/81/w//M/8P/zP/D/8y/w7/Mf8M/zH/Df8t/w7/Lf8O/y//Dv8u/w7/MP8P/zT/D/81/xD/Of8R/z3/E/9A/xX/Sv8V/0v/Fv9P/xn/U/8Z/1f/Gv9Z/xr/Yf8b/2b/G/9m/x7/ZP8c/2b/If9w/yH/fP8m/4T/KP+O/yv/kv8w/6n/Nf/A/z3/2P9H//n/T////1D///9I//z/R//9/0z///9I//n/Pf/Q/zT/u/8y/7L/L/+n/yr/nP8m/4v/JP+B/x7/bP8a/2D/Fv9T/xT/Sv8T/0H/Ev8//xD/PP8Q/zj/EP84/xD/OP8Q/zj/EP83/xH/N/8Q/zf/EP83/w//Nf8P/zT/D/8z/w//Mv8P/zP/Df8x/w3/K/8M/yr/Df8t/w7/LP8O/y//D/8z/w7/Nf8Q/zr/Ef87/xL/QP8T/0v/E/9K/xb/Tv8Y/1L/GP9W/xr/Wv8b/1//vv///8D////D////wv///8f///8i/4b/Kf+Q/yr/mv8u/6P/M/+0/zT/uv89/+b/X////3T///92////c////2T///9w////UP///z//2v83/8X/Mv+y/y//pv8q/5v/Jv+N/yP/gP8d/2n/Gv9h/xf/VP8V/0n/Ev9E/xL/QP8S/zz/Ef87/xH/Ov8Q/zv/EP85/xD/Of8Q/zj/EP84/xD/N/8Q/zX/D/81/w//NP8P/zT/D/8y/w3/Mf8M/yn/DP8o/wz/Kv8N/yz/Dv8w/w7/M/8O/zP/D/82/xD/O/8S/z7/FP9H/xP/Rv8X/0n/Fv9O/xf/U/8X/1X/F/9Z/xj/Xf8c/2T/H/9s///////J/////////////////////////9H///+E////Ov/O/3////+3////nv///4z///9w////Yf///1b///9B/+f/Of/E/zX/sf8t/6H/K/+U/yb/hv8j/3z/Hv9o/xz/YP8X/1T/FP9O/xP/Sf8S/0X/E/9C/xP/Pf8S/z3/Ev87/xH/PP8R/zv/EP87/xD/Of8Q/zf/EP82/w//Nf8P/zX/D/8z/w//Mf8O/zL/DP8o/wz/J/8M/yn/Df8t/w7/MP8O/zL/D/8z/w//Nv8P/zf/EP87/xL/RP8T/0b/FP9H/xX/TP8X/0//GP9V/xb/WP8a/17/Hv9k/x//bv/H////Jf+G/yz/lv8u/6P/MP+o/y//of////////////////9W/////////4f///9x////bP///1////9U////QP/s/zf/xv8z/67/Lf+b/yb/iv8l/33/If91/x7/av8c/2H/F/9X/xj/UP8V/07/FP9L/xT/Rf8T/0H/E/8+/xL/P/8S/z7/Ef89/xH/PP8R/zv/Ef87/w//N/8P/zb/D/80/w//NP8O/zT/D/8y/wv/J/8M/yf/Df8p/w3/LP8O/y//Dv8y/w//Mv8O/zX/EP82/xD/PP8T/0X/FP9E/xT/R/8V/0n/F/9M/xf/Uv8W/1f/Gv9e/xz/ZP8f/3D/x////yb/if8t/5n/L/+g/y3/ov8s/53/g////zL/uv//////Vf///27///9u////Zf///2D///9Y////Uv///0L/8P84/87/M/+x/y3/m/8n/4j/I/98/yH/ef8f/23/Hv9l/xr/Wv8Y/1f/Fv9U/xb/Tv8V/0v/E/9E/xP/Qf8T/0D/Ev9A/xL/P/8R/z3/Ef8+/xH/Ov8R/zj/EP85/w7/Nv8P/zX/Dv8z/w7/Mf8L/yb/DP8n/wz/Kf8M/y3/Dv8u/w7/Mv8O/zL/D/81/w//Nv8R/zv/E/9F/xP/RP8T/0X/FP9J/xX/S/8T/07/GP9V/xr/Xf8c/2X/H/9x/8f///8n/4v/K/+V/37///99////fv///9P///+Q////9////2f///+D////hv///27///9i////V////1T///9G//j/PP/T/zD/tf8s/5z/Kv+O/yX/g/8j/4H/IP9z/x7/Z/8c/2P/Gv9d/xj/V/8Z/1X/Fv9P/xT/SP8U/0X/FP9C/xP/Qf8T/0D/Ev9A/xH/Pv8R/zv/Ef88/xD/Of8R/zb/D/81/w7/M/8O/zT/C/8m/wz/J/8M/yn/Df8r/w3/Lf8O/zH/Dv8x/w//NP8P/zj/Ef87/xT/RP8U/0P/Ff9F/xT/Rv8T/0n/Ff9N/xj/Uv8Z/1r/Hf9j/yH/cf//////e//1/3z/+/8s/5b/LP+c/y//n//U////5/////////9u////dP///3T///9w////Yv///1b///9J////RP/3/zz/0f80/7f/Lf+g/yj/lP8m/4v/Jv+I/yH/dv8f/2//G/9n/xv/Yf8b/1r/Gf9X/xj/Uf8V/03/FP9J/xT/Rv8T/0T/E/9C/xP/Qf8S/z//Ev8+/xH/PP8R/zn/Ef86/xD/OP8O/zX/Dv80/wr/Jf8M/yb/DP8o/w3/Kf8N/yz/D/8v/w7/MP8O/zL/EP85/xD/O/8T/0P/E/9C/xP/Q/8U/0X/E/9I/xT/Sv8W/1D/GP9Y/x3/ZP8f/3P/yf///yn/i/8q/5T/LP+b/9H////Q////hf///0P/xv9c//P/a////4v///+J////Z//2/1X/5P9H/9//P//b/z7/4/86/8j/Nf+5/y//pv8s/5n/K/+R/yf/iv8j/3r/Hv9y/x7/bP8b/2T/G/9f/xr/Wv8Y/1X/F/9Q/xb/S/8V/0n/Ff9H/xL/Rv8T/0L/Ev9A/xL/P/8T/z7/Ev88/xH/O/8Q/zj/D/82/w7/NP8L+yT/C/8m/wz/J/8M/yj/DP8r/wz/Lf8N/y//Dv8y/w//OP8R/zz/FP9E/xT/Qv8T/0P/E/9E/xP/SP8U/0j/Ff9L/xf/Uf8a/13/Hf9v/8n///8p/47/z////9D///8q/5b/Lf+b/zL/ov8//7L/VP/P/2r/+/+E////lf///1//2v9L/8D/O/+0/zH/uf82/8X/Nv+//zb/uf8w/6r/MP+d/yr/k/8m/4z/JP98/yD/df8e/23/HP9m/xz/YP8b/1r/Gv9V/xf/Uv8W/0//Ff9M/xX/Sf8T/0b/E/9D/xL/Q/8T/0H/E/8+/xP/Pv8R/zv/EP85/w//OP8O/zX/C/Qj/wv/Jf8M/yf/DP8n/w3/Kf8M/yz/Df8t/w3/Mf8P/zf/Ef86/xT/Q/8S/0L/E/9D/xL/Q/8T/0f/FP9F/xT/SP8W/0z/Gf9W/x//Z///////zf///yr/kP8p/4//J/+I/yf/if8q/4r/Mv+S/0P/pv9S/7f/ef///1r/w/9R/7n/Q/+p/zX/n/8v/6H/M/+v/zP/tP80/7H/Mv+o/yz/n/8q/5X/Kf+M/yP/e/8h/3b/Hv9u/x3/Zv8b/2D/HP9c/xj/V/8Y/1P/F/9Q/xb/Tv8V/0z/Ff9H/xP/Rv8T/0T/E/9B/xL/P/8S/z//Ef88/xD/Ov8P/zj/D/81/wvuIv8L+ST/DP8m/wz/Jv8N/yj/DP8r/w3/LP8N/y//Dv80/w//Ov8T/0H/Ev9A/xP/QP8T/0L/E/9E/xT/Qv8T/0P/FP9G/xX/UP8b/2D/H/9y/yL/e/8l/4P/I/+A/yH/dv8i/3L/If9u/yP/bv8y/4H/Pv+S/0z/sP9H/5//QP+Z/zf/k/8r/4//Kf+W/y7/of8x/6f/MP+m/y7/of8p/5n/K/+Q/yf/iv8k/37/IP90/yD/b/8e/2f/G/9i/xr/Xf8Z/1r/Gf9X/xj/U/8X/1D/Fv9P/xb/TP8T/0f/FP9E/xP/Qv8T/0H/Ev8//xD/PP8P/zv/Dv84/w7/Nf8K5CD/CvAj/wv8Jf8L/yX/DP8n/wv/Kf8M/yr/DP8u/w3/Mv8Q/zX/Ef8+/xH/PP8S/zz/EP8+/xH/P/8R/z7/EP8//xP/Qf8U/0n/F/9T/xv/Y/8f/2z/If9w/x7/bf8c/2X/G/9e/xf/Vv8a/1j/If9o/yr/dv8y/4H/NP+D/y7/gv8n/3//I/+D/yX/i/8o/5b/LP+a/yr/l/8q/5X/Kf+Q/yf/i/8n/4f/I/95/yD/dP8f/2z/Hv9o/xz/ZP8c/1//G/9c/xn/WP8Z/1f/F/9U/xb/UP8W/0v/FP9I/xT/Rf8T/0P/E/9C/xL/Pv8Q/zz/EP89/w7/Ov8O/zX/Cdkf/wrlIv8L8CP/C/wk/wv/Jv8L/yf/C/8o/wz/K/8N/y//EP8y/xH/O/8R/zj/D/84/xD/O/8Q/zz/Ef88/xH/Pf8R/z3/E/9D/xP/Sf8Y/1T/Gf9Z/xn/Wf8X/1j/F/9R/xX/Uf8X/03/F/9T/xr/WP8e/2D/Iv9q/yX/bv8i/3H/If90/yL/eP8l/4T/Jv+H/yj/if8n/4v/KP+M/yb/h/8k/4P/Jf+E/yL/dv8f/2//Hf9p/x3/Zf8d/2P/G/9g/xv/XP8Z/13/Gv9Z/xj/Vv8W/1P/Fv9O/xT/Sv8V/0X/E/9F/xP/Qv8S/0D/Ef8+/xD/PP8P/zj/D/82/wjOHf8J2R//CuQi/wvwIv8L9yT/C/8m/wv/Jf8L/yj/Df8s/w3/Lv8P/zb/Dv8y/w//NP8Q/zf/D/85/xD/O/8Q/zv/EP87/xH/Pv8R/0P/E/9F/xX/Rv8V/0j/Ev9G/xL/Rf8U/0X/FP9I/xX/Tv8X/1H/F/9U/xj/WP8c/2D/Hf9p/x7/cP8f/3L/I/95/yT/fv8m/4D/Jf+E/yT/g/8k/4D/JP9//yP/fv8h/3T/H/9u/x3/Zv8e/2X/Hf9l/xv/YP8b/2D/Gv9f/xn/XP8Z/1r/GP9U/xf/UP8V/03/Fv9H/xP/Rv8T/0T/Ev9A/xL/Pf8R/zz/EP84/w//Nv8HwRz/CM0e/wnWHv8K4CH/Ceoi/wnyIv8K9yP/Cv8l/wr/J/8N/yv/Dv8y/w7/MP8P/zP/D/82/xD/OP8R/zr/EP85/xD/N/8R/zn/Ef89/xP/PP8Q/zr/Ef86/xD/Pf8P/z3/Ef8//xP/Qv8U/0j/Ff9L/xX/Tv8X/1T/G/9Y/xz/Yf8c/2j/Hv9s/yD/cP8h/3L/Iv92/yL/fv8j/37/I/96/yP/eP8i/3n/IP9x/x7/av8d/2T/Hv9j/x3/ZP8e/2P/Hv9j/xv/Yv8a/1//Gf9b/xj/Vf8Y/1H/Fv9N/xX/Sv8V/0f/E/9F/xT/Qv8S/z//Ef88/xD/OP8P/zX/B7Qa/wi/HP8IyRz/CdIf/wnaIP8J4SD/Cegh/wrvIv8K+ST/C/8m/w3/L/8N/y7/Dv8x/w//Nf8P/zb/D/84/xD/OP8R/zf/D/83/w//OP8Q/zb/D/80/w7/Nv8Q/zb/D/84/xD/PP8S/z7/Ev9B/xP/Rv8U/0j/Ff9N/xj/U/8Z/1z/G/9h/x3/Zf8d/2j/Hv9o/x//bv8h/3b/Iv92/yH/c/8g/3L/If9z/x7/av8d/2n/Hv9l/xz/Y/8d/2P/Hf9j/yD/Zv8e/2X/HP9f/xn/W/8Y/1b/F/9U/xb/Tv8W/0z/Ff9K/xP/Rv8T/0L/Ef8//xH/PP8Q/zj/D/81/wewGv8HtRv/CL0b/wnGHf8Izh7/CdUe/wnaH/8J4yD/Cuoh/wr2JP8N/yz/Df8r/w7/L/8O/zL/Df8z/w//Nv8P/zj/D/82/w//Nv8O/zb/EP80/xD/M/8P/zP/Dv8x/w7/Nf8P/zf/EP85/xD/Ov8S/z//E/9D/xP/R/8W/03/Gf9V/xn/Wf8Z/13/Gf9h/xz/Yv8e/2b/H/9r/x7/bv8e/23/Hv9s/x//bP8d/2T/G/9j/xz/ZP8e/2b/G/9h/x3/Yv8d/2X/IP9m/yP/Zv8d/17/Gf9Y/xj/VP8X/1H/GP9O/xX/Sf8T/0b/E/9C/xH/P/8R/zz/EP86/w//N/8Hrhn/B64Z/we1Gv8HvRz/CMQc/wjKHf8Jzx7/CdYe/wnfH/8J6yL/DP8q/wz/KP8M/yv/Dv8t/w3/Mv8P/zX/D/81/w//Nv8P/zb/D/81/w7/M/8Q/zT/D/81/w//NP8O/zT/DP8y/w7/Mv8P/zb/D/86/xD/PP8R/0H/E/9G/xf/TP8X/1P/GP9W/xf/Wf8b/1z/HP9g/xz/ZP8e/2T/HP9l/x//Y/8d/2L/G/9h/xv/X/8b/1//Hv9k/x//ZP8b/2D/G/9k/x//Yv8g/2P/JP9m/x7/Xv8a/1T/F/9R/xf/Tv8V/0r/Ff9I/xT/Qv8R/z//Ef88/xD/Ov8P/zb/B64Z/wesGf8HrBn/BrMa/we6G/8IwBz/CMMc/wjIHP8J1R//CeIh/wz/J/8M/yb/DP8o/w3/K/8M/y//Df8x/w7/NP8R/zX/D/82/w//NP8P/zb/EP82/xD/Nf8Q/zT/D/81/w7/NP8O/zT/EP82/xD/NP8Q/zb/EP88/xP/P/8U/0X/Ff9K/xb/Tf8Z/1X/Gv9X/xn/Wv8a/1v/HP9c/xz/Xf8a/1z/Gv9e/xr/Xf8a/13/Gv9c/xv/Yf8f/2L/If9k/xv/X/8c/1//Hf9h/x//Yf8h/17/Hf9Z/xj/Uv8W/0//Ff9K/xX/Rv8U/0T/Ev8//xD/O/8P/zn/D/83/wesGP8Hqhj/BqkZ/waqGP8Grhn/CLMa/wi3G/8Iuxv/CMod/wnYH/8K6yH/C/0l/wz/J/8M/yn/DP8u/wz/MP8Q/zT/EP83/xD/N/8P/zf/D/82/xH/N/8R/zf/EP82/w7/Nv8O/zT/Dv81/xD/N/8Q/zb/EP84/xH/Ov8R/z3/Ev9A/xP/RP8U/0r/Fv9O/xf/Uv8X/1L/GP9U/xj/VP8Y/1X/GP9Y/xj/Wf8Y/1j/F/9Y/xj/XP8b/1z/G/9g/x3/Xv8e/2L/Gv9c/xz/XP8d/13/H/9c/x7/Wv8c/1b/GP9P/xX/S/8V/0f/FP9D/xL/QP8R/zv/EP84/w//Nv8="
+    }
+  },
+  "startup_latency": {
+    "origin": "initial ready snapshot, after source binding",
+    "first_execution_simulation_time": 1.566999999999883,
+    "first_execution_simulation_seconds": 1.541999999999883,
+    "observed_active_simulation_seconds": 1.5744999999998794,
+    "observed_active_wall_seconds": 5.494699999988079
+  },
+  "active": {
+    "wall": 29538,
+    "time": 3.6005000000003697,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "p": [
+      1.109753495601666,
+      0.9678685562537778,
+      1.199472892194985
+    ],
+    "v": [
+      -0.03456451610618634,
+      -0.014049475467618385,
+      -0.00020735715106957075
+    ],
+    "w": [
+      0.0014361654015519624,
+      0.0024740748111977376,
+      0.044681488133476915
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 9,
+        "accepted": 8,
+        "discarded": 0,
+        "framesApplied": 4068
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0004867367465242,
+        "aR": 1.0002648963583514,
+        "betaL": -0.03788316612510859,
+        "betaR": 0.022053041605461683,
+        "sL": 1.697509002496553e-05,
+        "sR": 1.697509002496553e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.026134899104808026,
+        "betaR": -0.03298499541408712,
+        "sL": -6.802414595556771e-06,
+        "sR": -6.520359099769112e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.026134899104808026,
+        "betaR": -0.03298499541408712,
+        "sL": -6.802414595556771e-06,
+        "sR": -6.520359099769111e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0004867367465242,
+        "aR": 1.0002648963583514,
+        "betaL": -0.011748267020300567,
+        "betaR": -0.010931953808625439,
+        "sL": 1.0172675429408758e-05,
+        "sR": 1.0454730925196418e-05,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867704,
+          0.6579969533132297
+        ],
+        "executedAt": 1.566999999999883
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688774009357e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026980237,
+                "mbon:MBON05:left": 0.293559567509641
+              },
+              "score": -0.19631419723983864
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689119913218e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046138457,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668833042
+            }
+          ],
+          "p": [
+            0.4999999995404098,
+            0.5000000004595903
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.04475151919391059,
+          "forwardSpeed": -0.033584978243006706,
+          "verticalSpeed": -8.050048805957643e-05,
+          "feed": 1.0399154634809685e-05
+        },
+        "active": true,
+        "framesApplied": 4068,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.681102173843389,
+        "min": 0.30360278487205505,
+        "max": 0.9925677180290222
+      }
+    },
+    "controls": {
+      "aL": 1.0004867367465242,
+      "aR": 1.0002648963583514,
+      "betaL": -0.011748267020300567,
+      "betaR": -0.010931953808625439,
+      "sL": 1.0172675429408758e-05,
+      "sR": 1.0454730925196418e-05,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466867704,
+          0.6579969533132297
+        ]
+      },
+      "action": 0
+    },
+    "pilotState": {
+      "speed": 0.033584978243006706,
+      "heading": 0.39223703286681794,
+      "target": [
+        1.1020121755773586,
+        0.9646660618144219,
+        1.1994528707515457
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": true,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 606.6999999880791,
+      "failed": 0,
+      "accepted": 9
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [
+      [
+        1.3414999999999078,
+        "approaches the bread (34 % for approach)"
+      ]
+    ],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "5af09535",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 123.50390625
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "f60d3a56",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 122.03792317708333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "2af70590",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 121.71240234375
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "b86eb98b",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 119.00227864583333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 5,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "72f78edd",
+          "minRGB": 4,
+          "maxRGB": 255,
+          "meanRGB": 114.89908854166667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 6,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "8b1a480c",
+          "minRGB": 4,
+          "maxRGB": 255,
+          "meanRGB": 112.41389973958333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 7,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "d94569cc",
+          "minRGB": 2,
+          "maxRGB": 255,
+          "meanRGB": 108.80875651041667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 8,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "447190c1",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 107.923828125
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 9,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "22584eca",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 106.03727213541667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 10,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "52fac344",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 103.78206380208333
+        }
+      }
+    ],
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "accepted": true,
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.493689119913218e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_qualified",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7612468417976022,
+          "min": 0.49162575602531433,
+          "max": 0.9990012645721436
+        },
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688774009357e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026980237,
+                "mbon:MBON05:left": 0.293559567509641
+              },
+              "score": -0.19631419723983864
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689119913218e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046138457,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668833042
+            }
+          ],
+          "p": [
+            0.4999999995404098,
+            0.5000000004595903
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867704,
+            0.6579969533132297
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689119913218e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.69757074045785e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.000687614667237734,
+          "dn:DNa02:left": 0.0019945532426266506,
+          "dn:DNa02:right": 0.009724569181969704,
+          "dn:DNp09": 0,
+          "mn9": 9.771761050989703e-06,
+          "mbon:MBON11:right": 0.09724537046138457,
+          "mbon:MBON05:left": 0.293559567149715,
+          "dn:DNp03": 0.0007544339291312211
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 89,
+        "residual": 8.872238815849087e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.755672003062679,
+          "min": 0.40425369143486023,
+          "max": 0.9989917874336243
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876167046034401,
+          "dn:DNa02:left": 0.001994552922439327,
+          "dn:DNa02:right": 0.00972456991670325,
+          "dn:DNp09": 0,
+          "mn9": 9.771727861042017e-06,
+          "mbon:MBON11:right": 0.09724537046576569,
+          "mbon:MBON05:left": 0.2935595671551978,
+          "dn:DNp03": 0.0007538815062668137
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 77,
+        "residual": 9.306441381973229e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7542141503906198,
+          "min": 0.38338273763656616,
+          "max": 0.9990056753158569
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876171776446134,
+          "dn:DNa02:left": 0.001994552940186812,
+          "dn:DNa02:right": 0.009724569835497118,
+          "dn:DNp09": 0,
+          "mn9": 9.771728129533105e-06,
+          "mbon:MBON11:right": 0.09724537046766524,
+          "mbon:MBON05:left": 0.29355956715614256,
+          "dn:DNp03": 0.0007537481973450155
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 127,
+        "residual": 9.190116267987491e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7435059700749208,
+          "min": 0.3512495756149292,
+          "max": 0.9932451844215393
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014043475253019216,
+          "dn:DNa02:left": 0.00203428846020773,
+          "dn:DNa02:right": 0.009500015952015106,
+          "dn:DNp09": 0,
+          "mn9": 1.0366233325384702e-05,
+          "mbon:MBON11:right": 0.09724537500617299,
+          "mbon:MBON05:left": 0.29355956754351237,
+          "dn:DNp03": 0.0007538254833337846
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 5,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 82,
+        "residual": 8.524241241758546e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7263188134087427,
+          "min": 0.33502376079559326,
+          "max": 0.9929824471473694
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.001405798891338849,
+          "dn:DNa02:left": 0.002034081785370768,
+          "dn:DNa02:right": 0.00949756971097724,
+          "dn:DNp09": 0,
+          "mn9": 1.0367702421557606e-05,
+          "mbon:MBON11:right": 0.09724537488106606,
+          "mbon:MBON05:left": 0.2935595675064993,
+          "dn:DNp03": 0.0007537347580464867
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 6,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 138,
+        "residual": 9.481963658686254e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7140252566415712,
+          "min": 0.2922095060348511,
+          "max": 0.9900559186935425
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0011985771131546646,
+          "dn:DNa02:left": 0.0020284030999670414,
+          "dn:DNa02:right": 0.009549805539063103,
+          "dn:DNp09": 0,
+          "mn9": 1.0194521371608168e-05,
+          "mbon:MBON11:right": 0.0972453746664617,
+          "mbon:MBON05:left": 0.2935595673691694,
+          "dn:DNp03": 0.0007532168473260968
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 7,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 106,
+        "residual": 9.335529558285316e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6953678323898987,
+          "min": 0.19842681288719177,
+          "max": 0.9958066940307617
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.001193879324219384,
+          "dn:DNa02:left": 0.0020283627851958815,
+          "dn:DNa02:right": 0.009550830218477122,
+          "dn:DNp09": 0,
+          "mn9": 1.0191409867381731e-05,
+          "mbon:MBON11:right": 0.09724537459717268,
+          "mbon:MBON05:left": 0.2935595673466605,
+          "dn:DNp03": 0.0007531367426946854
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 8,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 113,
+        "residual": 9.25249822092411e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6896224048605126,
+          "min": 0.3092191517353058,
+          "max": 0.9966173768043518
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014236647853229532,
+          "dn:DNa02:left": 0.002034518528075883,
+          "dn:DNa02:right": 0.009494058318902144,
+          "dn:DNp09": 0,
+          "mn9": 1.0396850076212937e-05,
+          "mbon:MBON11:right": 0.09724537465128798,
+          "mbon:MBON05:left": 0.29355956746579015,
+          "dn:DNp03": 0.0007538663257979922
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 9,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 86,
+        "residual": 8.808884703892517e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.681102173843389,
+          "min": 0.30360278487205505,
+          "max": 0.9925677180290222
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014250305790889288,
+          "dn:DNa02:left": 0.0020345552136271667,
+          "dn:DNa02:right": 0.009493141745945599,
+          "dn:DNp09": 0,
+          "mn9": 1.0399154634809685e-05,
+          "mbon:MBON11:right": 0.09724537459420447,
+          "mbon:MBON05:left": 0.29355956744767125,
+          "dn:DNp03": 0.0007541931785924585
+        }
+      }
+    ],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "5af09535",
+      "minRGB": 6,
+      "maxRGB": 255,
+      "meanRGB": 123.50390625,
+      "rgba_base64": "Gf9Y/xn/Vv8Z/1T/F/9T/xf/UP8W/0v/Ff9H/xP/Qv8Q/z3/EP84/w//M/8N/y7/DP8q/wr/J/8K+CT/Cekh/wnfIP8J3CD/CNYf/wnUHf8I2R//Cu0j/wr/Jv8L/y3/Dv8y/w//N/8S/zz/Ef9A/xL/Qf8T/0L/Ef9C/xL/Qf8S/0L/Ef9B/xL/QP8T/0H/Ev87/xH/Ov8P/zv/E/9C/xP/Q/8S/z3/Ev88/xL/P/8S/z7/D/82/w//M/8O/zH/Df8t/w7/Lv8S/zH/Df8s/wz/Kf8M/yn/DP8q/wz/Kf8M/yr/DP8q/w3/Kv8N/yv/Df8r/w3/LP8M/y3/DP8t/xr/V/8Y/1b/GP9U/xj/U/8X/1H/F/9O/xX/SP8V/0T/Ev8//xD/Ov8O/zX/Dv8x/w3/Lf8L/yr/Cv8n/wr5JP8J8iL/Cuwi/wjmIP8J5CD/COoj/wr9I/8L/yv/Dv8x/xD/Nv8R/z7/E/9F/xP/Rv8U/0j/E/9K/xT/Sv8W/0n/Ff9J/xP/Sf8U/03/FP9C/xL/Qf8R/0H/Ff9H/xL/Q/8T/0L/Ev9D/xX/R/8R/z//EP89/xD/O/8Q/zf/D/82/w//M/8U/zX/EP8w/w7/LP8N/yz/DP8q/wz/K/8M/yz/DP8q/wz/Kv8N/yr/Df8s/w3/LP8N/y3/DP8t/wz/Lv8Z/1X/Gf9T/xf/U/8Y/1T/Fv9R/xb/Tf8U/0j/E/9F/xL/P/8S/zr/EP82/w7/M/8O/y//DP8s/wv/Kv8K/yn/Cv8m/wr/Jf8J+yX/Cfck/wr/Jv8L/yv/Df8w/xH/N/8R/zz/E/9E/xP/S/8V/0z/F/9Q/xb/T/8X/1H/Fv9R/xb/Uf8X/1X/FP9N/xX/Sv8V/0z/Ff9N/xP/R/8T/0r/GP9Q/xb/T/8T/0n/Ev9G/xT/Sv8R/z//Ef89/xH/O/8Y/z//EP8z/w//Mf8O/y//Dv8s/w7/LP8M/y3/DP8s/wz/Lf8M/yv/Df8r/w3/LP8N/y3/Df8t/wz/Lv8M/y7/F/9T/xj/UP8X/1H/F/9R/xf/UP8W/03/FP9H/xP/RP8T/0D/EP89/xL/Pv8R/zj/EP82/w3/Mf8O/zD/DP8u/wz/K/8L/yn/C/8o/wn/Kf8M/yv/DP8v/xD/Nv8T/z3/EP9E/xT/R/8V/07/GP9U/xn/Wf8Y/1v/GP9a/xj/Wv8Z/17/F/9W/xj/VP8Z/1X/Fv9M/xb/T/8Y/1b/GP9Y/xf/Uv8X/1L/GP9W/xf/UP8T/0j/Ef9F/xP/Qf8X/0T/Ev87/w//N/8P/zP/D/8w/w7/L/8O/y3/Dv8u/w3/L/8M/y3/Df8u/w3/LP8N/yz/Df8t/w3/Lf8M/y//Df8v/xj/UP8X/0//GP9O/xf/T/8W/0z/Ff9K/xT/SP8U/0X/E/9C/xH/Pv8S/0L/Ef89/xD/PP8Q/zj/Dv81/w7/M/8M/zH/Df8v/w3/Mv8M/zH/Dv80/xD/Ov8R/z//FP9G/xT/S/8X/1H/Gf9Y/xz/YP8b/2T/Hf9m/yD/Zv8e/2n/G/9c/xr/Wv8c/13/F/9T/xj/Uf8Z/1r/GP9V/xj/Vv8c/17/G/9f/xj/Vv8X/1H/Ff9M/xb/Rv8Y/0j/E/9B/xL/Pv8Q/zj/D/80/w7/Mv8O/zD/Dv8v/w7/MP8O/y//Dv8v/wz/L/8N/y3/Df8u/w3/Lv8N/y7/Df8v/wz/L/8X/03/Fv9K/xf/Tf8U/0v/FP9J/xT/SP8V/0b/FP9D/xL/Qf8R/z7/E/9F/xP/QP8S/z7/Ev88/xD/Ov8Q/zj/Dv81/w7/Nf8Q/zn/Ef88/xD/Pv8T/0P/FP9H/xf/TP8Y/1T/Gf9b/xv/Yv8f/2v/IP9x/yL/df8j/3T/Hv9t/x7/a/8f/2X/Gv9f/x3/Yv8Z/1//F/9W/xr/Xv8b/2D/Gv9c/x//bv8g/3D/F/9W/xb/T/8W/0n/Fv9H/xb/Rf8U/z7/Ef85/w//Nf8O/zP/Dv8y/w7/Mf8O/zD/Dv8x/w7/Mf8O/zH/Df8v/w3/L/8N/y7/Df8u/w3/Lv8N/y//Ff9I/xT/Rv8V/0n/Ff9I/xX/Rf8T/0b/FP9E/xH/Q/8T/z//Ev9A/xT/SP8S/0P/E/9C/xL/QP8Q/z7/Ef8+/xD/Pf8S/z//Ev9C/xP/Q/8T/0n/E/9K/xb/UP8Z/1P/Gf9a/x3/Zf8g/2z/If90/yb/gP8h/3v/H/94/yX/ef8f/3H/IP9w/x//bP8c/2P/HP9m/x3/Yv8e/3D/H/9w/yD/cv8a/1//G/9g/xn/Vv8X/0//Fv9M/xn/S/8W/0X/E/8//xH/O/8P/zT/Df80/w7/Mv8O/zH/Dv8z/w7/Mv8O/zL/Dv8x/w//MP8N/zD/Dv8v/w7/MP8O/y//Df8v/xP/RP8U/0L/E/9E/xT/RP8U/0T/FP9E/xP/Qf8R/z//Ev8//xP/Qf8U/0j/FP9D/xT/RP8U/0T/E/9D/xL/Q/8T/0P/Ev9F/xT/Sv8V/0v/Ff9N/xf/VP8Y/1j/Gv9a/xv/Yv8e/2n/Iv90/yX/gv8k/4L/J/+L/yj/if8k/37/Jf+B/yH/dP8g/3P/If9v/yD/d/8g/3b/Hf9u/x3/a/8d/2v/G/9k/xr/Zv8Z/1j/F/9S/xz/Uv8Z/0v/Ff9D/xL/P/8Q/zr/EP83/w//NP8P/zL/Dv80/w7/NP8O/zP/Dv8z/w//Mv8P/zL/D/8x/w7/Mf8O/zD/Dv8v/w3/L/8S/z//Ev89/xL/P/8T/z//EP8//xH/QP8S/z3/Ev8+/xH/Pv8T/0L/Ff9J/xP/RP8U/0b/Ff9I/xP/SP8V/0n/Ff9K/xX/TP8X/0//Fv9U/xj/Vv8Z/1j/Hf9e/xv/YP8f/2b/If9y/yP/gP8k/4T/Kf+Q/yr/k/8s/5n/K/+T/yn/i/8n/4f/Jv+O/yj/if8h/3j/Iv95/yT/e/8i/3n/Hv9v/x7/bf8d/2r/G/9f/x3/Wv8Z/1H/FP9I/xP/Qv8S/z3/EP85/xD/N/8P/zX/D/80/w//Nf8O/zT/Dv80/w//NP8P/zT/D/8y/w//Mv8P/zH/Dv8x/w7/MP8N/y7/Ev84/xL/OP8Q/zn/EP86/xD/O/8R/zv/Ef86/xH/O/8S/z3/Ev9A/xT/Sf8U/0X/FP9J/xX/Tf8X/0//F/9P/xb/Uf8W/1P/GP9Z/xv/Xv8Z/17/HP9e/x7/ZP8d/2f/IP9t/yL/fv8h/37/J/+M/yz/mf8v/6P/Mf+o/y//ov8y/6T/Lv+l/yj/kf8r/5L/KP+P/yv/lP8r/5T/Jv+C/yH/fv8i/3f/Iv9y/yH/Zv8d/1v/Ff9Q/xT/Rv8T/0L/EP8+/xD/Of8P/zj/D/81/w//Nv8Q/zX/EP81/w//Nv8P/zX/D/80/w//M/8P/zH/D/8y/w//Mf8O/zD/Df8v/w//M/8P/zP/Dv8z/w//Nf8Q/zj/D/84/xD/N/8Q/zr/Ef8+/xL/Qf8V/0n/FP9K/xX/S/8X/1H/GP9S/xf/U/8Z/1f/Gf9b/xj/X/8b/2P/Hv9k/x3/Zf8c/2b/Hf9t/yT/ev8k/4L/KP+G/yr/kf8u/6X/OP/F/zj/xf83/8f/Mv+u/y7/pP8u/6T/Mf+k/zb/uv8z/7T/K/+X/yn/j/8l/4n/J/+A/yL/ev8f/2f/HP9c/xf/UP8V/0b/Ev9A/xD/Pf8Q/zn/D/85/w//N/8P/zb/EP82/xH/Nv8Q/zb/D/82/w//Nf8P/zT/D/80/w//Mv8P/zH/Dv8x/wz/MP8N/y//Dv8v/w7/Mv8P/zH/D/80/w//Nf8P/zf/Ef85/xH/Pv8S/0H/FP9J/xP/S/8V/07/GP9R/xj/Vf8Y/1b/G/9f/xn/ZP8c/2X/Hf9l/xv/Zf8d/2f/IP9x/yL/eP8l/4L/J/+H/yz/l/81/7b/OP/G/zv/zf8+/9j/Ov/G/zX/u/84/8j/PP/N/zz/0f87/8T/Nf+2/y7/pf8r/5//Kf+U/yb/iP8k/4L/H/9p/xz/Xf8Z/1P/E/9I/xL/QP8S/zz/EP87/w//Of8P/zf/EP83/xD/N/8Q/zf/Ef82/xD/Nv8P/zb/D/81/w//M/8P/zP/D/8y/w7/Mf8M/zH/Df8t/w7/Lf8O/y//Dv8u/w7/MP8P/zT/D/81/xD/Of8R/z3/E/9A/xX/Sv8V/0v/Fv9P/xn/U/8Z/1f/Gv9Z/xr/Yf8b/2b/G/9m/x7/ZP8c/2b/If9w/yH/fP8m/4T/KP+O/yv/kv8w/6n/Nf/A/z3/2P9H//n/T////1D///9I//z/R//9/0z///9I//n/Pf/Q/zT/u/8y/7L/L/+n/yr/nP8m/4v/JP+B/x7/bP8a/2D/Fv9T/xT/Sv8T/0H/Ev8//xD/PP8Q/zj/EP84/xD/OP8Q/zj/EP83/xH/N/8Q/zf/EP83/w//Nf8P/zT/D/8z/w//Mv8P/zP/Df8x/w3/K/8M/yr/Df8t/w7/LP8O/y//D/8z/w7/Nf8Q/zr/Ef87/xL/QP8T/0v/E/9K/xb/Tv8Y/1L/GP9W/xr/Wv8b/1//vv///8D////D////wv///8f///8i/4b/Kf+Q/yr/mv8u/6P/M/+0/zT/uv89/+b/X////3T///92////c////2T///9w////UP///z//2v83/8X/Mv+y/y//pv8q/5v/Jv+N/yP/gP8d/2n/Gv9h/xf/VP8V/0n/Ev9E/xL/QP8S/zz/Ef87/xH/Ov8Q/zv/EP85/xD/Of8Q/zj/EP84/xD/N/8Q/zX/D/81/w//NP8P/zT/D/8y/w3/Mf8M/yn/DP8o/wz/Kv8N/yz/Dv8w/w7/M/8O/zP/D/82/xD/O/8S/z7/FP9H/xP/Rv8X/0n/Fv9O/xf/U/8X/1X/F/9Z/xj/Xf8c/2T/H/9s///////J/////////////////////////9H///+E////Ov/O/3////+3////nv///4z///9w////Yf///1b///9B/+f/Of/E/zX/sf8t/6H/K/+U/yb/hv8j/3z/Hv9o/xz/YP8X/1T/FP9O/xP/Sf8S/0X/E/9C/xP/Pf8S/z3/Ev87/xH/PP8R/zv/EP87/xD/Of8Q/zf/EP82/w//Nf8P/zX/D/8z/w//Mf8O/zL/DP8o/wz/J/8M/yn/Df8t/w7/MP8O/zL/D/8z/w//Nv8P/zf/EP87/xL/RP8T/0b/FP9H/xX/TP8X/0//GP9V/xb/WP8a/17/Hv9k/x//bv/H////Jf+G/yz/lv8u/6P/MP+o/y//of////////////////9W/////////4f///9x////bP///1////9U////QP/s/zf/xv8z/67/Lf+b/yb/iv8l/33/If91/x7/av8c/2H/F/9X/xj/UP8V/07/FP9L/xT/Rf8T/0H/E/8+/xL/P/8S/z7/Ef89/xH/PP8R/zv/Ef87/w//N/8P/zb/D/80/w//NP8O/zT/D/8y/wv/J/8M/yf/Df8p/w3/LP8O/y//Dv8y/w//Mv8O/zX/EP82/xD/PP8T/0X/FP9E/xT/R/8V/0n/F/9M/xf/Uv8W/1f/Gv9e/xz/ZP8f/3D/x////yb/if8t/5n/L/+g/y3/ov8s/53/g////zL/uv//////Vf///27///9u////Zf///2D///9Y////Uv///0L/8P84/87/M/+x/y3/m/8n/4j/I/98/yH/ef8f/23/Hv9l/xr/Wv8Y/1f/Fv9U/xb/Tv8V/0v/E/9E/xP/Qf8T/0D/Ev9A/xL/P/8R/z3/Ef8+/xH/Ov8R/zj/EP85/w7/Nv8P/zX/Dv8z/w7/Mf8L/yb/DP8n/wz/Kf8M/y3/Dv8u/w7/Mv8O/zL/D/81/w//Nv8R/zv/E/9F/xP/RP8T/0X/FP9J/xX/S/8T/07/GP9V/xr/Xf8c/2X/H/9x/8f///8n/4v/K/+V/37///99////fv///9P///+Q////9////2f///+D////hv///27///9i////V////1T///9G//j/PP/T/zD/tf8s/5z/Kv+O/yX/g/8j/4H/IP9z/x7/Z/8c/2P/Gv9d/xj/V/8Z/1X/Fv9P/xT/SP8U/0X/FP9C/xP/Qf8T/0D/Ev9A/xH/Pv8R/zv/Ef88/xD/Of8R/zb/D/81/w7/M/8O/zT/C/8m/wz/J/8M/yn/Df8r/w3/Lf8O/zH/Dv8x/w//NP8P/zj/Ef87/xT/RP8U/0P/Ff9F/xT/Rv8T/0n/Ff9N/xj/Uv8Z/1r/Hf9j/yH/cf//////e//1/3z/+/8s/5b/LP+c/y//n//U////5/////////9u////dP///3T///9w////Yv///1b///9J////RP/3/zz/0f80/7f/Lf+g/yj/lP8m/4v/Jv+I/yH/dv8f/2//G/9n/xv/Yf8b/1r/Gf9X/xj/Uf8V/03/FP9J/xT/Rv8T/0T/E/9C/xP/Qf8S/z//Ev8+/xH/PP8R/zn/Ef86/xD/OP8O/zX/Dv80/wr/Jf8M/yb/DP8o/w3/Kf8N/yz/D/8v/w7/MP8O/zL/EP85/xD/O/8T/0P/E/9C/xP/Q/8U/0X/E/9I/xT/Sv8W/1D/GP9Y/x3/ZP8f/3P/yf///yn/i/8q/5T/LP+b/9H////Q////hf///0P/xv9c//P/a////4v///+J////Z//2/1X/5P9H/9//P//b/z7/4/86/8j/Nf+5/y//pv8s/5n/K/+R/yf/iv8j/3r/Hv9y/x7/bP8b/2T/G/9f/xr/Wv8Y/1X/F/9Q/xb/S/8V/0n/Ff9H/xL/Rv8T/0L/Ev9A/xL/P/8T/z7/Ev88/xH/O/8Q/zj/D/82/w7/NP8L+yT/C/8m/wz/J/8M/yj/DP8r/wz/Lf8N/y//Dv8y/w//OP8R/zz/FP9E/xT/Qv8T/0P/E/9E/xP/SP8U/0j/Ff9L/xf/Uf8a/13/Hf9v/8n///8p/47/z////9D///8q/5b/Lf+b/zL/ov8//7L/VP/P/2r/+/+E////lf///1//2v9L/8D/O/+0/zH/uf82/8X/Nv+//zb/uf8w/6r/MP+d/yr/k/8m/4z/JP98/yD/df8e/23/HP9m/xz/YP8b/1r/Gv9V/xf/Uv8W/0//Ff9M/xX/Sf8T/0b/E/9D/xL/Q/8T/0H/E/8+/xP/Pv8R/zv/EP85/w//OP8O/zX/C/Qj/wv/Jf8M/yf/DP8n/w3/Kf8M/yz/Df8t/w3/Mf8P/zf/Ef86/xT/Q/8S/0L/E/9D/xL/Q/8T/0f/FP9F/xT/SP8W/0z/Gf9W/x//Z///////zf///yr/kP8p/4//J/+I/yf/if8q/4r/Mv+S/0P/pv9S/7f/ef///1r/w/9R/7n/Q/+p/zX/n/8v/6H/M/+v/zP/tP80/7H/Mv+o/yz/n/8q/5X/Kf+M/yP/e/8h/3b/Hv9u/x3/Zv8b/2D/HP9c/xj/V/8Y/1P/F/9Q/xb/Tv8V/0z/Ff9H/xP/Rv8T/0T/E/9B/xL/P/8S/z//Ef88/xD/Ov8P/zj/D/81/wvuIv8L+ST/DP8m/wz/Jv8N/yj/DP8r/w3/LP8N/y//Dv80/w//Ov8T/0H/Ev9A/xP/QP8T/0L/E/9E/xT/Qv8T/0P/FP9G/xX/UP8b/2D/H/9y/yL/e/8l/4P/I/+A/yH/dv8i/3L/If9u/yP/bv8y/4H/Pv+S/0z/sP9H/5//QP+Z/zf/k/8r/4//Kf+W/y7/of8x/6f/MP+m/y7/of8p/5n/K/+Q/yf/iv8k/37/IP90/yD/b/8e/2f/G/9i/xr/Xf8Z/1r/Gf9X/xj/U/8X/1D/Fv9P/xb/TP8T/0f/FP9E/xP/Qv8T/0H/Ev8//xD/PP8P/zv/Dv84/w7/Nf8K5CD/CvAj/wv8Jf8L/yX/DP8n/wv/Kf8M/yr/DP8u/w3/Mv8Q/zX/Ef8+/xH/PP8S/zz/EP8+/xH/P/8R/z7/EP8//xP/Qf8U/0n/F/9T/xv/Y/8f/2z/If9w/x7/bf8c/2X/G/9e/xf/Vv8a/1j/If9o/yr/dv8y/4H/NP+D/y7/gv8n/3//I/+D/yX/i/8o/5b/LP+a/yr/l/8q/5X/Kf+Q/yf/i/8n/4f/I/95/yD/dP8f/2z/Hv9o/xz/ZP8c/1//G/9c/xn/WP8Z/1f/F/9U/xb/UP8W/0v/FP9I/xT/Rf8T/0P/E/9C/xL/Pv8Q/zz/EP89/w7/Ov8O/zX/Cdkf/wrlIv8L8CP/C/wk/wv/Jv8L/yf/C/8o/wz/K/8N/y//EP8y/xH/O/8R/zj/D/84/xD/O/8Q/zz/Ef88/xH/Pf8R/z3/E/9D/xP/Sf8Y/1T/Gf9Z/xn/Wf8X/1j/F/9R/xX/Uf8X/03/F/9T/xr/WP8e/2D/Iv9q/yX/bv8i/3H/If90/yL/eP8l/4T/Jv+H/yj/if8n/4v/KP+M/yb/h/8k/4P/Jf+E/yL/dv8f/2//Hf9p/x3/Zf8d/2P/G/9g/xv/XP8Z/13/Gv9Z/xj/Vv8W/1P/Fv9O/xT/Sv8V/0X/E/9F/xP/Qv8S/0D/Ef8+/xD/PP8P/zj/D/82/wjOHf8J2R//CuQi/wvwIv8L9yT/C/8m/wv/Jf8L/yj/Df8s/w3/Lv8P/zb/Dv8y/w//NP8Q/zf/D/85/xD/O/8Q/zv/EP87/xH/Pv8R/0P/E/9F/xX/Rv8V/0j/Ev9G/xL/Rf8U/0X/FP9I/xX/Tv8X/1H/F/9U/xj/WP8c/2D/Hf9p/x7/cP8f/3L/I/95/yT/fv8m/4D/Jf+E/yT/g/8k/4D/JP9//yP/fv8h/3T/H/9u/x3/Zv8e/2X/Hf9l/xv/YP8b/2D/Gv9f/xn/XP8Z/1r/GP9U/xf/UP8V/03/Fv9H/xP/Rv8T/0T/Ev9A/xL/Pf8R/zz/EP84/w//Nv8HwRz/CM0e/wnWHv8K4CH/Ceoi/wnyIv8K9yP/Cv8l/wr/J/8N/yv/Dv8y/w7/MP8P/zP/D/82/xD/OP8R/zr/EP85/xD/N/8R/zn/Ef89/xP/PP8Q/zr/Ef86/xD/Pf8P/z3/Ef8//xP/Qv8U/0j/Ff9L/xX/Tv8X/1T/G/9Y/xz/Yf8c/2j/Hv9s/yD/cP8h/3L/Iv92/yL/fv8j/37/I/96/yP/eP8i/3n/IP9x/x7/av8d/2T/Hv9j/x3/ZP8e/2P/Hv9j/xv/Yv8a/1//Gf9b/xj/Vf8Y/1H/Fv9N/xX/Sv8V/0f/E/9F/xT/Qv8S/z//Ef88/xD/OP8P/zX/B7Qa/wi/HP8IyRz/CdIf/wnaIP8J4SD/Cegh/wrvIv8K+ST/C/8m/w3/L/8N/y7/Dv8x/w//Nf8P/zb/D/84/xD/OP8R/zf/D/83/w//OP8Q/zb/D/80/w7/Nv8Q/zb/D/84/xD/PP8S/z7/Ev9B/xP/Rv8U/0j/Ff9N/xj/U/8Z/1z/G/9h/x3/Zf8d/2j/Hv9o/x//bv8h/3b/Iv92/yH/c/8g/3L/If9z/x7/av8d/2n/Hv9l/xz/Y/8d/2P/Hf9j/yD/Zv8e/2X/HP9f/xn/W/8Y/1b/F/9U/xb/Tv8W/0z/Ff9K/xP/Rv8T/0L/Ef8//xH/PP8Q/zj/D/81/wewGv8HtRv/CL0b/wnGHf8Izh7/CdUe/wnaH/8J4yD/Cuoh/wr2JP8N/yz/Df8r/w7/L/8O/zL/Df8z/w//Nv8P/zj/D/82/w//Nv8O/zb/EP80/xD/M/8P/zP/Dv8x/w7/Nf8P/zf/EP85/xD/Ov8S/z//E/9D/xP/R/8W/03/Gf9V/xn/Wf8Z/13/Gf9h/xz/Yv8e/2b/H/9r/x7/bv8e/23/Hv9s/x//bP8d/2T/G/9j/xz/ZP8e/2b/G/9h/x3/Yv8d/2X/IP9m/yP/Zv8d/17/Gf9Y/xj/VP8X/1H/GP9O/xX/Sf8T/0b/E/9C/xH/P/8R/zz/EP86/w//N/8Hrhn/B64Z/we1Gv8HvRz/CMQc/wjKHf8Jzx7/CdYe/wnfH/8J6yL/DP8q/wz/KP8M/yv/Dv8t/w3/Mv8P/zX/D/81/w//Nv8P/zb/D/81/w7/M/8Q/zT/D/81/w//NP8O/zT/DP8y/w7/Mv8P/zb/D/86/xD/PP8R/0H/E/9G/xf/TP8X/1P/GP9W/xf/Wf8b/1z/HP9g/xz/ZP8e/2T/HP9l/x//Y/8d/2L/G/9h/xv/X/8b/1//Hv9k/x//ZP8b/2D/G/9k/x//Yv8g/2P/JP9m/x7/Xv8a/1T/F/9R/xf/Tv8V/0r/Ff9I/xT/Qv8R/z//Ef88/xD/Ov8P/zb/B64Z/wesGf8HrBn/BrMa/we6G/8IwBz/CMMc/wjIHP8J1R//CeIh/wz/J/8M/yb/DP8o/w3/K/8M/y//Df8x/w7/NP8R/zX/D/82/w//NP8P/zb/EP82/xD/Nf8Q/zT/D/81/w7/NP8O/zT/EP82/xD/NP8Q/zb/EP88/xP/P/8U/0X/Ff9K/xb/Tf8Z/1X/Gv9X/xn/Wv8a/1v/HP9c/xz/Xf8a/1z/Gv9e/xr/Xf8a/13/Gv9c/xv/Yf8f/2L/If9k/xv/X/8c/1//Hf9h/x//Yf8h/17/Hf9Z/xj/Uv8W/0//Ff9K/xX/Rv8U/0T/Ev8//xD/O/8P/zn/D/83/wesGP8Hqhj/BqkZ/waqGP8Grhn/CLMa/wi3G/8Iuxv/CMod/wnYH/8K6yH/C/0l/wz/J/8M/yn/DP8u/wz/MP8Q/zT/EP83/xD/N/8P/zf/D/82/xH/N/8R/zf/EP82/w7/Nv8O/zT/Dv81/xD/N/8Q/zb/EP84/xH/Ov8R/z3/Ev9A/xP/RP8U/0r/Fv9O/xf/Uv8X/1L/GP9U/xj/VP8Y/1X/GP9Y/xj/Wf8Y/1j/F/9Y/xj/XP8b/1z/G/9g/x3/Xv8e/2L/Gv9c/xz/XP8d/13/H/9c/x7/Wv8c/1b/GP9P/xX/S/8V/0f/FP9D/xL/QP8R/zv/EP84/w//Nv8=",
+      "sha256": "c1074976aeea397338321e15f8f38006b28b51ec1b18f0923710c1b760b19142"
+    }
+  },
+  "motion": {
+    "horizontal_metres": 0.0954839692553908,
+    "simulation_seconds": 2.0010000000004906,
+    "wall_seconds": 6.767899999976158
+  },
+  "brain_off_baseline": {
+    "wall": 30704.69999998808,
+    "time": 0,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted-off",
+    "source": "neural-navigation",
+    "p": [
+      1.2,
+      1,
+      1.2
+    ],
+    "v": [
+      0,
+      0,
+      0
+    ],
+    "w": [
+      0,
+      0,
+      0
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 0,
+        "accepted": 0,
+        "last": null
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "active": false,
+        "framesApplied": 0,
+        "attention": null
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller"
+    },
+    "controls": {
+      "aL": 1,
+      "aR": 1,
+      "betaL": 0,
+      "betaR": 0,
+      "sL": 0,
+      "sR": 0,
+      "f": 200
+    },
+    "search": null,
+    "pilotState": {
+      "speed": 0.3,
+      "heading": 0.29999999999999993,
+      "target": [
+        1.2,
+        1,
+        1.2
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": false,
+      "brainReady": false,
+      "learnReady": false,
+      "solveMs": 0,
+      "failed": 0,
+      "accepted": 0
+    },
+    "lessons": null,
+    "events": [
+      [
+        0,
+        "sugar on the banana"
+      ],
+      [
+        0,
+        "assisted flight: neural contribution is reported separately"
+      ]
+    ],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "5af09535",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 123.50390625
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "f60d3a56",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 122.03792317708333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "2af70590",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 121.71240234375
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "b86eb98b",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 119.00227864583333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 5,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "72f78edd",
+          "minRGB": 4,
+          "maxRGB": 255,
+          "meanRGB": 114.89908854166667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 6,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "8b1a480c",
+          "minRGB": 4,
+          "maxRGB": 255,
+          "meanRGB": 112.41389973958333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 7,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "d94569cc",
+          "minRGB": 2,
+          "maxRGB": 255,
+          "meanRGB": 108.80875651041667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 8,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "447190c1",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 107.923828125
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 9,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "22584eca",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 106.03727213541667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 10,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "52fac344",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 103.78206380208333
+        }
+      }
+    ],
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "accepted": true,
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.493689119913218e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_qualified",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7612468417976022,
+          "min": 0.49162575602531433,
+          "max": 0.9990012645721436
+        },
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688774009357e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026980237,
+                "mbon:MBON05:left": 0.293559567509641
+              },
+              "score": -0.19631419723983864
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689119913218e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046138457,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668833042
+            }
+          ],
+          "p": [
+            0.4999999995404098,
+            0.5000000004595903
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867704,
+            0.6579969533132297
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689119913218e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.69757074045785e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.000687614667237734,
+          "dn:DNa02:left": 0.0019945532426266506,
+          "dn:DNa02:right": 0.009724569181969704,
+          "dn:DNp09": 0,
+          "mn9": 9.771761050989703e-06,
+          "mbon:MBON11:right": 0.09724537046138457,
+          "mbon:MBON05:left": 0.293559567149715,
+          "dn:DNp03": 0.0007544339291312211
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 89,
+        "residual": 8.872238815849087e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.755672003062679,
+          "min": 0.40425369143486023,
+          "max": 0.9989917874336243
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876167046034401,
+          "dn:DNa02:left": 0.001994552922439327,
+          "dn:DNa02:right": 0.00972456991670325,
+          "dn:DNp09": 0,
+          "mn9": 9.771727861042017e-06,
+          "mbon:MBON11:right": 0.09724537046576569,
+          "mbon:MBON05:left": 0.2935595671551978,
+          "dn:DNp03": 0.0007538815062668137
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 77,
+        "residual": 9.306441381973229e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7542141503906198,
+          "min": 0.38338273763656616,
+          "max": 0.9990056753158569
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876171776446134,
+          "dn:DNa02:left": 0.001994552940186812,
+          "dn:DNa02:right": 0.009724569835497118,
+          "dn:DNp09": 0,
+          "mn9": 9.771728129533105e-06,
+          "mbon:MBON11:right": 0.09724537046766524,
+          "mbon:MBON05:left": 0.29355956715614256,
+          "dn:DNp03": 0.0007537481973450155
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 127,
+        "residual": 9.190116267987491e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7435059700749208,
+          "min": 0.3512495756149292,
+          "max": 0.9932451844215393
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014043475253019216,
+          "dn:DNa02:left": 0.00203428846020773,
+          "dn:DNa02:right": 0.009500015952015106,
+          "dn:DNp09": 0,
+          "mn9": 1.0366233325384702e-05,
+          "mbon:MBON11:right": 0.09724537500617299,
+          "mbon:MBON05:left": 0.29355956754351237,
+          "dn:DNp03": 0.0007538254833337846
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 5,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 82,
+        "residual": 8.524241241758546e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7263188134087427,
+          "min": 0.33502376079559326,
+          "max": 0.9929824471473694
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.001405798891338849,
+          "dn:DNa02:left": 0.002034081785370768,
+          "dn:DNa02:right": 0.00949756971097724,
+          "dn:DNp09": 0,
+          "mn9": 1.0367702421557606e-05,
+          "mbon:MBON11:right": 0.09724537488106606,
+          "mbon:MBON05:left": 0.2935595675064993,
+          "dn:DNp03": 0.0007537347580464867
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 6,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 138,
+        "residual": 9.481963658686254e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7140252566415712,
+          "min": 0.2922095060348511,
+          "max": 0.9900559186935425
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0011985771131546646,
+          "dn:DNa02:left": 0.0020284030999670414,
+          "dn:DNa02:right": 0.009549805539063103,
+          "dn:DNp09": 0,
+          "mn9": 1.0194521371608168e-05,
+          "mbon:MBON11:right": 0.0972453746664617,
+          "mbon:MBON05:left": 0.2935595673691694,
+          "dn:DNp03": 0.0007532168473260968
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 7,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 106,
+        "residual": 9.335529558285316e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6953678323898987,
+          "min": 0.19842681288719177,
+          "max": 0.9958066940307617
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.001193879324219384,
+          "dn:DNa02:left": 0.0020283627851958815,
+          "dn:DNa02:right": 0.009550830218477122,
+          "dn:DNp09": 0,
+          "mn9": 1.0191409867381731e-05,
+          "mbon:MBON11:right": 0.09724537459717268,
+          "mbon:MBON05:left": 0.2935595673466605,
+          "dn:DNp03": 0.0007531367426946854
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 8,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 113,
+        "residual": 9.25249822092411e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6896224048605126,
+          "min": 0.3092191517353058,
+          "max": 0.9966173768043518
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014236647853229532,
+          "dn:DNa02:left": 0.002034518528075883,
+          "dn:DNa02:right": 0.009494058318902144,
+          "dn:DNp09": 0,
+          "mn9": 1.0396850076212937e-05,
+          "mbon:MBON11:right": 0.09724537465128798,
+          "mbon:MBON05:left": 0.29355956746579015,
+          "dn:DNp03": 0.0007538663257979922
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 9,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 86,
+        "residual": 8.808884703892517e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.681102173843389,
+          "min": 0.30360278487205505,
+          "max": 0.9925677180290222
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014250305790889288,
+          "dn:DNa02:left": 0.0020345552136271667,
+          "dn:DNa02:right": 0.009493141745945599,
+          "dn:DNp09": 0,
+          "mn9": 1.0399154634809685e-05,
+          "mbon:MBON11:right": 0.09724537459420447,
+          "mbon:MBON05:left": 0.29355956744767125,
+          "dn:DNp03": 0.0007541931785924585
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 10,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 152,
+        "residual": 9.26728705330504e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6694638592291243,
+          "min": 0.23743897676467896,
+          "max": 0.9987897276878357
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0011219710098996456,
+          "dn:DNa02:left": 0.0020270364314146053,
+          "dn:DNa02:right": 0.009558833714960071,
+          "dn:DNp09": 0,
+          "mn9": 1.0141300294994461e-05,
+          "mbon:MBON11:right": 0.09724537396343695,
+          "mbon:MBON05:left": 0.29355956726674853,
+          "dn:DNp03": 0.0007534214214708614
+        }
+      }
+    ],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "5af09535",
+      "minRGB": 6,
+      "maxRGB": 255,
+      "meanRGB": 123.50390625,
+      "rgba_base64": "Gf9Y/xn/Vv8Z/1T/F/9T/xf/UP8W/0v/Ff9H/xP/Qv8Q/z3/EP84/w//M/8N/y7/DP8q/wr/J/8K+CT/Cekh/wnfIP8J3CD/CNYf/wnUHf8I2R//Cu0j/wr/Jv8L/y3/Dv8y/w//N/8S/zz/Ef9A/xL/Qf8T/0L/Ef9C/xL/Qf8S/0L/Ef9B/xL/QP8T/0H/Ev87/xH/Ov8P/zv/E/9C/xP/Q/8S/z3/Ev88/xL/P/8S/z7/D/82/w//M/8O/zH/Df8t/w7/Lv8S/zH/Df8s/wz/Kf8M/yn/DP8q/wz/Kf8M/yr/DP8q/w3/Kv8N/yv/Df8r/w3/LP8M/y3/DP8t/xr/V/8Y/1b/GP9U/xj/U/8X/1H/F/9O/xX/SP8V/0T/Ev8//xD/Ov8O/zX/Dv8x/w3/Lf8L/yr/Cv8n/wr5JP8J8iL/Cuwi/wjmIP8J5CD/COoj/wr9I/8L/yv/Dv8x/xD/Nv8R/z7/E/9F/xP/Rv8U/0j/E/9K/xT/Sv8W/0n/Ff9J/xP/Sf8U/03/FP9C/xL/Qf8R/0H/Ff9H/xL/Q/8T/0L/Ev9D/xX/R/8R/z//EP89/xD/O/8Q/zf/D/82/w//M/8U/zX/EP8w/w7/LP8N/yz/DP8q/wz/K/8M/yz/DP8q/wz/Kv8N/yr/Df8s/w3/LP8N/y3/DP8t/wz/Lv8Z/1X/Gf9T/xf/U/8Y/1T/Fv9R/xb/Tf8U/0j/E/9F/xL/P/8S/zr/EP82/w7/M/8O/y//DP8s/wv/Kv8K/yn/Cv8m/wr/Jf8J+yX/Cfck/wr/Jv8L/yv/Df8w/xH/N/8R/zz/E/9E/xP/S/8V/0z/F/9Q/xb/T/8X/1H/Fv9R/xb/Uf8X/1X/FP9N/xX/Sv8V/0z/Ff9N/xP/R/8T/0r/GP9Q/xb/T/8T/0n/Ev9G/xT/Sv8R/z//Ef89/xH/O/8Y/z//EP8z/w//Mf8O/y//Dv8s/w7/LP8M/y3/DP8s/wz/Lf8M/yv/Df8r/w3/LP8N/y3/Df8t/wz/Lv8M/y7/F/9T/xj/UP8X/1H/F/9R/xf/UP8W/03/FP9H/xP/RP8T/0D/EP89/xL/Pv8R/zj/EP82/w3/Mf8O/zD/DP8u/wz/K/8L/yn/C/8o/wn/Kf8M/yv/DP8v/xD/Nv8T/z3/EP9E/xT/R/8V/07/GP9U/xn/Wf8Y/1v/GP9a/xj/Wv8Z/17/F/9W/xj/VP8Z/1X/Fv9M/xb/T/8Y/1b/GP9Y/xf/Uv8X/1L/GP9W/xf/UP8T/0j/Ef9F/xP/Qf8X/0T/Ev87/w//N/8P/zP/D/8w/w7/L/8O/y3/Dv8u/w3/L/8M/y3/Df8u/w3/LP8N/yz/Df8t/w3/Lf8M/y//Df8v/xj/UP8X/0//GP9O/xf/T/8W/0z/Ff9K/xT/SP8U/0X/E/9C/xH/Pv8S/0L/Ef89/xD/PP8Q/zj/Dv81/w7/M/8M/zH/Df8v/w3/Mv8M/zH/Dv80/xD/Ov8R/z//FP9G/xT/S/8X/1H/Gf9Y/xz/YP8b/2T/Hf9m/yD/Zv8e/2n/G/9c/xr/Wv8c/13/F/9T/xj/Uf8Z/1r/GP9V/xj/Vv8c/17/G/9f/xj/Vv8X/1H/Ff9M/xb/Rv8Y/0j/E/9B/xL/Pv8Q/zj/D/80/w7/Mv8O/zD/Dv8v/w7/MP8O/y//Dv8v/wz/L/8N/y3/Df8u/w3/Lv8N/y7/Df8v/wz/L/8X/03/Fv9K/xf/Tf8U/0v/FP9J/xT/SP8V/0b/FP9D/xL/Qf8R/z7/E/9F/xP/QP8S/z7/Ev88/xD/Ov8Q/zj/Dv81/w7/Nf8Q/zn/Ef88/xD/Pv8T/0P/FP9H/xf/TP8Y/1T/Gf9b/xv/Yv8f/2v/IP9x/yL/df8j/3T/Hv9t/x7/a/8f/2X/Gv9f/x3/Yv8Z/1//F/9W/xr/Xv8b/2D/Gv9c/x//bv8g/3D/F/9W/xb/T/8W/0n/Fv9H/xb/Rf8U/z7/Ef85/w//Nf8O/zP/Dv8y/w7/Mf8O/zD/Dv8x/w7/Mf8O/zH/Df8v/w3/L/8N/y7/Df8u/w3/Lv8N/y//Ff9I/xT/Rv8V/0n/Ff9I/xX/Rf8T/0b/FP9E/xH/Q/8T/z//Ev9A/xT/SP8S/0P/E/9C/xL/QP8Q/z7/Ef8+/xD/Pf8S/z//Ev9C/xP/Q/8T/0n/E/9K/xb/UP8Z/1P/Gf9a/x3/Zf8g/2z/If90/yb/gP8h/3v/H/94/yX/ef8f/3H/IP9w/x//bP8c/2P/HP9m/x3/Yv8e/3D/H/9w/yD/cv8a/1//G/9g/xn/Vv8X/0//Fv9M/xn/S/8W/0X/E/8//xH/O/8P/zT/Df80/w7/Mv8O/zH/Dv8z/w7/Mv8O/zL/Dv8x/w//MP8N/zD/Dv8v/w7/MP8O/y//Df8v/xP/RP8U/0L/E/9E/xT/RP8U/0T/FP9E/xP/Qf8R/z//Ev8//xP/Qf8U/0j/FP9D/xT/RP8U/0T/E/9D/xL/Q/8T/0P/Ev9F/xT/Sv8V/0v/Ff9N/xf/VP8Y/1j/Gv9a/xv/Yv8e/2n/Iv90/yX/gv8k/4L/J/+L/yj/if8k/37/Jf+B/yH/dP8g/3P/If9v/yD/d/8g/3b/Hf9u/x3/a/8d/2v/G/9k/xr/Zv8Z/1j/F/9S/xz/Uv8Z/0v/Ff9D/xL/P/8Q/zr/EP83/w//NP8P/zL/Dv80/w7/NP8O/zP/Dv8z/w//Mv8P/zL/D/8x/w7/Mf8O/zD/Dv8v/w3/L/8S/z//Ev89/xL/P/8T/z//EP8//xH/QP8S/z3/Ev8+/xH/Pv8T/0L/Ff9J/xP/RP8U/0b/Ff9I/xP/SP8V/0n/Ff9K/xX/TP8X/0//Fv9U/xj/Vv8Z/1j/Hf9e/xv/YP8f/2b/If9y/yP/gP8k/4T/Kf+Q/yr/k/8s/5n/K/+T/yn/i/8n/4f/Jv+O/yj/if8h/3j/Iv95/yT/e/8i/3n/Hv9v/x7/bf8d/2r/G/9f/x3/Wv8Z/1H/FP9I/xP/Qv8S/z3/EP85/xD/N/8P/zX/D/80/w//Nf8O/zT/Dv80/w//NP8P/zT/D/8y/w//Mv8P/zH/Dv8x/w7/MP8N/y7/Ev84/xL/OP8Q/zn/EP86/xD/O/8R/zv/Ef86/xH/O/8S/z3/Ev9A/xT/Sf8U/0X/FP9J/xX/Tf8X/0//F/9P/xb/Uf8W/1P/GP9Z/xv/Xv8Z/17/HP9e/x7/ZP8d/2f/IP9t/yL/fv8h/37/J/+M/yz/mf8v/6P/Mf+o/y//ov8y/6T/Lv+l/yj/kf8r/5L/KP+P/yv/lP8r/5T/Jv+C/yH/fv8i/3f/Iv9y/yH/Zv8d/1v/Ff9Q/xT/Rv8T/0L/EP8+/xD/Of8P/zj/D/81/w//Nv8Q/zX/EP81/w//Nv8P/zX/D/80/w//M/8P/zH/D/8y/w//Mf8O/zD/Df8v/w//M/8P/zP/Dv8z/w//Nf8Q/zj/D/84/xD/N/8Q/zr/Ef8+/xL/Qf8V/0n/FP9K/xX/S/8X/1H/GP9S/xf/U/8Z/1f/Gf9b/xj/X/8b/2P/Hv9k/x3/Zf8c/2b/Hf9t/yT/ev8k/4L/KP+G/yr/kf8u/6X/OP/F/zj/xf83/8f/Mv+u/y7/pP8u/6T/Mf+k/zb/uv8z/7T/K/+X/yn/j/8l/4n/J/+A/yL/ev8f/2f/HP9c/xf/UP8V/0b/Ev9A/xD/Pf8Q/zn/D/85/w//N/8P/zb/EP82/xH/Nv8Q/zb/D/82/w//Nf8P/zT/D/80/w//Mv8P/zH/Dv8x/wz/MP8N/y//Dv8v/w7/Mv8P/zH/D/80/w//Nf8P/zf/Ef85/xH/Pv8S/0H/FP9J/xP/S/8V/07/GP9R/xj/Vf8Y/1b/G/9f/xn/ZP8c/2X/Hf9l/xv/Zf8d/2f/IP9x/yL/eP8l/4L/J/+H/yz/l/81/7b/OP/G/zv/zf8+/9j/Ov/G/zX/u/84/8j/PP/N/zz/0f87/8T/Nf+2/y7/pf8r/5//Kf+U/yb/iP8k/4L/H/9p/xz/Xf8Z/1P/E/9I/xL/QP8S/zz/EP87/w//Of8P/zf/EP83/xD/N/8Q/zf/Ef82/xD/Nv8P/zb/D/81/w//M/8P/zP/D/8y/w7/Mf8M/zH/Df8t/w7/Lf8O/y//Dv8u/w7/MP8P/zT/D/81/xD/Of8R/z3/E/9A/xX/Sv8V/0v/Fv9P/xn/U/8Z/1f/Gv9Z/xr/Yf8b/2b/G/9m/x7/ZP8c/2b/If9w/yH/fP8m/4T/KP+O/yv/kv8w/6n/Nf/A/z3/2P9H//n/T////1D///9I//z/R//9/0z///9I//n/Pf/Q/zT/u/8y/7L/L/+n/yr/nP8m/4v/JP+B/x7/bP8a/2D/Fv9T/xT/Sv8T/0H/Ev8//xD/PP8Q/zj/EP84/xD/OP8Q/zj/EP83/xH/N/8Q/zf/EP83/w//Nf8P/zT/D/8z/w//Mv8P/zP/Df8x/w3/K/8M/yr/Df8t/w7/LP8O/y//D/8z/w7/Nf8Q/zr/Ef87/xL/QP8T/0v/E/9K/xb/Tv8Y/1L/GP9W/xr/Wv8b/1//vv///8D////D////wv///8f///8i/4b/Kf+Q/yr/mv8u/6P/M/+0/zT/uv89/+b/X////3T///92////c////2T///9w////UP///z//2v83/8X/Mv+y/y//pv8q/5v/Jv+N/yP/gP8d/2n/Gv9h/xf/VP8V/0n/Ev9E/xL/QP8S/zz/Ef87/xH/Ov8Q/zv/EP85/xD/Of8Q/zj/EP84/xD/N/8Q/zX/D/81/w//NP8P/zT/D/8y/w3/Mf8M/yn/DP8o/wz/Kv8N/yz/Dv8w/w7/M/8O/zP/D/82/xD/O/8S/z7/FP9H/xP/Rv8X/0n/Fv9O/xf/U/8X/1X/F/9Z/xj/Xf8c/2T/H/9s///////J/////////////////////////9H///+E////Ov/O/3////+3////nv///4z///9w////Yf///1b///9B/+f/Of/E/zX/sf8t/6H/K/+U/yb/hv8j/3z/Hv9o/xz/YP8X/1T/FP9O/xP/Sf8S/0X/E/9C/xP/Pf8S/z3/Ev87/xH/PP8R/zv/EP87/xD/Of8Q/zf/EP82/w//Nf8P/zX/D/8z/w//Mf8O/zL/DP8o/wz/J/8M/yn/Df8t/w7/MP8O/zL/D/8z/w//Nv8P/zf/EP87/xL/RP8T/0b/FP9H/xX/TP8X/0//GP9V/xb/WP8a/17/Hv9k/x//bv/H////Jf+G/yz/lv8u/6P/MP+o/y//of////////////////9W/////////4f///9x////bP///1////9U////QP/s/zf/xv8z/67/Lf+b/yb/iv8l/33/If91/x7/av8c/2H/F/9X/xj/UP8V/07/FP9L/xT/Rf8T/0H/E/8+/xL/P/8S/z7/Ef89/xH/PP8R/zv/Ef87/w//N/8P/zb/D/80/w//NP8O/zT/D/8y/wv/J/8M/yf/Df8p/w3/LP8O/y//Dv8y/w//Mv8O/zX/EP82/xD/PP8T/0X/FP9E/xT/R/8V/0n/F/9M/xf/Uv8W/1f/Gv9e/xz/ZP8f/3D/x////yb/if8t/5n/L/+g/y3/ov8s/53/g////zL/uv//////Vf///27///9u////Zf///2D///9Y////Uv///0L/8P84/87/M/+x/y3/m/8n/4j/I/98/yH/ef8f/23/Hv9l/xr/Wv8Y/1f/Fv9U/xb/Tv8V/0v/E/9E/xP/Qf8T/0D/Ev9A/xL/P/8R/z3/Ef8+/xH/Ov8R/zj/EP85/w7/Nv8P/zX/Dv8z/w7/Mf8L/yb/DP8n/wz/Kf8M/y3/Dv8u/w7/Mv8O/zL/D/81/w//Nv8R/zv/E/9F/xP/RP8T/0X/FP9J/xX/S/8T/07/GP9V/xr/Xf8c/2X/H/9x/8f///8n/4v/K/+V/37///99////fv///9P///+Q////9////2f///+D////hv///27///9i////V////1T///9G//j/PP/T/zD/tf8s/5z/Kv+O/yX/g/8j/4H/IP9z/x7/Z/8c/2P/Gv9d/xj/V/8Z/1X/Fv9P/xT/SP8U/0X/FP9C/xP/Qf8T/0D/Ev9A/xH/Pv8R/zv/Ef88/xD/Of8R/zb/D/81/w7/M/8O/zT/C/8m/wz/J/8M/yn/Df8r/w3/Lf8O/zH/Dv8x/w//NP8P/zj/Ef87/xT/RP8U/0P/Ff9F/xT/Rv8T/0n/Ff9N/xj/Uv8Z/1r/Hf9j/yH/cf//////e//1/3z/+/8s/5b/LP+c/y//n//U////5/////////9u////dP///3T///9w////Yv///1b///9J////RP/3/zz/0f80/7f/Lf+g/yj/lP8m/4v/Jv+I/yH/dv8f/2//G/9n/xv/Yf8b/1r/Gf9X/xj/Uf8V/03/FP9J/xT/Rv8T/0T/E/9C/xP/Qf8S/z//Ev8+/xH/PP8R/zn/Ef86/xD/OP8O/zX/Dv80/wr/Jf8M/yb/DP8o/w3/Kf8N/yz/D/8v/w7/MP8O/zL/EP85/xD/O/8T/0P/E/9C/xP/Q/8U/0X/E/9I/xT/Sv8W/1D/GP9Y/x3/ZP8f/3P/yf///yn/i/8q/5T/LP+b/9H////Q////hf///0P/xv9c//P/a////4v///+J////Z//2/1X/5P9H/9//P//b/z7/4/86/8j/Nf+5/y//pv8s/5n/K/+R/yf/iv8j/3r/Hv9y/x7/bP8b/2T/G/9f/xr/Wv8Y/1X/F/9Q/xb/S/8V/0n/Ff9H/xL/Rv8T/0L/Ev9A/xL/P/8T/z7/Ev88/xH/O/8Q/zj/D/82/w7/NP8L+yT/C/8m/wz/J/8M/yj/DP8r/wz/Lf8N/y//Dv8y/w//OP8R/zz/FP9E/xT/Qv8T/0P/E/9E/xP/SP8U/0j/Ff9L/xf/Uf8a/13/Hf9v/8n///8p/47/z////9D///8q/5b/Lf+b/zL/ov8//7L/VP/P/2r/+/+E////lf///1//2v9L/8D/O/+0/zH/uf82/8X/Nv+//zb/uf8w/6r/MP+d/yr/k/8m/4z/JP98/yD/df8e/23/HP9m/xz/YP8b/1r/Gv9V/xf/Uv8W/0//Ff9M/xX/Sf8T/0b/E/9D/xL/Q/8T/0H/E/8+/xP/Pv8R/zv/EP85/w//OP8O/zX/C/Qj/wv/Jf8M/yf/DP8n/w3/Kf8M/yz/Df8t/w3/Mf8P/zf/Ef86/xT/Q/8S/0L/E/9D/xL/Q/8T/0f/FP9F/xT/SP8W/0z/Gf9W/x//Z///////zf///yr/kP8p/4//J/+I/yf/if8q/4r/Mv+S/0P/pv9S/7f/ef///1r/w/9R/7n/Q/+p/zX/n/8v/6H/M/+v/zP/tP80/7H/Mv+o/yz/n/8q/5X/Kf+M/yP/e/8h/3b/Hv9u/x3/Zv8b/2D/HP9c/xj/V/8Y/1P/F/9Q/xb/Tv8V/0z/Ff9H/xP/Rv8T/0T/E/9B/xL/P/8S/z//Ef88/xD/Ov8P/zj/D/81/wvuIv8L+ST/DP8m/wz/Jv8N/yj/DP8r/w3/LP8N/y//Dv80/w//Ov8T/0H/Ev9A/xP/QP8T/0L/E/9E/xT/Qv8T/0P/FP9G/xX/UP8b/2D/H/9y/yL/e/8l/4P/I/+A/yH/dv8i/3L/If9u/yP/bv8y/4H/Pv+S/0z/sP9H/5//QP+Z/zf/k/8r/4//Kf+W/y7/of8x/6f/MP+m/y7/of8p/5n/K/+Q/yf/iv8k/37/IP90/yD/b/8e/2f/G/9i/xr/Xf8Z/1r/Gf9X/xj/U/8X/1D/Fv9P/xb/TP8T/0f/FP9E/xP/Qv8T/0H/Ev8//xD/PP8P/zv/Dv84/w7/Nf8K5CD/CvAj/wv8Jf8L/yX/DP8n/wv/Kf8M/yr/DP8u/w3/Mv8Q/zX/Ef8+/xH/PP8S/zz/EP8+/xH/P/8R/z7/EP8//xP/Qf8U/0n/F/9T/xv/Y/8f/2z/If9w/x7/bf8c/2X/G/9e/xf/Vv8a/1j/If9o/yr/dv8y/4H/NP+D/y7/gv8n/3//I/+D/yX/i/8o/5b/LP+a/yr/l/8q/5X/Kf+Q/yf/i/8n/4f/I/95/yD/dP8f/2z/Hv9o/xz/ZP8c/1//G/9c/xn/WP8Z/1f/F/9U/xb/UP8W/0v/FP9I/xT/Rf8T/0P/E/9C/xL/Pv8Q/zz/EP89/w7/Ov8O/zX/Cdkf/wrlIv8L8CP/C/wk/wv/Jv8L/yf/C/8o/wz/K/8N/y//EP8y/xH/O/8R/zj/D/84/xD/O/8Q/zz/Ef88/xH/Pf8R/z3/E/9D/xP/Sf8Y/1T/Gf9Z/xn/Wf8X/1j/F/9R/xX/Uf8X/03/F/9T/xr/WP8e/2D/Iv9q/yX/bv8i/3H/If90/yL/eP8l/4T/Jv+H/yj/if8n/4v/KP+M/yb/h/8k/4P/Jf+E/yL/dv8f/2//Hf9p/x3/Zf8d/2P/G/9g/xv/XP8Z/13/Gv9Z/xj/Vv8W/1P/Fv9O/xT/Sv8V/0X/E/9F/xP/Qv8S/0D/Ef8+/xD/PP8P/zj/D/82/wjOHf8J2R//CuQi/wvwIv8L9yT/C/8m/wv/Jf8L/yj/Df8s/w3/Lv8P/zb/Dv8y/w//NP8Q/zf/D/85/xD/O/8Q/zv/EP87/xH/Pv8R/0P/E/9F/xX/Rv8V/0j/Ev9G/xL/Rf8U/0X/FP9I/xX/Tv8X/1H/F/9U/xj/WP8c/2D/Hf9p/x7/cP8f/3L/I/95/yT/fv8m/4D/Jf+E/yT/g/8k/4D/JP9//yP/fv8h/3T/H/9u/x3/Zv8e/2X/Hf9l/xv/YP8b/2D/Gv9f/xn/XP8Z/1r/GP9U/xf/UP8V/03/Fv9H/xP/Rv8T/0T/Ev9A/xL/Pf8R/zz/EP84/w//Nv8HwRz/CM0e/wnWHv8K4CH/Ceoi/wnyIv8K9yP/Cv8l/wr/J/8N/yv/Dv8y/w7/MP8P/zP/D/82/xD/OP8R/zr/EP85/xD/N/8R/zn/Ef89/xP/PP8Q/zr/Ef86/xD/Pf8P/z3/Ef8//xP/Qv8U/0j/Ff9L/xX/Tv8X/1T/G/9Y/xz/Yf8c/2j/Hv9s/yD/cP8h/3L/Iv92/yL/fv8j/37/I/96/yP/eP8i/3n/IP9x/x7/av8d/2T/Hv9j/x3/ZP8e/2P/Hv9j/xv/Yv8a/1//Gf9b/xj/Vf8Y/1H/Fv9N/xX/Sv8V/0f/E/9F/xT/Qv8S/z//Ef88/xD/OP8P/zX/B7Qa/wi/HP8IyRz/CdIf/wnaIP8J4SD/Cegh/wrvIv8K+ST/C/8m/w3/L/8N/y7/Dv8x/w//Nf8P/zb/D/84/xD/OP8R/zf/D/83/w//OP8Q/zb/D/80/w7/Nv8Q/zb/D/84/xD/PP8S/z7/Ev9B/xP/Rv8U/0j/Ff9N/xj/U/8Z/1z/G/9h/x3/Zf8d/2j/Hv9o/x//bv8h/3b/Iv92/yH/c/8g/3L/If9z/x7/av8d/2n/Hv9l/xz/Y/8d/2P/Hf9j/yD/Zv8e/2X/HP9f/xn/W/8Y/1b/F/9U/xb/Tv8W/0z/Ff9K/xP/Rv8T/0L/Ef8//xH/PP8Q/zj/D/81/wewGv8HtRv/CL0b/wnGHf8Izh7/CdUe/wnaH/8J4yD/Cuoh/wr2JP8N/yz/Df8r/w7/L/8O/zL/Df8z/w//Nv8P/zj/D/82/w//Nv8O/zb/EP80/xD/M/8P/zP/Dv8x/w7/Nf8P/zf/EP85/xD/Ov8S/z//E/9D/xP/R/8W/03/Gf9V/xn/Wf8Z/13/Gf9h/xz/Yv8e/2b/H/9r/x7/bv8e/23/Hv9s/x//bP8d/2T/G/9j/xz/ZP8e/2b/G/9h/x3/Yv8d/2X/IP9m/yP/Zv8d/17/Gf9Y/xj/VP8X/1H/GP9O/xX/Sf8T/0b/E/9C/xH/P/8R/zz/EP86/w//N/8Hrhn/B64Z/we1Gv8HvRz/CMQc/wjKHf8Jzx7/CdYe/wnfH/8J6yL/DP8q/wz/KP8M/yv/Dv8t/w3/Mv8P/zX/D/81/w//Nv8P/zb/D/81/w7/M/8Q/zT/D/81/w//NP8O/zT/DP8y/w7/Mv8P/zb/D/86/xD/PP8R/0H/E/9G/xf/TP8X/1P/GP9W/xf/Wf8b/1z/HP9g/xz/ZP8e/2T/HP9l/x//Y/8d/2L/G/9h/xv/X/8b/1//Hv9k/x//ZP8b/2D/G/9k/x//Yv8g/2P/JP9m/x7/Xv8a/1T/F/9R/xf/Tv8V/0r/Ff9I/xT/Qv8R/z//Ef88/xD/Ov8P/zb/B64Z/wesGf8HrBn/BrMa/we6G/8IwBz/CMMc/wjIHP8J1R//CeIh/wz/J/8M/yb/DP8o/w3/K/8M/y//Df8x/w7/NP8R/zX/D/82/w//NP8P/zb/EP82/xD/Nf8Q/zT/D/81/w7/NP8O/zT/EP82/xD/NP8Q/zb/EP88/xP/P/8U/0X/Ff9K/xb/Tf8Z/1X/Gv9X/xn/Wv8a/1v/HP9c/xz/Xf8a/1z/Gv9e/xr/Xf8a/13/Gv9c/xv/Yf8f/2L/If9k/xv/X/8c/1//Hf9h/x//Yf8h/17/Hf9Z/xj/Uv8W/0//Ff9K/xX/Rv8U/0T/Ev8//xD/O/8P/zn/D/83/wesGP8Hqhj/BqkZ/waqGP8Grhn/CLMa/wi3G/8Iuxv/CMod/wnYH/8K6yH/C/0l/wz/J/8M/yn/DP8u/wz/MP8Q/zT/EP83/xD/N/8P/zf/D/82/xH/N/8R/zf/EP82/w7/Nv8O/zT/Dv81/xD/N/8Q/zb/EP84/xH/Ov8R/z3/Ev9A/xP/RP8U/0r/Fv9O/xf/Uv8X/1L/GP9U/xj/VP8Y/1X/GP9Y/xj/Wf8Y/1j/F/9Y/xj/XP8b/1z/G/9g/x3/Xv8e/2L/Gv9c/xz/XP8d/13/H/9c/x7/Wv8c/1b/GP9P/xX/S/8V/0f/FP9D/xL/QP8R/zv/EP84/w//Nv8="
+    }
+  },
+  "brain_off": {
+    "wall": 50531.5,
+    "time": 2.0239999999998433,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted-off",
+    "source": "neural-navigation",
+    "p": [
+      1.2,
+      1,
+      1.2
+    ],
+    "v": [
+      0,
+      0,
+      0
+    ],
+    "w": [
+      0,
+      0,
+      -9.018618407319194e-15
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 8.32299272656438e-17,
+        "betaR": -8.32299272656438e-17,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 8.32299272656438e-17,
+        "betaR": -8.32299272656438e-17,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 0,
+        "accepted": 0,
+        "last": null
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "active": false,
+        "framesApplied": 0,
+        "attention": null
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller"
+    },
+    "controls": {
+      "aL": 1,
+      "aR": 1,
+      "betaL": 8.32299272656438e-17,
+      "betaR": -8.32299272656438e-17,
+      "sL": 0,
+      "sR": 0,
+      "f": 200
+    },
+    "search": null,
+    "pilotState": {
+      "speed": 0,
+      "heading": 0.29999999999999993,
+      "target": [
+        1.2,
+        1,
+        1.2
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": false,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 0,
+      "failed": 0,
+      "accepted": 0
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [
+      [
+        0,
+        "sugar on the banana"
+      ],
+      [
+        0,
+        "assisted flight: neural contribution is reported separately"
+      ]
+    ],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "5af09535",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 123.50390625
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "f60d3a56",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 122.03792317708333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "2af70590",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 121.71240234375
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "b86eb98b",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 119.00227864583333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 5,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "72f78edd",
+          "minRGB": 4,
+          "maxRGB": 255,
+          "meanRGB": 114.89908854166667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 6,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "8b1a480c",
+          "minRGB": 4,
+          "maxRGB": 255,
+          "meanRGB": 112.41389973958333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 7,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "d94569cc",
+          "minRGB": 2,
+          "maxRGB": 255,
+          "meanRGB": 108.80875651041667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 8,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "447190c1",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 107.923828125
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 9,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "22584eca",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 106.03727213541667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 10,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "52fac344",
+          "minRGB": 3,
+          "maxRGB": 255,
+          "meanRGB": 103.78206380208333
+        }
+      }
+    ],
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "accepted": true,
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.493689119913218e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_qualified",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7612468417976022,
+          "min": 0.49162575602531433,
+          "max": 0.9990012645721436
+        },
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688774009357e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026980237,
+                "mbon:MBON05:left": 0.293559567509641
+              },
+              "score": -0.19631419723983864
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493689119913218e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046138457,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668833042
+            }
+          ],
+          "p": [
+            0.4999999995404098,
+            0.5000000004595903
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466867704,
+            0.6579969533132297
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493689119913218e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103339574397e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.69757074045785e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.000687614667237734,
+          "dn:DNa02:left": 0.0019945532426266506,
+          "dn:DNa02:right": 0.009724569181969704,
+          "dn:DNp09": 0,
+          "mn9": 9.771761050989703e-06,
+          "mbon:MBON11:right": 0.09724537046138457,
+          "mbon:MBON05:left": 0.293559567149715,
+          "dn:DNp03": 0.0007544339291312211
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 89,
+        "residual": 8.872238815849087e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.755672003062679,
+          "min": 0.40425369143486023,
+          "max": 0.9989917874336243
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876167046034401,
+          "dn:DNa02:left": 0.001994552922439327,
+          "dn:DNa02:right": 0.00972456991670325,
+          "dn:DNp09": 0,
+          "mn9": 9.771727861042017e-06,
+          "mbon:MBON11:right": 0.09724537046576569,
+          "mbon:MBON05:left": 0.2935595671551978,
+          "dn:DNp03": 0.0007538815062668137
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 77,
+        "residual": 9.306441381973229e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7542141503906198,
+          "min": 0.38338273763656616,
+          "max": 0.9990056753158569
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876171776446134,
+          "dn:DNa02:left": 0.001994552940186812,
+          "dn:DNa02:right": 0.009724569835497118,
+          "dn:DNp09": 0,
+          "mn9": 9.771728129533105e-06,
+          "mbon:MBON11:right": 0.09724537046766524,
+          "mbon:MBON05:left": 0.29355956715614256,
+          "dn:DNp03": 0.0007537481973450155
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 127,
+        "residual": 9.190116267987491e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7435059700749208,
+          "min": 0.3512495756149292,
+          "max": 0.9932451844215393
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014043475253019216,
+          "dn:DNa02:left": 0.00203428846020773,
+          "dn:DNa02:right": 0.009500015952015106,
+          "dn:DNp09": 0,
+          "mn9": 1.0366233325384702e-05,
+          "mbon:MBON11:right": 0.09724537500617299,
+          "mbon:MBON05:left": 0.29355956754351237,
+          "dn:DNp03": 0.0007538254833337846
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 5,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 82,
+        "residual": 8.524241241758546e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7263188134087427,
+          "min": 0.33502376079559326,
+          "max": 0.9929824471473694
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.001405798891338849,
+          "dn:DNa02:left": 0.002034081785370768,
+          "dn:DNa02:right": 0.00949756971097724,
+          "dn:DNp09": 0,
+          "mn9": 1.0367702421557606e-05,
+          "mbon:MBON11:right": 0.09724537488106606,
+          "mbon:MBON05:left": 0.2935595675064993,
+          "dn:DNp03": 0.0007537347580464867
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 6,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 138,
+        "residual": 9.481963658686254e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7140252566415712,
+          "min": 0.2922095060348511,
+          "max": 0.9900559186935425
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0011985771131546646,
+          "dn:DNa02:left": 0.0020284030999670414,
+          "dn:DNa02:right": 0.009549805539063103,
+          "dn:DNp09": 0,
+          "mn9": 1.0194521371608168e-05,
+          "mbon:MBON11:right": 0.0972453746664617,
+          "mbon:MBON05:left": 0.2935595673691694,
+          "dn:DNp03": 0.0007532168473260968
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 7,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 106,
+        "residual": 9.335529558285316e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6953678323898987,
+          "min": 0.19842681288719177,
+          "max": 0.9958066940307617
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.001193879324219384,
+          "dn:DNa02:left": 0.0020283627851958815,
+          "dn:DNa02:right": 0.009550830218477122,
+          "dn:DNp09": 0,
+          "mn9": 1.0191409867381731e-05,
+          "mbon:MBON11:right": 0.09724537459717268,
+          "mbon:MBON05:left": 0.2935595673466605,
+          "dn:DNp03": 0.0007531367426946854
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 8,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 113,
+        "residual": 9.25249822092411e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6896224048605126,
+          "min": 0.3092191517353058,
+          "max": 0.9966173768043518
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014236647853229532,
+          "dn:DNa02:left": 0.002034518528075883,
+          "dn:DNa02:right": 0.009494058318902144,
+          "dn:DNp09": 0,
+          "mn9": 1.0396850076212937e-05,
+          "mbon:MBON11:right": 0.09724537465128798,
+          "mbon:MBON05:left": 0.29355956746579015,
+          "dn:DNp03": 0.0007538663257979922
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 9,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 86,
+        "residual": 8.808884703892517e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.681102173843389,
+          "min": 0.30360278487205505,
+          "max": 0.9925677180290222
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0014250305790889288,
+          "dn:DNa02:left": 0.0020345552136271667,
+          "dn:DNa02:right": 0.009493141745945599,
+          "dn:DNp09": 0,
+          "mn9": 1.0399154634809685e-05,
+          "mbon:MBON11:right": 0.09724537459420447,
+          "mbon:MBON05:left": 0.29355956744767125,
+          "dn:DNp03": 0.0007541931785924585
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 10,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 152,
+        "residual": 9.26728705330504e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.6694638592291243,
+          "min": 0.23743897676467896,
+          "max": 0.9987897276878357
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0011219710098996456,
+          "dn:DNa02:left": 0.0020270364314146053,
+          "dn:DNa02:right": 0.009558833714960071,
+          "dn:DNp09": 0,
+          "mn9": 1.0141300294994461e-05,
+          "mbon:MBON11:right": 0.09724537396343695,
+          "mbon:MBON05:left": 0.29355956726674853,
+          "dn:DNp03": 0.0007534214214708614
+        }
+      }
+    ],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "5af09535",
+      "minRGB": 6,
+      "maxRGB": 255,
+      "meanRGB": 123.50390625,
+      "rgba_base64": "Gf9Y/xn/Vv8Z/1T/F/9T/xf/UP8W/0v/Ff9H/xP/Qv8Q/z3/EP84/w//M/8N/y7/DP8q/wr/J/8K+CT/Cekh/wnfIP8J3CD/CNYf/wnUHf8I2R//Cu0j/wr/Jv8L/y3/Dv8y/w//N/8S/zz/Ef9A/xL/Qf8T/0L/Ef9C/xL/Qf8S/0L/Ef9B/xL/QP8T/0H/Ev87/xH/Ov8P/zv/E/9C/xP/Q/8S/z3/Ev88/xL/P/8S/z7/D/82/w//M/8O/zH/Df8t/w7/Lv8S/zH/Df8s/wz/Kf8M/yn/DP8q/wz/Kf8M/yr/DP8q/w3/Kv8N/yv/Df8r/w3/LP8M/y3/DP8t/xr/V/8Y/1b/GP9U/xj/U/8X/1H/F/9O/xX/SP8V/0T/Ev8//xD/Ov8O/zX/Dv8x/w3/Lf8L/yr/Cv8n/wr5JP8J8iL/Cuwi/wjmIP8J5CD/COoj/wr9I/8L/yv/Dv8x/xD/Nv8R/z7/E/9F/xP/Rv8U/0j/E/9K/xT/Sv8W/0n/Ff9J/xP/Sf8U/03/FP9C/xL/Qf8R/0H/Ff9H/xL/Q/8T/0L/Ev9D/xX/R/8R/z//EP89/xD/O/8Q/zf/D/82/w//M/8U/zX/EP8w/w7/LP8N/yz/DP8q/wz/K/8M/yz/DP8q/wz/Kv8N/yr/Df8s/w3/LP8N/y3/DP8t/wz/Lv8Z/1X/Gf9T/xf/U/8Y/1T/Fv9R/xb/Tf8U/0j/E/9F/xL/P/8S/zr/EP82/w7/M/8O/y//DP8s/wv/Kv8K/yn/Cv8m/wr/Jf8J+yX/Cfck/wr/Jv8L/yv/Df8w/xH/N/8R/zz/E/9E/xP/S/8V/0z/F/9Q/xb/T/8X/1H/Fv9R/xb/Uf8X/1X/FP9N/xX/Sv8V/0z/Ff9N/xP/R/8T/0r/GP9Q/xb/T/8T/0n/Ev9G/xT/Sv8R/z//Ef89/xH/O/8Y/z//EP8z/w//Mf8O/y//Dv8s/w7/LP8M/y3/DP8s/wz/Lf8M/yv/Df8r/w3/LP8N/y3/Df8t/wz/Lv8M/y7/F/9T/xj/UP8X/1H/F/9R/xf/UP8W/03/FP9H/xP/RP8T/0D/EP89/xL/Pv8R/zj/EP82/w3/Mf8O/zD/DP8u/wz/K/8L/yn/C/8o/wn/Kf8M/yv/DP8v/xD/Nv8T/z3/EP9E/xT/R/8V/07/GP9U/xn/Wf8Y/1v/GP9a/xj/Wv8Z/17/F/9W/xj/VP8Z/1X/Fv9M/xb/T/8Y/1b/GP9Y/xf/Uv8X/1L/GP9W/xf/UP8T/0j/Ef9F/xP/Qf8X/0T/Ev87/w//N/8P/zP/D/8w/w7/L/8O/y3/Dv8u/w3/L/8M/y3/Df8u/w3/LP8N/yz/Df8t/w3/Lf8M/y//Df8v/xj/UP8X/0//GP9O/xf/T/8W/0z/Ff9K/xT/SP8U/0X/E/9C/xH/Pv8S/0L/Ef89/xD/PP8Q/zj/Dv81/w7/M/8M/zH/Df8v/w3/Mv8M/zH/Dv80/xD/Ov8R/z//FP9G/xT/S/8X/1H/Gf9Y/xz/YP8b/2T/Hf9m/yD/Zv8e/2n/G/9c/xr/Wv8c/13/F/9T/xj/Uf8Z/1r/GP9V/xj/Vv8c/17/G/9f/xj/Vv8X/1H/Ff9M/xb/Rv8Y/0j/E/9B/xL/Pv8Q/zj/D/80/w7/Mv8O/zD/Dv8v/w7/MP8O/y//Dv8v/wz/L/8N/y3/Df8u/w3/Lv8N/y7/Df8v/wz/L/8X/03/Fv9K/xf/Tf8U/0v/FP9J/xT/SP8V/0b/FP9D/xL/Qf8R/z7/E/9F/xP/QP8S/z7/Ev88/xD/Ov8Q/zj/Dv81/w7/Nf8Q/zn/Ef88/xD/Pv8T/0P/FP9H/xf/TP8Y/1T/Gf9b/xv/Yv8f/2v/IP9x/yL/df8j/3T/Hv9t/x7/a/8f/2X/Gv9f/x3/Yv8Z/1//F/9W/xr/Xv8b/2D/Gv9c/x//bv8g/3D/F/9W/xb/T/8W/0n/Fv9H/xb/Rf8U/z7/Ef85/w//Nf8O/zP/Dv8y/w7/Mf8O/zD/Dv8x/w7/Mf8O/zH/Df8v/w3/L/8N/y7/Df8u/w3/Lv8N/y//Ff9I/xT/Rv8V/0n/Ff9I/xX/Rf8T/0b/FP9E/xH/Q/8T/z//Ev9A/xT/SP8S/0P/E/9C/xL/QP8Q/z7/Ef8+/xD/Pf8S/z//Ev9C/xP/Q/8T/0n/E/9K/xb/UP8Z/1P/Gf9a/x3/Zf8g/2z/If90/yb/gP8h/3v/H/94/yX/ef8f/3H/IP9w/x//bP8c/2P/HP9m/x3/Yv8e/3D/H/9w/yD/cv8a/1//G/9g/xn/Vv8X/0//Fv9M/xn/S/8W/0X/E/8//xH/O/8P/zT/Df80/w7/Mv8O/zH/Dv8z/w7/Mv8O/zL/Dv8x/w//MP8N/zD/Dv8v/w7/MP8O/y//Df8v/xP/RP8U/0L/E/9E/xT/RP8U/0T/FP9E/xP/Qf8R/z//Ev8//xP/Qf8U/0j/FP9D/xT/RP8U/0T/E/9D/xL/Q/8T/0P/Ev9F/xT/Sv8V/0v/Ff9N/xf/VP8Y/1j/Gv9a/xv/Yv8e/2n/Iv90/yX/gv8k/4L/J/+L/yj/if8k/37/Jf+B/yH/dP8g/3P/If9v/yD/d/8g/3b/Hf9u/x3/a/8d/2v/G/9k/xr/Zv8Z/1j/F/9S/xz/Uv8Z/0v/Ff9D/xL/P/8Q/zr/EP83/w//NP8P/zL/Dv80/w7/NP8O/zP/Dv8z/w//Mv8P/zL/D/8x/w7/Mf8O/zD/Dv8v/w3/L/8S/z//Ev89/xL/P/8T/z//EP8//xH/QP8S/z3/Ev8+/xH/Pv8T/0L/Ff9J/xP/RP8U/0b/Ff9I/xP/SP8V/0n/Ff9K/xX/TP8X/0//Fv9U/xj/Vv8Z/1j/Hf9e/xv/YP8f/2b/If9y/yP/gP8k/4T/Kf+Q/yr/k/8s/5n/K/+T/yn/i/8n/4f/Jv+O/yj/if8h/3j/Iv95/yT/e/8i/3n/Hv9v/x7/bf8d/2r/G/9f/x3/Wv8Z/1H/FP9I/xP/Qv8S/z3/EP85/xD/N/8P/zX/D/80/w//Nf8O/zT/Dv80/w//NP8P/zT/D/8y/w//Mv8P/zH/Dv8x/w7/MP8N/y7/Ev84/xL/OP8Q/zn/EP86/xD/O/8R/zv/Ef86/xH/O/8S/z3/Ev9A/xT/Sf8U/0X/FP9J/xX/Tf8X/0//F/9P/xb/Uf8W/1P/GP9Z/xv/Xv8Z/17/HP9e/x7/ZP8d/2f/IP9t/yL/fv8h/37/J/+M/yz/mf8v/6P/Mf+o/y//ov8y/6T/Lv+l/yj/kf8r/5L/KP+P/yv/lP8r/5T/Jv+C/yH/fv8i/3f/Iv9y/yH/Zv8d/1v/Ff9Q/xT/Rv8T/0L/EP8+/xD/Of8P/zj/D/81/w//Nv8Q/zX/EP81/w//Nv8P/zX/D/80/w//M/8P/zH/D/8y/w//Mf8O/zD/Df8v/w//M/8P/zP/Dv8z/w//Nf8Q/zj/D/84/xD/N/8Q/zr/Ef8+/xL/Qf8V/0n/FP9K/xX/S/8X/1H/GP9S/xf/U/8Z/1f/Gf9b/xj/X/8b/2P/Hv9k/x3/Zf8c/2b/Hf9t/yT/ev8k/4L/KP+G/yr/kf8u/6X/OP/F/zj/xf83/8f/Mv+u/y7/pP8u/6T/Mf+k/zb/uv8z/7T/K/+X/yn/j/8l/4n/J/+A/yL/ev8f/2f/HP9c/xf/UP8V/0b/Ev9A/xD/Pf8Q/zn/D/85/w//N/8P/zb/EP82/xH/Nv8Q/zb/D/82/w//Nf8P/zT/D/80/w//Mv8P/zH/Dv8x/wz/MP8N/y//Dv8v/w7/Mv8P/zH/D/80/w//Nf8P/zf/Ef85/xH/Pv8S/0H/FP9J/xP/S/8V/07/GP9R/xj/Vf8Y/1b/G/9f/xn/ZP8c/2X/Hf9l/xv/Zf8d/2f/IP9x/yL/eP8l/4L/J/+H/yz/l/81/7b/OP/G/zv/zf8+/9j/Ov/G/zX/u/84/8j/PP/N/zz/0f87/8T/Nf+2/y7/pf8r/5//Kf+U/yb/iP8k/4L/H/9p/xz/Xf8Z/1P/E/9I/xL/QP8S/zz/EP87/w//Of8P/zf/EP83/xD/N/8Q/zf/Ef82/xD/Nv8P/zb/D/81/w//M/8P/zP/D/8y/w7/Mf8M/zH/Df8t/w7/Lf8O/y//Dv8u/w7/MP8P/zT/D/81/xD/Of8R/z3/E/9A/xX/Sv8V/0v/Fv9P/xn/U/8Z/1f/Gv9Z/xr/Yf8b/2b/G/9m/x7/ZP8c/2b/If9w/yH/fP8m/4T/KP+O/yv/kv8w/6n/Nf/A/z3/2P9H//n/T////1D///9I//z/R//9/0z///9I//n/Pf/Q/zT/u/8y/7L/L/+n/yr/nP8m/4v/JP+B/x7/bP8a/2D/Fv9T/xT/Sv8T/0H/Ev8//xD/PP8Q/zj/EP84/xD/OP8Q/zj/EP83/xH/N/8Q/zf/EP83/w//Nf8P/zT/D/8z/w//Mv8P/zP/Df8x/w3/K/8M/yr/Df8t/w7/LP8O/y//D/8z/w7/Nf8Q/zr/Ef87/xL/QP8T/0v/E/9K/xb/Tv8Y/1L/GP9W/xr/Wv8b/1//vv///8D////D////wv///8f///8i/4b/Kf+Q/yr/mv8u/6P/M/+0/zT/uv89/+b/X////3T///92////c////2T///9w////UP///z//2v83/8X/Mv+y/y//pv8q/5v/Jv+N/yP/gP8d/2n/Gv9h/xf/VP8V/0n/Ev9E/xL/QP8S/zz/Ef87/xH/Ov8Q/zv/EP85/xD/Of8Q/zj/EP84/xD/N/8Q/zX/D/81/w//NP8P/zT/D/8y/w3/Mf8M/yn/DP8o/wz/Kv8N/yz/Dv8w/w7/M/8O/zP/D/82/xD/O/8S/z7/FP9H/xP/Rv8X/0n/Fv9O/xf/U/8X/1X/F/9Z/xj/Xf8c/2T/H/9s///////J/////////////////////////9H///+E////Ov/O/3////+3////nv///4z///9w////Yf///1b///9B/+f/Of/E/zX/sf8t/6H/K/+U/yb/hv8j/3z/Hv9o/xz/YP8X/1T/FP9O/xP/Sf8S/0X/E/9C/xP/Pf8S/z3/Ev87/xH/PP8R/zv/EP87/xD/Of8Q/zf/EP82/w//Nf8P/zX/D/8z/w//Mf8O/zL/DP8o/wz/J/8M/yn/Df8t/w7/MP8O/zL/D/8z/w//Nv8P/zf/EP87/xL/RP8T/0b/FP9H/xX/TP8X/0//GP9V/xb/WP8a/17/Hv9k/x//bv/H////Jf+G/yz/lv8u/6P/MP+o/y//of////////////////9W/////////4f///9x////bP///1////9U////QP/s/zf/xv8z/67/Lf+b/yb/iv8l/33/If91/x7/av8c/2H/F/9X/xj/UP8V/07/FP9L/xT/Rf8T/0H/E/8+/xL/P/8S/z7/Ef89/xH/PP8R/zv/Ef87/w//N/8P/zb/D/80/w//NP8O/zT/D/8y/wv/J/8M/yf/Df8p/w3/LP8O/y//Dv8y/w//Mv8O/zX/EP82/xD/PP8T/0X/FP9E/xT/R/8V/0n/F/9M/xf/Uv8W/1f/Gv9e/xz/ZP8f/3D/x////yb/if8t/5n/L/+g/y3/ov8s/53/g////zL/uv//////Vf///27///9u////Zf///2D///9Y////Uv///0L/8P84/87/M/+x/y3/m/8n/4j/I/98/yH/ef8f/23/Hv9l/xr/Wv8Y/1f/Fv9U/xb/Tv8V/0v/E/9E/xP/Qf8T/0D/Ev9A/xL/P/8R/z3/Ef8+/xH/Ov8R/zj/EP85/w7/Nv8P/zX/Dv8z/w7/Mf8L/yb/DP8n/wz/Kf8M/y3/Dv8u/w7/Mv8O/zL/D/81/w//Nv8R/zv/E/9F/xP/RP8T/0X/FP9J/xX/S/8T/07/GP9V/xr/Xf8c/2X/H/9x/8f///8n/4v/K/+V/37///99////fv///9P///+Q////9////2f///+D////hv///27///9i////V////1T///9G//j/PP/T/zD/tf8s/5z/Kv+O/yX/g/8j/4H/IP9z/x7/Z/8c/2P/Gv9d/xj/V/8Z/1X/Fv9P/xT/SP8U/0X/FP9C/xP/Qf8T/0D/Ev9A/xH/Pv8R/zv/Ef88/xD/Of8R/zb/D/81/w7/M/8O/zT/C/8m/wz/J/8M/yn/Df8r/w3/Lf8O/zH/Dv8x/w//NP8P/zj/Ef87/xT/RP8U/0P/Ff9F/xT/Rv8T/0n/Ff9N/xj/Uv8Z/1r/Hf9j/yH/cf//////e//1/3z/+/8s/5b/LP+c/y//n//U////5/////////9u////dP///3T///9w////Yv///1b///9J////RP/3/zz/0f80/7f/Lf+g/yj/lP8m/4v/Jv+I/yH/dv8f/2//G/9n/xv/Yf8b/1r/Gf9X/xj/Uf8V/03/FP9J/xT/Rv8T/0T/E/9C/xP/Qf8S/z//Ev8+/xH/PP8R/zn/Ef86/xD/OP8O/zX/Dv80/wr/Jf8M/yb/DP8o/w3/Kf8N/yz/D/8v/w7/MP8O/zL/EP85/xD/O/8T/0P/E/9C/xP/Q/8U/0X/E/9I/xT/Sv8W/1D/GP9Y/x3/ZP8f/3P/yf///yn/i/8q/5T/LP+b/9H////Q////hf///0P/xv9c//P/a////4v///+J////Z//2/1X/5P9H/9//P//b/z7/4/86/8j/Nf+5/y//pv8s/5n/K/+R/yf/iv8j/3r/Hv9y/x7/bP8b/2T/G/9f/xr/Wv8Y/1X/F/9Q/xb/S/8V/0n/Ff9H/xL/Rv8T/0L/Ev9A/xL/P/8T/z7/Ev88/xH/O/8Q/zj/D/82/w7/NP8L+yT/C/8m/wz/J/8M/yj/DP8r/wz/Lf8N/y//Dv8y/w//OP8R/zz/FP9E/xT/Qv8T/0P/E/9E/xP/SP8U/0j/Ff9L/xf/Uf8a/13/Hf9v/8n///8p/47/z////9D///8q/5b/Lf+b/zL/ov8//7L/VP/P/2r/+/+E////lf///1//2v9L/8D/O/+0/zH/uf82/8X/Nv+//zb/uf8w/6r/MP+d/yr/k/8m/4z/JP98/yD/df8e/23/HP9m/xz/YP8b/1r/Gv9V/xf/Uv8W/0//Ff9M/xX/Sf8T/0b/E/9D/xL/Q/8T/0H/E/8+/xP/Pv8R/zv/EP85/w//OP8O/zX/C/Qj/wv/Jf8M/yf/DP8n/w3/Kf8M/yz/Df8t/w3/Mf8P/zf/Ef86/xT/Q/8S/0L/E/9D/xL/Q/8T/0f/FP9F/xT/SP8W/0z/Gf9W/x//Z///////zf///yr/kP8p/4//J/+I/yf/if8q/4r/Mv+S/0P/pv9S/7f/ef///1r/w/9R/7n/Q/+p/zX/n/8v/6H/M/+v/zP/tP80/7H/Mv+o/yz/n/8q/5X/Kf+M/yP/e/8h/3b/Hv9u/x3/Zv8b/2D/HP9c/xj/V/8Y/1P/F/9Q/xb/Tv8V/0z/Ff9H/xP/Rv8T/0T/E/9B/xL/P/8S/z//Ef88/xD/Ov8P/zj/D/81/wvuIv8L+ST/DP8m/wz/Jv8N/yj/DP8r/w3/LP8N/y//Dv80/w//Ov8T/0H/Ev9A/xP/QP8T/0L/E/9E/xT/Qv8T/0P/FP9G/xX/UP8b/2D/H/9y/yL/e/8l/4P/I/+A/yH/dv8i/3L/If9u/yP/bv8y/4H/Pv+S/0z/sP9H/5//QP+Z/zf/k/8r/4//Kf+W/y7/of8x/6f/MP+m/y7/of8p/5n/K/+Q/yf/iv8k/37/IP90/yD/b/8e/2f/G/9i/xr/Xf8Z/1r/Gf9X/xj/U/8X/1D/Fv9P/xb/TP8T/0f/FP9E/xP/Qv8T/0H/Ev8//xD/PP8P/zv/Dv84/w7/Nf8K5CD/CvAj/wv8Jf8L/yX/DP8n/wv/Kf8M/yr/DP8u/w3/Mv8Q/zX/Ef8+/xH/PP8S/zz/EP8+/xH/P/8R/z7/EP8//xP/Qf8U/0n/F/9T/xv/Y/8f/2z/If9w/x7/bf8c/2X/G/9e/xf/Vv8a/1j/If9o/yr/dv8y/4H/NP+D/y7/gv8n/3//I/+D/yX/i/8o/5b/LP+a/yr/l/8q/5X/Kf+Q/yf/i/8n/4f/I/95/yD/dP8f/2z/Hv9o/xz/ZP8c/1//G/9c/xn/WP8Z/1f/F/9U/xb/UP8W/0v/FP9I/xT/Rf8T/0P/E/9C/xL/Pv8Q/zz/EP89/w7/Ov8O/zX/Cdkf/wrlIv8L8CP/C/wk/wv/Jv8L/yf/C/8o/wz/K/8N/y//EP8y/xH/O/8R/zj/D/84/xD/O/8Q/zz/Ef88/xH/Pf8R/z3/E/9D/xP/Sf8Y/1T/Gf9Z/xn/Wf8X/1j/F/9R/xX/Uf8X/03/F/9T/xr/WP8e/2D/Iv9q/yX/bv8i/3H/If90/yL/eP8l/4T/Jv+H/yj/if8n/4v/KP+M/yb/h/8k/4P/Jf+E/yL/dv8f/2//Hf9p/x3/Zf8d/2P/G/9g/xv/XP8Z/13/Gv9Z/xj/Vv8W/1P/Fv9O/xT/Sv8V/0X/E/9F/xP/Qv8S/0D/Ef8+/xD/PP8P/zj/D/82/wjOHf8J2R//CuQi/wvwIv8L9yT/C/8m/wv/Jf8L/yj/Df8s/w3/Lv8P/zb/Dv8y/w//NP8Q/zf/D/85/xD/O/8Q/zv/EP87/xH/Pv8R/0P/E/9F/xX/Rv8V/0j/Ev9G/xL/Rf8U/0X/FP9I/xX/Tv8X/1H/F/9U/xj/WP8c/2D/Hf9p/x7/cP8f/3L/I/95/yT/fv8m/4D/Jf+E/yT/g/8k/4D/JP9//yP/fv8h/3T/H/9u/x3/Zv8e/2X/Hf9l/xv/YP8b/2D/Gv9f/xn/XP8Z/1r/GP9U/xf/UP8V/03/Fv9H/xP/Rv8T/0T/Ev9A/xL/Pf8R/zz/EP84/w//Nv8HwRz/CM0e/wnWHv8K4CH/Ceoi/wnyIv8K9yP/Cv8l/wr/J/8N/yv/Dv8y/w7/MP8P/zP/D/82/xD/OP8R/zr/EP85/xD/N/8R/zn/Ef89/xP/PP8Q/zr/Ef86/xD/Pf8P/z3/Ef8//xP/Qv8U/0j/Ff9L/xX/Tv8X/1T/G/9Y/xz/Yf8c/2j/Hv9s/yD/cP8h/3L/Iv92/yL/fv8j/37/I/96/yP/eP8i/3n/IP9x/x7/av8d/2T/Hv9j/x3/ZP8e/2P/Hv9j/xv/Yv8a/1//Gf9b/xj/Vf8Y/1H/Fv9N/xX/Sv8V/0f/E/9F/xT/Qv8S/z//Ef88/xD/OP8P/zX/B7Qa/wi/HP8IyRz/CdIf/wnaIP8J4SD/Cegh/wrvIv8K+ST/C/8m/w3/L/8N/y7/Dv8x/w//Nf8P/zb/D/84/xD/OP8R/zf/D/83/w//OP8Q/zb/D/80/w7/Nv8Q/zb/D/84/xD/PP8S/z7/Ev9B/xP/Rv8U/0j/Ff9N/xj/U/8Z/1z/G/9h/x3/Zf8d/2j/Hv9o/x//bv8h/3b/Iv92/yH/c/8g/3L/If9z/x7/av8d/2n/Hv9l/xz/Y/8d/2P/Hf9j/yD/Zv8e/2X/HP9f/xn/W/8Y/1b/F/9U/xb/Tv8W/0z/Ff9K/xP/Rv8T/0L/Ef8//xH/PP8Q/zj/D/81/wewGv8HtRv/CL0b/wnGHf8Izh7/CdUe/wnaH/8J4yD/Cuoh/wr2JP8N/yz/Df8r/w7/L/8O/zL/Df8z/w//Nv8P/zj/D/82/w//Nv8O/zb/EP80/xD/M/8P/zP/Dv8x/w7/Nf8P/zf/EP85/xD/Ov8S/z//E/9D/xP/R/8W/03/Gf9V/xn/Wf8Z/13/Gf9h/xz/Yv8e/2b/H/9r/x7/bv8e/23/Hv9s/x//bP8d/2T/G/9j/xz/ZP8e/2b/G/9h/x3/Yv8d/2X/IP9m/yP/Zv8d/17/Gf9Y/xj/VP8X/1H/GP9O/xX/Sf8T/0b/E/9C/xH/P/8R/zz/EP86/w//N/8Hrhn/B64Z/we1Gv8HvRz/CMQc/wjKHf8Jzx7/CdYe/wnfH/8J6yL/DP8q/wz/KP8M/yv/Dv8t/w3/Mv8P/zX/D/81/w//Nv8P/zb/D/81/w7/M/8Q/zT/D/81/w//NP8O/zT/DP8y/w7/Mv8P/zb/D/86/xD/PP8R/0H/E/9G/xf/TP8X/1P/GP9W/xf/Wf8b/1z/HP9g/xz/ZP8e/2T/HP9l/x//Y/8d/2L/G/9h/xv/X/8b/1//Hv9k/x//ZP8b/2D/G/9k/x//Yv8g/2P/JP9m/x7/Xv8a/1T/F/9R/xf/Tv8V/0r/Ff9I/xT/Qv8R/z//Ef88/xD/Ov8P/zb/B64Z/wesGf8HrBn/BrMa/we6G/8IwBz/CMMc/wjIHP8J1R//CeIh/wz/J/8M/yb/DP8o/w3/K/8M/y//Df8x/w7/NP8R/zX/D/82/w//NP8P/zb/EP82/xD/Nf8Q/zT/D/81/w7/NP8O/zT/EP82/xD/NP8Q/zb/EP88/xP/P/8U/0X/Ff9K/xb/Tf8Z/1X/Gv9X/xn/Wv8a/1v/HP9c/xz/Xf8a/1z/Gv9e/xr/Xf8a/13/Gv9c/xv/Yf8f/2L/If9k/xv/X/8c/1//Hf9h/x//Yf8h/17/Hf9Z/xj/Uv8W/0//Ff9K/xX/Rv8U/0T/Ev8//xD/O/8P/zn/D/83/wesGP8Hqhj/BqkZ/waqGP8Grhn/CLMa/wi3G/8Iuxv/CMod/wnYH/8K6yH/C/0l/wz/J/8M/yn/DP8u/wz/MP8Q/zT/EP83/xD/N/8P/zf/D/82/xH/N/8R/zf/EP82/w7/Nv8O/zT/Dv81/xD/N/8Q/zb/EP84/xH/Ov8R/z3/Ev9A/xP/RP8U/0r/Fv9O/xf/Uv8X/1L/GP9U/xj/VP8Y/1X/GP9Y/xj/Wf8Y/1j/F/9Y/xj/XP8b/1z/G/9g/x3/Xv8e/2L/Gv9c/xz/XP8d/13/H/9c/x7/Wv8c/1b/GP9P/xX/S/8V/0f/FP9D/xL/QP8R/zv/EP84/w//Nv8="
+    }
+  },
+  "brain_off_comparison": {
+    "simulation_seconds": 2.0239999999998433,
+    "wall_seconds": 19.82680000001192,
+    "horizontal_metres": 0.0
+  },
+  "served_sources": {
+    "scope": "Local page and dedicated-worker response bodies; external CDN/font bytes are not pinned.",
+    "instrumentation": "Only brain_full.json is intercepted: route.fetch (30s, no redirects), SHA256 verification, then fulfill with the same decoded body; transfer/content encoding headers are removed and decoded content-length is set. Other local responses are read after download. Routing disables the context HTTP cache.",
+    "assets": {
+      "web/index.html": {
+        "sha256": "fa7b27f2e3b4ed9dcc8ba4d4f89ecf116f9ee925d37225d63e7d54c37c655892",
+        "bytes": 16977,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/?controller=assisted&seed=1&noscan=1&nobloom=1&noviews=1"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/page.js": {
+        "sha256": "90423df8b011533e1a5847eca5cfee7267d918a83abfd7c9f2db6ebd9bab11cd",
+        "bytes": 47469,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/page.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/body.js": {
+        "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+        "bytes": 22149,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/body.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/room.js": {
+        "sha256": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+        "bytes": 36801,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/room.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/life.js": {
+        "sha256": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+        "bytes": 30929,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/fly.js": {
+        "sha256": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+        "bytes": 22736,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/fly.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/eye.js": {
+        "sha256": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+        "bytes": 5647,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/eye.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-life.js": {
+        "sha256": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+        "bytes": 14845,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settled-life.js": {
+        "sha256": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+        "bytes": 13340,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settled-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/physics-clock.js": {
+        "sha256": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+        "bytes": 1067,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/physics-clock.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain_scan.js": {
+        "sha256": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+        "bytes": 96646,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain_scan.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/senses.js": {
+        "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+        "bytes": 3706,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/senses.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/retina.js": {
+        "sha256": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+        "bytes": 4316,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/retina.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/assisted-life.js": {
+        "sha256": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+        "bytes": 15154,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/assisted-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motor.js": {
+        "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+        "bytes": 3204,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/motor.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-policy.js": {
+        "sha256": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+        "bytes": 4578,
+        "responses": 3,
+        "urls": [
+          "http://127.0.0.1:8817/neural-policy.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/lessons_full.json": {
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+        "bytes": 1709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/lessons_full.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/worker.js": {
+        "sha256": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+        "bytes": 23543,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/worker.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain.js": {
+        "sha256": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+        "bytes": 17894,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/brain.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/learner.js": {
+        "sha256": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+        "bytes": 19709,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/learner.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/atlas.json": {
+        "sha256": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+        "bytes": 11633781,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/atlas.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/brain_full.json": {
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+        "bytes": 42913998,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/data/brain_full.json"
+        ],
+        "binding": "intercepted request: fetch, hash, fulfill identical body"
+      }
+    }
+  },
+  "completed": "2026-09-27T07:50:19.839093+00:00",
+  "body_sha256": "79ff084c3891983eed26f86cf0c10db7426cf3854d3d66c42073ac171b06661f"
+}

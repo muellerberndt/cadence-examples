@@ -141,6 +141,14 @@ export class Flight {
     this.touching = 0;
     this.onFloor = false;
     this.landed = false;
+    // Optional passive horizontal support tops, separate from the six room walls.
+    // Callback (x, y) -> height or array of heights in metres. A list preserves a
+    // table below a fruit. These are one-sided tops, not solid meshes: no sides,
+    // undersides or sloping normals are inferred. Unset retains Python parity.
+    this.surfaceHeight = null;
+    this.supportHeight = null;
+    this._surfacePreviousBottom = position[2] - RADIUS;
+    this._surfaceContactHeight = null;
   }
 
   // The body-to-world rotation matrix, row major.
@@ -277,6 +285,37 @@ export class Flight {
         else Wz += N * side;
       }
     }
+    // A top becomes a contact only by crossing it from above, or by remaining in
+    // an existing contact. Merely entering a table/fruit footprint from below
+    // cannot apply a metre-deep spring force or teleport the body onto its top.
+    const bottom = p[2] - RADIUS;
+    let supportHeight = null;
+    if (typeof this.surfaceHeight === "function") {
+      const raw = this.surfaceHeight(p[0], p[1]);
+      const heights = Array.isArray(raw) ? raw : [raw];
+      for (const height of heights) {
+        if (!Number.isFinite(height) || height <= 0 || height >= ROOM[2]) continue;
+        const d = height - bottom;
+        if (d <= 0) continue;
+        const continuing = height === this._surfaceContactHeight;
+        const crossed = this._surfacePreviousBottom >= height && v[2] <= 0;
+        if ((continuing || crossed) && (supportHeight === null || height > supportHeight)) supportHeight = height;
+      }
+      if (supportHeight !== null) {
+        touching++;
+        onFloor = true;
+        const N = Math.max(0, K_CONTACT * (supportHeight - bottom) - C_CONTACT * v[2]);
+        const vt = Math.hypot(v[0], v[1]);
+        if (vt > 0) {
+          const k = Math.min(MU * N, C_SLIDE * vt) / vt;
+          Wx -= k * v[0]; Wy -= k * v[1];
+        }
+        Wz += N;
+      }
+    }
+    this.supportHeight = supportHeight;
+    this._surfaceContactHeight = supportHeight;
+    this._surfacePreviousBottom = bottom;
     if (touching > 0) {
       Tx -= C_SPIN * w[0];
       Ty -= C_SPIN * w[1];

@@ -296,7 +296,8 @@ export class Brain {
     return { updated: false, reason: "no_decreasing_parameter_step", free, plus, minus, delta, initial };
   }
 
-  // recurrent growth rate, identical to WormBrain.growth in Python
+  // Single-start finite growth estimate, identical to WormBrain.growth in Python.
+  // This can miss modes and is not a stability or contraction certificate.
   growth(A = null) {
     const H = this.H, saved = this.val;
     if (A) this.val = A;

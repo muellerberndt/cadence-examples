@@ -32,6 +32,9 @@ class Lesson:
     free: np.ndarray
     plus: np.ndarray | None
     minus: np.ndarray | None
+    # delta is the learner's proposed gradient; applied is the final parameter change.
+    applied: dict | None = None
+    halvings: int = 0
 
 
 class WormBrain:
@@ -94,7 +97,8 @@ class WormBrain:
 
     def growth(self, A: np.ndarray | None = None) -> float:
         """Recurrent growth rate: (|A^64 x| / |x|)^(1/64) from a fixed start.
-        Below one, activity dies out without input. Same function in web/brain.js."""
+        This single-start estimate can miss modes; it is not a stability or
+        contraction certificate. Same function in web/brain.js."""
         A = self.net.parameters()["A"] if A is None else A
         x = np.linspace(1.0, 2.0, self.H)
         x /= np.linalg.norm(x)
@@ -109,14 +113,16 @@ class WormBrain:
         return float(np.exp(log / 64))
 
     def _stabilize(self, before: dict) -> int:
-        """Homeostasis: if a lesson made the brain's recurrence grow past
-        `stability`, keep only half the change, repeatedly, via set_parameters."""
+        """Heuristic growth filter: halve the proposal until its estimate passes."""
         halvings = 0
         after = self.net.parameters()
-        while self.growth(after["A"]) > self.p["stability"] and halvings < 12:
+        def passes():
+            estimate = self.growth(after["A"])
+            return np.isfinite(estimate) and estimate <= self.p["stability"]
+        while not passes() and halvings < 12:
             after = {k: before[k] + 0.5 * (after[k] - before[k]) for k in after}
             halvings += 1
-        if self.growth(after["A"]) > self.p["stability"]:
+        if not passes():
             after = before              # no stable share of it: the lesson is not kept
         if halvings:
             self.net.set_parameters(after)
@@ -124,17 +130,26 @@ class WormBrain:
 
     def _observe(self, kind: str, u: np.ndarray, y: np.ndarray) -> Lesson:
         before = self.net.parameters()
+        updates_before = self.net.updates
         r = self.net.observe(u, y, beta=self.p["beta"], rate=0.0 if self.frozen else self.p["rate"],
                              backtrack=not self.frozen)
         self.halvings = self._stabilize(before) if r.updated and not self.frozen else 0
+        applied = {k: v - before[k] for k, v in self.net.parameters().items()} if r.updated else None
+        updated = bool(r.updated and any(np.any(v != 0) for v in applied.values()))
+        reason = r.reason
+        if r.updated and not updated:
+            self.net.updates = updates_before
+            reason = "growth_filter_rejected"
+        elif updated and self.halvings:
+            reason = "updated_after_growth_filter"
         self.stretch = []
-        if r.updated and not self.frozen:
+        if updated and not self.frozen:
             self.lessons += 1
-        elif not r.updated:
+        elif not updated:
             self.rejected += 1
-        return Lesson(kind, bool(r.updated), r.reason, r.delta, u[0], y[0], r.free.hidden[0],
+        return Lesson(kind, updated, reason, r.delta, u[0], y[0], r.free.hidden[0],
                       None if r.plus is None else r.plus.hidden[0],
-                      None if r.minus is None else r.minus.hidden[0])
+                      None if r.minus is None else r.minus.hidden[0], applied, self.halvings)
 
     # ---- before birth --------------------------------------------------------------
     def born(self) -> list[Lesson]:
@@ -149,10 +164,14 @@ class WormBrain:
             y = np.zeros((1, T, len(self.outputs)))
             y[0, 2:, self.outputs.index("reverse")] = self.p["teach_level"]
             before = self.net.parameters()
+            updates_before = self.net.updates
             r = self.net.observe(u, y, beta=self.p["beta"], rate=self.p["rate"], backtrack=True)
             if r.updated:
                 self._stabilize(before)
-            out.append(r.updated)
+            kept = bool(r.updated and any(np.any(v != before[k]) for k, v in self.net.parameters().items()))
+            if r.updated and not kept:
+                self.net.updates = updates_before
+            out.append(kept)
         self.net.reset()
         self.stretch = []
         return out

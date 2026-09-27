@@ -1,0 +1,144 @@
+{
+  "body": {
+    "created_utc": "2026-09-27T07:05:01.017982+00:00",
+    "files": {
+      "cadence/__init__.py": {
+        "bytes": 4890,
+        "path": "/Users/muellerberndt/Projects/oph-meta/cadence/src/cadence/__init__.py",
+        "sha256": "728b6cc2a0ee3b9cd10d4579ae9797599877dfcc6603b5e8c6a2fcad21cdf51c"
+      },
+      "cadence/brain.py": {
+        "bytes": 65946,
+        "path": "/Users/muellerberndt/Projects/oph-meta/cadence/src/cadence/brain.py",
+        "sha256": "452b65727105fead891bfc140ba7f5b2c4f1732550e52923f9a9a46f669f3cea"
+      },
+      "cadence/connectome.py": {
+        "bytes": 6853,
+        "path": "/Users/muellerberndt/Projects/oph-meta/cadence/src/cadence/connectome.py",
+        "sha256": "4a01f371493f1cdfa5a1d698b00071117c2ccd317a7a8b7f9eef326f1e63e954"
+      },
+      "cadence/learning.py": {
+        "bytes": 61751,
+        "path": "/Users/muellerberndt/Projects/oph-meta/cadence/src/cadence/learning.py",
+        "sha256": "7ee3b14cc9b720ffa59477744c743204dc16863edf37a762caa2c43ff8b74a8c"
+      },
+      "cadence/neuron.py": {
+        "bytes": 4112,
+        "path": "/Users/muellerberndt/Projects/oph-meta/cadence/src/cadence/neuron.py",
+        "sha256": "25cd3c09d26c9a8c6b717c57eff9f32547ac8f73e736ce1ac9696a94002fd27e"
+      },
+      "fixture": {
+        "bytes": 10637896,
+        "path": "/Users/muellerberndt/Projects/oph-meta/cadence-fruitfly/data/banc/banc_888_min5_seam_v3.npz",
+        "sha256": "9bc04c96610916fd1cd9ad6a2e8aa11490ced3fbd60a07e91d12f2e226a8fda6"
+      },
+      "fruitfly/banc.py": {
+        "bytes": 10624,
+        "path": "fruitfly/banc.py",
+        "sha256": "902f487b551bd9710a76fb97dea943486de154d1ada759c5710db18d350d89e8"
+      },
+      "fruitfly/brain.py": {
+        "bytes": 10802,
+        "path": "fruitfly/brain.py",
+        "sha256": "7a7d8cad0433bf030bb983c824a454f9dec7298107f6989981abe2ff32ff7e20"
+      },
+      "fruitfly/lessons.py": {
+        "bytes": 6601,
+        "path": "fruitfly/lessons.py",
+        "sha256": "8fb8177b39cb4974009455e33c3b0ed5a78e063dfd99f98d3f63886dab3d1d4b"
+      },
+      "lessons": {
+        "bytes": 1709,
+        "path": "web/data/lessons_full.json",
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6"
+      },
+      "manifest": {
+        "bytes": 1689,
+        "path": "fruitfly/fixtures/banc_888_manifest.json",
+        "sha256": "ccfcd95e4860384f3e23c274506cdaf0c76c1e50641a4e80d010d16d9ec4c833"
+      },
+      "payload": {
+        "bytes": 42913998,
+        "path": "web/data/brain_full.json",
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf"
+      },
+      "setup": {
+        "bytes": 1943,
+        "path": "receipts/lessons_setup_full.json",
+        "sha256": "0cedcda2af6165a72a0f7962535f30e265eb9e74b132214f4768a30bb3a19a9a"
+      },
+      "tools/brain_payload.py": {
+        "bytes": 10968,
+        "path": "tools/brain_payload.py",
+        "sha256": "9487c90f7302b4b56106c0e6103978312ec70d333e5fd5128978f067a6f18880"
+      },
+      "tools/export_web.py": {
+        "bytes": 9374,
+        "path": "tools/export_web.py",
+        "sha256": "f24ac1146b29e2d0f93c4682954562102b23f887eeb1ae2ec9ad97ee4373f646"
+      },
+      "verifier": {
+        "bytes": 16473,
+        "path": "tools/verify_full_export.py",
+        "sha256": "44ba542b7af04258773f97ba4d924434d90d499b4c7da6eb818edbc9ded509ce"
+      }
+    },
+    "result": {
+      "absolute_tolerance": 1e-12,
+      "all_directed_edges_exact": true,
+      "class_log_gain": {
+        "ln": -3.0
+      },
+      "counts_exceeding_uint16": 0,
+      "edge_classes": 1877099,
+      "edge_classes_below_five_contacts": 15681,
+      "edge_classes_below_six_contacts": 421215,
+      "gain_pre_present": false,
+      "initial_plastic_edge_classes": 16795,
+      "isolated_neurons_retained": 5911,
+      "largest_contact_count": 1051,
+      "limitations": [
+        "retained fixture only; excluded raw-release objects and subthreshold non-seam edges remain excluded",
+        "class gains, naive seam and calibrated output biases are supplied model transformations",
+        "bias calibration and setup/preflight outcomes are bound and compared, not rerun",
+        "no dynamics parity, convergence, biological fidelity, learning or behaviour claim"
+      ],
+      "maximum_absolute_errors": {
+        "efficacy": 0.0,
+        "factor": 0.0,
+        "weight_browser_reconstruction": 0.0,
+        "weight_from_fixture": 0.0
+      },
+      "members_exact": true,
+      "model": {
+        "adaptation": null,
+        "dt": 0.2,
+        "gain": 0.02,
+        "leak": 0.0,
+        "slope": 4.0,
+        "stimulus_amplitude": 3.0,
+        "threshold": 1.5
+      },
+      "neurons": 150802,
+      "output_indices": {
+        "mbon:MBON05:left": 10432,
+        "mbon:MBON11:right": 20918
+      },
+      "population_count": 326,
+      "populations_exact": true,
+      "relative_tolerance": 0,
+      "represented_contacts": 23131051,
+      "setup_records_agree": true,
+      "stored_counts_and_signs_exact": true
+    },
+    "runtime": {
+      "byteorder": "little",
+      "cadence": "0.16.0",
+      "numpy": "2.5.3",
+      "python": "3.13.0"
+    },
+    "schema": "cadence.full-export-integrity/1",
+    "verified": true
+  },
+  "sha256": "ad792310a98cbff589ffeb9f8b8be6fcec971cff4a64c53533d10585b7e958df"
+}

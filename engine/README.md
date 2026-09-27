@@ -3,8 +3,8 @@
 A settling brain of the library, in a page, with the library's arithmetic: `brain.js` settles a
 sparse connectome (the rate model, the free phase, the nudged phase), `learner.js` runs the
 one-stream actor-critic on it, `export.py` writes what the engine reads from a `cadence.Brain`,
-and `parity.mjs` holds the two to each other. The fruit fly runs 60,000 neurons and 1.2 million
-synapse classes on it in a worker at about 6 ms per step; the worm's temporal patch is a
+and `parity.mjs` holds the two to each other. The current fruit fly runs all 150,802 retained neurons and 1,877,099
+connection classes on it in a worker; the worm's temporal patch is a
 different model and carries its own engine.
 
 This page is the guide for building an example of your own: the payload, the settle loop, the
@@ -51,12 +51,15 @@ brain.mean("mbon:MBON11:right"); brain.activeCount(0.5); brain.s;   // readouts,
 brain.reset();                                     // the state back to rest; the stimuli stay until clearStimuli()
 ```
 
-Run it in a worker and send a batch of steps per message, with a rule that a slow worker never
-builds a backlog (drop the simulated time you cannot settle; the fly caps the backlog at ten
-slices). The activation vector `brain.s` (copied to a `Float32Array` and transferred) feeds the
+Run it in a worker with one solve in flight and retain only the newest pending
+observation. The current fly advances body physics independently while a frozen
+sensory snapshot settles. Use `settleControl` for an equation-residual check before
+authorizing outputs; a fixed count of `step` calls is not qualification. Optional
+`settlement-trace.js` and `neural-replay.js` instrumentation records actual repairs
+and intermediate activity; those samples do not authorize a decision. The activation vector `brain.s` (copied to a `Float32Array` and transferred) feeds the
 viewer; `brain.members` maps it onto the atlas of the whole brain when the page settles a
-sub-net. Cost: one step is one pass over the synapses; 1.2 million classes take about 6 ms in
-Chrome on a laptop.
+sub-net. Cost: one step is one pass over the synapses. Measure latency for the actual
+payload, device and browser; a legacy subset timing is not a full-graph guarantee.
 
 ## The viewer
 

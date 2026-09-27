@@ -1,0 +1,297 @@
+{
+  "schema": "cadence.flight-clarity-browser/1",
+  "passed": false,
+  "started": "2026-09-27T09:20:37.784446+00:00",
+  "sha256": {
+    "web/index.html": "0e886612640a04fc7bdf8af66b02885a7d9906e46fa7bfd094893cd8279b1053",
+    "web/page.js": "35a37226a72e4cee1c183832fa251f274856cf25e2484dc1291009dfde61463d",
+    "web/worker.js": "245bf987c4d62ce6b8566cbd12d0b07456ea4634afa5fc2be456fdc2790949fe",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "59f7ab8512b6ffb6a2d8c43c8d3e6dc8eb26a51d19e16367fc916f67c33ce908",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "daea8afe1872c1c30b7075e6c696fa52ef7693aeae430d164f07475aa2a6a851",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "3ca1c9de9c2d58c0554de37ff61da18d9b4a9d16ca135cc893186be6d905f2f9",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "1d861ce2d1e14d5013a28c6c83e70e1742523e869eb87bda9dc1f4a715c59658",
+    "tools/check_flight_clarity.py": "eac6998001366ac74dd592ffb068111ad61852fceae2f14b04e6b5621a077926"
+  },
+  "checks": [],
+  "page_errors": [],
+  "protocol": {
+    "url": "http://127.0.0.1:8817/",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "mobile_viewport": [
+      430,
+      900
+    ],
+    "wall_window_ms": 8000,
+    "sample_interval_ms": 200,
+    "minimum_displacement_m": 0.05,
+    "maximum_median_nose_travel_error_deg": 30,
+    "default_simulation_speed": 0.5,
+    "physics_step_seconds": 0.0005,
+    "windows": "Initial8wallsec immediately after brain/learner ready, includingstartup. Then wait at most30wallsec for persistent actual executed-choice counter, and capture8wallsec. Both retained; the latter is the movement/alignment acceptance window. Applied-step differences measure actual actuation time even when an authority interval begins and expires within one rendering frame.",
+    "angle_scope": "Actual body yaw versus actual horizontal velocity, active route, speed>0.005m/s, at least0.5simsec after first sample.",
+    "limits": "Software WebGL timing is machine-specific. One wiring/layout run does not establish navigation competence or a learning improvement. No neural values, body states, or route commands are fabricated."
+  },
+  "browser": "151.0.7922.34",
+  "default_visibility": {
+    "brain": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "path-panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "options": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "card": {
+      "visible": false,
+      "left": 24,
+      "right": 444,
+      "top": 918,
+      "bottom": 920,
+      "width": 420,
+      "height": 2
+    },
+    "eye": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "inset": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "status": {
+      "visible": true,
+      "left": 24,
+      "right": 444,
+      "top": 837.40625,
+      "bottom": 920,
+      "width": 420,
+      "height": 82.59375
+    },
+    "toolbar": {
+      "visible": true,
+      "left": 24,
+      "right": 319.8125,
+      "top": 934,
+      "bottom": 976,
+      "width": 295.8125,
+      "height": 42
+    }
+  },
+  "error": "AssertionError(('state-hunger', {'left': 42, 'right': 123, 'top': 881, 'bottom': 906, 'unobscured': False}))",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_flight_clarity.py\", line 138, in run\n    result[\"desktop_layout\"] = bounds(page, 1440, 1000)\n                               ~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_flight_clarity.py\", line 76, in bounds\n    assert box[\"unobscured\"], (id_, box)\n           ~~~^^^^^^^^^^^^^^\nAssertionError: ('state-hunger', {'left': 42, 'right': 123, 'top': 881, 'bottom': 906, 'unobscured': False})\n",
+  "failure_state": {
+    "wall": 37245.89999997616,
+    "simTime": 0.07450000000000005,
+    "frames": 145,
+    "pageFps": 5.45256270447113,
+    "details": {
+      "panel": null,
+      "extraViews": false,
+      "speed": 0.5,
+      "droppedWallSeconds": 0
+    },
+    "p": [
+      1.2,
+      1,
+      1.2
+    ],
+    "v": [
+      0,
+      0,
+      0
+    ],
+    "q": [
+      0.9887710779360424,
+      0,
+      0,
+      0.14943813247359924
+    ],
+    "bodyYaw": 0.30000000000000004,
+    "velocityHeading": 0,
+    "horizontalSpeed": 0,
+    "requestedHeading": 0.29999999999999993,
+    "facingHeading": 0.29999999999999993,
+    "command": {
+      "yawRate": 0,
+      "forwardSpeed": 0,
+      "verticalSpeed": 0,
+      "feed": 0
+    },
+    "active": false,
+    "framesApplied": 0,
+    "settleMs": 0,
+    "accepted": 0,
+    "late": 0,
+    "failed": 0,
+    "neuralState": "waiting",
+    "pathsEnabled": false,
+    "choices": {
+      "requested": 0,
+      "accepted": 0,
+      "discarded": 0,
+      "executed": 0,
+      "creditedOutcomes": 0,
+      "uncreditedOutcomes": 0
+    },
+    "lastChoice": null,
+    "pending": {
+      "requestId": null,
+      "worker": false,
+      "decision": null
+    },
+    "search": null
+  },
+  "failure_visibility": {
+    "brain": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "path-panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "options": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "card": {
+      "visible": false,
+      "left": 24,
+      "right": 444,
+      "top": 918,
+      "bottom": 920,
+      "width": 420,
+      "height": 2
+    },
+    "eye": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "inset": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "status": {
+      "visible": true,
+      "left": 24,
+      "right": 444,
+      "top": 837.40625,
+      "bottom": 920,
+      "width": 420,
+      "height": 82.59375
+    },
+    "toolbar": {
+      "visible": true,
+      "left": 24,
+      "right": 319.8125,
+      "top": 934,
+      "bottom": 976,
+      "width": 295.8125,
+      "height": 42
+    }
+  },
+  "requests": [],
+  "replies": [],
+  "failure_screenshot": {
+    "path": "receipts/flight_clarity_half_speed_2026-09-27.png",
+    "sha256": "052340f781c107845c71c46d9a0ffb46d81e83647067f45bb73e95345db92e3e"
+  },
+  "sources_unchanged": true,
+  "completed": "2026-09-27T09:21:18.270322+00:00",
+  "body_sha256": "9f98a553ed54a1cfc3448d703f9874a25df7eb6b7ce6833ac42eb3ced66ff30c"
+}

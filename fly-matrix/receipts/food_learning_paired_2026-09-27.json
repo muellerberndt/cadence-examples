@@ -1,0 +1,1062 @@
+{
+  "schema": "cadence.food-learning-paired/1",
+  "started": "2026-09-27T10:59:42.908Z",
+  "protocol": {
+    "steps": 1024,
+    "tolerance": 0.000001,
+    "config": {
+      "outputs": [
+        "mbon:MBON11:right",
+        "mbon:MBON05:left"
+      ],
+      "actions": [
+        0,
+        1
+      ],
+      "plastic": {
+        "pre": [
+          "kc"
+        ],
+        "post": [
+          "mbon"
+        ]
+      },
+      "critic": "kc",
+      "beta": 0.1,
+      "temperature": 0.3,
+      "gamma": 0.95,
+      "lam": 0.9,
+      "eta": 1,
+      "etaBias": 0,
+      "etaCritic": 0.05,
+      "cap": 3,
+      "dopamineCap": 1,
+      "tonic": {}
+    },
+    "hunger": 0.6,
+    "heading": 0.3,
+    "room": {
+      "table": {
+        "x0": 2.45,
+        "x1": 3.55,
+        "y0": 1.95,
+        "y1": 2.65,
+        "z": 0.75
+      },
+      "fruits": {
+        "banana": {
+          "pos": [
+            2.88,
+            2.33,
+            0.795
+          ]
+        },
+        "bread": {
+          "pos": [
+            3.13,
+            2.28,
+            0.8068
+          ]
+        }
+      }
+    },
+    "contexts": [
+      "spawn",
+      "banana_hover",
+      "bread_hover"
+    ],
+    "trainingArms": [
+      "reward_banana",
+      "reward_bread",
+      "frozen_banana",
+      "frozen_bread"
+    ],
+    "training": {
+      "lessons": 1,
+      "actionDraw": 0,
+      "reward": 1,
+      "terminal": true,
+      "selectedOdor": "named food at its own +HOVER_HEIGHT; approach deliberately sampled with draw0"
+    },
+    "postProbes": [
+      "spawn:banana",
+      "spawn:bread",
+      "banana_hover:banana",
+      "bread_hover:bread"
+    ],
+    "scope": "Actual Life.senses transduction at fixed room/body poses, no rendered retina or dynamics. Explicit synthetic one-lesson intervention, same initial parameters, opposite-food and frozen-actor controls. Near-food response selectivity compares two separate real sensor contexts and is not a current in-place target-choice probability. No innate preference, natural learning, multitrial improvement, generalization or exact-gradient claim."
+  },
+  "sources": {
+    "web/brain.js": "09a71640cd485663e1165d949b460b974458370ca0853173efc126f69fb6b63d",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/life.js": "ad88d45fccc3e5fd1e47c2b1aa486d849c673012525160f88d0993794d61b772",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/assisted-life.js": "d44e5a85defa5d8a2a60534424172c795aec32c7c506380047fd9d300ab6a893",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/neural-replay.js": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/room.js": "416dea676671e7ea63e4e62ce8685c9da3fc8a6c79264e273bb02dd223be6470"
+  },
+  "producer_sha256": "9dc6423a23e97fe481d62a1b4d749ff5b798b28bcd2f15086916436e8fc51403",
+  "baselines": {
+    "spawn:banana": {
+      "context": "spawn",
+      "fruit": "banana",
+      "solve": {
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.494088890407704e-7,
+        "initialResidual": 2.1213203435596424,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independentResidual": 9.494088890407704e-7,
+      "readouts": {
+        "mbon:MBON11:right": 0.09724537026652373,
+        "mbon:MBON05:left": 0.2935595675086138
+      },
+      "score": -0.19631419724209004,
+      "approachP": 0.34200304627138245,
+      "state_sha256": "aba3749dff107ec5edb840b12046dabc7516b339d953f8fde0a5871a5e177f1e",
+      "potential_sha256": "72e119b79d21d8020402489d7d33a59839d9d26b585a67235c5743ba4efaeb2e",
+      "kcMean": 1.4349581538663874e-7
+    },
+    "spawn:bread": {
+      "context": "spawn",
+      "fruit": "bread",
+      "solve": {
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.494089233119674e-7,
+        "initialResidual": 2.1213203435596424,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independentResidual": 9.494089233119674e-7,
+      "readouts": {
+        "mbon:MBON11:right": 0.09724537045783745,
+        "mbon:MBON05:left": 0.2935595671492997
+      },
+      "score": -0.19631419669146227,
+      "approachP": 0.34200304668442105,
+      "state_sha256": "21ef14cfe2da2a9a73596d834148d5cb51c91c6bc7d6e0ec0efd644418048519",
+      "potential_sha256": "fcc0c0259701473e4dd28f69b48aa7a2a80f38dd889e631fd1de8371d951dff2",
+      "kcMean": 1.434945918442244e-7
+    },
+    "banana_hover:banana": {
+      "context": "banana_hover",
+      "fruit": "banana",
+      "solve": {
+        "converged": true,
+        "iterations": 428,
+        "residual": 9.832441323354146e-7,
+        "initialResidual": 2.967934988950168,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independentResidual": 9.832441323354146e-7,
+      "readouts": {
+        "mbon:MBON11:right": 0.19760409404017823,
+        "mbon:MBON05:left": 0.4073170733674576
+      },
+      "score": -0.20971297932727936,
+      "approachP": 0.33202438254720423,
+      "state_sha256": "258bc9679a1313574e23a62cbccddbb15ec0e0f42dc23f341380a0850a20e5ba",
+      "potential_sha256": "60ef418124c3db1a5c4468c058205d74a129e1e61486498a4a6db9680425be87",
+      "kcMean": 0.009136415065254143
+    },
+    "banana_hover:bread": {
+      "context": "banana_hover",
+      "fruit": "bread",
+      "solve": {
+        "converged": true,
+        "iterations": 293,
+        "residual": 7.203934946353741e-7,
+        "initialResidual": 2.1213203435596424,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independentResidual": 7.203934948574187e-7,
+      "readouts": {
+        "mbon:MBON11:right": 0.3302241903945933,
+        "mbon:MBON05:left": 0.3142653621046538
+      },
+      "score": 0.015958828289939497,
+      "approachP": 0.5132958883036686,
+      "state_sha256": "1f2ee217ac68ce0b2d6456c8f24fc505d48714849aaf8c74d530d3238d751808",
+      "potential_sha256": "14ee38abc3dee3ee38f7290a93207e3f27a760740b9b628258aefcc4fb7f85e4",
+      "kcMean": 0.007853254863820663
+    },
+    "bread_hover:banana": {
+      "context": "bread_hover",
+      "fruit": "banana",
+      "solve": {
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.296605617010317e-7,
+        "initialResidual": 2.1213203435596424,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independentResidual": 9.296605617149095e-7,
+      "readouts": {
+        "mbon:MBON11:right": 0.0973081470656999,
+        "mbon:MBON05:left": 0.29378051549028417
+      },
+      "score": -0.19647236842458426,
+      "approachP": 0.34188440828196087,
+      "state_sha256": "3dcff4034403eb3d898f6df7777d8e52f12eea26090358c6275a7079f8d5d91f",
+      "potential_sha256": "22ffd5673531e46a82e69af0c20bd3e2c305fe87f59e25fab27b0ffa200fa4c1",
+      "kcMean": 0.00001422850374034545
+    },
+    "bread_hover:bread": {
+      "context": "bread_hover",
+      "fruit": "bread",
+      "solve": {
+        "converged": true,
+        "iterations": 233,
+        "residual": 9.733603913986144e-7,
+        "initialResidual": 2.967934988950168,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independentResidual": 9.73360391620659e-7,
+      "readouts": {
+        "mbon:MBON11:right": 0.8164207766842075,
+        "mbon:MBON05:left": 0.3848287879405197
+      },
+      "score": 0.4315919887436878,
+      "approachP": 0.8082439534806947,
+      "state_sha256": "a1d726647dfc8725cd4513e8aa1ad181d40713b7e0c631e356e60e90d59c75a3",
+      "potential_sha256": "698545897b18a0912ee9970d044dc437a744752031aa88ba2c96d3f692037019",
+      "kcMean": 0.027851057837782245
+    }
+  },
+  "arms": {
+    "reward_banana": {
+      "fruit": "banana",
+      "frozen": false,
+      "decision": {
+        "accepted": true,
+        "reason": "residual_qualified",
+        "choice": 0,
+        "action": 0,
+        "p": [
+          0.33202438254720423,
+          0.6679756174527959
+        ],
+        "value": 0,
+        "greedy": false,
+        "draw": 0,
+        "solves": {
+          "free": {
+            "converged": true,
+            "iterations": 0,
+            "residual": 9.832441323354146e-7,
+            "initialResidual": 9.832441323354146e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "plus": {
+            "converged": true,
+            "iterations": 136,
+            "residual": 9.765083150981013e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "minus": {
+            "converged": true,
+            "iterations": 138,
+            "residual": 9.954862258965136e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          }
+        }
+      },
+      "post": {
+        "spawn:banana": {
+          "context": "spawn",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494088890407704e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494088890407704e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724540784964854,
+            "mbon:MBON05:left": 0.2935595671520371
+          },
+          "score": -0.1963141593023886,
+          "approachP": 0.3420030747308336,
+          "state_sha256": "0d03e612f5e6010e106769d9a56916f7584a6ec9311107b58e33bf7fd8bf57c3",
+          "potential_sha256": "3f0b92e99a2cb11567ffae01feae9bcbb4b5aaed42a6a5f253cb8574d7d61b8f",
+          "kcMean": 1.4349581538663874e-7
+        },
+        "spawn:bread": {
+          "context": "spawn",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494089233119674e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494089233119674e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724540797829599,
+            "mbon:MBON05:left": 0.2935595668140835
+          },
+          "score": -0.1963141588357875,
+          "approachP": 0.3420030750808419,
+          "state_sha256": "a1b8904444e6ff88e0f76e484896d719f600951a65584e6bd298888ba8fb9cb9",
+          "potential_sha256": "1cad028717062913d1094a8179445738ef74968b2960a504b577681e42290cf1",
+          "kcMean": 1.4349459184422387e-7
+        },
+        "banana_hover:banana": {
+          "context": "banana_hover",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 428,
+            "residual": 9.833030123473918e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.833030132355702e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.31657905393520686,
+            "mbon:MBON05:left": 0.3647798755319254
+          },
+          "score": -0.04820082159671857,
+          "approachP": 0.45991883505815656,
+          "state_sha256": "64c45d24f5f01ec782cd0208a6fab2dfd4a8a0ff6e4a0827ae9dfc3ca26e0c65",
+          "potential_sha256": "14aff370820064d9cbfcf28ccccf00c44f4e3e40d3921f26a251013a82621944",
+          "kcMean": 0.009140808894511533
+        },
+        "bread_hover:bread": {
+          "context": "bread_hover",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 233,
+            "residual": 9.728635830263954e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.7286358324844e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.8412452995166024,
+            "mbon:MBON05:left": 0.3825383980322134
+          },
+          "score": 0.45870690148438903,
+          "approachP": 0.8218633232051724,
+          "state_sha256": "701691d62db92c9a0f37e4d0d0b631595610c1c57e7e0bf737381cee6be29c4c",
+          "potential_sha256": "09b623968ba480ce156caa3364d91eb560fb5b2e28cb8dae6970f0e32c5f02d5",
+          "kcMean": 0.02785639059871362
+        }
+      },
+      "independentPhaseResiduals": {
+        "free": 9.832441323354146e-7,
+        "plus": 9.765083150981013e-7,
+        "minus": 9.954862263406028e-7
+      },
+      "update": {
+        "accepted": true,
+        "reason": "qualified_local_update",
+        "lesson": {
+          "delta": 1,
+          "tdError": 1,
+          "reward": 1,
+          "value": 0,
+          "nextValue": 0,
+          "moved": 11295,
+          "meanAbsStep": 0.001301063841713259,
+          "trace": 0.0008749935154600358,
+          "saturation": 0,
+          "updates": 1,
+          "plastic": 16795,
+          "changed": 9598,
+          "meanAbsChange": 0.00153110186592427,
+          "maxAbsChange": 0.5449638244339587,
+          "dropped": 0
+        }
+      },
+      "independentUpdateMaxError": 2.220446049250313e-16,
+      "weight_sha256": "936bb11e8d8fd5cfd4973416562f569ef375b0a0ee0dfe75abb8ca401598a5be",
+      "initial_weight_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "metrics": {
+        "nearApproachGap": -0.36194448814701585,
+        "spawnTargetP": [
+          0.49999999961116576,
+          0.5000000003888343
+        ]
+      },
+      "sameInputChanges": {
+        "spawn:banana": 2.8459451129059232e-8,
+        "spawn:bread": 2.8396420825860247e-8,
+        "banana_hover:banana": 0.12789445251095233,
+        "bread_hover:bread": 0.013619369724477748
+      }
+    },
+    "reward_bread": {
+      "fruit": "bread",
+      "frozen": false,
+      "decision": {
+        "accepted": true,
+        "reason": "residual_qualified",
+        "choice": 0,
+        "action": 0,
+        "p": [
+          0.8082439534806947,
+          0.19175604651930533
+        ],
+        "value": 0,
+        "greedy": false,
+        "draw": 0,
+        "solves": {
+          "free": {
+            "converged": true,
+            "iterations": 0,
+            "residual": 9.733603913986144e-7,
+            "initialResidual": 9.733603913986144e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "plus": {
+            "converged": true,
+            "iterations": 98,
+            "residual": 9.889872909507602e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "minus": {
+            "converged": true,
+            "iterations": 111,
+            "residual": 9.327485264165603e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          }
+        }
+      },
+      "post": {
+        "spawn:banana": {
+          "context": "spawn",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494088890407704e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494088890407704e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724537093707174,
+            "mbon:MBON05:left": 0.29355956749820483
+          },
+          "score": -0.19631419656113308,
+          "approachP": 0.3420030467821841,
+          "state_sha256": "83cf9cc1789c4b48076449d6fb084dca8e8d43c9012d8c06020e5c6a44c6887b",
+          "potential_sha256": "0925a7762f42d384b02d1e7982f83fd195051cdfce808752b65bd1dd83858791",
+          "kcMean": 1.4349581538663874e-7
+        },
+        "spawn:bread": {
+          "context": "spawn",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494089233119674e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494089233119674e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724537115510182,
+            "mbon:MBON05:left": 0.29355956713886683
+          },
+          "score": -0.196314195983765,
+          "approachP": 0.34200304721528124,
+          "state_sha256": "7fc722f1f89f115f73390ffa8eaddcb24a8a0b7ae4c605d6459b2435fdede6a1",
+          "potential_sha256": "175e3fdb62597a03e1caffad1a460c51cd98597eefac5fb79559691e88c42a4d",
+          "kcMean": 1.4349459184422331e-7
+        },
+        "banana_hover:banana": {
+          "context": "banana_hover",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 428,
+            "residual": 9.832504765938666e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.832504783702234e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.20653131980398473,
+            "mbon:MBON05:left": 0.4066488740919153
+          },
+          "score": -0.20011755428793057,
+          "approachP": 0.33915580122671385,
+          "state_sha256": "a616df89dc0b45f6c9406c7a8cc12eadb15c37dffc6a8584358de82df6135deb",
+          "potential_sha256": "880639bb9858965779ec336c619c0921940363acd2c529eb490d901863ac5325",
+          "kcMean": 0.009136699110987205
+        },
+        "bread_hover:bread": {
+          "context": "bread_hover",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 233,
+            "residual": 9.720805036472768e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.720805036472768e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.8832431802079284,
+            "mbon:MBON05:left": 0.380530722886976
+          },
+          "score": 0.5027124573209524,
+          "approachP": 0.8423353881491593,
+          "state_sha256": "f0aa7d84e51d18712b8becd9bb4f7c9ea5b5913ff4f72e1017b475dd8a231c67",
+          "potential_sha256": "da072104d4e4a2129e56bd2e0e6ed476e02e21a4d866b4a953aba7c990bc13b0",
+          "kcMean": 0.027865502386233438
+        }
+      },
+      "independentPhaseResiduals": {
+        "free": 9.73360391620659e-7,
+        "plus": 9.889872909507602e-7,
+        "minus": 9.327485264165603e-7
+      },
+      "update": {
+        "accepted": true,
+        "reason": "qualified_local_update",
+        "lesson": {
+          "delta": 1,
+          "tdError": 1,
+          "reward": 1,
+          "value": 0,
+          "nextValue": 0,
+          "moved": 10996,
+          "meanAbsStep": 0.0010618704574444856,
+          "trace": 0.0006952264096492741,
+          "saturation": 0,
+          "updates": 1,
+          "plastic": 16795,
+          "changed": 9674,
+          "meanAbsChange": 0.0012069802792317136,
+          "maxAbsChange": 0.2901376663248166,
+          "dropped": 0
+        }
+      },
+      "independentUpdateMaxError": 4.440892098500626e-16,
+      "weight_sha256": "f25633ed587a4e4de9fe5fb10a47365d205ddac58cb0b3be2761e3e0688f5dcb",
+      "initial_weight_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "metrics": {
+        "nearApproachGap": -0.5031795869224455,
+        "spawnTargetP": [
+          0.49999999951885993,
+          0.5000000004811401
+        ]
+      },
+      "sameInputChanges": {
+        "spawn:banana": 5.108016232213686e-10,
+        "spawn:bread": 5.30860189140725e-10,
+        "banana_hover:banana": 0.007131418679509616,
+        "bread_hover:bread": 0.03409143466846465
+      }
+    },
+    "frozen_banana": {
+      "fruit": "banana",
+      "frozen": true,
+      "decision": {
+        "accepted": true,
+        "reason": "residual_qualified",
+        "choice": 0,
+        "action": 0,
+        "p": [
+          0.33202438254720423,
+          0.6679756174527959
+        ],
+        "value": 0,
+        "greedy": false,
+        "draw": 0,
+        "solves": {
+          "free": {
+            "converged": true,
+            "iterations": 0,
+            "residual": 9.832441323354146e-7,
+            "initialResidual": 9.832441323354146e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "plus": {
+            "converged": true,
+            "iterations": 136,
+            "residual": 9.765083150981013e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "minus": {
+            "converged": true,
+            "iterations": 138,
+            "residual": 9.954862258965136e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          }
+        }
+      },
+      "post": {
+        "spawn:banana": {
+          "context": "spawn",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494088890407704e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494088890407704e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724537026652373,
+            "mbon:MBON05:left": 0.2935595675086138
+          },
+          "score": -0.19631419724209004,
+          "approachP": 0.34200304627138245,
+          "state_sha256": "aba3749dff107ec5edb840b12046dabc7516b339d953f8fde0a5871a5e177f1e",
+          "potential_sha256": "72e119b79d21d8020402489d7d33a59839d9d26b585a67235c5743ba4efaeb2e",
+          "kcMean": 1.4349581538663874e-7
+        },
+        "spawn:bread": {
+          "context": "spawn",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494089233119674e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494089233119674e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724537045783745,
+            "mbon:MBON05:left": 0.2935595671492997
+          },
+          "score": -0.19631419669146227,
+          "approachP": 0.34200304668442105,
+          "state_sha256": "21ef14cfe2da2a9a73596d834148d5cb51c91c6bc7d6e0ec0efd644418048519",
+          "potential_sha256": "fcc0c0259701473e4dd28f69b48aa7a2a80f38dd889e631fd1de8371d951dff2",
+          "kcMean": 1.434945918442244e-7
+        },
+        "banana_hover:banana": {
+          "context": "banana_hover",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 428,
+            "residual": 9.832441323354146e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.832441323354146e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.19760409404017823,
+            "mbon:MBON05:left": 0.4073170733674576
+          },
+          "score": -0.20971297932727936,
+          "approachP": 0.33202438254720423,
+          "state_sha256": "258bc9679a1313574e23a62cbccddbb15ec0e0f42dc23f341380a0850a20e5ba",
+          "potential_sha256": "60ef418124c3db1a5c4468c058205d74a129e1e61486498a4a6db9680425be87",
+          "kcMean": 0.009136415065254143
+        },
+        "bread_hover:bread": {
+          "context": "bread_hover",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 233,
+            "residual": 9.733603913986144e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.73360391620659e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.8164207766842075,
+            "mbon:MBON05:left": 0.3848287879405197
+          },
+          "score": 0.4315919887436878,
+          "approachP": 0.8082439534806947,
+          "state_sha256": "a1d726647dfc8725cd4513e8aa1ad181d40713b7e0c631e356e60e90d59c75a3",
+          "potential_sha256": "698545897b18a0912ee9970d044dc437a744752031aa88ba2c96d3f692037019",
+          "kcMean": 0.027851057837782245
+        }
+      },
+      "independentPhaseResiduals": {
+        "free": 9.832441323354146e-7,
+        "plus": 9.765083150981013e-7,
+        "minus": 9.954862263406028e-7
+      },
+      "update": {
+        "accepted": true,
+        "reason": "qualified_local_update",
+        "lesson": {
+          "delta": 1,
+          "tdError": 1,
+          "reward": 1,
+          "value": 0,
+          "nextValue": 0,
+          "moved": 0,
+          "meanAbsStep": 0,
+          "trace": 0.0008749935154600358,
+          "saturation": 0,
+          "updates": 1,
+          "plastic": 16795,
+          "changed": 0,
+          "meanAbsChange": 0,
+          "maxAbsChange": 0,
+          "dropped": 0
+        }
+      },
+      "independentUpdateMaxError": 0,
+      "weight_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "initial_weight_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "metrics": {
+        "nearApproachGap": -0.47621957093349043,
+        "spawnTargetP": [
+          0.49999999954114355,
+          0.5000000004588565
+        ]
+      },
+      "sameInputChanges": {
+        "spawn:banana": 0,
+        "spawn:bread": 0,
+        "banana_hover:banana": 0,
+        "bread_hover:bread": 0
+      }
+    },
+    "frozen_bread": {
+      "fruit": "bread",
+      "frozen": true,
+      "decision": {
+        "accepted": true,
+        "reason": "residual_qualified",
+        "choice": 0,
+        "action": 0,
+        "p": [
+          0.8082439534806947,
+          0.19175604651930533
+        ],
+        "value": 0,
+        "greedy": false,
+        "draw": 0,
+        "solves": {
+          "free": {
+            "converged": true,
+            "iterations": 0,
+            "residual": 9.733603913986144e-7,
+            "initialResidual": 9.733603913986144e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "plus": {
+            "converged": true,
+            "iterations": 98,
+            "residual": 9.889872909507602e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "minus": {
+            "converged": true,
+            "iterations": 111,
+            "residual": 9.327485264165603e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          }
+        }
+      },
+      "post": {
+        "spawn:banana": {
+          "context": "spawn",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494088890407704e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494088890407704e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724537026652373,
+            "mbon:MBON05:left": 0.2935595675086138
+          },
+          "score": -0.19631419724209004,
+          "approachP": 0.34200304627138245,
+          "state_sha256": "aba3749dff107ec5edb840b12046dabc7516b339d953f8fde0a5871a5e177f1e",
+          "potential_sha256": "72e119b79d21d8020402489d7d33a59839d9d26b585a67235c5743ba4efaeb2e",
+          "kcMean": 1.4349581538663874e-7
+        },
+        "spawn:bread": {
+          "context": "spawn",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 130,
+            "residual": 9.494089233119674e-7,
+            "initialResidual": 2.1213203435596424,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.494089233119674e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.09724537045783745,
+            "mbon:MBON05:left": 0.2935595671492997
+          },
+          "score": -0.19631419669146227,
+          "approachP": 0.34200304668442105,
+          "state_sha256": "21ef14cfe2da2a9a73596d834148d5cb51c91c6bc7d6e0ec0efd644418048519",
+          "potential_sha256": "fcc0c0259701473e4dd28f69b48aa7a2a80f38dd889e631fd1de8371d951dff2",
+          "kcMean": 1.434945918442244e-7
+        },
+        "banana_hover:banana": {
+          "context": "banana_hover",
+          "fruit": "banana",
+          "solve": {
+            "converged": true,
+            "iterations": 428,
+            "residual": 9.832441323354146e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.832441323354146e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.19760409404017823,
+            "mbon:MBON05:left": 0.4073170733674576
+          },
+          "score": -0.20971297932727936,
+          "approachP": 0.33202438254720423,
+          "state_sha256": "258bc9679a1313574e23a62cbccddbb15ec0e0f42dc23f341380a0850a20e5ba",
+          "potential_sha256": "60ef418124c3db1a5c4468c058205d74a129e1e61486498a4a6db9680425be87",
+          "kcMean": 0.009136415065254143
+        },
+        "bread_hover:bread": {
+          "context": "bread_hover",
+          "fruit": "bread",
+          "solve": {
+            "converged": true,
+            "iterations": 233,
+            "residual": 9.733603913986144e-7,
+            "initialResidual": 2.967934988950168,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "independentResidual": 9.73360391620659e-7,
+          "readouts": {
+            "mbon:MBON11:right": 0.8164207766842075,
+            "mbon:MBON05:left": 0.3848287879405197
+          },
+          "score": 0.4315919887436878,
+          "approachP": 0.8082439534806947,
+          "state_sha256": "a1d726647dfc8725cd4513e8aa1ad181d40713b7e0c631e356e60e90d59c75a3",
+          "potential_sha256": "698545897b18a0912ee9970d044dc437a744752031aa88ba2c96d3f692037019",
+          "kcMean": 0.027851057837782245
+        }
+      },
+      "independentPhaseResiduals": {
+        "free": 9.73360391620659e-7,
+        "plus": 9.889872909507602e-7,
+        "minus": 9.327485264165603e-7
+      },
+      "update": {
+        "accepted": true,
+        "reason": "qualified_local_update",
+        "lesson": {
+          "delta": 1,
+          "tdError": 1,
+          "reward": 1,
+          "value": 0,
+          "nextValue": 0,
+          "moved": 0,
+          "meanAbsStep": 0,
+          "trace": 0.0006952264096492741,
+          "saturation": 0,
+          "updates": 1,
+          "plastic": 16795,
+          "changed": 0,
+          "meanAbsChange": 0,
+          "maxAbsChange": 0,
+          "dropped": 0
+        }
+      },
+      "independentUpdateMaxError": 0,
+      "weight_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "initial_weight_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "metrics": {
+        "nearApproachGap": -0.47621957093349043,
+        "spawnTargetP": [
+          0.49999999954114355,
+          0.5000000004588565
+        ]
+      },
+      "sameInputChanges": {
+        "spawn:banana": 0,
+        "spawn:bread": 0,
+        "banana_hover:banana": 0,
+        "bread_hover:bread": 0
+      }
+    }
+  },
+  "completed": true,
+  "payload": {
+    "neurons": 150802,
+    "edges": 1877099,
+    "plastic": 16795
+  },
+  "contexts": {
+    "spawn": {
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "senses": {
+        "haltere:left": 0.5,
+        "haltere:right": 0.5,
+        "ocelli:left": 0.7071067811865475,
+        "ocelli:right": 0.7071067811865475,
+        "lptc:hs:left": 0.5,
+        "lptc:vs:left": 0.5,
+        "lptc:hs:right": 0.5,
+        "lptc:vs:right": 0.5,
+        "jo:C:left": 0,
+        "jo:C:right": 0,
+        "jo:E:left": 0,
+        "jo:E:right": 0,
+        "vis:LC4": 0,
+        "vis:LPLC2": 0,
+        "orn:decaying_fruit:left": 0.000017894943428970347,
+        "orn:decaying_fruit:right": 0.00001221971648877075,
+        "orn:yeasty:left": 0.000003699298701815671,
+        "orn:yeasty:right": 0.000002658835574177515,
+        "grn:sugar:labellum": 0,
+        "grn:sugar:front_leg": 0,
+        "leg_touch": 0,
+        "dan:pam": 0,
+        "dan:ppl1": 0
+      }
+    },
+    "banana_hover": {
+      "position": [
+        2.88,
+        2.33,
+        0.8450000000000001
+      ],
+      "senses": {
+        "haltere:left": 0.5,
+        "haltere:right": 0.5,
+        "ocelli:left": 0.7071067811865475,
+        "ocelli:right": 0.7071067811865475,
+        "lptc:hs:left": 0.5,
+        "lptc:vs:left": 0.5,
+        "lptc:hs:right": 0.5,
+        "lptc:vs:right": 0.5,
+        "jo:C:left": 0,
+        "jo:C:right": 0,
+        "jo:E:left": 0,
+        "jo:E:right": 0,
+        "vis:LC4": 0,
+        "vis:LPLC2": 0,
+        "orn:decaying_fruit:left": 0.9893116629833894,
+        "orn:decaying_fruit:right": 0.9893116629833894,
+        "orn:yeasty:left": 0.17816643802849214,
+        "orn:yeasty:right": 0.24631242033257028,
+        "grn:sugar:labellum": 0,
+        "grn:sugar:front_leg": 0,
+        "leg_touch": 0,
+        "dan:pam": 0,
+        "dan:ppl1": 0
+      }
+    },
+    "bread_hover": {
+      "position": [
+        3.13,
+        2.28,
+        0.8568
+      ],
+      "senses": {
+        "haltere:left": 0.5,
+        "haltere:right": 0.5,
+        "ocelli:left": 0.7071067811865475,
+        "ocelli:right": 0.7071067811865475,
+        "lptc:hs:left": 0.5,
+        "lptc:vs:left": 0.5,
+        "lptc:hs:right": 0.5,
+        "lptc:vs:right": 0.5,
+        "jo:C:left": 0,
+        "jo:C:right": 0,
+        "jo:E:left": 0,
+        "jo:E:right": 0,
+        "vis:LC4": 0,
+        "vis:LPLC2": 0,
+        "orn:decaying_fruit:left": 0.23542525912185427,
+        "orn:decaying_fruit:right": 0.17373490869285188,
+        "orn:yeasty:left": 0.9893116629833894,
+        "orn:yeasty:right": 0.9893116629833894,
+        "grn:sugar:labellum": 0,
+        "grn:sugar:front_leg": 0,
+        "leg_touch": 0,
+        "dan:pam": 0,
+        "dan:ppl1": 0
+      }
+    }
+  },
+  "before": {
+    "nearApproachGap": -0.47621957093349043,
+    "spawnTargetP": [
+      0.49999999954114355,
+      0.5000000004588565
+    ]
+  },
+  "findings": {
+    "before": {
+      "nearApproachGap": -0.47621957093349043,
+      "spawnTargetP": [
+        0.49999999954114355,
+        0.5000000004588565
+      ]
+    },
+    "allTrainingQualified": true,
+    "allPostProbesQualified": true,
+    "frozenControlsExact": true,
+    "bananaRewardSelectivityChange": 0.11427508278647458,
+    "breadRewardSelectivityChange": -0.026960015988955033
+  },
+  "seconds": 122.93716858299999,
+  "sourcesUnchanged": true,
+  "finished": "2026-09-27T11:01:46.007Z",
+  "journal_sha256": "292ae25c782c5cde3e82edcd139b2c6b8ecae2deef7c349b31440e3647d3400b",
+  "body_sha256": "6ad4ec03d9bd8086541731c3d8c6575e611188167da93d26fa7f745ac5e1d1a4"
+}

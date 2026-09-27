@@ -117,6 +117,124 @@ export class ActorCriticLearner {
     return { choice, action: this.actions[choice], p: Array.from(p), value, greedy };
   }
 
+  _settledConfigError() {
+    const c = this.cfg, b = this.brain;
+    if (![c.beta, c.temperature, c.gamma, c.lam, c.eta, c.etaBias, c.etaCritic, c.cap, c.dopamineCap].every(Number.isFinite)
+        || c.beta <= 0 || !Number.isFinite(2 * c.beta) || c.temperature <= 0 || c.gamma < 0 || c.gamma > 1 || c.lam < 0 || c.lam > 1
+        || c.eta < 0 || c.etaBias < 0 || c.etaCritic < 0 || c.cap < 0 || c.dopamineCap < 0) return "invalid_learning_config";
+    const validIndex = i => Number.isInteger(i) && i >= 0 && i < b.n;
+    if (!this.outputs.length || this.actions.length !== this.outputs.length || new Set(this.outputs).size !== this.outputs.length
+        || !this.outputs.every(validIndex) || !this.criticIndex.every(validIndex) || !this.neurons.every(validIndex)
+        || !this.post.every(validIndex) || !this.edges.every(e => Number.isInteger(e) && e >= 0 && e < b.edges)
+        || new Set(this.edges).size !== this.edges.length || new Set(this.neurons).size !== this.neurons.length) return "invalid_learning_indices";
+    if (![this.efficacy, this.trace, this.traceBias, this.traceCritic, this.wCritic].every(a => a.every(Number.isFinite))
+        || !Number.isFinite(this.bCritic)) return "nonfinite_learning_state";
+    return null;
+  }
+
+  /** Opt-in checked decision. Non-greedy decisions require a free equilibrium and both
+   * nudged equilibria to meet the potential-equation residual tolerance. Eligibility is
+   * staged and committed only after all phases and contrasts are finite. A failure restores
+   * the live neural state and preserves traces/weights/critic, but cancels old pending credit.
+   * This is a local two-phase contrast on the directed fly graph, not a certified EP gradient.
+   * The finite-beta contrast and solver tolerance supply no derivative-error bound here. */
+  actSettled({ greedy = false, u = undefined, maxSteps = 256, tolerance = 1e-6 } = {}) {
+    const c = this.cfg, b = this.brain, solves = {};
+    this.pending = null;
+    const invalid = this._settledConfigError();
+    if (invalid || typeof greedy !== "boolean" || (u !== undefined && (!Number.isFinite(u) || u < 0 || u >= 1))) {
+      return { accepted: false, reason: invalid || "invalid_action_draw", solves };
+    }
+    const beforeV = Float64Array.from(b.v), beforeS = Float64Array.from(b.s), beforeSteps = b.steps;
+    const reject = reason => {
+      b.v.set(beforeV); b.s.set(beforeS); b.steps = beforeSteps;
+      return { accepted: false, reason, solves };
+    };
+    solves.free = b.settleControl(maxSteps, tolerance);
+    if (!solves.free.converged) return reject("free_phase_failed");
+    const p = this.probabilities(), value = this.value(), saturation = this.saturation();
+    if (!p.every(Number.isFinite) || !Number.isFinite(value) || !Number.isFinite(saturation)) return reject("nonfinite_decision");
+    let choice = 0, draw = null;
+    if (greedy) { for (let j = 1; j < p.length; j++) if (p[j] > p[choice]) choice = j; }
+    else {
+      draw = u === undefined ? this.rng() : u;
+      if (!Number.isFinite(draw) || draw < 0 || draw >= 1) return reject("invalid_action_draw");
+      let acc = 0;
+      for (let j = 0; j < p.length; j++) { acc += p[j]; if (acc < draw) choice++; }
+      choice = Math.min(choice, p.length - 1);
+      const target = new Float64Array(p.length); target[choice] = 1;
+      const plus = b.settleNudgedResidual(this.outputs, target, c.beta, c.temperature, maxSteps, tolerance);
+      const summary = ({ converged, iterations, residual, tolerance, reason }) => ({ converged, iterations, residual, tolerance, reason });
+      solves.plus = summary(plus);
+      if (!plus.converged) return reject("plus_phase_failed");
+      const minus = b.settleNudgedResidual(this.outputs, target, -c.beta, c.temperature, maxSteps, tolerance);
+      solves.minus = summary(minus);
+      if (!minus.converged) return reject("minus_phase_failed");
+      const span = 2 * c.beta, decay = c.gamma * c.lam;
+      const trace = new Float64Array(this.trace.length), traceBias = new Float64Array(this.traceBias.length), traceCritic = new Float64Array(this.traceCritic.length);
+      for (let k = 0; k < this.edges.length; k++) {
+        const j = b.pre[this.edges[k]], i = this.post[k];
+        const contrast = (plus.s[j] * (plus.s[i] - minus.s[i]) + (plus.s[j] - minus.s[j]) * minus.s[i]) / span;
+        trace[k] = this.trace[k] * decay + contrast;
+      }
+      for (let k = 0; k < this.neurons.length; k++) { const i = this.neurons[k]; traceBias[k] = this.traceBias[k] * decay + (plus.s[i] - minus.s[i]) / span; }
+      for (let k = 0; k < this.criticIndex.length; k++) traceCritic[k] = this.traceCritic[k] * decay + b.s[this.criticIndex[k]];
+      traceCritic[this.criticIndex.length] = this.traceCritic[this.criticIndex.length] * decay + 1;
+      if (![trace, traceBias, traceCritic].every(a => a.every(Number.isFinite))) return reject("nonfinite_eligibility");
+      this.trace.set(trace); this.traceBias.set(traceBias); this.traceCritic.set(traceCritic);
+      // Potentials are internal evidence for independently checking the phase equations;
+      // public diagnostics deliberately contain no per-neuron arrays.
+      this.pending = { value, choice, saturation, plus: plus.s, minus: minus.s,
+        plusV: plus.v, minusV: minus.v, settled: true, solves };
+    }
+    return { accepted: true, reason: "residual_qualified", choice, action: this.actions[choice], p: Array.from(p), value, greedy, draw, solves };
+  }
+
+  /** Reward a checked decision. Terminal rewards need no next-state value; otherwise the
+   * current observation must first satisfy the same free residual criterion. All proposed
+   * parameter updates are checked for finiteness before the legacy arithmetic commits them.
+   * Weights use the existing efficacy units (no hidden contact-factor conversion). */
+  learnSettled(reward, done, { maxSteps = 256, tolerance = 1e-6 } = {}) {
+    const b = this.brain, c = this.cfg;
+    const invalid = this._settledConfigError();
+    const reject = reason => { this.pending = null; return { accepted: false, reason }; };
+    if (!this.pending?.settled) return reject("no_qualified_decision");
+    if (invalid || !Number.isFinite(reward) || typeof done !== "boolean") return reject(invalid || "invalid_reward");
+    let solve;
+    if (!done) {
+      const v = Float64Array.from(b.v), s = Float64Array.from(b.s), steps = b.steps;
+      solve = b.settleControl(maxSteps, tolerance);
+      if (!solve.converged) {
+        b.v.set(v); b.s.set(s); b.steps = steps;
+        return { ...reject("next_phase_failed"), solve };
+      }
+    }
+    const nextValue = done ? 0 : this.value(), tdError = reward + c.gamma * nextValue - this.pending.value;
+    const delta = c.dopamineCap > 0 ? Math.max(-c.dopamineCap, Math.min(c.dopamineCap, tdError)) : tdError;
+    if (![nextValue, tdError, delta].every(Number.isFinite)) return reject("nonfinite_update");
+    // Replay the update's arithmetic without mutation, including composition into effective
+    // edge coefficients. This catches overflow even when a finite efficacy cap would hide it.
+    for (let k = 0; k < this.edges.length; k++) {
+      const e = this.edges[k], step = c.eta * delta * this.trace[k];
+      const raw = this.efficacy[k] + step, eff = Math.max(-c.cap, Math.min(c.cap, raw));
+      const factor = b.gainPre ? b.gainPre[e] : b.gain * (b.count ? b.count[e] : 1);
+      if (![step, raw, eff * factor].every(Number.isFinite)) return reject("nonfinite_update");
+    }
+    for (let k = 0; k < this.neurons.length; k++) {
+      if (!Number.isFinite(b.bias[this.neurons[k]] + c.etaBias * delta * this.traceBias[k])) return reject("nonfinite_update");
+    }
+    let energy = 0;
+    for (const t of this.traceCritic) energy += t * t;
+    const norm = 1 / (1 + energy);
+    if (!Number.isFinite(energy)) return reject("nonfinite_update");
+    for (let k = 0; k < this.criticIndex.length; k++) {
+      if (!Number.isFinite(this.wCritic[k] + c.etaCritic * delta * this.traceCritic[k] * norm)) return reject("nonfinite_update");
+    }
+    if (!Number.isFinite(this.bCritic + c.etaCritic * delta * this.traceCritic[this.criticIndex.length] * norm)) return reject("nonfinite_update");
+    const lesson = this.learn(reward, done);
+    return { accepted: true, reason: "qualified_local_update", ...(solve ? { solve } : {}), lesson };
+  }
+
   /** Dopamine from the reward and the live state's value (the next state), then the three-factor step.
    *  An outcome with no decision pending teaches nothing and is counted in `dropped`: a page that hands
    *  outcomes over must see that count (the fly's blows were lost this way for a day). */

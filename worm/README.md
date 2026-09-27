@@ -27,7 +27,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 - **Description:** The 302 neurons of the hermaphrodite *C. elegans*, wired as measured, as one temporal patch. The worm lives on a plate, smells, eats, gets hurt, and learns during its life what the smells around it predict. The page draws the whole nervous system inside the crawling body.
 - **Cadence version:** 0.12.0. The newborn brain in `web/data/brain.json` is exported under that release, and CI rebuilds it under the same pin.
 - **Hardware for initial training:** None. The twelve reflex lessons before birth run inside `worm/tools/export_web.py`, 41 seconds on an Apple M4 laptop, CPU only. Everything else is learned in the browser while the worm lives.
-- **Cadence features showcased:** `cadence.experimental.PartitionedTemporalPatchNet` with the connectome as its mask; `imagine`, `advance` and `observe` used as the library documents them; learning by centred equilibrium detuning with backtracking; `set_parameters` and `growth` for the stability bound on every lesson; a browser port of the same energy solve, held to the library by a parity test.
+- **Cadence features showcased:** `cadence.experimental.PartitionedTemporalPatchNet` with the connectome as its mask; `imagine`, `advance` and `observe` used as the library documents them; learning by centred equilibrium detuning with backtracking; `set_parameters` and a single-start `growth` estimate to filter each lesson; a browser port of the same energy solve, held to the library by a parity test.
 - **Problems encountered during development:**
   - The first body rewound a trail of past head positions when reversing. Repeated reversals in an irritant field used the trail up and the worm shrank to a point, and omega turns and wall bounces turned the head in one step and folded the body. The body is a centreline of exactly one body length whose leading end bends at a bounded curvature, and a turn rotates the direction of travel directly.
   - The same seed leads a different life on another machine, because the last digit of a float changes a decision. The CI runner's life found a wall-clamp kink that never occurred locally. Coverage therefore rests on a brain-free fuzz of 300 bodies that is identical on every machine, and the wall rule turns an end inward before it reaches the edge.
@@ -44,9 +44,9 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 
 - **Learning from experience in one life.** Apart from twelve reflex lessons before birth, nothing is trained in advance. What a smell means is learned from the food or the pain it came before, while the worm lives on the plate.
 - **Simple affect.** Food and pain are the only outcomes. They decide when a lesson happens and which command group it favours; bacteria reach the dopaminergic neurons and pain the ASH nociceptors.
-- **Direct motor control.** The body reads the command interneurons and nothing else. No controller sits between the brain and the movement.
+- **Neural command readouts with supplied movement.** Forward/reverse readouts modulate an engineered crawling, reversal, steering and wall controller. The motor neurons do not drive muscles.
 - **Structure as a constraint.** The measured connectome is the mask of one `PartitionedTemporalPatchNet`. Learning changes the weight of a connection that exists and cannot add one.
-- **The temporal patch used as documented.** `imagine`, `advance` and `observe`, learning by centred equilibrium detuning with backtracking, and a stability bound on every lesson.
+- **The temporal patch used as documented.** `imagine`, `advance` and `observe`, learning by centred equilibrium detuning with backtracking, and a heuristic growth filter on every lesson.
 
 ## The brain is the connectome
 
@@ -60,7 +60,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 - Senses (`B`): smell A on AWA, smell B on AWC, bacteria on the dopaminergic CEP, ADE and PDE,
   pain on the ASH nociceptors.
 - Readouts (`C`): the command interneurons. AVB and PVC drive the body forward; AVA, AVD and
-  AVE drive it backward. `C` averages each group and is fixed.
+  AVE drive it backward. `C` starts by averaging each group; learning can change its permitted readout weights.
 - Behaviour: when backward drive wins, the worm reverses and then makes an omega turn (a
   pirouette). It does so more often while forward drive falls, and it bends toward the side of
   its head swing on which forward drive rose, so smells steer it only through what the brain
@@ -86,8 +86,11 @@ The brain is used exactly as the library documents it:
    the free prediction everywhere except the last four ticks, where the wanted command group is
    asked to reach 0.8 and its rival 0. `observe` learns by centred equilibrium detuning with
    backtracking.
-4. A lesson is kept only if it leaves the context stable. If the growth rate of `A` would pass
-   0.97, the change is halved (with `set_parameters`) until it no longer does.
+4. A proposed lesson passes a heuristic growth filter. A 64-step estimate from one fixed
+   initial vector is compared with 0.97; failing proposals are halved (with `set_parameters`)
+   up to twelve times, then restored if none passes. This estimate can miss unstable modes
+   and is not a stability or contraction certificate. Lesson counters and applied changes
+   describe the final retained weights, including rejection after restoration.
 
 Before birth the worm receives twelve lessons in which pain drives the reverse group: the
 withdrawal reflex it hatches with. What smells mean is not supplied; it is learned from what
@@ -139,7 +142,7 @@ node worm/tests/body.mjs                   # the body's invariants under stress
 ## Supplied and learned
 
 - Supplied: the wiring and its signs, which neurons sense what, which neurons command the body,
-  the body mechanics, the moments at which lessons happen, the target level, the stability bound.
+  the body mechanics, the moments at which lessons happen, the target level, the growth-filter threshold.
 - Learned: the weights of every connection, from twelve reflex lessons and then from the life.
 
 ## Limits
@@ -150,7 +153,10 @@ node worm/tests/body.mjs                   # the body's invariants under stress
   feedback from which a body wave could arise.
 - Food and pain are the only outcomes; a smell learns only by coming before one of them.
 - A receipt of conditioning with paired, unpaired, frozen and lesioned controls across seeds is
-  not yet in this directory.
+  not yet in this directory. Neural parity and visible weight changes do not establish robust
+  conditioning or learned motor control.
+- The displayed transmitter colors/clouds are illustrations driven by the model, not a
+  reconstructed receptor, concentration or release-kinetics simulation.
 
 ## Build on it
 

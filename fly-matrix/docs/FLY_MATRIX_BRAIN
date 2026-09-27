@@ -1,0 +1,295 @@
+# How the Matrix fly works
+
+**Import a biological connectome. Run it as a Cadence patch net. Feed in sensory
+data and read out neural decisions. This example focuses on getting that loop
+running quickly with the current Cadence library and its browser
+implementation. It does not yet reproduce every detail of neural activity or
+the body: precise spike timing, the full set of neurotransmitters and their
+receptor effects, slow chemical signaling, biological hunger regulation and
+individual muscle dynamics are examples of what remains simplified or absent.
+The demo will develop further as Cadence gains capabilities and the model gains
+better biological data and validated sensory and body interfaces.**
+
+Importing biological connectomes is one application of Cadence, rather than its
+main purpose. Cadence is a general library for computation and learning through
+local repair and settlement, including the research toward deep, recursively
+observing networks. A nervous system's recurrent wiring fits its local-state,
+read-port and feedback representation: this example instantiates that wiring
+as a settlement model. The idea that animal brains themselves compute through
+shared equilibria motivates the work; the import alone does not establish that
+biological hypothesis.
+
+**The brain chooses goals. The body controller carries them out.**
+
+The simulation runs every neuron in the full retained brain-and-nerve-cord
+connectome. It receives simulated versions of the sensory channels a fly uses:
+eye pixels, odors, balance, touch and taste. These enter a Cadence patch net;
+they are not a recording or exact reconstruction of a living fly's sensory input. The network settles, compares
+banana and bread, and supplies an approach-or-avoid choice. Its mushroom-body
+connections can learn from what happens after that choice is executed.
+
+The body controller makes that choice visible: it flies toward the selected
+fruit or retreats from it, lands, rests, feeds, cleans itself and takes off.
+Routes and body routines are supplied mechanics. The neural decision is which
+fruit to consider and whether to approach or avoid it; cleaning is currently a
+body routine after landing, not a separately learned neural decision.
+
+## 1. From connectome to patch-net brain
+
+The model contains **150,802 neurons and 1,877,099 directed connection classes**
+from the retained [BANC brain-and-nerve-cord](https://www.nature.com/articles/s41586-026-10735-w)
+fixture. Every neuron and edge in
+that fixture is included. The importer keeps proofread neurons and
+generally requires five contacts per connection; all KC→MBON connections are
+retained even below that threshold.
+
+Each neuron becomes a patch with a local potential and activity. Its incoming
+connections are read ports: they bring in activities published by other neurons.
+Contact counts, predicted transmitter signs and supplied physiological gains
+set the initial interactions. The mushroom-body learning connections and output
+biases receive a calibrated starting point.
+In particular, KC→MBON efficacies are normalized so connection classes start
+with equal effective magnitude instead of their measured relative contact
+counts. This is a supplied initialization for the learning demonstration;
+it does not preserve all of the specimen's connection strengths or establish
+which of those strengths were innate versus learned.
+
+Including every retained neuron preserves the wiring; it does not recover every
+biological mechanism. The export supplies a graded neuron model and operating
+points, and does not reproduce peptide, hormonal or volume signaling. A settled
+state satisfies this model's equations. Whether it produces appropriate fly
+behavior is a separate check.
+
+The current transmitter mapping is deliberately limited:
+
+| Mechanism | What this model implements |
+| --- | --- |
+| Fast chemical connections | Predicted acetylcholine becomes a positive weight; GABA, glutamate and histamine become negative weights. These are supplied sign conventions, without postsynaptic receptor types. |
+| Dopamine and other modulators | The importer gives dopamine, octopamine, serotonin and tyramine zero fast-synapse sign. Their release, receptor effects and slow modulation are not separately implemented. |
+| Reward-dependent learning | A supplied critic computes a dopamine-like scalar that multiplies local KC→MBON traces. Activity in the imported PAM/PPL1 neurons does not compute that scalar. |
+| Adaptation | Cadence's Python neuron model supports a local adaptation state; this browser model disables it. Adaptation alone would not supply hunger physiology. |
+
+See the explicit [transmitter mapping](../fruitfly/banc.py) and
+[learning multiplier](../web/learner.js). A zero sign here means that this
+model omits the transmitter's action, not that the biological transmitter has
+no effect. Representing those effects requires declared physiological
+assumptions and tested coupling to neural state. That may be achievable through
+the existing patch rule; a separate biochemical engine has not been shown
+necessary. Changing all zero signs to positive weights would not supply the
+missing physiology.
+
+**Local repair is how the brain computes.** Each patch adjusts its potential
+toward its combined incoming activity, sensory drive and bias. That adjustment
+changes what connected patches read next. Shared inputs make the local
+neighborhoods overlap; recurrent connections remain intact. The connectome is
+not flattened into a feed-forward network.
+
+The browser repeats these local updates until the largest equation mismatch
+across **all neurons** is at most `1e-6`, with a live-demo cap of 256 rounds per phase. Only a
+qualified settlement can supply a new goal. Failed attempts are reported and
+the previous neural state is retained; an unfinished solve never becomes a
+successful choice. This is a numerical check for that input, not a guarantee
+that every possible input converges.
+
+```mermaid
+flowchart LR
+    W[World and fly body] --> I[Eye pixels, odor, balance, touch and taste]
+    I --> P[Cadence patches: local repairs through recurrent connections]
+    P --> Q[Check whole-network settlement]
+    Q --> C[Neural choice: fruit + approach or avoid]
+    C --> B[Body controller: route, wings, landing and body routines]
+    B --> W
+    W --> O[Actual outcome]
+    O --> L[Local mushroom-body learning]
+    L --> P
+```
+
+[export_web.py](../tools/export_web.py) builds the model;
+[brain.js](../web/brain.js) implements the patch dynamics.
+
+## 2. What goes into the patch net
+
+| Sensory input | What the brain receives |
+| --- | --- |
+| Vision | Actual raw 64×32 head-camera RGB pixels, converted to brightness drives for all 1,831 retained photoreceptors. |
+| Smell | Banana and yeast odor plumes sampled on the two sides of the fly, with hunger-dependent gain. |
+| Balance and motion | Body orientation, rotation, airspeed and flight-state signals encoded into named sensory populations. |
+| Touch and taste | Contact with the environment and sugar contact encoded into sensory drives. |
+| Outcome context | Brief reward-related PAM/PPL1 population drives after outcomes. A separate reward/critic helper supplies the learning multiplier. |
+
+The eye inset shows the same camera projection with cosmetic facets and tint;
+the neural input uses a separate raw capture without those display effects.
+Hiding the inset does not turn off vision. Pixel-to-photoreceptor mapping is an
+engineered grid because anatomical viewing directions are unavailable.
+Balance inputs also use supplied encoders; not all visual processing comes
+through the retinal pixels.
+
+**Input clamping means holding the sensory drives steady for one solve.** It
+does not force sensory neurons to a prescribed activity. Those neurons still
+receive recurrent signals and settle with the rest of the network. The next
+observation supplies new drives and starts the next settlement.
+
+The nervous-system scan replays actual recorded activity and local potential
+repairs from the solve. It is a view of numerical neural dynamics, not invented
+flashes or biological spike timing. The optional settling inspector exposes
+individual patches, shared read ports and residuals.
+
+While a solve runs, the scan streams its actual activity and last-update repairs,
+with a fixed color scale and the phase, step and residual shown. These are
+intermediate states, including attempts that may fail. Candidate comparisons
+and positive/negative nudges are separate solves; switching between them is not
+a biological propagation-time measurement. Progress never grants motor or
+learning authority.
+
+See [eye.js](../web/eye.js), [retina.js](../web/retina.js) and
+[worker.js](../web/worker.js) for the sensory input path.
+
+## 3. What the fly decides and how it learns
+
+**Innate appetite comes before learning.** A fly should not need a sugar lesson
+to acquire the basic drive to seek and eat food. In this demo, hunger currently
+enables food-choice requests and changes odor sensitivity; it is not yet a
+validated appetite circuit. The full-connectome model can settle and still
+choose to avoid food while hungry. Local learning tests do not establish that
+this missing innate behavior works.
+
+Biological hunger can alter olfactory processing through neuromodulation, as
+shown by [Root et al.](https://pmc.ncbi.nlm.nih.gov/articles/PMC3073827/).
+That motivates modeling the sensory physiology, but does not validate the
+demo's supplied gains or establish that wiring alone specifies the dynamics.
+Learning here concerns experience-dependent odor preferences, not teaching
+the animal that it needs to eat.
+
+**Which fruit?** The network settles under each odor context from the same
+starting state and observation. The supplied attention protocol masks the
+competing odor during each probe. Settled mushroom-body output scores determine
+the target probabilities; a sampler draws the fruit. No fruit coordinates or
+explicit sugar-location label enter these comparisons, although sugar can be
+visible in the eye pixels. A near tie means weak preference, so either fruit
+may be selected. The console shows both target probabilities.
+
+Banana starts with sugar on it; that is the reward location, not a built-in
+instruction to prefer banana. The initial distant odors are very weak, and
+the first target odds are approximately 50/50. Bread is therefore a valid
+exploratory choice. `/reset` also resets learned preferences.
+
+**Approach or avoid?** The network settles under the selected odor. Its MBON
+outputs supply the two action probabilities. The body controller receives
+that selected fruit and action—it does not choose the strongest smell or
+invent a random destination while waiting.
+
+**What changes with experience?** The learning mechanism uses the same patch
+dynamics with positive and negative output nudges. Each plastic KC→MBON
+connection reads the contrast between its endpoints' joint activities in those
+two settlements. The free state and both perturbed states must qualify before
+eligibility is stored. The selected target probe supplies the action's free
+state, whose whole-network residual is checked again before either nudge.
+An actual, matching execution and outcome are required before that choice can
+receive credit. A rejected phase cancels that search and permits a new request;
+it cannot leave the fly waiting forever on a discarded decision.
+Each goal request certifies its own sensory input and phases, so it can run even
+if a preceding unattended observation failed. That does not admit failed phases
+or grant permission to use unqualified motor readings.
+
+A supplied critic converts the outcome into a reward error that scales these
+local traces. **16,795 KC→MBON connection classes** can change; other connections
+stay fixed during a run. Updated weights affect later settlements and choices.
+The console reports how many weights actually moved. A zero-change update is
+not presented as learned improvement.
+
+Sugar gives reward `+1`; an empty fruit gives `0`; a matching aversive event
+gives `-1`. With a new critic predicting zero, an empty-food visit can correctly
+produce no update. Learning is stronger when the actual odor activates the
+mushroom body: a faint, distant choice can leave very little eligibility.
+Only the sugar-bearing food supplies calories in this two-choice lesson. An
+unsugared bread visit therefore cannot reduce hunger; the food model does not
+represent bread's ordinary nutritional content.
+The current checks establish local odor-linked learning, not a reliable learned
+banana preference throughout the room.
+
+This is learning of odor-linked approach/avoid responses. It does not establish
+learned flight trajectories, learned grooming or an exact-gradient guarantee
+for the asymmetric connectome. See [learner.js](../web/learner.js).
+
+The [browser check](../receipts/browser_goal_responsive_learning_2026-09-27.json)
+follows a real neural choice through landing, sugar reward and nonzero updates.
+A separate [controlled learning check](../tools/check_goal_learning.mjs) changes
+synapses with one synthetic lesson, then restores only those weights to verify
+that they caused the changed neural response.
+A [paired food check](../receipts/food_learning_paired_2026-09-27.json) uses
+actual nearby odor encodings with explicit synthetic rewards and frozen-weight
+controls. Rewarding either food changes its own nearby approach response more
+than the other food's response. It uses the offline 1,024-round budget without
+retinal input; it does not establish learned remote food selection in the demo.
+
+## 4. Why the fly has a body controller
+
+The brain's checked neural choice supplies a goal; the simulation translates
+that goal into body movement. It does not simulate each motor-neuron spike,
+neuromuscular junction, muscle contraction, joint force or wingbeat interaction.
+Those details are coarse-grained into a body controller so the imported network
+can interact with a visible world at browser speed. The connectome also does not specify all the receptor,
+neuromuscular and muscle dynamics needed to do that. This model uses graded
+neural activities and equilibrium solves, with a practical motor interface.
+
+Think of it as a fly brain in an Iron Man suit: the neural goal drives a supplied
+movement system. That is a metaphor for the interface, not a claim about what
+the model experiences. The suit also supplies routines and wall clearance;
+those movements are not new decisions recovered from the connectome.
+
+[goal-life.js](../web/goal-life.js) implements that interface:
+
+- **Approach** turns the brain-selected fruit into a route, aligns the body,
+  supplies wing commands and descends to land when nearby.
+- **Avoid** executes a finite retreat from the selected fruit, bounded inside
+  the room, then asks the brain for another choice.
+- **After landing**, fixed body routines provide resting, feeding if hungry
+  and on sugar, cleaning the head, legs or wings, and takeoff.
+- **At startup**, a one-time body launch follows the initial heading at up to
+  `0.30 m/s`, for at most `1.2 m` or `6 s`, shortened near walls. It selects no
+  fruit and earns no learning credit, then joins the ordinary waiting cruise.
+  A qualified neural goal takes over; pausing or changing the scene cancels
+  the initial launch.
+- **Between neural replies**, the body continues the accepted goal smoothly.
+  The bounded travel window starts after admission, so computation time does
+  not cancel a landing halfway through. Without a goal, it cruises along its
+  current heading and makes supplied room-clearance turns. This movement
+  chooses no food and receives no learning credit. Fresh, qualified motor-neuron readouts can
+  add bounded wing steering trim, subject to their one-second freshness limit.
+- **A nudge** releases any perch, lets the actual impulse move the body for
+  `0.15 s`, then resumes supplied stabilization and cruise. This physical
+  recovery is distinct from a neural escape choice. Only a previously executed,
+  matching food choice can receive the aversive learning outcome.
+
+The body moves while the serial worker computes. Goal replies have a bounded
+`20 s` admission window, and checked observations can enable a new goal request
+for `10 s`; neither turns an old observation into fresh motor steering. Scene
+changes withdraw old choices. The worker finishes its current job before the
+newest observation is submitted, preventing repeated nudges from building a
+queue of obsolete solves.
+
+**Hunger stays between zero and one.** It rises while the fly is awake and
+falls only while it is physically supported on the currently sugared fruit
+and feeding. Satiety, removal of sugar or loss of food contact ends feeding.
+Hunger also changes odor sensitivity and whether another food decision is
+requested. These are supplied body physiology rules with compressed demo
+timing, rather than a claim to recover biological metabolism from anatomy.
+
+The supplied cruise target is **0.30 m/s**, and time defaults to **1×**. Wall
+clearance, stabilization and body routines are assistance. They do not earn
+separate credit for learned obstacle avoidance or learned motor coordination.
+The body controller is also needed because reliable direct connectome control
+of those movements has not yet been established; browser cost is not the only
+reason for the abstraction.
+
+There is **one demo controller**, with the Matrix console, nervous-system scan
+and fly's-eye view. `/status` shows brain/body readings; `/paths` shows the
+neural choice beside the measured route. `/sugar banana`, `/sugar bread` and
+`/nudge` change the fly's experience. `/pause`, `/resume` and `/reset` control
+the demonstration. Display options change the view, never who controls the fly.
+
+The [README](../README.md#run) links the checks and their recorded evidence for
+the sensory, settlement, decision and learning mechanisms. The useful starting
+point is already tangible: imported wiring receives data, patches repair their
+states, checked outputs guide a body, and outcomes can change local synapses.
+You can inspect that loop now and test richer models as the example develops.

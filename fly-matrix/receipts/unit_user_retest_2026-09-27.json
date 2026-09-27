@@ -1,0 +1,180 @@
+{
+  "schema": "fly-matrix-focused-user-retest/v1",
+  "started": "2026-09-27T08:57:22.249413+00:00",
+  "completed": "2026-09-27T08:57:23.544233+00:00",
+  "passed": false,
+  "sources_unchanged": true,
+  "sources_sha256": {
+    "tests/assisted-worker.mjs": "7a686d391e134072de8cb02c71302e4c8a65bd766e81c1847aa3b8a6f8a314bb",
+    "tests/camera.mjs": "3e0eeb46d8d0c1bbdad3f1e801533843b9d44eaa0f7f6d16b34606ba1668a358",
+    "tests/control-cache.mjs": "dda060de64298370c6b8ee83993e7c6f45e17f3d26b31f15ab572acbfb21e464",
+    "tests/neural-life.mjs": "ac796ad54dea09c05d2ae96edde0d21496083bb0da629fe8b704807292876297",
+    "tests/neural-state.mjs": "379222d2dab7a29892d6dcf7e34283028eba0151c5a28d2c743464cb4a1f1eed",
+    "tests/neural-worker.mjs": "62fb9d776c22ab8f35db3c560923d14eec0b74ce3c3b2a3d6d67feed7a96db3a",
+    "tests/path-history.mjs": "5975cc367cda9b2e0edefdb18edb15d1604a2da49e0c33a800b21c30d21fd1e7",
+    "tests/retina.mjs": "7e2f504a8c1b0addff7e58d9c0c7d5e1d1d6625f0d97c640b62722a50d70fb18",
+    "tests/settled-learning.mjs": "aa554c766f604a3a6b4d863de98021185bf9ad0b5594f448046615aff40e4eb7",
+    "tests/settled_body.mjs": "805fe920f59be52aa5ba7c2a74a5208ddee57e9093e7e00942c8f56efe0b726a",
+    "tests/settled_motor.mjs": "385686ee20d56c728cf43218f210e712a55a132549cde1aa281bcaa096faba7d",
+    "tests/settlement-trace.mjs": "f09f669b80b5d40935c04a3cea8a7ffc4b616c98ca1b2a3ded13b2d0b1af5afa",
+    "tests/settlement.mjs": "75e21e30196adef124f3c122cb43486d2527266627d4f6c3f4e41087214a4dc6",
+    "tests/test_browser_source_binding.py": "6ac94824e616355872316eaab56c4e5814250ac7e5f1133d54407f5dde0ef78c",
+    "tools/browser_source_binding.py": "2aedb4148ddbbc02a9d0b906a37e79f2e8fd5ddb439c280eb8ccd54a3447ac4c",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/brain.js": "3ca1c9de9c2d58c0554de37ff61da18d9b4a9d16ca135cc893186be6d905f2f9",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/index.html": "dffe92adc352d7e609be5737b5c99144d78a1f71d1e5a3ea961ec0f4cbcc7eba",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/neural-life.js": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/page.js": "afd1827a1d244d09ca374aec03c92a247f1abef8a798991407e32130c786502d",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "daea8afe1872c1c30b7075e6c696fa52ef7693aeae430d164f07475aa2a6a851",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/settled-life.js": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/worker.js": "245bf987c4d62ce6b8566cbd12d0b07456ea4634afa5fc2be456fdc2790949fe"
+  },
+  "suites": [
+    {
+      "command": [
+        "node",
+        "tests/neural-state.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.06,
+      "summary": "8 public neural state groups passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/neural-life.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.126,
+      "summary": "19 neural navigation authority tests passed; 0 failed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/retina.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.062,
+      "summary": "retina: pixel/color/spatial causality, fixed membership, bounded validation, raw capture, stable projection and failure restoration passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/path-history.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.062,
+      "summary": "15 path history/projection groups passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/settlement-trace.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.085,
+      "summary": "8 settlement trace groups passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/settlement.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.068,
+      "summary": "control settlement checks passed: equation residual, caps, saturation, nonfinite rejection, declared sensory ports, motor-overlap rejection without mutation, worker ownership and legacy isolation"
+    },
+    {
+      "command": [
+        "node",
+        "tests/settled-learning.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.061,
+      "summary": "settled learning checks passed: independent free/nudged residuals, copied-state isolation, all-phase atomic rejection, local contrast/update, frozen control, checked next state and finite updates"
+    },
+    {
+      "command": [
+        "node",
+        "tests/control-cache.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.065,
+      "summary": "control cache differential checks passed: identical potentials, activities, residuals and solve decisions"
+    },
+    {
+      "command": [
+        "node",
+        "tests/neural-worker.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.123,
+      "summary": "6/6 neural worker tests passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/assisted-worker.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.077,
+      "summary": "15 assisted worker integration tests passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/camera.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.09,
+      "summary": "camera: strict frozen-state stability, contact semantics, actual pose tracking, transition and legacy orbit passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/settled_motor.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.099,
+      "summary": "settled motor: 34 Python/JS parity cases, worst 0; silent/steering-only/invalid/one-sided controls passed"
+    },
+    {
+      "command": [
+        "node",
+        "tests/settled_body.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.074,
+      "summary": "settled body: passive top contact, gravity, attitude, below-top crossing, moved/removed support, layered tops and motor causality passed"
+    },
+    {
+      "command": [
+        "../../cadence/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_browser_source_binding.py"
+      ],
+      "exit_code": 1,
+      "seconds": 0.239,
+      "summary": "2 failed, 18 passed in 0.05s",
+      "output": ".......F....F.......                                                     [100%]\n=================================== FAILURES ===================================\n_ test_wrong_other_asset_fails_even_after_an_initial_match[web/physics-clock.js] _\n\nfixture = (<test_browser_source_binding.Context object at 0x103a66cf0>, <browser_source_binding.ServedSourceBinding object at 0x...web/page.js': b'web/page.js', 'web/worker.js': b'web/worker.js', 'web/assisted-life.js': b'web/assisted-life.js', ...})\nname = 'web/physics-clock.js'\n\n    @pytest.mark.parametrize(\"name\", [\"web/senses.js\", \"web/physics-clock.js\", \"web/index.html\",\n                                      \"web/retina.js\", \"web/neural-policy.js\", \"web/neural-life.js\"])\n    def test_wrong_other_asset_fails_even_after_an_initial_match(fixture, name):\n        context, binding, bodies = fixture\n        serve_assets(context, bodies)\n        serve_payload(context, bodies)\n        context.finish(Request(Response(BASE_URL + name.removeprefix(\"web/\") + \"?old=1\", b\"stale\")))\n>       with pytest.raises(AssertionError, match=\"served SHA256.*differs from frozen\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AssertionError: Regex pattern did not match.\nE         Expected regex: 'served SHA256.*differs from frozen'\nE         Actual message: 'served source binding failed: unbound local response: http://localhost:8817/demo/physics-clock.js?old=1'\n\ntests/test_browser_source_binding.py:189: AssertionError\n_________ test_missing_asset_reaches_bounded_failure_without_a_browser _________\n\nfixture = (<test_browser_source_binding.Context object at 0x103ad2c10>, <browser_source_binding.ServedSourceBinding object at 0x...web/page.js': b'web/page.js', 'web/worker.js': b'web/worker.js', 'web/assisted-life.js': b'web/assisted-life.js', ...})\n\n    def test_missing_asset_reaches_bounded_failure_without_a_browser(fixture):\n        context, binding, bodies = fixture\n        serve_assets(context, bodies, omit=(\"web/physics-clock.js\",))\n        serve_payload(context, bodies)\n        # No browser wait is necessary when the declared deadline has already expired.\n>       with pytest.raises(AssertionError, match=\"unobserved browser response bodies: web/physics-clock.js\"):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       Failed: DID NOT RAISE AssertionError\n\ntests/test_browser_source_binding.py:198: Failed\n=========================== short test summary info ============================\nFAILED tests/test_browser_source_binding.py::test_wrong_other_asset_fails_even_after_an_initial_match[web/physics-clock.js]\nFAILED tests/test_browser_source_binding.py::test_missing_asset_reaches_bounded_failure_without_a_browser\n2 failed, 18 passed in 0.05s\n"
+    }
+  ]
+}

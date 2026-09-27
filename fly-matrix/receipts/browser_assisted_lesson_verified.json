@@ -1,0 +1,278 @@
+{
+  "initial_condition": {
+    "p": [
+      3.0949999999999998,
+      2.28,
+      0.8917999999999999
+    ],
+    "time": 0.02500000000000002,
+    "bread": [
+      3.13,
+      2.28,
+      0.8068
+    ],
+    "seed": 1,
+    "sugar": "bread"
+  },
+  "result": {
+    "time": 1.2499999999999178,
+    "authority": {
+      "mode": "assisted",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "fruit-bearing turns, wall avoidance, speed, altitude and landing targets",
+      "behaviorFallback": "bouts, saccades, takeoff impulse, perch position/attitude hold, sitting, grooming and feeding",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "checked MBON approach/avoid choice for its still-open search only",
+      "neuralMotor": "checked motor-neuron plane/shift trim only; no neural lift/power claim",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 1878
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 1,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.8055932402565343,
+          0.1944067597434656
+        ],
+        "executedAt": 0.6999999999999783
+      },
+      "lastDiscard": {
+        "kind": "all",
+        "reason": "sugar moved",
+        "t": 0.02500000000000002
+      },
+      "lastCancellation": null
+    },
+    "p": [
+      3.1213107484017186,
+      2.264133225374867,
+      0.8079999999999999
+    ],
+    "events": [
+      [
+        0.02500000000000002,
+        "sugar on the bread"
+      ],
+      [
+        0.10000000000000007,
+        "saccade"
+      ],
+      [
+        0.10000000000000007,
+        "smells the bread"
+      ],
+      [
+        0.5999999999999893,
+        "approaches the bread (81 % for approach)"
+      ],
+      [
+        0.6999999999999783,
+        "descends to the bread"
+      ],
+      [
+        0.7999999999999673,
+        "descends to the bread"
+      ],
+      [
+        0.8999999999999563,
+        "descends to the bread"
+      ],
+      [
+        0.9999999999999453,
+        "descends to the bread"
+      ],
+      [
+        1.0999999999999344,
+        "descends to the bread"
+      ],
+      [
+        1.1999999999999234,
+        "descends to the bread"
+      ],
+      [
+        1.2139999999999218,
+        "lands on the bread: sugar"
+      ],
+      [
+        1.2249999999999206,
+        "dopamine 1.00: sugar on the bread"
+      ]
+    ],
+    "lesson": {
+      "type": "lesson",
+      "plastic": 16795,
+      "outputs": [
+        15595,
+        8181
+      ],
+      "critic": 4130,
+      "changed": 9845,
+      "meanAbsChange": 0.0012349928166330603,
+      "maxAbsChange": 0.2912272951560145,
+      "dropped": 0,
+      "delta": 1,
+      "tdError": 1,
+      "reward": 1,
+      "value": 0,
+      "nextValue": 0,
+      "moved": 10924,
+      "meanAbsStep": 0.0011130084738405722,
+      "trace": 0.0007239359671470326,
+      "saturation": 0,
+      "updates": 1,
+      "accepted": true,
+      "reason": "qualified_local_update",
+      "lost": false,
+      "why": "sugar on the bread",
+      "generation": 0,
+      "requestId": 2,
+      "searchToken": "0:1"
+    },
+    "mode": "landed",
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "accepted": true,
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.8055932402565343,
+            0.1944067597434656
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.6270739405881613,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 184,
+              "residual": 9.946630981083615e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 91,
+              "residual": 9.714906230584575e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 101,
+              "residual": 9.938418052968245e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "residual": 9.946630981083615e-07,
+        "tolerance": 1e-06,
+        "iterations": 184,
+        "reason": "residual_qualified",
+        "updates": null,
+        "reward": null,
+        "simulationTime": 0.5749999999999921,
+        "readouts": {
+          "approach": 0.8210392871086347,
+          "avoid": 0.39455140111012754
+        }
+      },
+      {
+        "type": "lesson",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "accepted": true,
+        "decision": null,
+        "residual": null,
+        "tolerance": null,
+        "iterations": null,
+        "reason": "qualified_local_update",
+        "updates": 1,
+        "reward": 1,
+        "simulationTime": 1.2249999999999206,
+        "readouts": null
+      }
+    ]
+  },
+  "page_errors": [],
+  "claim": "A real checked MBON choice was used before assisted sugar contact; only its matching later outcome updated local synapses. Landing, navigation and feeding remain supplied assistance.",
+  "limits": "One seed and one near-food initial condition; reduced rendering cost; not a general learning-performance or autonomous-navigation result.",
+  "sha256": {
+    "web/page.js": "2f5fc9d7d2a59d41d7d3fe1605dc7c1e7ec8d3270dd6954ee350d1464e66d275",
+    "web/worker.js": "8955ac85ac16b5385217a4b64932600d08606b07ef5fc90b20e88670f1dc8036",
+    "web/assisted-life.js": "9e82dfd025d7cba9cebfaf5f4a7683a596f9dfdc88b74f42d6054fbc8adff0b5",
+    "web/life.js": "bc9a01c4dc8cf2b50c88da2bde779a43a9691de992902d086e14e826fed8706c",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/data/brain.json": "f43f50887302467132a0205ec7f9b0da3e32247f39678fe0d03b9f1a527b5657",
+    "web/data/lessons.json": "78b037212f8f7149d30fb1a88a48f076dda7e2edee04ed13d787f95432378471",
+    "tools/check_assisted_lesson.py": "fefd4e6f52b6e8b3147470b2be0c7b35f0212f7ba8ae555ba081f46f0a80042b"
+  }
+}

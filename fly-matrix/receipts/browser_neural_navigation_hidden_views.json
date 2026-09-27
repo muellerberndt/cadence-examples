@@ -1,0 +1,1527 @@
+{
+  "schema": "cadence.neural-page-check/2",
+  "passed": false,
+  "started": "2026-09-27T07:45:23.663794+00:00",
+  "full_views": false,
+  "checks": [],
+  "sha256": {
+    "web/index.html": "fa7b27f2e3b4ed9dcc8ba4d4f89ecf116f9ee925d37225d63e7d54c37c655892",
+    "web/page.js": "90423df8b011533e1a5847eca5cfee7267d918a83abfd7c9f2db6ebd9bab11cd",
+    "web/worker.js": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+    "web/settled-life.js": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "68f846d664bc8d9d6a638b2c3decc1b2b11229b23579dcd4ed9e3f2bb52f6e81",
+    "tools/check_neural_page.py": "446df5966975e8fc27328faa17ff89272f4c23ee5966e9609d96d3a37c0293bc"
+  },
+  "page_errors": [],
+  "protocol": {
+    "seed": 1,
+    "minimum_active_simulation_seconds": 2,
+    "minimum_horizontal_displacement_metres": 0.05,
+    "maximum_brain_off_horizontal_drift_metres": 0.01,
+    "followup": "Separate validation after the initial 6.6mm-motion diagnostic and addition of supplied hover-thrust projection; no claim of independent navigation confirmation or learning improvement."
+  },
+  "claim": "Actual rendered pixels enter the full recurrent graph; qualified neural readouts supply route requests and odor attention; brain-off retains only stabilization.",
+  "limits": "One seed and bounded start; supplied retinal mapping, attention protocol, decoders and HandPilot stabilization; no biological retinotopy, learned navigation, flight competence or whole-mind claim.",
+  "runtime": {
+    "python": "3.13.0",
+    "browser": "151.0.7922.34"
+  },
+  "initial": {
+    "wall": 15561.900000035763,
+    "time": 0.10000000000000007,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "p": [
+      1.2,
+      1,
+      1.2
+    ],
+    "v": [
+      0,
+      0,
+      0
+    ],
+    "w": [
+      0,
+      0,
+      -9.018618407279217e-15
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 8.322992726632911e-17,
+        "betaR": -8.322992726632911e-17,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1,
+        "aR": 1,
+        "betaL": 8.322992726632911e-17,
+        "betaR": -8.322992726632911e-17,
+        "sL": 0,
+        "sR": 0,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 0,
+        "last": null
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "active": false,
+        "framesApplied": 0,
+        "attention": null
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller"
+    },
+    "controls": {
+      "aL": 1,
+      "aR": 1,
+      "betaL": 8.322992726632911e-17,
+      "betaR": -8.322992726632911e-17,
+      "sL": 0,
+      "sR": 0,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": null,
+      "neuralToken": "0:1"
+    },
+    "pilotState": {
+      "speed": 0,
+      "heading": 0.29999999999999993,
+      "target": [
+        1.2,
+        1,
+        1.2
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": true,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 0,
+      "failed": 0,
+      "accepted": 0
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "93729aa6",
+          "minRGB": 7,
+          "maxRGB": 255,
+          "meanRGB": 123.84391276041667
+        }
+      }
+    ],
+    "messages": [],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "93729aa6",
+      "minRGB": 7,
+      "maxRGB": 255,
+      "meanRGB": 123.84391276041667,
+      "rgba_base64": "GP9V/xf/Uv8Y/1P/Fv9R/xb/Tv8W/0n/FP9G/xL/P/8R/zv/D/82/w//Mf8N/y7/Df8p/wr/Jv8K8iP/Ceoi/wrkIP8J4SD/Cd0h/wnfIP8J5CH/Cvkk/wz/KP8N/y//Dv8y/xH/OP8S/zz/Ev8//xH/Q/8S/0L/Ev9C/xL/Qv8T/0L/Ef9B/xL/Pv8T/0L/Ev88/xH/Ov8P/zv/Ev9A/xP/Qv8S/zv/Ef86/xL/Pv8R/zz/D/81/w7/M/8O/y7/Df8s/w3/LP8O/yv/DP8o/wz/KP8M/yj/DP8p/wv/KP8L/yn/C/8q/wv/KP8L/yn/DP8p/wz/Kv8M/yv/DP8s/xj/VP8X/1P/GP9T/xf/U/8W/1D/F/9K/xP/Rv8U/0L/Ev88/w//OP8O/zT/Dv8w/w7/LP8M/yj/Cv8m/wr7JP8K9yT/CvIk/wnyJP8J7yL/CfYk/wz/Jv8O/yz/EP8z/xH/Of8R/z//E/9E/xP/Rv8U/0n/Ff9J/xX/SP8V/0v/FP9J/xT/R/8V/03/E/9D/xL/QP8R/0D/Ff9H/xL/Q/8S/0P/Ev9D/xT/SP8R/0D/EP88/xD/OP8P/zb/D/8z/w7/Mv8O/y//Dv8s/w3/Kv8N/yr/Df8q/w3/Kv8N/yv/C/8q/wv/Kv8L/yn/C/8q/wz/Kv8M/yv/DP8r/wz/LP8Y/1P/F/9T/xj/Uv8X/1H/F/9Q/xb/S/8U/0f/E/9D/xL/Pv8R/zj/D/82/w7/Mv8O/y//Df8s/wv/KP8K/yf/C/8n/wr/Jv8K/yX/Cf8k/wv/Jv8M/yn/D/8v/xH/OP8R/z7/E/9F/xP/S/8V/07/F/9Q/xb/UP8W/1H/Fv9S/xb/UP8X/1T/Ff9N/xb/SP8X/0r/Fv9M/xT/SP8U/0j/GP9P/xf/Tv8U/0b/E/9F/xT/Rv8Q/z7/EP87/w//Of8Q/zT/Dv8w/w7/L/8N/y3/Df8s/w7/K/8O/yz/Df8s/wz/K/8L/y3/C/8q/wv/K/8M/yr/DP8r/wz/LP8M/yz/Fv9R/xb/Uv8X/1H/GP9O/xj/Tv8U/0v/FP9H/xP/Qv8S/z7/EP87/xH/Pv8Q/zf/EP80/w7/MP8O/yz/C/8s/wz/LP8K/yn/C/8p/wr/KP8M/yj/Dv8v/xD/Nf8R/z3/Ev9F/xT/Sf8W/0//GP9W/xj/Wv8X/1v/Gf9Z/xf/WP8Z/1z/F/9U/xf/U/8Y/1X/Ff9M/xX/TP8X/1P/GP9V/xb/UP8Y/1D/GP9U/xf/Uf8U/0j/Ev9C/xH/Pv8R/zr/EP83/w7/M/8O/zH/Df8v/w3/Lf8O/yz/Dv8t/w7/Lv8M/y3/DP8t/wv/Lf8L/yv/DP8r/wz/K/8M/yz/DP8t/xb/T/8V/0//F/9P/xj/T/8W/03/Fv9I/xT/Rf8T/0P/Ef9A/xH/P/8S/0H/Ef86/w//Nf8P/zP/D/8x/w//Mf8N/zH/DP8w/w7/Lv8M/y7/Df8x/xH/N/8R/0D/E/9F/xX/TP8X/1L/GP9Z/xv/Yf8c/2L/HP9n/x3/ZP8c/2f/Gv9a/xj/Wf8c/1z/F/9T/xn/Uf8Z/1f/F/9U/xf/VP8a/13/G/9c/xn/VP8X/1D/Ff9K/xP/Rf8U/0H/Ev8+/xH/Of8O/zX/Dv8y/w3/Mf8N/y7/Dv8t/w7/L/8O/y//Dv8u/w3/L/8M/y7/C/8t/wz/Lf8M/y3/DP8s/wz/Lf8W/0v/Ff9L/xb/TP8U/0z/Ff9J/xX/R/8U/0b/E/9C/xL/QP8S/z//Ev9D/xL/Pv8S/zz/Ef84/xD/Of8Q/zf/Dv82/w//Nf8O/zf/EP86/xD/PP8T/0L/E/9I/xb/TP8Y/1X/GP9c/xv/ZP8e/2n/Hv9t/yD/dv8g/3P/Hf9p/x7/av8c/2T/HP9b/xz/YP8c/1v/F/9U/xr/XP8b/13/Gf9a/x7/a/8f/2//F/9U/xX/Tf8V/0n/FP9C/xP/P/8S/zz/Ef83/w//M/8N/zL/Df8w/w3/L/8O/zD/Dv8v/w7/L/8N/y//Df8w/wz/L/8M/y7/DP8u/wz/Lf8M/y3/FP9J/xL/Sf8U/0j/FP9I/xX/R/8T/0P/E/9E/xL/Qv8S/z//Ev8//xP/RP8S/z//Ev8+/xH/Pf8R/zz/Ef89/w//PP8P/zz/EP8+/xP/Qf8U/0b/FP9K/xf/UP8X/1X/G/9a/xz/Z/8f/2z/H/91/yP/f/8g/3j/Hv91/yX/eP8d/23/Hv9t/xz/av8b/2H/HP9l/xv/YP8d/23/Hv9v/yD/cP8a/17/G/9f/xf/WP8W/07/Ff9K/xT/RP8S/0D/Ev88/xD/OP8Q/zT/D/8z/w7/Mv8N/zH/Dv8x/w7/MP8O/zD/Df8w/w3/Mf8N/y//Df8v/wz/Lv8N/y7/Df8u/xL/Q/8T/0X/FP9E/xT/Qv8U/0P/E/9D/xP/Qf8Q/0H/Ev8+/xL/QP8S/0b/E/9A/xT/Qv8S/0P/Ev9D/xT/Qv8T/0H/Ev9C/xX/R/8V/0r/Ff9N/xj/VP8Y/1r/Gv9b/xv/ZP8e/2v/H/9z/yT/hP8j/4H/KP+I/yf/hv8i/37/Jf9//yH/cP8f/3H/IP9v/yD/dv8h/3b/H/9r/x3/af8d/2r/G/9g/xr/Zf8Z/1j/F/9R/xT/Sf8U/0T/Ev9A/xL/PP8Q/zn/EP82/w//NP8P/zP/Dv8x/w7/Mv8O/zL/Dv8y/w3/Mv8N/zH/Df8x/w7/MP8O/zD/Df8w/w3/Lv8S/z//Ev8//xP/QP8T/z7/E/8//xL/P/8T/z7/Ev8//xH/P/8S/z7/E/9F/xL/Qv8T/0P/FP9I/xT/Sf8V/0n/Ff9H/xT/S/8W/1H/F/9S/xj/V/8Z/1z/Hf9g/xv/Y/8f/2f/H/9x/yP/gf8k/4L/Kf+Q/yn/kf8t/5b/K/+Q/yn/iv8m/4P/J/+I/yX/g/8g/3P/Iv91/yT/ev8h/3f/Hf9s/x3/aP8c/2n/Gv9b/xf/U/8W/0v/Ev9F/xH/QP8S/zv/EP84/xD/Nv8P/zb/D/8z/w//M/8Q/zP/Dv8z/w7/Mv8N/zL/Dv8y/w7/Mv8O/zH/Dv8x/w7/MP8N/y//EP87/xD/Ov8Q/zn/Ef87/xH/PP8S/zz/Ev89/xH/PP8R/z7/Ev8//xP/Rv8U/0X/E/9F/xb/S/8W/07/GP9P/xb/T/8W/1D/Gv9Z/xv/Xf8Z/1//G/9i/x3/Yv8e/2n/Hv9v/yL/fv8g/37/KP+M/yv/mf8v/6L/MP+n/y//ov8v/6P/LP+h/yb/jP8o/4//KP+K/yn/kf8p/4//Jv+B/yD/e/8h/3X/IP9w/xz/X/8a/1f/Ff9O/xP/Rv8R/z7/EP86/xD/OP8P/zj/D/81/w//Nf8P/zT/D/80/xD/NP8O/zP/D/80/w7/M/8O/zP/Dv8x/w7/MP8O/zD/Dv8v/w7/Nf8O/zb/D/80/w//Nv8Q/zj/EP85/xH/PP8R/zr/Ev89/xL/P/8U/0j/E/9H/xX/Sv8X/0//GP9S/xf/VP8Z/1n/G/9c/xr/YP8c/2P/HP9m/x3/ZP8c/2j/Hf9w/yP/ff8l/4T/KP+I/yn/kP8u/6X/Of/D/zj/xP83/8P/M/+q/y7/n/8r/5//Lv+f/zT/tv8y/7D/K/+V/yn/jv8j/4f/Jf99/yH/eP8d/2X/Gv9b/xb/T/8V/0T/Ef89/w//O/8Q/zf/D/83/w//Nv8P/zb/D/82/w//NP8Q/zT/Ef81/w//NP8O/zT/Dv8z/w7/Mv8O/zH/Dv8x/w3/Mf8O/zL/Df8y/w7/Mv8P/zT/EP83/xD/Nv8Q/zj/Ef85/xH/PP8R/0D/E/9J/xL/Rv8W/0z/F/9R/xj/Vv8Z/1j/G/9g/xz/Y/8f/2b/Hv9n/xz/Z/8e/2v/H/9y/yT/ef8m/4L/Jv+G/yz/l/80/7X/Of/F/zz/zv8+/9f/Ov/F/zP/uf84/8b/Ov/H/zf/y/85/8P/M/+z/y7/pv8r/5r/KP+U/yT/iP8k/3r/Hv9p/xz/Xf8Y/1H/E/9F/xL/Pf8R/zv/Ef84/w//N/8P/zf/D/84/w//Nv8P/zb/EP82/xH/Nf8R/zX/Dv80/w7/NP8O/zP/Dv8y/w7/Mv8O/zH/Df8w/w3/Mf8O/zD/D/8x/w7/M/8Q/zT/EP83/xD/OP8S/zz/E/9A/xP/SP8U/0n/F/9N/xj/VP8Y/1j/Gv9b/xv/Y/8d/2f/Hv9l/x3/aP8d/2n/H/9w/yH/fP8l/4P/J/+P/yv/kv8v/6j/N/+6/0L/2f9H//r/Tv///0////9H//j/Rv/6/03///9H//b/PP/O/zT/uf8w/6//Lf+n/yv/mv8n/4v/Iv99/x7/av8c/13/Fv9U/xX/Sv8T/0D/EP87/xD/OP8R/zj/EP85/w//N/8P/zj/EP82/xD/N/8Q/zX/Ef82/xD/NP8O/zX/Dv8z/w7/M/8O/zH/Dv8x/wz/Lv8N/y7/Df8u/w7/Lv8O/zD/D/8y/xD/N/8R/zn/Ef88/xL/QP8S/0j/FP9H/xb/Tf8W/1P/GP9X/xr/XP8d/2H/wf///8L////D////wf///8b///8k/4v/K/+O/yz/m/8t/6X/NP+z/zP/vf9A/+f/X////3b///91////cv///2T///9z////Uf///z7/1v82/8D/Mf+v/y3/pv8p/5z/Jf+M/yL/gf8c/2n/Gv9f/xj/U/8W/0v/Ev9A/xL/Pv8Q/zv/Ef86/xH/Of8Q/zr/EP84/xD/OP8Q/zb/EP83/xD/Nf8Q/zb/Dv81/w7/NP8O/zL/Dv8y/w7/Mv8M/yv/C/8s/wz/LP8N/y7/Dv8x/w//Mv8P/zX/EP84/xH/Ov8T/z7/E/9G/xT/RP8W/0r/F/9Q/xb/Vf8Z/1n/Gf9f/xz/Yv8e/2f/IP9u///////J/////////////////////////9T///+F////Of/P/4T///+6////oP///4v///9w////ZP///1f///89/+H/Ov/D/zP/rv8u/5//LP+W/yj/hf8l/3z/Hv9o/xv/YP8X/1b/E/9N/xP/Rf8S/0H/Ef8//xD/PP8S/zv/E/88/xH/PP8Q/zj/EP85/xD/N/8Q/zj/D/82/xD/Nv8O/zT/Dv80/w7/M/8O/zH/DP8q/wv/Kv8M/yr/Df8u/w7/MP8O/zH/D/81/xD/N/8R/zj/EP88/xP/RP8T/0T/E/9J/xb/Tf8X/1T/GP9Y/xr/Xf8c/2D/Hv9m/yD/cv/H////J/+E/yr/lv8v/6P/Mv+p/y//pP////////////////9X/////////4n///9z////av///2D///9S////P//k/zf/xP8u/67/Lf+b/yj/iv8k/37/IP94/x7/aP8c/17/Gf9Y/xj/Tv8V/0r/FP9I/xL/Q/8R/z7/Ev89/xP/Pf8T/zz/Ev87/xH/Of8R/zr/EP84/w//OP8P/zb/D/81/w7/Nf8O/zT/Dv8z/wz/Kv8L/yn/DP8q/w3/LP8O/y//D/8z/xD/Nf8P/zf/EP84/xH/PP8T/0P/FP9D/xT/Rv8U/0r/Fv9Q/xj/VP8Z/1n/HP9h/x7/Z/8f/3T/x////yb/i/8r/5v/L/+i/zD/o/8s/57/g////zX/uf//////V////23///9t////aP///2L///9X////Uf///0D/5v83/8n/M/+x/y3/mv8m/4n/JP99/yL/ev8h/2//H/9q/x7/X/8b/1j/GP9T/xX/Tv8T/0j/E/9E/xL/Qf8T/0D/E/89/xL/Pf8R/z3/Ef87/xH/O/8Q/zr/D/84/w//N/8N/zX/Df80/w3/M/8L/yn/Cv8p/wz/Kv8N/yz/Dv8u/w7/Mv8P/zP/EP83/xD/OP8S/zz/E/9E/xL/Q/8U/0f/Ff9K/xb/Tv8V/1T/Gv9Y/x3/YP8c/2z/IP9y/8r///8o/5H/LP+Z/37///9+////f////9X///+P////+P///2n///+D////hf///23///9h////V////1P///9B//L/Ov/S/zH/s/8s/5v/Kv+P/yT/gv8k/4D/JP91/x//bv8g/2X/Hv9e/xv/WP8Z/1T/Fv9Q/xf/TP8W/0f/Ff9E/xX/Qv8V/0H/Ev9A/xH/Pf8Q/z3/EP88/xD/Ov8P/zf/D/80/w3/Nf8N/zT/C/8o/wr/Kf8M/yr/DP8r/w3/Lf8O/zH/D/8y/xD/Nv8Q/zn/E/88/xP/Rf8T/0P/FP9I/xT/SP8T/03/GP9Q/xr/V/8d/17/Hv9p/yL/eP//////e//5/3z//v8r/5X/Kf+a/y3/nP/Y////5f////7///9v////df///3b///9w////Zf///1n///9J////Qv/v/zr/0f80/7b/Lf+h/yn/k/8l/4r/J/+G/yP/ef8h/3L/Hv9p/x7/Yf8c/1z/G/9W/xv/Vv8e/1T/IP9W/yP/Vf8g/1L/HP9L/xn/Rf8V/0P/Ev9B/xH/Pf8R/zv/EP85/w//OP8N/zb/Dv80/wv/J/8L/yj/C/8q/w3/K/8N/yz/Dv8w/w//Mf8P/zb/Ef86/xL/Pf8T/0f/Ev9D/xT/Rv8U/0j/FP9L/xj/UP8a/1f/Gv9e/x7/Z/8f/3b/zP///yn/j/8p/5b/LP+Y/9D////Q////h////0X/yv9f//T/bv///4r///+L////Z//3/1f/5f9H/97/P//a/zz/3v83/8v/NP+3/y7/qf8q/5v/Kv+P/yj/if8k/3v/IP9z/yD/b/8f/2r/IP9j/x7/Xv8b/1f/G/9V/xz/VP8d/1X/HP9S/xn/S/8Y/0n/F/9F/xT/Q/8S/0D/Ev8+/xH/Ov8R/zr/D/82/w//Nf8K/yX/Cv8o/wv/Kv8N/yr/Df8s/w3/L/8O/zD/D/81/xD/Of8R/zz/FP9H/xT/RP8S/0b/E/9I/xP/Sv8X/03/GP9Q/xr/Wf8b/2P/IP9y/8v///8r/5H/0P///9D///8r/5f/LP+Y/zP/o/9A/7b/Vf/S/2v///+E////lv///2D/2f9K/8D/OP+0/zT/uf85/8n/Nv/B/zT/tf8v/6z/Mv+j/y3/mP8o/4v/I/97/yL/df8f/23/Hf9o/xv/Y/8e/1//Hv9d/xz/V/8c/1b/G/9T/xr/UP8Y/0z/F/9H/xT/R/8S/0X/Ev9C/xL/Pv8S/z3/E/87/xL/N/8P/zb/Cv4k/wr/J/8K/yn/DP8q/wz/K/8N/y3/Df8v/w7/Mv8R/zj/E/88/xP/Rv8S/0X/E/9F/xP/R/8V/0j/F/9K/xf/Tf8Y/1P/G/9c/x//b///////zf///yv/k/8p/4//J/+M/yf/i/8r/4z/Nf+V/0X/q/9S/7j/ef///1z/xP9Q/7f/Qv+q/zX/oP8v/6P/Mf+0/zP/tf8x/6//MP+n/y3/oP8v/5f/LP+R/yP/fP8h/3X/IP9t/xz/Z/8d/2L/Hf9g/xz/XP8b/1f/Gv9W/xn/VP8Z/1D/F/9N/xb/Sf8X/0b/Ev9E/xL/Qv8S/z//E/8+/xL/O/8S/zf/D/82/wr3I/8K/yX/Cv8o/wz/Kf8M/yr/Df8s/w3/Lf8O/zD/EP82/xL/O/8S/0X/Ev9D/xP/Q/8T/0b/FP9G/xX/Rv8V/0n/F/9M/xf/Vv8b/2f/If92/yT/hP8m/4j/I/+D/yL/d/8g/3L/I/9y/yP/c/8z/4T/P/+X/03/sv9H/57/P/+c/zf/lv8s/5L/K/+W/y7/pf8x/6j/Mf+n/y//oP8s/5j/K/+S/yn/jv8l/37/IP90/x//bP8e/2n/G/9j/xv/Yv8b/1v/G/9Z/xn/Vf8Y/1P/GP9R/xj/TP8W/0r/Ff9H/xT/Rf8S/0P/Ev9A/xL/Pv8R/zv/Ef87/xD/OP8J7iH/Cvoj/wr/J/8L/yj/DP8p/w3/Kf8N/yz/Df8u/w//Mv8R/zj/Ef9A/xH/P/8S/0H/E/9C/xP/RP8U/0L/FP9D/xT/SP8U/07/GP9Z/x//av8g/3X/Iv90/x//cf8f/2v/G/9g/xr/W/8a/1z/If9q/yv/ef8z/4L/M/+F/y7/gf8n/3//I/+C/yX/i/8n/5X/LP+a/y3/lf8p/5P/J/+R/yj/jP8n/4j/JP98/yL/c/8e/27/Hf9q/x3/ZP8c/2H/G/9d/xr/Wv8a/1j/Gf9U/xj/Uf8Y/0z/Fv9K/xT/R/8U/0X/Ev9E/xL/Qv8S/z7/Ef87/xH/O/8P/zf/CeMg/wnwIv8J+yX/Cv8m/wv/J/8M/yj/DP8q/w3/LP8P/zD/Dv81/xH/PP8R/zv/EP88/xD/PP8T/0D/Ev8//xP/Pf8V/0P/E/9J/xT/Tf8b/1r/G/9h/xr/Xv8b/1z/Fv9Y/xf/VP8Z/1L/GP9V/xr/W/8e/2L/Iv9p/yT/cP8i/3H/If9z/yH/ev8m/4L/Jf+H/yX/iP8n/4r/Kf+J/yX/hf8k/4P/Jf+E/yL/eP8g/3H/Hv9s/xz/Z/8d/2X/G/9h/xz/YP8b/13/HP9a/xn/V/8Y/1T/F/9Q/xX/Sv8U/0j/E/9G/xL/Q/8S/0H/Ev8+/xL/PP8R/zv/D/84/wjYH/8J5CD/Ce8h/wr5JP8K/yX/DP8m/wz/Kf8M/yr/D/8t/w7/MP8P/zn/Dv82/w//Ov8Q/zr/FP8+/xP/Pv8S/z3/Ev8+/xL/Q/8S/0b/Ff9I/xX/Tf8V/0z/Ff9K/xL/R/8W/0b/Fv9M/xb/UP8X/1P/Gf9X/xr/Wf8c/2H/Hf9p/x//b/8f/3X/Iv92/yP/fv8l/3//I/9+/yT/gf8k/4H/I/99/yL/ff8e/3T/Hv9w/x7/af8d/2X/Hf9l/xv/Yv8d/2P/HP9f/xz/Xf8b/1r/F/9V/xf/UP8V/03/Ff9J/xP/Rv8S/0P/Ev9C/xL/Pv8S/zz/Ef87/w//OP8IzB3/CdYf/wnhH/8J6yL/CvQk/wr+JP8M/yf/C/8o/wz/Kf8N/y3/Dv81/w7/NP8P/zb/EP85/xL/PP8T/zz/E/88/xH/PP8R/z7/Ef9A/xL/P/8R/z//Ef88/xH/QP8Q/0H/FP9B/xX/Rf8V/0r/Ff9M/xb/Uv8Y/1X/G/9Z/xv/Yv8c/2j/Hf9s/x//bv8h/3H/Iv93/yP/ff8k/37/Iv97/yX/ef8h/3v/H/9x/x7/a/8e/2f/HP9l/x3/ZP8c/2T/HP9j/x3/Yf8c/1//G/9d/xn/Wf8X/1X/Ff9O/xb/Sv8V/0j/FP9E/xP/Q/8S/0H/Ev89/xH/PP8P/zj/B8Ec/wfIHf8I0x7/CNsf/wniIf8J7SL/CvYk/wv/Jf8M/yX/C/8n/w3/Mf8N/zL/Dv80/w//OP8S/zv/Ev86/xH/O/8R/zv/D/85/w//Ov8S/zn/EP84/w//Of8R/zr/EP87/xP/Pf8S/0L/E/9F/xT/R/8V/0v/Fv9O/xj/U/8Z/1z/Gv9g/xz/ZP8e/2j/Hv9r/yD/bv8i/3b/I/94/yD/d/8h/3P/IP93/x7/a/8e/2f/HP9m/x3/Y/8e/2T/Hf9k/x7/Y/8d/2D/HP9h/xr/Xf8Z/1n/F/9U/xb/UP8V/0v/FP9K/xT/Rf8U/0X/E/9C/xL/Pv8R/zz/D/83/we6G/8Huhr/B8Ic/wjLHf8I0x//Cd0g/wnnIf8K8CL/C/ok/wv/Jv8N/y7/Df8v/w7/Mv8O/zb/EP83/xH/OP8R/zn/D/84/w//Nv8P/zb/EP82/xD/NP8P/zP/D/83/w7/Ov8R/zj/Ef88/xH/Pf8T/0H/E/9G/xT/SP8X/07/GP9W/xr/W/8Z/17/Gf9h/xz/ZP8e/2j/H/9u/x//cf8f/3D/H/9v/x//cP8d/2n/HP9l/xz/Zf8c/2L/Hf9k/x3/Y/8e/2T/Hv9i/x3/Yf8a/1z/GP9Z/xb/Vv8W/1D/Fv9N/xP/TP8T/0b/E/9F/xL/Qv8S/z7/Ev88/w//N/8HuBv/B7ca/we5G/8Iwhv/CMkc/wjSH/8J2yD/CuMh/wrtIv8L/yX/DP8t/wz/K/8M/y3/Dv8z/xD/Nv8R/zb/Ef83/w//OP8P/zf/Dv80/xD/Nf8P/zX/D/80/w7/Nv8O/zX/D/81/xD/Of8Q/zj/EP87/xH/P/8S/0P/E/9H/xf/Tv8X/1L/GP9W/xf/W/8c/17/HP9i/xz/Zv8e/2n/Hf9o/x7/aP8d/2X/Hf9k/xz/Yv8d/2L/HP9g/xv/Yf8b/2T/Hv9i/x//Yv8d/2D/Gv9d/xn/Vv8X/1b/F/9S/xf/Tv8V/0z/FP9I/xL/RP8S/0L/Ev8//xH/Pf8P/zn/B7Ya/we0Gv8HtBr/B7ca/wi/G/8IxR3/CM8e/wfYH/8K4iH/C/kk/wz/LP8M/yn/Df8r/w3/MP8Q/zP/EP81/xD/N/8P/zj/D/84/w//Nv8Q/zf/EP83/xD/Nv8Q/zj/D/81/xD/Nf8Q/zb/EP83/xD/Of8Q/zn/EP89/xP/P/8U/0b/Fv9L/xb/T/8Z/1T/Gf9b/xr/W/8b/17/G/9h/xz/YP8c/2L/HP9h/xz/YP8d/2D/Gv9f/xr/Xv8c/2D/Hf9g/x3/Yf8d/2H/Hv9g/xn/Xf8Z/1n/GP9V/xf/U/8W/07/FP9O/xT/Sv8T/0T/E/9E/xL/QP8R/zv/D/85/we0Gv8Hshr/B7AZ/wevGf8Hsxr/B7ga/wjBHf8Hyh3/CNcf/wrtIv8L/yX/C/8p/wz/K/8M/y3/D/8w/xD/NP8R/zf/EP84/xD/OP8P/zf/Ef84/xH/OP8Q/zj/EP84/w//N/8Q/zf/EP81/xD/N/8Q/zn/EP86/xD/PP8S/z3/E/9C/xT/R/8W/0v/Fv9S/xj/VP8X/1X/GP9Y/xr/WP8a/1r/G/9b/xv/XP8b/1z/Gf9c/xn/W/8Z/13/G/9d/xz/Yf8c/17/Hf9d/xn/X/8a/13/HP9b/xr/Vf8X/1P/Fv9P/xT/TP8V/0r/E/9F/xP/Qv8S/0D/EP88/w//OP8="
+    }
+  },
+  "active": {
+    "wall": 22163.900000035763,
+    "time": 2.100999999999869,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "p": [
+      1.1789816770158297,
+      0.9933009908152166,
+      1.1998950841612268
+    ],
+    "v": [
+      -0.051102385912604915,
+      -0.01675983149611286,
+      -0.000256270060293182
+    ],
+    "w": [
+      0.002568858595342474,
+      4.490343513861892e-06,
+      0.04630896137053926
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 984
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0010779967756152,
+        "aR": 1.0008062744304251,
+        "betaL": -0.032419619876049674,
+        "betaR": 0.020811328227585732,
+        "sL": 2.214072529061832e-05,
+        "sR": 2.214072529061832e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120838160947262,
+        "betaR": -0.0312728051206572,
+        "sL": -4.809547022144251e-06,
+        "sR": -6.505959433642513e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120838160947262,
+        "betaR": -0.0312728051206572,
+        "sL": -4.8095470221442505e-06,
+        "sR": -6.505959433642515e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0010779967756152,
+        "aR": 1.0008062744304251,
+        "betaL": -0.011298781715102412,
+        "betaR": -0.010461476893071468,
+        "sL": 1.733117826847407e-05,
+        "sR": 1.5634765856975805e-05,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466868112,
+          0.6579969533131889
+        ],
+        "executedAt": 1.6094999999998783
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688058748173e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026985645,
+                "mbon:MBON05:left": 0.29355956750964013
+              },
+              "score": -0.19631419723978366
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688402500977e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046143897,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668827602
+            }
+          ],
+          "p": [
+            0.4999999995404103,
+            0.5000000004595897
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.04638009917152826,
+          "forwardSpeed": -0.04977809852327055,
+          "verticalSpeed": 7.974764750268335e-06,
+          "feed": 9.771727457137089e-06
+        },
+        "active": true,
+        "framesApplied": 984,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7577263928384224,
+        "min": 0.4362400770187378,
+        "max": 0.9989825487136841
+      }
+    },
+    "controls": {
+      "aL": 1.0010779967756152,
+      "aR": 1.0008062744304251,
+      "betaL": -0.011298781715102412,
+      "betaR": -0.010461476893071468,
+      "sL": 1.733117826847407e-05,
+      "sR": 1.5634765856975805e-05,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466868112,
+          0.6579969533131889
+        ]
+      },
+      "action": 0
+    },
+    "pilotState": {
+      "speed": 0.04977809852327055,
+      "heading": 0.32281900892877347,
+      "target": [
+        1.167205526970969,
+        0.9893614546755839,
+        1.1998972059874444
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": true,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 547.1999999880791,
+      "failed": 0,
+      "accepted": 3
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [
+      [
+        1.3919999999999022,
+        "approaches the bread (34 % for approach)"
+      ]
+    ],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "93729aa6",
+          "minRGB": 7,
+          "maxRGB": 255,
+          "meanRGB": 123.84391276041667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "d7fea7ea",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 122.90511067708333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "e8504cfa",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 122.57763671875
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "442d6a12",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 120.00537109375
+        }
+      }
+    ],
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "accepted": true,
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.493688402500977e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_qualified",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7625014463908552,
+          "min": 0.5138405561447144,
+          "max": 0.9990335702896118
+        },
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688058748173e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026985645,
+                "mbon:MBON05:left": 0.29355956750964013
+              },
+              "score": -0.19631419723978366
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688402500977e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046143897,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668827602
+            }
+          ],
+          "p": [
+            0.4999999995404103,
+            0.5000000004595897
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466868112,
+            0.6579969533131889
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493688402500977e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103338464174e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570739625183e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876143487509314,
+          "dn:DNa02:left": 0.0019945532312710137,
+          "dn:DNa02:right": 0.009724569027264733,
+          "dn:DNp09": 0,
+          "mn9": 9.771760878014477e-06,
+          "mbon:MBON11:right": 0.09724537046143897,
+          "mbon:MBON05:left": 0.293559567149715,
+          "dn:DNp03": 0.0007545250883660154
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 84,
+        "residual": 9.651308233715739e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.758887836283377,
+          "min": 0.45328131318092346,
+          "max": 0.9989872574806213
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876156443236784,
+          "dn:DNa02:left": 0.0019945528808218006,
+          "dn:DNa02:right": 0.009724569514144273,
+          "dn:DNp09": 0,
+          "mn9": 9.771727234234065e-06,
+          "mbon:MBON11:right": 0.09724537046639205,
+          "mbon:MBON05:left": 0.29355956715540976,
+          "dn:DNp03": 0.000754180960272141
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 78,
+        "residual": 9.683121511283588e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7577263928384224,
+          "min": 0.4362400770187378,
+          "max": 0.9989825487136841
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876160275051887,
+          "dn:DNa02:left": 0.0019945528949781312,
+          "dn:DNa02:right": 0.009724569423566174,
+          "dn:DNp09": 0,
+          "mn9": 9.771727457137089e-06,
+          "mbon:MBON11:right": 0.09724537046823652,
+          "mbon:MBON05:left": 0.29355956715632103,
+          "dn:DNp03": 0.0007540724004240915
+        }
+      }
+    ],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "93729aa6",
+      "minRGB": 7,
+      "maxRGB": 255,
+      "meanRGB": 123.84391276041667,
+      "rgba_base64": "GP9V/xf/Uv8Y/1P/Fv9R/xb/Tv8W/0n/FP9G/xL/P/8R/zv/D/82/w//Mf8N/y7/Df8p/wr/Jv8K8iP/Ceoi/wrkIP8J4SD/Cd0h/wnfIP8J5CH/Cvkk/wz/KP8N/y//Dv8y/xH/OP8S/zz/Ev8//xH/Q/8S/0L/Ev9C/xL/Qv8T/0L/Ef9B/xL/Pv8T/0L/Ev88/xH/Ov8P/zv/Ev9A/xP/Qv8S/zv/Ef86/xL/Pv8R/zz/D/81/w7/M/8O/y7/Df8s/w3/LP8O/yv/DP8o/wz/KP8M/yj/DP8p/wv/KP8L/yn/C/8q/wv/KP8L/yn/DP8p/wz/Kv8M/yv/DP8s/xj/VP8X/1P/GP9T/xf/U/8W/1D/F/9K/xP/Rv8U/0L/Ev88/w//OP8O/zT/Dv8w/w7/LP8M/yj/Cv8m/wr7JP8K9yT/CvIk/wnyJP8J7yL/CfYk/wz/Jv8O/yz/EP8z/xH/Of8R/z//E/9E/xP/Rv8U/0n/Ff9J/xX/SP8V/0v/FP9J/xT/R/8V/03/E/9D/xL/QP8R/0D/Ff9H/xL/Q/8S/0P/Ev9D/xT/SP8R/0D/EP88/xD/OP8P/zb/D/8z/w7/Mv8O/y//Dv8s/w3/Kv8N/yr/Df8q/w3/Kv8N/yv/C/8q/wv/Kv8L/yn/C/8q/wz/Kv8M/yv/DP8r/wz/LP8Y/1P/F/9T/xj/Uv8X/1H/F/9Q/xb/S/8U/0f/E/9D/xL/Pv8R/zj/D/82/w7/Mv8O/y//Df8s/wv/KP8K/yf/C/8n/wr/Jv8K/yX/Cf8k/wv/Jv8M/yn/D/8v/xH/OP8R/z7/E/9F/xP/S/8V/07/F/9Q/xb/UP8W/1H/Fv9S/xb/UP8X/1T/Ff9N/xb/SP8X/0r/Fv9M/xT/SP8U/0j/GP9P/xf/Tv8U/0b/E/9F/xT/Rv8Q/z7/EP87/w//Of8Q/zT/Dv8w/w7/L/8N/y3/Df8s/w7/K/8O/yz/Df8s/wz/K/8L/y3/C/8q/wv/K/8M/yr/DP8r/wz/LP8M/yz/Fv9R/xb/Uv8X/1H/GP9O/xj/Tv8U/0v/FP9H/xP/Qv8S/z7/EP87/xH/Pv8Q/zf/EP80/w7/MP8O/yz/C/8s/wz/LP8K/yn/C/8p/wr/KP8M/yj/Dv8v/xD/Nf8R/z3/Ev9F/xT/Sf8W/0//GP9W/xj/Wv8X/1v/Gf9Z/xf/WP8Z/1z/F/9U/xf/U/8Y/1X/Ff9M/xX/TP8X/1P/GP9V/xb/UP8Y/1D/GP9U/xf/Uf8U/0j/Ev9C/xH/Pv8R/zr/EP83/w7/M/8O/zH/Df8v/w3/Lf8O/yz/Dv8t/w7/Lv8M/y3/DP8t/wv/Lf8L/yv/DP8r/wz/K/8M/yz/DP8t/xb/T/8V/0//F/9P/xj/T/8W/03/Fv9I/xT/Rf8T/0P/Ef9A/xH/P/8S/0H/Ef86/w//Nf8P/zP/D/8x/w//Mf8N/zH/DP8w/w7/Lv8M/y7/Df8x/xH/N/8R/0D/E/9F/xX/TP8X/1L/GP9Z/xv/Yf8c/2L/HP9n/x3/ZP8c/2f/Gv9a/xj/Wf8c/1z/F/9T/xn/Uf8Z/1f/F/9U/xf/VP8a/13/G/9c/xn/VP8X/1D/Ff9K/xP/Rf8U/0H/Ev8+/xH/Of8O/zX/Dv8y/w3/Mf8N/y7/Dv8t/w7/L/8O/y//Dv8u/w3/L/8M/y7/C/8t/wz/Lf8M/y3/DP8s/wz/Lf8W/0v/Ff9L/xb/TP8U/0z/Ff9J/xX/R/8U/0b/E/9C/xL/QP8S/z//Ev9D/xL/Pv8S/zz/Ef84/xD/Of8Q/zf/Dv82/w//Nf8O/zf/EP86/xD/PP8T/0L/E/9I/xb/TP8Y/1X/GP9c/xv/ZP8e/2n/Hv9t/yD/dv8g/3P/Hf9p/x7/av8c/2T/HP9b/xz/YP8c/1v/F/9U/xr/XP8b/13/Gf9a/x7/a/8f/2//F/9U/xX/Tf8V/0n/FP9C/xP/P/8S/zz/Ef83/w//M/8N/zL/Df8w/w3/L/8O/zD/Dv8v/w7/L/8N/y//Df8w/wz/L/8M/y7/DP8u/wz/Lf8M/y3/FP9J/xL/Sf8U/0j/FP9I/xX/R/8T/0P/E/9E/xL/Qv8S/z//Ev8//xP/RP8S/z//Ev8+/xH/Pf8R/zz/Ef89/w//PP8P/zz/EP8+/xP/Qf8U/0b/FP9K/xf/UP8X/1X/G/9a/xz/Z/8f/2z/H/91/yP/f/8g/3j/Hv91/yX/eP8d/23/Hv9t/xz/av8b/2H/HP9l/xv/YP8d/23/Hv9v/yD/cP8a/17/G/9f/xf/WP8W/07/Ff9K/xT/RP8S/0D/Ev88/xD/OP8Q/zT/D/8z/w7/Mv8N/zH/Dv8x/w7/MP8O/zD/Df8w/w3/Mf8N/y//Df8v/wz/Lv8N/y7/Df8u/xL/Q/8T/0X/FP9E/xT/Qv8U/0P/E/9D/xP/Qf8Q/0H/Ev8+/xL/QP8S/0b/E/9A/xT/Qv8S/0P/Ev9D/xT/Qv8T/0H/Ev9C/xX/R/8V/0r/Ff9N/xj/VP8Y/1r/Gv9b/xv/ZP8e/2v/H/9z/yT/hP8j/4H/KP+I/yf/hv8i/37/Jf9//yH/cP8f/3H/IP9v/yD/dv8h/3b/H/9r/x3/af8d/2r/G/9g/xr/Zf8Z/1j/F/9R/xT/Sf8U/0T/Ev9A/xL/PP8Q/zn/EP82/w//NP8P/zP/Dv8x/w7/Mv8O/zL/Dv8y/w3/Mv8N/zH/Df8x/w7/MP8O/zD/Df8w/w3/Lv8S/z//Ev8//xP/QP8T/z7/E/8//xL/P/8T/z7/Ev8//xH/P/8S/z7/E/9F/xL/Qv8T/0P/FP9I/xT/Sf8V/0n/Ff9H/xT/S/8W/1H/F/9S/xj/V/8Z/1z/Hf9g/xv/Y/8f/2f/H/9x/yP/gf8k/4L/Kf+Q/yn/kf8t/5b/K/+Q/yn/iv8m/4P/J/+I/yX/g/8g/3P/Iv91/yT/ev8h/3f/Hf9s/x3/aP8c/2n/Gv9b/xf/U/8W/0v/Ev9F/xH/QP8S/zv/EP84/xD/Nv8P/zb/D/8z/w//M/8Q/zP/Dv8z/w7/Mv8N/zL/Dv8y/w7/Mv8O/zH/Dv8x/w7/MP8N/y//EP87/xD/Ov8Q/zn/Ef87/xH/PP8S/zz/Ev89/xH/PP8R/z7/Ev8//xP/Rv8U/0X/E/9F/xb/S/8W/07/GP9P/xb/T/8W/1D/Gv9Z/xv/Xf8Z/1//G/9i/x3/Yv8e/2n/Hv9v/yL/fv8g/37/KP+M/yv/mf8v/6L/MP+n/y//ov8v/6P/LP+h/yb/jP8o/4//KP+K/yn/kf8p/4//Jv+B/yD/e/8h/3X/IP9w/xz/X/8a/1f/Ff9O/xP/Rv8R/z7/EP86/xD/OP8P/zj/D/81/w//Nf8P/zT/D/80/xD/NP8O/zP/D/80/w7/M/8O/zP/Dv8x/w7/MP8O/zD/Dv8v/w7/Nf8O/zb/D/80/w//Nv8Q/zj/EP85/xH/PP8R/zr/Ev89/xL/P/8U/0j/E/9H/xX/Sv8X/0//GP9S/xf/VP8Z/1n/G/9c/xr/YP8c/2P/HP9m/x3/ZP8c/2j/Hf9w/yP/ff8l/4T/KP+I/yn/kP8u/6X/Of/D/zj/xP83/8P/M/+q/y7/n/8r/5//Lv+f/zT/tv8y/7D/K/+V/yn/jv8j/4f/Jf99/yH/eP8d/2X/Gv9b/xb/T/8V/0T/Ef89/w//O/8Q/zf/D/83/w//Nv8P/zb/D/82/w//NP8Q/zT/Ef81/w//NP8O/zT/Dv8z/w7/Mv8O/zH/Dv8x/w3/Mf8O/zL/Df8y/w7/Mv8P/zT/EP83/xD/Nv8Q/zj/Ef85/xH/PP8R/0D/E/9J/xL/Rv8W/0z/F/9R/xj/Vv8Z/1j/G/9g/xz/Y/8f/2b/Hv9n/xz/Z/8e/2v/H/9y/yT/ef8m/4L/Jv+G/yz/l/80/7X/Of/F/zz/zv8+/9f/Ov/F/zP/uf84/8b/Ov/H/zf/y/85/8P/M/+z/y7/pv8r/5r/KP+U/yT/iP8k/3r/Hv9p/xz/Xf8Y/1H/E/9F/xL/Pf8R/zv/Ef84/w//N/8P/zf/D/84/w//Nv8P/zb/EP82/xH/Nf8R/zX/Dv80/w7/NP8O/zP/Dv8y/w7/Mv8O/zH/Df8w/w3/Mf8O/zD/D/8x/w7/M/8Q/zT/EP83/xD/OP8S/zz/E/9A/xP/SP8U/0n/F/9N/xj/VP8Y/1j/Gv9b/xv/Y/8d/2f/Hv9l/x3/aP8d/2n/H/9w/yH/fP8l/4P/J/+P/yv/kv8v/6j/N/+6/0L/2f9H//r/Tv///0////9H//j/Rv/6/03///9H//b/PP/O/zT/uf8w/6//Lf+n/yv/mv8n/4v/Iv99/x7/av8c/13/Fv9U/xX/Sv8T/0D/EP87/xD/OP8R/zj/EP85/w//N/8P/zj/EP82/xD/N/8Q/zX/Ef82/xD/NP8O/zX/Dv8z/w7/M/8O/zH/Dv8x/wz/Lv8N/y7/Df8u/w7/Lv8O/zD/D/8y/xD/N/8R/zn/Ef88/xL/QP8S/0j/FP9H/xb/Tf8W/1P/GP9X/xr/XP8d/2H/wf///8L////D////wf///8b///8k/4v/K/+O/yz/m/8t/6X/NP+z/zP/vf9A/+f/X////3b///91////cv///2T///9z////Uf///z7/1v82/8D/Mf+v/y3/pv8p/5z/Jf+M/yL/gf8c/2n/Gv9f/xj/U/8W/0v/Ev9A/xL/Pv8Q/zv/Ef86/xH/Of8Q/zr/EP84/xD/OP8Q/zb/EP83/xD/Nf8Q/zb/Dv81/w7/NP8O/zL/Dv8y/w7/Mv8M/yv/C/8s/wz/LP8N/y7/Dv8x/w//Mv8P/zX/EP84/xH/Ov8T/z7/E/9G/xT/RP8W/0r/F/9Q/xb/Vf8Z/1n/Gf9f/xz/Yv8e/2f/IP9u///////J/////////////////////////9T///+F////Of/P/4T///+6////oP///4v///9w////ZP///1f///89/+H/Ov/D/zP/rv8u/5//LP+W/yj/hf8l/3z/Hv9o/xv/YP8X/1b/E/9N/xP/Rf8S/0H/Ef8//xD/PP8S/zv/E/88/xH/PP8Q/zj/EP85/xD/N/8Q/zj/D/82/xD/Nv8O/zT/Dv80/w7/M/8O/zH/DP8q/wv/Kv8M/yr/Df8u/w7/MP8O/zH/D/81/xD/N/8R/zj/EP88/xP/RP8T/0T/E/9J/xb/Tf8X/1T/GP9Y/xr/Xf8c/2D/Hv9m/yD/cv/H////J/+E/yr/lv8v/6P/Mv+p/y//pP////////////////9X/////////4n///9z////av///2D///9S////P//k/zf/xP8u/67/Lf+b/yj/iv8k/37/IP94/x7/aP8c/17/Gf9Y/xj/Tv8V/0r/FP9I/xL/Q/8R/z7/Ev89/xP/Pf8T/zz/Ev87/xH/Of8R/zr/EP84/w//OP8P/zb/D/81/w7/Nf8O/zT/Dv8z/wz/Kv8L/yn/DP8q/w3/LP8O/y//D/8z/xD/Nf8P/zf/EP84/xH/PP8T/0P/FP9D/xT/Rv8U/0r/Fv9Q/xj/VP8Z/1n/HP9h/x7/Z/8f/3T/x////yb/i/8r/5v/L/+i/zD/o/8s/57/g////zX/uf//////V////23///9t////aP///2L///9X////Uf///0D/5v83/8n/M/+x/y3/mv8m/4n/JP99/yL/ev8h/2//H/9q/x7/X/8b/1j/GP9T/xX/Tv8T/0j/E/9E/xL/Qf8T/0D/E/89/xL/Pf8R/z3/Ef87/xH/O/8Q/zr/D/84/w//N/8N/zX/Df80/w3/M/8L/yn/Cv8p/wz/Kv8N/yz/Dv8u/w7/Mv8P/zP/EP83/xD/OP8S/zz/E/9E/xL/Q/8U/0f/Ff9K/xb/Tv8V/1T/Gv9Y/x3/YP8c/2z/IP9y/8r///8o/5H/LP+Z/37///9+////f////9X///+P////+P///2n///+D////hf///23///9h////V////1P///9B//L/Ov/S/zH/s/8s/5v/Kv+P/yT/gv8k/4D/JP91/x//bv8g/2X/Hv9e/xv/WP8Z/1T/Fv9Q/xf/TP8W/0f/Ff9E/xX/Qv8V/0H/Ev9A/xH/Pf8Q/z3/EP88/xD/Ov8P/zf/D/80/w3/Nf8N/zT/C/8o/wr/Kf8M/yr/DP8r/w3/Lf8O/zH/D/8y/xD/Nv8Q/zn/E/88/xP/Rf8T/0P/FP9I/xT/SP8T/03/GP9Q/xr/V/8d/17/Hv9p/yL/eP//////e//5/3z//v8r/5X/Kf+a/y3/nP/Y////5f////7///9v////df///3b///9w////Zf///1n///9J////Qv/v/zr/0f80/7b/Lf+h/yn/k/8l/4r/J/+G/yP/ef8h/3L/Hv9p/x7/Yf8c/1z/G/9W/xv/Vv8e/1T/IP9W/yP/Vf8g/1L/HP9L/xn/Rf8V/0P/Ev9B/xH/Pf8R/zv/EP85/w//OP8N/zb/Dv80/wv/J/8L/yj/C/8q/w3/K/8N/yz/Dv8w/w//Mf8P/zb/Ef86/xL/Pf8T/0f/Ev9D/xT/Rv8U/0j/FP9L/xj/UP8a/1f/Gv9e/x7/Z/8f/3b/zP///yn/j/8p/5b/LP+Y/9D////Q////h////0X/yv9f//T/bv///4r///+L////Z//3/1f/5f9H/97/P//a/zz/3v83/8v/NP+3/y7/qf8q/5v/Kv+P/yj/if8k/3v/IP9z/yD/b/8f/2r/IP9j/x7/Xv8b/1f/G/9V/xz/VP8d/1X/HP9S/xn/S/8Y/0n/F/9F/xT/Q/8S/0D/Ev8+/xH/Ov8R/zr/D/82/w//Nf8K/yX/Cv8o/wv/Kv8N/yr/Df8s/w3/L/8O/zD/D/81/xD/Of8R/zz/FP9H/xT/RP8S/0b/E/9I/xP/Sv8X/03/GP9Q/xr/Wf8b/2P/IP9y/8v///8r/5H/0P///9D///8r/5f/LP+Y/zP/o/9A/7b/Vf/S/2v///+E////lv///2D/2f9K/8D/OP+0/zT/uf85/8n/Nv/B/zT/tf8v/6z/Mv+j/y3/mP8o/4v/I/97/yL/df8f/23/Hf9o/xv/Y/8e/1//Hv9d/xz/V/8c/1b/G/9T/xr/UP8Y/0z/F/9H/xT/R/8S/0X/Ev9C/xL/Pv8S/z3/E/87/xL/N/8P/zb/Cv4k/wr/J/8K/yn/DP8q/wz/K/8N/y3/Df8v/w7/Mv8R/zj/E/88/xP/Rv8S/0X/E/9F/xP/R/8V/0j/F/9K/xf/Tf8Y/1P/G/9c/x//b///////zf///yv/k/8p/4//J/+M/yf/i/8r/4z/Nf+V/0X/q/9S/7j/ef///1z/xP9Q/7f/Qv+q/zX/oP8v/6P/Mf+0/zP/tf8x/6//MP+n/y3/oP8v/5f/LP+R/yP/fP8h/3X/IP9t/xz/Z/8d/2L/Hf9g/xz/XP8b/1f/Gv9W/xn/VP8Z/1D/F/9N/xb/Sf8X/0b/Ev9E/xL/Qv8S/z//E/8+/xL/O/8S/zf/D/82/wr3I/8K/yX/Cv8o/wz/Kf8M/yr/Df8s/w3/Lf8O/zD/EP82/xL/O/8S/0X/Ev9D/xP/Q/8T/0b/FP9G/xX/Rv8V/0n/F/9M/xf/Vv8b/2f/If92/yT/hP8m/4j/I/+D/yL/d/8g/3L/I/9y/yP/c/8z/4T/P/+X/03/sv9H/57/P/+c/zf/lv8s/5L/K/+W/y7/pf8x/6j/Mf+n/y//oP8s/5j/K/+S/yn/jv8l/37/IP90/x//bP8e/2n/G/9j/xv/Yv8b/1v/G/9Z/xn/Vf8Y/1P/GP9R/xj/TP8W/0r/Ff9H/xT/Rf8S/0P/Ev9A/xL/Pv8R/zv/Ef87/xD/OP8J7iH/Cvoj/wr/J/8L/yj/DP8p/w3/Kf8N/yz/Df8u/w//Mv8R/zj/Ef9A/xH/P/8S/0H/E/9C/xP/RP8U/0L/FP9D/xT/SP8U/07/GP9Z/x//av8g/3X/Iv90/x//cf8f/2v/G/9g/xr/W/8a/1z/If9q/yv/ef8z/4L/M/+F/y7/gf8n/3//I/+C/yX/i/8n/5X/LP+a/y3/lf8p/5P/J/+R/yj/jP8n/4j/JP98/yL/c/8e/27/Hf9q/x3/ZP8c/2H/G/9d/xr/Wv8a/1j/Gf9U/xj/Uf8Y/0z/Fv9K/xT/R/8U/0X/Ev9E/xL/Qv8S/z7/Ef87/xH/O/8P/zf/CeMg/wnwIv8J+yX/Cv8m/wv/J/8M/yj/DP8q/w3/LP8P/zD/Dv81/xH/PP8R/zv/EP88/xD/PP8T/0D/Ev8//xP/Pf8V/0P/E/9J/xT/Tf8b/1r/G/9h/xr/Xv8b/1z/Fv9Y/xf/VP8Z/1L/GP9V/xr/W/8e/2L/Iv9p/yT/cP8i/3H/If9z/yH/ev8m/4L/Jf+H/yX/iP8n/4r/Kf+J/yX/hf8k/4P/Jf+E/yL/eP8g/3H/Hv9s/xz/Z/8d/2X/G/9h/xz/YP8b/13/HP9a/xn/V/8Y/1T/F/9Q/xX/Sv8U/0j/E/9G/xL/Q/8S/0H/Ev8+/xL/PP8R/zv/D/84/wjYH/8J5CD/Ce8h/wr5JP8K/yX/DP8m/wz/Kf8M/yr/D/8t/w7/MP8P/zn/Dv82/w//Ov8Q/zr/FP8+/xP/Pv8S/z3/Ev8+/xL/Q/8S/0b/Ff9I/xX/Tf8V/0z/Ff9K/xL/R/8W/0b/Fv9M/xb/UP8X/1P/Gf9X/xr/Wf8c/2H/Hf9p/x//b/8f/3X/Iv92/yP/fv8l/3//I/9+/yT/gf8k/4H/I/99/yL/ff8e/3T/Hv9w/x7/af8d/2X/Hf9l/xv/Yv8d/2P/HP9f/xz/Xf8b/1r/F/9V/xf/UP8V/03/Ff9J/xP/Rv8S/0P/Ev9C/xL/Pv8S/zz/Ef87/w//OP8IzB3/CdYf/wnhH/8J6yL/CvQk/wr+JP8M/yf/C/8o/wz/Kf8N/y3/Dv81/w7/NP8P/zb/EP85/xL/PP8T/zz/E/88/xH/PP8R/z7/Ef9A/xL/P/8R/z//Ef88/xH/QP8Q/0H/FP9B/xX/Rf8V/0r/Ff9M/xb/Uv8Y/1X/G/9Z/xv/Yv8c/2j/Hf9s/x//bv8h/3H/Iv93/yP/ff8k/37/Iv97/yX/ef8h/3v/H/9x/x7/a/8e/2f/HP9l/x3/ZP8c/2T/HP9j/x3/Yf8c/1//G/9d/xn/Wf8X/1X/Ff9O/xb/Sv8V/0j/FP9E/xP/Q/8S/0H/Ev89/xH/PP8P/zj/B8Ec/wfIHf8I0x7/CNsf/wniIf8J7SL/CvYk/wv/Jf8M/yX/C/8n/w3/Mf8N/zL/Dv80/w//OP8S/zv/Ev86/xH/O/8R/zv/D/85/w//Ov8S/zn/EP84/w//Of8R/zr/EP87/xP/Pf8S/0L/E/9F/xT/R/8V/0v/Fv9O/xj/U/8Z/1z/Gv9g/xz/ZP8e/2j/Hv9r/yD/bv8i/3b/I/94/yD/d/8h/3P/IP93/x7/a/8e/2f/HP9m/x3/Y/8e/2T/Hf9k/x7/Y/8d/2D/HP9h/xr/Xf8Z/1n/F/9U/xb/UP8V/0v/FP9K/xT/Rf8U/0X/E/9C/xL/Pv8R/zz/D/83/we6G/8Huhr/B8Ic/wjLHf8I0x//Cd0g/wnnIf8K8CL/C/ok/wv/Jv8N/y7/Df8v/w7/Mv8O/zb/EP83/xH/OP8R/zn/D/84/w//Nv8P/zb/EP82/xD/NP8P/zP/D/83/w7/Ov8R/zj/Ef88/xH/Pf8T/0H/E/9G/xT/SP8X/07/GP9W/xr/W/8Z/17/Gf9h/xz/ZP8e/2j/H/9u/x//cf8f/3D/H/9v/x//cP8d/2n/HP9l/xz/Zf8c/2L/Hf9k/x3/Y/8e/2T/Hv9i/x3/Yf8a/1z/GP9Z/xb/Vv8W/1D/Fv9N/xP/TP8T/0b/E/9F/xL/Qv8S/z7/Ev88/w//N/8HuBv/B7ca/we5G/8Iwhv/CMkc/wjSH/8J2yD/CuMh/wrtIv8L/yX/DP8t/wz/K/8M/y3/Dv8z/xD/Nv8R/zb/Ef83/w//OP8P/zf/Dv80/xD/Nf8P/zX/D/80/w7/Nv8O/zX/D/81/xD/Of8Q/zj/EP87/xH/P/8S/0P/E/9H/xf/Tv8X/1L/GP9W/xf/W/8c/17/HP9i/xz/Zv8e/2n/Hf9o/x7/aP8d/2X/Hf9k/xz/Yv8d/2L/HP9g/xv/Yf8b/2T/Hv9i/x//Yv8d/2D/Gv9d/xn/Vv8X/1b/F/9S/xf/Tv8V/0z/FP9I/xL/RP8S/0L/Ev8//xH/Pf8P/zn/B7Ya/we0Gv8HtBr/B7ca/wi/G/8IxR3/CM8e/wfYH/8K4iH/C/kk/wz/LP8M/yn/Df8r/w3/MP8Q/zP/EP81/xD/N/8P/zj/D/84/w//Nv8Q/zf/EP83/xD/Nv8Q/zj/D/81/xD/Nf8Q/zb/EP83/xD/Of8Q/zn/EP89/xP/P/8U/0b/Fv9L/xb/T/8Z/1T/Gf9b/xr/W/8b/17/G/9h/xz/YP8c/2L/HP9h/xz/YP8d/2D/Gv9f/xr/Xv8c/2D/Hf9g/x3/Yf8d/2H/Hv9g/xn/Xf8Z/1n/GP9V/xf/U/8W/07/FP9O/xT/Sv8T/0T/E/9E/xL/QP8R/zv/D/85/we0Gv8Hshr/B7AZ/wevGf8Hsxr/B7ga/wjBHf8Hyh3/CNcf/wrtIv8L/yX/C/8p/wz/K/8M/y3/D/8w/xD/NP8R/zf/EP84/xD/OP8P/zf/Ef84/xH/OP8Q/zj/EP84/w//N/8Q/zf/EP81/xD/N/8Q/zn/EP86/xD/PP8S/z3/E/9C/xT/R/8W/0v/Fv9S/xj/VP8X/1X/GP9Y/xr/WP8a/1r/G/9b/xv/XP8b/1z/Gf9c/xn/W/8Z/13/G/9d/xz/Yf8c/17/Hf9d/xn/X/8a/13/HP9b/xr/Vf8X/1P/Fv9P/xT/TP8V/0r/E/9F/xP/Qv8S/0D/EP88/w//OP8="
+    }
+  },
+  "motion": {
+    "horizontal_metres": 0.02206006856573009,
+    "simulation_seconds": 2.000999999999869,
+    "wall_seconds": 6.602
+  },
+  "error": "{'horizontal_metres': 0.02206006856573009, 'simulation_seconds': 2.000999999999869, 'wall_seconds': 6.602}",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_neural_page.py\", line 148, in run\n    assert distance >= MIN_XY_MOTION, result[\"motion\"]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'horizontal_metres': 0.02206006856573009, 'simulation_seconds': 2.000999999999869, 'wall_seconds': 6.602}\n",
+  "failure_state": {
+    "wall": 22173.80000001192,
+    "time": 2.100999999999869,
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "pilot": "assisted",
+    "source": "neural-navigation",
+    "p": [
+      1.1789816770158297,
+      0.9933009908152166,
+      1.1998950841612268
+    ],
+    "v": [
+      -0.051102385912604915,
+      -0.01675983149611286,
+      -0.000256270060293182
+    ],
+    "w": [
+      0.002568858595342474,
+      4.490343513861892e-06,
+      0.04630896137053926
+    ],
+    "mode": "flying",
+    "authority": {
+      "mode": "neural-navigation",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "none; settled descending and wing-plane motor outputs request local velocity and yaw",
+      "behaviorFallback": "zero translational/yaw request; HandPilot retains balance and velocity damping",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "settled candidate MBON scores select odor attention, then checked approach/avoid modulates neural navigation",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 984
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0010779967756152,
+        "aR": 1.0008062744304251,
+        "betaL": -0.032419619876049674,
+        "betaR": 0.020811328227585732,
+        "sL": 2.214072529061832e-05,
+        "sR": 2.214072529061832e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120838160947262,
+        "betaR": -0.0312728051206572,
+        "sL": -4.809547022144251e-06,
+        "sR": -6.505959433642513e-06,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.021120838160947262,
+        "betaR": -0.0312728051206572,
+        "sL": -4.8095470221442505e-06,
+        "sR": -6.505959433642515e-06,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0010779967756152,
+        "aR": 1.0008062744304251,
+        "betaL": -0.011298781715102412,
+        "betaR": -0.010461476893071468,
+        "sL": 1.733117826847407e-05,
+        "sR": 1.5634765856975805e-05,
+        "f": 200
+      },
+      "lastChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466868112,
+          0.6579969533131889
+        ],
+        "executedAt": 1.6094999999998783
+      },
+      "lastDiscard": null,
+      "lastCancellation": null,
+      "targetSelection": {
+        "requested": 1,
+        "accepted": 1,
+        "last": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688058748173e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026985645,
+                "mbon:MBON05:left": 0.29355956750964013
+              },
+              "score": -0.19631419723978366
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688402500977e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046143897,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668827602
+            }
+          ],
+          "p": [
+            0.4999999995404103,
+            0.5000000004595897
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      },
+      "navigation": {
+        "gains": {
+          "yaw": 6,
+          "yawLimit": 2.5,
+          "forward": 0.3,
+          "vertical": 0.12,
+          "hoverAdmittanceSeconds": 1,
+          "planeLimit": 0.05
+        },
+        "command": {
+          "yawRate": 0.04638009917152826,
+          "forwardSpeed": -0.04977809852327055,
+          "verticalSpeed": 7.974764750268335e-06,
+          "feed": 9.771727457137089e-06
+        },
+        "active": true,
+        "framesApplied": 984,
+        "attention": "bread"
+      },
+      "bodyRoutines": "passive contact; contact-only taste/reward; neural MN9 feeding extension; no supplied route or takeoff impulse",
+      "retina": "page-supplied rendered receptor observations; no visual target/bearing input to controller",
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7577263928384224,
+        "min": 0.4362400770187378,
+        "max": 0.9989825487136841
+      }
+    },
+    "controls": {
+      "aL": 1.0010779967756152,
+      "aR": 1.0008062744304251,
+      "betaL": -0.011298781715102412,
+      "betaR": -0.010461476893071468,
+      "sL": 1.733117826847407e-05,
+      "sR": 1.5634765856975805e-05,
+      "f": 200
+    },
+    "search": {
+      "since": 0.10000000000000007,
+      "askedAt": 0.10000000000000007,
+      "asked": true,
+      "landed": null,
+      "fruit": "bread",
+      "neuralToken": "0:1",
+      "neuralChoice": {
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.3420030466868112,
+          0.6579969533131889
+        ]
+      },
+      "action": 0
+    },
+    "pilotState": {
+      "speed": 0.04977809852327055,
+      "heading": 0.32281900892877347,
+      "target": [
+        1.167205526970969,
+        0.9893614546755839,
+        1.1998972059874444
+      ],
+      "route": null
+    },
+    "status": {
+      "pending": true,
+      "brainReady": true,
+      "learnReady": true,
+      "solveMs": 547.1999999880791,
+      "failed": 0,
+      "accepted": 3
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "events": [
+      [
+        1.3919999999999022,
+        "approaches the bread (34 % for approach)"
+      ]
+    ],
+    "packets": [
+      {
+        "type": "assist:decide",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "selectTarget": true,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "93729aa6",
+          "minRGB": 7,
+          "maxRGB": 255,
+          "meanRGB": 123.84391276041667
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "d7fea7ea",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 122.90511067708333
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "e8504cfa",
+          "minRGB": 6,
+          "maxRGB": 255,
+          "meanRGB": 122.57763671875
+        }
+      },
+      {
+        "type": "assist:observe",
+        "requestId": 4,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "selectTarget": false,
+        "steps": 1024,
+        "tolerance": 1e-06,
+        "retinal": {
+          "width": 64,
+          "height": 32,
+          "origin": "bottom-left",
+          "bytes": 8192,
+          "fnv1a32": "442d6a12",
+          "minRGB": 5,
+          "maxRGB": 255,
+          "meanRGB": 120.00537109375
+        }
+      }
+    ],
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 1,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": null,
+        "accepted": true,
+        "converged": true,
+        "iterations": 130,
+        "residual": 9.493688402500977e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_qualified",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7625014463908552,
+          "min": 0.5138405561447144,
+          "max": 0.9990335702896118
+        },
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688058748173e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537026985645,
+                "mbon:MBON05:left": 0.29355956750964013
+              },
+              "score": -0.19631419723978366
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 130,
+                "residual": 9.493688402500977e-07,
+                "tolerance": 1e-06,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.09724537046143897,
+                "mbon:MBON05:left": 0.293559567149715
+              },
+              "score": -0.19631419668827602
+            }
+          ],
+          "p": [
+            0.4999999995404103,
+            0.5000000004595897
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.3420030466868112,
+            0.6579969533131889
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 130,
+              "residual": 9.493688402500977e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 66,
+              "residual": 9.990103338464174e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 78,
+              "residual": 9.697570739625183e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876143487509314,
+          "dn:DNa02:left": 0.0019945532312710137,
+          "dn:DNa02:right": 0.009724569027264733,
+          "dn:DNp09": 0,
+          "mn9": 9.771760878014477e-06,
+          "mbon:MBON11:right": 0.09724537046143897,
+          "mbon:MBON05:left": 0.293559567149715,
+          "dn:DNp03": 0.0007545250883660154
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 84,
+        "residual": 9.651308233715739e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.758887836283377,
+          "min": 0.45328131318092346,
+          "max": 0.9989872574806213
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876156443236784,
+          "dn:DNa02:left": 0.0019945528808218006,
+          "dn:DNa02:right": 0.009724569514144273,
+          "dn:DNp09": 0,
+          "mn9": 9.771727234234065e-06,
+          "mbon:MBON11:right": 0.09724537046639205,
+          "mbon:MBON05:left": 0.29355956715540976,
+          "dn:DNp03": 0.000754180960272141
+        }
+      },
+      {
+        "type": "control",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "attention": "bread",
+        "accepted": null,
+        "converged": true,
+        "iterations": 78,
+        "residual": 9.683121511283588e-07,
+        "tolerance": 1e-06,
+        "reason": "residual_tolerance",
+        "retinal": {
+          "neurons": 1831,
+          "width": 64,
+          "height": 32,
+          "mean": 0.7577263928384224,
+          "min": 0.4362400770187378,
+          "max": 0.9989825487136841
+        },
+        "targetSelection": null,
+        "decision": null,
+        "updates": null,
+        "changed": null,
+        "readouts": {
+          "dn:landing": 0.0006876160275051887,
+          "dn:DNa02:left": 0.0019945528949781312,
+          "dn:DNa02:right": 0.009724569423566174,
+          "dn:DNp09": 0,
+          "mn9": 9.771727457137089e-06,
+          "mbon:MBON11:right": 0.09724537046823652,
+          "mbon:MBON05:left": 0.29355956715632103,
+          "dn:DNp03": 0.0007540724004240915
+        }
+      }
+    ],
+    "firstRetinal": {
+      "width": 64,
+      "height": 32,
+      "origin": "bottom-left",
+      "bytes": 8192,
+      "fnv1a32": "93729aa6",
+      "minRGB": 7,
+      "maxRGB": 255,
+      "meanRGB": 123.84391276041667,
+      "rgba_base64": "GP9V/xf/Uv8Y/1P/Fv9R/xb/Tv8W/0n/FP9G/xL/P/8R/zv/D/82/w//Mf8N/y7/Df8p/wr/Jv8K8iP/Ceoi/wrkIP8J4SD/Cd0h/wnfIP8J5CH/Cvkk/wz/KP8N/y//Dv8y/xH/OP8S/zz/Ev8//xH/Q/8S/0L/Ev9C/xL/Qv8T/0L/Ef9B/xL/Pv8T/0L/Ev88/xH/Ov8P/zv/Ev9A/xP/Qv8S/zv/Ef86/xL/Pv8R/zz/D/81/w7/M/8O/y7/Df8s/w3/LP8O/yv/DP8o/wz/KP8M/yj/DP8p/wv/KP8L/yn/C/8q/wv/KP8L/yn/DP8p/wz/Kv8M/yv/DP8s/xj/VP8X/1P/GP9T/xf/U/8W/1D/F/9K/xP/Rv8U/0L/Ev88/w//OP8O/zT/Dv8w/w7/LP8M/yj/Cv8m/wr7JP8K9yT/CvIk/wnyJP8J7yL/CfYk/wz/Jv8O/yz/EP8z/xH/Of8R/z//E/9E/xP/Rv8U/0n/Ff9J/xX/SP8V/0v/FP9J/xT/R/8V/03/E/9D/xL/QP8R/0D/Ff9H/xL/Q/8S/0P/Ev9D/xT/SP8R/0D/EP88/xD/OP8P/zb/D/8z/w7/Mv8O/y//Dv8s/w3/Kv8N/yr/Df8q/w3/Kv8N/yv/C/8q/wv/Kv8L/yn/C/8q/wz/Kv8M/yv/DP8r/wz/LP8Y/1P/F/9T/xj/Uv8X/1H/F/9Q/xb/S/8U/0f/E/9D/xL/Pv8R/zj/D/82/w7/Mv8O/y//Df8s/wv/KP8K/yf/C/8n/wr/Jv8K/yX/Cf8k/wv/Jv8M/yn/D/8v/xH/OP8R/z7/E/9F/xP/S/8V/07/F/9Q/xb/UP8W/1H/Fv9S/xb/UP8X/1T/Ff9N/xb/SP8X/0r/Fv9M/xT/SP8U/0j/GP9P/xf/Tv8U/0b/E/9F/xT/Rv8Q/z7/EP87/w//Of8Q/zT/Dv8w/w7/L/8N/y3/Df8s/w7/K/8O/yz/Df8s/wz/K/8L/y3/C/8q/wv/K/8M/yr/DP8r/wz/LP8M/yz/Fv9R/xb/Uv8X/1H/GP9O/xj/Tv8U/0v/FP9H/xP/Qv8S/z7/EP87/xH/Pv8Q/zf/EP80/w7/MP8O/yz/C/8s/wz/LP8K/yn/C/8p/wr/KP8M/yj/Dv8v/xD/Nf8R/z3/Ev9F/xT/Sf8W/0//GP9W/xj/Wv8X/1v/Gf9Z/xf/WP8Z/1z/F/9U/xf/U/8Y/1X/Ff9M/xX/TP8X/1P/GP9V/xb/UP8Y/1D/GP9U/xf/Uf8U/0j/Ev9C/xH/Pv8R/zr/EP83/w7/M/8O/zH/Df8v/w3/Lf8O/yz/Dv8t/w7/Lv8M/y3/DP8t/wv/Lf8L/yv/DP8r/wz/K/8M/yz/DP8t/xb/T/8V/0//F/9P/xj/T/8W/03/Fv9I/xT/Rf8T/0P/Ef9A/xH/P/8S/0H/Ef86/w//Nf8P/zP/D/8x/w//Mf8N/zH/DP8w/w7/Lv8M/y7/Df8x/xH/N/8R/0D/E/9F/xX/TP8X/1L/GP9Z/xv/Yf8c/2L/HP9n/x3/ZP8c/2f/Gv9a/xj/Wf8c/1z/F/9T/xn/Uf8Z/1f/F/9U/xf/VP8a/13/G/9c/xn/VP8X/1D/Ff9K/xP/Rf8U/0H/Ev8+/xH/Of8O/zX/Dv8y/w3/Mf8N/y7/Dv8t/w7/L/8O/y//Dv8u/w3/L/8M/y7/C/8t/wz/Lf8M/y3/DP8s/wz/Lf8W/0v/Ff9L/xb/TP8U/0z/Ff9J/xX/R/8U/0b/E/9C/xL/QP8S/z//Ev9D/xL/Pv8S/zz/Ef84/xD/Of8Q/zf/Dv82/w//Nf8O/zf/EP86/xD/PP8T/0L/E/9I/xb/TP8Y/1X/GP9c/xv/ZP8e/2n/Hv9t/yD/dv8g/3P/Hf9p/x7/av8c/2T/HP9b/xz/YP8c/1v/F/9U/xr/XP8b/13/Gf9a/x7/a/8f/2//F/9U/xX/Tf8V/0n/FP9C/xP/P/8S/zz/Ef83/w//M/8N/zL/Df8w/w3/L/8O/zD/Dv8v/w7/L/8N/y//Df8w/wz/L/8M/y7/DP8u/wz/Lf8M/y3/FP9J/xL/Sf8U/0j/FP9I/xX/R/8T/0P/E/9E/xL/Qv8S/z//Ev8//xP/RP8S/z//Ev8+/xH/Pf8R/zz/Ef89/w//PP8P/zz/EP8+/xP/Qf8U/0b/FP9K/xf/UP8X/1X/G/9a/xz/Z/8f/2z/H/91/yP/f/8g/3j/Hv91/yX/eP8d/23/Hv9t/xz/av8b/2H/HP9l/xv/YP8d/23/Hv9v/yD/cP8a/17/G/9f/xf/WP8W/07/Ff9K/xT/RP8S/0D/Ev88/xD/OP8Q/zT/D/8z/w7/Mv8N/zH/Dv8x/w7/MP8O/zD/Df8w/w3/Mf8N/y//Df8v/wz/Lv8N/y7/Df8u/xL/Q/8T/0X/FP9E/xT/Qv8U/0P/E/9D/xP/Qf8Q/0H/Ev8+/xL/QP8S/0b/E/9A/xT/Qv8S/0P/Ev9D/xT/Qv8T/0H/Ev9C/xX/R/8V/0r/Ff9N/xj/VP8Y/1r/Gv9b/xv/ZP8e/2v/H/9z/yT/hP8j/4H/KP+I/yf/hv8i/37/Jf9//yH/cP8f/3H/IP9v/yD/dv8h/3b/H/9r/x3/af8d/2r/G/9g/xr/Zf8Z/1j/F/9R/xT/Sf8U/0T/Ev9A/xL/PP8Q/zn/EP82/w//NP8P/zP/Dv8x/w7/Mv8O/zL/Dv8y/w3/Mv8N/zH/Df8x/w7/MP8O/zD/Df8w/w3/Lv8S/z//Ev8//xP/QP8T/z7/E/8//xL/P/8T/z7/Ev8//xH/P/8S/z7/E/9F/xL/Qv8T/0P/FP9I/xT/Sf8V/0n/Ff9H/xT/S/8W/1H/F/9S/xj/V/8Z/1z/Hf9g/xv/Y/8f/2f/H/9x/yP/gf8k/4L/Kf+Q/yn/kf8t/5b/K/+Q/yn/iv8m/4P/J/+I/yX/g/8g/3P/Iv91/yT/ev8h/3f/Hf9s/x3/aP8c/2n/Gv9b/xf/U/8W/0v/Ev9F/xH/QP8S/zv/EP84/xD/Nv8P/zb/D/8z/w//M/8Q/zP/Dv8z/w7/Mv8N/zL/Dv8y/w7/Mv8O/zH/Dv8x/w7/MP8N/y//EP87/xD/Ov8Q/zn/Ef87/xH/PP8S/zz/Ev89/xH/PP8R/z7/Ev8//xP/Rv8U/0X/E/9F/xb/S/8W/07/GP9P/xb/T/8W/1D/Gv9Z/xv/Xf8Z/1//G/9i/x3/Yv8e/2n/Hv9v/yL/fv8g/37/KP+M/yv/mf8v/6L/MP+n/y//ov8v/6P/LP+h/yb/jP8o/4//KP+K/yn/kf8p/4//Jv+B/yD/e/8h/3X/IP9w/xz/X/8a/1f/Ff9O/xP/Rv8R/z7/EP86/xD/OP8P/zj/D/81/w//Nf8P/zT/D/80/xD/NP8O/zP/D/80/w7/M/8O/zP/Dv8x/w7/MP8O/zD/Dv8v/w7/Nf8O/zb/D/80/w//Nv8Q/zj/EP85/xH/PP8R/zr/Ev89/xL/P/8U/0j/E/9H/xX/Sv8X/0//GP9S/xf/VP8Z/1n/G/9c/xr/YP8c/2P/HP9m/x3/ZP8c/2j/Hf9w/yP/ff8l/4T/KP+I/yn/kP8u/6X/Of/D/zj/xP83/8P/M/+q/y7/n/8r/5//Lv+f/zT/tv8y/7D/K/+V/yn/jv8j/4f/Jf99/yH/eP8d/2X/Gv9b/xb/T/8V/0T/Ef89/w//O/8Q/zf/D/83/w//Nv8P/zb/D/82/w//NP8Q/zT/Ef81/w//NP8O/zT/Dv8z/w7/Mv8O/zH/Dv8x/w3/Mf8O/zL/Df8y/w7/Mv8P/zT/EP83/xD/Nv8Q/zj/Ef85/xH/PP8R/0D/E/9J/xL/Rv8W/0z/F/9R/xj/Vv8Z/1j/G/9g/xz/Y/8f/2b/Hv9n/xz/Z/8e/2v/H/9y/yT/ef8m/4L/Jv+G/yz/l/80/7X/Of/F/zz/zv8+/9f/Ov/F/zP/uf84/8b/Ov/H/zf/y/85/8P/M/+z/y7/pv8r/5r/KP+U/yT/iP8k/3r/Hv9p/xz/Xf8Y/1H/E/9F/xL/Pf8R/zv/Ef84/w//N/8P/zf/D/84/w//Nv8P/zb/EP82/xH/Nf8R/zX/Dv80/w7/NP8O/zP/Dv8y/w7/Mv8O/zH/Df8w/w3/Mf8O/zD/D/8x/w7/M/8Q/zT/EP83/xD/OP8S/zz/E/9A/xP/SP8U/0n/F/9N/xj/VP8Y/1j/Gv9b/xv/Y/8d/2f/Hv9l/x3/aP8d/2n/H/9w/yH/fP8l/4P/J/+P/yv/kv8v/6j/N/+6/0L/2f9H//r/Tv///0////9H//j/Rv/6/03///9H//b/PP/O/zT/uf8w/6//Lf+n/yv/mv8n/4v/Iv99/x7/av8c/13/Fv9U/xX/Sv8T/0D/EP87/xD/OP8R/zj/EP85/w//N/8P/zj/EP82/xD/N/8Q/zX/Ef82/xD/NP8O/zX/Dv8z/w7/M/8O/zH/Dv8x/wz/Lv8N/y7/Df8u/w7/Lv8O/zD/D/8y/xD/N/8R/zn/Ef88/xL/QP8S/0j/FP9H/xb/Tf8W/1P/GP9X/xr/XP8d/2H/wf///8L////D////wf///8b///8k/4v/K/+O/yz/m/8t/6X/NP+z/zP/vf9A/+f/X////3b///91////cv///2T///9z////Uf///z7/1v82/8D/Mf+v/y3/pv8p/5z/Jf+M/yL/gf8c/2n/Gv9f/xj/U/8W/0v/Ev9A/xL/Pv8Q/zv/Ef86/xH/Of8Q/zr/EP84/xD/OP8Q/zb/EP83/xD/Nf8Q/zb/Dv81/w7/NP8O/zL/Dv8y/w7/Mv8M/yv/C/8s/wz/LP8N/y7/Dv8x/w//Mv8P/zX/EP84/xH/Ov8T/z7/E/9G/xT/RP8W/0r/F/9Q/xb/Vf8Z/1n/Gf9f/xz/Yv8e/2f/IP9u///////J/////////////////////////9T///+F////Of/P/4T///+6////oP///4v///9w////ZP///1f///89/+H/Ov/D/zP/rv8u/5//LP+W/yj/hf8l/3z/Hv9o/xv/YP8X/1b/E/9N/xP/Rf8S/0H/Ef8//xD/PP8S/zv/E/88/xH/PP8Q/zj/EP85/xD/N/8Q/zj/D/82/xD/Nv8O/zT/Dv80/w7/M/8O/zH/DP8q/wv/Kv8M/yr/Df8u/w7/MP8O/zH/D/81/xD/N/8R/zj/EP88/xP/RP8T/0T/E/9J/xb/Tf8X/1T/GP9Y/xr/Xf8c/2D/Hv9m/yD/cv/H////J/+E/yr/lv8v/6P/Mv+p/y//pP////////////////9X/////////4n///9z////av///2D///9S////P//k/zf/xP8u/67/Lf+b/yj/iv8k/37/IP94/x7/aP8c/17/Gf9Y/xj/Tv8V/0r/FP9I/xL/Q/8R/z7/Ev89/xP/Pf8T/zz/Ev87/xH/Of8R/zr/EP84/w//OP8P/zb/D/81/w7/Nf8O/zT/Dv8z/wz/Kv8L/yn/DP8q/w3/LP8O/y//D/8z/xD/Nf8P/zf/EP84/xH/PP8T/0P/FP9D/xT/Rv8U/0r/Fv9Q/xj/VP8Z/1n/HP9h/x7/Z/8f/3T/x////yb/i/8r/5v/L/+i/zD/o/8s/57/g////zX/uf//////V////23///9t////aP///2L///9X////Uf///0D/5v83/8n/M/+x/y3/mv8m/4n/JP99/yL/ev8h/2//H/9q/x7/X/8b/1j/GP9T/xX/Tv8T/0j/E/9E/xL/Qf8T/0D/E/89/xL/Pf8R/z3/Ef87/xH/O/8Q/zr/D/84/w//N/8N/zX/Df80/w3/M/8L/yn/Cv8p/wz/Kv8N/yz/Dv8u/w7/Mv8P/zP/EP83/xD/OP8S/zz/E/9E/xL/Q/8U/0f/Ff9K/xb/Tv8V/1T/Gv9Y/x3/YP8c/2z/IP9y/8r///8o/5H/LP+Z/37///9+////f////9X///+P////+P///2n///+D////hf///23///9h////V////1P///9B//L/Ov/S/zH/s/8s/5v/Kv+P/yT/gv8k/4D/JP91/x//bv8g/2X/Hv9e/xv/WP8Z/1T/Fv9Q/xf/TP8W/0f/Ff9E/xX/Qv8V/0H/Ev9A/xH/Pf8Q/z3/EP88/xD/Ov8P/zf/D/80/w3/Nf8N/zT/C/8o/wr/Kf8M/yr/DP8r/w3/Lf8O/zH/D/8y/xD/Nv8Q/zn/E/88/xP/Rf8T/0P/FP9I/xT/SP8T/03/GP9Q/xr/V/8d/17/Hv9p/yL/eP//////e//5/3z//v8r/5X/Kf+a/y3/nP/Y////5f////7///9v////df///3b///9w////Zf///1n///9J////Qv/v/zr/0f80/7b/Lf+h/yn/k/8l/4r/J/+G/yP/ef8h/3L/Hv9p/x7/Yf8c/1z/G/9W/xv/Vv8e/1T/IP9W/yP/Vf8g/1L/HP9L/xn/Rf8V/0P/Ev9B/xH/Pf8R/zv/EP85/w//OP8N/zb/Dv80/wv/J/8L/yj/C/8q/w3/K/8N/yz/Dv8w/w//Mf8P/zb/Ef86/xL/Pf8T/0f/Ev9D/xT/Rv8U/0j/FP9L/xj/UP8a/1f/Gv9e/x7/Z/8f/3b/zP///yn/j/8p/5b/LP+Y/9D////Q////h////0X/yv9f//T/bv///4r///+L////Z//3/1f/5f9H/97/P//a/zz/3v83/8v/NP+3/y7/qf8q/5v/Kv+P/yj/if8k/3v/IP9z/yD/b/8f/2r/IP9j/x7/Xv8b/1f/G/9V/xz/VP8d/1X/HP9S/xn/S/8Y/0n/F/9F/xT/Q/8S/0D/Ev8+/xH/Ov8R/zr/D/82/w//Nf8K/yX/Cv8o/wv/Kv8N/yr/Df8s/w3/L/8O/zD/D/81/xD/Of8R/zz/FP9H/xT/RP8S/0b/E/9I/xP/Sv8X/03/GP9Q/xr/Wf8b/2P/IP9y/8v///8r/5H/0P///9D///8r/5f/LP+Y/zP/o/9A/7b/Vf/S/2v///+E////lv///2D/2f9K/8D/OP+0/zT/uf85/8n/Nv/B/zT/tf8v/6z/Mv+j/y3/mP8o/4v/I/97/yL/df8f/23/Hf9o/xv/Y/8e/1//Hv9d/xz/V/8c/1b/G/9T/xr/UP8Y/0z/F/9H/xT/R/8S/0X/Ev9C/xL/Pv8S/z3/E/87/xL/N/8P/zb/Cv4k/wr/J/8K/yn/DP8q/wz/K/8N/y3/Df8v/w7/Mv8R/zj/E/88/xP/Rv8S/0X/E/9F/xP/R/8V/0j/F/9K/xf/Tf8Y/1P/G/9c/x//b///////zf///yv/k/8p/4//J/+M/yf/i/8r/4z/Nf+V/0X/q/9S/7j/ef///1z/xP9Q/7f/Qv+q/zX/oP8v/6P/Mf+0/zP/tf8x/6//MP+n/y3/oP8v/5f/LP+R/yP/fP8h/3X/IP9t/xz/Z/8d/2L/Hf9g/xz/XP8b/1f/Gv9W/xn/VP8Z/1D/F/9N/xb/Sf8X/0b/Ev9E/xL/Qv8S/z//E/8+/xL/O/8S/zf/D/82/wr3I/8K/yX/Cv8o/wz/Kf8M/yr/Df8s/w3/Lf8O/zD/EP82/xL/O/8S/0X/Ev9D/xP/Q/8T/0b/FP9G/xX/Rv8V/0n/F/9M/xf/Vv8b/2f/If92/yT/hP8m/4j/I/+D/yL/d/8g/3L/I/9y/yP/c/8z/4T/P/+X/03/sv9H/57/P/+c/zf/lv8s/5L/K/+W/y7/pf8x/6j/Mf+n/y//oP8s/5j/K/+S/yn/jv8l/37/IP90/x//bP8e/2n/G/9j/xv/Yv8b/1v/G/9Z/xn/Vf8Y/1P/GP9R/xj/TP8W/0r/Ff9H/xT/Rf8S/0P/Ev9A/xL/Pv8R/zv/Ef87/xD/OP8J7iH/Cvoj/wr/J/8L/yj/DP8p/w3/Kf8N/yz/Df8u/w//Mv8R/zj/Ef9A/xH/P/8S/0H/E/9C/xP/RP8U/0L/FP9D/xT/SP8U/07/GP9Z/x//av8g/3X/Iv90/x//cf8f/2v/G/9g/xr/W/8a/1z/If9q/yv/ef8z/4L/M/+F/y7/gf8n/3//I/+C/yX/i/8n/5X/LP+a/y3/lf8p/5P/J/+R/yj/jP8n/4j/JP98/yL/c/8e/27/Hf9q/x3/ZP8c/2H/G/9d/xr/Wv8a/1j/Gf9U/xj/Uf8Y/0z/Fv9K/xT/R/8U/0X/Ev9E/xL/Qv8S/z7/Ef87/xH/O/8P/zf/CeMg/wnwIv8J+yX/Cv8m/wv/J/8M/yj/DP8q/w3/LP8P/zD/Dv81/xH/PP8R/zv/EP88/xD/PP8T/0D/Ev8//xP/Pf8V/0P/E/9J/xT/Tf8b/1r/G/9h/xr/Xv8b/1z/Fv9Y/xf/VP8Z/1L/GP9V/xr/W/8e/2L/Iv9p/yT/cP8i/3H/If9z/yH/ev8m/4L/Jf+H/yX/iP8n/4r/Kf+J/yX/hf8k/4P/Jf+E/yL/eP8g/3H/Hv9s/xz/Z/8d/2X/G/9h/xz/YP8b/13/HP9a/xn/V/8Y/1T/F/9Q/xX/Sv8U/0j/E/9G/xL/Q/8S/0H/Ev8+/xL/PP8R/zv/D/84/wjYH/8J5CD/Ce8h/wr5JP8K/yX/DP8m/wz/Kf8M/yr/D/8t/w7/MP8P/zn/Dv82/w//Ov8Q/zr/FP8+/xP/Pv8S/z3/Ev8+/xL/Q/8S/0b/Ff9I/xX/Tf8V/0z/Ff9K/xL/R/8W/0b/Fv9M/xb/UP8X/1P/Gf9X/xr/Wf8c/2H/Hf9p/x//b/8f/3X/Iv92/yP/fv8l/3//I/9+/yT/gf8k/4H/I/99/yL/ff8e/3T/Hv9w/x7/af8d/2X/Hf9l/xv/Yv8d/2P/HP9f/xz/Xf8b/1r/F/9V/xf/UP8V/03/Ff9J/xP/Rv8S/0P/Ev9C/xL/Pv8S/zz/Ef87/w//OP8IzB3/CdYf/wnhH/8J6yL/CvQk/wr+JP8M/yf/C/8o/wz/Kf8N/y3/Dv81/w7/NP8P/zb/EP85/xL/PP8T/zz/E/88/xH/PP8R/z7/Ef9A/xL/P/8R/z//Ef88/xH/QP8Q/0H/FP9B/xX/Rf8V/0r/Ff9M/xb/Uv8Y/1X/G/9Z/xv/Yv8c/2j/Hf9s/x//bv8h/3H/Iv93/yP/ff8k/37/Iv97/yX/ef8h/3v/H/9x/x7/a/8e/2f/HP9l/x3/ZP8c/2T/HP9j/x3/Yf8c/1//G/9d/xn/Wf8X/1X/Ff9O/xb/Sv8V/0j/FP9E/xP/Q/8S/0H/Ev89/xH/PP8P/zj/B8Ec/wfIHf8I0x7/CNsf/wniIf8J7SL/CvYk/wv/Jf8M/yX/C/8n/w3/Mf8N/zL/Dv80/w//OP8S/zv/Ev86/xH/O/8R/zv/D/85/w//Ov8S/zn/EP84/w//Of8R/zr/EP87/xP/Pf8S/0L/E/9F/xT/R/8V/0v/Fv9O/xj/U/8Z/1z/Gv9g/xz/ZP8e/2j/Hv9r/yD/bv8i/3b/I/94/yD/d/8h/3P/IP93/x7/a/8e/2f/HP9m/x3/Y/8e/2T/Hf9k/x7/Y/8d/2D/HP9h/xr/Xf8Z/1n/F/9U/xb/UP8V/0v/FP9K/xT/Rf8U/0X/E/9C/xL/Pv8R/zz/D/83/we6G/8Huhr/B8Ic/wjLHf8I0x//Cd0g/wnnIf8K8CL/C/ok/wv/Jv8N/y7/Df8v/w7/Mv8O/zb/EP83/xH/OP8R/zn/D/84/w//Nv8P/zb/EP82/xD/NP8P/zP/D/83/w7/Ov8R/zj/Ef88/xH/Pf8T/0H/E/9G/xT/SP8X/07/GP9W/xr/W/8Z/17/Gf9h/xz/ZP8e/2j/H/9u/x//cf8f/3D/H/9v/x//cP8d/2n/HP9l/xz/Zf8c/2L/Hf9k/x3/Y/8e/2T/Hv9i/x3/Yf8a/1z/GP9Z/xb/Vv8W/1D/Fv9N/xP/TP8T/0b/E/9F/xL/Qv8S/z7/Ev88/w//N/8HuBv/B7ca/we5G/8Iwhv/CMkc/wjSH/8J2yD/CuMh/wrtIv8L/yX/DP8t/wz/K/8M/y3/Dv8z/xD/Nv8R/zb/Ef83/w//OP8P/zf/Dv80/xD/Nf8P/zX/D/80/w7/Nv8O/zX/D/81/xD/Of8Q/zj/EP87/xH/P/8S/0P/E/9H/xf/Tv8X/1L/GP9W/xf/W/8c/17/HP9i/xz/Zv8e/2n/Hf9o/x7/aP8d/2X/Hf9k/xz/Yv8d/2L/HP9g/xv/Yf8b/2T/Hv9i/x//Yv8d/2D/Gv9d/xn/Vv8X/1b/F/9S/xf/Tv8V/0z/FP9I/xL/RP8S/0L/Ev8//xH/Pf8P/zn/B7Ya/we0Gv8HtBr/B7ca/wi/G/8IxR3/CM8e/wfYH/8K4iH/C/kk/wz/LP8M/yn/Df8r/w3/MP8Q/zP/EP81/xD/N/8P/zj/D/84/w//Nv8Q/zf/EP83/xD/Nv8Q/zj/D/81/xD/Nf8Q/zb/EP83/xD/Of8Q/zn/EP89/xP/P/8U/0b/Fv9L/xb/T/8Z/1T/Gf9b/xr/W/8b/17/G/9h/xz/YP8c/2L/HP9h/xz/YP8d/2D/Gv9f/xr/Xv8c/2D/Hf9g/x3/Yf8d/2H/Hv9g/xn/Xf8Z/1n/GP9V/xf/U/8W/07/FP9O/xT/Sv8T/0T/E/9E/xL/QP8R/zv/D/85/we0Gv8Hshr/B7AZ/wevGf8Hsxr/B7ga/wjBHf8Hyh3/CNcf/wrtIv8L/yX/C/8p/wz/K/8M/y3/D/8w/xD/NP8R/zf/EP84/xD/OP8P/zf/Ef84/xH/OP8Q/zj/EP84/w//N/8Q/zf/EP81/xD/N/8Q/zn/EP86/xD/PP8S/z3/E/9C/xT/R/8W/0v/Fv9S/xj/VP8X/1X/GP9Y/xr/WP8a/1r/G/9b/xv/XP8b/1z/Gf9c/xn/W/8Z/13/G/9d/xz/Yf8c/17/Hf9d/xn/X/8a/13/HP9b/xr/Vf8X/1P/Fv9P/xT/TP8V/0r/E/9F/xP/Qv8S/0D/EP88/w//OP8="
+    }
+  },
+  "served_sources": {
+    "scope": "Local page and dedicated-worker response bodies; external CDN/font bytes are not pinned.",
+    "instrumentation": "Only brain_full.json is intercepted: route.fetch (30s, no redirects), SHA256 verification, then fulfill with the same decoded body; transfer/content encoding headers are removed and decoded content-length is set. Other local responses are read after download. Routing disables the context HTTP cache.",
+    "assets": {
+      "web/index.html": {
+        "sha256": "fa7b27f2e3b4ed9dcc8ba4d4f89ecf116f9ee925d37225d63e7d54c37c655892",
+        "bytes": 16977,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/?controller=assisted&seed=1&noscan=1&nobloom=1&noviews=1"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/page.js": {
+        "sha256": "90423df8b011533e1a5847eca5cfee7267d918a83abfd7c9f2db6ebd9bab11cd",
+        "bytes": 47469,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/page.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/body.js": {
+        "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+        "bytes": 22149,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/body.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/room.js": {
+        "sha256": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+        "bytes": 36801,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/room.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/fly.js": {
+        "sha256": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+        "bytes": 22736,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/fly.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/eye.js": {
+        "sha256": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+        "bytes": 5647,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/eye.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/life.js": {
+        "sha256": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+        "bytes": 30929,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-life.js": {
+        "sha256": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+        "bytes": 14845,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settled-life.js": {
+        "sha256": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+        "bytes": 13340,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settled-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/physics-clock.js": {
+        "sha256": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+        "bytes": 1067,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/physics-clock.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain_scan.js": {
+        "sha256": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+        "bytes": 96646,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain_scan.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/senses.js": {
+        "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+        "bytes": 3706,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/senses.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/retina.js": {
+        "sha256": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+        "bytes": 4316,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/retina.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/assisted-life.js": {
+        "sha256": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+        "bytes": 15154,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/assisted-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-policy.js": {
+        "sha256": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+        "bytes": 4578,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/neural-policy.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motor.js": {
+        "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+        "bytes": 3204,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/motor.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/lessons_full.json": {
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+        "bytes": 1709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/lessons_full.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/worker.js": {
+        "sha256": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+        "bytes": 23543,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/worker.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain.js": {
+        "sha256": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+        "bytes": 17894,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/learner.js": {
+        "sha256": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+        "bytes": 19709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/learner.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/atlas.json": {
+        "sha256": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+        "bytes": 11633781,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/atlas.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/brain_full.json": {
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+        "bytes": 42913998,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/brain_full.json"
+        ],
+        "binding": "intercepted request: fetch, hash, fulfill identical body"
+      }
+    }
+  },
+  "sources_unchanged": true,
+  "completed": "2026-09-27T07:45:46.364170+00:00",
+  "body_sha256": "f8aabef0abd90a7cd81504ab4297c7a45a32f88890f90f98d52555833cc77f73"
+}

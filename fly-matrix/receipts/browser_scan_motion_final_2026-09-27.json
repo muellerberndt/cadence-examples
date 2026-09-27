@@ -1,0 +1,7032 @@
+{
+  "schema": "cadence.scan-motion-browser/1",
+  "passed": true,
+  "started": "2026-09-27T09:58:18.981705+00:00",
+  "sha256": {
+    "web/index.html": "a9e7d1c3e11a1f71e99ea5755a65f759f92b512a551bf1b9e50cc4075916097b",
+    "web/page.js": "8432a9e9eee37a15d4e694f802cfa96f2e871a4a5807238de847b15aa96e6806",
+    "web/worker.js": "f33b71e0a7c5758dc12b92da0caaf56889fe6661678463f1ebb3ae503efe5674",
+    "web/brain-console.js": "4f846ed89bc48859e090f7c6f3271a0f4828ad66ef1384c9376ca8365d68ae92",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "03e4d9bc3e6bfc6a2217e0afa29106eccb7a05d42b617d807096d4bb2208f826",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/motion-support.js": "5e5a925bb5f312b2cd4d5b96f1730e283d73098ad4a840446faab64596c4eaa5",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "da9bf7f60329c457c80b844050a469d3950bdfbeed740cf8d0271aa9a87ca252",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/neural-replay.js": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "416dea676671e7ea63e4e62ce8685c9da3fc8a6c79264e273bb02dd223be6470",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "09a71640cd485663e1165d949b460b974458370ca0853173efc126f69fb6b63d",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "daaedb9653e10aa185459889a5c26f16f70913f371a7866e31e44b30cc774fdd",
+    "tools/check_scan_motion.py": "6d477a8986fa55b5b258cb90ae330926724aa79ee03cdce42916623a2da48e7f"
+  },
+  "errors": [],
+  "checks": [
+    "default narrow scan, eye and console visible; actual supported motion sustained with fresh/delayed/held counters separate",
+    "displayed recorded repair identity, iteration, residual and neuron activity/delta witnesses equal the actual worker frame",
+    "mobile scan and eye fit above console; optional settlement inspector closes back to default scan"
+  ],
+  "protocol": {
+    "url": "http://127.0.0.1:8817/",
+    "desktop": [
+      1440,
+      1000
+    ],
+    "mobile": [
+      430,
+      900
+    ],
+    "windowWallSeconds": 8,
+    "sampleMilliseconds": 200,
+    "speedThresholdMps": 0.1,
+    "minimumMovingFraction": 0.5,
+    "maximumMedianNoseTravelDegrees": 30,
+    "stopThresholdMps": 0.02,
+    "stopWindow": "Across both retained windows, airborne noncontact samples after2 simulated seconds from the first admitted motion-support source. All contacts retained and reported; at least3 eligible samples required. Late window may be entirely at a wall.",
+    "scope": "One UI and motion-support wiring check. Supplied motion support is separated from fresh neural actuation; no navigation competence or learning claim."
+  },
+  "browser": "151.0.7922.34",
+  "initial": [
+    {
+      "wall": 28209.80000001192,
+      "time": 0,
+      "frames": 13,
+      "fps": 0.29702676211126616,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.29999999999999993,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 29763.099999964237,
+      "time": 1.0829999999999362,
+      "frames": 15,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 29965.099999964237,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 30166.899999976158,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 30367.899999976158,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 30569,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 30770,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 30971.899999976158,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 31173,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 31374.19999998808,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 31575.30000001192,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 31776.5,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 31977.599999964237,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 32178.80000001192,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 32379.899999976158,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 32580.30000001192,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 32781.39999997616,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 32982.5,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 33183.69999998808,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 33384.69999998808,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 33585.69999998808,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 33786.80000001192,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 33987.89999997616,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 34189,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 34390.09999996424,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 34591.19999998808,
+      "time": 1.5829999999998812,
+      "frames": 18,
+      "fps": 1.846210652635467,
+      "position": [
+        1.2,
+        1,
+        1.2
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "heading": 0.30000000000000004,
+      "speed": 0,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "inactive",
+        "active": false,
+        "source": null,
+        "sourceAgeSeconds": null,
+        "originalCommand": {
+          "yawRate": 0,
+          "forwardSpeed": 0,
+          "verticalSpeed": 0,
+          "feed": 0
+        },
+        "desiredVelocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "appliedHeading": null,
+        "appliedFrames": 0,
+        "freshFrames": 0,
+        "delayedFrames": 0,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 0
+      },
+      "replay": null
+    },
+    {
+      "wall": 35207.19999998808,
+      "time": 3.1000000000002026,
+      "frames": 20,
+      "fps": 0.7453925423476134,
+      "position": [
+        1.1357565049814289,
+        0.9796001026420633,
+        1.1939737228842753
+      ],
+      "velocity": [
+        -0.23066093401388676,
+        -0.07453229484927092,
+        -0.00020225106269096478
+      ],
+      "heading": -2.8261058123413014,
+      "speed": 0.24240364983980187,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 1,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 0.1500000000000001,
+          "acceptedAt": 2.58300000000003,
+          "freshUntil": 1.1500000000000001,
+          "holdUntil": 10.58300000000003,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.9500000000002027,
+        "originalCommand": {
+          "yawRate": 0.04638009645128981,
+          "forwardSpeed": -0.04977730266258443,
+          "verticalSpeed": 8.041288909654086e-06,
+          "feed": 9.771760758193156e-06
+        },
+        "desiredVelocityWorld": [
+          -0.28439292081704215,
+          -0.09550218107012841,
+          8.041288909654086e-06
+        ],
+        "velocityWorld": [
+          -0.24845234871599145,
+          -0.08120674663756339,
+          7.00642716816848e-06
+        ],
+        "appliedHeading": -2.8256880530073576,
+        "appliedFrames": 1034,
+        "freshFrames": 0,
+        "delayedFrames": 1034,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 2.3976579666137696,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 35409,
+      "time": 3.166500000000225,
+      "frames": 22,
+      "fps": 0.7453925423476134,
+      "position": [
+        1.1199792967727908,
+        0.9744819486638018,
+        1.1939646793029715
+      ],
+      "velocity": [
+        -0.24319265332523388,
+        -0.0791978983737596,
+        -8.601195648481254e-05
+      ],
+      "heading": -2.823606674295584,
+      "speed": 0.25576351135020753,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 1,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 0.1500000000000001,
+          "acceptedAt": 2.58300000000003,
+          "freshUntil": 1.1500000000000001,
+          "holdUntil": 10.58300000000003,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.016500000000225,
+        "originalCommand": {
+          "yawRate": 0.04638009645128981,
+          "forwardSpeed": -0.04977730266258443,
+          "verticalSpeed": 8.041288909654086e-06,
+          "feed": 9.771760758193156e-06
+        },
+        "desiredVelocityWorld": [
+          -0.28409701347961575,
+          -0.09637887181308477,
+          8.041288909654086e-06
+        ],
+        "velocityWorld": [
+          -0.25681036649479644,
+          -0.08465330186630543,
+          7.248130379425672e-06
+        ],
+        "appliedHeading": -2.823175630167234,
+        "appliedFrames": 1167,
+        "freshFrames": 0,
+        "delayedFrames": 1167,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 2.3976579666137696,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 35610.59999996424,
+      "time": 3.4835000000003307,
+      "frames": 23,
+      "fps": 0.7453925423476134,
+      "position": [
+        1.037282664516159,
+        0.9469932892208646,
+        1.1939596556660592
+      ],
+      "velocity": [
+        -0.2722664588127816,
+        -0.09236584630731953,
+        6.0214865888374826e-06
+      ],
+      "heading": -2.8107014280067126,
+      "speed": 0.28750734626878577,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 1,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 0.1500000000000001,
+          "acceptedAt": 2.58300000000003,
+          "freshUntil": 1.1500000000000001,
+          "holdUntil": 10.58300000000003,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.3335000000003308,
+        "originalCommand": {
+          "yawRate": 0.04638009645128981,
+          "forwardSpeed": -0.04977730266258443,
+          "verticalSpeed": 8.041288909654086e-06,
+          "feed": 9.771760758193156e-06
+        },
+        "desiredVelocityWorld": [
+          -0.28264934996469526,
+          -0.10054523839812207,
+          8.041288909654086e-06
+        ],
+        "velocityWorld": [
+          -0.27579423065232483,
+          -0.09488815676308851,
+          7.818098979504818e-06
+        ],
+        "appliedHeading": -2.8102245707221916,
+        "appliedFrames": 1801,
+        "freshFrames": 0,
+        "delayedFrames": 1801,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 2,
+        "iteration": 2,
+        "residual": 1.9181263732910154,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 35811.69999998808,
+      "time": 3.4835000000003307,
+      "frames": 23,
+      "fps": 0.7453925423476134,
+      "position": [
+        1.037282664516159,
+        0.9469932892208646,
+        1.1939596556660592
+      ],
+      "velocity": [
+        -0.2722664588127816,
+        -0.09236584630731953,
+        6.0214865888374826e-06
+      ],
+      "heading": -2.8107014280067126,
+      "speed": 0.28750734626878577,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 1,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 0.1500000000000001,
+          "acceptedAt": 2.58300000000003,
+          "freshUntil": 1.1500000000000001,
+          "holdUntil": 10.58300000000003,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.3335000000003308,
+        "originalCommand": {
+          "yawRate": 0.04638009645128981,
+          "forwardSpeed": -0.04977730266258443,
+          "verticalSpeed": 8.041288909654086e-06,
+          "feed": 9.771760758193156e-06
+        },
+        "desiredVelocityWorld": [
+          -0.28264934996469526,
+          -0.10054523839812207,
+          8.041288909654086e-06
+        ],
+        "velocityWorld": [
+          -0.27579423065232483,
+          -0.09488815676308851,
+          7.818098979504818e-06
+        ],
+        "appliedHeading": -2.8102245707221916,
+        "appliedFrames": 1801,
+        "freshFrames": 0,
+        "delayedFrames": 1801,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 2,
+        "iteration": 2,
+        "residual": 1.9181263732910154,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 36013.69999998808,
+      "time": 3.783500000000431,
+      "frames": 24,
+      "fps": 4.165625260351594,
+      "position": [
+        0.9543038144748697,
+        0.9182489560548879,
+        1.1939619042178409
+      ],
+      "velocity": [
+        -0.2792719244630782,
+        -0.0987680178362526,
+        7.981091616814182e-06
+      ],
+      "heading": -2.79752784079305,
+      "speed": 0.2962227694499759,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 1,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 0.1500000000000001,
+          "acceptedAt": 2.58300000000003,
+          "freshUntil": 1.1500000000000001,
+          "holdUntil": 10.58300000000003,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.633500000000431,
+        "originalCommand": {
+          "yawRate": 0.04638009645128981,
+          "forwardSpeed": -0.04977730266258443,
+          "verticalSpeed": 8.041288909654086e-06,
+          "feed": 9.771760758193156e-06
+        },
+        "desiredVelocityWorld": [
+          -0.28122304570454143,
+          -0.10446817010296197,
+          8.041288909654086e-06
+        ],
+        "velocityWorld": [
+          -0.27999118597143374,
+          -0.10048322934650998,
+          7.974065394536034e-06
+        ],
+        "appliedHeading": -2.797028951783514,
+        "appliedFrames": 2401,
+        "freshFrames": 0,
+        "delayedFrames": 2401,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 2,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 3,
+        "iteration": 4,
+        "residual": 2.5409868618884177,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 9.902347090093647e-14,
+            "deltaV": 7.072385645873203e-12,
+            "heat": 2.022662731748781e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 36808.80000001192,
+      "time": 4.716500000000106,
+      "frames": 26,
+      "fps": 4.165625260351594,
+      "position": [
+        0.6933536597893281,
+        0.8196883993168386,
+        1.1939694048896952
+      ],
+      "velocity": [
+        -0.2782122769334219,
+        -0.11193973088599676,
+        8.047654591143313e-06
+      ],
+      "heading": -2.754718380134062,
+      "speed": 0.29988760292367606,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.1335000000000757,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.27644058682460304,
+          -0.11653583979218193,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.2776956024310368,
+          -0.11330139684907067,
+          8.03505605968957e-06
+        ],
+        "appliedHeading": -2.7542038939769986,
+        "appliedFrames": 4267,
+        "freshFrames": 0,
+        "delayedFrames": 4267,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 5,
+        "iteration": 16,
+        "residual": 3.6483800826417125,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.4034407276884995e-12,
+            "deltaV": 1.7601845328507615e-11,
+            "heat": 5.034029304518128e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -6.024635790247146e-10,
+            "heat": 1.7230121329703252e-08
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": -2.5903665131399474e-15,
+            "heat": 7.408303300242974e-14
+          }
+        ],
+        "displayed": true
+      }
+    }
+  ],
+  "initialSummary": {
+    "wallSeconds": 8.599,
+    "simSeconds": 4.716500000000106,
+    "fps": 1.5118036981044307,
+    "netHorizontalM": 0.5377757779872497,
+    "minSpeedMps": 0,
+    "medianSpeedMps": 0.0,
+    "fractionAbovePointOne": 0.1875,
+    "contactSamples": 0,
+    "freshSteps": 0,
+    "supportSteps": {
+      "appliedFrames": 4267,
+      "freshFrames": 0,
+      "delayedFrames": 4267,
+      "heldFrames": 0
+    },
+    "medianNoseTravelDegrees": 0.21926908330012315
+  },
+  "desktopLayout": {
+    "brain": {
+      "left": 1136,
+      "right": 1416,
+      "top": 22,
+      "bottom": 782,
+      "width": 280,
+      "height": 760,
+      "visible": true,
+      "unobscured": true
+    },
+    "scan": {
+      "left": 1147,
+      "right": 1405,
+      "top": 84.5,
+      "bottom": 684.21875,
+      "width": 258,
+      "height": 599.71875,
+      "visible": true,
+      "unobscured": true
+    },
+    "eye": {
+      "left": 1136,
+      "right": 1416,
+      "top": 796,
+      "bottom": 976,
+      "width": 280,
+      "height": 180,
+      "visible": true,
+      "unobscured": true
+    },
+    "brain-console": {
+      "left": 24,
+      "right": 604,
+      "top": 796,
+      "bottom": 976,
+      "width": 580,
+      "height": 180,
+      "visible": true,
+      "unobscured": true
+    },
+    "console-input": {
+      "left": 130.8125,
+      "right": 553,
+      "top": 941,
+      "bottom": 965,
+      "width": 422.1875,
+      "height": 24,
+      "visible": true,
+      "unobscured": true
+    },
+    "scan-playback": {
+      "left": 1147,
+      "right": 1405,
+      "top": 724,
+      "bottom": 738,
+      "width": 258,
+      "height": 14,
+      "visible": true,
+      "unobscured": true
+    }
+  },
+  "steady": [
+    {
+      "wall": 36862.69999998808,
+      "time": 4.7835000000000685,
+      "frames": 28,
+      "fps": 4,
+      "position": [
+        0.6747244929289515,
+        0.8121590557020887,
+        1.1939699440865839
+      ],
+      "velocity": [
+        -0.27788335595668856,
+        -0.11280985797167625,
+        8.047769353304608e-06
+      ],
+      "heading": -2.751615242282333,
+      "speed": 0.299908692060336,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.2005000000000385,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.27607712147173197,
+          -0.11739430565356462,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.2773556614489577,
+          -0.11416797531809478,
+          8.035381345662878e-06
+        ],
+        "appliedHeading": -2.7511005943312594,
+        "appliedFrames": 4401,
+        "freshFrames": 0,
+        "delayedFrames": 4401,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 5,
+        "iteration": 16,
+        "residual": 3.6483800826417125,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.4034407276884995e-12,
+            "deltaV": 1.7601845328507615e-11,
+            "heat": 5.034029304518128e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -6.024635790247146e-10,
+            "heat": 1.7230121329703252e-08
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": -2.5903665131399474e-15,
+            "heat": 7.408303300242974e-14
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 37064.5,
+      "time": 4.7835000000000685,
+      "frames": 28,
+      "fps": 4,
+      "position": [
+        0.6747244929289515,
+        0.8121590557020887,
+        1.1939699440865839
+      ],
+      "velocity": [
+        -0.27788335595668856,
+        -0.11280985797167625,
+        8.047769353304608e-06
+      ],
+      "heading": -2.751615242282333,
+      "speed": 0.299908692060336,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.2005000000000385,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.27607712147173197,
+          -0.11739430565356462,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.2773556614489577,
+          -0.11416797531809478,
+          8.035381345662878e-06
+        ],
+        "appliedHeading": -2.7511005943312594,
+        "appliedFrames": 4401,
+        "freshFrames": 0,
+        "delayedFrames": 4401,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 5,
+        "iteration": 16,
+        "residual": 3.6483800826417125,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.4034407276884995e-12,
+            "deltaV": 1.7601845328507615e-11,
+            "heat": 5.034029304518128e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -6.024635790247146e-10,
+            "heat": 1.7230121329703252e-08
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": -2.5903665131399474e-15,
+            "heat": 7.408303300242974e-14
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 37266.59999996424,
+      "time": 5.1334999999998745,
+      "frames": 29,
+      "fps": 4,
+      "position": [
+        0.5777798553838941,
+        0.7718835565991392,
+        1.1939727608687232
+      ],
+      "velocity": [
+        -0.27606515861256964,
+        -0.1173210996819833,
+        8.048065564567557e-06
+      ],
+      "heading": -2.7353937666655392,
+      "speed": 0.2999603510972293,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.5504999999998446,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.2741351653975413,
+          -0.1218602112769491,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.2754988630970001,
+          -0.11866562275457175,
+          8.036178722335582e-06
+        ],
+        "appliedHeading": -2.7348786805715726,
+        "appliedFrames": 5101,
+        "freshFrames": 0,
+        "delayedFrames": 5101,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 130,
+        "residual": 9.493687657922967e-07,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.770367698607835e-12,
+            "deltaV": -9.778996410026663e-20,
+            "heat": 2.7967381828918017e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.8244186571252557e-15,
+            "heat": 8.077679557140158e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.0657300045901994e-22,
+            "heat": 3.047928114659018e-21
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 37467.09999996424,
+      "time": 5.1334999999998745,
+      "frames": 29,
+      "fps": 4,
+      "position": [
+        0.5777798553838941,
+        0.7718835565991392,
+        1.1939727608687232
+      ],
+      "velocity": [
+        -0.27606515861256964,
+        -0.1173210996819833,
+        8.048065564567557e-06
+      ],
+      "heading": -2.7353937666655392,
+      "speed": 0.2999603510972293,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.5504999999998446,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.2741351653975413,
+          -0.1218602112769491,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.2754988630970001,
+          -0.11866562275457175,
+          8.036178722335582e-06
+        ],
+        "appliedHeading": -2.7348786805715726,
+        "appliedFrames": 5101,
+        "freshFrames": 0,
+        "delayedFrames": 5101,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 130,
+        "residual": 9.493687657922967e-07,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.770367698607835e-12,
+            "deltaV": -9.778996410026663e-20,
+            "heat": 2.7967381828918017e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.8244186571252557e-15,
+            "heat": 8.077679557140158e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.0657300045901994e-22,
+            "heat": 3.047928114659018e-21
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 37668.89999997616,
+      "time": 5.516499999999662,
+      "frames": 30,
+      "fps": 4,
+      "position": [
+        0.47244903209729855,
+        0.7260107138096016,
+        1.1939758432974614
+      ],
+      "velocity": [
+        -0.27395039853510517,
+        -0.1222101868303715,
+        8.048148570090619e-06
+      ],
+      "heading": -2.7176336667111896,
+      "speed": 0.29997358320801726,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.9334999999996323,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.2719273560695684,
+          -0.12671035088347812,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.27335603553271054,
+          -0.12354320890686589,
+          8.036383311614661e-06
+        ],
+        "appliedHeading": -2.7171184457309656,
+        "appliedFrames": 5867,
+        "freshFrames": 0,
+        "delayedFrames": 5867,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 130,
+        "residual": 9.493687657922967e-07,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.770367698607835e-12,
+            "deltaV": -9.778996410026663e-20,
+            "heat": 2.7967381828918017e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.8244186571252557e-15,
+            "heat": 8.077679557140158e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.0657300045901994e-22,
+            "heat": 3.047928114659018e-21
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 37870.5,
+      "time": 5.68349999999957,
+      "frames": 31,
+      "fps": 4,
+      "position": [
+        0.42677889091818855,
+        0.7054240635224923,
+        1.1939771873393732
+      ],
+      "velocity": [
+        -0.2729973288797161,
+        -0.12432889294162412,
+        8.048160463712218e-06
+      ],
+      "heading": -2.709888717268956,
+      "speed": 0.2999753576471736,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.1004999999995397,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.27093777708674804,
+          -0.1288127359669517,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.2723920823530629,
+          -0.12565711232783006,
+          8.036410793828987e-06
+        ],
+        "appliedHeading": -2.7093734755399206,
+        "appliedFrames": 6201,
+        "freshFrames": 0,
+        "delayedFrames": 6201,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 130,
+        "residual": 9.493687657922967e-07,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.770367698607835e-12,
+            "deltaV": -9.778996410026663e-20,
+            "heat": 2.7967381828918017e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.8244186571252557e-15,
+            "heat": 8.077679557140158e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.0657300045901994e-22,
+            "heat": 3.047928114659018e-21
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 38072.19999998808,
+      "time": 5.849999999999477,
+      "frames": 32,
+      "fps": 3.750234389649358,
+      "position": [
+        0.38140537632955196,
+        0.6845474544097478,
+        1.19397852735867
+      ],
+      "velocity": [
+        -0.2720299727737284,
+        -0.12643359229133178,
+        8.048166747246566e-06
+      ],
+      "heading": -2.7021667167943964,
+      "speed": 0.29997626463933136,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 2,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 2.58300000000003,
+          "acceptedAt": 3.9500000000004865,
+          "freshUntil": 3.58300000000003,
+          "holdUntil": 11.950000000000486,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.2669999999994475,
+        "originalCommand": {
+          "yawRate": 0.04638009895907497,
+          "forwardSpeed": -0.04977808552137617,
+          "verticalSpeed": 8.036439712346492e-06,
+          "feed": 9.7717265376178e-06
+        },
+        "desiredVelocityWorld": [
+          -0.26993497965224317,
+          -0.1309011335326897,
+          8.036439712346492e-06
+        ],
+        "velocityWorld": [
+          -0.27141419214536755,
+          -0.1277570174150518,
+          8.036424855183058e-06
+        ],
+        "appliedHeading": -2.7016514637324955,
+        "appliedFrames": 6534,
+        "freshFrames": 0,
+        "delayedFrames": 6534,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 3,
+        "accepted": 2,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 1,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 130,
+        "residual": 9.493687657922967e-07,
+        "frameCount": 7,
+        "iterations": 130,
+        "neuronCount": 150802,
+        "peakDelta": 0.7516782283782959,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.770367698607835e-12,
+            "deltaV": -9.778996410026663e-20,
+            "heat": 2.7967381828918017e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.8244186571252557e-15,
+            "heat": 8.077679557140158e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.0657300045901994e-22,
+            "heat": 3.047928114659018e-21
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 38923.80000001192,
+      "time": 6.832999999998933,
+      "frames": 34,
+      "fps": 3.750234389649358,
+      "position": [
+        0.2557745962733337,
+        0.6261230918613144,
+        1.188690617166522
+      ],
+      "velocity": [
+        0.16546323124590798,
+        0.08926175284217498,
+        -0.0012290547621174738
+      ],
+      "heading": 0.49429874040826643,
+      "speed": 0.18800463136527873,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.882999999998446,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.26365874957245117,
+          0.1431225480973961,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.1976821929237812,
+          0.10657656423898482,
+          1.2131622167559845e-05
+        ],
+        "appliedHeading": 0.494460076411919,
+        "appliedFrames": 8500,
+        "freshFrames": 0,
+        "delayedFrames": 8500,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 1.771268556439897,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.908822484438579e-12,
+            "deltaV": 1.2952316962666448e-16,
+            "heat": 4.576168765891295e-15
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.1669021849786126e-18,
+            "heat": 7.65585832466573e-17
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 2.1920794696167997e-29,
+            "heat": 7.744811900324876e-28
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 39125.09999996424,
+      "time": 6.883499999998905,
+      "frames": 36,
+      "fps": 3.8707180181923695,
+      "position": [
+        0.2645985499677469,
+        0.6308824445712323,
+        1.1886444739497122
+      ],
+      "velocity": [
+        0.1832449055813169,
+        0.09884223625350125,
+        -0.0006613445830426574
+      ],
+      "heading": 0.4951663726445378,
+      "speed": 0.20820298530304196,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.933499999998418,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.2633204778176772,
+          0.14374395974047108,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.2097173792688318,
+          0.11332032630721467,
+          1.2239343535763839e-05
+        ],
+        "appliedHeading": 0.49540250936029734,
+        "appliedFrames": 8601,
+        "freshFrames": 0,
+        "delayedFrames": 8601,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 1.771268556439897,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.908822484438579e-12,
+            "deltaV": 1.2952316962666448e-16,
+            "heat": 4.576168765891295e-15
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.1669021849786126e-18,
+            "heat": 7.65585832466573e-17
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 2.1920794696167997e-29,
+            "heat": 7.744811900324876e-28
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 39329.89999997616,
+      "time": 7.21649999999872,
+      "frames": 37,
+      "fps": 3.8707180181923695,
+      "position": [
+        0.3374873241860624,
+        0.6705103817494276,
+        1.1885943397310499
+      ],
+      "velocity": [
+        0.24155011654297057,
+        0.13274207347545017,
+        1.2492922674169817e-06
+      ],
+      "heading": 0.5056680317237617,
+      "speed": 0.2756209659523101,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.2664999999982336,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.2610533122819383,
+          0.14782140625304846,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.24816017420180767,
+          0.1375423163877551,
+          1.2593550120803647e-05
+        ],
+        "appliedHeading": 0.506098891432332,
+        "appliedFrames": 9267,
+        "freshFrames": 0,
+        "delayedFrames": 9267,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 2,
+        "iteration": 2,
+        "residual": 2.7172960592875293,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.908824652842924e-12,
+            "deltaV": 1.0727744407125128e-16,
+            "heat": 3.790207741166977e-15
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -1.942206843384708e-18,
+            "heat": 6.861989929741438e-17
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.7536634854154736e-29,
+            "heat": 6.195849038777414e-28
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 39531,
+      "time": 7.21649999999872,
+      "frames": 37,
+      "fps": 3.8707180181923695,
+      "position": [
+        0.3374873241860624,
+        0.6705103817494276,
+        1.1885943397310499
+      ],
+      "velocity": [
+        0.24155011654297057,
+        0.13274207347545017,
+        1.2492922674169817e-06
+      ],
+      "heading": 0.5056680317237617,
+      "speed": 0.2756209659523101,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.2664999999982336,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.2610533122819383,
+          0.14782140625304846,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.24816017420180767,
+          0.1375423163877551,
+          1.2593550120803647e-05
+        ],
+        "appliedHeading": 0.506098891432332,
+        "appliedFrames": 9267,
+        "freshFrames": 0,
+        "delayedFrames": 9267,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 2,
+        "iteration": 2,
+        "residual": 2.7172960592875293,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.908824652842924e-12,
+            "deltaV": 1.0727744407125128e-16,
+            "heat": 3.790207741166977e-15
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -1.942206843384708e-18,
+            "heat": 6.861989929741438e-17
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.7536634854154736e-29,
+            "heat": 6.195849038777414e-28
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 39732.09999996424,
+      "time": 7.549999999998535,
+      "frames": 38,
+      "fps": 3.8707180181923695,
+      "position": [
+        0.42093953943911727,
+        0.7170682965251264,
+        1.1885977032814847
+      ],
+      "velocity": [
+        0.2554043454791858,
+        0.1447330157678492,
+        1.2624201725176398e-05
+      ],
+      "heading": 0.5195220601474609,
+      "speed": 0.2935626433027672,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.5999999999980488,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.25871946745059504,
+          0.1518691448651782,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.2566142556153751,
+          0.146930822447235,
+          1.2687109522386266e-05
+        ],
+        "appliedHeading": 0.520009668872082,
+        "appliedFrames": 9934,
+        "freshFrames": 0,
+        "delayedFrames": 9934,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 3,
+        "iteration": 4,
+        "residual": 2.9820197959956802,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.812087364524208e-12,
+            "deltaV": -6.909022833012646e-12,
+            "heat": 2.44101933111196e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -1.5769040325465898e-18,
+            "heat": 5.571342005208419e-17
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 1.1223446276566376e-29,
+            "heat": 3.965343384817545e-28
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 39933.5,
+      "time": 7.716499999998443,
+      "frames": 39,
+      "fps": 3.8707180181923695,
+      "position": [
+        0.46362819814437983,
+        0.7414629013713265,
+        1.1885998197472547
+      ],
+      "velocity": [
+        0.2570557207552918,
+        0.14813204216053927,
+        1.2749021239048141e-05
+      ],
+      "heading": 0.5269188552278782,
+      "speed": 0.2966829039356234,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.7664999999979565,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.2575307718194411,
+          0.1538762540682706,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.2573168145134635,
+          0.1498756082912044,
+          1.2703378889433107e-05
+        ],
+        "appliedHeading": 0.5274192763456841,
+        "appliedFrames": 10267,
+        "freshFrames": 0,
+        "delayedFrames": 10267,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 4,
+        "iteration": 8,
+        "residual": 1.2846016624936838,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 3.1762789013539683e-12,
+            "deltaV": -2.0211369036737814e-11,
+            "heat": 7.14085679476284e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 2.337511260941394e-12,
+            "heat": 8.258635442182083e-11
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.597123683353994e-30,
+            "heat": 1.6242047315029172e-28
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 40134.5,
+      "time": 7.88349999999835,
+      "frames": 40,
+      "fps": 4,
+      "position": [
+        0.5065927630197457,
+        0.7664361731082661,
+        1.1886019491685866
+      ],
+      "velocity": [
+        0.25732687077178323,
+        0.15086120422825228,
+        1.2748781230432098e-05
+      ],
+      "heading": 0.5344957997713474,
+      "speed": 0.29828882205405627,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 3,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 3.9500000000004865,
+          "acceptedAt": 6.183499999999293,
+          "freshUntil": 4.950000000000486,
+          "holdUntil": 14.183499999999292,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.933499999997864,
+        "originalCommand": {
+          "yawRate": 0.04670079846776504,
+          "forwardSpeed": 0.19158683209597638,
+          "verticalSpeed": 1.2720569029405076e-05,
+          "feed": 1.066555693040515e-05
+        },
+        "desiredVelocityWorld": [
+          0.2563228658441765,
+          0.15588004505204725,
+          1.2720569029405076e-05
+        ],
+        "velocityWorld": [
+          0.2570940081504529,
+          0.15236897392987617,
+          1.2711755077039498e-05
+        ],
+        "appliedHeading": 0.535003921650252,
+        "appliedFrames": 10601,
+        "freshFrames": 0,
+        "delayedFrames": 10601,
+        "heldFrames": 0,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 4,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 5,
+        "iteration": 16,
+        "residual": 1.1804242321678853,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 1.5463152676711833e-12,
+            "deltaV": -1.7223819592793177e-11,
+            "heat": 6.085328907445842e-10
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 6.530931906389981e-10,
+            "heat": 2.3074361976682667e-08
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 7.712693971620861e-31,
+            "heat": 2.724963370833258e-29
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 41036.19999998808,
+      "time": 8.949999999999447,
+      "frames": 42,
+      "fps": 1.8751171948246792,
+      "position": [
+        0.7781373575655309,
+        0.934749506278393,
+        1.1886151498947275
+      ],
+      "velocity": [
+        0.25095346895051934,
+        0.1642994584696153,
+        1.189578241775795e-05
+      ],
+      "heading": 0.5840578528041945,
+      "speed": 0.2999532557444711,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.7665000000001543,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.2482333382648102,
+          0.16846426853759908,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.2501534053615318,
+          0.16553409680995138,
+          1.1859595135790766e-05
+        ],
+        "appliedHeading": 0.5845773529740347,
+        "appliedFrames": 12734,
+        "freshFrames": 0,
+        "delayedFrames": 12201,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 41237.59999996424,
+      "time": 8.998999999999507,
+      "frames": 44,
+      "fps": 1.8751171948246792,
+      "position": [
+        0.7904248417079667,
+        0.9428144587886049,
+        1.188615732458937
+      ],
+      "velocity": [
+        0.2505799615237045,
+        0.16487619025322153,
+        1.1882898759435221e-05
+      ],
+      "heading": 0.5863492354612287,
+      "speed": 0.299957455699367,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.815500000000214,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.24784644448913287,
+          0.16903295523091105,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.24977576978178873,
+          0.16610842274199794,
+          1.1851010549198256e-05
+        ],
+        "appliedHeading": 0.5868687887082603,
+        "appliedFrames": 12832,
+        "freshFrames": 0,
+        "delayedFrames": 12299,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 41445.59999996424,
+      "time": 9.333499999999916,
+      "frames": 45,
+      "fps": 1.8751171948246792,
+      "position": [
+        0.8738108424127663,
+        0.9986214529504348,
+        1.1886196983362525
+      ],
+      "velocity": [
+        0.2479818964434733,
+        0.16878397188885627,
+        1.1838947870267069e-05
+      ],
+      "heading": 0.601995765821016,
+      "speed": 0.2999717488869239,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.150000000000623,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.24517060495709753,
+          0.1728912214803598,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.24715410014248387,
+          0.17000150257011343,
+          1.1821765917476268e-05
+        ],
+        "appliedHeading": 0.6025155105454034,
+        "appliedFrames": 13501,
+        "freshFrames": 0,
+        "delayedFrames": 12968,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 41646.69999998808,
+      "time": 9.333499999999916,
+      "frames": 45,
+      "fps": 1.8751171948246792,
+      "position": [
+        0.8738108424127663,
+        0.9986214529504348,
+        1.1886196983362525
+      ],
+      "velocity": [
+        0.2479818964434733,
+        0.16878397188885627,
+        1.1838947870267069e-05
+      ],
+      "heading": 0.601995765821016,
+      "speed": 0.2999717488869239,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.150000000000623,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.24517060495709753,
+          0.1728912214803598,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.24715410014248387,
+          0.17000150257011343,
+          1.1821765917476268e-05
+        ],
+        "appliedHeading": 0.6025155105454034,
+        "appliedFrames": 13501,
+        "freshFrames": 0,
+        "delayedFrames": 12968,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 41848.30000001192,
+      "time": 9.650000000000302,
+      "frames": 46,
+      "fps": 1.8751171948246792,
+      "position": [
+        0.9518987058699876,
+        1.0526219866174524,
+        1.188623443217579
+      ],
+      "velocity": [
+        0.24545859382799304,
+        0.17243930505260932,
+        1.182771584927666e-05
+      ],
+      "heading": 0.6168035188532972,
+      "speed": 0.29997539100906684,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.4665000000010098,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.24258344965147968,
+          0.17650288936781744,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.2446117260531316,
+          0.1736439467814021,
+          1.1814296756266591e-05
+        ],
+        "appliedHeading": 0.6173233182132497,
+        "appliedFrames": 14134,
+        "freshFrames": 0,
+        "delayedFrames": 13601,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 42049.89999997616,
+      "time": 9.816500000000506,
+      "frames": 47,
+      "fps": 1.8751171948246792,
+      "position": [
+        0.9926550323248535,
+        1.0814925399717163,
+        1.1886254123335345
+      ],
+      "velocity": [
+        0.24410839673962118,
+        0.17434661516192315,
+        1.1825571413120606e-05
+      ],
+      "heading": 0.6245938144220211,
+      "speed": 0.299976085008802,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.6330000000012133,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.24120104307169069,
+          0.17838737853651082,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.24325195267820923,
+          0.17554452954268177,
+          1.1812870637137617e-05
+        ],
+        "appliedHeading": 0.6251136250930113,
+        "appliedFrames": 14467,
+        "freshFrames": 0,
+        "delayedFrames": 13934,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 42251.19999998808,
+      "time": 10.00000000000073,
+      "frames": 48,
+      "fps": 5.713741548423928,
+      "position": [
+        1.0373106890057973,
+        1.1136775891962158,
+        1.1886275822043917
+      ],
+      "velocity": [
+        0.24260282727759297,
+        0.17643624407153247,
+        1.1824393247315774e-05
+      ],
+      "heading": 0.6331796626892872,
+      "speed": 0.2999764657854862,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 4,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 6.183499999999293,
+          "acceptedAt": 8.21649999999855,
+          "freshUntil": 7.183499999999293,
+          "holdUntil": 16.21649999999855,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.8165000000014375,
+        "originalCommand": {
+          "yawRate": 0.04679023900368093,
+          "forwardSpeed": 0.19264341911826605,
+          "verticalSpeed": 1.1811363806086775e-05,
+          "feed": 1.0662294937219782e-05
+        },
+        "desiredVelocityWorld": [
+          0.23966053571674598,
+          0.18045173210574159,
+          1.1811363806086775e-05
+        ],
+        "velocityWorld": [
+          0.24173601006106596,
+          0.1776267098642524,
+          1.1812087062696512e-05
+        ],
+        "appliedHeading": 0.6336994798902206,
+        "appliedFrames": 14834,
+        "freshFrames": 0,
+        "delayedFrames": 14301,
+        "heldFrames": 533,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 4,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 3,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 111,
+        "residual": 8.958749595500137e-07,
+        "frameCount": 7,
+        "iterations": 111,
+        "neuronCount": 150802,
+        "peakDelta": 0.6084640622138977,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 2.0616383491871282e-13,
+            "deltaV": -1.9538148343567873e-17,
+            "heat": 6.903001941558511e-16
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -4.672029919751788e-16,
+            "heat": 1.6506696861153317e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 4.794626773595221e-40,
+            "heat": 1.6939843114520272e-38
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 43061.5,
+      "time": 10.966500000001911,
+      "frames": 50,
+      "fps": 5.713741548423928,
+      "position": [
+        1.2678497801941533,
+        1.2894483781271755,
+        1.1886391491353328
+      ],
+      "velocity": [
+        0.23438044673227992,
+        0.18722153116070112,
+        1.2158908268423594e-05
+      ],
+      "heading": 0.6783920996700322,
+      "speed": 0.2999768250058335,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 5,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 8.21649999999855,
+          "acceptedAt": 10.283000000001076,
+          "freshUntil": 9.21649999999855,
+          "holdUntil": 18.283000000001074,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.750000000003361,
+        "originalCommand": {
+          "yawRate": 0.04676710239625711,
+          "forwardSpeed": 0.19239720814136677,
+          "verticalSpeed": 1.2183025367259314e-05,
+          "feed": 1.0663060864017657e-05
+        },
+        "desiredVelocityWorld": [
+          0.23126078957267973,
+          0.19109800419214412,
+          1.2183025367259314e-05
+        ],
+        "velocityWorld": [
+          0.2334610113516967,
+          0.18837104136453434,
+          1.215889777501526e-05
+        ],
+        "appliedHeading": 0.6789116835373653,
+        "appliedFrames": 16767,
+        "freshFrames": 0,
+        "delayedFrames": 16034,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 1.9969699449937355,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -6.160207245903611e-20,
+            "heat": 2.6495695170288172e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -3.4918557379688187e-16,
+            "heat": 1.5018836055456092e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 43262.80000001192,
+      "time": 11.016500000001972,
+      "frames": 52,
+      "fps": 3.934684241589618,
+      "position": [
+        1.2795577369909332,
+        1.2988232853653112,
+        1.1886397572507927
+      ],
+      "velocity": [
+        0.23394199688271952,
+        0.18776911080302702,
+        1.2165429226114554e-05
+      ],
+      "heading": 0.680730525191741,
+      "speed": 0.2999768272337611,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 5,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 8.21649999999855,
+          "acceptedAt": 10.283000000001076,
+          "freshUntil": 9.21649999999855,
+          "holdUntil": 18.283000000001074,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.800000000003422,
+        "originalCommand": {
+          "yawRate": 0.04676710239625711,
+          "forwardSpeed": 0.19239720814136677,
+          "verticalSpeed": 1.2183025367259314e-05,
+          "feed": 1.0663060864017657e-05
+        },
+        "desiredVelocityWorld": [
+          0.23081330272773048,
+          0.1916382510980442,
+          1.2183025367259314e-05
+        ],
+        "velocityWorld": [
+          0.23301988358509101,
+          0.18891645728586584,
+          1.2163271365491386e-05
+        ],
+        "appliedHeading": 0.6812501059697685,
+        "appliedFrames": 16867,
+        "freshFrames": 0,
+        "delayedFrames": 16134,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 1.9969699449937355,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -6.160207245903611e-20,
+            "heat": 2.6495695170288172e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -3.4918557379688187e-16,
+            "heat": 1.5018836055456092e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 43463.89999997616,
+      "time": 11.016500000001972,
+      "frames": 52,
+      "fps": 3.934684241589618,
+      "position": [
+        1.2795577369909332,
+        1.2988232853653112,
+        1.1886397572507927
+      ],
+      "velocity": [
+        0.23394199688271952,
+        0.18776911080302702,
+        1.2165429226114554e-05
+      ],
+      "heading": 0.680730525191741,
+      "speed": 0.2999768272337611,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 5,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 8.21649999999855,
+          "acceptedAt": 10.283000000001076,
+          "freshUntil": 9.21649999999855,
+          "holdUntil": 18.283000000001074,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.800000000003422,
+        "originalCommand": {
+          "yawRate": 0.04676710239625711,
+          "forwardSpeed": 0.19239720814136677,
+          "verticalSpeed": 1.2183025367259314e-05,
+          "feed": 1.0663060864017657e-05
+        },
+        "desiredVelocityWorld": [
+          0.23081330272773048,
+          0.1916382510980442,
+          1.2183025367259314e-05
+        ],
+        "velocityWorld": [
+          0.23301988358509101,
+          0.18891645728586584,
+          1.2163271365491386e-05
+        ],
+        "appliedHeading": 0.6812501059697685,
+        "appliedFrames": 16867,
+        "freshFrames": 0,
+        "delayedFrames": 16134,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 1,
+        "iteration": 1,
+        "residual": 1.9969699449937355,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -6.160207245903611e-20,
+            "heat": 2.6495695170288172e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -3.4918557379688187e-16,
+            "heat": 1.5018836055456092e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 43665.80000001192,
+      "time": 11.41600000000246,
+      "frames": 53,
+      "fps": 3.934684241589618,
+      "position": [
+        1.3723104850728045,
+        1.374706841010673,
+        1.1886446232500165
+      ],
+      "velocity": [
+        0.23039312496144077,
+        0.1921070279805142,
+        1.2188977250392506e-05
+      ],
+      "heading": 0.6994142360825076,
+      "speed": 0.29997683615406734,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 5,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 8.21649999999855,
+          "acceptedAt": 10.283000000001076,
+          "freshUntil": 9.21649999999855,
+          "holdUntil": 18.283000000001074,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.19950000000391,
+        "originalCommand": {
+          "yawRate": 0.04676710239625711,
+          "forwardSpeed": 0.19239720814136677,
+          "verticalSpeed": 1.2183025367259314e-05,
+          "feed": 1.0663060864017657e-05
+        },
+        "desiredVelocityWorld": [
+          0.22719276191816956,
+          0.19591694396349166,
+          1.2183025367259314e-05
+        ],
+        "velocityWorld": [
+          0.22944976512808613,
+          0.1932369089510288,
+          1.2179029118575721e-05
+        ],
+        "appliedHeading": 0.6999338057361804,
+        "appliedFrames": 17666,
+        "freshFrames": 0,
+        "delayedFrames": 16933,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 2,
+        "iteration": 2,
+        "residual": 1.591146141933037,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -4.928165667475918e-20,
+            "heat": 2.119655696341115e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -3.1645225024803545e-16,
+            "heat": 1.3610941936243251e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 43866.80000001192,
+      "time": 11.749000000002868,
+      "frames": 54,
+      "fps": 3.934684241589618,
+      "position": [
+        1.4485294176375887,
+        1.439274182712871,
+        1.188648683071232
+      ],
+      "velocity": [
+        0.22737352631380692,
+        0.19567162026590018,
+        1.2193377645943207e-05
+      ],
+      "heading": 0.7149877284185213,
+      "speed": 0.2999768381823138,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 5,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 8.21649999999855,
+          "acceptedAt": 10.283000000001076,
+          "freshUntil": 9.21649999999855,
+          "holdUntil": 18.283000000001074,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.532500000004317,
+        "originalCommand": {
+          "yawRate": 0.04676710239625711,
+          "forwardSpeed": 0.19239720814136677,
+          "verticalSpeed": 1.2183025367259314e-05,
+          "feed": 1.0663060864017657e-05
+        },
+        "desiredVelocityWorld": [
+          0.2241142332553555,
+          0.19943121734664335,
+          1.2183025367259314e-05
+        ],
+        "velocityWorld": [
+          0.22641269063196126,
+          0.19678666636328868,
+          1.2181970562073392e-05
+        ],
+        "appliedHeading": 0.715507295998613,
+        "appliedFrames": 18332,
+        "freshFrames": 0,
+        "delayedFrames": 17599,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 3,
+        "iteration": 4,
+        "residual": 1.010055300480131,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -3.15402610473277e-20,
+            "heat": 1.3565796167069922e-18
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -2.590157137183298e-16,
+            "heat": 1.1140536464258194e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 44067.80000001192,
+      "time": 11.933000000003092,
+      "frames": 55,
+      "fps": 3.934684241589618,
+      "position": [
+        1.4902102997773492,
+        1.4754578086751924,
+        1.1886509267377556
+      ],
+      "velocity": [
+        0.22568134336136086,
+        0.19762093755965107,
+        1.2194199771858695e-05
+      ],
+      "heading": 0.7235928840718172,
+      "speed": 0.2999768386114901,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 5,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 8.21649999999855,
+          "acceptedAt": 10.283000000001076,
+          "freshUntil": 9.21649999999855,
+          "holdUntil": 18.283000000001074,
+          "detached": false
+        },
+        "sourceAgeSeconds": 3.716500000004542,
+        "originalCommand": {
+          "yawRate": 0.04676710239625711,
+          "forwardSpeed": 0.19239720814136677,
+          "verticalSpeed": 1.2183025367259314e-05,
+          "feed": 1.0663060864017657e-05
+        },
+        "desiredVelocityWorld": [
+          0.2223898219088559,
+          0.20135234568126434,
+          1.2183025367259314e-05
+        ],
+        "velocityWorld": [
+          0.2247109492024521,
+          0.19872767301766117,
+          1.2182520087946555e-05
+        ],
+        "appliedHeading": 0.7241124512650093,
+        "appliedFrames": 18700,
+        "freshFrames": 0,
+        "delayedFrames": 17967,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 6,
+        "accepted": 5,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 4,
+        "iteration": 8,
+        "residual": 1.1862723167730573,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -1.2918890650981847e-20,
+            "heat": 5.556550092661047e-19
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": -1.0497923060362457e-15,
+            "heat": 4.5152663346540584e-14
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    },
+    {
+      "wall": 45089.80000001192,
+      "time": 13.000000000004396,
+      "frames": 57,
+      "fps": 3.6924213052709463,
+      "position": [
+        1.725649152715504,
+        1.6922421831613115,
+        1.1886637457709786
+      ],
+      "velocity": [
+        0.21554087991054552,
+        0.20863418558968203,
+        1.1874816242647408e-05
+      ],
+      "heading": 0.7735058386756103,
+      "speed": 0.299976822953511,
+      "touching": 0,
+      "onFloor": false,
+      "freshFrames": 0,
+      "freshActive": false,
+      "motion": {
+        "enabled": true,
+        "config": {
+          "cruiseSpeed": 0.3,
+          "maxObservationAgeSeconds": 4,
+          "holdSeconds": 8,
+          "responseSeconds": 0.25,
+          "maxAcceleration": 1
+        },
+        "phase": "delayed_checked",
+        "active": true,
+        "source": {
+          "requestId": 6,
+          "generation": 0,
+          "attention": null,
+          "searchToken": null,
+          "observationTime": 10.283000000001076,
+          "acceptedAt": 12.100000000003297,
+          "freshUntil": 11.283000000001076,
+          "holdUntil": 20.1000000000033,
+          "detached": false
+        },
+        "sourceAgeSeconds": 2.7170000000033205,
+        "originalCommand": {
+          "yawRate": 0.04678636327436085,
+          "forwardSpeed": 0.19264205525458641,
+          "verticalSpeed": 1.1849245429000734e-05,
+          "feed": 1.066222151876252e-05
+        },
+        "desiredVelocityWorld": [
+          0.21206590596342903,
+          0.21219814214057123,
+          1.1849245429000734e-05
+        ],
+        "velocityWorld": [
+          0.21451607464678407,
+          0.20969154430708065,
+          1.185835846054286e-05
+        ],
+        "appliedHeading": 0.7740256134266681,
+        "appliedFrames": 20834,
+        "freshFrames": 0,
+        "delayedFrames": 20101,
+        "heldFrames": 733,
+        "stoppingFrames": 0
+      },
+      "observations": {
+        "requested": 7,
+        "accepted": 6,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "details": {
+        "panel": "brain",
+        "eyeVisible": true,
+        "eyeMain": false,
+        "speed": 1,
+        "droppedWallSeconds": 3.8664000000000014
+      },
+      "replay": {
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameIndex": 6,
+        "iteration": 97,
+        "residual": 9.546775229241078e-07,
+        "frameCount": 7,
+        "iterations": 97,
+        "neuronCount": 150802,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "atlasIndex": 0,
+            "activity": 0,
+            "deltaV": -3.0636140774294486e-29,
+            "heat": 1.3176924752970782e-27
+          },
+          {
+            "neuronIndex": 37700,
+            "atlasIndex": 37700,
+            "activity": 0,
+            "deltaV": 5.483777327308046e-17,
+            "heat": 2.3586299454741956e-15
+          },
+          {
+            "neuronIndex": 75401,
+            "atlasIndex": 75401,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "atlasIndex": 113101,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "atlasIndex": 150801,
+            "activity": 0,
+            "deltaV": 0,
+            "heat": 0
+          }
+        ],
+        "displayed": true
+      }
+    }
+  ],
+  "steadySummary": {
+    "wallSeconds": 8.227100000023842,
+    "simSeconds": 8.216500000004327,
+    "fps": 3.5249358826215746,
+    "netHorizontalM": 1.3707621791492088,
+    "minSpeedMps": 0.18800463136527873,
+    "medianSpeedMps": 0.2999717488869239,
+    "fractionAbovePointOne": 1.0,
+    "contactSamples": 0,
+    "freshSteps": 0,
+    "supportSteps": {
+      "appliedFrames": 16433,
+      "freshFrames": 0,
+      "delayedFrames": 15700,
+      "heldFrames": 733
+    },
+    "medianNoseTravelDegrees": 0.2502604024559214
+  },
+  "desktopImage": {
+    "path": "receipts/browser_scan_motion_final_2026-09-27.png",
+    "sha256": "2680c29640cef1652353cc5af7eb3718177515e3d9edfbbf1e95c7d36a470fac"
+  },
+  "airborneAssessment": {
+    "firstSupportAcceptedAt": 2.58300000000003,
+    "samples": 29,
+    "movingFraction": 1.0,
+    "medianSpeedMps": 0.2999717488869239,
+    "minimumSpeedMps": 0.18800463136527873,
+    "medianNoseTravelDegrees": 0.2492752340272166,
+    "contactSamples": 0
+  },
+  "replay": {
+    "display": {
+      "identity": {
+        "requestId": 5,
+        "generation": 0,
+        "source": "control"
+      },
+      "frameIndex": 6,
+      "iteration": 97,
+      "residual": 9.546775229241078e-07,
+      "frameCount": 7,
+      "iterations": 97,
+      "neuronCount": 150802,
+      "peakDelta": 0.4998152554035187,
+      "samples": [
+        {
+          "neuronIndex": 0,
+          "atlasIndex": 0,
+          "activity": 0,
+          "deltaV": -3.0636140774294486e-29,
+          "heat": 1.3176924752970782e-27
+        },
+        {
+          "neuronIndex": 37700,
+          "atlasIndex": 37700,
+          "activity": 0,
+          "deltaV": 5.483777327308046e-17,
+          "heat": 2.3586299454741956e-15
+        },
+        {
+          "neuronIndex": 75401,
+          "atlasIndex": 75401,
+          "activity": 0,
+          "deltaV": 0,
+          "heat": 0
+        },
+        {
+          "neuronIndex": 113101,
+          "atlasIndex": 113101,
+          "activity": 0,
+          "deltaV": 0,
+          "heat": 0
+        },
+        {
+          "neuronIndex": 150801,
+          "atlasIndex": 150801,
+          "activity": 0,
+          "deltaV": 0,
+          "heat": 0
+        }
+      ],
+      "displayed": true
+    },
+    "rendered": [
+      {
+        "activity": 0,
+        "heat": 1.3176924752970782e-27
+      },
+      {
+        "activity": 0,
+        "heat": 2.3586299454741956e-15
+      },
+      {
+        "activity": 0,
+        "heat": 0
+      },
+      {
+        "activity": 0,
+        "heat": 0
+      },
+      {
+        "activity": 0,
+        "heat": 0
+      }
+    ],
+    "packet": {
+      "requestId": 5,
+      "generation": 0,
+      "residual": 9.546775229241078e-07,
+      "converged": true,
+      "iterations": 97,
+      "replay": {
+        "schema": "cadence-neural-replay/v1",
+        "n": 150802,
+        "identity": {
+          "requestId": 5,
+          "generation": 0,
+          "source": "control"
+        },
+        "frameCount": 7,
+        "iteration": 97,
+        "residual": 9.546775229241078e-07,
+        "peakDelta": 0.4998152554035187,
+        "samples": [
+          {
+            "neuronIndex": 0,
+            "activity": 0,
+            "deltaV": -3.0636140774294486e-29
+          },
+          {
+            "neuronIndex": 37700,
+            "activity": 0,
+            "deltaV": 5.483777327308046e-17
+          },
+          {
+            "neuronIndex": 75401,
+            "activity": 0,
+            "deltaV": 0
+          },
+          {
+            "neuronIndex": 113101,
+            "activity": 0,
+            "deltaV": 0
+          },
+          {
+            "neuronIndex": 150801,
+            "activity": 0,
+            "deltaV": 0
+          }
+        ]
+      }
+    }
+  },
+  "mobileLayout": {
+    "brain": {
+      "left": 258,
+      "right": 418,
+      "top": 84,
+      "bottom": 320,
+      "width": 160,
+      "height": 236,
+      "visible": true,
+      "unobscured": true
+    },
+    "scan": {
+      "left": 266,
+      "right": 410,
+      "top": 138,
+      "bottom": 284.5,
+      "width": 144,
+      "height": 146.5,
+      "visible": true,
+      "unobscured": true
+    },
+    "eye": {
+      "left": 258,
+      "right": 418,
+      "top": 330,
+      "bottom": 437,
+      "width": 160,
+      "height": 107,
+      "visible": true,
+      "unobscured": true
+    },
+    "brain-console": {
+      "left": 12,
+      "right": 418,
+      "top": 710,
+      "bottom": 880,
+      "width": 406,
+      "height": 170,
+      "visible": true,
+      "unobscured": true
+    },
+    "console-input": {
+      "left": 107,
+      "right": 371,
+      "top": 841,
+      "bottom": 871,
+      "width": 264,
+      "height": 30,
+      "visible": true,
+      "unobscured": true
+    },
+    "scan-playback": {
+      "left": 266,
+      "right": 410,
+      "top": 289.5,
+      "bottom": 312,
+      "width": 144,
+      "height": 22.5,
+      "visible": true,
+      "unobscured": true
+    }
+  },
+  "mobileImage": {
+    "path": "receipts/browser_scan_motion_final_mobile_2026-09-27.png",
+    "sha256": "5b8baeed4f0cbca9eaaba89cd58f98672797382cb640c31a6879a5b18b3d7a96"
+  },
+  "served": {
+    "scope": "Local page and dedicated-worker response bodies; external CDN/font bytes are not pinned.",
+    "instrumentation": "Only brain_full.json is intercepted: route.fetch (30s, no redirects), SHA256 verification, then fulfill with the same decoded body; transfer/content encoding headers are removed and decoded content-length is set. Other local responses are read after download. Routing disables the context HTTP cache.",
+    "assets": {
+      "web/index.html": {
+        "sha256": "a9e7d1c3e11a1f71e99ea5755a65f759f92b512a551bf1b9e50cc4075916097b",
+        "bytes": 18616,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/page.js": {
+        "sha256": "8432a9e9eee37a15d4e694f802cfa96f2e871a4a5807238de847b15aa96e6806",
+        "bytes": 53240,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/page.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/body.js": {
+        "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+        "bytes": 22149,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/body.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/room.js": {
+        "sha256": "416dea676671e7ea63e4e62ce8685c9da3fc8a6c79264e273bb02dd223be6470",
+        "bytes": 37015,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/room.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/fly.js": {
+        "sha256": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+        "bytes": 22736,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/fly.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/eye.js": {
+        "sha256": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+        "bytes": 5647,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/eye.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-life.js": {
+        "sha256": "03e4d9bc3e6bfc6a2217e0afa29106eccb7a05d42b617d807096d4bb2208f826",
+        "bytes": 24347,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/path-view.js": {
+        "sha256": "da9bf7f60329c457c80b844050a469d3950bdfbeed740cf8d0271aa9a87ca252",
+        "bytes": 7657,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/path-view.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/path-history.js": {
+        "sha256": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+        "bytes": 8199,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/path-history.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settlement-view.js": {
+        "sha256": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+        "bytes": 40444,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settlement-view.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-state.js": {
+        "sha256": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+        "bytes": 5154,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-state.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/physics-clock.js": {
+        "sha256": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+        "bytes": 1067,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/physics-clock.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain-console.js": {
+        "sha256": "4f846ed89bc48859e090f7c6f3271a0f4828ad66ef1384c9376ca8365d68ae92",
+        "bytes": 10227,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain-console.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-replay.js": {
+        "sha256": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+        "bytes": 5926,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/neural-replay.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain_scan.js": {
+        "sha256": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+        "bytes": 96646,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain_scan.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/retina.js": {
+        "sha256": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+        "bytes": 4316,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/retina.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/assisted-life.js": {
+        "sha256": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+        "bytes": 15154,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/assisted-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-policy.js": {
+        "sha256": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+        "bytes": 4578,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/neural-policy.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/life.js": {
+        "sha256": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+        "bytes": 30948,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motion-support.js": {
+        "sha256": "5e5a925bb5f312b2cd4d5b96f1730e283d73098ad4a840446faab64596c4eaa5",
+        "bytes": 2111,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/motion-support.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motor.js": {
+        "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+        "bytes": 3204,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/motor.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/senses.js": {
+        "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+        "bytes": 3706,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/senses.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/lessons_full.json": {
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+        "bytes": 1709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/lessons_full.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/worker.js": {
+        "sha256": "f33b71e0a7c5758dc12b92da0caaf56889fe6661678463f1ebb3ae503efe5674",
+        "bytes": 29496,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/worker.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain.js": {
+        "sha256": "09a71640cd485663e1165d949b460b974458370ca0853173efc126f69fb6b63d",
+        "bytes": 19322,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/learner.js": {
+        "sha256": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+        "bytes": 19709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/learner.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settlement-trace.js": {
+        "sha256": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+        "bytes": 8045,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settlement-trace.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/atlas.json": {
+        "sha256": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+        "bytes": 11633781,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/atlas.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/brain_full.json": {
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+        "bytes": 42913998,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/brain_full.json"
+        ],
+        "binding": "intercepted request: fetch, hash, fulfill identical body"
+      }
+    }
+  },
+  "sourcesUnchanged": true,
+  "completed": "2026-09-27T09:59:12.622779+00:00",
+  "body_sha256": "0967e17d93b47e549cd840c2d1086c5bfb466eb454e7f5636957821a5b0b8935"
+}

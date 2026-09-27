@@ -15,3 +15,40 @@ export function wingControls(activation) {
   out.frequency = HOVER.frequency * (0.9 + 0.1 * (g("power:left") + g("power:right")));
   return out;
 }
+
+// Absolute settled motor activities only. The hover-assisted function above is a
+// historical control; it must not be used in the connectome-only body path.
+export const SETTLED_MOTOR_GROUPS = [
+  ...GROUPS.flatMap(group => ["left", "right"].map(side => `${group}:${side}`)),
+  "mn9", "mn:ttm:left", "mn:ttm:right",
+];
+
+export function settledMotor(readouts) {
+  const activity = {};
+  for (const name of SETTLED_MOTOR_GROUPS) {
+    const value = Object.hasOwn(readouts, name) ? readouts[name] : 0;
+    if (typeof value !== "number" || !Number.isFinite(value))
+      throw new RangeError(`motor readout ${name} must be a finite number`);
+    activity[name] = Math.min(1, Math.max(0, value));
+  }
+  const amplitudes = [], planes = [], shifts = [];
+  for (const side of ["left", "right"]) {
+    const power = activity[`power:${side}`];
+    const [b1, b2, b3, i1, i2, iii1, iii3, iii4] =
+      ["b1", "b2", "b3", "i1", "i2", "iii1", "iii3", "iii4"].map(name => activity[`mn:wing:${name}:${side}`]);
+    amplitudes.push(Math.min(1.3, Math.max(0, Math.sqrt(power) * (1 + GAIN_AMPLITUDE * (b1 + b2 - b3 - i1)))));
+    planes.push(Math.min(0.5, Math.max(-0.5, GAIN_TILT * (b2 - i2 - 0.5 * iii3))));
+    shifts.push(Math.min(0.0005, Math.max(-0.0005, 1e-3 * GAIN_SHIFT * (iii1 - iii3 - iii4))));
+  }
+  // Candidate model, not fitted biology: activity is a normalized stroke-force
+  // fraction. A supplied 200 Hz mechanical carrier is powered by motor activity;
+  // a silent side has zero amplitude/force. No neural oscillator or hover offset.
+  // With zero steering, equal power p produces p times body weight at level rest.
+  const frequency = activity["power:left"] > 0 || activity["power:right"] > 0 ? 200 : 0;
+  return {
+    wings: [...amplitudes, ...planes, ...shifts, frequency],
+    proboscis: activity.mn9,
+    // Extensor activations, not a supplied gait or a jump/landing policy.
+    legs: { ttm_left: activity["mn:ttm:left"], ttm_right: activity["mn:ttm:right"] },
+  };
+}

@@ -1,33 +1,36 @@
 #!/usr/bin/env python3
 """Gate 3b: the fly's ethogram on the page against the real fly's numbers (docs/REAL_FLY.md).
 
-    python tools/ethogram.py --seconds 240
+    python tools/ethogram.py --legacy --receipt runs/ethogram_legacy_rerun.json --seconds 240
 
 Serves web/ on a free port and runs the page in Playwright's Chromium, headless on SwiftShader as the
 reversal scenario does (--headed for a window on Metal), for the given simulated seconds under each
 condition of the switch (brain, shuffled, instincts), each from a fresh page after a warm-up, and reads
 the life layer's counters: saccades per second of flight, mean flight bout, mean sit, landings, grooming
 and feeding episodes, the fraction of time sitting, odour decisions, sugar visits. Each summary is set
-against the bands of docs/REAL_FLY.md. Writes receipts/g3b_ethogram.json.
+against the bands of docs/REAL_FLY.md. This tool explicitly measures the legacy hybrid,
+not the default direct-motor controller. A new receipt path is required; archived receipts
+are never overwritten.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import math
 import os
 import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
-
-from playwright.sync_api import sync_playwright
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 REAL = {"saccade_rate_per_s": [0.4, 1.0], "bout_s": [30, 90], "sit_s": [2, 60], "sitting_fraction": [0.3, 0.9], "sources": "docs/REAL_FLY.md"}
 BANDS = {k: v for k, v in REAL.items() if k != "sources"}
 READY = "window.__app && window.__app.S.ready && window.__app.S.learnReady"
+CONTROLLERS = {"brain": "legacy", "shuffled": "legacy-shuffled", "legacy": "legacy", "legacy-shuffled": "legacy-shuffled", "instincts": "instincts"}
 RESET = """() => { const L = window.__app.life(); L.ethogram = { saccades: 0, microSaccades: 0, bouts: [], sits: [], grooms: 0, feeds: 0, landings: 0,
   flying_s: 0, sitting_s: 0, boutStart: L.clock, sitStart: L.mode === "flying" ? null : L.clock, decisions: 0 }; return L.clock; }"""
 STATE = """() => { const app = window.__app, L = app.life(); return { clock: L.clock, mode: L.mode, events: L.events.slice(-40), fps: app.S.fps }; }"""
@@ -58,11 +61,24 @@ def run_condition(browser, url, cond, args, log):
     page = browser.new_page(viewport={"width": 1400, "height": 900})
     errors: list[str] = []
     page.on("pageerror", lambda e: errors.append(str(e)[:300]))
-    page.goto(f"{url}?seed={args.seed}&noscan=1&nobloom=1&noviews=1")
+    controller = CONTROLLERS[cond]
+    parts = urlsplit(url); query = dict(parse_qsl(parts.query))
+    query.update(controller=controller, seed=args.seed, noscan=1, nobloom=1, noviews=1)
+    page.goto(urlunsplit(parts._replace(query=urlencode(query))))
     page.wait_for_function(READY, timeout=300000)
-    page.evaluate(f"window.__app.setPilot('{cond}'); window.__app.S.speed = {args.speed};")
+    assert page.evaluate("window.__app.S.pilot") == controller
+    page.evaluate("speed => { window.__app.S.speed = speed; }", args.speed)
     t_start = page.evaluate("window.__app.life().clock")
-    while page.evaluate("window.__app.life().clock") - t_start < args.warmup:  # the switch's transients pass before the counters start
+    deadline = time.monotonic() + args.wall_timeout
+    progress_clock, progress_at = t_start, time.monotonic()
+    def checked_clock(clock):
+        nonlocal progress_clock, progress_at
+        now = time.monotonic()
+        if now > deadline: raise TimeoutError("legacy condition exceeded wall-time budget")
+        if clock > progress_clock: progress_clock, progress_at = clock, now
+        elif now - progress_at > args.stall_timeout: raise TimeoutError("legacy simulation clock stopped advancing")
+        return clock
+    while checked_clock(page.evaluate("window.__app.life().clock")) - t_start < args.warmup:
         time.sleep(1)
     mode0 = page.evaluate("window.__app.life().mode")
     t0 = page.evaluate(RESET)
@@ -71,7 +87,7 @@ def run_condition(browser, url, cond, args, log):
     while last - t0 < args.seconds:
         time.sleep(2)
         st = page.evaluate(STATE)
-        last = st["clock"]
+        last = checked_clock(st["clock"])
         for t, text in st["events"]:
             if (round(t, 3), text) not in seen:
                 seen.add((round(t, 3), text)); events.append((t, text))
@@ -88,7 +104,7 @@ def run_condition(browser, url, cond, args, log):
     }
     summary["in_band"] = {k: in_band(summary[k], band) for k, band in BANDS.items()}
     timeouts = sum(1 for _, x in events if "did not answer" in x)
-    out = {"mode_at_reset": mode0, "seconds": last - t0, "wall_s": wall, "summary": summary, "raw": e, "brain_timeouts": timeouts, "page_errors": errors[:5], "events_tail": events[-30:]}
+    out = {"controller": controller, "mode_at_reset": mode0, "seconds": last - t0, "wall_s": wall, "summary": summary, "raw": e, "brain_timeouts": timeouts, "page_errors": errors[:5], "events_tail": events[-30:]}
     log(f"{cond}: {json.dumps({k: (round(v, 3) if isinstance(v, float) else v) for k, v in summary.items() if k not in ('visits', 'p_approach', 'in_band')})} in band {summary['in_band']}; "
         f"{len(events)} events, {timeouts} brain timeouts, {len(errors)} page errors, {wall:.0f} s wall")
     page.close()
@@ -101,8 +117,15 @@ def main() -> None:
     ap.add_argument("--web", default=str(ROOT / "web"))
     ap.add_argument("--seconds", type=float, default=240); ap.add_argument("--warmup", type=float, default=10); ap.add_argument("--speed", type=float, default=1.0)
     ap.add_argument("--conditions", default="brain,shuffled,instincts"); ap.add_argument("--seed", type=int, default=7)
-    ap.add_argument("--headed", action="store_true"); ap.add_argument("--receipt", default=str(ROOT / "receipts" / "g3b_ethogram.json"))
+    ap.add_argument("--headed", action="store_true"); ap.add_argument("--receipt", required=True, help="new output path; existing receipts are refused")
+    ap.add_argument("--legacy", action="store_true", help="explicitly enable this historical hybrid measurement")
+    ap.add_argument("--wall-timeout", type=float, default=3600); ap.add_argument("--stall-timeout", type=float, default=60)
     args = ap.parse_args()
+    if not args.legacy: ap.error("this historical measurement requires explicit --legacy")
+    if Path(args.receipt).exists(): ap.error("receipt already exists; choose a new output path")
+    if any(c not in CONTROLLERS for c in args.conditions.split(",")): ap.error("conditions must select legacy, legacy-shuffled or instincts (brain/shuffled are historical aliases)")
+    if not all(math.isfinite(v) for v in [args.seconds, args.speed, args.wall_timeout, args.stall_timeout, args.warmup]) or min(args.seconds, args.speed, args.wall_timeout, args.stall_timeout) <= 0 or args.warmup < 0: ap.error("durations and speed must be finite and positive, with nonnegative warmup")
+    from playwright.sync_api import sync_playwright
     log = lambda *a: print(*a, flush=True)
     srv = None; url = args.url
     if url is None:
@@ -110,7 +133,7 @@ def main() -> None:
         srv = subprocess.Popen([sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"], cwd=args.web, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(0.8); url = f"http://127.0.0.1:{port}/index.html"
     data = Path(args.web) / "data"
-    out = {"tool": "tools/ethogram.py", "page": commit(), "payload": {p.name: sha(p) for p in sorted(data.glob("*.json"))}, "seed": args.seed, "speed": args.speed,
+    out = {"tool": "tools/ethogram.py", "architecture": "legacy_hybrid_explicit", "page": commit(), "source_sha256": {p.name: sha(p) for p in [*sorted(Path(args.web).glob("*.js")), Path(args.web) / "index.html"]}, "payload": {p.name: sha(p) for p in sorted(data.glob("*.json"))}, "seed": args.seed, "speed": args.speed,
            "seconds": args.seconds, "warmup_s": args.warmup, "headless": not args.headed, "real": REAL, "conditions": {}}
     try:
         with sync_playwright() as p:
@@ -122,11 +145,15 @@ def main() -> None:
                 except Exception as exc:  # a lost page loses one condition, not the receipt
                     out["conditions"][cond] = {"error": str(exc)[:300]}
                     log(cond, "failed:", str(exc)[:200])
+                finally:
+                    for context in browser.contexts:
+                        context.close()
             browser.close()
     finally:
         if srv: srv.terminate()
     Path(args.receipt).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.receipt).write_text(json.dumps(out, indent=1))
+    with Path(args.receipt).open("x") as handle:
+        json.dump(out, handle, indent=1)
     log(f"receipt: {os.path.relpath(args.receipt, ROOT)}")
 
 

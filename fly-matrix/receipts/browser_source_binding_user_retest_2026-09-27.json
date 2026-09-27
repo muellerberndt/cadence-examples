@@ -1,0 +1,23 @@
+{
+  "schema": "fly-matrix-browser-source-unit-retest/v1",
+  "completed": "2026-09-27T08:58:07.782219+00:00",
+  "command": [
+    "../../cadence/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_browser_source_binding.py"
+  ],
+  "exit_code": 0,
+  "passed": true,
+  "sources_unchanged": true,
+  "source_sha256": {
+    "tests/test_browser_source_binding.py": "e2a9a02901d83bb5faf9838407dd23bb710977770373158d3064bef0349aa4e2",
+    "tools/browser_source_binding.py": "2aedb4148ddbbc02a9d0b906a37e79f2e8fd5ddb439c280eb8ccd54a3447ac4c",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1"
+  },
+  "output": "....................                                                     [100%]\n20 passed in 0.06s\n",
+  "prior_failure_receipt": "receipts/unit_user_retest_2026-09-27.json",
+  "prior_failure_receipt_sha256": "45b5ed0fe5a479a3b6159feb274abd80977fe58816c6b70235290454f3011658",
+  "correction": "Two required-asset negative controls now target neural-state.js, replacing the no-longer-loaded physics-clock.js; failure assertions unchanged."
+}

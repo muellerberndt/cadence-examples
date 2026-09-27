@@ -1,0 +1,3125 @@
+{
+  "schema": "cadence.flight-clarity-browser/1",
+  "passed": false,
+  "started": "2026-09-27T09:22:10.389920+00:00",
+  "sha256": {
+    "web/index.html": "0e886612640a04fc7bdf8af66b02885a7d9906e46fa7bfd094893cd8279b1053",
+    "web/page.js": "35a37226a72e4cee1c183832fa251f274856cf25e2484dc1291009dfde61463d",
+    "web/worker.js": "245bf987c4d62ce6b8566cbd12d0b07456ea4634afa5fc2be456fdc2790949fe",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "59f7ab8512b6ffb6a2d8c43c8d3e6dc8eb26a51d19e16367fc916f67c33ce908",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "daea8afe1872c1c30b7075e6c696fa52ef7693aeae430d164f07475aa2a6a851",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "3ca1c9de9c2d58c0554de37ff61da18d9b4a9d16ca135cc893186be6d905f2f9",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "1d861ce2d1e14d5013a28c6c83e70e1742523e869eb87bda9dc1f4a715c59658",
+    "tools/check_flight_clarity.py": "c983cb3617cf46994c2adf1ad07dd78b071c314fcccc3aee866d953d41badd0e"
+  },
+  "checks": [
+    "plain default has five primary controls, compact metrics, no open diagnostic/path/extra views, and explicit half-speed setting"
+  ],
+  "page_errors": [],
+  "protocol": {
+    "url": "http://127.0.0.1:8817/",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "mobile_viewport": [
+      430,
+      900
+    ],
+    "wall_window_ms": 8000,
+    "sample_interval_ms": 200,
+    "minimum_displacement_m": 0.05,
+    "maximum_median_nose_travel_error_deg": 30,
+    "default_simulation_speed": 0.5,
+    "physics_step_seconds": 0.0005,
+    "windows": "Initial8wallsec immediately after brain/learner ready, includingstartup. Then wait at most30wallsec for persistent actual executed-choice counter, and capture8wallsec. Both retained; the latter is the movement/alignment acceptance window. Applied-step differences measure actual actuation time even when an authority interval begins and expires within one rendering frame.",
+    "angle_scope": "Actual body yaw versus actual horizontal velocity, active route, speed>0.005m/s, at least0.5simsec after first sample.",
+    "limits": "Software WebGL timing is machine-specific. One wiring/layout run does not establish navigation competence or a learning improvement. No neural values, body states, or route commands are fabricated."
+  },
+  "browser": "151.0.7922.34",
+  "default_visibility": {
+    "brain": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "path-panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "options": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "card": {
+      "visible": false,
+      "left": 24,
+      "right": 444,
+      "top": 918,
+      "bottom": 920,
+      "width": 420,
+      "height": 2
+    },
+    "eye": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "inset": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "status": {
+      "visible": true,
+      "left": 24,
+      "right": 444,
+      "top": 837.40625,
+      "bottom": 920,
+      "width": 420,
+      "height": 82.59375
+    },
+    "toolbar": {
+      "visible": true,
+      "left": 24,
+      "right": 319.8125,
+      "top": 934,
+      "bottom": 976,
+      "width": 295.8125,
+      "height": 42
+    }
+  },
+  "initial_samples": [
+    {
+      "wall": 38817.80000001192,
+      "simTime": 0.23300000000000018,
+      "frames": 114,
+      "pageFps": 5.454545454545454,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.4499000000000014
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 39020.60000002384,
+      "simTime": 0.2665000000000002,
+      "frames": 115,
+      "pageFps": 5.454545454545454,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.4499000000000014
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 39222.80000001192,
+      "simTime": 0.35800000000000026,
+      "frames": 116,
+      "pageFps": 5.454545454545454,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.4499000000000014
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 39424.10000002384,
+      "simTime": 0.5249999999999976,
+      "frames": 118,
+      "pageFps": 4.351610095735423,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.4499000000000014
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 39625.30000001192,
+      "simTime": 0.5249999999999976,
+      "frames": 118,
+      "pageFps": 4.351610095735423,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.4499000000000014
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 39827.10000002384,
+      "simTime": 0.6499999999999838,
+      "frames": 119,
+      "pageFps": 4.351610095735423,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.5499999999999999
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 40029.10000002384,
+      "simTime": 0.7414999999999737,
+      "frames": 120,
+      "pageFps": 4.351610095735423,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.5499999999999999
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 40229.89999997616,
+      "simTime": 0.8329999999999637,
+      "frames": 121,
+      "pageFps": 4.351610095735423,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.5499999999999999
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 0,
+      "accepted": 0,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "waiting",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 1,
+        "worker": true,
+        "decision": null
+      },
+      "search": null
+    },
+    {
+      "wall": 40766.10000002384,
+      "simTime": 0.9164999999999545,
+      "frames": 122,
+      "pageFps": 4.834187373102568,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.5499999999999999
+      },
+      "p": [
+        1.2,
+        1,
+        1.2
+      ],
+      "v": [
+        0,
+        0,
+        0
+      ],
+      "q": [
+        0.9887710779360424,
+        0,
+        0,
+        0.14943813247359924
+      ],
+      "bodyYaw": 0.30000000000000004,
+      "velocityHeading": 0,
+      "horizontalSpeed": 0,
+      "requestedHeading": 0.29999999999999993,
+      "facingHeading": 0.29999999999999993,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 0,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "live",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 40967.80000001192,
+      "simTime": 1.066499999999938,
+      "frames": 125,
+      "pageFps": 4.834187373102568,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1972423831667915,
+        0.9990863966023594,
+        1.195420017605964
+      ],
+      "v": [
+        -0.03391529120503025,
+        -0.011226591020279102,
+        -0.017518581366653786
+      ],
+      "q": [
+        0.14595884426413144,
+        0.03308899705128493,
+        0.005319685075147955,
+        -0.9887228302238805
+      ],
+      "bodyYaw": -2.848491450117757,
+      "velocityHeading": -2.821926835538028,
+      "horizontalSpeed": 0.03572510774593428,
+      "requestedHeading": 0.3069570144402508,
+      "facingHeading": -2.834635639149542,
+      "command": {
+        "yawRate": 0.04638009626833979,
+        "forwardSpeed": -0.0497773224035338,
+        "verticalSpeed": 7.923666342609234e-06,
+        "feed": 9.771762585998728e-06
+      },
+      "active": true,
+      "framesApplied": 300,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "live",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 41169.5,
+      "simTime": 1.166499999999927,
+      "frames": 126,
+      "pageFps": 4.834187373102568,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1943493116665602,
+        0.9981340174280242,
+        1.1944100287543864
+      ],
+      "v": [
+        -0.016758028404007735,
+        -0.005555496479632551,
+        -0.005214729556494269
+      ],
+      "q": [
+        0.14679339980922715,
+        -9.970765438237996e-05,
+        -5.991863789803032e-06,
+        -0.989167168781359
+      ],
+      "bodyYaw": -2.8469411107453206,
+      "velocityHeading": -2.8214817117481346,
+      "horizontalSpeed": 0.017654887627077658,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 41371.39999997616,
+      "simTime": 1.266499999999916,
+      "frames": 127,
+      "pageFps": 4.834187373102568,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.193377861919308,
+        0.9978118136288322,
+        1.1941077068559105
+      ],
+      "v": [
+        -0.0050286799635341,
+        -0.0016682147802301384,
+        -0.0015649844929789068
+      ],
+      "q": [
+        0.14679343554150098,
+        2.4830657816681005e-06,
+        4.667943431618674e-07,
+        -0.98916716851882
+      ],
+      "bodyYaw": -2.8469410417116574,
+      "velocityHeading": -2.8212766963642526,
+      "horizontalSpeed": 0.005298165977829271,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 41573.19999998808,
+      "simTime": 1.4244999999998986,
+      "frames": 129,
+      "pageFps": 5.454545454545455,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1930235143301582,
+        0.9976942600606423,
+        1.1939974298468723
+      ],
+      "v": [
+        -0.0007508489888279226,
+        -0.0002490957685062633,
+        -0.00023367242967932522
+      ],
+      "q": [
+        0.14679343613366413,
+        5.57413402708203e-08,
+        1.0138212906487964e-08,
+        -0.9891671684341675
+      ],
+      "bodyYaw": -2.8469410405148166,
+      "velocityHeading": -2.8212658360252627,
+      "horizontalSpeed": 0.0007910896952379292,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 41774.69999998808,
+      "simTime": 1.5164999999998885,
+      "frames": 130,
+      "pageFps": 5.454545454545455,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929818709214324,
+        0.9976804447434593,
+        1.1939844699642308
+      ],
+      "v": [
+        -0.0002481118352258303,
+        -8.231195155446794e-05,
+        -7.721509368347409e-05
+      ],
+      "q": [
+        0.14679343614491205,
+        6.087204457668256e-09,
+        1.1070822088169e-09,
+        -0.9891671684325
+      ],
+      "bodyYaw": -2.8469410404920747,
+      "velocityHeading": -2.8212646884224983,
+      "horizontalSpeed": 0.0002614091431986162,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 41976.10000002384,
+      "simTime": 1.5999999999998793,
+      "frames": 131,
+      "pageFps": 5.454545454545455,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929688417782034,
+        0.9976761222779325,
+        1.1939804151537907
+      ],
+      "v": [
+        -9.081837418884068e-05,
+        -3.0129343043608808e-05,
+        -2.8263659798398138e-05
+      ],
+      "q": [
+        0.14679343614609525,
+        8.156165293538149e-10,
+        1.4833709455198547e-10,
+        -0.9891671684323244
+      ],
+      "bodyYaw": -2.846941040489683,
+      "velocityHeading": -2.8212643294024513,
+      "horizontalSpeed": 9.568570636486801e-05,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 42178,
+      "simTime": 1.6824999999998702,
+      "frames": 132,
+      "pageFps": 5.454545454545455,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.192964105959402,
+        0.9976745511515841,
+        1.193978941315813
+      ],
+      "v": [
+        -3.364551387928049e-05,
+        -1.1162032807370779e-05,
+        -1.0470847212104128e-05
+      ],
+      "q": [
+        0.14679343614625262,
+        1.119434178024578e-10,
+        2.0359357509654806e-11,
+        -0.9891671684323011
+      ],
+      "bodyYaw": -2.8469410404893645,
+      "velocityHeading": -2.821264198898625,
+      "horizontalSpeed": 3.5448717615644124e-05,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 42379.60000002384,
+      "simTime": 1.766499999999861,
+      "frames": 133,
+      "pageFps": 5.454545454545455,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.192962333005497,
+        0.9976739629670391,
+        1.193978389553419
+      ],
+      "v": [
+        -1.2241644152994842e-05,
+        -4.061214712912926e-06,
+        -3.8097317847802912e-06
+      ],
+      "q": [
+        0.14679343614627438,
+        1.4819244458721662e-11,
+        2.6951577886859524e-12,
+        -0.9891671684322978
+      ],
+      "bodyYaw": -2.8469410404893205,
+      "velocityHeading": -2.821264150040837,
+      "horizontalSpeed": 1.2897725245675425e-05,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 42581.80000001192,
+      "simTime": 1.9409999999998417,
+      "frames": 135,
+      "pageFps": 5.806638923836277,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929614431239577,
+        0.9976736677452455,
+        1.1939781126126814
+      ],
+      "v": [
+        -1.4986075247825317e-06,
+        -4.971691181029444e-07,
+        -4.663828326850327e-07
+      ],
+      "q": [
+        0.14679343614627732,
+        2.220906666516447e-13,
+        4.0367088332446455e-14,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8212641255302953,
+      "horizontalSpeed": 1.5789242050618155e-06,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 42783.5,
+      "simTime": 2.0329999999998463,
+      "frames": 136,
+      "pageFps": 5.806638923836277,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613600085565,
+        0.997673640171374,
+        1.1939780867462717
+      ],
+      "v": [
+        -4.952022831637305e-07,
+        -1.6428536500798685e-07,
+        -1.5411229397328612e-07
+      ],
+      "q": [
+        0.14679343614627732,
+        2.4260535563424102e-14,
+        4.339813154337762e-15,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8212641233336986,
+      "horizontalSpeed": 5.217422566808049e-07,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 42985,
+      "simTime": 2.1079999999998713,
+      "frames": 137,
+      "pageFps": 5.806638923836277,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613356213382,
+        0.9976736320808152,
+        1.1939780791567065
+      ],
+      "v": [
+        -2.007891762906913e-07,
+        -6.661262331035767e-08,
+        -6.24877582576527e-08
+      ],
+      "q": [
+        0.14679343614627732,
+        3.992668180594661e-15,
+        6.857799993934126e-16,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821264123023434,
+      "horizontalSpeed": 2.1155031292763883e-07,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 43187.19999998808,
+      "simTime": 2.199499999999902,
+      "frames": 138,
+      "pageFps": 5.806638923836277,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613245183945,
+        0.9976736283973684,
+        1.1939780757013516
+      ],
+      "v": [
+        -6.674959621950098e-08,
+        -2.2144449155458555e-08,
+        -2.0773194589926935e-08
+      ],
+      "q": [
+        0.14679343614627732,
+        4.436286148524985e-16,
+        5.972705177775058e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8212641232756552,
+      "horizontalSpeed": 7.03269878770953e-08,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 43388.69999998808,
+      "simTime": 2.349999999999952,
+      "frames": 140,
+      "pageFps": 5.806638923836277,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.19296131989286,
+        0.997673626862828,
+        1.1939780742618349
+      ],
+      "v": [
+        -1.0908131055049941e-08,
+        -3.618816649038014e-09,
+        -3.3947280923140753e-09
+      ],
+      "q": [
+        0.14679343614627732,
+        2.112409916821315e-17,
+        -6.091597525658268e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8212641274995174,
+      "horizontalSpeed": 1.1492743669529032e-08,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 43590.5,
+      "simTime": 2.424999999999977,
+      "frames": 141,
+      "pageFps": 6.268469597922425,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.192961319355667,
+        0.997673626684612,
+        1.1939780740946553
+      ],
+      "v": [
+        -4.422909044996584e-09,
+        -1.4673179231349927e-09,
+        -1.376457016874738e-09
+      ],
+      "q": [
+        0.14679343614627732,
+        7.659203602281505e-18,
+        -3.8224225167666844e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8212641402756593,
+      "horizontalSpeed": 4.6599513203321965e-09,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 43792.5,
+      "simTime": 2.5165000000000077,
+      "frames": 142,
+      "pageFps": 6.268469597922425,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613191110953,
+        0.9976736266034743,
+        1.193978074018541
+      ],
+      "v": [
+        -1.4703352063713953e-09,
+        -4.877895987282621e-10,
+        -4.5758417891507983e-10
+      ],
+      "q": [
+        0.14679343614627732,
+        6.868466867607058e-18,
+        -4.480366359546066e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821264164248096,
+      "horizontalSpeed": 1.5491366342975343e-09,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 43994.10000002384,
+      "simTime": 2.58300000000003,
+      "frames": 143,
+      "pageFps": 6.268469597922425,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613190440065,
+        0.9976736265812164,
+        1.1939780739976615
+      ],
+      "v": [
+        -6.603976082991074e-10,
+        -2.1908949534421192e-10,
+        -2.0552285832128436e-10
+      ],
+      "q": [
+        0.14679343614627732,
+        9.200434639850004e-18,
+        -6.169864258985099e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8212642440370828,
+      "horizontalSpeed": 6.95791066353516e-10,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 44195.39999997616,
+      "simTime": 2.7580000000000884,
+      "frames": 145,
+      "pageFps": 6.268469597922425,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613189959614,
+        0.9976736265652769,
+        1.1939780739827097
+      ],
+      "v": [
+        -8.036003333999549e-11,
+        -2.665970410132382e-11,
+        -2.5008903910446467e-11
+      ],
+      "q": [
+        0.14679343614627732,
+        8.926491664317568e-18,
+        -6.014672034482815e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821264826681355,
+      "horizontalSpeed": 8.466684582039967e-11,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 44396.80000001192,
+      "simTime": 2.8415000000001163,
+      "frames": 146,
+      "pageFps": 6.268469597922425,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613189917423,
+        0.9976736265638769,
+        1.193978073981396
+      ],
+      "v": [
+        -2.9414839525850186e-11,
+        -9.758424881929025e-12,
+        -9.154206425277412e-12
+      ],
+      "q": [
+        0.14679343614627732,
+        1.239281904368622e-17,
+        -8.350838514291228e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821266186886739,
+      "horizontalSpeed": 3.099128329882082e-11,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 44598.19999998808,
+      "simTime": 2.933000000000147,
+      "frames": 147,
+      "pageFps": 5.9014458542343045,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 0.7832999999999956
+      },
+      "p": [
+        1.1929613189901154,
+        0.9976736265633371,
+        1.19397807398089
+      ],
+      "v": [
+        -9.778575259247352e-12,
+        -3.243997975210759e-12,
+        -3.0431889714893808e-12
+      ],
+      "q": [
+        0.14679343614627732,
+        2.2109596200139418e-18,
+        -1.4898479922092056e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821271862754911,
+      "horizontalSpeed": 1.0302623790274783e-11,
+      "requestedHeading": -2.846941040489314,
+      "facingHeading": -2.846941040489314,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 1452,
+      "accepted": 1,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "pending": {
+        "requestId": 2,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": null
+      }
+    },
+    {
+      "wall": 45241.69999998808,
+      "simTime": 3.158000000000222,
+      "frames": 149,
+      "pageFps": 5.9014458542343045,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.033199999999997
+      },
+      "p": [
+        1.192961318989358,
+        0.9976736265630872,
+        1.193978073980651
+      ],
+      "v": [
+        -6.518714019577787e-13,
+        -2.1618261252622132e-13,
+        -2.0286218858174207e-13
+      ],
+      "q": [
+        0.14679343614627732,
+        7.136954659839798e-18,
+        -4.809234918638844e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8213724273327205,
+      "horizontalSpeed": 6.867832603151173e-13,
+      "requestedHeading": -2.8469410404893143,
+      "facingHeading": -2.8469410404893143,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 3924,
+      "accepted": 2,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": null,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 3,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": false,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    },
+    {
+      "wall": 45443.10000002384,
+      "simTime": 3.1750000000002276,
+      "frames": 151,
+      "pageFps": 5.9014458542343045,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.033199999999997
+      },
+      "p": [
+        1.1929613189893504,
+        0.9976736265630834,
+        1.193978073980651
+      ],
+      "v": [
+        -5.312551139227143e-13,
+        -1.7616386837349948e-13,
+        -1.6532592352416775e-13
+      ],
+      "q": [
+        0.14679343614627732,
+        8.399522331712136e-18,
+        -5.660015809161078e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821403464778111,
+      "horizontalSpeed": 5.597014423684753e-13,
+      "requestedHeading": -2.8469410404893143,
+      "facingHeading": -2.8469410404893143,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 3924,
+      "accepted": 2,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": null,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 3,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": false,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    },
+    {
+      "wall": 45645.10000002384,
+      "simTime": 3.2580000000002554,
+      "frames": 152,
+      "pageFps": 5.9014458542343045,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.033199999999997
+      },
+      "p": [
+        1.1929613189893185,
+        0.997673626563075,
+        1.193978073980651
+      ],
+      "v": [
+        -1.9565183053405663e-13,
+        -6.481107234627684e-14,
+        -6.088083189708174e-14
+      ],
+      "q": [
+        0.14679343614627732,
+        5.58686901840846e-18,
+        -3.764710159098182e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.821711805530698,
+      "horizontalSpeed": 2.0610704473647074e-13,
+      "requestedHeading": -2.8469410404893143,
+      "facingHeading": -2.8469410404893143,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 3924,
+      "accepted": 2,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": null,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 3,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": false,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    },
+    {
+      "wall": 45846.39999997616,
+      "simTime": 3.458000000000322,
+      "frames": 154,
+      "pageFps": 5.294740557712651,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.033199999999997
+      },
+      "p": [
+        1.1929613189893185,
+        0.997673626563075,
+        1.193978073980651
+      ],
+      "v": [
+        -1.762757775530085e-14,
+        -5.816456711645468e-15,
+        -5.483183080755988e-15
+      ],
+      "q": [
+        0.14679343614627732,
+        -4.798915406081273e-18,
+        3.233747835346705e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.8228780367064967,
+      "horizontalSpeed": 1.856239925757506e-14,
+      "requestedHeading": -2.8469410404893143,
+      "facingHeading": -2.8469410404893143,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 3924,
+      "accepted": 2,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": null,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 3,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": false,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    },
+    {
+      "wall": 46048.30000001192,
+      "simTime": 3.550000000000353,
+      "frames": 155,
+      "pageFps": 5.294740557712651,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.033199999999997
+      },
+      "p": [
+        1.1929613189893185,
+        0.997673626563075,
+        1.193978073980651
+      ],
+      "v": [
+        -5.841617112844655e-15,
+        -1.8668667573928803e-15,
+        -1.8070600896723243e-15
+      ],
+      "q": [
+        0.14679343614627732,
+        1.1325882085084393e-17,
+        -7.63194254880269e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.832270313658261,
+      "horizontalSpeed": 6.132673314545471e-15,
+      "requestedHeading": -2.8469410404893143,
+      "facingHeading": -2.8469410404893143,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 3924,
+      "accepted": 2,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": null,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 3,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": false,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    },
+    {
+      "wall": 46249.39999997616,
+      "simTime": 3.6415000000003834,
+      "frames": 156,
+      "pageFps": 5.294740557712651,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.033199999999997
+      },
+      "p": [
+        1.1929613189893185,
+        0.997673626563075,
+        1.193978073980651
+      ],
+      "v": [
+        -1.9520554677548108e-15,
+        -5.873660685317433e-16,
+        -6.025792386767093e-16
+      ],
+      "q": [
+        0.14679343614627732,
+        4.5749839960267734e-18,
+        -3.0828517158375806e-17,
+        -0.9891671684322974
+      ],
+      "bodyYaw": -2.8469410404893143,
+      "velocityHeading": -2.849313862051274,
+      "horizontalSpeed": 2.0385091237602765e-15,
+      "requestedHeading": -2.8469410404893143,
+      "facingHeading": -2.8469410404893143,
+      "command": {
+        "yawRate": 0,
+        "forwardSpeed": 0,
+        "verticalSpeed": 0,
+        "feed": 0
+      },
+      "active": false,
+      "framesApplied": 367,
+      "settleMs": 3924,
+      "accepted": 2,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "stale",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": null,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 3,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": false,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    },
+    {
+      "wall": 46849.10000002384,
+      "simTime": 3.850000000000453,
+      "frames": 158,
+      "pageFps": 4.285591840233147,
+      "details": {
+        "panel": null,
+        "extraViews": false,
+        "speed": 0.5,
+        "droppedWallSeconds": 1.2497999999999956
+      },
+      "p": [
+        1.1949135298372282,
+        0.9983069602795362,
+        1.189908570382878
+      ],
+      "v": [
+        0.03061866549542933,
+        0.010127017673123297,
+        -0.023757092908281777
+      ],
+      "q": [
+        -0.9891989405570113,
+        0.005328926619363058,
+        -0.03313059501671049,
+        -0.14268644720438883
+      ],
+      "bodyYaw": 0.28647606880427967,
+      "velocityHeading": 0.3194206365367256,
+      "horizontalSpeed": 0.03224994827395458,
+      "requestedHeading": -2.841143639441756,
+      "facingHeading": 0.30044901414803693,
+      "command": {
+        "yawRate": 0.04637920838019166,
+        "forwardSpeed": -0.049779041050501696,
+        "verticalSpeed": 7.834709935147167e-06,
+        "feed": 9.771706025962357e-06
+      },
+      "active": true,
+      "framesApplied": 617,
+      "settleMs": 1028.2999999523163,
+      "accepted": 3,
+      "late": 0,
+      "failed": 0,
+      "neuralState": "live",
+      "pathsEnabled": false,
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": {
+        "requestId": 2,
+        "searchToken": "0:1",
+        "executedAt": 3.7255000000004115,
+        "fruit": "bread",
+        "action": 0
+      },
+      "pending": {
+        "requestId": 4,
+        "worker": true,
+        "decision": {
+          "requestId": 2,
+          "generation": 0,
+          "searchToken": "0:1"
+        }
+      },
+      "search": {
+        "pendingUntil": null,
+        "neuralToken": "0:1",
+        "choice": {
+          "requestId": 2,
+          "executed": true,
+          "executedAt": null,
+          "revoked": null
+        }
+      }
+    }
+  ],
+  "initial_summary": {
+    "wallSeconds": 8.031300000011921,
+    "simulatedSeconds": 3.617000000000453,
+    "simulationPerWall": 0.45036295493818984,
+    "independentFps": 5.478565113983376,
+    "horizontalDisplacementM": 0.005360835962033837,
+    "sampledHorizontalPathLengthM": 0.009465544580407126,
+    "sampleCount": 35,
+    "activeSamples": 2,
+    "activeSampleFraction": 0.05714285714285714,
+    "neuralActuationSteps": 617,
+    "neuralActuationSimulatedSeconds": 0.3085,
+    "neuralActuationTimeFraction": 0.08529167818633158,
+    "medianActiveMovingNoseTravelErrorDeg": 1.704812494381097,
+    "activeMovingNoseTravelErrorsDeg": [
+      1.52204029981016,
+      1.887584688952034
+    ],
+    "acceptedRepliesDuringWindow": 3,
+    "lateRepliesDuringWindow": 0,
+    "droppedWallSecondsDuringWindow": 0.7998999999999942
+  },
+  "error": "TimeoutError('Page.wait_for_function: Timeout 10000ms exceeded.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_flight_clarity.py\", line 143, in run\n    page.wait_for_function(\"()=>{const s=getComputedStyle(document.getElementById('loading'));return s.display==='none'||s.visibility==='hidden';}\", timeout=10000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/sync_api/_generated.py\", line 12761, in wait_for_function\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for_function(\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n        )\n        ^\n    )\n    ^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_page.py\", line 1151, in wait_for_function\n    return await self._main_frame.wait_for_function(**locals_to_params(locals()))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_frame.py\", line 940, in wait_for_function\n    await self._channel.send(\"waitForFunction\", self._timeout, params)\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 10000ms exceeded.\n",
+  "failure_state": {
+    "wall": 57225.69999998808,
+    "simTime": 8.049999999998347,
+    "frames": 218,
+    "pageFps": 6.673021925643469,
+    "details": {
+      "panel": null,
+      "extraViews": false,
+      "speed": 0.5,
+      "droppedWallSeconds": 3.232299999999988
+    },
+    "p": [
+      1.1916031618590548,
+      0.9972967037428162,
+      1.147934827819985
+    ],
+    "v": [
+      -0.03122923807507475,
+      -0.01126140732670357,
+      -0.021566412191123173
+    ],
+    "q": [
+      0.1573915075620343,
+      0.033033712293447016,
+      0.005759852186705712,
+      -0.9869668238103302
+    ],
+    "bodyYaw": -2.825348589229972,
+    "velocityHeading": -2.795501930491747,
+    "horizontalSpeed": 0.03319765964232466,
+    "requestedHeading": 0.33012853059391084,
+    "facingHeading": -2.8114641229958823,
+    "command": {
+      "yawRate": 0.046381109775776114,
+      "forwardSpeed": -0.04976962530992652,
+      "verticalSpeed": 7.786861931962574e-06,
+      "feed": 9.771663696402068e-06
+    },
+    "active": true,
+    "framesApplied": 6081,
+    "settleMs": 903.6000000238419,
+    "accepted": 10,
+    "late": 0,
+    "failed": 0,
+    "neuralState": "live",
+    "pathsEnabled": false,
+    "choices": {
+      "requested": 1,
+      "accepted": 1,
+      "discarded": 0,
+      "executed": 1,
+      "creditedOutcomes": 0,
+      "uncreditedOutcomes": 0
+    },
+    "lastChoice": {
+      "requestId": 2,
+      "searchToken": "0:1",
+      "executedAt": 3.7255000000004115,
+      "fruit": "bread",
+      "action": 0
+    },
+    "pending": {
+      "requestId": 11,
+      "worker": true,
+      "decision": {
+        "requestId": 2,
+        "generation": 0,
+        "searchToken": "0:1"
+      }
+    },
+    "search": {
+      "pendingUntil": null,
+      "neuralToken": "0:1",
+      "choice": {
+        "requestId": 2,
+        "executed": true,
+        "executedAt": null,
+        "revoked": null
+      }
+    }
+  },
+  "failure_visibility": {
+    "brain": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "path-panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "options": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "card": {
+      "visible": false,
+      "left": 24,
+      "right": 444,
+      "top": 918,
+      "bottom": 920,
+      "width": 420,
+      "height": 2
+    },
+    "eye": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "inset": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "status": {
+      "visible": true,
+      "left": 24,
+      "right": 444,
+      "top": 837.40625,
+      "bottom": 920,
+      "width": 420,
+      "height": 82.59375
+    },
+    "toolbar": {
+      "visible": true,
+      "left": 24,
+      "right": 319.8125,
+      "top": 934,
+      "bottom": 976,
+      "width": 295.8125,
+      "height": 42
+    }
+  },
+  "requests": [
+    {
+      "type": "assist:observe",
+      "requestId": 1,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:decide",
+      "requestId": 2,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:accept",
+      "requestId": 2,
+      "generation": 0,
+      "trace": false,
+      "retina": null
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 3,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 4,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 5,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 6,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 7,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 8,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 9,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 10,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 11,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    }
+  ],
+  "replies": [
+    {
+      "type": "control",
+      "requestId": 1,
+      "generation": 0,
+      "roundTripMs": 1459.5,
+      "workerMs": 1452,
+      "iterations": 130,
+      "residual": 9.493695019395509e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7552289398461336,
+        "min": 0.3813110291957855,
+        "max": 0.9990150332450867
+      },
+      "trace": null
+    },
+    {
+      "type": "assisted_decision",
+      "requestId": 2,
+      "generation": 0,
+      "roundTripMs": 3926.2999999523163,
+      "workerMs": 3924,
+      "iterations": 62,
+      "residual": 9.229731943172226e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7552600075057919,
+        "min": 0.38219547271728516,
+        "max": 0.9990243315696716
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 3,
+      "generation": 0,
+      "roundTripMs": 1029.6000000238419,
+      "workerMs": 1028.2999999523163,
+      "iterations": 95,
+      "residual": 9.673213456906637e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.4636543579196129,
+        "min": 0.05017252266407013,
+        "max": 0.8184446096420288
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 4,
+      "generation": 0,
+      "roundTripMs": 888.1999999880791,
+      "workerMs": 887.1000000238419,
+      "iterations": 82,
+      "residual": 8.462939351527865e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.4549035347127348,
+        "min": 0.04575672373175621,
+        "max": 0.8177925944328308
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 5,
+      "generation": 0,
+      "roundTripMs": 1057.1000000238419,
+      "workerMs": 1055.8999999761581,
+      "iterations": 97,
+      "residual": 9.345608723565491e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7578356959239048,
+        "min": 0.382690966129303,
+        "max": 0.9990242719650269
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 6,
+      "generation": 0,
+      "roundTripMs": 949.3999999761581,
+      "workerMs": 948.0999999642372,
+      "iterations": 93,
+      "residual": 9.169694354937974e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.4148620513333358,
+        "min": 0,
+        "max": 0.8157657980918884
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 7,
+      "generation": 0,
+      "roundTripMs": 892.1000000238419,
+      "workerMs": 890.9000000357628,
+      "iterations": 91,
+      "residual": 9.869759813874168e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7537484065487631,
+        "min": 0.38414880633354187,
+        "max": 0.9985020756721497
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 8,
+      "generation": 0,
+      "roundTripMs": 859.5999999642372,
+      "workerMs": 858.1999999880791,
+      "iterations": 86,
+      "residual": 8.466350438496306e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.40856227081259505,
+        "min": 0,
+        "max": 0.8147675395011902
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 9,
+      "generation": 0,
+      "roundTripMs": 986.8000000119209,
+      "workerMs": 985.5,
+      "iterations": 96,
+      "residual": 9.508341949349131e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7507025669794275,
+        "min": 0.382667601108551,
+        "max": 0.9985097646713257
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 10,
+      "generation": 0,
+      "roundTripMs": 905,
+      "workerMs": 903.6000000238419,
+      "iterations": 90,
+      "residual": 9.538084587701334e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.4100171048582918,
+        "min": 0,
+        "max": 0.8076326251029968
+      },
+      "trace": null
+    }
+  ],
+  "failure_screenshot": {
+    "path": "receipts/flight_clarity_half_speed_ready_2026-09-27.png",
+    "sha256": "c421dcefa4de951a84365ce17c433bba17f44fef820f3e8c7641252cdff53a22"
+  },
+  "sources_unchanged": true,
+  "completed": "2026-09-27T09:23:09.679537+00:00",
+  "body_sha256": "2dd983cf2ac71f24ab782c430c0f2a5d2bfbc4e83042a7a166c79c90c336b788"
+}

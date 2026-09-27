@@ -1,0 +1,6593 @@
+{
+  "schema": "cadence.wall-recovery-browser/1",
+  "passed": false,
+  "started": "2026-09-27T10:05:52.622437+00:00",
+  "sha256": {
+    "web/index.html": "a9e7d1c3e11a1f71e99ea5755a65f759f92b512a551bf1b9e50cc4075916097b",
+    "web/page.js": "8432a9e9eee37a15d4e694f802cfa96f2e871a4a5807238de847b15aa96e6806",
+    "web/worker.js": "f33b71e0a7c5758dc12b92da0caaf56889fe6661678463f1ebb3ae503efe5674",
+    "web/brain-console.js": "4f846ed89bc48859e090f7c6f3271a0f4828ad66ef1384c9376ca8365d68ae92",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "03e4d9bc3e6bfc6a2217e0afa29106eccb7a05d42b617d807096d4bb2208f826",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/motion-support.js": "5e5a925bb5f312b2cd4d5b96f1730e283d73098ad4a840446faab64596c4eaa5",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "da9bf7f60329c457c80b844050a469d3950bdfbeed740cf8d0271aa9a87ca252",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/neural-replay.js": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "416dea676671e7ea63e4e62ce8685c9da3fc8a6c79264e273bb02dd223be6470",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "09a71640cd485663e1165d949b460b974458370ca0853173efc126f69fb6b63d",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "daaedb9653e10aa185459889a5c26f16f70913f371a7866e31e44b30cc774fdd",
+    "tools/check_wall_recovery.py": "d09494518b4d321717d98dd2c0d23e4bf83abd357c6279adea992b3cf1954d44"
+  },
+  "expect": "stall",
+  "errors": [],
+  "protocol": {
+    "url": "http://127.0.0.1:8817/",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "maxWallSeconds": 70,
+    "maxSimSeconds": 40,
+    "sampleMilliseconds": 250,
+    "roomMetres": [
+      4,
+      3,
+      2.6
+    ],
+    "bodyRadiusMetres": 0.0012,
+    "approach": "First horizontal room-plane clearance <=0.25m.",
+    "stall": "Clearance<0.02m, horizontal body speed<0.03m/s, support desired velocity into nearest wall>0.05m/s for>=3simsec.",
+    "recovery": "After approach, distance from that same plane>=0.4m and actual horizontal speed>0.1m/s, then observe2more simsec; recovery must occur within12simsec.",
+    "scope": "Natural plain-URL trajectory; no pose, readout, neural state or route injection. Supplied assistance is recorded separately."
+  },
+  "browser": "151.0.7922.34",
+  "probe": {
+    "rows": [
+      {
+        "wall": 26574,
+        "time": 0,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.29999999999999993
+        },
+        "observations": {
+          "requested": 0,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": null,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.15049890386631684
+      },
+      {
+        "wall": 34827.10000002384,
+        "time": 1.1999999999999234,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 35078.40000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 35329.60000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 35581.5,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 35832.10000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 36084.19999998808,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 36335.30000001192,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 36586.5,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 36837.60000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 37088.80000001192,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 37339.90000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 37591,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 37842.19999998808,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 38093.30000001192,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 38344.40000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 38595.10000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 38846.19999998808,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 39096.40000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 39347.5,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 39598.40000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 39849.60000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 40100.69999998808,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 40351.80000001192,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 40602.90000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 40853.5,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 41104.40000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 41355.5,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 41606.69999998808,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 41857.80000001192,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 42108.90000003576,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 42360.10000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 42611.10000002384,
+        "time": 1.2329999999999197,
+        "position": [
+          1.2,
+          1,
+          1.2
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "speed": 0,
+        "horizontalSpeed": 0,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.1987999999999999,
+          2.7988,
+          0.9988,
+          1.9988,
+          1.1987999999999999,
+          1.3988
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "inactive",
+          "active": false,
+          "source": null,
+          "sourceAgeSeconds": null,
+          "originalCommand": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "desiredVelocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "velocityWorld": [
+            0,
+            0,
+            0
+          ],
+          "appliedHeading": null,
+          "appliedFrames": 0,
+          "freshFrames": 0,
+          "delayedFrames": 0,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.30000000000000004
+        },
+        "observations": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 1,
+        "solveMs": 0,
+        "controlReplies": 0,
+        "paused": false,
+        "fps": 0.24242718093552648
+      },
+      {
+        "wall": 43870.90000003576,
+        "time": 3.233000000000247,
+        "position": [
+          1.0100049499302661,
+          0.9376757651329003,
+          1.1939603409481299
+        ],
+        "velocity": [
+          -0.2757511298534847,
+          -0.09483174146557093,
+          7.432234894385754e-06
+        ],
+        "speed": 0.29160203164605075,
+        "horizontalSpeed": 0.29160203155133585,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          1.008804949930266,
+          2.988795050069734,
+          0.9364757651329003,
+          2.0611242348671,
+          1.1927603409481298,
+          1.4048396590518701
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 1,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 0.20000000000000015,
+            "acceptedAt": 2.232999999999913,
+            "freshUntil": 1.2000000000000002,
+            "holdUntil": 10.232999999999913,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.033000000000247,
+          "originalCommand": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2821823437716781,
+            -0.10184853883842652,
+            8.04424288600549e-06
+          ],
+          "velocityWorld": [
+            -0.2779630652675318,
+            -0.0969748419892073,
+            7.894279616024658e-06
+          ],
+          "appliedHeading": -2.805918880967128,
+          "appliedFrames": 2000,
+          "freshFrames": 0,
+          "delayedFrames": 2000,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.805918880967128
+        },
+        "observations": {
+          "requested": 2,
+          "accepted": 1,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 2,
+        "solveMs": 1457.6000000238419,
+        "controlReplies": 1,
+        "paused": false,
+        "fps": 0.8954956568460666
+      },
+      {
+        "wall": 44122.30000001192,
+        "time": 3.316500000000275,
+        "position": [
+          0.9868943876717495,
+          0.9296814595811463,
+          1.1939609802746842
+        ],
+        "velocity": [
+          -0.2776563727993027,
+          -0.09660044316256197,
+          7.81542487253933e-06
+        ],
+        "speed": 0.29398079365215274,
+        "horizontalSpeed": 0.29398079354826695,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.9856943876717496,
+          3.011905612328251,
+          0.9284814595811464,
+          2.0691185404188537,
+          1.1927609802746841,
+          1.4048390197253158
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 1,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 0.20000000000000015,
+            "acceptedAt": 2.232999999999913,
+            "freshUntil": 1.2000000000000002,
+            "holdUntil": 10.232999999999913,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.1165000000002747,
+          "originalCommand": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "desiredVelocityWorld": [
+            -0.28178579595044123,
+            -0.10294059063642631,
+            8.04424288600549e-06
+          ],
+          "velocityWorld": [
+            -0.2791014489151777,
+            -0.09852333075295659,
+            7.93686111934055e-06
+          ],
+          "appliedHeading": -2.8022460780011182,
+          "appliedFrames": 2167,
+          "freshFrames": 0,
+          "delayedFrames": 2167,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.8022460780011182
+        },
+        "observations": {
+          "requested": 2,
+          "accepted": 1,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 2,
+        "solveMs": 1457.6000000238419,
+        "controlReplies": 1,
+        "paused": false,
+        "fps": 0.8954956568460666
+      },
+      {
+        "wall": 44373.5,
+        "time": 3.316500000000275,
+        "position": [
+          0.9868943876717495,
+          0.9296814595811463,
+          1.1939609802746842
+        ],
+        "velocity": [
+          -0.2776563727993027,
+          -0.09660044316256197,
+          7.81542487253933e-06
+        ],
+        "speed": 0.29398079365215274,
+        "horizontalSpeed": 0.29398079354826695,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.9856943876717496,
+          3.011905612328251,
+          0.9284814595811464,
+          2.0691185404188537,
+          1.1927609802746841,
+          1.4048390197253158
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 1,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 0.20000000000000015,
+            "acceptedAt": 2.232999999999913,
+            "freshUntil": 1.2000000000000002,
+            "holdUntil": 10.232999999999913,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.1165000000002747,
+          "originalCommand": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "desiredVelocityWorld": [
+            -0.28178579595044123,
+            -0.10294059063642631,
+            8.04424288600549e-06
+          ],
+          "velocityWorld": [
+            -0.2791014489151777,
+            -0.09852333075295659,
+            7.93686111934055e-06
+          ],
+          "appliedHeading": -2.8022460780011182,
+          "appliedFrames": 2167,
+          "freshFrames": 0,
+          "delayedFrames": 2167,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.8022460780011182
+        },
+        "observations": {
+          "requested": 2,
+          "accepted": 1,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 2,
+        "solveMs": 1457.6000000238419,
+        "controlReplies": 1,
+        "paused": false,
+        "fps": 0.8954956568460666
+      },
+      {
+        "wall": 44625,
+        "time": 3.8665000000004586,
+        "position": [
+          0.8330009957792694,
+          0.8740140614444215,
+          1.1939653856804573
+        ],
+        "velocity": [
+          -0.2801810598811195,
+          -0.10529620645153928,
+          8.050216972880139e-06
+        ],
+        "speed": 0.2993137442116527,
+        "horizontalSpeed": 0.29931374410339506,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.8318009957792695,
+          3.1657990042207307,
+          0.8728140614444215,
+          2.1247859385555787,
+          1.1927653856804572,
+          1.4048346143195427
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 1,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 0.20000000000000015,
+            "acceptedAt": 2.232999999999913,
+            "freshUntil": 1.2000000000000002,
+            "holdUntil": 10.232999999999913,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.6665000000004584,
+          "originalCommand": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2790684880538453,
+            -0.11009440937368614,
+            8.04424288600549e-06
+          ],
+          "velocityWorld": [
+            -0.27988076542957085,
+            -0.10672119148571269,
+            8.0323446471085e-06
+          ],
+          "appliedHeading": -2.777301883846463,
+          "appliedFrames": 3267,
+          "freshFrames": 0,
+          "delayedFrames": 3267,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.777301883846463
+        },
+        "observations": {
+          "requested": 2,
+          "accepted": 1,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 2,
+        "solveMs": 1457.6000000238419,
+        "controlReplies": 1,
+        "paused": false,
+        "fps": 0.8954956568460666
+      },
+      {
+        "wall": 44876.5,
+        "time": 3.8665000000004586,
+        "position": [
+          0.8330009957792694,
+          0.8740140614444215,
+          1.1939653856804573
+        ],
+        "velocity": [
+          -0.2801810598811195,
+          -0.10529620645153928,
+          8.050216972880139e-06
+        ],
+        "speed": 0.2993137442116527,
+        "horizontalSpeed": 0.29931374410339506,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.8318009957792695,
+          3.1657990042207307,
+          0.8728140614444215,
+          2.1247859385555787,
+          1.1927653856804572,
+          1.4048346143195427
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 1,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 0.20000000000000015,
+            "acceptedAt": 2.232999999999913,
+            "freshUntil": 1.2000000000000002,
+            "holdUntil": 10.232999999999913,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.6665000000004584,
+          "originalCommand": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2790684880538453,
+            -0.11009440937368614,
+            8.04424288600549e-06
+          ],
+          "velocityWorld": [
+            -0.27988076542957085,
+            -0.10672119148571269,
+            8.0323446471085e-06
+          ],
+          "appliedHeading": -2.777301883846463,
+          "appliedFrames": 3267,
+          "freshFrames": 0,
+          "delayedFrames": 3267,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.777301883846463
+        },
+        "observations": {
+          "requested": 2,
+          "accepted": 1,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 2,
+        "solveMs": 1457.6000000238419,
+        "controlReplies": 1,
+        "paused": false,
+        "fps": 0.8954956568460666
+      },
+      {
+        "wall": 45127.60000002384,
+        "time": 3.8665000000004586,
+        "position": [
+          0.8330009957792694,
+          0.8740140614444215,
+          1.1939653856804573
+        ],
+        "velocity": [
+          -0.2801810598811195,
+          -0.10529620645153928,
+          8.050216972880139e-06
+        ],
+        "speed": 0.2993137442116527,
+        "horizontalSpeed": 0.29931374410339506,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.8318009957792695,
+          3.1657990042207307,
+          0.8728140614444215,
+          2.1247859385555787,
+          1.1927653856804572,
+          1.4048346143195427
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 1,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 0.20000000000000015,
+            "acceptedAt": 2.232999999999913,
+            "freshUntil": 1.2000000000000002,
+            "holdUntil": 10.232999999999913,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.6665000000004584,
+          "originalCommand": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2790684880538453,
+            -0.11009440937368614,
+            8.04424288600549e-06
+          ],
+          "velocityWorld": [
+            -0.27988076542957085,
+            -0.10672119148571269,
+            8.0323446471085e-06
+          ],
+          "appliedHeading": -2.777301883846463,
+          "appliedFrames": 3267,
+          "freshFrames": 0,
+          "delayedFrames": 3267,
+          "heldFrames": 0,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.777301883846463
+        },
+        "observations": {
+          "requested": 2,
+          "accepted": 1,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 2,
+        "solveMs": 1457.6000000238419,
+        "controlReplies": 1,
+        "paused": false,
+        "fps": 0.8954956568460666
+      },
+      {
+        "wall": 46240.10000002384,
+        "time": 5.581999999999626,
+        "position": [
+          0.359118796071466,
+          0.6741372465196436,
+          1.1939792019188968
+        ],
+        "velocity": [
+          -0.27154741830248114,
+          -0.12746732759700044,
+          8.052672135810432e-06
+        ],
+        "speed": 0.29997653250931017,
+        "horizontalSpeed": 0.29997653240122585,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.35791879607146604,
+          3.639681203928534,
+          0.6729372465196436,
+          2.3246627534803563,
+          1.1927792019188967,
+          1.4048207980811032
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 2,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 2.232999999999913,
+            "acceptedAt": 4.58200000000018,
+            "freshUntil": 3.232999999999913,
+            "holdUntil": 12.58200000000018,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.348999999999713,
+          "originalCommand": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "desiredVelocityWorld": [
+            -0.269435190019267,
+            -0.13192679174178928,
+            8.040852929511356e-06
+          ],
+          "velocityWorld": [
+            -0.270926521526103,
+            -0.1287883777013376,
+            8.040902563437307e-06
+          ],
+          "appliedHeading": -2.6978483831822224,
+          "appliedFrames": 6698,
+          "freshFrames": 0,
+          "delayedFrames": 5933,
+          "heldFrames": 765,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.6978483831822224
+        },
+        "observations": {
+          "requested": 3,
+          "accepted": 2,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 3,
+        "solveMs": 825,
+        "controlReplies": 2,
+        "paused": false,
+        "fps": 0.9668374746205136
+      },
+      {
+        "wall": 46491.40000003576,
+        "time": 5.6819999999995705,
+        "position": [
+          0.3319938479959536,
+          0.6613272695710529,
+          1.1939800071846045
+        ],
+        "velocity": [
+          -0.27095352550078455,
+          -0.12872545731713997,
+          8.052644021994937e-06
+        ],
+        "speed": 0.29997675977924726,
+        "horizontalSpeed": 0.2999767596711637,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.3307938479959536,
+          3.6668061520040465,
+          0.6601272695710529,
+          2.337472730428947,
+          1.1927800071846044,
+          1.4048199928153955
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 2,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 2.232999999999913,
+            "acceptedAt": 4.58200000000018,
+            "freshUntil": 3.232999999999913,
+            "holdUntil": 12.58200000000018,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.4489999999996575,
+          "originalCommand": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2688204165215829,
+            -0.133175011399146,
+            8.040852929511356e-06
+          ],
+          "velocityWorld": [
+            -0.2703264341072791,
+            -0.13004359354887454,
+            8.040886200126888e-06
+          ],
+          "appliedHeading": -2.6932104473780045,
+          "appliedFrames": 6898,
+          "freshFrames": 0,
+          "delayedFrames": 6133,
+          "heldFrames": 765,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.6932104473780045
+        },
+        "observations": {
+          "requested": 3,
+          "accepted": 2,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 3,
+        "solveMs": 825,
+        "controlReplies": 2,
+        "paused": false,
+        "fps": 0.9668374746205136
+      },
+      {
+        "wall": 46742.60000002384,
+        "time": 5.6819999999995705,
+        "position": [
+          0.3319938479959536,
+          0.6613272695710529,
+          1.1939800071846045
+        ],
+        "velocity": [
+          -0.27095352550078455,
+          -0.12872545731713997,
+          8.052644021994937e-06
+        ],
+        "speed": 0.29997675977924726,
+        "horizontalSpeed": 0.2999767596711637,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.3307938479959536,
+          3.6668061520040465,
+          0.6601272695710529,
+          2.337472730428947,
+          1.1927800071846044,
+          1.4048199928153955
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 2,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 2.232999999999913,
+            "acceptedAt": 4.58200000000018,
+            "freshUntil": 3.232999999999913,
+            "holdUntil": 12.58200000000018,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.4489999999996575,
+          "originalCommand": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2688204165215829,
+            -0.133175011399146,
+            8.040852929511356e-06
+          ],
+          "velocityWorld": [
+            -0.2703264341072791,
+            -0.13004359354887454,
+            8.040886200126888e-06
+          ],
+          "appliedHeading": -2.6932104473780045,
+          "appliedFrames": 6898,
+          "freshFrames": 0,
+          "delayedFrames": 6133,
+          "heldFrames": 765,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.6932104473780045
+        },
+        "observations": {
+          "requested": 3,
+          "accepted": 2,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 3,
+        "solveMs": 825,
+        "controlReplies": 2,
+        "paused": false,
+        "fps": 0.9668374746205136
+      },
+      {
+        "wall": 46993.69999998808,
+        "time": 6.215499999999275,
+        "position": [
+          0.1883051657408041,
+          0.590869225382688,
+          1.1939843032523116
+        ],
+        "velocity": [
+          -0.2676861474016002,
+          -0.13538990678171042,
+          8.052593739704297e-06
+        ],
+        "speed": 0.2999771665209133,
+        "horizontalSpeed": 0.2999771664128313,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.1871051657408041,
+          3.810494834259196,
+          0.5896692253826881,
+          2.407930774617312,
+          1.1927843032523116,
+          1.4048156967476884
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 2,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 2.232999999999913,
+            "acceptedAt": 4.58200000000018,
+            "freshUntil": 3.232999999999913,
+            "holdUntil": 12.58200000000018,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.9824999999993618,
+          "originalCommand": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "desiredVelocityWorld": [
+            -0.26544321010276006,
+            -0.13978520025504126,
+            8.040852929511356e-06
+          ],
+          "velocityWorld": [
+            -0.2670265027518756,
+            -0.13669208722656262,
+            8.040856867517715e-06
+          ],
+          "appliedHeading": -2.6684668070523676,
+          "appliedFrames": 7965,
+          "freshFrames": 0,
+          "delayedFrames": 7200,
+          "heldFrames": 765,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.6684668070523676
+        },
+        "observations": {
+          "requested": 3,
+          "accepted": 2,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 3,
+        "solveMs": 825,
+        "controlReplies": 2,
+        "paused": false,
+        "fps": 0.9668374746205136
+      },
+      {
+        "wall": 47245,
+        "time": 6.215499999999275,
+        "position": [
+          0.1883051657408041,
+          0.590869225382688,
+          1.1939843032523116
+        ],
+        "velocity": [
+          -0.2676861474016002,
+          -0.13538990678171042,
+          8.052593739704297e-06
+        ],
+        "speed": 0.2999771665209133,
+        "horizontalSpeed": 0.2999771664128313,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.1871051657408041,
+          3.810494834259196,
+          0.5896692253826881,
+          2.407930774617312,
+          1.1927843032523116,
+          1.4048156967476884
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 2,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 2.232999999999913,
+            "acceptedAt": 4.58200000000018,
+            "freshUntil": 3.232999999999913,
+            "holdUntil": 12.58200000000018,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.9824999999993618,
+          "originalCommand": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "desiredVelocityWorld": [
+            -0.26544321010276006,
+            -0.13978520025504126,
+            8.040852929511356e-06
+          ],
+          "velocityWorld": [
+            -0.2670265027518756,
+            -0.13669208722656262,
+            8.040856867517715e-06
+          ],
+          "appliedHeading": -2.6684668070523676,
+          "appliedFrames": 7965,
+          "freshFrames": 0,
+          "delayedFrames": 7200,
+          "heldFrames": 765,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.6684668070523676
+        },
+        "observations": {
+          "requested": 3,
+          "accepted": 2,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 3,
+        "solveMs": 825,
+        "controlReplies": 2,
+        "paused": false,
+        "fps": 0.9668374746205136
+      },
+      {
+        "wall": 47496.80000001192,
+        "time": 6.665499999999025,
+        "position": [
+          0.06849161857782289,
+          0.5286897928213103,
+          1.1939879269178753
+        ],
+        "velocity": [
+          -0.2648023679931355,
+          -0.1409469173541739,
+          8.052588135680955e-06
+        ],
+        "speed": 0.2999772119199398,
+        "horizontalSpeed": 0.29997721181185794,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.06729161857782288,
+          3.930308381422177,
+          0.5274897928213104,
+          2.47011020717869,
+          1.1927879269178752,
+          1.4048120730821247
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 2,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 2.232999999999913,
+            "acceptedAt": 4.58200000000018,
+            "freshUntil": 3.232999999999913,
+            "holdUntil": 12.58200000000018,
+            "detached": false
+          },
+          "sourceAgeSeconds": 4.432499999999113,
+          "originalCommand": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "desiredVelocityWorld": [
+            -0.2624681472558594,
+            -0.1452944309878273,
+            8.040852929511356e-06
+          ],
+          "velocityWorld": [
+            -0.26411567615054415,
+            -0.14223504367863954,
+            8.040853580459433e-06
+          ],
+          "appliedHeading": -2.647595780833484,
+          "appliedFrames": 8865,
+          "freshFrames": 0,
+          "delayedFrames": 7235,
+          "heldFrames": 1630,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": -2.647595780833484
+        },
+        "observations": {
+          "requested": 3,
+          "accepted": 2,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 3,
+        "solveMs": 825,
+        "controlReplies": 2,
+        "paused": false,
+        "fps": 3.692080487354619
+      },
+      {
+        "wall": 48506.60000002384,
+        "time": 7.8489999999983695,
+        "position": [
+          0.05170222529693596,
+          0.523367415330326,
+          1.1881179549329919
+        ],
+        "velocity": [
+          0.19937807288453332,
+          0.12302242329493539,
+          -0.0002704383198304963
+        ],
+        "speed": 0.2342780521461483,
+        "horizontalSpeed": 0.2342778960561763,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.05050222529693596,
+          3.947097774703064,
+          0.5221674153303261,
+          2.475432584669674,
+          1.1869179549329918,
+          1.4106820450670081
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.2669999999981894,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.25405036194226344,
+            0.15955692901596263,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.2175047543772181,
+            0.1347676953704475,
+            1.1547091978307249e-05
+          ],
+          "appliedHeading": 0.5547125540983526,
+          "appliedFrames": 11232,
+          "freshFrames": 0,
+          "delayedFrames": 8802,
+          "heldFrames": 2430,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.5547125540983526
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.5354969574036574
+      },
+      {
+        "wall": 48758,
+        "time": 7.898999999998342,
+        "position": [
+          0.06192968425016803,
+          0.5296848890923167,
+          1.1881079989738037
+        ],
+        "velocity": [
+          0.20928983126583217,
+          0.12942505549716865,
+          -0.00014195695486121998
+        ],
+        "speed": 0.246075392133189,
+        "horizontalSpeed": 0.24607535118683804,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.06072968425016803,
+          3.936870315749832,
+          0.5284848890923167,
+          2.4691151109076834,
+          1.1869079989738036,
+          1.4106920010261963
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.3169999999981616,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.25367638900215794,
+            0.16015083409968817,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.22409400727999362,
+            0.1393173938295615,
+            1.1597559889675728e-05
+          ],
+          "appliedHeading": 0.556216805578405,
+          "appliedFrames": 11332,
+          "freshFrames": 0,
+          "delayedFrames": 8902,
+          "heldFrames": 2430,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.556216805578405
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.5354969574036574
+      },
+      {
+        "wall": 49010.10000002384,
+        "time": 8.298999999998651,
+        "position": [
+          0.15445785551240854,
+          0.5877169424949844,
+          1.188100305598392
+        ],
+        "velocity": [
+          0.24378081117014944,
+          0.15531983861327775,
+          1.0831295911884153e-05
+        ],
+        "speed": 0.2890559397053582,
+        "horizontalSpeed": 0.2890559395024269,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.15325785551240853,
+          3.844342144487592,
+          0.5865169424949844,
+          2.4110830575050155,
+          1.186900305598392,
+          1.410699694401608
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.716999999998471,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.250634796739038,
+            0.1648702479636065,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.24618352189580248,
+            0.15831592224930954,
+            1.1779484523891808e-05
+          ],
+          "appliedHeading": 0.571495794163354,
+          "appliedFrames": 12132,
+          "freshFrames": 0,
+          "delayedFrames": 9702,
+          "heldFrames": 2430,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.571495794163354
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.5354969574036574
+      },
+      {
+        "wall": 49261.19999998808,
+        "time": 8.298999999998651,
+        "position": [
+          0.15445785551240854,
+          0.5877169424949844,
+          1.188100305598392
+        ],
+        "velocity": [
+          0.24378081117014944,
+          0.15531983861327775,
+          1.0831295911884153e-05
+        ],
+        "speed": 0.2890559397053582,
+        "horizontalSpeed": 0.2890559395024269,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.15325785551240853,
+          3.844342144487592,
+          0.5865169424949844,
+          2.4110830575050155,
+          1.186900305598392,
+          1.410699694401608
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "delayed_checked",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 3.716999999998471,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.250634796739038,
+            0.1648702479636065,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.24618352189580248,
+            0.15831592224930954,
+            1.1779484523891808e-05
+          ],
+          "appliedHeading": 0.571495794163354,
+          "appliedFrames": 12132,
+          "freshFrames": 0,
+          "delayedFrames": 9702,
+          "heldFrames": 2430,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.571495794163354
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.5354969574036574
+      },
+      {
+        "wall": 49512.30000001192,
+        "time": 8.831999999999303,
+        "position": [
+          0.2862923072626534,
+          0.6738557824870727,
+          1.1881065552077832
+        ],
+        "velocity": [
+          0.24809815582902128,
+          0.16631002091108243,
+          1.1852163808868394e-05
+        ],
+        "speed": 0.29868330740381155,
+        "horizontalSpeed": 0.2986833071686565,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.28509230726265344,
+          3.7125076927373466,
+          0.6726557824870727,
+          2.3249442175129276,
+          1.186906555207783,
+          1.4106934447922168
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 4.2499999999991225,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.24644563571581068,
+            0.17106884180536774,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.24765840571691347,
+            0.16773862229039133,
+            1.1820047914584884e-05
+          ],
+          "appliedHeading": 0.5953269080187497,
+          "appliedFrames": 13198,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 2930,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.5953269080187497
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.5354969574036574
+      },
+      {
+        "wall": 49763.90000003576,
+        "time": 9.015499999999527,
+        "position": [
+          0.3317466033700996,
+          0.7046041527181577,
+          1.1881087293211612
+        ],
+        "velocity": [
+          0.24724445043319188,
+          0.16877327251639884,
+          1.1844625874586265e-05
+        ],
+        "speed": 0.2993563694431786,
+        "horizontalSpeed": 0.2993563692088506,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.3305466033700996,
+          3.6670533966299006,
+          0.7034041527181577,
+          2.2941958472818422,
+          1.186908729321161,
+          1.4106912706788388
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 4.433499999999347,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.2449678003075355,
+            0.17317845366120865,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.24659664008126744,
+            0.1700874457329433,
+            1.1822886232241926e-05
+          ],
+          "appliedHeading": 0.603806485078224,
+          "appliedFrames": 13565,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 3297,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.603806485078224
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 5.142710208279744
+      },
+      {
+        "wall": 50029.19999998808,
+        "time": 9.364999999999954,
+        "position": [
+          0.41775863047564027,
+          0.76434591276609,
+          1.1881128678290442
+        ],
+        "velocity": [
+          0.24485605193520607,
+          0.17303117867690315,
+          1.183911633930255e-05
+        ],
+        "speed": 0.2998237400603551,
+        "horizontalSpeed": 0.29982373982661,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.4165586304756403,
+          3.58104136952436,
+          0.76314591276609,
+          2.2344540872339103,
+          1.1869128678290441,
+          1.4106871321709558
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 4.782999999999774,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.2421032084110214,
+            0.17716104672610605,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.24405085091824627,
+            0.1742574056496929,
+            1.1824858726911643e-05
+          ],
+          "appliedHeading": 0.6200741070480502,
+          "appliedFrames": 14264,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 3996,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.6200741070480502
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 5.142710208279744
+      },
+      {
+        "wall": 50280.69999998808,
+        "time": 9.364999999999954,
+        "position": [
+          0.41775863047564027,
+          0.76434591276609,
+          1.1881128678290442
+        ],
+        "velocity": [
+          0.24485605193520607,
+          0.17303117867690315,
+          1.183911633930255e-05
+        ],
+        "speed": 0.2998237400603551,
+        "horizontalSpeed": 0.29982373982661,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.4165586304756403,
+          3.58104136952436,
+          0.76314591276609,
+          2.2344540872339103,
+          1.1869128678290441,
+          1.4106871321709558
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 4.782999999999774,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.2421032084110214,
+            0.17716104672610605,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.24405085091824627,
+            0.1742574056496929,
+            1.1824858726911643e-05
+          ],
+          "appliedHeading": 0.6200741070480502,
+          "appliedFrames": 14264,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 3996,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.6200741070480502
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 5.142710208279744
+      },
+      {
+        "wall": 50532.5,
+        "time": 9.732000000000403,
+        "position": [
+          0.5070936999469552,
+          0.828631311675686,
+          1.1881172124859143
+        ],
+        "velocity": [
+          0.2419511052579869,
+          0.17726995162838055,
+          1.1837810837813337e-05
+        ],
+        "speed": 0.2999416163622908,
+        "horizontalSpeed": 0.299941616128689,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.5058936999469552,
+          3.491706300053045,
+          0.8274313116756861,
+          2.1701686883243143,
+          1.1869172124859142,
+          1.4106827875140857
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 5.150000000000222,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.23902551142879475,
+            0.18129204308574356,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.241090510415811,
+            0.17846280499622652,
+            1.1825356925551116e-05
+          ],
+          "appliedHeading": 0.6372199389269191,
+          "appliedFrames": 14998,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 4730,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.6372199389269191
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 5.142710208279744
+      },
+      {
+        "wall": 50783.69999998808,
+        "time": 10.06550000000081,
+        "position": [
+          0.5873237668143347,
+          0.8883815787651822,
+          1.1881211603403183
+        ],
+        "velocity": [
+          0.23917818598782006,
+          0.1810368302794369,
+          1.1837539037880685e-05
+        ],
+        "speed": 0.2999675627633382,
+        "horizontalSpeed": 0.29996756252976736,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.5861237668143348,
+          3.4114762331856654,
+          0.8871815787651822,
+          2.110418421234818,
+          1.1869211603403182,
+          1.4106788396596817
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 5.48350000000063,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.23616760178817606,
+            0.1849996320688814,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.23829145228763696,
+            0.18221188023325852,
+            1.1825466776603554e-05
+          ],
+          "appliedHeading": 0.652817515175116,
+          "appliedFrames": 15665,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 5397,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.652817515175116
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.857142857142857
+      },
+      {
+        "wall": 51034.80000001192,
+        "time": 10.06550000000081,
+        "position": [
+          0.5873237668143347,
+          0.8883815787651822,
+          1.1881211603403183
+        ],
+        "velocity": [
+          0.23917818598782006,
+          0.1810368302794369,
+          1.1837539037880685e-05
+        ],
+        "speed": 0.2999675627633382,
+        "horizontalSpeed": 0.29996756252976736,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.5861237668143348,
+          3.4114762331856654,
+          0.8871815787651822,
+          2.110418421234818,
+          1.1869211603403182,
+          1.4106788396596817
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 5.48350000000063,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.23616760178817606,
+            0.1849996320688814,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.23829145228763696,
+            0.18221188023325852,
+            1.1825466776603554e-05
+          ],
+          "appliedHeading": 0.652817515175116,
+          "appliedFrames": 15665,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 5397,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.652817515175116
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.857142857142857
+      },
+      {
+        "wall": 51286.10000002384,
+        "time": 10.53200000000138,
+        "position": [
+          0.6979709379679502,
+          0.9740486999871744,
+          1.1881266825285253
+        ],
+        "velocity": [
+          0.23517681417051534,
+          0.18621788417585536,
+          1.183746096353865e-05
+        ],
+        "speed": 0.29997538974131005,
+        "horizontalSpeed": 0.29997538950774844,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.6967709379679502,
+          3.30082906203205,
+          0.9728486999871744,
+          2.024751300012826,
+          1.1869266825285252,
+          1.4106733174714747
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 5.9500000000012,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.2320736384910304,
+            0.1901100373929123,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.23426233574001892,
+            0.18737202113447166,
+            1.1825499983319508e-05
+          ],
+          "appliedHeading": 0.6746424221743903,
+          "appliedFrames": 16598,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 6330,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.6746424221743903
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.857142857142857
+      },
+      {
+        "wall": 51537.30000001192,
+        "time": 10.53200000000138,
+        "position": [
+          0.6979709379679502,
+          0.9740486999871744,
+          1.1881266825285253
+        ],
+        "velocity": [
+          0.23517681417051534,
+          0.18621788417585536,
+          1.183746096353865e-05
+        ],
+        "speed": 0.29997538974131005,
+        "horizontalSpeed": 0.29997538950774844,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.6967709379679502,
+          3.30082906203205,
+          0.9728486999871744,
+          2.024751300012826,
+          1.1869266825285252,
+          1.4106733174714747
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 5.9500000000012,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.2320736384910304,
+            0.1901100373929123,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.23426233574001892,
+            0.18737202113447166,
+            1.1825499983319508e-05
+          ],
+          "appliedHeading": 0.6746424221743903,
+          "appliedFrames": 16598,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 6330,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.6746424221743903
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.857142857142857
+      },
+      {
+        "wall": 51788.80000001192,
+        "time": 10.932000000001869,
+        "position": [
+          0.7913385218776977,
+          1.0494130174974867,
+          1.1881314175101982
+        ],
+        "velocity": [
+          0.23165162575478043,
+          0.19058709995844256,
+          1.1837450249092792e-05
+        ],
+        "speed": 0.2999765299578076,
+        "horizontalSpeed": 0.2999765297242473,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.7901385218776977,
+          3.2074614781223025,
+          1.0482130174974866,
+          1.9493869825025132,
+          1.1869314175101982,
+          1.4106685824898018
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 6.350000000001689,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.22847515396825172,
+            0.19441991672455697,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.23071536857531133,
+            0.19172373614310173,
+            1.1825504835109869e-05
+          ],
+          "appliedHeading": 0.6933577610546156,
+          "appliedFrames": 17398,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 7130,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.6933577610546156
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.857142857142857
+      },
+      {
+        "wall": 52040.5,
+        "time": 11.331500000002357,
+        "position": [
+          0.8831655150917183,
+          1.1264141476035374,
+          1.1881361465710591
+        ],
+        "velocity": [
+          0.2280490483684408,
+          0.1948837796025657,
+          1.1837448210351404e-05
+        ],
+        "speed": 0.2999767593565509,
+        "horizontalSpeed": 0.2999767591229908,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.8819655150917183,
+          3.115634484908282,
+          1.1252141476035373,
+          1.8723858523964625,
+          1.186936146571059,
+          1.4106638534289409
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 6.749500000002177,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.22480128939421387,
+            0.19865643781840772,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.22709164074454194,
+            0.19600268045910071,
+            1.1825505814173352e-05
+          ],
+          "appliedHeading": 0.7120500082611579,
+          "appliedFrames": 18197,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 7929,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.7120500082611579
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.3694810836426847
+      },
+      {
+        "wall": 52290.60000002384,
+        "time": 11.331500000002357,
+        "position": [
+          0.8831655150917183,
+          1.1264141476035374,
+          1.1881361465710591
+        ],
+        "velocity": [
+          0.2280490483684408,
+          0.1948837796025657,
+          1.1837448210351404e-05
+        ],
+        "speed": 0.2999767593565509,
+        "horizontalSpeed": 0.2999767591229908,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.8819655150917183,
+          3.115634484908282,
+          1.1252141476035373,
+          1.8723858523964625,
+          1.186936146571059,
+          1.4106638534289409
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 6.749500000002177,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.22480128939421387,
+            0.19865643781840772,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.22709164074454194,
+            0.19600268045910071,
+            1.1825505814173352e-05
+          ],
+          "appliedHeading": 0.7120500082611579,
+          "appliedFrames": 18197,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 7929,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.7120500082611579
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.3694810836426847
+      },
+      {
+        "wall": 52542,
+        "time": 11.699000000002806,
+        "position": [
+          0.9663528346270911,
+          1.1987519105362032,
+          1.1881404968331852
+        ],
+        "velocity": [
+          0.2246644984930857,
+          0.19877612009690018,
+          1.1837447835917949e-05
+        ],
+        "speed": 0.29997680400999704,
+        "horizontalSpeed": 0.299976803776437,
+        "touching": 0,
+        "onFloor": false,
+        "clearances": [
+          0.9651528346270911,
+          3.032447165372909,
+          1.1975519105362031,
+          1.8000480894637967,
+          1.1869404968331851,
+          1.4106595031668148
+        ],
+        "support": {
+          "enabled": true,
+          "config": {
+            "cruiseSpeed": 0.3,
+            "maxObservationAgeSeconds": 4,
+            "holdSeconds": 8,
+            "responseSeconds": 0.25,
+            "maxAcceleration": 1
+          },
+          "phase": "held",
+          "active": true,
+          "source": {
+            "requestId": 3,
+            "generation": 0,
+            "attention": null,
+            "searchToken": null,
+            "observationTime": 4.58200000000018,
+            "acceptedAt": 7.065499999998804,
+            "freshUntil": 5.58200000000018,
+            "holdUntil": 15.065499999998803,
+            "detached": false
+          },
+          "sourceAgeSeconds": 7.117000000002626,
+          "originalCommand": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "desiredVelocityWorld": [
+            0.2213523121539587,
+            0.20249235517445205,
+            1.1825506062468978e-05
+          ],
+          "velocityWorld": [
+            0.22368798024769518,
+            0.19987838650902867,
+            1.1825506005379501e-05
+          ],
+          "appliedHeading": 0.7292450664835866,
+          "appliedFrames": 18932,
+          "freshFrames": 0,
+          "delayedFrames": 10268,
+          "heldFrames": 8664,
+          "stoppingFrames": 0
+        },
+        "navigation": {
+          "gains": {
+            "yaw": 6,
+            "yawLimit": 2.5,
+            "forward": 0.3,
+            "vertical": 0.12,
+            "hoverAdmittanceSeconds": 1,
+            "planeLimit": 0.05
+          },
+          "command": {
+            "yawRate": 0,
+            "forwardSpeed": 0,
+            "verticalSpeed": 0,
+            "feed": 0
+          },
+          "active": false,
+          "framesApplied": 0,
+          "attention": null,
+          "facingHeading": 0.7292450664835866
+        },
+        "observations": {
+          "requested": 4,
+          "accepted": 3,
+          "discarded": 0,
+          "framesApplied": 0
+        },
+        "boundary": null,
+        "pending": 4,
+        "solveMs": 1396.699999988079,
+        "controlReplies": 3,
+        "paused": false,
+        "fps": 2.3694810836426847
+      }
+    ],
+    "approach": {
+      "time": 6.215499999999275,
+      "index": 42,
+      "wall": 0,
+      "clearance": 0.1871051657408041
+    },
+    "recovery": {
+      "time": 9.364999999999954,
+      "index": 51,
+      "clearance": 0.4165586304756403,
+      "seconds": 3.149500000000679
+    },
+    "stalledSince": null,
+    "stop": "recovered_and_observed_two_seconds"
+  },
+  "image": {
+    "path": "receipts/browser_wall_stall_before_2026-09-27.png",
+    "sha256": "bfa31f8c7c8233d1e7c14f3ea016f0559866da99bbd4b69f2789376c00e35f42"
+  },
+  "console": {
+    "collapsed": false,
+    "entries": [
+      {
+        "id": 1,
+        "time": 0,
+        "kind": "link",
+        "text": "Connecting the full patch net. /help lists commands; /status reads the brain.",
+        "meta": null
+      },
+      {
+        "id": 2,
+        "time": 0,
+        "kind": "link",
+        "text": "150,802 neurons connected \u00b7 learning ready \u00b7 time 1\u00d7.",
+        "meta": {
+          "generation": 0
+        }
+      },
+      {
+        "id": 3,
+        "time": 2.232999999999913,
+        "kind": "settle",
+        "text": "Solve #1: 130 local-update sweeps \u00b7 residual 9.49e-7 \u00b7 checked course input admitted.",
+        "meta": {
+          "generation": 0,
+          "requestId": 1,
+          "accepted": true,
+          "iterations": 130,
+          "residual": 9.493687461135936e-07
+        }
+      },
+      {
+        "id": 4,
+        "time": 2.233499999999913,
+        "kind": "course",
+        "text": "Input #1: neural heading 197.2\u00b0 \u00b7 turn 2.66\u00b0/s \u00b7 travel target 30 cm/s \u00b7 recorded input.",
+        "meta": {
+          "generation": 0,
+          "requestId": 1,
+          "framesApplied": 1,
+          "freshFramesApplied": 0,
+          "phase": "delayed_checked",
+          "command": {
+            "yawRate": 0.046380096248507016,
+            "forwardSpeed": -0.04977730244790297,
+            "verticalSpeed": 8.04424288600549e-06,
+            "feed": 9.77176070529728e-06
+          },
+          "heading": 3.4416158436379174
+        }
+      },
+      {
+        "id": 5,
+        "time": 4.58200000000018,
+        "kind": "settle",
+        "text": "Solve #2: 69 local-update sweeps \u00b7 residual 8.68e-7 \u00b7 checked course input admitted.",
+        "meta": {
+          "generation": 0,
+          "requestId": 2,
+          "accepted": true,
+          "iterations": 69,
+          "residual": 8.67839694995709e-07
+        }
+      },
+      {
+        "id": 6,
+        "time": 4.58250000000018,
+        "kind": "course",
+        "text": "Input #2: neural heading 203.4\u00b0 \u00b7 turn 2.66\u00b0/s \u00b7 travel target 30 cm/s \u00b7 recorded input.",
+        "meta": {
+          "generation": 0,
+          "requestId": 2,
+          "framesApplied": 4699,
+          "freshFramesApplied": 0,
+          "phase": "delayed_checked",
+          "command": {
+            "yawRate": 0.04638009914382474,
+            "forwardSpeed": -0.04977808429074573,
+            "verticalSpeed": 8.040852929511356e-06,
+            "feed": 9.771726481813409e-06
+          },
+          "heading": 3.550562689727012
+        }
+      },
+      {
+        "id": 7,
+        "time": 7.065499999998804,
+        "kind": "settle",
+        "text": "Solve #3: 111 local-update sweeps \u00b7 residual 9.79e-7 \u00b7 checked course input admitted.",
+        "meta": {
+          "generation": 0,
+          "requestId": 3,
+          "accepted": true,
+          "iterations": 111,
+          "residual": 9.78978248133977e-07
+        }
+      },
+      {
+        "id": 8,
+        "time": 7.0659999999988035,
+        "kind": "course",
+        "text": "Input #3: neural heading 30.0\u00b0 \u00b7 turn 2.68\u00b0/s \u00b7 travel target 30 cm/s \u00b7 recorded input.",
+        "meta": {
+          "generation": 0,
+          "requestId": 3,
+          "framesApplied": 9666,
+          "freshFramesApplied": 0,
+          "phase": "delayed_checked",
+          "command": {
+            "yawRate": 0.046789326088957334,
+            "forwardSpeed": 0.19262316696726142,
+            "verticalSpeed": 1.1825506062468978e-05,
+            "feed": 1.0662391534593796e-05
+          },
+          "heading": 0.5241552169744182
+        }
+      }
+    ]
+  },
+  "served": {
+    "scope": "Local page and dedicated-worker response bodies; external CDN/font bytes are not pinned.",
+    "instrumentation": "Only brain_full.json is intercepted: route.fetch (30s, no redirects), SHA256 verification, then fulfill with the same decoded body; transfer/content encoding headers are removed and decoded content-length is set. Other local responses are read after download. Routing disables the context HTTP cache.",
+    "assets": {
+      "web/index.html": {
+        "sha256": "a9e7d1c3e11a1f71e99ea5755a65f759f92b512a551bf1b9e50cc4075916097b",
+        "bytes": 18616,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/page.js": {
+        "sha256": "8432a9e9eee37a15d4e694f802cfa96f2e871a4a5807238de847b15aa96e6806",
+        "bytes": 53240,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/page.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/body.js": {
+        "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+        "bytes": 22149,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/body.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/fly.js": {
+        "sha256": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+        "bytes": 22736,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/fly.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/room.js": {
+        "sha256": "416dea676671e7ea63e4e62ce8685c9da3fc8a6c79264e273bb02dd223be6470",
+        "bytes": 37015,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/room.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/eye.js": {
+        "sha256": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+        "bytes": 5647,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/eye.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/path-history.js": {
+        "sha256": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+        "bytes": 8199,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/path-history.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-life.js": {
+        "sha256": "03e4d9bc3e6bfc6a2217e0afa29106eccb7a05d42b617d807096d4bb2208f826",
+        "bytes": 24347,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/path-view.js": {
+        "sha256": "da9bf7f60329c457c80b844050a469d3950bdfbeed740cf8d0271aa9a87ca252",
+        "bytes": 7657,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/path-view.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-state.js": {
+        "sha256": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+        "bytes": 5154,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/neural-state.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/physics-clock.js": {
+        "sha256": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+        "bytes": 1067,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/physics-clock.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain-console.js": {
+        "sha256": "4f846ed89bc48859e090f7c6f3271a0f4828ad66ef1384c9376ca8365d68ae92",
+        "bytes": 10227,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain-console.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settlement-view.js": {
+        "sha256": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+        "bytes": 40444,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settlement-view.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain_scan.js": {
+        "sha256": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+        "bytes": 96646,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain_scan.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-replay.js": {
+        "sha256": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+        "bytes": 5926,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/neural-replay.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/retina.js": {
+        "sha256": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+        "bytes": 4316,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/retina.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/life.js": {
+        "sha256": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+        "bytes": 30948,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/assisted-life.js": {
+        "sha256": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+        "bytes": 15154,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/assisted-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/neural-policy.js": {
+        "sha256": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+        "bytes": 4578,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/neural-policy.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motion-support.js": {
+        "sha256": "5e5a925bb5f312b2cd4d5b96f1730e283d73098ad4a840446faab64596c4eaa5",
+        "bytes": 2111,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/motion-support.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/senses.js": {
+        "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+        "bytes": 3706,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/senses.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motor.js": {
+        "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+        "bytes": 3204,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/motor.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/lessons_full.json": {
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+        "bytes": 1709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/lessons_full.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/worker.js": {
+        "sha256": "f33b71e0a7c5758dc12b92da0caaf56889fe6661678463f1ebb3ae503efe5674",
+        "bytes": 29496,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/worker.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain.js": {
+        "sha256": "09a71640cd485663e1165d949b460b974458370ca0853173efc126f69fb6b63d",
+        "bytes": 19322,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/learner.js": {
+        "sha256": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+        "bytes": 19709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/learner.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settlement-trace.js": {
+        "sha256": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+        "bytes": 8045,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settlement-trace.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/atlas.json": {
+        "sha256": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+        "bytes": 11633781,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/atlas.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/brain_full.json": {
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+        "bytes": 42913998,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/brain_full.json"
+        ],
+        "binding": "intercepted request: fetch, hash, fulfill identical body"
+      }
+    }
+  },
+  "error": "AssertionError('recovered_and_observed_two_seconds')",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_wall_recovery.py\", line 58, in run\n    if args.expect=='stall':assert r['probe']['stop']=='sustained_wall_stall',r['probe']['stop']\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: recovered_and_observed_two_seconds\n",
+  "sourcesUnchanged": true,
+  "completed": "2026-09-27T10:06:48.507528+00:00",
+  "body_sha256": "d340ae413ff0df9a0b461e92cb90e9e3229a576639cb6fc40bf4ff6627df0a8f"
+}

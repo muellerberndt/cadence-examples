@@ -11,6 +11,8 @@
 //   { mode: "flying" | "landed" | "grooming" | "feeding" | "takeoff",
 //     t: seconds of the life clock, groom: "head" | "wings" | "legs" | null,
 //     feed: 0..1 (proboscis extension), hunger: 0..1 }
+// With pose.neural === true only body state and the declared motor commands move
+// the drawing. Unmodelled joints stay fixed; there are no cosmetic behaviours.
 // A call without a pose is a flying fly (a landed one when the physics says landed). When the fly
 // stands, the body centre stays where the physics puts it (RADIUS above the surface) and the
 // tarsi reach down to the surface.
@@ -192,49 +194,52 @@ export function createFly() {
     group.position.set(x, y, z);
     group.quaternion.set(q[1], q[2], q[3], q[0]);
     if (!pose) pose = { mode: flight.landed ? "landed" : "flying", t: flight.t, groom: null, feed: 0, hunger: 0 };
-    const t = pose.t || 0, mode = pose.mode || "flying";
+    const neural = pose.neural === true;
+    const t = neural ? 0 : (pose.t || 0), mode = pose.mode || "flying";
     const sitting = mode === "landed" || mode === "grooming" || mode === "feeding";
 
     // mode changes: a takeoff starts the jump; a landing starts the fold
-    if (mode !== S.mode) {
+    if (!neural && mode !== S.mode) {
       if (mode === "takeoff" || (mode === "flying" && S.mode !== "flying")) S.takeoff = 0;
       if (mode === "grooming") { S.groomSide = Math.sin(t * 977.7) > 0 ? 1 : -1; S.groomT = t; }
       S.mode = mode;
     }
-    if (S.takeoff >= 0) { S.takeoff += dt; if (S.takeoff > 1) S.takeoff = -1; }
+    if (neural) { S.takeoff = -1; S.stand = 0; S.feed = clamp01(pose.feed ?? 0); }
+    if (!neural && S.takeoff >= 0) { S.takeoff += dt; if (S.takeoff > 1) S.takeoff = -1; }
     const jumping = S.takeoff >= 0 && S.takeoff < TAKEOFF_S;
     const standWant = sitting || jumping ? 1 : 0;
-    S.stand += Math.sign(standWant - S.stand) * Math.min(Math.abs(standWant - S.stand), dt / FOLD_S);
+    if (!neural) S.stand += Math.sign(standWant - S.stand) * Math.min(Math.abs(standWant - S.stand), dt / FOLD_S);
     const stand = smooth(S.stand), flying = 1 - stand;
-    S.feed += ((mode === "feeding" ? clamp01(pose.feed ?? 1) : 0) - S.feed) * (1 - Math.exp(-dt / 0.25));
+    if (!neural) S.feed += ((mode === "feeding" ? clamp01(pose.feed ?? 1) : 0) - S.feed) * (1 - Math.exp(-dt / 0.25));
 
     // the surface plane in the body group's frame; the body itself stays at the physics centre
     const zs = surfaceZ(x, y), h = Math.max(0, z - zs);
     n.set(0, 0, 1).applyQuaternion(qi.copy(group.quaternion).invert());   // world up in the fly's frame
-    body.position.set(0.04 * MM * S.feed, 0, 0);
-    body.rotation.set(0, 0.08 * S.feed, 0);
+    body.position.set(neural ? 0 : 0.04 * MM * S.feed, 0, 0);
+    body.rotation.set(0, neural ? 0 : 0.08 * S.feed, 0);
     qb.setFromEuler(body.rotation); nb.copy(n).applyQuaternion(qi.copy(qb).invert());
     tb.copy(body.position); dist = -h - n.dot(tb);
 
     // the head: idle wiggles when sitting, steady in flight, lowered when grooming or feeding
-    S.headNext -= dt;
-    if (S.headNext <= 0) {
+    if (!neural) S.headNext -= dt;
+    if (!neural && S.headNext <= 0) {
       S.headNext = 0.7 + 1.8 * Math.random();
       S.wantYaw = (Math.random() - 0.5) * 0.7; S.wantPitch = (Math.random() - 0.5) * 0.35;
       S.headTau = Math.random() < 0.3 ? 0.05 : 0.35;
     }
-    const groom = mode === "grooming" ? (pose.groom || "head") : null;
+    const groom = !neural && mode === "grooming" ? (pose.groom || "head") : null;
     let yawT = sitting ? S.wantYaw : 0, pitchT = sitting ? S.wantPitch : 0;
     if (groom === "head") { pitchT = 0.32 + 0.06 * Math.sin(t * 9); yawT = 0.1 * Math.sin(t * 4.4); }
     if (groom === "legs") pitchT = 0.18;
-    if (mode === "feeding") pitchT = 0.3 + 0.05 * S.feed * Math.sin(t * 19);
+    if (!neural && mode === "feeding") pitchT = 0.3 + 0.05 * S.feed * Math.sin(t * 19);
     const kh = 1 - Math.exp(-dt / (sitting ? S.headTau : 0.15));
     S.headYaw += (yawT - S.headYaw) * kh; S.headPitch += (pitchT - S.headPitch) * kh;
+    if (neural) { S.headYaw = 0; S.headPitch = 0; }
     head.rotation.set(0, S.headPitch, S.headYaw);
     head.updateMatrix();
 
     // the abdomen breathes when sitting
-    const breath = 1 + 0.03 * stand * Math.sin(TWO_PI * 1.1 * t);
+    const breath = neural ? 1 : 1 + 0.03 * stand * Math.sin(TWO_PI * 1.1 * t);
     abdomen.scale.set(breath, 1, 0.82 * breath);
 
     segI = 0; ptI = 0;
@@ -246,7 +251,7 @@ export function createFly() {
       const s = L.side;
       // the standing foot, on the surface, pushed down by the jump
       const sx = L.stand[0] * MM, sy = s * L.stand[1] * MM;
-      _e.set(sx, sy, surfaceAt(sx, sy) - 0.45 * MM * jump);
+      _e.set(sx, sy, neural ? -1.2 * MM : surfaceAt(sx, sy) - 0.45 * MM * jump);
       L.dir.set(sx - L.hipV.x, sy - L.hipV.y, 0).normalize(); L.bulge.set(0, s, 0.7);
       let tarsusDir = _d.copy(L.dir);
       if (groom === "head" && L.name === "front") {
@@ -276,8 +281,8 @@ export function createFly() {
     // the proboscis: folded under the head, or extended to the surface and pumping
     P0.set(0.08 * MM, 0, -0.24 * MM).applyMatrix4(head.matrix);
     fold1.copy(P0).add(_a.set(-0.12 * MM, 0, -0.14 * MM)); fold2.copy(fold1).add(_a.set(0.16 * MM, 0, -0.06 * MM));
-    const below = surfaceAt(P0.x, P0.y), reach = Math.min(1.1 * MM, Math.max(0.25 * MM, P0.z - below));
-    const pump = S.feed > 0.3 ? 0.06 * Math.sin(TWO_PI * 3.2 * t) : 0;
+    const below = surfaceAt(P0.x, P0.y), reach = neural ? 1.1 * MM : Math.min(1.1 * MM, Math.max(0.25 * MM, P0.z - below));
+    const pump = !neural && S.feed > 0.3 ? 0.06 * Math.sin(TWO_PI * 3.2 * t) : 0;
     ext1.copy(P0).add(_a.set(0.06 * MM, 0, -0.42 * reach)); ext2.copy(P0).add(_a.set(0.08 * MM, 0, -reach * (1 - 0.5 * pump)));
     const f = smooth(S.feed);
     P1.lerpVectors(fold1, ext1, f); P2.lerpVectors(fold2, ext2, f);
@@ -285,9 +290,9 @@ export function createFly() {
 
     // the antennae: pedicel, funiculus, arista, twitching from their bases
     for (const A of antennae) {
-      A.next -= dt;
-      if (A.next <= 0) { A.next = 0.5 + 1.5 * Math.random(); A.twitch = 0.25; }
-      A.twitch = Math.max(0, A.twitch - dt);
+      if (!neural) A.next -= dt;
+      if (!neural && A.next <= 0) { A.next = 0.5 + 1.5 * Math.random(); A.twitch = 0.25; }
+      A.twitch = neural ? 0 : Math.max(0, A.twitch - dt);
       const k = Math.sin(Math.PI * Math.min(1, A.twitch / 0.25)), s = A.side;
       hp.set(0.24 * MM, s * 0.085 * MM, -0.02 * MM);
       hq.set((0.3 + 0.03 * k) * MM, s * (0.1 + 0.05 * k) * MM, (-0.07 + 0.03 * k) * MM);
@@ -301,9 +306,9 @@ export function createFly() {
 
     // the halteres, beating against the wings while flying
     const phase = flight.phase, flicker = 0.5 + 0.5 * Math.sin(2.0 * phase);
-    const wingsOn = (c.aL + c.aR) > 0.02;
+    const wingsOn = neural ? c.f > 0 && (c.aL + c.aR) > 0 : (c.aL + c.aR) > 0.02;
     for (const H of halteres) {
-      const ang = -H.side * 0.8 * Math.sin(phase) * flying * (wingsOn ? 1 : 0), ca = Math.cos(ang), sa = Math.sin(ang);
+      const ang = neural ? 0 : -H.side * 0.8 * Math.sin(phase) * flying * (wingsOn ? 1 : 0), ca = Math.cos(ang), sa = Math.sin(ang);
       _a.set(H.dir.x, H.dir.y * ca - H.dir.z * sa, H.dir.y * sa + H.dir.z * ca).multiplyScalar(0.36 * MM).add(H.base);
       putSeg(H.base, _a); putPt(_a);
     }
@@ -313,7 +318,8 @@ export function createFly() {
     // the wings: beating while flying, folded flat over the abdomen while sitting
     for (const w of wings) {
       const a = w.side > 0 ? c.aL : c.aR, beta = w.side > 0 ? c.betaL : c.betaR, sft = w.side > 0 ? c.sL : c.sR;
-      const sweep = Math.min(SWEEP_MAX, SWEEP_HOVER * a);
+      const activeWing = neural ? c.f > 0 && a > 0 : wingsOn;
+      const sweep = neural && !activeWing ? 0 : Math.min(SWEEP_MAX, SWEEP_HOVER * a);
       const groomed = groom === "wings" && w.side === gs ? 1 : 0;
       w.pivot.position.x = sft * flying;
       w.tilt.rotation.y = beta * flying + stand * (-0.08 - 0.3 * groomed);
@@ -326,14 +332,14 @@ export function createFly() {
       }
       w.fan.geometry.attributes.position.array.set(fan);
       w.fan.geometry.attributes.position.needsUpdate = true;
-      w.fan.material.opacity = wingsOn ? (0.07 + 0.06 * Math.min(1, a) + 0.03 * flicker) * flying : 0;
+      w.fan.material.opacity = activeWing ? (0.07 + 0.06 * Math.min(1, a) + 0.03 * flicker) * flying : 0;
       w.fan.visible = w.fan.material.opacity > 0.005;
       // the wing itself: its stroke angle in flight, the folded angle at rest
       const strokeAngle = -w.side * sweep * Math.sin(phase);
       const foldAngle = w.side * (Math.PI / 2 + (w.side > 0 ? 0.34 : 0.18) - 0.3 * groomed);
       w.blade.rotation.z = strokeAngle * flying + foldAngle * stand;
       w.blade.position.z = stand * (w.side > 0 ? 0.06 : 0.03) * MM;
-      w.lines.material.opacity = (0.55 + 0.25 * flicker) * flying + 0.9 * stand;
+      w.lines.material.opacity = neural && !activeWing ? 0.9 : (0.55 + 0.25 * flicker) * flying + 0.9 * stand;
       w.fill.material.opacity = 0.09 * flying + 0.14 * stand;
     }
 

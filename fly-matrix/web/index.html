@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A fly in the Matrix · Cadence</title>
-<meta name="description" content="The whole nervous system of an adult fruit fly, brain and nerve cord wired as measured, as one Cadence brain flying a body with physics through a wireframe room, learning which smell means sugar at its mushroom body's synapses. Live in your browser.">
+<meta name="description" content="A 150,802-neuron Cadence patch net receives rendered eye pixels, settles and learns approach/avoid responses inside a simulated fly with supplied navigation and body routines.">
 <link rel="canonical" href="https://floatingpragma.io/cadence-examples/fly-matrix/">
 <link rel="icon" href="data:,">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pragma Research">
 <meta property="og:title" content="A fly in the Matrix">
-<meta property="og:description" content="150,802 neurons of an adult fruit fly, brain and nerve cord wired as measured, as one Cadence brain flying a body with physics through a wireframe room and learning which smell means sugar. Every neuron drawn where it sits, the fly in close-up, its compound eyes' view.">
+<meta property="og:description" content="A 150,802-neuron Cadence patch net receives rendered eye pixels, settles and learns approach/avoid responses inside a simulated fly with supplied navigation and body routines.">
 <meta property="og:url" content="https://floatingpragma.io/cadence-examples/fly-matrix/">
 <meta property="og:image" content="https://floatingpragma.io/cadence-examples/fly-matrix/card.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,116 +19,159 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
-  :root{--ink:#c8ffd8;--soft:#7fe39a;--dim:#3d8a52;--line:rgba(57,255,106,.22);--glass:rgba(0,10,4,.78);--cold:#7fe39a;--hot:#ff3b5c;
-        --sense:#39ff6a;--motor:#b8ff5a;--brain:#39ff6a;--shuffled:#c9a6ff;--hand:#ffd166;--matrix:#39ff6a}
-  *{box-sizing:border-box} html,body{margin:0;height:100%;background:#000;color:var(--ink);font:12.5px/1.45 "IBM Plex Mono",ui-monospace,Menlo,monospace;overflow:hidden}
-  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;opacity:.6}
-  h1,h3,.h1{text-shadow:0 0 12px rgba(57,255,106,.55)}
-  b{color:var(--ink)}
+  :root{--ink:#c8ffd8;--soft:#7fe39a;--dim:#679774;--line:rgba(97,186,121,.25);--glass:rgba(2,14,7,.84);--cold:#7fe39a;--hot:#ff7583;
+    --sense:#63df88;--motor:#b8df81;--brain:#63df88;--shuffled:#c9a6ff;--hand:#ffd166;--matrix:#67e78e;--console-height:260px;--console-bottom:24px;--detail-bottom:calc(var(--console-occupied-height,var(--console-height)) + var(--console-bottom) + 14px)}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#000;color:var(--ink);font:12px/1.5 "IBM Plex Mono",ui-monospace,Menlo,monospace;overflow:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);opacity:.45}
   body.card::after{display:none}
-  body.glitch #title h1{animation:glitch .12s steps(2) infinite}
-  body.glitch .glass{animation:glitchbox .16s steps(3) infinite}
-  @keyframes glitch{0%{transform:translate(0,0);text-shadow:0 0 12px rgba(57,255,106,.55)}50%{transform:translate(3px,-1px) skewX(-6deg);text-shadow:-3px 0 #ff3b5c,3px 0 #39ff6a}100%{transform:translate(-2px,1px)}}
-  @keyframes glitchbox{0%{clip-path:inset(0 0 0 0)}33%{clip-path:inset(12% 0 40% 0);transform:translateX(3px)}66%{clip-path:inset(55% 0 5% 0);transform:translateX(-3px)}100%{clip-path:inset(0 0 0 0)}}
+  b{color:var(--ink)}
+  button,input{font:inherit}
+  button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--soft);padding:4px 8px;border-radius:4px;cursor:pointer}
+  button:hover,button.on{background:rgba(99,223,136,.1);color:var(--ink)}
+  button:focus-visible,input:focus-visible{outline:2px solid #91d8a3;outline-offset:3px}
   canvas#world{position:fixed;inset:0;width:100%;height:100%;display:block}
-  .glass{background:var(--glass);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-  #title{position:fixed;left:28px;top:24px;pointer-events:none}
-  #title h1{font:400 24px/1 "Share Tech Mono",ui-monospace,monospace;margin:0;letter-spacing:.14em;text-transform:uppercase;color:var(--matrix)}
-  #title p{margin:6px 0 0;color:var(--dim);font-size:12px}
-  #panel{position:fixed;left:24px;top:84px;width:260px;padding:14px 16px 12px;max-height:calc(100vh - 230px);overflow:auto;display:none}
-  body.instruments #panel{display:block}
-  .h{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
+  .glass{background:var(--glass);border:1px solid var(--line);border-radius:8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  #title{position:fixed;left:24px;top:22px;pointer-events:none;z-index:10}
+  #title h1{font:400 22px/1.15 "Share Tech Mono",ui-monospace,monospace;margin:0;letter-spacing:.12em;text-transform:uppercase;color:var(--matrix)}
+  #title p{margin:6px 0 0;color:var(--dim);font-size:10px;max-width:calc(100vw - 48px)}
+  .h{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
+  .detail-close{float:right;padding:1px 7px;font-size:15px;line-height:20px}
+
+  /* The command line stays available while a single inspector is open. */
+  #brain-console{position:fixed;left:24px;bottom:var(--console-bottom);width:min(580px,calc(100vw - 48px));height:var(--console-height);z-index:30;display:flex;flex-direction:column;padding:9px 12px 8px;background:rgba(0,12,5,.8);border:1px solid rgba(99,174,119,.32);border-radius:6px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  #console-resize{position:absolute;left:0;right:0;top:-6px;height:14px;cursor:ns-resize;touch-action:none;user-select:none;border-radius:5px}
+  #console-resize::after{content:"";position:absolute;left:calc(50% - 22px);top:5px;width:44px;height:3px;border-radius:2px;background:#55956a}
+  #console-resize:hover::after,#console-resize:focus-visible::after{background:#a5efb7}
+  #console-resize:focus-visible{outline:2px solid #91d8a3;outline-offset:1px}
+  #brain-console.resizing{user-select:none}
+  .console-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;padding-bottom:6px;border-bottom:1px solid var(--line);color:#9ad6aa;font-size:10px;letter-spacing:.12em}
+  .console-header small{color:var(--dim);font:inherit;letter-spacing:.06em}
+  #console-toggle{padding:1px 7px;font-size:13px;line-height:18px;min-width:28px}
+  #console-log{flex:1;min-height:0;margin:5px 0;overflow:auto;overscroll-behavior:contain;scrollbar-color:#2c5940 transparent;font-size:11px;line-height:1.65;font-variant-numeric:tabular-nums;color:#9dc9a9}
+  #console-log[hidden]{display:none}
+  .console-line{display:grid;grid-template-columns:45px 57px minmax(0,1fr);gap:7px;margin:1px 0}
+  .console-time{color:#5f9470;text-align:right}
+  .console-kind{color:#83bc94;overflow-wrap:anywhere}
+  .console-text{white-space:pre-wrap;overflow-wrap:anywhere}
+  .console-line[data-kind="error"] .console-text{color:#f4a1a4}
+  .console-line[data-kind="learning"] .console-text{color:#c5e7a3}
+  .console-line[data-kind="command"] .console-text{color:#d0ead7}
+  #console-form{display:flex;align-items:center;gap:8px;flex-shrink:0;border-top:1px solid var(--line);padding-top:7px;min-height:34px}
+  #console-form label{white-space:nowrap;color:#81d99a;font-size:11px}
+  #console-input{flex:1;min-width:0;width:0;border:0;border-radius:0;background:transparent;color:#ceefda;caret-color:#90e4a9;padding:3px 0;font-size:12px;outline-offset:0}
+  #console-input::placeholder{color:#62836b;opacity:1}
+  #console-form button{padding:2px 8px;min-width:30px;font-size:17px;line-height:22px}
+  #brain-console.collapsed{height:auto}
+  #brain-console.collapsed #console-log{display:none}
+  #brain-console.collapsed #console-resize{display:none}
+  #brain-console.collapsed .console-header{border-bottom:0;padding-bottom:3px}
+
+  #eye{position:fixed;right:24px;bottom:24px;width:280px;height:180px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:transparent;cursor:pointer;z-index:10}
+  #eye .tag{position:absolute;left:9px;right:9px;top:7px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#a1d5b0;text-shadow:0 1px 4px #000;pointer-events:none}
+  #eye .tag b{display:block;margin-top:2px;color:#81ad8e;font-weight:400;letter-spacing:0;text-transform:none;font-size:10px}
+
+  #panel,#path-panel,#card{position:fixed;left:24px;top:84px;bottom:var(--detail-bottom);width:min(420px,calc(100vw - 48px));padding:14px 16px;overflow:auto;overscroll-behavior:contain;display:none;z-index:22;background:rgba(2,14,7,.96)}
+  body.detail-instruments #panel,body.detail-paths #path-panel,body.detail-about #card{display:block}
+  #path-panel[hidden]{display:none}
   .row{display:grid;grid-template-columns:78px 1fr 34px;align-items:center;gap:8px;margin:5px 0}
   .row span{color:var(--soft);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .row .num{color:var(--dim);font-size:10.5px;text-align:right;font-variant-numeric:tabular-nums}
-  .bar{position:relative;height:6px;border-radius:3px;background:rgba(57,255,106,.08)}
-  .bar i{position:absolute;top:0;left:0;height:6px;border-radius:3px;background:var(--sense);box-shadow:0 0 6px rgba(57,255,106,.5)}
+  .row .num{color:var(--dim);font-size:11px;text-align:right;font-variant-numeric:tabular-nums}
+  .bar{position:relative;height:6px;border-radius:3px;background:rgba(99,223,136,.08)}
+  .bar i{position:absolute;top:0;left:0;height:6px;border-radius:3px;background:var(--sense)}
   .bar.motor i{background:var(--motor)}
   .bar.two i{left:50%}
   .bar.two::after{content:"";position:absolute;left:50%;top:-3px;width:1px;height:12px;background:rgba(255,255,255,.25)}
   #panel hr{border:0;border-top:1px solid var(--line);margin:12px 0 10px}
   #stats{color:var(--dim);font-size:11px;margin-top:8px;line-height:1.5}
-  #stats b{color:var(--ink);font-weight:600}
-  #brain{position:fixed;right:24px;top:22px;width:392px;padding:10px 12px 8px;transition:width .25s,height .25s}
-  #brain canvas#scan{width:100%;height:540px;display:block;cursor:grab;border-radius:8px}
-  #brain.big{width:calc(100vw - 48px)} #brain.big canvas#scan{height:calc(100vh - 170px)}
-  #brain .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  #path-panel{font-size:11px;line-height:1.5}
+  #path-panel .h{color:#8bc7d4;margin-bottom:8px}
+  #path-panel p{margin:7px 0}
+  #path-status{color:#b1c9bc}#path-status[data-active="true"]{color:#80c9d7}
+  #path-command{color:#d5e7e9;font-variant-numeric:tabular-nums;min-height:34px}
+  #path-map{display:block;width:100%;height:130px;border:1px solid rgba(105,232,255,.16);border-radius:5px;margin-top:9px}
+  #path-time,#path-note,#path-legend,#path-sampling{color:#96b4a4;font-size:11px}
+  #path-legend .trail{color:#80c9d7}#path-duration{color:#d2ba7d}
+  #path-choice{border-top:1px solid var(--line);padding-top:8px;color:#d5e8dc}
+  #path-candidates,#path-sampling{white-space:pre-line;font-variant-numeric:tabular-nums}
+  #card h3{font:400 16px/1.4 "Share Tech Mono",ui-monospace,monospace;margin:0 0 8px;letter-spacing:.08em;text-transform:uppercase;color:var(--matrix)}
+  #card p,#card li{color:var(--soft);font-size:12px;line-height:1.55;margin:8px 0}
+  #card ul{padding-left:16px;margin:4px 0}
+  #card code{font-size:11px;color:var(--cold)}
+
+  #brain{position:fixed;right:24px;top:22px;bottom:var(--detail-bottom);width:min(560px,calc(100vw - 48px));padding:10px 12px 8px;display:none;flex-direction:column;overflow:hidden;z-index:22;background:rgba(2,14,7,.96)}
+  body.detail-brain #brain{display:flex}
+  #brain.big{left:24px;right:24px;top:76px;width:auto}
+  #brain .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-shrink:0}
   #brain .top .h{margin:0}
   #brain .top .tools{display:flex;gap:4px}
-  #brain .top button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--soft);font:500 11px Inter,sans-serif;padding:3px 8px;border-radius:7px;cursor:pointer}
-  #brain .top button.on,#brain .top button:hover{background:rgba(168,204,234,.14);color:var(--ink)}
-  #legend{display:none;flex-wrap:wrap;gap:3px 12px;margin:6px 0 2px;color:var(--dim);font-size:10.5px}
-  #brain.big #legend{display:flex}
+  #brain .top button{font-size:11px;padding:3px 7px;white-space:nowrap}
+  #brain:not(.settling):not(.big){width:280px;padding:9px 10px 8px}
+  #brain:not(.settling):not(.big) .top{flex-wrap:wrap;gap:5px}
+  #brain:not(.settling):not(.big) .top .h{width:100%;font-size:10px;color:#a1d5b0}
+  #brain:not(.settling):not(.big) .top .tools{width:100%;justify-content:space-between;gap:3px}
+  #brain:not(.settling):not(.big) #brain-fit,#brain:not(.settling):not(.big) [data-close-detail]{display:none}
+  #settlement-view{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;margin-top:9px}
+  #settlement-view[hidden]{display:none}
+  #anatomy-view{flex:1;min-height:0;margin-top:8px}
+  #brain canvas#scan{width:100%;height:100%;display:block;cursor:grab;border-radius:5px}
+  #brain.settling #anatomy-view,#brain.settling #legend,#brain.settling #strip,#brain.settling #brain-encoding{display:none}
+  #brain-encoding{color:#96b4a4;font-size:10px;margin:5px 0 0;flex-shrink:0}
+  #scan-playback{color:#a1d5b0;font-size:10px;line-height:1.4;margin-top:5px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  #brain.settling #scan-playback{display:none}
+  #legend{display:none;flex-wrap:wrap;gap:3px 12px;margin:6px 0 2px;color:var(--dim);font-size:11px;flex-shrink:0}
+  #brain.big:not(.settling) #legend{display:flex}
   #legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
-  #brainfoot{color:var(--dim);font-size:10.5px;min-height:15px;margin-top:4px;line-height:1.4}
-  #brainfoot b{color:var(--ink);font-weight:600}
+  #brainfoot{color:var(--dim);font-size:11px;min-height:15px;margin-top:4px;line-height:1.4;flex-shrink:0}
   #labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
   #labels span{position:absolute;font-size:10px;color:var(--soft);white-space:nowrap;text-shadow:0 0 4px #000}
-  #strip{width:100%;height:40px;display:none;margin-top:6px;border-radius:8px}
-  #brain.big #strip{display:block;height:64px}
-  #toolbar{position:fixed;left:24px;bottom:24px;display:flex;align-items:center;gap:4px;padding:5px;flex-wrap:wrap;max-width:760px;row-gap:4px}
-  #toolbar button{padding:7px 10px;font-size:12px}
-  #toolbar .lab{color:var(--dim);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:0 4px 0 8px}
-  #eye{position:fixed;right:440px;bottom:24px;width:360px;height:250px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:transparent;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 24px rgba(57,255,106,.12)}
-  #eye .tag,#inset .tag{position:absolute;left:10px;top:8px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);text-shadow:0 0 6px #000;pointer-events:none}
-  #eye .tag b,#inset .tag b{color:var(--ink);font-weight:600;letter-spacing:0;text-transform:none;font-size:11.5px;margin-left:8px}
-  @media (max-width:1400px){#eye{display:none}}
-  #toolbar button{appearance:none;border:0;background:transparent;color:var(--soft);font:500 12.5px Inter,sans-serif;padding:8px 12px;border-radius:9px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap}
-  #toolbar button:hover{background:rgba(168,204,234,.1);color:var(--ink)}
-  #toolbar button.on{background:rgba(168,204,234,.18);color:var(--ink)}
-  #toolbar .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
-  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 2px}
-  .seg button{padding:6px 10px!important;border-radius:0!important}
-  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:0 0 6px currentColor}
-  #card{position:fixed;left:24px;bottom:24px;width:420px;padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s}
-  #card.open{max-height:60vh;padding:14px 16px;overflow:auto}
-  #card h3{font:400 16px/1.2 "Share Tech Mono",ui-monospace,monospace;margin:0 0 8px;letter-spacing:.1em;text-transform:uppercase;color:var(--matrix)}
-  #card p,#card li{color:var(--soft);font-size:12px;line-height:1.5;margin:6px 0}
-  #card ul{padding-left:16px;margin:4px 0}
-  #card code{font:11px ui-monospace,Menlo,monospace;color:var(--cold)}
-  #paused{position:fixed;left:50%;top:22px;transform:translateX(-50%);padding:7px 16px;border:1px solid #39ff6a;color:#9dffb0;background:rgba(0,0,0,.65);font-size:12px;letter-spacing:.22em;text-transform:uppercase;display:none;z-index:30;pointer-events:none;text-shadow:0 0 8px #39ff6a}
-  body.paused #paused{display:block}
-  #hint{position:fixed;left:24px;bottom:192px;max-width:760px;color:var(--soft);font-size:11.5px;line-height:1.45;pointer-events:none;text-align:left;text-shadow:0 0 8px #000}
-  #credit{position:fixed;left:0;right:0;bottom:2px;margin:0;text-align:center;color:var(--dim);font-size:10.5px;line-height:14px;pointer-events:none}
-  #credit b{color:var(--soft);font-weight:600}
-  #credit a{color:inherit;pointer-events:auto;text-underline-offset:3px}
-  #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#000;z-index:9;color:var(--soft);transition:opacity .5s}
+  #strip{width:100%;height:48px;display:none;margin-top:6px;border-radius:5px;flex-shrink:0}
+  #brain.big:not(.settling) #strip{display:block}
+
+  #paused{position:fixed;top:22px;right:24px;padding:4px 8px;border:1px solid var(--line);color:#a8cbb2;background:rgba(0,10,4,.72);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:none;z-index:25;pointer-events:none}
+  body.paused #paused{display:block}body.detail-brain #paused{display:none}
+  #credit{position:fixed;left:0;right:0;bottom:2px;margin:0;text-align:center;color:#50745b;font-size:9px;line-height:14px;pointer-events:none;z-index:10}
+  #credit b{color:#6c9b7b;font-weight:500}#credit a{color:inherit;pointer-events:auto;text-underline-offset:3px}
+  .credit-mobile{display:none}
+  #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#000;z-index:40;color:var(--soft);transition:opacity .5s}
   #loading.gone{opacity:0;pointer-events:none}
-  #loading .h1{font:400 30px/1 "Share Tech Mono",ui-monospace,monospace;color:var(--matrix);letter-spacing:.18em;text-transform:uppercase}
+  #loading .h1{font:400 30px/1.15 "Share Tech Mono",ui-monospace,monospace;color:var(--matrix);letter-spacing:.12em;text-transform:uppercase;text-align:center}
   #loading .bar{width:240px}
-  #inset{position:fixed;right:24px;bottom:24px;width:400px;height:250px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:transparent;cursor:pointer;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 24px rgba(57,255,106,.12)}
-  #inset .tag{position:absolute;left:10px;top:8px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);text-shadow:0 0 6px #000;pointer-events:none}
-  #inset .tag b{color:var(--ink);font-weight:600;letter-spacing:0;text-transform:none;font-size:11.5px;margin-left:8px}
-  #status{position:fixed;left:24px;bottom:118px;width:760px;padding:9px 14px 8px;font-size:12px;max-width:calc(100vw - 840px)}
-  #status .line{display:flex;gap:14px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--soft)}
-  #status .line b{color:var(--ink);font-weight:600}
-  #status .line .sep{color:var(--dim)}
-  #status .val{display:inline-flex;align-items:center;gap:6px}
-  #status .val .bar{width:90px;height:5px;display:inline-block}
-  #status .val .bar i{height:5px}
-  #status .val .bar.valence::after{content:"";position:absolute;left:50%;top:-3px;width:1px;height:11px;background:rgba(200,255,216,.35)}
-  #status #events{color:var(--dim);font-size:11px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #status #events b{color:var(--soft);font-weight:500}
-  .sugar{color:#ffe9a8}
-  #dopamine{position:relative;height:16px;width:120px;display:inline-block;vertical-align:middle;border-radius:4px;background:rgba(57,255,106,.06)}
-  #dopamine canvas{position:absolute;inset:0;width:100%;height:100%}
-  .tools button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--soft);font:500 11px "IBM Plex Mono",monospace;padding:3px 8px;border-radius:7px;cursor:pointer}
-  .tools button.on,.tools button:hover{background:rgba(57,255,106,.14);color:var(--ink)}
-  .sugar{color:#ffe9a8}
-  @media (max-width:1500px){#status{width:560px;max-width:none;bottom:118px}#toolbar{max-width:580px}#hint{max-width:560px;bottom:200px}#eye{width:300px;height:212px;right:380px}#inset{width:340px;height:212px}}
-  @media (max-height:900px){#brain canvas#scan{height:400px}#inset{width:340px;height:212px}#eye{width:300px;height:212px;right:380px}}
-  @media (max-height:780px){#brain canvas#scan{height:300px}}
-  @media (max-width:1100px){#brain{width:320px}#brain canvas#scan{height:360px}#inset{width:320px;height:200px}}
-  @media (max-width:760px){#panel{display:none}#brain{left:12px;right:12px;top:auto;bottom:80px;width:auto}#brain canvas#scan{height:200px}#title{left:16px;top:16px}#card{display:none}#inset,#status{display:none}}
+  @media(max-width:960px) and (min-width:761px){#brain-console{width:calc(100vw - 342px)}}
+  @media(max-width:760px){
+    :root{--console-height:clamp(160px,calc(100dvh - 460px),240px);--console-bottom:20px}
+    #title{left:16px;top:16px}#title h1{font-size:20px}#title p{font-size:9px;max-width:calc(100vw - 32px)}
+    #brain-console{left:12px;width:calc(100vw - 24px);padding:8px 10px}
+    .console-header{font-size:9px}#console-log{font-size:11px}.console-line{grid-template-columns:39px 47px minmax(0,1fr);gap:5px}
+    #console-form{gap:6px}#console-form label{font-size:10px}#console-input{font-size:16px}#console-input::placeholder{font-size:11px}
+    #eye{right:12px;top:330px;bottom:auto;width:160px;height:107px}
+    #eye .tag{font-size:9px;top:6px}#eye .tag b{font-size:9px}
+    #panel,#path-panel,#card{left:12px;right:12px;top:76px;width:auto;padding:12px}
+    #brain,#brain.big{left:12px;right:12px;top:76px;width:auto;padding:9px}
+    #brain .top{flex-wrap:wrap}#brain .top .h{display:none}#brain .top .tools{width:100%;justify-content:space-between;gap:2px}
+    #brain .top button{font-size:10px;padding:4px 6px}#brain.settling #brainfoot{display:none}
+    #brain:not(.settling):not(.big){left:auto;right:12px;top:84px;bottom:auto;width:160px;height:236px;padding:7px}
+    #brain:not(.settling):not(.big) .top{gap:3px}
+    #brain:not(.settling):not(.big) .top .h{display:block;font-size:9px;letter-spacing:.06em}
+    #brain:not(.settling):not(.big) .top .tools{gap:2px}
+    #brain:not(.settling):not(.big) .top button{font-size:9px;padding:3px 4px}
+    #brain:not(.settling):not(.big) #brain-big{display:none}
+    #brain:not(.settling):not(.big) #brainfoot,#brain:not(.settling):not(.big) #brain-encoding{display:none}
+    #brain:not(.settling):not(.big) #scan-playback{font-size:9px;line-height:1.25}
+    #path-map{height:110px}#paused{top:54px;right:12px;font-size:9px}
+    .credit-full{display:none}.credit-mobile{display:inline}
+    #loading .h1{font-size:24px}
+  }
+  @media(prefers-reduced-motion:reduce){#loading{transition:none}}
 </style>
 </head>
 <body>
 <canvas id="world"></canvas>
 
-<div id="title"><h1>A fly in the Matrix</h1><p>150,802 neurons, brain and nerve cord wired as measured, flying a body with physics, learning which smell means sugar.</p></div>
+<div id="title"><h1>A fly in the Matrix</h1><p>150,802 neurons · a connected patch-net brain</p><p id="demo-mode">Brain chooses goals · body executes</p></div>
 
 <div id="panel" class="glass">
-  <p class="h">Senses</p>
+  <p class="h">Senses<button class="detail-close" data-close-detail aria-label="Close senses">×</button></p>
   <div id="senses"></div>
   <hr>
   <p class="h">Mushroom body, descending and motor neurons</p>
@@ -137,40 +180,48 @@
   <div id="stats">loading the nervous system</div>
 </div>
 
+<section id="path-panel" class="glass" aria-label="Neural commands and measured flight path">
+  <p class="h">Flight path<button class="detail-close" data-close-detail aria-label="Close paths">×</button></p>
+  <div id="path-status">Waiting for an applied neural command</div>
+  <p id="path-command">No active neural velocity request.</p>
+  <canvas id="path-map" width="620" height="260" aria-label="Top view of measured movement and current command guide"></canvas>
+  <div id="path-time"></div>
+  <p id="path-legend"><span class="trail">Solid cyan: measured path with neural navigation active.</span><br>Grey: movement without a current neural command.<br><span id="path-duration">Gold projection: if the current command were held (≤1 s).</span></p>
+  <p id="path-note">Gold projects the current command for up to one second. Cyan records the actual flight path.</p>
+  <p id="path-choice">Odor attention: waiting for a checked decision.</p>
+  <div id="path-candidates"></div>
+  <p id="path-sampling"></p>
+</section>
+
 <div id="brain" class="glass">
-  <div class="top"><p class="h">Nervous system</p>
-    <div class="tools"><button id="style-brain" class="on" title="every neuron where it sits, in three dimensions">3D</button><button id="style-scan" title="the flat scan">scan</button><button id="brain-fit" title="fit the view">fit</button><button id="brain-big" title="the whole screen, every region labelled">expand</button></div></div>
-  <div style="position:relative"><canvas id="scan" width="784" height="1080"></canvas><div id="labels"></div></div>
+  <div class="top"><p class="h" id="brain-heading">Nervous system</p>
+    <div class="tools"><button id="style-settling" title="actual patches, read ports, repairs and equation residuals">settling</button><button id="style-brain" title="every neuron where it sits, in three dimensions">3D</button><button id="style-scan" class="on" title="the flat scan">scan</button><button id="brain-fit" title="fit the view">fit</button><button id="brain-big" title="expand the brain view">expand</button><button data-close-detail aria-label="Close brain inspector">×</button></div></div>
+  <div id="settlement-view" aria-label="Recorded patch settlement inspector"></div>
+  <div id="anatomy-view" style="position:relative"><canvas id="scan" width="784" height="1080"></canvas><div id="labels"></div></div>
   <div id="legend"></div>
   <canvas id="strip" width="1080" height="112"></canvas>
   <div id="brainfoot"></div>
+  <div id="scan-playback">Waiting for recorded updates</div>
+  <div id="brain-encoding">Measured activity + local potential repairs · recorded solver steps</div>
 </div>
 
-<div id="status" class="glass">
-  <div class="line" id="statusline">loading the nervous system</div>
-  <div class="line" style="margin-top:5px" id="valence"></div>
-  <div id="events"></div>
-</div>
+<section id="brain-console" aria-label="Brain command console">
+  <div id="console-resize" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Console height" aria-controls="console-log" title="Drag to resize · arrow keys adjust height · double-click to reset"></div>
+  <header class="console-header"><span>NEURAL LINK <small>/ LIVE FEED</small></span><button id="console-toggle" type="button" aria-expanded="true" aria-controls="console-log" title="Collapse log" aria-label="Collapse brain activity log">−</button></header>
+  <div id="console-log" role="log" aria-label="Brain activity" aria-live="off"></div>
+  <form id="console-form">
+    <label for="console-input">fly@matrix:~$</label>
+    <input id="console-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="/help for commands" aria-label="Console command">
+    <button type="submit" title="Send command" aria-label="Send command">↵</button>
+  </form>
+</section>
 
-<div id="eye"><div class="tag">fly view<b>compound eye, 150°</b></div></div>
-<div id="inset"><div class="tag">close-up<b id="inset-mode"></b></div></div>
+<div id="eye" role="button" tabindex="0" aria-label="Open the fly’s eye view" title="Open the fly’s eye view"><div class="tag">fly’s eye<b id="eye-input">pixels → photoreceptors</b></div></div>
 
-<div id="toolbar" class="glass">
-  <div class="seg" id="pilot"><button data-pilot="brain" class="on" title="the measured nervous system steers and learns"><span class="dot" style="background:var(--brain)"></span>brain</button><button data-pilot="shuffled" title="the same neurons with the wiring shuffled"><span class="dot" style="background:var(--shuffled)"></span>shuffled</button><button data-pilot="instincts" title="the hand-written instinct layer alone: every smell approached, nothing learned"><span class="dot" style="background:var(--hand)"></span>instincts</button></div>
-  <span class="lab">sugar</span><div class="seg" id="sugar"><button data-sugar="banana" class="on">banana</button><button data-sugar="bread">bread</button><button data-sugar="">none</button></div>
-  <span class="lab">view</span><div class="seg" id="camera"><button data-cam="follow" class="on">follow</button><button data-cam="room">room</button></div>
-  <div class="seg" id="speed"><button data-speed="0.25">¼×</button><button data-speed="0.5" class="on">½×</button><button data-speed="1">1×</button></div>
-  <div class="sep"></div>
-  <button id="forget" title="the synapses back to the measured wiring">forget</button>
-  <button id="lessons" title="the synapses the fly learned in the odour arena (the receipt's checkpoint)" style="display:none">arena</button>
-  <button id="instruments" title="the senses and the motor neurons, live">instruments</button>
-  <button id="about">about</button>
-</div>
-<div id="hint">The fly learns from what it finds: choose in the toolbar whether the sugar sits on the banana or the bread, move a fruit by clicking it and then the table, and click the fly while it sits on a fruit to strike it, which punishes that smell. Space pauses.</div>
 <div id="paused">paused · space resumes</div>
 
 <div id="card" class="glass">
-  <h3>What is running here</h3>
+  <h3>What is running here<button class="detail-close" data-close-detail aria-label="Close about">×</button></h3>
   <p id="card-brain"></p>
   <p id="card-body"></p>
   <p id="card-senses"></p>
@@ -180,7 +231,7 @@
 </div>
 
 <div id="loading"><div class="h1">A fly in the Matrix</div><div id="loading-text">loading the nervous system</div><div class="bar"><i id="loading-bar" style="width:0%"></i></div></div>
-<p id="credit">powered by <a href="https://github.com/muellerberndt/cadence"><b>Cadence</b></a> · <a href="https://github.com/muellerberndt/cadence-examples/tree/main/fly-matrix">source, receipts and checks</a> · made with <span style="color:#ff7850">♥</span> by <a href="https://floatingpragma.io">Pragma Research</a> · connectome: BANC release 888 (CC BY)</p>
+<p id="credit"><span class="credit-full">powered by <a href="https://github.com/muellerberndt/cadence"><b>Cadence</b></a> · <a href="https://github.com/muellerberndt/cadence-examples/tree/main/fly-matrix">source, receipts and checks</a> · made with <span style="color:#ff7850">♥</span> by <a href="https://floatingpragma.io">Pragma Research</a> · connectome: BANC release 888 (CC BY)</span><span class="credit-mobile">powered by <a href="https://github.com/muellerberndt/cadence">Cadence</a> · BANC 888 (CC BY)</span></p>
 
 <script type="module" src="./page.js"></script>
 </body>

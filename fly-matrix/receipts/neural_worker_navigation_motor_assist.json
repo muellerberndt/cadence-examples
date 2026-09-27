@@ -1,0 +1,637 @@
+{
+  "schema": "cadence.neural-worker-test/2",
+  "started": "2026-09-27T07:42:44.287Z",
+  "completed": "2026-09-27T07:42:52.668Z",
+  "passed": true,
+  "full_payload": true,
+  "sources": {
+    "tests/neural-worker.mjs": "62fb9d776c22ab8f35db3c560923d14eec0b74ce3c3b2a3d6d67feed7a96db3a",
+    "web/worker.js": "e865623d9a5acb5234f02ed6eae40e97a086018f9ef0c5d1768da5111de28bff",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/life.js": "5041b70ad089eddddf93be354be8643ecab3c3690d9f121d78a9cea14c38f2b3",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf"
+  },
+  "node": "v25.8.1",
+  "protocol": {
+    "max_steps": 1024,
+    "tolerance": 0.000001,
+    "synthetic_image": "64x32 bottom-left RGBA; black versus right-half RGB96, alpha255",
+    "target_seed": 1,
+    "full_learning_reward": 1,
+    "learner_config": {
+      "outputs": [
+        "mbon:MBON11:right",
+        "mbon:MBON05:left"
+      ],
+      "actions": [
+        0,
+        1
+      ],
+      "plastic": {
+        "pre": [
+          "kc"
+        ],
+        "post": [
+          "mbon"
+        ]
+      },
+      "critic": "kc",
+      "beta": 0.1,
+      "temperature": 0.3,
+      "eta": 0.1,
+      "etaBias": 0,
+      "etaCritic": 0.05,
+      "gamma": 0.95,
+      "lam": 0.9,
+      "cap": 3,
+      "dopamineCap": 1
+    },
+    "revision": "After the supplied hover-thrust projection was added to the navigation decoder; original experiment and producer retained separately. Neural solve and learning parameters unchanged.",
+    "limitations": "Causal input/decoder/learning wiring, not biological vision or autonomous navigation. eta=.1 in this worker unit assay; the page uses eta=1."
+  },
+  "cases": [
+    {
+      "name": "retinal pixels drive only worker-owned photoreceptors",
+      "passed": true,
+      "evidence": {
+        "retinal": {
+          "neurons": 2,
+          "width": 64,
+          "height": 32,
+          "mean": 0.1882352977991104,
+          "min": 0,
+          "max": 0.3764705955982208
+        },
+        "residual": 5.483876664904436e-7
+      }
+    },
+    {
+      "name": "malformed retinal packets cannot mutate state, weights or traces",
+      "passed": true
+    },
+    {
+      "name": "retinal membership overlapping a motor cell fails closed",
+      "passed": true
+    },
+    {
+      "name": "attention masks only the other odor and preserves retinal drive",
+      "passed": true
+    },
+    {
+      "name": "candidate values and sampled fruit change under a neural-weight intervention",
+      "passed": true,
+      "evidence": {
+        "original": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 25,
+                "residual": 7.995488160439379e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.05532173129906659,
+                "mbon:MBON05:left": -0.036122166761791585
+              },
+              "score": 0.09144389806085818
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 25,
+                "residual": 7.995488160300601e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": -0.05532173129906648,
+                "mbon:MBON05:left": 0.036122166761791474
+              },
+              "score": -0.09144389806085795
+            }
+          ],
+          "p": [
+            0.6478554799555213,
+            0.35214452004447866
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "banana",
+          "temperature": 0.3
+        },
+        "altered_odor_path_weights": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 25,
+                "residual": 7.995488160300601e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": -0.05532173129906648,
+                "mbon:MBON05:left": 0.036122166761791474
+              },
+              "score": -0.09144389806085795
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 25,
+                "residual": 7.995488160439379e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.05532173129906659,
+                "mbon:MBON05:left": -0.036122166761791585
+              },
+              "score": 0.09144389806085818
+            }
+          ],
+          "p": [
+            0.35214452004447866,
+            0.6478554799555213
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        }
+      }
+    },
+    {
+      "name": "candidate probes share one starting state and cannot supply unqualified choices",
+      "passed": true
+    },
+    {
+      "name": "full retained graph carries pixel effects beyond receptors; afferent lesion removes and restoration recovers them",
+      "passed": true,
+      "solves": [
+        {
+          "name": "original_black",
+          "converged": true,
+          "iterations": 89,
+          "residual": 8.4569157829395e-7,
+          "independent": 8.456915782661945e-7,
+          "retinal": {
+            "neurons": 1831,
+            "width": 64,
+            "height": 32,
+            "mean": 0,
+            "min": 0,
+            "max": 0
+          },
+          "navigation_readouts": {
+            "dn:landing": 0,
+            "dn:DNa02:left": 0,
+            "dn:DNa02:right": 0,
+            "dn:DNp09": 0,
+            "mn9": 0,
+            "dn:DNp03": 0
+          }
+        },
+        {
+          "name": "original_right_gray96",
+          "converged": true,
+          "iterations": 89,
+          "residual": 8.456915783217056e-7,
+          "independent": 8.4569157829395e-7,
+          "retinal": {
+            "neurons": 1831,
+            "width": 64,
+            "height": 32,
+            "mean": 0.1882352977991104,
+            "min": 0,
+            "max": 0.3764705955982208
+          },
+          "navigation_readouts": {
+            "dn:landing": 1.2111578638144354e-11,
+            "dn:DNa02:left": 0,
+            "dn:DNa02:right": 3.126132549340119e-11,
+            "dn:DNp09": 4.845288806112607e-13,
+            "mn9": 0,
+            "dn:DNp03": 0
+          }
+        },
+        {
+          "name": "afferents_cut_black",
+          "converged": true,
+          "iterations": 89,
+          "residual": 8.4569157829395e-7,
+          "independent": 8.456915782661945e-7,
+          "retinal": {
+            "neurons": 1831,
+            "width": 64,
+            "height": 32,
+            "mean": 0,
+            "min": 0,
+            "max": 0
+          },
+          "navigation_readouts": {
+            "dn:landing": 0,
+            "dn:DNa02:left": 0,
+            "dn:DNa02:right": 0,
+            "dn:DNp09": 0,
+            "mn9": 0,
+            "dn:DNp03": 0
+          }
+        },
+        {
+          "name": "afferents_cut_right_gray96",
+          "converged": true,
+          "iterations": 89,
+          "residual": 8.4569157829395e-7,
+          "independent": 8.456915782661945e-7,
+          "retinal": {
+            "neurons": 1831,
+            "width": 64,
+            "height": 32,
+            "mean": 0.1882352977991104,
+            "min": 0,
+            "max": 0.3764705955982208
+          },
+          "navigation_readouts": {
+            "dn:landing": 0,
+            "dn:DNa02:left": 0,
+            "dn:DNa02:right": 0,
+            "dn:DNp09": 0,
+            "mn9": 0,
+            "dn:DNp03": 0
+          }
+        },
+        {
+          "name": "restored_right_gray96",
+          "converged": true,
+          "iterations": 89,
+          "residual": 8.456915783217056e-7,
+          "independent": 8.4569157829395e-7,
+          "retinal": {
+            "neurons": 1831,
+            "width": 64,
+            "height": 32,
+            "mean": 0.1882352977991104,
+            "min": 0,
+            "max": 0.3764705955982208
+          },
+          "navigation_readouts": {
+            "dn:landing": 1.2111578638144354e-11,
+            "dn:DNa02:left": 0,
+            "dn:DNa02:right": 3.126132549340119e-11,
+            "dn:DNp09": 4.845288806112607e-13,
+            "mn9": 0,
+            "dn:DNp03": 0
+          }
+        }
+      ],
+      "evidence": {
+        "nodes": 150802,
+        "edges": 1877099,
+        "recipient_count": 1831,
+        "lesioned_edge_classes": 9667,
+        "intact": {
+          "maximum": 0.0028921746898363655,
+          "changed_over_1e_minus_8": 67
+        },
+        "lesion": {
+          "maximum": 0,
+          "changed_over_1e_minus_8": 0
+        },
+        "restored_exact": true,
+        "solves": [
+          {
+            "name": "original_black",
+            "converged": true,
+            "iterations": 89,
+            "residual": 8.4569157829395e-7,
+            "independent": 8.456915782661945e-7,
+            "retinal": {
+              "neurons": 1831,
+              "width": 64,
+              "height": 32,
+              "mean": 0,
+              "min": 0,
+              "max": 0
+            },
+            "navigation_readouts": {
+              "dn:landing": 0,
+              "dn:DNa02:left": 0,
+              "dn:DNa02:right": 0,
+              "dn:DNp09": 0,
+              "mn9": 0,
+              "dn:DNp03": 0
+            }
+          },
+          {
+            "name": "original_right_gray96",
+            "converged": true,
+            "iterations": 89,
+            "residual": 8.456915783217056e-7,
+            "independent": 8.4569157829395e-7,
+            "retinal": {
+              "neurons": 1831,
+              "width": 64,
+              "height": 32,
+              "mean": 0.1882352977991104,
+              "min": 0,
+              "max": 0.3764705955982208
+            },
+            "navigation_readouts": {
+              "dn:landing": 1.2111578638144354e-11,
+              "dn:DNa02:left": 0,
+              "dn:DNa02:right": 3.126132549340119e-11,
+              "dn:DNp09": 4.845288806112607e-13,
+              "mn9": 0,
+              "dn:DNp03": 0
+            }
+          },
+          {
+            "name": "afferents_cut_black",
+            "converged": true,
+            "iterations": 89,
+            "residual": 8.4569157829395e-7,
+            "independent": 8.456915782661945e-7,
+            "retinal": {
+              "neurons": 1831,
+              "width": 64,
+              "height": 32,
+              "mean": 0,
+              "min": 0,
+              "max": 0
+            },
+            "navigation_readouts": {
+              "dn:landing": 0,
+              "dn:DNa02:left": 0,
+              "dn:DNa02:right": 0,
+              "dn:DNp09": 0,
+              "mn9": 0,
+              "dn:DNp03": 0
+            }
+          },
+          {
+            "name": "afferents_cut_right_gray96",
+            "converged": true,
+            "iterations": 89,
+            "residual": 8.4569157829395e-7,
+            "independent": 8.456915782661945e-7,
+            "retinal": {
+              "neurons": 1831,
+              "width": 64,
+              "height": 32,
+              "mean": 0.1882352977991104,
+              "min": 0,
+              "max": 0.3764705955982208
+            },
+            "navigation_readouts": {
+              "dn:landing": 0,
+              "dn:DNa02:left": 0,
+              "dn:DNa02:right": 0,
+              "dn:DNp09": 0,
+              "mn9": 0,
+              "dn:DNp03": 0
+            }
+          },
+          {
+            "name": "restored_right_gray96",
+            "converged": true,
+            "iterations": 89,
+            "residual": 8.456915783217056e-7,
+            "independent": 8.4569157829395e-7,
+            "retinal": {
+              "neurons": 1831,
+              "width": 64,
+              "height": 32,
+              "mean": 0.1882352977991104,
+              "min": 0,
+              "max": 0.3764705955982208
+            },
+            "navigation_readouts": {
+              "dn:landing": 1.2111578638144354e-11,
+              "dn:DNa02:left": 0,
+              "dn:DNa02:right": 3.126132549340119e-11,
+              "dn:DNp09": 4.845288806112607e-13,
+              "mn9": 0,
+              "dn:DNp03": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "full graph chooses from checked odor candidates and learns only its admitted outcome",
+      "passed": true,
+      "proposal": {
+        "accepted": true,
+        "reason": "residual_qualified",
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 447,
+                "residual": 9.046661010037038e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.19754118193045891,
+                "mbon:MBON05:left": 0.407288030369671
+              },
+              "score": -0.20974684843921207
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 234,
+                "residual": 9.273407128862488e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.8157973505706975,
+                "mbon:MBON05:left": 0.38457753156435576
+              },
+              "score": 0.4312198190063417
+            }
+          ],
+          "p": [
+            0.10559425510820886,
+            0.894405744891791
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.8080516100395313,
+            0.1919483899604688
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.002735721180215478,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 234,
+              "residual": 9.273407128862488e-7,
+              "tolerance": 0.000001,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 98,
+              "residual": 9.811825179006917e-7,
+              "tolerance": 0.000001,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 110,
+              "residual": 9.955359310254153e-7,
+              "tolerance": 0.000001,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "readouts": {
+          "power:left": 0.0071461480626445134,
+          "power:right": 0.008429151409653479,
+          "mn:wing:b1:left": 0.8342944983315786,
+          "mn:wing:b1:right": 0.351512126346147,
+          "mn:wing:b2:left": 0.6666418600270209,
+          "mn:wing:b2:right": 0,
+          "mn:wing:b3:left": 0.018097791700138605,
+          "mn:wing:b3:right": 0.0184243286760503,
+          "mn:wing:i1:left": 0,
+          "mn:wing:i1:right": 0.0022318721663883026,
+          "mn:wing:i2:left": 0.06781613946263525,
+          "mn:wing:i2:right": 0.40594721642539244,
+          "mn:wing:iii1:left": 0,
+          "mn:wing:iii1:right": 0,
+          "mn:wing:iii3:left": 0.0076315358716720185,
+          "mn:wing:iii3:right": 0.03876242975388426,
+          "mn:wing:iii4:left": 0.027589745054803605,
+          "mn:wing:iii4:right": 0.009723549758158444,
+          "steering:left": 0.1279668502193717,
+          "steering:right": 0.060504153405851885,
+          "neck_mn": 0.1425214208691921,
+          "dn": 0.020984038644765123,
+          "mn:haltere:left": 0.006570286939149832,
+          "mn:haltere:right": 0.0006744181642978152,
+          "haltere:left": 0.3608719215389238,
+          "haltere:right": 0.3505506639613265,
+          "ocelli:left": 0.7331998011647874,
+          "ocelli:right": 0.8365398310741985,
+          "gf": 0,
+          "dn:landing": 0.012596062208063405,
+          "dn:grooming": 0.000010464147958499494,
+          "dn:DNa02:left": 0,
+          "dn:DNa02:right": 0,
+          "dn:DNp09": 0,
+          "dn:DNp09:left": 0,
+          "mn9": 0,
+          "mn:ttm:left": 0.00698308932254396,
+          "mn:ttm:right": 0.006089353451115013,
+          "kc": 0.027813565291553672,
+          "mbon": 0.01506727378093907,
+          "dan:pam": 0.00003304140932057686,
+          "dan:ppl1": 0.0033599938065244873,
+          "vis:LC4": 8.859157595777765e-10,
+          "vis:LPLC2": 1.0447756096435668e-7,
+          "mbon:MBON11:right": 0.8157973505706975,
+          "mbon:MBON05:left": 0.38457753156435576,
+          "mbon:approach": 0.01806420210425551,
+          "mbon:avoid": 0.024248414109023852,
+          "pn": 0.12741287077464014,
+          "apl": 0.9999999999999999,
+          "orn:decaying_fruit:left": 0.00000999339114730022,
+          "orn:decaying_fruit:right": 0.00001596819519782585,
+          "orn:yeasty:left": 0.9917778692178868,
+          "orn:yeasty:right": 0.9919445016420632,
+          "orn:fruity:left": 0.0000018649868448306253,
+          "orn:fruity:right": 0.00001757977460510765,
+          "grn:sugar:labellum": 0,
+          "grn:bitter:labellum": 0,
+          "leg_touch": 3.250640080272339e-9,
+          "lptc:hs:left": 0.413596841501441,
+          "lptc:vs:left": 0.4722667224856224,
+          "dn:DNp03": 0
+        }
+      },
+      "evidence": {
+        "targetSelection": {
+          "accepted": true,
+          "candidates": [
+            {
+              "fruit": "banana",
+              "solve": {
+                "converged": true,
+                "iterations": 447,
+                "residual": 9.046661010037038e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.19754118193045891,
+                "mbon:MBON05:left": 0.407288030369671
+              },
+              "score": -0.20974684843921207
+            },
+            {
+              "fruit": "bread",
+              "solve": {
+                "converged": true,
+                "iterations": 234,
+                "residual": 9.273407128862488e-7,
+                "tolerance": 0.000001,
+                "reason": "residual_tolerance"
+              },
+              "readouts": {
+                "mbon:MBON11:right": 0.8157973505706975,
+                "mbon:MBON05:left": 0.38457753156435576
+              },
+              "score": 0.4312198190063417
+            }
+          ],
+          "p": [
+            0.10559425510820886,
+            0.894405744891791
+          ],
+          "draw": 0.6270739405881613,
+          "fruit": "bread",
+          "temperature": 0.3
+        },
+        "phase_residuals": {
+          "free": 9.273407131082934e-7,
+          "plus": 9.81182517678647e-7,
+          "minus": 9.955359310254153e-7
+        },
+        "changed_edge_classes": 10982,
+        "scope": "one synthetic terminal reward through actual worker; no flight, discrimination or general-learning claim"
+      }
+    }
+  ],
+  "sha256": "2b8572c576bcd070a73063e612deee98c8bc107d512cf2e8936ce35e8a342053"
+}

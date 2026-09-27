@@ -1,15 +1,17 @@
-// The fly's life in the room: modes, drives, what the room does to the senses, and what the
-// brain's descending neurons do to the body. The wingbeat-timescale equilibrium reflex is the
-// body's own (the HandPilot's inner loop, as the worm's undulation is the worm's); everything
-// here happens at the timescale of a rate model: decisions every DECISION_S of simulated time.
+// Checked patch-net MBON outputs change the current search's approach/avoid
+// choice; AssistedLife also applies settled motor-neuron wing trim.
+// tests/assisted-life.mjs checks their effects on navigation and body motion.
+// We assist here with sensory encoders, food targets, routes, flight bouts,
+// landing, takeoff, feeding, grooming and HandPilot's flight controller.
+// The default NeuralLife inherits sensory encoding but bypasses the target,
+// route and behavior policies below; this class retains the legacy comparison.
 //
-// Two layers act on the course. The instinct layer is hand-written and declared (bouts of
-// flight with saccades, landing, sitting, grooming, wall avoidance): it is the control condition
-// of the demo and the fallback when the brain is quiet. The brain layer reads the settled
-// descending neurons (deviations from their level-flight rest) and overrides the course: DNa02
-// left and right turn, DNp09 drives forward flight, DNp07 and DNp10 land, the giant fibre
-// escapes, MN9 feeds, aDN1 and aDN2 groom. Only the brain layer changes between "brain",
-// "shuffled" and "instincts" on the page's switch.
+// LEGACY mode additionally lets unchecked neural readouts override these routines:
+// DNa02 turns, DNp09 forward flight, DNp07/DNp10 landing, giant-fibre escape,
+// MN9 feeding and aDN grooming. Those legacy overrides are disabled by AssistedLife,
+// which admits only checked MBON approach/avoid choices and bounded motor trim.
+// The current brain/shuffled modes use the separate SettledLife direct controller.
+// See ../docs/FLY_MATRIX_BRAIN for the current decision and motor authority split.
 import { HandPilot, hoverTrim, wrap_, RADIUS } from "./body.js";
 import { haltereTone, ocelliLR, opticFlowDrive, antennaDrive } from "./senses.js";
 
@@ -125,7 +127,12 @@ export class Life {
 
   log(text) { this.events.push([this.clock, text]); if (this.events.length > 40) this.events.shift(); }
 
-  // ---- the senses: what the room does to the afferents ----------------------------------
+  // ---- sensory input to the patch net --------------------------------------------------
+  // Encoded odor changes settled MBON responses; odor-lesion evidence is in
+  // receipts/assisted_evidence_1024.json. Attitude and rotation also drive the graph.
+  // We assist with analytic encoders and a virtual bilateral odor baseline.
+  // HS/VS and ocelli bypass upstream visual processing. The current page also
+  // sends rendered eye pixels to the worker's separate photoreceptor encoder.
   odour(source, sigma = ODOUR_SIGMA) {
     const [x, y, z] = this.flight.p, R = this.flight.rotation();
     const nl = [R[1], R[4], R[7]]; // the body's y axis (left) in the world
@@ -156,7 +163,8 @@ export class Life {
     const on = flying ? null : this.fruitAt(f.p);
     const onFruit = !!on;
     const onSugar = onFruit && on === this.sugar;
-    // what is smelled most at the head
+    // Strongest modeled odor is diagnostic context in GoalLife; only the legacy
+    // Life target selector below uses it to choose a fruit.
     const cb = banana.c, cr = bread.c;
     this.smellC = Math.max(cb, cr); this.smelled = this.smellC < SMELL_FLOOR ? null : (cb >= cr ? "banana" : "bread");
     this.smellDrive = this.smelled ? Math.max((this.smelled === "banana" ? banana : bread).left, (this.smelled === "banana" ? banana : bread).right) : 0;
@@ -182,6 +190,10 @@ export class Life {
   dev(name) { const r = this.readouts[name]; if (r === undefined) return 0; return r - (this.baseline ? (this.baseline[name] || 0) : 0); }
 
   // ---- decisions ----------------------------------------------------------------------------
+  // Checked MBON approach/avoid changes the open search's valence in AssistedLife;
+  // tests/assisted-life.mjs checks navigation and execution before reward credit.
+  // We assist with target selection, route geometry, random bouts and body routines.
+  // AssistedLife disables this legacy method's DN/GF overrides.
   decide(useBrain) {
     const f = this.flight, rng = this.rng, [x, y, z] = f.p, W = 4.0, D = 3.0, H = 2.6;
     if (this.mode === "flying") {
@@ -212,10 +224,9 @@ export class Life {
         if (this.dev("dn:landing") > LAND_LEVEL) land = true;
         if ((this.readouts["gf"] || 0) > ESCAPE_LEVEL) this.startEscape("the giant fibre fired");
       }
-      // the smell: the open search steers the course toward its fruit by instinct until the mushroom
-      // body has decided, then toward or away from it by that decision (the turn itself is supplied,
-      // as in the arena); an approached fruit is landed on. Without the brain the instinct layer
-      // approaches every smell it is hungry for and learns nothing.
+      // The mushroom-body choice directs this search toward or away from its fruit.
+      // We assist with the geometric turn and landing routine, plus an innate
+      // approach while waiting for a decision. Assistance alone learns no preference.
       if (this.search && this.valence && !this.search.landed && this.hunger > APPETITE) {
         const F = this.fruits[this.valence.fruit].pos, dxy = Math.hypot(F[0] - x, F[1] - y);
         const bearing = wrap_(Math.atan2(F[1] - y, F[0] - x) - this.heading);
@@ -224,7 +235,7 @@ export class Life {
         if (this.valence.action === 0) {
           this.altitude = Math.max(F[2] + HOVER_HEIGHT, this.altitude - 0.25 * DECISION_S / 0.1 * 0.1);
           if (this.valence.innate && useBrain) speed = Math.max(0.05, Math.min(speed, dxy));  // slows to a hover over the fruit until the brain has decided
-          const waited = this.search.asked && this.clock - this.search.askedAt > DECISION_WAIT_S;  // no answer: the instinct lands
+          const waited = this.search.asked && this.clock - this.search.askedAt > (this.decisionWaitSeconds ?? DECISION_WAIT_S);  // no answer: the supplied routine lands
           if (dxy < LAND_REACH && (!this.valence.innate || !useBrain || waited)) { land = true; }
         }
         else { this.altitude = Math.min(H - 0.4, this.altitude + 0.05); land = false; }
@@ -290,7 +301,7 @@ export class Life {
     const fruit = this.search.fruit;
     this.valence = { fruit, action: d.action, p: d.p }; this.search.action = d.action;
     this.lastP[fruit] = d.p[0];
-    this.log(`${d.action === 0 ? "approaches" : "avoids"} the ${fruit} (${(100 * d.p[0]).toFixed(0)} % for approach)`);
+    this.log(`samples ${d.action === 0 ? "approach" : "avoid"} intent for ${fruit} (${(100 * d.p[0]).toFixed(0)}% approach probability)`);
   }
   /** The outcome that ends a search: sugar (+1), an empty fruit (0), a blow (-1); queued for the worker.
    *  A search that reaches a fruit without sugar stays open while the fly sits there (search.landed): it
@@ -299,8 +310,8 @@ export class Life {
   closeSearch(reward, why) { if (this.search) this.outcome(reward, why); }
   /** An outcome at a fruit, search or no search. With no approach decision about that fruit to credit
    *  (no search open: the fly came to the fruit by chance, or fed there already; or the search was for
-   *  the other fruit, or it had decided to avoid) it is marked fresh: the page then asks the brain for
-   *  the approach decision the outcome is credited to, before handing the outcome over. */
+   *  the other fruit, or it had decided to avoid) it is marked fresh and cannot be credited to a neural decision. The page must
+   *  never manufacture a decision retrospectively after observing the outcome. */
   outcome(reward, why, on = null) {
     const S = this.search, fresh = !S || !S.asked || (on !== null && (S.action !== 0 || S.fruit !== on));  // an outcome at a fruit needs the approach decision about that fruit; a search ending on its own is credited to its decision
     this.pendingReward = { reward, done: true, why, fresh };
@@ -319,6 +330,20 @@ export class Life {
 
   startEscape(why) { this.escape = 0.25; this.heading = wrap_(this.heading + (this.rng() < 0.5 ? 1 : -1) * Math.PI / 2); this.speed = 1.0; this.altitude = Math.min(2.2, this.altitude + 0.4); this.landing = null; this.landingFruit = null; this.log("escape: " + why); }
   startFeeding() { this.mode = "feeding"; this.episode = FEED_S; this.ethogram.feeds++; this.log("feeds on the fruit"); }
+  /** Current supported contact, not a cached odor/taste flag. Fruit perches are
+   * above the floor, so onFloor alone cannot represent their physical support. */
+  feedingContact() {
+    const f = this.flight, p = this.perch;
+    return this.mode !== "flying" && !!p && f.touching > 0 && !!this.sugar
+      && this.fruitAt(f.p) === this.sugar
+      && Math.hypot(f.p[0] - p[0], f.p[1] - p[1]) < 1e-6
+      && Math.abs(f.p[2] - p[2] - RADIUS) < 1e-6;
+  }
+  stopFeeding(reason) {
+    if (this.mode !== "feeding") return;
+    this.mode = "landed"; this.episode = 0;
+    this.log(`stops feeding: ${reason}`);
+  }
   startGrooming() { this.mode = "grooming"; this.episode = GROOM_S; this.ethogram.grooms++; this.groomTarget = ["head", "head", "wings", "legs"][Math.floor(this.rng() * 4)]; this.log(`grooms its ${this.groomTarget}`); }
   /** What the body shows: the pose the fly model draws. */
   pose() { return { mode: this.takeoffAt >= 0 && this.clock - this.takeoffAt < 0.15 ? "takeoff" : this.mode, t: this.clock, groom: this.mode === "grooming" ? this.groomTarget : null, feed: this.mode === "feeding" ? Math.min(1, (FEED_S - this.episode) / 0.6) : 0, hunger: this.hunger }; }
@@ -334,8 +359,11 @@ export class Life {
   // ---- every physics step: the course into the pilot, the pilot into the wings ---------------
   step(dt) {
     const f = this.flight; this.clock += dt; this.since += dt;
+    if (this.mode === "feeding" && (!this.feedingContact() || this.hunger <= 0))
+      this.stopFeeding(this.hunger <= 0 ? "satiated" : "food contact lost");
     if (this.mode === "flying") this.ethogram.flying_s += dt; else this.ethogram.sitting_s += dt;
-    this.hunger = Math.min(1, this.hunger + (this.mode === "feeding" ? -0.12 : HUNGER_RATE) * dt);
+    this.hunger = Math.max(0, Math.min(1, this.hunger + (this.mode === "feeding" ? -0.12 : HUNGER_RATE) * dt));
+    if (this.mode === "feeding" && this.hunger === 0) this.stopFeeding("satiated");
     if (this.reward > 0) this.reward -= dt; if (this.punish > 0) this.punish -= dt;
     if (this.mode === "flying") {
       this.fatigue = Math.min(1, this.fatigue + dt / 60);

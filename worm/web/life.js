@@ -180,27 +180,34 @@ export class Life {
       const want = kind === "food" ? 0 : 1;
       for (let t = T - k; t < T; t++) { y[t * O + want] = this.p.teach_level; if (kinds.length === 1) y[t * O + 1 - want] = 0; }
     }
+    const updatesBefore = this.brain.updates;
     const r = this.brain.observe(this.stretch, y, this.p.beta, this.p.rate);
     const stretch = this.stretch; this.stretch = [];
     let halvings = 0;
     if (r.updated) {
       let after = this.brain.parameters();
-      while (this.brain.growth(after.A) > this.p.stability && halvings < 12) {
+      const passes = () => { const estimate = this.brain.growth(after.A); return Number.isFinite(estimate) && estimate <= this.p.stability; };
+      while (!passes() && halvings < 12) {
         after = { A: r.before.A.map((v, i) => v + 0.5 * (after.A[i] - v)),
                   B: r.before.B.map((v, i) => v + 0.5 * (after.B[i] - v)),
                   C: r.before.C.map((v, i) => v + 0.5 * (after.C[i] - v)) };
         halvings++;
       }
-      if (this.brain.growth(after.A) > this.p.stability) after = r.before;   // no stable share of it: the lesson is not kept
+      if (!passes()) after = r.before;   // no passing share of it: the lesson is not kept
       if (halvings) this.brain.setParameters(after);
-      this.lessons++;
-    } else this.rejected++;
+    }
+    const after = r.updated ? this.brain.parameters() : null;
+    const updated = Boolean(r.updated && ["A", "B", "C"].some(key => after[key].some((v, i) => v !== r.before[key][i])));
+    let reason = r.reason;
+    if (r.updated && !updated) { this.brain.updates = updatesBefore; reason = "growth_filter_rejected"; }
+    else if (updated && halvings) reason = "updated_after_growth_filter";
+    if (updated) this.lessons++; else this.rejected++;
     // what the visual layer needs: each synapse's applied change, each neuron's credit
-    const H = this.brain.H, applied = r.updated ? this.brain.parameters().A.map((v, i) => v - r.before.A[i]) : null;
+    const H = this.brain.H, applied = r.updated ? after.A.map((v, i) => v - r.before.A[i]) : null;
     const credit = new Float64Array(H);
     if (r.plus && r.minus) for (let t = 0; t < r.plus.T; t++) for (let i = 0; i < H; i++)
       credit[i] += Math.abs(r.plus.hidden[t * H + i] - r.minus.hidden[t * H + i]) / r.plus.T;
-    return { kinds, updated: r.updated, reason: r.reason, applied, credit, halvings, length: stretch.length, at: this.t };
+    return { kinds, updated, reason, applied, credit, halvings, length: stretch.length, at: this.t };
   }
 
   // ---- one tick: ten physics steps, then the brain thinks once -----------------------------

@@ -9,12 +9,17 @@
 // The payload (export.py) stores the synapses by receiving neuron (CSR by post, senders in the
 // library's order) and every population by name. The nudged settle is the learner's phase:
 // a cross-entropy push on the output neurons toward a one-hot target, as cadence.Nudge.
+import { createSettlementTrace } from "./settlement-trace.js";
+import { createNeuralReplay } from "./neural-replay.js";
 
 export function decodeArray(b64, T) {
   const bin = atob(b64); const buf = new ArrayBuffer(bin.length); const u = new Uint8Array(buf);
   for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
   return new T(buf);
 }
+
+// A bounded control solve is distinct from the legacy activation-motion stopping rule.
+export const MAX_CONTROL_STEPS = 1024;
 
 export class SettlingBrain {
   constructor(payload) {
@@ -105,6 +110,216 @@ export class SettlingBrain {
       if (movement < tolerance) return k + 1;
     }
     return steps;
+  }
+
+  /** The potential equation residual ||W act(v) + drive + bias - v||_infinity.
+   * This measures agreement with the current fixed-input equations. It is not an error
+   * bound to a unique equilibrium unless a separate contraction certificate is available. */
+  equationResidual() {
+    const n = this.n;
+    if (!this.controlActivation || this.controlActivation.length !== n) this.controlActivation = new Float64Array(n);
+    const a = this.controlActivation;
+    for (let i = 0; i < n; i++) {
+      if (!Number.isFinite(this.v[i]) || !Number.isFinite(this.s[i])) return Infinity;
+      a[i] = this.activation(this.v[i]);
+    }
+    return this._equationResidualFromActivation(a);
+  }
+
+  // Internal: a must equal act(v). Cache the equation defect already computed for the
+  // residual, so the next Euler update needs neither another sparse product nor another
+  // activation evaluation. The public residual always reconstructs act(v) first.
+  _equationResidualFromActivation(a) {
+    const n = this.n, v = this.v, drive = this.drive, bias = this.bias;
+    const rowPtr = this.rowPtr, pre = this.pre, w = this.w;
+    if (!this.controlDefect || this.controlDefect.length !== n) this.controlDefect = new Float64Array(n);
+    const defects = this.controlDefect;
+    let residual = 0;
+    for (let i = 0; i < n; i++) {
+      if (!Number.isFinite(v[i]) || !Number.isFinite(a[i]) || !Number.isFinite(drive[i]) || !Number.isFinite(bias[i])) return Infinity;
+      let input = 0;
+      for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) input += a[pre[e]] * w[e];
+      const defect = input + (drive[i] + bias[i]) - v[i];
+      if (!Number.isFinite(defect)) return Infinity;
+      defects[i] = defect;
+      residual = Math.max(residual, Math.abs(defect));
+    }
+    return residual;
+  }
+
+  /** Solve one frozen sensory input for control. No action sampling or learning occurs.
+   * A successful result means only that the returned state meets the equation-residual
+   * tolerance. The directed fly payload has no claimed global contraction certificate.
+   * Invalid/nonfinite or exhausted solves return converged:false; callers must not actuate
+   * from those results. Existing settleFree/settleNudged preserve their legacy semantics. */
+  settleControl(maxSteps = 256, tolerance = 1e-6, traceOptions = null, replayOptions = null) {
+    let iterations = 0, initialResidual = null;
+    let observer = null, replay = null;
+    // Internal synchronous observer. Its borrowed arrays are read-only; the
+    // worker throttles and copies them before transfer. No message can provide
+    // a callback. Recording is independent of convergence/control authority.
+    const progress = typeof this.onSolveProgress === "function" ? this.onSolveProgress : null;
+    let progressDelta = null, reported = -1;
+    const report = residual => {
+      if (!progress || !progressDelta || reported === iterations) return;
+      reported = iterations;
+      try { progress({ phase: "free", iteration: iterations, residual: Number.isFinite(residual) ? residual : null,
+        tolerance, n: this.n, activity: this.s, deltaV: progressDelta }); } catch { /* diagnostics cannot abort computation */ }
+    };
+    const result = (converged, residual, reason) => {
+      report(residual);
+      const diagnostic = { converged, iterations, residual: Number.isFinite(residual) ? residual : null,
+        initialResidual: Number.isFinite(initialResidual) ? initialResidual : null,
+        tolerance: Number.isFinite(tolerance) ? tolerance : null, reason };
+      return { ...diagnostic, ...(observer ? { trace: observer.finish(diagnostic) } : {}),
+        ...(replay ? { replay: replay.finish(diagnostic) } : {}) };
+    };
+    const invalid = this._residualSolveError(maxSteps, tolerance);
+    if (invalid) return result(false, null, invalid);
+    if (traceOptions !== null && traceOptions !== false) observer = createSettlementTrace(this, traceOptions, maxSteps, tolerance);
+    if (replayOptions !== null && replayOptions !== false) replay = createNeuralReplay(this, replayOptions, tolerance);
+    if (progress) progressDelta = replay?.deltaV ?? new Float32Array(this.n);
+    let residual = this.equationResidual();
+    // Observer-only input mismatch: reuse the already computed all-neuron
+    // defect before the first update. This is not novelty or an emotion model.
+    initialResidual = residual;
+    if (!Number.isFinite(residual)) { if (observer) observer.capture(0, residual); return result(false, residual, "nonfinite_state_or_equation"); }
+    // A restored potential is authoritative; publish its activation before using the recurrence.
+    this.s.set(this.controlActivation);
+    report(residual);
+    if (observer) observer.capture(0, residual);
+    if (replay) replay.capture(0, residual);
+    if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    const n = this.n, v = this.v, s = this.s, dt = this.dt, defects = this.controlDefect;
+    for (iterations = 1; iterations <= maxSteps; iterations++) {
+      // Identical arithmetic/order to step(): defect = input + (drive + bias) - v.
+      // Its sparse product was computed by the preceding residual check at this state.
+      if (replay || progressDelta) for (let i = 0; i < n; i++) {
+        const previous = v[i];
+        let t = defects[i];
+        t *= dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+        if (replay) replay.deltaV[i] = v[i] - previous;
+        else progressDelta[i] = v[i] - previous;
+      } else for (let i = 0; i < n; i++) {
+        let t = defects[i];
+        t *= dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+      }
+      this.steps++;
+      residual = this._equationResidualFromActivation(s);
+      if (observer) observer.capture(iterations, residual);
+      if (replay) replay.capture(iterations, residual);
+      if (iterations % 16 === 0) report(residual);
+      if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+      if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    }
+    iterations = maxSteps;
+    return result(false, residual, "iteration_limit");
+  }
+
+  _residualSolveError(maxSteps, tolerance) {
+    if (!Number.isInteger(maxSteps) || maxSteps < 1 || maxSteps > MAX_CONTROL_STEPS) return "invalid_max_steps";
+    if (!Number.isFinite(tolerance) || tolerance <= 0) return "invalid_tolerance";
+    if (!Number.isInteger(this.n) || this.n < 1 || !Number.isInteger(this.edges) || this.edges < 0
+        || this.rowPtr.length !== this.n + 1 || this.pre.length !== this.edges || this.w.length !== this.edges
+        || this.v.length !== this.n || this.s.length !== this.n || this.drive.length !== this.n || this.bias.length !== this.n
+        || this.rowPtr[0] !== 0 || this.rowPtr[this.n] !== this.edges) return "invalid_graph";
+    if (!Number.isFinite(this.dt) || this.dt <= 0 || this.dt > 1
+        || !Number.isFinite(this.slope) || this.slope < 0 || !Number.isFinite(this.threshold)
+        || !Number.isFinite(this.leak) || this.leak < 0
+        || !Number.isFinite(this.amplitude) || this.amplitude < 0
+        || !Number.isFinite(this.restScale) || !Number.isFinite(this.leakScale)) return "invalid_model";
+    for (let i = 0; i < this.n; i++) if (this.rowPtr[i] > this.rowPtr[i + 1]) return "invalid_graph";
+    for (let e = 0; e < this.edges; e++) if (this.pre[e] < 0 || this.pre[e] >= this.n) return "invalid_graph";
+    return null;
+  }
+
+  /** A copied-state solve of W act(v) + drive + bias + beta(target-softmax(act(v)/T)) - v = 0,
+   * with the nudge restricted to the listed output cells. Positive and negative beta are allowed.
+   * The nudge is the negative activation gradient of T times cross-entropy, not unscaled CE.
+   * The returned residual includes the nudge and is not an activation-motion or dt-scaled test.
+   * No live neuronal state, weight, bias, stimulus or step counter is modified. A directed graph
+   * can support this local contrast computation without satisfying EP's energy/gradient hypotheses. */
+  settleNudgedResidual(outputs, target, beta, T, maxSteps = 256, tolerance = 1e-6) {
+    let iterations = 0, v = null, s = null;
+    const progress = typeof this.onSolveProgress === "function" ? this.onSolveProgress : null;
+    let progressDelta = null, reported = -1;
+    const report = residual => {
+      if (!progress || !progressDelta || reported === iterations) return;
+      reported = iterations;
+      try { progress({ phase: beta >= 0 ? "plus" : "minus", iteration: iterations,
+        residual: Number.isFinite(residual) ? residual : null, tolerance, n: this.n,
+        activity: s, deltaV: progressDelta }); } catch { /* diagnostics cannot abort computation */ }
+    };
+    const result = (converged, residual, reason) => {
+      report(residual);
+      return { converged, iterations, residual: Number.isFinite(residual) ? residual : null,
+        tolerance: Number.isFinite(tolerance) ? tolerance : null, reason, v, s };
+    };
+    const invalid = this._residualSolveError(maxSteps, tolerance);
+    if (invalid) return result(false, null, invalid);
+    if (!(Array.isArray(outputs) || ArrayBuffer.isView(outputs)) || !outputs.length
+        || !(Array.isArray(target) || ArrayBuffer.isView(target)) || target.length !== outputs.length
+        || new Set(outputs).size !== outputs.length
+        || !Array.from(outputs).every(i => Number.isInteger(i) && i >= 0 && i < this.n)
+        || !Array.from(target).every(x => Number.isFinite(x) && x >= 0 && x <= 1)
+        || Math.abs(Array.from(target).reduce((a, b) => a + b, 0) - 1) > 1e-12
+        || !Number.isFinite(beta) || !Number.isFinite(T) || T <= 0) return result(false, null, "invalid_nudge");
+    const n = this.n, rowPtr = this.rowPtr, pre = this.pre, w = this.w;
+    v = Float64Array.from(this.v); s = new Float64Array(n);
+    if (progress) progressDelta = new Float32Array(n);
+    const defects = new Float64Array(n), probabilities = new Float64Array(outputs.length);
+    const outputSlot = new Int32Array(n).fill(-1);
+    for (let j = 0; j < outputs.length; j++) outputSlot[outputs[j]] = j;
+    for (let i = 0; i < n; i++) {
+      if (!Number.isFinite(v[i]) || !Number.isFinite(this.s[i])) return result(false, null, "nonfinite_state_or_equation");
+      s[i] = this.activation(v[i]);
+    }
+    const residualAtState = () => {
+      // Subtract before division to retain a finite softmax at very small positive T.
+      let maximum = -Infinity, sum = 0;
+      for (const i of outputs) maximum = Math.max(maximum, s[i]);
+      for (let j = 0; j < outputs.length; j++) { probabilities[j] = Math.exp((s[outputs[j]] - maximum) / T); sum += probabilities[j]; }
+      for (let j = 0; j < outputs.length; j++) probabilities[j] /= sum;
+      let residual = 0;
+      for (let i = 0; i < n; i++) {
+        if (!Number.isFinite(v[i]) || !Number.isFinite(s[i]) || !Number.isFinite(this.drive[i]) || !Number.isFinite(this.bias[i])) return Infinity;
+        let input = 0;
+        for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) input += s[pre[e]] * w[e];
+        const slot = outputSlot[i];
+        if (slot >= 0) input += beta * (target[slot] - probabilities[slot]);
+        const defect = input + (this.drive[i] + this.bias[i]) - v[i];
+        if (!Number.isFinite(defect)) return Infinity;
+        defects[i] = defect; residual = Math.max(residual, Math.abs(defect));
+      }
+      return residual;
+    };
+    let residual = residualAtState();
+    report(residual);
+    if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+    if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    for (iterations = 1; iterations <= maxSteps; iterations++) {
+      if (progressDelta) for (let i = 0; i < n; i++) {
+        const previous = v[i];
+        let t = defects[i]; t *= this.dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+        progressDelta[i] = v[i] - previous;
+      } else for (let i = 0; i < n; i++) {
+        let t = defects[i]; t *= this.dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+      }
+      residual = residualAtState();
+      if (iterations % 16 === 0) report(residual);
+      if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+      if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    }
+    iterations = maxSteps;
+    return result(false, residual, "iteration_limit");
   }
 
   /** Settle copies of the state for up to `steps` under the current drive with a cross-entropy nudge

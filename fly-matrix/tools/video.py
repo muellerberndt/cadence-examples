@@ -3,7 +3,9 @@
 the close-up as the main view, the compound eye full screen, the room, a closing title with the
 link. Recorded with Playwright's screencast at 1920 by 1080 and encoded for X with ffmpeg.
 
-    python tools/video.py --url http://127.0.0.1:8813/ --out runs/video/fly-matrix.mp4
+    python tools/video.py --legacy --url http://127.0.0.1:8813/ --out runs/video/fly-matrix.mp4
+
+This staged tour explicitly uses the legacy hybrid and is not a direct-controller result.
 """
 from __future__ import annotations
 
@@ -14,19 +16,21 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-
-from playwright.sync_api import sync_playwright
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 TITLE = "A FLY IN THE MATRIX"
-LINE2 = "150,802 neurons wired as measured, flying a body with physics, learning which smell means sugar"
+LINE2 = "Legacy hybrid illustration: neural activity with scripted instincts and a hand-written flight pilot"
 LINK = "floatingpragma.io/cadence-examples/fly-matrix"
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--legacy", action="store_true", help="explicitly allow the staged legacy tour")
     ap.add_argument("--url", default="http://127.0.0.1:8813/"); ap.add_argument("--out", default="runs/video/fly-matrix.mp4"); ap.add_argument("--seed", type=int, default=5)
     ap.add_argument("--w", type=int, default=1920); ap.add_argument("--h", type=int, default=1080)
     args = ap.parse_args()
+    if not args.legacy: ap.error("this staged tour requires explicit --legacy; it is not a direct-controller result")
+    from playwright.sync_api import sync_playwright
     out = Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
     vdir = out.parent / "raw"; shutil.rmtree(vdir, ignore_errors=True); vdir.mkdir()
     with sync_playwright() as p:
@@ -34,11 +38,10 @@ def main() -> None:
         ctx = b.new_context(viewport={"width": args.w, "height": args.h}, device_scale_factor=1, record_video_dir=str(vdir), record_video_size={"width": args.w, "height": args.h})
         pg = ctx.new_page()
         t_open = time.time()
-        pg.goto(f"{args.url}?seed={args.seed}&dpr=1")
-        for _ in range(240):
-            if pg.evaluate("window.__app && window.__app.S && window.__app.S.ready"):
-                break
-            time.sleep(0.25)
+        parts = urlsplit(args.url); query = dict(parse_qsl(parts.query))
+        query.update(controller="legacy", seed=args.seed, dpr=1)
+        pg.goto(urlunsplit(parts._replace(query=urlencode(query))))
+        pg.wait_for_function("window.__app && window.__app.S.ready && window.__app.S.pilot === 'legacy'", timeout=180000)
         t_ready = time.time() - t_open + 1.2                  # the loading screen fades out over the next second
         t0 = time.time()
         fly = "(() => { const l = window.__app.life(); if (l.mode !== 'flying') l.takeoff('the tour'); l.bout = 90; })()"  # airborne for a scene

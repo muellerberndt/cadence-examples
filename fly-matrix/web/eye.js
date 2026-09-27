@@ -1,9 +1,10 @@
-// What the fly sees: a wide-angle camera in the head, rendered at low resolution and shown through
-// a mosaic of hexagonal facets. Drosophila has about 750 ommatidia per eye with acceptance angles
-// near 5 degrees (Land 1997), so the world arrives as a few hundred blurred facets per eye; the
-// panel shows the frontal field of both eyes as one panorama, in the page's green.
+// A head-mounted camera supplies actual rendered RGB pixels to the retinal encoder.
+// Capture is independent of the visible eye panel and its cosmetic hexagon/scan shader.
+// The camera projection and retina.js index-grid are supplied candidate transduction,
+// not recovered optical axes, biological ommatidia or demonstrated visual competence.
 import * as THREE from "three";
 import { toThree } from "./room.js";
+import { RETINA_WIDTH, RETINA_HEIGHT } from "./retina.js";
 
 const MM = 1e-3;
 const VERT = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
@@ -31,6 +32,10 @@ void main(){
 export function createFlyEye(renderer, scene, options = {}) {
   const facetsAcross = options.facets || 56;
   const target = new THREE.WebGLRenderTarget(192, 96, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true });
+  const retinalTarget = new THREE.WebGLRenderTarget(RETINA_WIDTH, RETINA_HEIGHT, {
+    minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true,
+    format: THREE.RGBAFormat, type: THREE.UnsignedByteType,
+  });
   const camera = new THREE.PerspectiveCamera(options.fov || 150, 2, 0.6 * MM, 30);
   const quadScene = new THREE.Scene();
   const material = new THREE.ShaderMaterial({ uniforms: { tex: { value: target.texture }, cells: { value: new THREE.Vector2(facetsAcross, facetsAcross / 2) }, tint: { value: new THREE.Color(options.tint || 0x39ff6a) }, time: { value: 0 } }, vertexShader: VERT, fragmentShader: FRAG, depthTest: false, depthWrite: false });
@@ -38,29 +43,65 @@ export function createFlyEye(renderer, scene, options = {}) {
   const quadCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   const hidden = options.hide || [];
 
-  /** Render the fly's view into the rect (x, y from the bottom-left, in CSS pixels; three.js applies the pixel ratio). */
-  function render(flight, x, y, w, h, now = 0) {
+  function poseCamera(flight) {
     const [px, py, pz] = flight.p, R = flight.rotation();
+    if (![px, py, pz, ...R].every(Number.isFinite) || R.length !== 9) throw new RangeError("invalid_retinal_body_pose");
     const fwd = [R[0], R[3], R[6]], up = [R[2], R[5], R[8]];
     const head = [px + 0.9 * MM * fwd[0], py + 0.9 * MM * fwd[1], pz + 0.9 * MM * fwd[2]];
     camera.position.copy(toThree(...head));
     camera.up.copy(toThree(up[0], up[1], up[2]));
     camera.lookAt(toThree(head[0] + fwd[0], head[1] + fwd[1], head[2] + fwd[2]));
-    if (camera.aspect !== w / h) { camera.aspect = w / h; camera.updateProjectionMatrix(); }
-    const was = hidden.map((o) => o.visible); hidden.forEach((o) => { o.visible = false; });
-    const autoClear = renderer.autoClear;
-    renderer.autoClear = true;
-    renderer.setRenderTarget(target); renderer.clear(); renderer.render(scene, camera); renderer.setRenderTarget(null);
-    hidden.forEach((o, k) => { o.visible = was[k]; });
-    material.uniforms.time.value = now / 1000;
-    renderer.autoClear = false;
-    renderer.setScissorTest(true); renderer.setScissor(x, y, w, h); renderer.setViewport(x, y, w, h);
-    renderer.clear(true, true, false);
-    renderer.render(quadScene, quadCamera);
-    renderer.setScissorTest(false);
-    const size = renderer.getSize(new THREE.Vector2());
-    renderer.setViewport(0, 0, size.x, size.y);
-    renderer.autoClear = autoClear;
+    // A resized inset must never change the sensory projection.
+    if (camera.aspect !== 2) { camera.aspect = 2; camera.updateProjectionMatrix(); }
   }
-  return { render, camera, target };
+
+  function withRendererState(operation) {
+    const saved = { target: renderer.getRenderTarget(), viewport: renderer.getViewport(new THREE.Vector4()),
+      scissor: renderer.getScissor(new THREE.Vector4()), scissorTest: renderer.getScissorTest(), autoClear: renderer.autoClear };
+    const visible = hidden.map(o => o.visible);
+    try { return operation(saved); }
+    finally {
+      hidden.forEach((o, k) => { o.visible = visible[k]; });
+      renderer.autoClear = saved.autoClear;
+      renderer.setRenderTarget(saved.target);
+      renderer.setViewport(saved.viewport); renderer.setScissor(saved.scissor); renderer.setScissorTest(saved.scissorTest);
+    }
+  }
+
+  function drawScene(flight, destination) {
+    poseCamera(flight);
+    const visible = hidden.map(o => o.visible);
+    hidden.forEach(o => { o.visible = false; });
+    renderer.autoClear = true;
+    renderer.setRenderTarget(destination);
+    renderer.setScissorTest(false);
+    try { renderer.clear(); renderer.render(scene, camera); }
+    finally { hidden.forEach((o, k) => { o.visible = visible[k]; }); }
+  }
+
+  /** Raw offscreen RGB, bottom row first. Caller chooses when to sample; the
+   * visible inset, cosmetic scan time and debug-view flags are never inputs. */
+  function capture(flight) {
+    return withRendererState(() => {
+      drawScene(flight, retinalTarget);
+      const rgba = new Uint8Array(RETINA_WIDTH * RETINA_HEIGHT * 4);
+      renderer.readRenderTargetPixels(retinalTarget, 0, 0, RETINA_WIDTH, RETINA_HEIGHT, rgba);
+      return { width: RETINA_WIDTH, height: RETINA_HEIGHT, rgba, origin: "bottom-left" };
+    });
+  }
+
+  /** Display the same fixed projection with cosmetic facets. The destination
+   * rect uses bottom-left CSS pixels; Three applies the display pixel ratio. */
+  function render(flight, x, y, w, h, now = 0) {
+    return withRendererState(saved => {
+      drawScene(flight, target);
+      renderer.setRenderTarget(saved.target);
+      material.uniforms.time.value = now / 1000;
+      renderer.autoClear = false;
+      renderer.setScissorTest(true); renderer.setScissor(x, y, w, h); renderer.setViewport(x, y, w, h);
+      renderer.clear(true, true, false);
+      renderer.render(quadScene, quadCamera);
+    });
+  }
+  return { render, capture, camera, target };
 }

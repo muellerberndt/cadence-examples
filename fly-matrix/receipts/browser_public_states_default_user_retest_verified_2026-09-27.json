@@ -1,0 +1,125 @@
+{
+  "schema": "cadence.public-default-about-check/1",
+  "passed": false,
+  "url": "http://127.0.0.1:8817/",
+  "sha256": {
+    "web/index.html": "dffe92adc352d7e609be5737b5c99144d78a1f71d1e5a3ea961ec0f4cbcc7eba",
+    "web/page.js": "afd1827a1d244d09ca374aec03c92a247f1abef8a798991407e32130c786502d",
+    "web/worker.js": "245bf987c4d62ce6b8566cbd12d0b07456ea4634afa5fc2be456fdc2790949fe",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "6f730b4f7c2026fdf13113aca152d010687a26164ddaf7d6832594b81c15d4d7",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "daea8afe1872c1c30b7075e6c696fa52ef7693aeae430d164f07475aa2a6a851",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "3ca1c9de9c2d58c0554de37ff61da18d9b4a9d16ca135cc893186be6d905f2f9",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "2aedb4148ddbbc02a9d0b906a37e79f2e8fd5ddb439c280eb8ccd54a3447ac4c",
+    "tools/check_public_states.py": "b9f63bc831e25979ef44739eb3da62d43c808b6b3c4083c963bb91ac7f613595"
+  },
+  "started": "2026-09-27T09:01:32.599040+00:00",
+  "protocol": "Query-free mobile default launch; wait actual live measured states and executed neural route; normal pause and About clicks; wait450ms for CSS opening transition; check full card bounds and three vertical hit points; capture screenshot; normal close after350ms. No injected states or actions. Independent bounded supplement to check_public_states.py, inline producer retained in tool transcript. Corrected prior ad hoc harness mode lookup from absent S.brainView to documented settlement().mode; prior failed result retained.",
+  "page_errors": [],
+  "default_live": {
+    "url": "http://127.0.0.1:8817/",
+    "brainView": "settling",
+    "source": "neural-navigation",
+    "enabled": true,
+    "states": {
+      "generation": 0,
+      "time": 2.3904999999999657,
+      "paused": false,
+      "neural": {
+        "state": "live",
+        "available": true,
+        "raw": 0.5660442709917799,
+        "level": 0.36144844783557917,
+        "ageSeconds": 0.4170000000001275,
+        "sample": {
+          "generation": 0,
+          "requestId": 2,
+          "observationTime": 1.9734999999998382,
+          "neuronCount": 150802,
+          "active": 1741,
+          "initialResidual": 0.5660442709917799,
+          "residual": 9.865069112713343e-07,
+          "converged": true,
+          "iterations": 83,
+          "tolerance": 1e-06,
+          "reason": "residual_tolerance"
+        },
+        "reason": "",
+        "scale": 1,
+        "maxAgeSeconds": 1
+      },
+      "hunger": 0.6398416666669277,
+      "neurons": 150802,
+      "activityFraction": 0.01154493972228485,
+      "settlingSteps": 83,
+      "learningUpdates": 0,
+      "changedConnections": 0,
+      "attention": "bread",
+      "speed": 0.02425263587861391,
+      "altitude": 1.1999967354606182,
+      "wingHz": 200
+    },
+    "controls": [
+      {
+        "id": "pause",
+        "disabled": false
+      },
+      {
+        "id": "gust",
+        "disabled": false
+      },
+      {
+        "id": "nudge",
+        "disabled": false
+      },
+      {
+        "id": "forget",
+        "disabled": false
+      },
+      {
+        "id": "about",
+        "disabled": false
+      }
+    ],
+    "setPilot": "undefined"
+  },
+  "about_layout": {
+    "open": true,
+    "display": "block",
+    "left": 12,
+    "right": 418,
+    "top": 258.515625,
+    "bottom": 758,
+    "height": 499.484375,
+    "scrollHeight": 599,
+    "textLength": 1208,
+    "animations": 3,
+    "hits": [
+      true,
+      true,
+      true
+    ]
+  },
+  "error": "AssertionError({'open': True, 'display': 'block', 'left': 12, 'right': 418, 'top': 258.515625, 'bottom': 758, 'height': 499.484375, 'scrollHeight': 599, 'textLength': 1208, 'animations': 3, 'hits': [True, True, True]})",
+  "traceback": "Traceback (most recent call last):\n  File \"<stdin>\", line 27, in <module>\nAssertionError: {'open': True, 'display': 'block', 'left': 12, 'right': 418, 'top': 258.515625, 'bottom': 758, 'height': 499.484375, 'scrollHeight': 599, 'textLength': 1208, 'animations': 3, 'hits': [True, True, True]}\n",
+  "completed": "2026-09-27T09:02:03.445319+00:00",
+  "body_sha256": "37e6ac84dbe8e58a96c28aa4606dde16387122e7104966d2a430987ded5084f5"
+}

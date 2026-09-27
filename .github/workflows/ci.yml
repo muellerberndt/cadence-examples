@@ -111,15 +111,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
       - uses: actions/setup-node@v7
         with:
           node-version: "22"
-      - name: The browser brain against the library's settling, the body's twins, and the learner on the committed exports
+      - run: python -m pip install "cadence-net==0.17.0" pytest
+      - name: All browser controller, retina, settlement and learning regressions
+        working-directory: fly-matrix
         run: |
-          node fly-matrix/tests/parity.mjs
-          node fly-matrix/tests/body.mjs
-          node fly-matrix/tests/learner_smoke.mjs
-          node fly-matrix/tests/life.mjs
+          for test in tests/*.mjs; do node "$test" || exit 1; done
+          node tests/assisted-evidence.mjs --1024
+          node tests/settlement.mjs --payload
+          node tests/assisted-worker.mjs --payload
+      - name: Export custody, sensory authority and browser source binding
+        working-directory: fly-matrix
+        run: python -m pytest -q tests/test_export_web.py tests/test_full_export_integrity.py tests/test_settled_controller.py tests/test_browser_source_binding.py
+      - name: Worm learning counters reflect only retained parameter updates
+        run: |
+          python -m pytest -q worm/tests/test_learning_accounting.py
+          node worm/tests/learning-accounting.mjs
   engine:
     runs-on: ubuntu-latest
     steps:
@@ -131,7 +143,7 @@ jobs:
         with:
           node-version: "22"
       - name: Install the library the engine is held to
-        run: python -m pip install "cadence-net==0.16.0"
+        run: python -m pip install "cadence-net==0.17.0"
       - name: A fresh brain, its settle cases and a recorded run of the library's actor-critic, replayed through the engine
         run: |
           python engine/make_fixture.py --out /tmp/engine_fixture

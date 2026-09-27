@@ -1,0 +1,980 @@
+{
+  "schema": "cadence.flight-clarity-browser/1",
+  "passed": false,
+  "started": "2026-09-27T09:16:25.347869+00:00",
+  "sha256": {
+    "web/index.html": "ef11402f580f05dc1fc90a14adde888e01e9d192e4eea36b2dafbb58034bb635",
+    "web/page.js": "9da8171e602e829b3996de7d0845672e64c9077d0c3c38c6a5cf0b18b9ba04be",
+    "web/worker.js": "245bf987c4d62ce6b8566cbd12d0b07456ea4634afa5fc2be456fdc2790949fe",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/neural-life.js": "59f7ab8512b6ffb6a2d8c43c8d3e6dc8eb26a51d19e16367fc916f67c33ce908",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "daea8afe1872c1c30b7075e6c696fa52ef7693aeae430d164f07475aa2a6a851",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "3ca1c9de9c2d58c0554de37ff61da18d9b4a9d16ca135cc893186be6d905f2f9",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "1d861ce2d1e14d5013a28c6c83e70e1742523e869eb87bda9dc1f4a715c59658",
+    "tools/check_flight_clarity.py": "2e7c178a50da0342d86fd3f0a18583e93e9bdca0bd3c80cafd1c04dffd5629ed"
+  },
+  "checks": [],
+  "page_errors": [],
+  "protocol": {
+    "url": "http://127.0.0.1:8817/",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "mobile_viewport": [
+      430,
+      900
+    ],
+    "wall_window_ms": 8000,
+    "sample_interval_ms": 200,
+    "minimum_displacement_m": 0.05,
+    "maximum_median_nose_travel_error_deg": 30,
+    "windows": "Initial8wallsec after any physically applied active route, then8wallsec beginning after an executed target choice is observed. Both retained; the latter is the movement/alignment acceptance window.",
+    "angle_scope": "Actual body yaw versus actual horizontal velocity, active route, speed>0.005m/s, at least0.5simsec after first sample.",
+    "limits": "Software WebGL timing is machine-specific. One wiring/layout run does not establish navigation competence or a learning improvement. No neural values, body states, or route commands are fabricated."
+  },
+  "browser": "151.0.7922.34",
+  "error": "TimeoutError('Page.wait_for_function: Timeout 90000ms exceeded.')",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_flight_clarity.py\", line 124, in run\n    page.wait_for_function(\"window.__app?.S.ready&&__app.S.learnReady&&__app.life().authority.navigation.active&&__app.life().authority.navigation.framesApplied>0\", timeout=90000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/sync_api/_generated.py\", line 12761, in wait_for_function\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for_function(\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n        )\n        ^\n    )\n    ^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_page.py\", line 1151, in wait_for_function\n    return await self._main_frame.wait_for_function(**locals_to_params(locals()))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_frame.py\", line 940, in wait_for_function\n    await self._channel.send(\"waitForFunction\", self._timeout, params)\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 90000ms exceeded.\n",
+  "failure_state": {
+    "wall": 93825.70000004768,
+    "simTime": 38.1645000000002,
+    "frames": 312,
+    "pageFps": 2.202036884117809,
+    "details": {
+      "panel": null,
+      "extraViews": false,
+      "speed": 1,
+      "droppedWallSeconds": 15.435099999999967
+    },
+    "p": [
+      1.1981643600859662,
+      0.9990860977316203,
+      1.193511395586522
+    ],
+    "v": [
+      -7.194776663473788e-19,
+      1.0809247772053494e-18,
+      -7.367831388396806e-17
+    ],
+    "q": [
+      0.2894349040597566,
+      2.29862390230786e-19,
+      -7.601838896774529e-19,
+      -0.9571976997004953
+    ],
+    "bodyYaw": -2.554319813400448,
+    "velocityHeading": 2.1580691669842538,
+    "horizontalSpeed": 1.2984785274886546e-18,
+    "requestedHeading": -2.554319813400448,
+    "facingHeading": -2.554319813400448,
+    "command": {
+      "yawRate": 0,
+      "forwardSpeed": 0,
+      "verticalSpeed": 0,
+      "feed": 0
+    },
+    "active": false,
+    "framesApplied": 132,
+    "settleMs": 986.8000000119209,
+    "accepted": 2,
+    "late": 0,
+    "failed": 23,
+    "neuralState": "stale",
+    "pathsEnabled": false,
+    "pending": {
+      "requestId": 26,
+      "worker": true,
+      "decision": null
+    },
+    "search": null
+  },
+  "failure_visibility": {
+    "brain": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "path-panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "panel": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "options": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "card": {
+      "visible": false,
+      "left": 24,
+      "right": 444,
+      "top": 918,
+      "bottom": 920,
+      "width": 420,
+      "height": 2
+    },
+    "eye": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "inset": {
+      "visible": false,
+      "left": 0,
+      "right": 0,
+      "top": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "status": {
+      "visible": true,
+      "left": 24,
+      "right": 444,
+      "top": 837.40625,
+      "bottom": 920,
+      "width": 420,
+      "height": 82.59375
+    },
+    "toolbar": {
+      "visible": true,
+      "left": 24,
+      "right": 319.8125,
+      "top": 934,
+      "bottom": 976,
+      "width": 295.8125,
+      "height": 42
+    }
+  },
+  "requests": [
+    {
+      "type": "assist:observe",
+      "requestId": 1,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 2,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 3,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:decide",
+      "requestId": 4,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:accept",
+      "requestId": 4,
+      "generation": 0,
+      "trace": false,
+      "retina": null
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 5,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 6,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 7,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 8,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 9,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 10,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 11,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 12,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:cancel",
+      "requestId": 4,
+      "generation": 0,
+      "trace": false,
+      "retina": null
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 13,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 14,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 15,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 16,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 17,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 18,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 19,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 20,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 21,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 22,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 23,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 24,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 25,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    },
+    {
+      "type": "assist:observe",
+      "requestId": 26,
+      "generation": 0,
+      "trace": false,
+      "retina": {
+        "width": 64,
+        "height": 32,
+        "bytes": 8192
+      }
+    }
+  ],
+  "replies": [
+    {
+      "type": "control",
+      "requestId": 1,
+      "generation": 0,
+      "roundTripMs": 1516.0999999642372,
+      "workerMs": 1509.699999988079,
+      "iterations": 130,
+      "residual": 9.493695760989795e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7553137157016735,
+        "min": 0.3927018940448761,
+        "max": 0.999010443687439
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 2,
+      "generation": 0,
+      "roundTripMs": 720.1999999880791,
+      "workerMs": 717.6999999880791,
+      "iterations": 61,
+      "residual": 9.154327380578309e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7552313727638489,
+        "min": 0.39284414052963257,
+        "max": 0.9990335702896118
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 3,
+      "generation": 0,
+      "roundTripMs": 797.1999999880791,
+      "workerMs": 794.0999999642372,
+      "iterations": 63,
+      "residual": 9.758685453054028e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7549263730620766,
+        "min": 0.392050176858902,
+        "max": 0.9990335702896118
+      },
+      "trace": null
+    },
+    {
+      "type": "assisted_decision",
+      "requestId": 4,
+      "generation": 0,
+      "roundTripMs": 4287.100000023842,
+      "workerMs": 4285.399999976158,
+      "iterations": 62,
+      "residual": 8.692513727703854e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.7546441109860158,
+        "min": 0.39123252034187317,
+        "max": 0.9990382790565491
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 5,
+      "generation": 0,
+      "roundTripMs": 1617.300000011921,
+      "workerMs": 1615.800000011921,
+      "iterations": 135,
+      "residual": 9.80302733211147e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6016292511493146,
+        "min": 0.013455884531140327,
+        "max": 0.8063841462135315
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 6,
+      "generation": 0,
+      "roundTripMs": 1416.5,
+      "workerMs": 1414.800000011921,
+      "iterations": 122,
+      "residual": 9.585768612208057e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5934623841766994,
+        "min": 0.012257098220288754,
+        "max": 0.8063135743141174
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 7,
+      "generation": 0,
+      "roundTripMs": 1365.9000000357628,
+      "workerMs": 1364.699999988079,
+      "iterations": 117,
+      "residual": 9.935720954867833e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.592494504919946,
+        "min": 0.013652665540575981,
+        "max": 0.8060344457626343
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 8,
+      "generation": 0,
+      "roundTripMs": 1397.7000000476837,
+      "workerMs": 1396.7000000476837,
+      "iterations": 121,
+      "residual": 9.68379560539745e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5920096341142118,
+        "min": 0.018793568015098572,
+        "max": 0.8069563508033752
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 9,
+      "generation": 0,
+      "roundTripMs": 1164.8999999761581,
+      "workerMs": 1163.5999999642372,
+      "iterations": 101,
+      "residual": 9.859241547616193e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5911718540245607,
+        "min": 0.021481411531567574,
+        "max": 0.8071547150611877
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 10,
+      "generation": 0,
+      "roundTripMs": 1066,
+      "workerMs": 1064.699999988079,
+      "iterations": 91,
+      "residual": 9.826018922964863e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5899285707999924,
+        "min": 0.0022905098740011454,
+        "max": 0.8071017265319824
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 11,
+      "generation": 0,
+      "roundTripMs": 999.2999999523163,
+      "workerMs": 998.1999999880791,
+      "iterations": 87,
+      "residual": 9.422538862491336e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5896184684721176,
+        "min": 0.001164029585197568,
+        "max": 0.8071713447570801
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 12,
+      "generation": 0,
+      "roundTripMs": 990.0999999642372,
+      "workerMs": 988.6000000238419,
+      "iterations": 86,
+      "residual": 9.898149029297088e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5891724222104189,
+        "min": 0.012518028728663921,
+        "max": 0.8079355955123901
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 13,
+      "generation": 0,
+      "roundTripMs": 1205.9000000357628,
+      "workerMs": 1204.699999988079,
+      "iterations": 105,
+      "residual": 9.219759398160221e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5898548494759949,
+        "min": 0.010416468605399132,
+        "max": 0.8089468479156494
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 14,
+      "generation": 0,
+      "roundTripMs": 1262.9000000357628,
+      "workerMs": 1261.800000011921,
+      "iterations": 109,
+      "residual": 9.2252143479854e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5908805944670474,
+        "min": 0.008580553345382214,
+        "max": 0.8096556067466736
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 15,
+      "generation": 0,
+      "roundTripMs": 1142.699999988079,
+      "workerMs": 1141.5999999642372,
+      "iterations": 99,
+      "residual": 9.386778629938419e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.592014243450384,
+        "min": 0.006498097442090511,
+        "max": 0.8094538450241089
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 16,
+      "generation": 0,
+      "roundTripMs": 1328.5999999642372,
+      "workerMs": 1327.199999988079,
+      "iterations": 114,
+      "residual": 9.914100447261376e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5996540723366491,
+        "min": 0.006498097442090511,
+        "max": 0.8109323978424072
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 17,
+      "generation": 0,
+      "roundTripMs": 1229.6000000238419,
+      "workerMs": 1228.5,
+      "iterations": 106,
+      "residual": 9.427814320339678e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6012672565059543,
+        "min": 0.006498097442090511,
+        "max": 0.811769962310791
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 18,
+      "generation": 0,
+      "roundTripMs": 1280.699999988079,
+      "workerMs": 1279.199999988079,
+      "iterations": 110,
+      "residual": 9.660403899047765e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6026257287221592,
+        "min": 0.006498097442090511,
+        "max": 0.8111158013343811
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 19,
+      "generation": 0,
+      "roundTripMs": 1336.6000000238419,
+      "workerMs": 1335.5,
+      "iterations": 115,
+      "residual": 9.206038766862434e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6036989701472341,
+        "min": 0.00865849293768406,
+        "max": 0.811813473701477
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 20,
+      "generation": 0,
+      "roundTripMs": 1780.199999988079,
+      "workerMs": 1186.3999999761581,
+      "iterations": 102,
+      "residual": 9.229601916072028e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6040608058492833,
+        "min": 0.009890948422253132,
+        "max": 0.8122437000274658
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 21,
+      "generation": 0,
+      "roundTripMs": 1134.300000011921,
+      "workerMs": 1133.199999988079,
+      "iterations": 99,
+      "residual": 9.2585561684011e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6034020877441728,
+        "min": 0.011929117143154144,
+        "max": 0.8122046589851379
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 22,
+      "generation": 0,
+      "roundTripMs": 1037.9000000357628,
+      "workerMs": 1036.199999988079,
+      "iterations": 82,
+      "residual": 9.85858505719861e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.603072397564988,
+        "min": 0.013337600976228714,
+        "max": 0.8121612071990967
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 23,
+      "generation": 0,
+      "roundTripMs": 1169.300000011921,
+      "workerMs": 1167.8999999761581,
+      "iterations": 87,
+      "residual": 9.631337425375364e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6022766567354667,
+        "min": 0.013337600976228714,
+        "max": 0.8126652240753174
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 24,
+      "generation": 0,
+      "roundTripMs": 1105.4000000357628,
+      "workerMs": 1104.300000011921,
+      "iterations": 87,
+      "residual": 9.97378893141665e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.6010850029486343,
+        "min": 0.013401152566075325,
+        "max": 0.8132322430610657
+      },
+      "trace": null
+    },
+    {
+      "type": "control",
+      "requestId": 25,
+      "generation": 0,
+      "roundTripMs": 988,
+      "workerMs": 986.8000000119209,
+      "iterations": 88,
+      "residual": 9.395913977972015e-07,
+      "converged": true,
+      "retinal": {
+        "neurons": 1831,
+        "width": 64,
+        "height": 32,
+        "mean": 0.5999885680212969,
+        "min": 0.013337600976228714,
+        "max": 0.8134213089942932
+      },
+      "trace": null
+    }
+  ],
+  "failure_screenshot": {
+    "path": "receipts/flight_clarity_lifecycle_2026-09-27.png",
+    "sha256": "c923d44a90acd3e207e276849e2d0cde5306750b375428e69f0dc994594cbac6"
+  },
+  "sources_unchanged": true,
+  "completed": "2026-09-27T09:18:02.351216+00:00",
+  "body_sha256": "94b9359ab033bee5e1bd01d9f7353f326483ea478360f459327fa8326ac43470"
+}

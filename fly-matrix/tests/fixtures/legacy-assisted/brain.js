@@ -1,0 +1,307 @@
+// A settling brain in the browser: the cadence rate model on a sparse connectome, with the
+// arithmetic of the library in the library's order, so a parity test (parity.mjs) holds this
+// engine to cadence.Brain to a relative difference near machine precision.
+//
+//   synaptic input_i = sum over synapses e into i of  w_e * s_pre(e)      (w = gain * count * exp(log_gain[pre]) * efficacy)
+//   v_i <- v_i + dt * ( -v_i + input_i + stimulus_i + bias_i )
+//   s_i = rectified sigmoid(v_i), exactly zero at rest (or, with a leak, negative below rest)
+//
+// The payload (export.py) stores the synapses by receiving neuron (CSR by post, senders in the
+// library's order) and every population by name. The nudged settle is the learner's phase:
+// a cross-entropy push on the output neurons toward a one-hot target, as cadence.Nudge.
+
+export function decodeArray(b64, T) {
+  const bin = atob(b64); const buf = new ArrayBuffer(bin.length); const u = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return new T(buf);
+}
+
+// A bounded control solve is distinct from the legacy activation-motion stopping rule.
+export const MAX_CONTROL_STEPS = 1024;
+
+export class SettlingBrain {
+  constructor(payload) {
+    const m = payload.model;
+    this.n = payload.n; this.edges = payload.edges;
+    this.dt = m.dt; this.slope = m.slope; this.threshold = m.threshold; this.gain = m.gain; this.amplitude = m.stimulus_amplitude;
+    this.leak = m.leak || 0.0;  // >0: below rest the activation is negative, scaled by leak / rest (the library's leaky variant)
+    if (m.adaptation) throw new Error("the browser engine settles without adaptation; export a model with adaptation=None");
+    this.rest = 1.0 / (1.0 + Math.exp(this.slope * this.threshold));
+    this.restScale = 1.0 / (1.0 - this.rest);
+    this.leakScale = this.leak / this.rest;
+    this.rowPtr = decodeArray(payload.arrays.row_ptr, Int32Array);
+    this.pre = decodeArray(payload.arrays.pre, Int32Array);
+    this.w = decodeArray(payload.arrays.weight, Float64Array);
+    this.count = payload.arrays.count ? decodeArray(payload.arrays.count, Uint16Array) : null;  // synapses per class
+    this.logGain = payload.arrays.log_gain ? decodeArray(payload.arrays.log_gain, Float64Array) : null;  // per neuron: a gain per cell class, selected by protocol
+    this.gainPre = payload.arrays.gain_pre ? decodeArray(payload.arrays.gain_pre, Float64Array) : null;  // weight = gainPre * efficacy, when the payload carries the factor itself
+    if (!this.gainPre && this.logGain) {  // the factor composed as the library does: gain * count * exp(log_gain[pre])
+      this.gainPre = new Float64Array(this.edges);
+      for (let e = 0; e < this.edges; e++) this.gainPre[e] = this.gain * (this.count ? this.count[e] : 1) * Math.exp(this.logGain[this.pre[e]]);
+    }
+    this.sign = payload.arrays.sign ? decodeArray(payload.arrays.sign, payload.arrays.sign_dtype === "int8" ? Int8Array : Float64Array) : null;
+    this.efficacy0 = payload.arrays.efficacy ? decodeArray(payload.arrays.efficacy, Float64Array) : null;  // the efficacies the brain was exported with (signed)
+    if (!this.efficacy0 && payload.arrays.efficacy_index) {  // the few synapses off their sign, as index and value
+      this.efficacy0 = Float64Array.from(this.sign);
+      const idx = decodeArray(payload.arrays.efficacy_index, Int32Array), val = decodeArray(payload.arrays.efficacy_value, Float64Array);
+      for (let k = 0; k < idx.length; k++) this.efficacy0[idx[k]] = val[k];
+    }
+    this.bias = payload.arrays.bias ? decodeArray(payload.arrays.bias, Float64Array) : new Float64Array(this.n);
+    this.members = payload.arrays.members ? decodeArray(payload.arrays.members, Int32Array) : null;  // indices into a larger brain, when this is a sub-net
+    this.sets = payload.populations || {};
+    this.v = new Float64Array(this.n); this.s = new Float64Array(this.n);
+    this.drive = new Float64Array(this.n); this.total = new Float64Array(this.n);
+    this.steps = 0;
+  }
+
+  activation(v) {
+    let r = Math.exp((-this.slope) * (v - this.threshold));
+    r += 1.0; r = 1.0 / r; r -= this.rest;
+    if (this.leak === 0.0) { if (r < 0.0) r = 0.0; return r * this.restScale; }
+    return r > 0.0 ? r * this.restScale : r * this.leakScale;
+  }
+
+  reset() { this.v.fill(0); this.s.fill(0); this.steps = 0; }
+
+  /** Set the stimulus of a named population to a level in [0, 1] (scaled by the amplitude); levels combine by max. */
+  stimulate(name, level) {
+    const idx = this.sets[name]; if (!idx) return;
+    const d = this.amplitude * level;
+    for (const i of idx) if (d > this.drive[i]) this.drive[i] = d;
+  }
+  /** Set one neuron's stimulus level directly (the library's `stimulus_levels`: level times amplitude). */
+  setDrive(index, level) { this.drive[index] = this.amplitude * level; }
+  clearStimuli() { this.drive.fill(0); }
+  /** The weight of one synapse from an efficacy: gain * count * exp(log_gain[pre]) * efficacy, as the library composes it. */
+  setEfficacy(e, efficacy) { this.w[e] = (this.gainPre ? this.gainPre[e] : this.gain * (this.count ? this.count[e] : 1)) * efficacy; }
+
+  /** One step of the neuron model under the current drive. */
+  step() {
+    const n = this.n, rowPtr = this.rowPtr, pre = this.pre, w = this.w, s = this.s, v = this.v, total = this.total;
+    for (let i = 0; i < n; i++) {
+      let sum = 0.0;
+      for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) sum += s[pre[e]] * w[e];
+      total[i] = sum;
+    }
+    const dt = this.dt, drive = this.drive, bias = this.bias;
+    for (let i = 0; i < n; i++) {
+      let t = total[i];
+      t += drive[i] + bias[i];   // standing = drive + bias, added as one number as the library does
+      t -= v[i];
+      t *= dt;
+      v[i] += t;
+      s[i] = this.activation(v[i]);
+    }
+    this.steps++;
+  }
+
+  /** The free phase: up to `steps` steps, stopping once no activation moves by `tolerance` or more
+   *  (cadence.Brain.settle_batch with a tolerance). Returns the steps taken. */
+  settleFree(steps, tolerance) {
+    const prev = new Float64Array(this.n);
+    for (let k = 0; k < steps; k++) {
+      prev.set(this.s);
+      this.step();
+      if (tolerance === undefined || tolerance === null) continue;
+      let movement = 0.0;
+      for (let i = 0; i < this.n; i++) { const d = Math.abs(this.s[i] - prev[i]); if (d > movement) movement = d; }
+      if (movement < tolerance) return k + 1;
+    }
+    return steps;
+  }
+
+  /** The potential equation residual ||W act(v) + drive + bias - v||_infinity.
+   * This measures agreement with the current fixed-input equations. It is not an error
+   * bound to a unique equilibrium unless a separate contraction certificate is available. */
+  equationResidual() {
+    const n = this.n;
+    if (!this.controlActivation || this.controlActivation.length !== n) this.controlActivation = new Float64Array(n);
+    const a = this.controlActivation;
+    for (let i = 0; i < n; i++) {
+      if (!Number.isFinite(this.v[i]) || !Number.isFinite(this.s[i])) return Infinity;
+      a[i] = this.activation(this.v[i]);
+    }
+    return this._equationResidualFromActivation(a);
+  }
+
+  // Internal: a must equal act(v). Cache the equation defect already computed for the
+  // residual, so the next Euler update needs neither another sparse product nor another
+  // activation evaluation. The public residual always reconstructs act(v) first.
+  _equationResidualFromActivation(a) {
+    const n = this.n, v = this.v, drive = this.drive, bias = this.bias;
+    const rowPtr = this.rowPtr, pre = this.pre, w = this.w;
+    if (!this.controlDefect || this.controlDefect.length !== n) this.controlDefect = new Float64Array(n);
+    const defects = this.controlDefect;
+    let residual = 0;
+    for (let i = 0; i < n; i++) {
+      if (!Number.isFinite(v[i]) || !Number.isFinite(a[i]) || !Number.isFinite(drive[i]) || !Number.isFinite(bias[i])) return Infinity;
+      let input = 0;
+      for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) input += a[pre[e]] * w[e];
+      const defect = input + (drive[i] + bias[i]) - v[i];
+      if (!Number.isFinite(defect)) return Infinity;
+      defects[i] = defect;
+      residual = Math.max(residual, Math.abs(defect));
+    }
+    return residual;
+  }
+
+  /** Solve one frozen sensory input for control. No action sampling or learning occurs.
+   * A successful result means only that the returned state meets the equation-residual
+   * tolerance. The directed fly payload has no claimed global contraction certificate.
+   * Invalid/nonfinite or exhausted solves return converged:false; callers must not actuate
+   * from those results. Existing settleFree/settleNudged preserve their legacy semantics. */
+  settleControl(maxSteps = 256, tolerance = 1e-6) {
+    let iterations = 0;
+    const result = (converged, residual, reason) => ({ converged, iterations,
+      residual: Number.isFinite(residual) ? residual : null,
+      tolerance: Number.isFinite(tolerance) ? tolerance : null, reason });
+    const invalid = this._residualSolveError(maxSteps, tolerance);
+    if (invalid) return result(false, null, invalid);
+    let residual = this.equationResidual();
+    if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+    // A restored potential is authoritative; publish its activation before using the recurrence.
+    this.s.set(this.controlActivation);
+    if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    const n = this.n, v = this.v, s = this.s, dt = this.dt, defects = this.controlDefect;
+    for (iterations = 1; iterations <= maxSteps; iterations++) {
+      // Identical arithmetic/order to step(): defect = input + (drive + bias) - v.
+      // Its sparse product was computed by the preceding residual check at this state.
+      for (let i = 0; i < n; i++) {
+        let t = defects[i];
+        t *= dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+      }
+      this.steps++;
+      residual = this._equationResidualFromActivation(s);
+      if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+      if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    }
+    iterations = maxSteps;
+    return result(false, residual, "iteration_limit");
+  }
+
+  _residualSolveError(maxSteps, tolerance) {
+    if (!Number.isInteger(maxSteps) || maxSteps < 1 || maxSteps > MAX_CONTROL_STEPS) return "invalid_max_steps";
+    if (!Number.isFinite(tolerance) || tolerance <= 0) return "invalid_tolerance";
+    if (!Number.isInteger(this.n) || this.n < 1 || !Number.isInteger(this.edges) || this.edges < 0
+        || this.rowPtr.length !== this.n + 1 || this.pre.length !== this.edges || this.w.length !== this.edges
+        || this.v.length !== this.n || this.s.length !== this.n || this.drive.length !== this.n || this.bias.length !== this.n
+        || this.rowPtr[0] !== 0 || this.rowPtr[this.n] !== this.edges) return "invalid_graph";
+    if (!Number.isFinite(this.dt) || this.dt <= 0 || this.dt > 1
+        || !Number.isFinite(this.slope) || this.slope < 0 || !Number.isFinite(this.threshold)
+        || !Number.isFinite(this.leak) || this.leak < 0
+        || !Number.isFinite(this.amplitude) || this.amplitude < 0
+        || !Number.isFinite(this.restScale) || !Number.isFinite(this.leakScale)) return "invalid_model";
+    for (let i = 0; i < this.n; i++) if (this.rowPtr[i] > this.rowPtr[i + 1]) return "invalid_graph";
+    for (let e = 0; e < this.edges; e++) if (this.pre[e] < 0 || this.pre[e] >= this.n) return "invalid_graph";
+    return null;
+  }
+
+  /** A copied-state solve of W act(v) + drive + bias + beta(target-softmax(act(v)/T)) - v = 0,
+   * with the nudge restricted to the listed output cells. Positive and negative beta are allowed.
+   * The nudge is the negative activation gradient of T times cross-entropy, not unscaled CE.
+   * The returned residual includes the nudge and is not an activation-motion or dt-scaled test.
+   * No live neuronal state, weight, bias, stimulus or step counter is modified. A directed graph
+   * can support this local contrast computation without satisfying EP's energy/gradient hypotheses. */
+  settleNudgedResidual(outputs, target, beta, T, maxSteps = 256, tolerance = 1e-6) {
+    let iterations = 0, v = null, s = null;
+    const result = (converged, residual, reason) => ({ converged, iterations,
+      residual: Number.isFinite(residual) ? residual : null,
+      tolerance: Number.isFinite(tolerance) ? tolerance : null, reason, v, s });
+    const invalid = this._residualSolveError(maxSteps, tolerance);
+    if (invalid) return result(false, null, invalid);
+    if (!(Array.isArray(outputs) || ArrayBuffer.isView(outputs)) || !outputs.length
+        || !(Array.isArray(target) || ArrayBuffer.isView(target)) || target.length !== outputs.length
+        || new Set(outputs).size !== outputs.length
+        || !Array.from(outputs).every(i => Number.isInteger(i) && i >= 0 && i < this.n)
+        || !Array.from(target).every(x => Number.isFinite(x) && x >= 0 && x <= 1)
+        || Math.abs(Array.from(target).reduce((a, b) => a + b, 0) - 1) > 1e-12
+        || !Number.isFinite(beta) || !Number.isFinite(T) || T <= 0) return result(false, null, "invalid_nudge");
+    const n = this.n, rowPtr = this.rowPtr, pre = this.pre, w = this.w;
+    v = Float64Array.from(this.v); s = new Float64Array(n);
+    const defects = new Float64Array(n), probabilities = new Float64Array(outputs.length);
+    const outputSlot = new Int32Array(n).fill(-1);
+    for (let j = 0; j < outputs.length; j++) outputSlot[outputs[j]] = j;
+    for (let i = 0; i < n; i++) {
+      if (!Number.isFinite(v[i]) || !Number.isFinite(this.s[i])) return result(false, null, "nonfinite_state_or_equation");
+      s[i] = this.activation(v[i]);
+    }
+    const residualAtState = () => {
+      // Subtract before division to retain a finite softmax at very small positive T.
+      let maximum = -Infinity, sum = 0;
+      for (const i of outputs) maximum = Math.max(maximum, s[i]);
+      for (let j = 0; j < outputs.length; j++) { probabilities[j] = Math.exp((s[outputs[j]] - maximum) / T); sum += probabilities[j]; }
+      for (let j = 0; j < outputs.length; j++) probabilities[j] /= sum;
+      let residual = 0;
+      for (let i = 0; i < n; i++) {
+        if (!Number.isFinite(v[i]) || !Number.isFinite(s[i]) || !Number.isFinite(this.drive[i]) || !Number.isFinite(this.bias[i])) return Infinity;
+        let input = 0;
+        for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) input += s[pre[e]] * w[e];
+        const slot = outputSlot[i];
+        if (slot >= 0) input += beta * (target[slot] - probabilities[slot]);
+        const defect = input + (this.drive[i] + this.bias[i]) - v[i];
+        if (!Number.isFinite(defect)) return Infinity;
+        defects[i] = defect; residual = Math.max(residual, Math.abs(defect));
+      }
+      return residual;
+    };
+    let residual = residualAtState();
+    if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+    if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    for (iterations = 1; iterations <= maxSteps; iterations++) {
+      for (let i = 0; i < n; i++) {
+        let t = defects[i]; t *= this.dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+      }
+      residual = residualAtState();
+      if (!Number.isFinite(residual)) return result(false, residual, "nonfinite_state_or_equation");
+      if (residual <= tolerance) return result(true, residual, "residual_tolerance");
+    }
+    iterations = maxSteps;
+    return result(false, residual, "iteration_limit");
+  }
+
+  /** Settle copies of the state for up to `steps` under the current drive with a cross-entropy nudge
+   *  on `outputs` toward the one-hot `target` (strength beta, softmax temperature T), stopping when no
+   *  activation moves by `tolerance` or more: the library's nudged phase, in its order of operations.
+   *  Returns { s, taken } without touching the live state. */
+  settleNudged(outputs, target, beta, T, steps, tolerance) {
+    const n = this.n, rowPtr = this.rowPtr, pre = this.pre, w = this.w, dt = this.dt, drive = this.drive, bias = this.bias;
+    const v = Float64Array.from(this.v), s = Float64Array.from(this.s), total = new Float64Array(n), prev = new Float64Array(n);
+    const m = outputs.length, p = new Float64Array(m);
+    let taken = 0;
+    for (let k = 0; k < steps; k++) {
+      let zmax = -Infinity;
+      for (let j = 0; j < m; j++) { const z = s[outputs[j]] / T; if (z > zmax) zmax = z; }
+      let sum = 0.0;
+      for (let j = 0; j < m; j++) { p[j] = Math.exp(s[outputs[j]] / T - zmax); sum += p[j]; }
+      for (let j = 0; j < m; j++) p[j] /= sum;
+      for (let i = 0; i < n; i++) {
+        let acc = 0.0;
+        for (let e = rowPtr[i], end = rowPtr[i + 1]; e < end; e++) acc += s[pre[e]] * w[e];
+        total[i] = acc;
+      }
+      for (let j = 0; j < m; j++) total[outputs[j]] += beta * (target[j] - p[j]);
+      prev.set(s);
+      let movement = 0.0;
+      for (let i = 0; i < n; i++) {
+        let t = total[i];
+        t += drive[i] + bias[i];
+        t -= v[i];
+        t *= dt;
+        v[i] += t;
+        s[i] = this.activation(v[i]);
+        const d = Math.abs(s[i] - prev[i]); if (d > movement) movement = d;
+      }
+      taken = k + 1;
+      if (tolerance !== undefined && tolerance !== null && movement < tolerance) break;
+    }
+    return { s, taken };
+  }
+
+  mean(name) { const idx = this.sets[name]; if (!idx || !idx.length) return 0; let t = 0; for (const i of idx) t += this.s[i]; return t / idx.length; }
+  peak(name) { const idx = this.sets[name]; let m = 0; if (!idx) return 0; for (const i of idx) if (this.s[i] > m) m = this.s[i]; return m; }
+  activeCount(level = 0.5) { let c = 0; for (let i = 0; i < this.n; i++) if (this.s[i] >= level) c++; return c; }
+}

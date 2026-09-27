@@ -1,0 +1,355 @@
+{
+  "schema": "cadence.settlement-trace-worker-check/1",
+  "started": "2026-09-27T08:41:46.906Z",
+  "completed": "2026-09-27T08:42:02.061Z",
+  "passed": true,
+  "error": null,
+  "sources_unchanged": true,
+  "sha256": {
+    "tests/settlement-trace-worker.mjs": "d3ee640014b832de0e4966c4445f3e0d41ad67d30c1f7a9f003a423d3974001b",
+    "web/worker.js": "245bf987c4d62ce6b8566cbd12d0b07456ea4634afa5fc2be456fdc2790949fe",
+    "web/brain.js": "3ca1c9de9c2d58c0554de37ff61da18d9b4a9d16ca135cc893186be6d905f2f9",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/assisted-life.js": "c0345ece26946a94c0af398e53ff63bf727337eba3d52ade91b9ff039d6a1c30",
+    "web/life.js": "2dfb6977a9127528829bac245076547e2228bf80a00ecb80162c02077b92ba5b",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf"
+  },
+  "protocol": {
+    "pattern": "64x32 right-half RGB96, alpha255, bottom-left",
+    "observation_cap": 256,
+    "tolerance": 0.000001,
+    "trace_frames": 8,
+    "seed": 1,
+    "decision_cap": 1024,
+    "diagnostic_cap": 256,
+    "scope": "One fixed-input wiring/telemetry assay, no navigation or equilibrium uniqueness claim; independent full-state witnesses retained only in RAM."
+  },
+  "cases": [
+    {
+      "name": "fresh and rejected diagnostics preserve cache existence, identities and learner state",
+      "passed": true,
+      "evidence": {
+        "cases": 4,
+        "original_scratch_cache_absence_preserved": true
+      }
+    },
+    {
+      "name": "tiny: trace on/off exact state and decision parity, independent full-state arithmetic",
+      "passed": true,
+      "evidence": {
+        "arithmetic": {
+          "neurons": 7,
+          "edges": 8,
+          "selectedPatches": 2,
+          "sampledEdges": 4,
+          "frames": [
+            {
+              "iteration": 0,
+              "residual": 0.3764705955982208,
+              "settledCount": 6,
+              "localMaxDefect": 0,
+              "checkedNeuronUpdates": 0,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 4,
+              "residual": 0.0235294122248888,
+              "settledCount": 3,
+              "localMaxDefect": 0.004146482608613394,
+              "checkedNeuronUpdates": 7,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 8,
+              "residual": 0.00147058826405555,
+              "settledCount": 3,
+              "localMaxDefect": 0.0011730245174119882,
+              "checkedNeuronUpdates": 7,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 12,
+              "residual": 0.00016859519734303656,
+              "settledCount": 3,
+              "localMaxDefect": 0.00016859519734303656,
+              "checkedNeuronUpdates": 7,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 16,
+              "residual": 0.000018752100655432258,
+              "settledCount": 3,
+              "localMaxDefect": 0.000018752100655432258,
+              "checkedNeuronUpdates": 7,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 20,
+              "residual": 0.0000018203672312692987,
+              "settledCount": 5,
+              "localMaxDefect": 0.0000018203672312692987,
+              "checkedNeuronUpdates": 7,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 22,
+              "residual": 5.483876664904436e-7,
+              "settledCount": 7,
+              "localMaxDefect": 5.483876664904436e-7,
+              "checkedNeuronUpdates": 7,
+              "worstUpdateError": 0
+            }
+          ]
+        },
+        "pixels": {
+          "receptors": 2,
+          "rgba_sha256": "dac2f2fd5adb3710922975d9c5086e2cff9689bfddcdd11187b4226206859d9e",
+          "levels_sha256": "c6e4446e64b341ec7ace63279ed16033fb0c016cba8ab2361cb37b77827700bd"
+        },
+        "state_sha256": "75017e236438731f20884d804a83a490aa6d92e49eec117eb10f26b737e99fb6",
+        "targetDraw": 0.6270739405881613,
+        "actionDraw": 0.002735721180215478
+      }
+    },
+    {
+      "name": "tiny: isolated retinal comparison restores live state and outstanding proposal",
+      "passed": true,
+      "evidence": {
+        "actual": {
+          "converged": true,
+          "iterations": 25,
+          "residual": 9.63096880942163e-7,
+          "initialResidual": 0.8999999731779098,
+          "tolerance": 0.000001,
+          "reason": "residual_tolerance"
+        },
+        "black": {
+          "converged": true,
+          "iterations": 25,
+          "residual": 8.729815556315753e-7,
+          "initialResidual": 0.8999999731779098,
+          "tolerance": 0.000001,
+          "reason": "residual_tolerance"
+        },
+        "nonreceptor": {
+          "count": 5,
+          "changedCount": 3,
+          "maxAbsDelta": 0.018602153789035625,
+          "maxIndex": 6
+        },
+        "deltaReadouts": {
+          "power:left": -0.005490967991394147,
+          "power:right": 0.0035831166135517067,
+          "mn:wing:b1:left": -0.005490967991394147,
+          "mn:wing:b1:right": 0.0035831166135517067,
+          "mn:wing:b2:left": -0.005490967991394147,
+          "mn:wing:b2:right": 0.0035831166135517067,
+          "mn:wing:b3:left": -0.005490967991394147,
+          "mn:wing:b3:right": 0.0035831166135517067,
+          "mn:wing:i1:left": -0.005490967991394147,
+          "mn:wing:i1:right": 0.0035831166135517067,
+          "mn:wing:i2:left": -0.005490967991394147,
+          "mn:wing:i2:right": 0.0035831166135517067,
+          "mn:wing:iii1:left": -0.005490967991394147,
+          "mn:wing:iii1:right": 0.0035831166135517067,
+          "mn:wing:iii3:left": -0.005490967991394147,
+          "mn:wing:iii3:right": 0.0035831166135517067,
+          "mn:wing:iii4:left": -0.005490967991394147,
+          "mn:wing:iii4:right": 0.0035831166135517067,
+          "mn9": -0.005490967991394147,
+          "mn:ttm:left": 0.0035831166135517067,
+          "mn:ttm:right": -0.005490967991394147,
+          "kc": -0.018602153789035625,
+          "mbon": -0.00095392568892122,
+          "mbon:MBON11:right": -0.005490967991394147,
+          "mbon:MBON05:left": 0.0035831166135517067,
+          "orn:decaying_fruit:left": 0,
+          "orn:decaying_fruit:right": 0,
+          "orn:yeasty:left": 0,
+          "orn:yeasty:right": 0
+        },
+        "restored_state_sha256": "75017e236438731f20884d804a83a490aa6d92e49eec117eb10f26b737e99fb6",
+        "proposal_survived": true
+      }
+    },
+    {
+      "name": "actual full retained graph: trace on/off exact state and decision parity, independent full-state arithmetic",
+      "passed": true,
+      "evidence": {
+        "arithmetic": {
+          "neurons": 150802,
+          "edges": 1877099,
+          "selectedPatches": 32,
+          "sampledEdges": 96,
+          "frames": [
+            {
+              "iteration": 0,
+              "residual": 1.530487060546875,
+              "settledCount": 149870,
+              "localMaxDefect": 1.530487060546875,
+              "checkedNeuronUpdates": 0,
+              "worstUpdateError": 0
+            },
+            {
+              "iteration": 16,
+              "residual": 0.2242835414543204,
+              "settledCount": 145928,
+              "localMaxDefect": 0.0852678479523874,
+              "checkedNeuronUpdates": 150802,
+              "worstUpdateError": 2.220446049250313e-16
+            },
+            {
+              "iteration": 32,
+              "residual": 0.0228812541015061,
+              "settledCount": 145930,
+              "localMaxDefect": 0.009004998969132871,
+              "checkedNeuronUpdates": 150802,
+              "worstUpdateError": 5.551115123125783e-17
+            },
+            {
+              "iteration": 48,
+              "residual": 0.0018545880627599265,
+              "settledCount": 146129,
+              "localMaxDefect": 0.00044241232843000855,
+              "checkedNeuronUpdates": 150802,
+              "worstUpdateError": 2.220446049250313e-16
+            },
+            {
+              "iteration": 64,
+              "residual": 0.00010462742551373139,
+              "settledCount": 148767,
+              "localMaxDefect": 0.000017773458177883228,
+              "checkedNeuronUpdates": 150802,
+              "worstUpdateError": 2.220446049250313e-16
+            },
+            {
+              "iteration": 80,
+              "residual": 0.000004945107586556974,
+              "settledCount": 150788,
+              "localMaxDefect": 6.500434501788277e-7,
+              "checkedNeuronUpdates": 150802,
+              "worstUpdateError": 2.220446049250313e-16
+            },
+            {
+              "iteration": 89,
+              "residual": 8.4569157829395e-7,
+              "settledCount": 150802,
+              "localMaxDefect": 9.855424365490251e-8,
+              "checkedNeuronUpdates": 150802,
+              "worstUpdateError": 5.551115123125783e-17
+            }
+          ]
+        },
+        "pixels": {
+          "receptors": 1831,
+          "rgba_sha256": "dac2f2fd5adb3710922975d9c5086e2cff9689bfddcdd11187b4226206859d9e",
+          "levels_sha256": "3926cfc8b0db1b59c64212f540e954e15ceb4bf48e92238d996ad6ac90910235"
+        },
+        "state_sha256": "a30965f2281be8db18ff23aa87c76d5047d597c2d1a31544727031a91eb3dbe3",
+        "targetDraw": 0.6270739405881613,
+        "actionDraw": 0.002735721180215478
+      }
+    },
+    {
+      "name": "actual full retained graph: isolated retinal comparison restores live state and outstanding proposal",
+      "passed": true,
+      "evidence": {
+        "actual": {
+          "converged": true,
+          "iterations": 241,
+          "residual": 9.651636713181588e-7,
+          "initialResidual": 2.7000000000415256,
+          "tolerance": 0.000001,
+          "reason": "residual_tolerance"
+        },
+        "black": {
+          "converged": true,
+          "iterations": 241,
+          "residual": 9.651636616592185e-7,
+          "initialResidual": 2.7000000000415256,
+          "tolerance": 0.000001,
+          "reason": "residual_tolerance"
+        },
+        "nonreceptor": {
+          "count": 148971,
+          "changedCount": 31980,
+          "maxAbsDelta": 0.0028921754688281385,
+          "maxIndex": 42791
+        },
+        "deltaReadouts": {
+          "power:left": 7.346710878541884e-10,
+          "power:right": 3.464906174477367e-10,
+          "mn:wing:b1:left": 2.7089628283627487e-12,
+          "mn:wing:b1:right": 0,
+          "mn:wing:b2:left": 5.130629081306903e-10,
+          "mn:wing:b2:right": 0,
+          "mn:wing:b3:left": 0,
+          "mn:wing:b3:right": 0,
+          "mn:wing:i1:left": -4.87459573574045e-13,
+          "mn:wing:i1:right": -7.94964137920684e-13,
+          "mn:wing:i2:left": 1.9734897310080823e-12,
+          "mn:wing:i2:right": -4.4046537250874707e-13,
+          "mn:wing:iii1:left": 0,
+          "mn:wing:iii1:right": 0,
+          "mn:wing:iii3:left": 3.896150979967872e-14,
+          "mn:wing:iii3:right": -5.195202043084893e-14,
+          "mn:wing:iii4:left": 2.1067876332381275e-9,
+          "mn:wing:iii4:right": 9.639772313718709e-11,
+          "steering:left": 2.408533320702455e-10,
+          "steering:right": 1.069310699014503e-11,
+          "neck_mn": -4.607925499500176e-11,
+          "dn": -6.059319712647948e-12,
+          "mn:haltere:left": 1.373203417295854e-12,
+          "mn:haltere:right": 1.966206440284085e-12,
+          "haltere:left": -4.286741680851837e-17,
+          "haltere:right": 0,
+          "ocelli:left": -6.053354220423993e-16,
+          "ocelli:right": 0,
+          "gf": 0,
+          "dn:landing": 3.523034555058535e-11,
+          "dn:grooming": -5.982892709087504e-15,
+          "dn:DNa02:left": 0,
+          "dn:DNa02:right": 0,
+          "dn:DNp09": -2.812920388154186e-13,
+          "dn:DNp09:left": -5.625840776308372e-13,
+          "mn9": 0,
+          "mn:ttm:left": 2.7976991383293903e-13,
+          "mn:ttm:right": 1.8104051244249852e-13,
+          "kc": 7.916250120698631e-13,
+          "mbon": 2.540736718237291e-13,
+          "dan:pam": 5.4864560160641784e-15,
+          "dan:ppl1": 5.14783072939895e-12,
+          "vis:LC4": -6.079717423426005e-17,
+          "vis:LPLC2": 3.036356460074385e-11,
+          "mbon:MBON11:right": 2.78914114026918e-11,
+          "mbon:MBON05:left": 6.080358438964595e-12,
+          "mbon:approach": 3.2126384885700077e-13,
+          "mbon:avoid": 3.524888714245833e-13,
+          "pn": 2.2119042708546033e-12,
+          "apl": 2.107203300738547e-13,
+          "orn:decaying_fruit:left": -9.260611212331266e-17,
+          "orn:decaying_fruit:right": 2.141434815930432e-16,
+          "orn:yeasty:left": 1.0496093469196388e-16,
+          "orn:yeasty:right": 1.6513839042964565e-16,
+          "orn:fruity:left": -7.881641574201265e-19,
+          "orn:fruity:right": -3.32977121895138e-17,
+          "grn:sugar:labellum": 0,
+          "grn:bitter:labellum": 0,
+          "leg_touch": 3.283753176241585e-18,
+          "lptc:hs:left": -2.7128839637124024e-11,
+          "lptc:vs:left": 9.034393909621145e-15,
+          "dn:DNp03": 0
+        },
+        "restored_state_sha256": "a30965f2281be8db18ff23aa87c76d5047d597c2d1a31544727031a91eb3dbe3",
+        "proposal_survived": true
+      }
+    }
+  ],
+  "body_sha256": "46c12e4a456c34e1663355e4de637ae36a46042e64dcfd1af6424b0dd6597bf1"
+}

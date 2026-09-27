@@ -6,8 +6,9 @@ import { SettlingBrain } from "../web/brain.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 globalThis.atob ??= (b) => Buffer.from(b, "base64").toString("binary");
-const payload = JSON.parse(readFileSync(join(here, "..", "web", "data", "brain.json"), "utf8"));
-const cases = JSON.parse(readFileSync(join(here, "parity_cases.json"), "utf8"));
+const legacy = process.argv.includes("--legacy-subset");
+const payload = JSON.parse(readFileSync(join(here, "..", "web", "data", legacy ? "brain.json" : "brain_full.json"), "utf8"));
+const cases = JSON.parse(readFileSync(join(here, legacy ? "parity_cases.json" : "parity_full_cases.json"), "utf8"));
 const brain = new SettlingBrain(payload);
 let worst = 0;
 for (const c of cases.cases) {

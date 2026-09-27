@@ -1,0 +1,474 @@
+{
+  "initial_condition": {
+    "brain": {
+      "n": 150802,
+      "edges": 1877099,
+      "synapses": 23131051,
+      "whole": {
+        "neurons": 150802,
+        "edges": 1877099
+      }
+    },
+    "p": [
+      3.0949999999999998,
+      2.28,
+      0.8917999999999999
+    ],
+    "time": 0.10000000000000007,
+    "bread": [
+      3.13,
+      2.28,
+      0.8068
+    ],
+    "seed": 1,
+    "sugar": "bread"
+  },
+  "result": {
+    "time": 2.97300000000016,
+    "authority": {
+      "mode": "assisted",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "fruit-bearing turns, wall avoidance, speed, altitude and landing targets",
+      "behaviorFallback": "bouts, saccades, takeoff impulse, perch position/attitude hold, sitting, grooming and feeding",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "checked MBON approach/avoid choice for its still-open search only",
+      "neuralMotor": "checked motor-neuron plane/shift trim; pilot retains amplitude/frequency",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 5,
+        "accepted": 3,
+        "discarded": 0,
+        "framesApplied": 543
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "executed": 1,
+        "creditedOutcomes": 1,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "lastChoice": {
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "fruit": "bread",
+        "action": 0,
+        "executed": true,
+        "p": [
+          0.8077749793179363,
+          0.19222502068206365
+        ],
+        "executedAt": 2.0999999999998686
+      },
+      "lastDiscard": {
+        "kind": "all",
+        "reason": "sugar moved",
+        "t": 0.10000000000000007
+      },
+      "lastCancellation": null
+    },
+    "p": [
+      3.1293636344913516,
+      2.276200069554488,
+      0.8079999999999999
+    ],
+    "events": [
+      [
+        0.10000000000000007,
+        "saccade"
+      ],
+      [
+        0.10000000000000007,
+        "sugar on the bread"
+      ],
+      [
+        0.20000000000000015,
+        "smells the bread"
+      ],
+      [
+        2.098499999999868,
+        "approaches the bread (81 % for approach)"
+      ],
+      [
+        2.0999999999998686,
+        "descends to the bread"
+      ],
+      [
+        2.199999999999902,
+        "descends to the bread"
+      ],
+      [
+        2.2999999999999354,
+        "descends to the bread"
+      ],
+      [
+        2.399999999999969,
+        "descends to the bread"
+      ],
+      [
+        2.500000000000002,
+        "descends to the bread"
+      ],
+      [
+        2.6000000000000356,
+        "descends to the bread"
+      ],
+      [
+        2.619500000000042,
+        "lands on the bread: sugar"
+      ],
+      [
+        2.948000000000152,
+        "dopamine 1.00: sugar on the bread"
+      ]
+    ],
+    "lesson": {
+      "type": "lesson",
+      "plastic": 16795,
+      "outputs": [
+        20918,
+        10432
+      ],
+      "critic": 4130,
+      "changed": 9676,
+      "meanAbsChange": 0.0012144476731679402,
+      "maxAbsChange": 0.2927808275500708,
+      "dropped": 0,
+      "delta": 1,
+      "tdError": 1,
+      "reward": 1,
+      "value": 0,
+      "nextValue": 0,
+      "moved": 10950,
+      "meanAbsStep": 0.001073150320815827,
+      "trace": 0.0006996722841877521,
+      "saturation": 0,
+      "updates": 1,
+      "accepted": true,
+      "reason": "qualified_local_update",
+      "lost": false,
+      "why": "sugar on the bread",
+      "generation": 0,
+      "requestId": 3,
+      "searchToken": "0:1"
+    },
+    "mode": "landed",
+    "messages": [
+      {
+        "type": "assisted_decision",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "accepted": true,
+        "decision": {
+          "accepted": true,
+          "reason": "residual_qualified",
+          "choice": 0,
+          "action": 0,
+          "p": [
+            0.8077749793179363,
+            0.19222502068206365
+          ],
+          "value": 0,
+          "greedy": false,
+          "draw": 0.6270739405881613,
+          "solves": {
+            "free": {
+              "converged": true,
+              "iterations": 165,
+              "residual": 9.514966681223314e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "plus": {
+              "converged": true,
+              "iterations": 98,
+              "residual": 9.324319800718683e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            },
+            "minus": {
+              "converged": true,
+              "iterations": 110,
+              "residual": 9.343412157303277e-07,
+              "tolerance": 1e-06,
+              "reason": "residual_tolerance"
+            }
+          }
+        },
+        "residual": 9.514966681223314e-07,
+        "tolerance": 1e-06,
+        "iterations": 165,
+        "reason": "residual_qualified",
+        "updates": null,
+        "reward": null,
+        "simulationTime": 2.07349999999986,
+        "readouts": {
+          "approach": 0.8150363579050475,
+          "avoid": 0.3843512998207748
+        }
+      },
+      {
+        "type": "lesson",
+        "requestId": 3,
+        "generation": 0,
+        "searchToken": "0:1",
+        "accepted": true,
+        "decision": null,
+        "residual": null,
+        "tolerance": null,
+        "iterations": null,
+        "reason": "qualified_local_update",
+        "updates": 1,
+        "reward": 1,
+        "simulationTime": 2.948000000000152,
+        "readouts": null
+      }
+    ]
+  },
+  "page_errors": [],
+  "claim": "A real checked MBON choice was used before assisted sugar contact; only its matching later outcome updated local synapses. Landing, navigation and feeding remain supplied assistance.",
+  "limits": "One seed and one near-food initial condition; reduced rendering cost; not a general learning-performance or autonomous-navigation result.",
+  "sha256": {
+    "web/index.html": "35622573d1285b0abc72595ee2fcaddca80632db2a4a94df84592033665b1d6a",
+    "web/page.js": "c9513b495f5a70a128d262629ec301ff1764eddb75c6f6909b4cea38f8300bba",
+    "web/worker.js": "a4803b37ad48419f9b55144c74923c9d1c56ca9743de1296334578114ac5a7c8",
+    "web/assisted-life.js": "4d23cbc7d08bb14d6ddc52b50de0bd5e3a07c9efbcd777a20adca69747626bd0",
+    "web/life.js": "9c498126046251e08f8a3b3c870f26b9e042b468eb6594bcfb9b92f434ef5e3c",
+    "web/settled-life.js": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "84436023779c6644434e6154a10b7d00326ac349326f195e451f3065099deaa7",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "9b978f64594a4e25ddab8bafd94b59e2ce01e4c4ce7ab112ea7b77d90de33a9f",
+    "tools/check_assisted_lesson.py": "67520db843b0e78d9f7a1d446348189a61aa98fdfd0c5daaaec8a99881e7ac0d"
+  },
+  "served_sources": {
+    "scope": "Local page and dedicated-worker response bodies; external CDN/font bytes are not pinned.",
+    "instrumentation": "Only brain_full.json is intercepted: route.fetch (30s, no redirects), SHA256 verification, then fulfill with the same decoded body; transfer/content encoding headers are removed and decoded content-length is set. Other local responses are read after download. Routing disables the context HTTP cache.",
+    "assets": {
+      "web/index.html": {
+        "sha256": "35622573d1285b0abc72595ee2fcaddca80632db2a4a94df84592033665b1d6a",
+        "bytes": 16980,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/?noscan=1&nobloom=1&noviews=1&seed=1"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/page.js": {
+        "sha256": "c9513b495f5a70a128d262629ec301ff1764eddb75c6f6909b4cea38f8300bba",
+        "bytes": 46335,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/page.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/room.js": {
+        "sha256": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+        "bytes": 36801,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/room.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/body.js": {
+        "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+        "bytes": 22149,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/body.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/fly.js": {
+        "sha256": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+        "bytes": 22736,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/fly.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/eye.js": {
+        "sha256": "84436023779c6644434e6154a10b7d00326ac349326f195e451f3065099deaa7",
+        "bytes": 3895,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/eye.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/assisted-life.js": {
+        "sha256": "4d23cbc7d08bb14d6ddc52b50de0bd5e3a07c9efbcd777a20adca69747626bd0",
+        "bytes": 14996,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/assisted-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/life.js": {
+        "sha256": "9c498126046251e08f8a3b3c870f26b9e042b468eb6594bcfb9b92f434ef5e3c",
+        "bytes": 30772,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/settled-life.js": {
+        "sha256": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+        "bytes": 13340,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/settled-life.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/physics-clock.js": {
+        "sha256": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+        "bytes": 1067,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/physics-clock.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain_scan.js": {
+        "sha256": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+        "bytes": 96646,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain_scan.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/motor.js": {
+        "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+        "bytes": 3204,
+        "responses": 2,
+        "urls": [
+          "http://127.0.0.1:8817/motor.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/senses.js": {
+        "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+        "bytes": 3706,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/senses.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/lessons_full.json": {
+        "sha256": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+        "bytes": 1709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/lessons_full.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/worker.js": {
+        "sha256": "a4803b37ad48419f9b55144c74923c9d1c56ca9743de1296334578114ac5a7c8",
+        "bytes": 19884,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/worker.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/brain.js": {
+        "sha256": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+        "bytes": 17894,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/brain.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/learner.js": {
+        "sha256": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+        "bytes": 19709,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/learner.js"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/atlas.json": {
+        "sha256": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+        "bytes": 11633781,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/atlas.json"
+        ],
+        "binding": "completed browser response body"
+      },
+      "web/data/brain_full.json": {
+        "sha256": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+        "bytes": 42913998,
+        "responses": 1,
+        "urls": [
+          "http://127.0.0.1:8817/data/brain_full.json"
+        ],
+        "binding": "intercepted request: fetch, hash, fulfill identical body"
+      }
+    }
+  }
+}

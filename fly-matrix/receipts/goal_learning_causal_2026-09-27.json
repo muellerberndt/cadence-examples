@@ -1,0 +1,237 @@
+{
+  "schema": "cadence.full-graph-causal-learning-probe/1",
+  "started": "2026-09-27T10:46:37.903Z",
+  "protocol": {
+    "maxSteps": 1024,
+    "tolerance": 0.000001,
+    "draw": 0,
+    "reward": 1,
+    "done": true,
+    "config": {
+      "outputs": [
+        "mbon:MBON11:right",
+        "mbon:MBON05:left"
+      ],
+      "actions": [
+        0,
+        1
+      ],
+      "plastic": {
+        "pre": [
+          "kc"
+        ],
+        "post": [
+          "mbon"
+        ]
+      },
+      "critic": "kc",
+      "beta": 0.1,
+      "temperature": 0.3,
+      "nudgedSteps": 10,
+      "tolerance": 0.001,
+      "gamma": 0.95,
+      "lam": 0.9,
+      "eta": 1,
+      "etaBias": 0,
+      "etaCritic": 0.05,
+      "cap": 3,
+      "dopamineCap": 1,
+      "tonic": {}
+    },
+    "input": "payload lessons_setup.decision_senses plus fruit .9 bilateral and yeast .16 bilateral; no retinal drive",
+    "scope": "One synthetic terminal lesson on the full retained graph. Same frozen input, zero initial state for every readout comparison; restore/reinstate only plastic efficacy and effective weights. No browser outcome replay, discrimination, flight, multi-trial improvement or exact-gradient claim."
+  },
+  "sources": {
+    "web/brain.js": "09a71640cd485663e1165d949b460b974458370ca0853173efc126f69fb6b63d",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/neural-replay.js": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6"
+  },
+  "producer_sha256": "6521c276176cd5db0bca81a86673013869d5ebbd7a6cc9c1928a3d2119fbb2cd",
+  "passed": true,
+  "payload": {
+    "neurons": 150802,
+    "edges": 1877099,
+    "plastic": 16795
+  },
+  "senses": {
+    "haltere:left": 0.5,
+    "haltere:right": 0.5,
+    "ocelli:left": 0.71,
+    "ocelli:right": 0.71,
+    "lptc:hs:left": 0.5,
+    "lptc:vs:left": 0.5,
+    "lptc:hs:right": 0.5,
+    "lptc:vs:right": 0.5,
+    "orn:decaying_fruit:left": 0.9,
+    "orn:decaying_fruit:right": 0.9,
+    "orn:yeasty:left": 0.16,
+    "orn:yeasty:right": 0.16
+  },
+  "decision": {
+    "accepted": true,
+    "reason": "residual_qualified",
+    "choice": 0,
+    "action": 0,
+    "p": [
+      0.47388485856718415,
+      0.5261151414328158
+    ],
+    "value": 0,
+    "greedy": false,
+    "draw": 0,
+    "solves": {
+      "free": {
+        "converged": true,
+        "iterations": 444,
+        "residual": 9.995844979515667e-7,
+        "initialResidual": 2.7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "plus": {
+        "converged": true,
+        "iterations": 143,
+        "residual": 8.305520209361816e-7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "minus": {
+        "converged": true,
+        "iterations": 147,
+        "residual": 9.650732359922642e-7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      }
+    }
+  },
+  "independent_phase_residuals": {
+    "free": 9.995844979515667e-7,
+    "plus": 8.305520209361816e-7,
+    "minus": 9.650732364363535e-7
+  },
+  "update": {
+    "accepted": true,
+    "reason": "qualified_local_update",
+    "lesson": {
+      "delta": 1,
+      "tdError": 1,
+      "reward": 1,
+      "value": 0,
+      "nextValue": 0,
+      "moved": 11068,
+      "meanAbsStep": 0.0024779803496705528,
+      "trace": 0.0016330030669933731,
+      "saturation": 0,
+      "updates": 1,
+      "plastic": 16795,
+      "changed": 9734,
+      "meanAbsChange": 0.002817576145965977,
+      "maxAbsChange": 0.8902493633735867,
+      "dropped": 0
+    }
+  },
+  "independent_update_max_error": 4.440892098500626e-16,
+  "maximum_efficacy_change": 0.8902493633735867,
+  "changed_over_1e_minus_9": 9734,
+  "probes": {
+    "before": {
+      "outputs": [
+        0.38403180400500764,
+        0.4153985173270896
+      ],
+      "p": [
+        0.47388485856718415,
+        0.5261151414328158
+      ],
+      "state_sha256": "a6000e0afa0953abd3569c6c709347e2bd604b584e6a79794c6266790635b00f",
+      "potential_sha256": "2ada62166a0516c5502abb70dad2b67d55f42ff43d8ccef6e683c833cadb5b36",
+      "solve": {
+        "converged": true,
+        "iterations": 444,
+        "residual": 9.995844979515667e-7,
+        "initialResidual": 2.7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      }
+    },
+    "after": {
+      "solve": {
+        "converged": true,
+        "iterations": 444,
+        "residual": 9.98023061971054e-7,
+        "initialResidual": 2.7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independent_residual": 9.980230619155428e-7,
+      "weights_sha256": "97b5fb07174c68a27fc53d41d7056812244ec6087b29d5f25381ceb58946aa5f",
+      "outputs": [
+        0.6484021919347508,
+        0.3785154998035667
+      ],
+      "p": [
+        0.7108718804352264,
+        0.2891281195647735
+      ],
+      "state_sha256": "b202b79b1e9059f9a22cd082172f42309f70888ba535839a1dbb40f692f7a3d4",
+      "potential_sha256": "80a98937c535e1716b6567117fe9a21e97e49a709c8984f1c7a434fc221951fc"
+    },
+    "restored": {
+      "solve": {
+        "converged": true,
+        "iterations": 444,
+        "residual": 9.995844979515667e-7,
+        "initialResidual": 2.7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independent_residual": 9.995844979515667e-7,
+      "weights_sha256": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+      "outputs": [
+        0.38403180400500764,
+        0.4153985173270896
+      ],
+      "p": [
+        0.47388485856718415,
+        0.5261151414328158
+      ],
+      "state_sha256": "a6000e0afa0953abd3569c6c709347e2bd604b584e6a79794c6266790635b00f",
+      "potential_sha256": "2ada62166a0516c5502abb70dad2b67d55f42ff43d8ccef6e683c833cadb5b36"
+    },
+    "reinstated": {
+      "solve": {
+        "converged": true,
+        "iterations": 444,
+        "residual": 9.98023061971054e-7,
+        "initialResidual": 2.7,
+        "tolerance": 0.000001,
+        "reason": "residual_tolerance"
+      },
+      "independent_residual": 9.980230619155428e-7,
+      "weights_sha256": "97b5fb07174c68a27fc53d41d7056812244ec6087b29d5f25381ceb58946aa5f",
+      "outputs": [
+        0.6484021919347508,
+        0.3785154998035667
+      ],
+      "p": [
+        0.7108718804352264,
+        0.2891281195647735
+      ],
+      "state_sha256": "b202b79b1e9059f9a22cd082172f42309f70888ba535839a1dbb40f692f7a3d4",
+      "potential_sha256": "80a98937c535e1716b6567117fe9a21e97e49a709c8984f1c7a434fc221951fc"
+    }
+  },
+  "weight_hashes": {
+    "initial": "c574c4ce760db8820211268dbf6dd105b77baaac10783fac2896592d8be00693",
+    "learned": "97b5fb07174c68a27fc53d41d7056812244ec6087b29d5f25381ceb58946aa5f"
+  },
+  "weights_restored_and_reinstated_exact": true,
+  "probability_change": 0.23698702186804227,
+  "elapsed_seconds": 40.29489,
+  "sources_unchanged": true,
+  "completed": "2026-09-27T10:47:18.317Z",
+  "body_sha256": "66f72dee45a45836feb5c40980ade52482c67479bda1fac795ec6e062b5495f4"
+}

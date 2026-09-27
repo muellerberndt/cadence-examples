@@ -154,7 +154,7 @@ function panel() {
   $("fwd").style.width = `${Math.max(0, Math.min(1, life.readout[0])) * 100}%`;
   $("rev").style.width = `${Math.max(0, Math.min(1, life.readout[1])) * 100}%`;
   const m = Math.floor(life.t / 60), s = String(Math.floor(life.t % 60)).padStart(2, "0");
-  $("stats").textContent = `age ${m}:${s} · ${life.lessons} lessons · ${life.brain.growth().toFixed(2)} recurrent gain`;
+  $("stats").textContent = `age ${m}:${s} · ${life.lessons} lessons · ${life.brain.growth().toFixed(2)} growth estimate`;
 }
 setInterval(panel, 250);
 

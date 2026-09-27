@@ -1,0 +1,5835 @@
+{
+  "schema": "cadence.goal-responsiveness-browser/1",
+  "passed": false,
+  "started": "2026-09-27T11:14:51.896361+00:00",
+  "sourceSha256": {
+    "web/index.html": "602f1d38248158af3b776c195805241086f24e0710d4f9407501fb7fc866f465",
+    "web/page.js": "caf79654c9db603a971005173a3a879618d79bb50897074faf1a3f80cbcbb05c",
+    "web/worker.js": "475891102041984530dae43c2fd9f9fe8f73d00278f9ed0fbcb42c0821c6ed0e",
+    "web/brain-console.js": "2a07ca542bb60c6a5866e77122172a4c96bfb4d0065e8ad8bad9d7838da49c0c",
+    "web/assisted-life.js": "d44e5a85defa5d8a2a60534424172c795aec32c7c506380047fd9d300ab6a893",
+    "web/demo-life.js": "8505c6667566185ce18fd211253c875b4a2e5d838994beb82d019bcc8e62d631",
+    "web/goal-life.js": "dd48fac2a7b3f38867a07da56bde07281b10e5611eeb34668ffc82cbb167b799",
+    "web/target-evidence.js": "19982b252c76982e7d193879c829f45a46a0a675ca5b8e3dd568843e2b90b3c6",
+    "web/neural-policy.js": "446962f67773fdea34430bfdb12bc8425cb8c1f281afa577d1620f24dea1514e",
+    "web/retina.js": "ce75a474e18b18c90f41813cb51e4bf0b8d2c4b2aa6df668834512a751fb12a8",
+    "web/life.js": "ad88d45fccc3e5fd1e47c2b1aa486d849c673012525160f88d0993794d61b772",
+    "web/neural-state.js": "6f2fd416669f62973c96ddc8184553dd57ed0a13f3e1e2ee8bad7bfcd14ed9c1",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/worker-scheduling.js": "519532fcb306ecc0f41edbaa50dc38d9e82a3c44f6dbe9aa05aeea2c6653c2cf",
+    "web/path-history.js": "01764f9e30bf890c310d9a0ea080fa2c491b51d6744e89697c011ac31ce11ead",
+    "web/path-view.js": "45641d5010704f595386fa8879ea9f9de33fef70c81ad5c4d0885e5bb06d72cc",
+    "web/settlement-trace.js": "dab711022152a981850c6b337c6b5377acb6d2ce6e75eb65403e9c2d3c5bb636",
+    "web/settlement-view.js": "3c29471974f90cbf26cdfb48719217abcddddd8e2fdd266855780e168cef8ad3",
+    "web/neural-replay.js": "e4c68f83956a6d667e9a49a9cee014653fd49dddf3184f85ed7e2b72e0e318ad",
+    "web/settlement-progress.js": "e98a2345f08b8f0afc578c2daaa31d3d32da129045d71fdae976b631774b8428",
+    "web/senses.js": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf",
+    "web/room.js": "416dea676671e7ea63e4e62ce8685c9da3fc8a6c79264e273bb02dd223be6470",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/brain.js": "6b7b9260b82a002686738e35f59466dacb695a41b148fe363fc575f88f25020b",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/eye.js": "dc5b2a9fcaebb9c3debacb0beea190968b8a52f4a5e34c1a66aced591c3fb6e8",
+    "web/brain_scan.js": "a622ab95b47857d3f0cfd06f93ba9e2c0d4d94125d20da8d9922fbbeff3cda1b",
+    "web/data/brain_full.json": "5bee92b56a04b44fb3fb0b709ec21c7b4bba10d6c97052d63cf06960790294bf",
+    "web/data/lessons_full.json": "ae74b388fdb386f93184be58cc6f490d7b1537893df5d3e39fe31cc30681aaa6",
+    "web/data/atlas.json": "5e405bf209ad4c47375e628881a57519efef2aa7f7493eaa938b8320662f5c23",
+    "tools/browser_source_binding.py": "d596e9a6671676977f71fe8eccfb037d00a25b4e8340d623b8d3b53971e0b751",
+    "tools/check_goal_responsiveness.py": "ca3087ec2d68f67474be09936ecebb27a0b90ecd235fec72babf061f1afb5f3d"
+  },
+  "errors": [],
+  "protocol": {
+    "url": "http://127.0.0.1:8817/",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "maxSimSeconds": 80,
+    "maxWallSeconds": 120,
+    "sampleSeconds": 0.25,
+    "firstNudgeSimSeconds": 8,
+    "nudgeDisplacementWindow": 0.1,
+    "minimumNudgeDisplacementMetres": 0.005,
+    "stationarySpeedMetresPerSecond": 0.03,
+    "maximumSampledAirborneStationarySeconds": 2,
+    "minimumMeanFPS": 45,
+    "scope": "Unchanged scene, hardware Chromium, ordinary typed console commands. First nudge near8 simulated seconds; second only at an observed natural perch before70simsec. No injected body/neuronal state, decision or reward. Intermediate solver packets are display-only. Landing not observed within the fixed window is reported as uncovered. Quarter-second sampling cannot rule out shorter unsampled holds."
+  },
+  "samples": [
+    {
+      "wall": 61326.30000001192,
+      "time": 0.09900000000000007,
+      "frames": 3573,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.2117794921655738,
+        1.0036438239288041,
+        1.2000190617368818
+      ],
+      "velocity": [
+        0.19908921129134513,
+        0.06158550995860254,
+        0.00011702464662601036
+      ],
+      "spin": [
+        3.3325013489657613e-15,
+        0.10808692277941542,
+        -2.135752786157503e-14
+      ],
+      "quaternion": [
+        0.9725696203320862,
+        -0.02694134301676011,
+        0.1782598613538802,
+        0.14698952164576326
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6016500000000108,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 198,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": false,
+      "workerJobId": null,
+      "pending": false,
+      "pendingId": null,
+      "progressFrames": 0,
+      "display": null,
+      "scanText": "Waiting for recorded updates",
+      "fps": 59.998032851382106
+    },
+    {
+      "wall": 61454.5,
+      "time": 0.21650000000000016,
+      "frames": 3579,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.2399671400385628,
+        1.0123632852071511,
+        1.2000217662331818
+      ],
+      "velocity": [
+        0.2653119163297413,
+        0.08207059317418433,
+        -3.757690033832451e-05
+      ],
+      "spin": [
+        -4.506319086031829e-15,
+        0.03284914882035071,
+        2.081290744968005e-14
+      ],
+      "quaternion": [
+        0.9718832895282599,
+        -0.027501259684847772,
+        0.18196460122378705,
+        0.1468857928900667
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.603608333333357,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 433,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 1,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 0,
+        "residual": 2.993071496486664,
+        "tolerance": 1e-06,
+        "receivedAt": 61392.30000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 1,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 0 \u00b7 2.99e+0 \u00b7 checking",
+      "fps": 59.9980328513817
+    },
+    {
+      "wall": 61792.5,
+      "time": 0.566499999999993,
+      "frames": 3600,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.3385392546240087,
+        1.0428552134491025,
+        1.2000040220641723
+      ],
+      "velocity": [
+        0.28628497785359175,
+        0.08855832136880443,
+        -2.874839439224101e-05
+      ],
+      "spin": [
+        -9.812056192607534e-15,
+        0.0004916836224963484,
+        6.583157733733906e-15
+      ],
+      "quaternion": [
+        0.9716310998931547,
+        -0.027704058507878077,
+        0.18330643819359277,
+        0.14684767815457342
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6094416666667285,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 1133,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 1,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 0,
+        "residual": 2.993071496486664,
+        "tolerance": 1e-06,
+        "receivedAt": 61392.30000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 1,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 0 \u00b7 2.99e+0 \u00b7 checking",
+      "fps": 59.9980328513817
+    },
+    {
+      "wall": 62060.5,
+      "time": 0.8329999999999637,
+      "frames": 3616,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.414893280490255,
+        1.0664742814531647,
+        1.200000281106414
+      ],
+      "velocity": [
+        0.28658814164858515,
+        0.08865210092016455,
+        -4.473415023237988e-06
+      ],
+      "spin": [
+        -5.678025808147703e-15,
+        1.5899995392683637e-05,
+        -1.3477811886988182e-14
+      ],
+      "quaternion": [
+        0.9716276690096148,
+        -0.027706806864172612,
+        0.18332462294450672,
+        0.1468471596272408
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6138833333334243,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 1666,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 2,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 16,
+        "residual": 3.5578492104373303,
+        "tolerance": 1e-06,
+        "receivedAt": 61854,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 2,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 16 \u00b7 3.56e+0 \u00b7 checking",
+      "fps": 59.9980328513817
+    },
+    {
+      "wall": 62327.30000001192,
+      "time": 1.0989999999999345,
+      "frames": 3632,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.4911281142993327,
+        1.0900564790332783,
+        1.1999999057435735
+      ],
+      "velocity": [
+        0.28660042468352137,
+        0.08865590050812508,
+        7.134916173863855e-08
+      ],
+      "spin": [
+        -7.45306948756938e-15,
+        8.104768560044199e-07,
+        2.1275245066169548e-14
+      ],
+      "quaternion": [
+        0.971627558657455,
+        -0.02770689525859669,
+        0.18332520781430256,
+        0.14684714294914247
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6183166666667866,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 2198,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 3,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 32,
+        "residual": 0.4182816362519072,
+        "tolerance": 1e-06,
+        "receivedAt": 62192.5,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 3,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 32 \u00b7 4.18e-1 \u00b7 checking",
+      "fps": 59.9980328513817
+    },
+    {
+      "wall": 62661.80000001192,
+      "time": 1.4159999999998996,
+      "frames": 3651,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.5819805721055638,
+        1.118160437598876,
+        1.1999999746833874
+      ],
+      "velocity": [
+        0.286600935221478,
+        0.08865605843602112,
+        1.6182062088392264e-07
+      ],
+      "spin": [
+        -2.7510707163221528e-14,
+        1.8712709112531619e-07,
+        -1.0543858415366614e-14
+      ],
+      "quaternion": [
+        0.9716275468425093,
+        -0.027706904722601913,
+        0.18332527043375996,
+        0.1468471411634872
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6236000000001546,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 2832,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 4,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 48,
+        "residual": 0.05151816557773037,
+        "tolerance": 1e-06,
+        "receivedAt": 62622.40000003576,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 4,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 48 \u00b7 5.15e-2 \u00b7 checking",
+      "fps": 59.07256079551066
+    },
+    {
+      "wall": 62958.30000001192,
+      "time": 1.7329999999998646,
+      "frames": 3670,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.672833071288559,
+        1.1462644089638048,
+        1.1999999986328362
+      ],
+      "velocity": [
+        0.28660094648429707,
+        0.08865606192001986,
+        2.043830884653012e-08
+      ],
+      "spin": [
+        -9.144656696423794e-15,
+        2.4456177564353612e-08,
+        -4.61381774506832e-15
+      ],
+      "quaternion": [
+        0.9716275443225839,
+        -0.02770690674111148,
+        0.18332528378941337,
+        0.1468471407826379
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6288833333335225,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 3466,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 4,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 48,
+        "residual": 0.05151816557773037,
+        "tolerance": 1e-06,
+        "receivedAt": 62622.40000003576,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 4,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 48 \u00b7 5.15e-2 \u00b7 checking",
+      "fps": 59.07256079551066
+    },
+    {
+      "wall": 63221.40000003576,
+      "time": 1.9989999999998354,
+      "frames": 3686,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.749068923100644,
+        1.1698469214491503,
+        1.2000000003974214
+      ],
+      "velocity": [
+        0.28660094672729386,
+        0.08865606199518732,
+        -1.408478403827347e-10
+      ],
+      "spin": [
+        5.977980043890323e-15,
+        4.4702445871851395e-10,
+        -8.546673772432517e-15
+      ],
+      "quaternion": [
+        0.9716275441146818,
+        -0.02770690690764508,
+        0.1833252848912984,
+        0.14684714075121635
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6333166666668849,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 3998,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 5,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 64,
+        "residual": 0.004138017053405996,
+        "tolerance": 1e-06,
+        "receivedAt": 63013.60000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 5,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 64 \u00b7 4.14e-3 \u00b7 checking",
+      "fps": 59.07256079551066
+    },
+    {
+      "wall": 63484.10000002384,
+      "time": 2.2664999999999242,
+      "frames": 3702,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.825734676352136,
+        1.1935624180334656,
+        1.2000000001516558
+      ],
+      "velocity": [
+        0.28660094673722125,
+        0.08865606199825855,
+        -8.616811633254014e-10
+      ],
+      "spin": [
+        5.041722285209597e-14,
+        -8.683480452435971e-10,
+        -1.8706628443026788e-13
+      ],
+      "quaternion": [
+        0.9716275441326351,
+        -0.027706906893264462,
+        0.1833252847961472,
+        0.14684714075392852
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6377750000002474,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 4533,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 6,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 80,
+        "residual": 0.00037084046060886777,
+        "tolerance": 1e-06,
+        "receivedAt": 63392.30000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 6,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 80 \u00b7 3.71e-4 \u00b7 checking",
+      "fps": 59.94604855629927
+    },
+    {
+      "wall": 63751.80000001192,
+      "time": 2.5330000000000132,
+      "frames": 3718,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.9021138286577013,
+        1.2171892585560316,
+        1.2000000000208684
+      ],
+      "velocity": [
+        0.28660094673765596,
+        0.08865606199838919,
+        -2.0347918953212774e-10
+      ],
+      "spin": [
+        -3.4321447317393475e-14,
+        -2.2811722285905868e-10,
+        6.392829479690906e-14
+      ],
+      "quaternion": [
+        0.9716275441452861,
+        -0.02770690688313017,
+        0.18332528472909823,
+        0.14684714075583816
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6422166666669432,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 5066,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 6,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 80,
+        "residual": 0.00037084046060886777,
+        "tolerance": 1e-06,
+        "receivedAt": 63392.30000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 6,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 80 \u00b7 3.71e-4 \u00b7 checking",
+      "fps": 59.94604855629927
+    },
+    {
+      "wall": 64028.90000003576,
+      "time": 2.8000000000001024,
+      "frames": 3734,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        1.978636281436671,
+        1.2408604271095967,
+        1.1999999999989401
+      ],
+      "velocity": [
+        0.2866009467376769,
+        0.08865606199840238,
+        -1.4588878872047028e-11
+      ],
+      "spin": [
+        -2.5910103824534856e-14,
+        -2.027743237966848e-11,
+        1.0001827398633282e-13
+      ],
+      "quaternion": [
+        0.9716275441476347,
+        -0.02770690688124962,
+        0.18332528471664009,
+        0.1468471407562052
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6466666666669724,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 5600,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 7,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 96,
+        "residual": 3.936233368229125e-05,
+        "tolerance": 1e-06,
+        "receivedAt": 63786.80000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 7,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 96 \u00b7 3.94e-5 \u00b7 checking",
+      "fps": 59.94604855629927
+    },
+    {
+      "wall": 64294,
+      "time": 3.0665000000001914,
+      "frames": 3750,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.0550154337422715,
+        1.2644872676321626,
+        1.1999999999989013
+      ],
+      "velocity": [
+        0.2866009467376769,
+        0.08865606199841257,
+        4.652113187676634e-12
+      ],
+      "spin": [
+        -6.701730802229441e-14,
+        4.3395347310576465e-12,
+        1.6767675937970345e-13
+      ],
+      "quaternion": [
+        0.9716275441476914,
+        -0.027706906881205303,
+        0.18332528471632548,
+        0.14684714075623198
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6511083333336681,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 6133,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 1,
+      "pending": true,
+      "pendingId": 1,
+      "progressFrames": 8,
+      "display": {
+        "requestId": 1,
+        "generation": 0,
+        "phase": "observation",
+        "iteration": 112,
+        "residual": 4.5116734330719055e-06,
+        "tolerance": 1e-06,
+        "receivedAt": 64183.80000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 8,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #1 \u00b7 observation \u00b7 step 112 \u00b7 4.51e-6 \u00b7 checking",
+      "fps": 59.94604855629927
+    },
+    {
+      "wall": 64577.69999998808,
+      "time": 3.350000000000286,
+      "frames": 3766,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.1362668021424134,
+        1.2896212612087008,
+        1.1999999999998034
+      ],
+      "velocity": [
+        0.28660094673767617,
+        0.08865606199842908,
+        1.5673326961914043e-12
+      ],
+      "spin": [
+        -1.2067234962998394e-13,
+        1.759907639125636e-12,
+        3.137819361473425e-13
+      ],
+      "quaternion": [
+        0.9716275441476033,
+        -0.027706906881277582,
+        0.18332528471676454,
+        0.14684714075625266
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6558333333336991,
+      "startup": {
+        "enabled": true,
+        "phase": "launching",
+        "active": true,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": null,
+        "reason": null,
+        "framesApplied": 6700,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": false,
+        "phase": "startup",
+        "heading": 0.29999999999999993,
+        "desiredHeading": 0.29999999999999993,
+        "altitude": 1.2,
+        "velocityWorld": [
+          0,
+          0,
+          0
+        ],
+        "framesApplied": 0,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 10,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 0,
+        "residual": 2.479901558362695,
+        "tolerance": 1e-06,
+        "receivedAt": 64542.60000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 10,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 0 \u00b7 2.48e+0 \u00b7 checking",
+      "fps": 59.998032851382106
+    },
+    {
+      "wall": 64891.5,
+      "time": 3.6655000000003914,
+      "frames": 3785,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.226689400838162,
+        1.317592248769187,
+        1.1999999999999444
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844327,
+        -1.5630820070352755e-13
+      ],
+      "spin": [
+        3.1892217330423656e-14,
+        5.405470957962169e-14,
+        -4.163640161260757e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301573,
+        0.18332528471690024,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6610916666670669,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 497,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 10,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 0,
+        "residual": 2.479901558362695,
+        "tolerance": 1e-06,
+        "receivedAt": 64542.60000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 10,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 0 \u00b7 2.48e+0 \u00b7 checking",
+      "fps": 59.998032851382106
+    },
+    {
+      "wall": 65153.5,
+      "time": 3.9320000000004804,
+      "frames": 3800,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.303068553143763,
+        1.3412190892917528,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.0886560619984434,
+        -2.1978230867192305e-13
+      ],
+      "spin": [
+        -3.1671089940292764e-15,
+        -3.807986963877251e-14,
+        -3.1334603527769594e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.02770690688130164,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6655333333337626,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 1030,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 11,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 16,
+        "residual": 0.1185108459530464,
+        "tolerance": 1e-06,
+        "receivedAt": 64950.80000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 11,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 16 \u00b7 1.19e-1 \u00b7 checking",
+      "fps": 59.998032851382106
+    },
+    {
+      "wall": 65411.80000001192,
+      "time": 4.183000000000401,
+      "frames": 3815,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.375005390774929,
+        1.363471760853344,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1677618874211754e-13
+      ],
+      "spin": [
+        -9.070061322832917e-16,
+        -4.2786794032367875e-14,
+        -3.5105741247291976e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6697166666671234,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 1532,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 12,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 32,
+        "residual": 0.016540760427980805,
+        "tolerance": 1e-06,
+        "receivedAt": 65304.10000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 12,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 32 \u00b7 1.65e-2 \u00b7 checking",
+      "fps": 58.0822996652883
+    },
+    {
+      "wall": 65728.19999998808,
+      "time": 4.500000000000226,
+      "frames": 3834,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.4658578908907844,
+        1.3915757325068276,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1674654258896364e-13
+      ],
+      "spin": [
+        -3.846418998964683e-15,
+        -4.04689684141495e-14,
+        -3.526219278718059e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6750000000004913,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 2166,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 13,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 48,
+        "residual": 0.0017567151276390858,
+        "tolerance": 1e-06,
+        "receivedAt": 65657.10000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 13,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 48 \u00b7 1.76e-3 \u00b7 checking",
+      "fps": 58.0822996652883
+    },
+    {
+      "wall": 66074.10000002384,
+      "time": 4.850000000000032,
+      "frames": 3855,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.5661682222489843,
+        1.4226053542062576,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1674654258896364e-13
+      ],
+      "spin": [
+        -4.0929872830949395e-15,
+        -4.047151482276637e-14,
+        -3.526219278718059e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6808333333338629,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 2866,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 14,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 64,
+        "residual": 0.0001620833743389838,
+        "tolerance": 1e-06,
+        "receivedAt": 66008.5,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 14,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 64 \u00b7 1.62e-4 \u00b7 checking",
+      "fps": 58.0822996652883
+    },
+    {
+      "wall": 66338,
+      "time": 5.116499999999884,
+      "frames": 3871,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.642547374554585,
+        1.4462321947288235,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -4.226220945857766e-16,
+        -3.779446543529613e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6852750000005586,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 3399,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 14,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 64,
+        "residual": 0.0001620833743389838,
+        "tolerance": 1e-06,
+        "receivedAt": 66008.5,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 14,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 64 \u00b7 1.62e-4 \u00b7 checking",
+      "fps": 58.0822996652883
+    },
+    {
+      "wall": 66594.10000002384,
+      "time": 5.366499999999745,
+      "frames": 3886,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.7141976112390136,
+        1.4683962102284163,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -8.935322942028073e-16,
+        -3.787283869447985e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6894416666672526,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 3899,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 15,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 80,
+        "residual": 1.4447032603781551e-05,
+        "tolerance": 1e-06,
+        "receivedAt": 66339,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 15,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 80 \u00b7 1.44e-5 \u00b7 checking",
+      "fps": 59.94604855629926
+    },
+    {
+      "wall": 66881.5,
+      "time": 5.66549999999958,
+      "frames": 3904,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.79989129431359,
+        1.4949043727659292,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -1.5878531187887283e-15,
+        -3.787492648365732e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6944250000006186,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 4497,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 16,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 96,
+        "residual": 1.7250299075843856e-06,
+        "tolerance": 1e-06,
+        "receivedAt": 66711.60000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 16,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 96 \u00b7 1.73e-6 \u00b7 checking",
+      "fps": 59.94604855629926
+    },
+    {
+      "wall": 67141.19999998808,
+      "time": 5.9164999999994405,
+      "frames": 3919,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.8718281319447563,
+        1.5171570443275204,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -5.50188672218171e-16,
+        -3.7813030127464804e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.6986083333339793,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 4999,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 16,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:banana",
+        "iteration": 96,
+        "residual": 1.7250299075843856e-06,
+        "tolerance": 1e-06,
+        "receivedAt": 66711.60000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 16,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:banana \u00b7 step 96 \u00b7 1.73e-6 \u00b7 checking",
+      "fps": 59.94604855629926
+    },
+    {
+      "wall": 67412.30000001192,
+      "time": 6.182999999999293,
+      "frames": 3935,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        2.948207284250357,
+        1.5407838848500863,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1674654258896364e-13
+      ],
+      "spin": [
+        -5.114637763255475e-15,
+        -4.048808698859284e-14,
+        -3.526219278718059e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7030500000006751,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 5532,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 17,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 16,
+        "residual": 0.1185108459530464,
+        "tolerance": 1e-06,
+        "receivedAt": 67256.10000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 17,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 16 \u00b7 1.19e-1 \u00b7 checking",
+      "fps": 60.00393468424212
+    },
+    {
+      "wall": 67676.69999998808,
+      "time": 6.449999999999145,
+      "frames": 3951,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.0247297370293267,
+        1.5644550534036514,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1674654258896364e-13
+      ],
+      "spin": [
+        -4.469560883157069e-15,
+        -4.0417017014052264e-14,
+        -3.526219278718059e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7075000000007042,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 6066,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 18,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 32,
+        "residual": 0.016540760427980805,
+        "tolerance": 1e-06,
+        "receivedAt": 67633,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 18,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 32 \u00b7 1.65e-2 \u00b7 checking",
+      "fps": 60.00393468424212
+    },
+    {
+      "wall": 67943.40000003576,
+      "time": 6.716499999998997,
+      "frames": 3967,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.1011088893349275,
+        1.5880818939262173,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -6.532345234773195e-16,
+        -3.7828433334259455e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7119416666674,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 6599,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 18,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 32,
+        "residual": 0.016540760427980805,
+        "tolerance": 1e-06,
+        "receivedAt": 67633,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 18,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 32 \u00b7 1.65e-2 \u00b7 checking",
+      "fps": 60.00393468424212
+    },
+    {
+      "wall": 68213.10000002384,
+      "time": 6.9829999999988495,
+      "frames": 3983,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.1774880416405282,
+        1.6117087344487833,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1674654258896364e-13
+      ],
+      "spin": [
+        -5.2570924287165225e-15,
+        -4.0505858350254605e-14,
+        -3.526219278718059e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7163833333340958,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 7132,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 19,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 48,
+        "residual": 0.0017567151276390858,
+        "tolerance": 1e-06,
+        "receivedAt": 68002.5,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 19,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 48 \u00b7 1.76e-3 \u00b7 checking",
+      "fps": 60.00393468424212
+    },
+    {
+      "wall": 68485.10000002384,
+      "time": 7.265499999998693,
+      "frames": 4000,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.2584528090939324,
+        1.6367540719633231,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -2.0326093389220313e-15,
+        -3.791055372806918e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7210916666674599,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 7697,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 20,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 64,
+        "residual": 0.0001620833743389838,
+        "tolerance": 1e-06,
+        "receivedAt": 68366.10000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 20,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 64 \u00b7 1.62e-4 \u00b7 checking",
+      "fps": 60.00393468424128
+    },
+    {
+      "wall": 68746.10000002384,
+      "time": 7.515999999998554,
+      "frames": 4015,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.3302463462517298,
+        1.658962415493915,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.1674654258896364e-13
+      ],
+      "spin": [
+        -2.6517653918293173e-15,
+        -4.041556762657175e-14,
+        -3.526219278718059e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7252666666674873,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 8198,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 21,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 64,
+        "residual": 0.0001620833743389838,
+        "tolerance": 1e-06,
+        "receivedAt": 68366.10000002384,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 20,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 64 \u00b7 1.62e-4 \u00b7 checking",
+      "fps": 60.00393468424128
+    },
+    {
+      "wall": 69042.60000002384,
+      "time": 7.8164999999983875,
+      "frames": 4033,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.416369930746413,
+        1.6856035621244256,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        4.48214487167891e-16,
+        -3.779866230132463e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7302750000008534,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 8799,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 21,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "target:bread",
+        "iteration": 80,
+        "residual": 1.4447032603781551e-05,
+        "tolerance": 1e-06,
+        "receivedAt": 68737.80000001192,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 21,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 target:bread \u00b7 step 80 \u00b7 1.44e-5 \u00b7 checking",
+      "fps": 60.00393468424128
+    },
+    {
+      "wall": 69333.69999998808,
+      "time": 8.116499999998428,
+      "frames": 4051,
+      "mode": "flying",
+      "paused": false,
+      "position": [
+        3.502350214767727,
+        1.712200380723937,
+        1.1999999999999418
+      ],
+      "velocity": [
+        0.2866009467376721,
+        0.08865606199844346,
+        -2.167473896219109e-13
+      ],
+      "spin": [
+        -1.90552644839265e-15,
+        -3.783828700316419e-14,
+        -4.4561736417398363e-14
+      ],
+      "quaternion": [
+        0.9716275441475756,
+        -0.027706906881301587,
+        0.18332528471690013,
+        0.14684714075626287
+      ],
+      "perch": null,
+      "touching": 0,
+      "onFloor": false,
+      "contactFruit": null,
+      "hunger": 0.7352750000008862,
+      "startup": {
+        "enabled": true,
+        "phase": "finished",
+        "active": false,
+        "heading": 0.29999999999999993,
+        "origin": [
+          1.2,
+          1,
+          1.2
+        ],
+        "target": [
+          2.3464037869507273,
+          1.3546242479936073,
+          1.2
+        ],
+        "startedAt": 0,
+        "deadline": 6,
+        "endedAt": 3.4170000000003085,
+        "reason": "continuous waiting cruise",
+        "framesApplied": 6834,
+        "config": {
+          "speed": 0.3,
+          "distance": 1.2,
+          "maxSeconds": 6,
+          "clearance": 0.15,
+          "reached": 0.015
+        }
+      },
+      "waitingSupport": {
+        "enabled": true,
+        "active": true,
+        "phase": "cruise",
+        "heading": 0.30000000000014787,
+        "desiredHeading": 0.30000000000014787,
+        "altitude": 1.1999999999998876,
+        "velocityWorld": [
+          0.28660094673766867,
+          0.08865606199844424,
+          0
+        ],
+        "framesApplied": 9399,
+        "turns": 0,
+        "lastTurn": null,
+        "config": {
+          "speed": 0.3,
+          "turnMargin": 0.35,
+          "innerClearance": 0.15,
+          "turnRate": 2.5,
+          "reactionSeconds": 0.15,
+          "minRecoveryHeight": 0.4
+        }
+      },
+      "physicalReaction": {
+        "active": false,
+        "until": null,
+        "startedAt": null,
+        "events": 0,
+        "framesApplied": 0
+      },
+      "goal": {
+        "phase": "waiting",
+        "fruit": null,
+        "action": null,
+        "decisionRequestId": null,
+        "generation": 0,
+        "searchToken": null,
+        "target": null,
+        "executed": false,
+        "framesApplied": 0,
+        "clearanceLimited": false,
+        "config": {
+          "speed": 0.3,
+          "clearance": 0.15,
+          "retreat": 0.6,
+          "avoidClimb": 0.15,
+          "reached": 0.04,
+          "restSeconds": 2,
+          "retrySeconds": 0.5,
+          "maxExecutionSeconds": 20
+        }
+      },
+      "choices": {
+        "requested": 1,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "lastChoice": null,
+      "lesson": {
+        "type": "learn:ready",
+        "plastic": 16795,
+        "outputs": [
+          20918,
+          10432
+        ],
+        "critic": 4130,
+        "changed": 0,
+        "meanAbsChange": 0,
+        "maxAbsChange": 0,
+        "dropped": 0
+      },
+      "workerBusy": true,
+      "workerJobId": 2,
+      "pending": true,
+      "pendingId": 2,
+      "progressFrames": 23,
+      "display": {
+        "requestId": 2,
+        "generation": 0,
+        "phase": "plus",
+        "iteration": 0,
+        "residual": 0.06579967048383928,
+        "tolerance": 1e-06,
+        "receivedAt": 69312.5,
+        "completed": false,
+        "withdrawn": false,
+        "authoritative": false,
+        "framesReceived": 23,
+        "neuronCount": 150802
+      },
+      "scanText": "Live #2 \u00b7 plus \u00b7 step 0 \u00b7 6.58e-2 \u00b7 checking",
+      "fps": 60.00393468424128
+    }
+  ],
+  "nudges": [
+    {
+      "kind": "initial",
+      "before": {
+        "wall": 69443.60000002384,
+        "time": 8.21649999999855,
+        "frames": 4057,
+        "mode": "flying",
+        "paused": false,
+        "position": [
+          3.5310103094414984,
+          1.721065986923774,
+          1.1999999999999418
+        ],
+        "velocity": [
+          0.2866009467376721,
+          0.08865606199844346,
+          -2.167473896219109e-13
+        ],
+        "spin": [
+          -1.4619545422641475e-15,
+          -3.785198242731379e-14,
+          -4.4561736417398363e-14
+        ],
+        "quaternion": [
+          0.9716275441475756,
+          -0.027706906881301587,
+          0.18332528471690013,
+          0.14684714075626287
+        ],
+        "perch": null,
+        "touching": 0,
+        "onFloor": false,
+        "contactFruit": null,
+        "hunger": 0.7369416666675638,
+        "startup": {
+          "enabled": true,
+          "phase": "finished",
+          "active": false,
+          "heading": 0.29999999999999993,
+          "origin": [
+            1.2,
+            1,
+            1.2
+          ],
+          "target": [
+            2.3464037869507273,
+            1.3546242479936073,
+            1.2
+          ],
+          "startedAt": 0,
+          "deadline": 6,
+          "endedAt": 3.4170000000003085,
+          "reason": "continuous waiting cruise",
+          "framesApplied": 6834,
+          "config": {
+            "speed": 0.3,
+            "distance": 1.2,
+            "maxSeconds": 6,
+            "clearance": 0.15,
+            "reached": 0.015
+          }
+        },
+        "waitingSupport": {
+          "enabled": true,
+          "active": true,
+          "phase": "cruise",
+          "heading": 0.30000000000014787,
+          "desiredHeading": 0.30000000000014787,
+          "altitude": 1.1999999999998876,
+          "velocityWorld": [
+            0.28660094673766867,
+            0.08865606199844424,
+            0
+          ],
+          "framesApplied": 9599,
+          "turns": 0,
+          "lastTurn": null,
+          "config": {
+            "speed": 0.3,
+            "turnMargin": 0.35,
+            "innerClearance": 0.15,
+            "turnRate": 2.5,
+            "reactionSeconds": 0.15,
+            "minRecoveryHeight": 0.4
+          }
+        },
+        "physicalReaction": {
+          "active": false,
+          "until": null,
+          "startedAt": null,
+          "events": 0,
+          "framesApplied": 0
+        },
+        "goal": {
+          "phase": "waiting",
+          "fruit": null,
+          "action": null,
+          "decisionRequestId": null,
+          "generation": 0,
+          "searchToken": null,
+          "target": null,
+          "executed": false,
+          "framesApplied": 0,
+          "clearanceLimited": false,
+          "config": {
+            "speed": 0.3,
+            "clearance": 0.15,
+            "retreat": 0.6,
+            "avoidClimb": 0.15,
+            "reached": 0.04,
+            "restSeconds": 2,
+            "retrySeconds": 0.5,
+            "maxExecutionSeconds": 20
+          }
+        },
+        "choices": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "executed": 0,
+          "creditedOutcomes": 0,
+          "uncreditedOutcomes": 0
+        },
+        "lastChoice": null,
+        "lesson": {
+          "type": "learn:ready",
+          "plastic": 16795,
+          "outputs": [
+            20918,
+            10432
+          ],
+          "critic": 4130,
+          "changed": 0,
+          "meanAbsChange": 0,
+          "maxAbsChange": 0,
+          "dropped": 0
+        },
+        "workerBusy": true,
+        "workerJobId": 2,
+        "pending": true,
+        "pendingId": 2,
+        "progressFrames": 23,
+        "display": {
+          "requestId": 2,
+          "generation": 0,
+          "phase": "plus",
+          "iteration": 0,
+          "residual": 0.06579967048383928,
+          "tolerance": 1e-06,
+          "receivedAt": 69312.5,
+          "completed": false,
+          "withdrawn": false,
+          "authoritative": false,
+          "framesReceived": 23,
+          "neuronCount": 150802
+        },
+        "scanText": "Live #2 \u00b7 plus \u00b7 step 0 \u00b7 6.58e-2 \u00b7 checking",
+        "fps": 59.994000599939675
+      },
+      "after": {
+        "wall": 69443.69999998808,
+        "time": 8.21649999999855,
+        "frames": 4057,
+        "mode": "flying",
+        "paused": false,
+        "position": [
+          3.5310103094414984,
+          1.721065986923774,
+          1.1999999999999418
+        ],
+        "velocity": [
+          0.2866009467376721,
+          0.08865606199844346,
+          -2.167473896219109e-13
+        ],
+        "spin": [
+          -1.4619545422641475e-15,
+          -3.785198242731379e-14,
+          -4.4561736417398363e-14
+        ],
+        "quaternion": [
+          0.9716275441475756,
+          -0.027706906881301587,
+          0.18332528471690013,
+          0.14684714075626287
+        ],
+        "perch": null,
+        "touching": 0,
+        "onFloor": false,
+        "contactFruit": null,
+        "hunger": 0.7369416666675638,
+        "startup": {
+          "enabled": true,
+          "phase": "finished",
+          "active": false,
+          "heading": 0.29999999999999993,
+          "origin": [
+            1.2,
+            1,
+            1.2
+          ],
+          "target": [
+            2.3464037869507273,
+            1.3546242479936073,
+            1.2
+          ],
+          "startedAt": 0,
+          "deadline": 6,
+          "endedAt": 3.4170000000003085,
+          "reason": "continuous waiting cruise",
+          "framesApplied": 6834,
+          "config": {
+            "speed": 0.3,
+            "distance": 1.2,
+            "maxSeconds": 6,
+            "clearance": 0.15,
+            "reached": 0.015
+          }
+        },
+        "waitingSupport": {
+          "enabled": true,
+          "active": true,
+          "phase": "cruise",
+          "heading": 0.30000000000014787,
+          "desiredHeading": 0.30000000000014787,
+          "altitude": 1.1999999999998876,
+          "velocityWorld": [
+            0.28660094673766867,
+            0.08865606199844424,
+            0
+          ],
+          "framesApplied": 9599,
+          "turns": 0,
+          "lastTurn": null,
+          "config": {
+            "speed": 0.3,
+            "turnMargin": 0.35,
+            "innerClearance": 0.15,
+            "turnRate": 2.5,
+            "reactionSeconds": 0.15,
+            "minRecoveryHeight": 0.4
+          }
+        },
+        "physicalReaction": {
+          "active": false,
+          "until": null,
+          "startedAt": null,
+          "events": 0,
+          "framesApplied": 0
+        },
+        "goal": {
+          "phase": "waiting",
+          "fruit": null,
+          "action": null,
+          "decisionRequestId": null,
+          "generation": 0,
+          "searchToken": null,
+          "target": null,
+          "executed": false,
+          "framesApplied": 0,
+          "clearanceLimited": false,
+          "config": {
+            "speed": 0.3,
+            "clearance": 0.15,
+            "retreat": 0.6,
+            "avoidClimb": 0.15,
+            "reached": 0.04,
+            "restSeconds": 2,
+            "retrySeconds": 0.5,
+            "maxExecutionSeconds": 20
+          }
+        },
+        "choices": {
+          "requested": 1,
+          "accepted": 0,
+          "discarded": 0,
+          "executed": 0,
+          "creditedOutcomes": 0,
+          "uncreditedOutcomes": 0
+        },
+        "lastChoice": null,
+        "lesson": {
+          "type": "learn:ready",
+          "plastic": 16795,
+          "outputs": [
+            20918,
+            10432
+          ],
+          "critic": 4130,
+          "changed": 0,
+          "meanAbsChange": 0,
+          "maxAbsChange": 0,
+          "dropped": 0
+        },
+        "workerBusy": true,
+        "workerJobId": 2,
+        "pending": true,
+        "pendingId": 2,
+        "progressFrames": 23,
+        "display": {
+          "requestId": 2,
+          "generation": 0,
+          "phase": "plus",
+          "iteration": 0,
+          "residual": 0.06579967048383928,
+          "tolerance": 1e-06,
+          "receivedAt": 69312.5,
+          "completed": false,
+          "withdrawn": false,
+          "authoritative": false,
+          "framesReceived": 23,
+          "neuronCount": 150802
+        },
+        "scanText": "Live #2 \u00b7 plus \u00b7 step 0 \u00b7 6.58e-2 \u00b7 checking",
+        "fps": 59.994000599939675
+      }
+    }
+  ],
+  "browser": "151.0.7922.34",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+  "brain": {
+    "n": 150802,
+    "edges": 1877099,
+    "synapses": 23131051,
+    "whole": {
+      "neurons": 150802,
+      "edges": 1877099
+    }
+  },
+  "error": "AssertionError('Nudge did not apply the declared physical impulse')",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/muellerberndt/Projects/oph-meta/cadence-examples/fly-matrix/tools/check_goal_responsiveness.py\", line 117, in run\n    assert abs(event['after']['velocity'][2] - event['before']['velocity'][2] - .6) < 1e-10, 'Nudge did not apply the declared physical impulse'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Nudge did not apply the declared physical impulse\n",
+  "packets": [
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 61392.10000002384,
+      "time": 0.16650000000000012,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 0,
+      "iterations": null,
+      "residual": 2.993071496486664,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 61854,
+      "time": 0.6329999999999857,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 16,
+      "iterations": null,
+      "residual": 3.5578492104373303,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.764836311340332,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 62192.5,
+      "time": 0.9654999999999491,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 32,
+      "iterations": null,
+      "residual": 0.4182816362519072,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.09004233032464981,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 62622.40000003576,
+      "time": 1.3989999999999014,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 48,
+      "iterations": null,
+      "residual": 0.05151816557773037,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.012733845971524715,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 63013.5,
+      "time": 1.7829999999998591,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 64,
+      "iterations": null,
+      "residual": 0.004138017053405996,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.000949438544921577,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 63392.30000001192,
+      "time": 2.1654999999998905,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 80,
+      "iterations": null,
+      "residual": 0.00037084046060886777,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 8.353917655767873e-05,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 63786.69999998808,
+      "time": 2.5665000000000244,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 96,
+      "iterations": null,
+      "residual": 3.936233368229125e-05,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 9.161129128187895e-06,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 64183.80000001192,
+      "time": 2.966500000000158,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 112,
+      "iterations": null,
+      "residual": 4.5116734330719055e-06,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 1.0414386224510963e-06,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 64454.60000002384,
+      "time": 3.233000000000247,
+      "phase": "observation",
+      "attention": null,
+      "iteration": 123,
+      "iterations": null,
+      "residual": 9.252837571693817e-07,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 2.1199701905061374e-07,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "control",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 64462.10000002384,
+      "time": 3.233000000000247,
+      "phase": null,
+      "attention": null,
+      "iteration": null,
+      "iterations": 123,
+      "residual": 9.252837571693817e-07,
+      "tolerance": 1e-06,
+      "n": null,
+      "valid": null,
+      "authoritative": null,
+      "maxAbsDeltaV": null,
+      "accepted": null,
+      "converged": true,
+      "reason": "residual_tolerance",
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": true,
+      "hasActivity": false,
+      "hasDelta": false
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 64542.60000002384,
+      "time": 3.316500000000275,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 0,
+      "iterations": null,
+      "residual": 2.479901558362695,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 64950.80000001192,
+      "time": 3.732500000000414,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 16,
+      "iterations": null,
+      "residual": 0.1185108459530464,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.027170808985829353,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 65304,
+      "time": 4.083000000000457,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 32,
+      "iterations": null,
+      "residual": 0.016540760427980805,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.0037608081474900246,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 65657.10000002384,
+      "time": 4.433000000000263,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 48,
+      "iterations": null,
+      "residual": 0.0017567151276390858,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.0004067041736561805,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 66008.5,
+      "time": 4.782000000000069,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 64,
+      "iterations": null,
+      "residual": 0.0001620833743389838,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 3.7678142689401284e-05,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 66339,
+      "time": 5.116499999999884,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 80,
+      "iterations": null,
+      "residual": 1.4447032603781551e-05,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 3.3620647172938334e-06,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 66711.60000002384,
+      "time": 5.482999999999681,
+      "phase": "target:banana",
+      "attention": "banana",
+      "iteration": 96,
+      "iterations": null,
+      "residual": 1.7250299075843856e-06,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 3.8895569787200657e-07,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 67256.10000002384,
+      "time": 6.032999999999376,
+      "phase": "target:bread",
+      "attention": "bread",
+      "iteration": 16,
+      "iterations": null,
+      "residual": 0.1185108459530464,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.027170808985829353,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 67632.90000003576,
+      "time": 6.415499999999164,
+      "phase": "target:bread",
+      "attention": "bread",
+      "iteration": 32,
+      "iterations": null,
+      "residual": 0.016540760427980805,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.0037608081474900246,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 68002.5,
+      "time": 6.78299999999896,
+      "phase": "target:bread",
+      "attention": "bread",
+      "iteration": 48,
+      "iterations": null,
+      "residual": 0.0017567151276390858,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0.0004067041736561805,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 68366.10000002384,
+      "time": 7.149499999998757,
+      "phase": "target:bread",
+      "attention": "bread",
+      "iteration": 64,
+      "iterations": null,
+      "residual": 0.0001620833743389838,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 3.7678142689401284e-05,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 68737.80000001192,
+      "time": 7.515999999998554,
+      "phase": "target:bread",
+      "attention": "bread",
+      "iteration": 80,
+      "iterations": null,
+      "residual": 1.4447032603781551e-05,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 3.3620647172938334e-06,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 69112.30000001192,
+      "time": 7.882999999998351,
+      "phase": "target:bread",
+      "attention": "bread",
+      "iteration": 96,
+      "iterations": null,
+      "residual": 1.7250695804049698e-06,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 3.8896456544534885e-07,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    },
+    {
+      "type": "settlement_progress",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 69312.5,
+      "time": 8.082999999998387,
+      "phase": "plus",
+      "attention": "bread",
+      "iteration": 0,
+      "iterations": null,
+      "residual": 0.06579967048383928,
+      "tolerance": 1e-06,
+      "n": 150802,
+      "valid": true,
+      "authoritative": false,
+      "maxAbsDeltaV": 0,
+      "accepted": null,
+      "converged": null,
+      "reason": null,
+      "updates": null,
+      "moved": null,
+      "delta": null,
+      "decision": null,
+      "targetSelection": null,
+      "hasReadouts": false,
+      "hasActivity": true,
+      "hasDelta": true
+    }
+  ],
+  "requests": [
+    {
+      "type": "assist:observe",
+      "requestId": 1,
+      "generation": 0,
+      "searchToken": null,
+      "wall": 61338.69999998808,
+      "time": 0.11650000000000009,
+      "steps": 256,
+      "tolerance": 1e-06,
+      "reward": null,
+      "neuralCredit": null,
+      "progress": true,
+      "activeJobs": 1
+    },
+    {
+      "type": "assist:decide",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 64477.90000003576,
+      "time": 3.2490000000002524,
+      "steps": 256,
+      "tolerance": 1e-06,
+      "reward": null,
+      "neuralCredit": null,
+      "progress": true,
+      "activeJobs": 1
+    },
+    {
+      "type": "assist:cancel",
+      "requestId": 2,
+      "generation": 0,
+      "searchToken": "0:1",
+      "wall": 69445.40000003576,
+      "time": 8.21649999999855,
+      "steps": null,
+      "tolerance": null,
+      "reward": null,
+      "neuralCredit": null,
+      "progress": null,
+      "activeJobs": 1
+    }
+  ],
+  "sourcesUnchanged": true,
+  "completed": "2026-09-27T11:16:09.200753+00:00",
+  "body_sha256": "c2b960dc46c5b9e333a2478a5b2d7ed003bc5e417b7b1be3eb2ce21cda06808c"
+}

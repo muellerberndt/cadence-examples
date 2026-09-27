@@ -520,8 +520,11 @@ export class CameraRig {
   closeupZoom(dy) { this.cu.d = Math.min(0.05, Math.max(0.005, this.cu.d * Math.exp(dy * 0.0015))); }
 
   // `sitting` says whether the fly stands on a surface; when it is not given, a fly that has
-  // been still for 0.4 s counts as sitting.
-  update(flight, dt, sitting = null) {
+  // been still for 0.4 s counts as sitting. `{orbit: false}` is the direct-control presentation:
+  // no idle orbit or camera inertia, so an unchanged body has an unchanged view. It uses actual
+  // support contact if `sitting` is omitted. Legacy callers retain their cinematic camera.
+  update(flight, dt, sitting = null, options = {}) {
+    const direct = options.orbit === false;
     const cam = this.camera, [x, y, z] = flight.p, R = flight.rotation();
     if (this.mode === "room") {
       cam.fov = 60; cam.near = 0.01;
@@ -533,29 +536,36 @@ export class CameraRig {
     } else {
       cam.fov = 46; cam.near = 0.0006;
       const hx = R[0], hy = R[3], hn = Math.hypot(hx, hy) || 1;   // the heading, smoothed
-      const k = this.first ? 1 : 1 - Math.exp(-dt / 0.25);
-      this.fwd.lerp(new THREE.Vector3(hx / hn, hy / hn, 0), k).normalize();
+      const k = this.first || direct ? 1 : 1 - Math.exp(-dt / 0.25);
+      // A fixed viewing azimuth lets the audience see the real body turn.
+      // Camera-only option: neither physics nor the head-camera retina changes.
+      if (options.trackHeading !== false || this.first)
+        this.fwd.lerp(new THREE.Vector3(hx / hn, hy / hn, 0), k).normalize();
       const d = this.zoom;
       const want = new THREE.Vector3(x - this.fwd.x * d, y - this.fwd.y * d, z + 0.42 * d);
-      const kp = this.first ? 1 : 1 - Math.exp(-dt / 0.12), kl = this.first ? 1 : 1 - Math.exp(-dt / 0.05);
+      const kp = this.first || direct ? 1 : 1 - Math.exp(-dt / 0.12), kl = this.first || direct ? 1 : 1 - Math.exp(-dt / 0.05);
       this.pos.lerp(want, kp); this.look.lerp(new THREE.Vector3(x, y, z), kl);
       cam.position.copy(toThree(this.pos.x, this.pos.y, this.pos.z)); cam.up.set(0, 1, 0);
       cam.lookAt(toThree(this.look.x, this.look.y, this.look.z));
     }
     cam.updateProjectionMatrix();
     this.first = false;
-    this.updateCloseup(flight, dt, sitting, R);
+    this.updateCloseup(flight, dt, sitting, R, options);
   }
 
-  updateCloseup(flight, dt, sitting, R) {
+  updateCloseup(flight, dt, sitting, R, options = {}) {
     const cu = this.cu, cam = this.closeup, [x, y, z] = flight.p;
-    if (sitting === null || sitting === undefined) { cu.still = flight.speed() < 0.01 ? cu.still + dt : 0; sitting = cu.still > 0.4; }
-    cu.sit += ((sitting ? 1 : 0) - cu.sit) * (cu.first ? 1 : 1 - Math.exp(-dt / 0.6));
-    if (sitting) cu.phi += 0.1 * dt;                          // the slow orbit while the fly sits
+    const direct = options.orbit === false;
+    if (sitting === null || sitting === undefined) {
+      if (direct) sitting = flight.onFloor === true && flight.touching > 0;
+      else { cu.still = flight.speed() < 0.01 ? cu.still + dt : 0; sitting = cu.still > 0.4; }
+    }
+    cu.sit += ((sitting ? 1 : 0) - cu.sit) * (cu.first || direct ? 1 : 1 - Math.exp(-dt / 0.6));
+    if (sitting && !direct) cu.phi += 0.1 * dt;              // legacy idle orbit only
     const heading = Math.atan2(R[3], R[0]);
     const az = heading + 0.8 + cu.phi, el = 0.16 + 0.26 * cu.sit;
     cu.want.set(Math.cos(el) * Math.cos(az), Math.cos(el) * Math.sin(az), Math.sin(el)).multiplyScalar(cu.d);
-    if (cu.first) { cu.off.copy(cu.want); cu.vel.set(0, 0, 0); cu.first = false; }
+    if (cu.first || direct) { cu.off.copy(cu.want); cu.vel.set(0, 0, 0); cu.first = false; }
     else {                                                     // critically damped spring on the offset
       const w0 = 7.0, ax = w0 * w0 * (cu.want.x - cu.off.x) - 2 * w0 * cu.vel.x, ay = w0 * w0 * (cu.want.y - cu.off.y) - 2 * w0 * cu.vel.y, az_ = w0 * w0 * (cu.want.z - cu.off.z) - 2 * w0 * cu.vel.z;
       cu.vel.x += ax * dt; cu.vel.y += ay * dt; cu.vel.z += az_ * dt;

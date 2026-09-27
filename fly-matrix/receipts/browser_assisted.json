@@ -1,0 +1,495 @@
+{
+  "full_views": true,
+  "checks": [
+    "default full body travels horizontally above floor; checked actual-payload trim is used",
+    "pause holds physical position and revokes neural trim",
+    "brain-off keeps explicitly supplied flight but no neural observations, trim, decisions or updates",
+    "transport failure disables neural contribution while visible assistance continues"
+  ],
+  "initial": {
+    "wall": 6408.099999964237,
+    "time": 0.02500000000000002,
+    "mode": "assisted",
+    "p": [
+      1.2009839913362192,
+      1.0003043841895944,
+      1.2000028627530566
+    ],
+    "v": [
+      0.0735797859229218,
+      0.022760895024475567,
+      0.00028618114547752726
+    ],
+    "authority": {
+      "mode": "assisted",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "fruit-bearing turns, wall avoidance, speed, altitude and landing targets",
+      "behaviorFallback": "bouts, saccades, takeoff impulse, perch position/attitude hold, sitting, grooming and feeding",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "checked MBON approach/avoid choice for its still-open search only",
+      "neuralMotor": "checked motor-neuron plane/shift trim only; no neural lift/power claim",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0327144306676181,
+        "aR": 1.0327144306676181,
+        "betaL": 0.051191044429504444,
+        "betaR": 0.05119104442950468,
+        "sL": 2.518410680200071e-05,
+        "sR": 2.518410680200071e-05,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0327144306676181,
+        "aR": 1.0327144306676181,
+        "betaL": 0.051191044429504444,
+        "betaR": 0.05119104442950468,
+        "sL": 2.518410680200071e-05,
+        "sR": 2.518410680200071e-05,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        15595,
+        8181
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "decisions": 0,
+    "controls": {
+      "aL": 1.0327144306676181,
+      "aR": 1.0327144306676181,
+      "betaL": 0.051191044429504444,
+      "betaR": 0.05119104442950468,
+      "sL": 2.518410680200071e-05,
+      "sR": 2.518410680200071e-05,
+      "f": 200
+    },
+    "events": []
+  },
+  "active": {
+    "wall": 52039.09999996424,
+    "time": 2.0249999999998436,
+    "mode": "assisted",
+    "p": [
+      1.7654385671845096,
+      0.5889845963940644,
+      1.1261111173227225
+    ],
+    "v": [
+      0.4005342074732937,
+      0.12163225378505944,
+      -0.13381308575589776
+    ],
+    "authority": {
+      "mode": "assisted",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "fruit-bearing turns, wall avoidance, speed, altitude and landing targets",
+      "behaviorFallback": "bouts, saccades, takeoff impulse, perch position/attitude hold, sitting, grooming and feeding",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "checked MBON approach/avoid choice for its still-open search only",
+      "neuralMotor": "checked motor-neuron plane/shift trim only; no neural lift/power claim",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 20,
+        "accepted": 20,
+        "discarded": 0,
+        "framesApplied": 3800
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 0.962166083804325,
+        "aR": 0.9216705268667107,
+        "betaL": 0.10234262810433992,
+        "betaR": 0.23138898511215678,
+        "sL": -0.00012194734831173838,
+        "sR": -0.00012194734831173838,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.03502410740571935,
+        "betaR": -0.05,
+        "sL": -1.6052949757566845e-05,
+        "sR": -1.3232910878531525e-05,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0.035024107405719346,
+        "betaR": -0.04999999999999999,
+        "sL": -1.605294975756685e-05,
+        "sR": -1.3232910878531521e-05,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 0.962166083804325,
+        "aR": 0.9216705268667107,
+        "betaL": 0.13736673551005926,
+        "betaR": 0.1813889851121568,
+        "sL": -0.00013800029806930523,
+        "sR": -0.0001351802591902699,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        15595,
+        8181
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "decisions": 0,
+    "controls": {
+      "aL": 0.962166083804325,
+      "aR": 0.9216705268667107,
+      "betaL": 0.13736673551005926,
+      "betaR": 0.1813889851121568,
+      "sL": -0.00013800029806930523,
+      "sR": -0.0001351802591902699,
+      "f": 200
+    },
+    "events": [
+      [
+        0.10000000000000007,
+        "saccade"
+      ],
+      [
+        1.2999999999999123,
+        "saccade"
+      ]
+    ]
+  },
+  "brain_off": {
+    "wall": 79135.79999995232,
+    "time": 1.0249999999999426,
+    "mode": "assisted-off",
+    "p": [
+      1.3494107943430798,
+      0.7209758855613521,
+      1.0556945781755371
+    ],
+    "v": [
+      0.507806595090382,
+      -0.13271300384548965,
+      -0.18204427202806592
+    ],
+    "authority": {
+      "mode": "assisted",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "fruit-bearing turns, wall avoidance, speed, altitude and landing targets",
+      "behaviorFallback": "bouts, saccades, takeoff impulse, perch position/attitude hold, sitting, grooming and feeding",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "checked MBON approach/avoid choice for its still-open search only",
+      "neuralMotor": "checked motor-neuron plane/shift trim only; no neural lift/power claim",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "framesApplied": 0
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 1.0411608479719694,
+        "aR": 1.0630610800999736,
+        "betaL": 0.1859496999427584,
+        "betaR": 0.17739352631837385,
+        "sL": -0.00015740780697429826,
+        "sR": -0.00015740780697429826,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 1.0411608479719694,
+        "aR": 1.0630610800999736,
+        "betaL": 0.1859496999427584,
+        "betaR": 0.17739352631837385,
+        "sL": -0.00015740780697429826,
+        "sR": -0.00015740780697429826,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": null,
+      "lastCancellation": null
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        15595,
+        8181
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "decisions": 0,
+    "controls": {
+      "aL": 1.0411608479719694,
+      "aR": 1.0630610800999736,
+      "betaL": 0.1859496999427584,
+      "betaR": 0.17739352631837385,
+      "sL": -0.00015740780697429826,
+      "sR": -0.00015740780697429826,
+      "f": 200
+    },
+    "events": [
+      [
+        0,
+        "sugar on the banana"
+      ],
+      [
+        0,
+        "assisted flight: neural contribution is reported separately"
+      ],
+      [
+        0.10000000000000007,
+        "saccade"
+      ]
+    ]
+  },
+  "worker_failure": {
+    "wall": 90188.69999998808,
+    "time": 0.45000000000000034,
+    "mode": "assisted",
+    "p": [
+      1.2124469248493275,
+      0.8812253812138799,
+      1.1757734908128867
+    ],
+    "v": [
+      -0.10028628950281479,
+      -0.5069102216771282,
+      -0.294685942240733
+    ],
+    "authority": {
+      "mode": "assisted",
+      "autonomous": false,
+      "pilotWings": "HandPilot supplies power, frequency and stabilizing wing commands",
+      "navigationScript": "fruit-bearing turns, wall avoidance, speed, altitude and landing targets",
+      "behaviorFallback": "bouts, saccades, takeoff impulse, perch position/attitude hold, sitting, grooming and feeding",
+      "senses": "engineered transduction; HS/VS and ocellar projection inputs bypass upstream visual processing",
+      "neuralDecision": "checked MBON approach/avoid choice for its still-open search only",
+      "neuralMotor": "checked motor-neuron plane/shift trim only; no neural lift/power claim",
+      "limits": {
+        "planeRadians": 0.05,
+        "shiftMetres": 5e-05,
+        "ttlSeconds": 1
+      },
+      "observations": {
+        "requested": 1,
+        "accepted": 1,
+        "discarded": 0,
+        "framesApplied": 50
+      },
+      "choices": {
+        "requested": 0,
+        "accepted": 0,
+        "discarded": 0,
+        "executed": 0,
+        "creditedOutcomes": 0,
+        "uncreditedOutcomes": 0
+      },
+      "pilotControls": {
+        "aL": 0.8946761484532,
+        "aR": 0.9127214666464235,
+        "betaL": 0.3582639719711264,
+        "betaR": 0.3359914619388998,
+        "sL": -0.00014846909584063583,
+        "sR": -0.00014846909584063583,
+        "f": 200
+      },
+      "requestedNeuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "neuralTrim": {
+        "aL": 0,
+        "aR": 0,
+        "betaL": 0,
+        "betaR": 0,
+        "sL": 0,
+        "sR": 0,
+        "f": 0
+      },
+      "executedControls": {
+        "aL": 0.8946761484532,
+        "aR": 0.9127214666464235,
+        "betaL": 0.3582639719711264,
+        "betaR": 0.3359914619388998,
+        "sL": -0.00014846909584063583,
+        "sR": -0.00014846909584063583,
+        "f": 200
+      },
+      "lastChoice": null,
+      "lastDiscard": {
+        "kind": "all",
+        "reason": "invalid worker message",
+        "t": 0.1500000000000001
+      },
+      "lastCancellation": null
+    },
+    "lessons": {
+      "type": "learn:ready",
+      "plastic": 16795,
+      "outputs": [
+        15595,
+        8181
+      ],
+      "critic": 4130,
+      "changed": 0,
+      "meanAbsChange": 0,
+      "maxAbsChange": 0,
+      "dropped": 0
+    },
+    "decisions": 0,
+    "controls": {
+      "aL": 0.8946761484532,
+      "aR": 0.9127214666464235,
+      "betaL": 0.3582639719711264,
+      "betaR": 0.3359914619388998,
+      "sL": -0.00014846909584063583,
+      "sR": -0.00014846909584063583,
+      "f": 200
+    },
+    "events": [
+      [
+        0,
+        "sugar on the banana"
+      ],
+      [
+        0,
+        "assisted flight: neural contribution is reported separately"
+      ],
+      [
+        0.10000000000000007,
+        "saccade"
+      ],
+      [
+        0.1500000000000001,
+        "invalid worker message"
+      ]
+    ]
+  },
+  "page_errors": [],
+  "claim": "Working assisted flight and real checked motor trim; no claim of autonomous flight or learned room navigation.",
+  "sha256": {
+    "web/page.js": "2f5fc9d7d2a59d41d7d3fe1605dc7c1e7ec8d3270dd6954ee350d1464e66d275",
+    "web/index.html": "3fe0969552d603db8f01c1608a15ee3fc13012f86ca63fecc79f36f72450e250",
+    "web/worker.js": "801edf1eed8f0575620a7b3e402efa4207e446daf7485f730d8b08c853c8ddff",
+    "web/assisted-life.js": "9e82dfd025d7cba9cebfaf5f4a7683a596f9dfdc88b74f42d6054fbc8adff0b5",
+    "web/life.js": "bc9a01c4dc8cf2b50c88da2bde779a43a9691de992902d086e14e826fed8706c",
+    "web/brain.js": "1b4d546e3d933b82ec4f35346433473ea1428dc2ac4ae677e1a30bc8808e7948",
+    "web/learner.js": "11aa9b405142d5f0b08a7c6a89d2c7d5680f81c46077824c259ee75a1f49be56",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/data/brain.json": "f43f50887302467132a0205ec7f9b0da3e32247f39678fe0d03b9f1a527b5657",
+    "tools/check_assisted_page.py": "886340f023acb9fe2d1e10529812beebb2c7b2bae49e4756e054f275478f7184"
+  }
+}

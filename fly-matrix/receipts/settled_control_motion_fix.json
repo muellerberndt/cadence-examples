@@ -1,0 +1,5679 @@
+{
+  "schema": "cadence.fly-matrix.settled-control-probe/v1",
+  "created_utc": "2026-09-27T05:55:30.880Z",
+  "protocol": {
+    "schema": "cadence.fly-matrix.settled-control-protocol/v1",
+    "seed_label": 1,
+    "rng_used": false,
+    "duration_s": 0.5,
+    "decision_period_s": 0.02,
+    "physics_dt_s": 0.0005,
+    "max_steps": 256,
+    "equation_tolerance": 0.000001,
+    "command_ttl_s": 0.12,
+    "initial": {
+      "position": [
+        2,
+        1.5,
+        0.5
+      ],
+      "attitude_radians": [
+        0,
+        0,
+        0
+      ],
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "angular_velocity": [
+        0,
+        0,
+        0
+      ]
+    },
+    "room": {
+      "dimensions_m": [
+        4,
+        3,
+        2.6
+      ],
+      "geometry": "existing Flight floor, walls and ceiling only",
+      "fruits": {
+        "banana": [
+          1.75,
+          1.5,
+          0
+        ],
+        "bread": [
+          2.25,
+          1.5,
+          0
+        ]
+      }
+    },
+    "arms": [
+      "measured",
+      "zero_motor"
+    ],
+    "intervention": "zero_motor replaces all declared motor readouts by zero after the same real-payload solve; it is an output lesion, not a shuffled or whole-brain lesion",
+    "sensory_source": "SettledLife.senses(null, decision_period_s), frozen throughout each solve",
+    "scheduling": "synchronous offline sample-and-hold; simulated physics pauses during compute; 40 body steps follow each command",
+    "learning": false,
+    "teacher": false,
+    "renderer": false,
+    "descriptive_thresholds": {
+      "lost_height_m": 0.1,
+      "severe_tilt_radians": 1.5707963267948966
+    },
+    "scope": "short integration and actuator-authority diagnostic; no flight competence, real-time performance, unique-equilibrium, whole-connectome or biological-fidelity claim"
+  },
+  "sources": [
+    {
+      "path": "tools/settled_control_probe.mjs",
+      "sha256": "d68a9768bf295c8356679b46847ebf19ce6f71273820defaa0a99fa3c8a3c209"
+    },
+    {
+      "path": "web/brain.js",
+      "sha256": "ccdb65639f6a96be67cb79def67f6801b1ba481111e12b1fa2d44581c51e9416"
+    },
+    {
+      "path": "web/body.js",
+      "sha256": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96"
+    },
+    {
+      "path": "web/settled-life.js",
+      "sha256": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a"
+    },
+    {
+      "path": "web/motor.js",
+      "sha256": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744"
+    },
+    {
+      "path": "web/senses.js",
+      "sha256": "775e9ede0ca1e032da2ee269979397450f3ede03b24c65cf07d4521db695edbf"
+    },
+    {
+      "path": "web/data/brain.json",
+      "sha256": "f43f50887302467132a0205ec7f9b0da3e32247f39678fe0d03b9f1a527b5657"
+    }
+  ],
+  "runtime": {
+    "node": "v25.8.1",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "payload": {
+    "neurons": 60000,
+    "edges": 1209528,
+    "synapses": 16793896,
+    "whole": {
+      "neurons": 150802,
+      "edges": 1877099
+    },
+    "model": {
+      "dt": 0.2,
+      "slope": 4,
+      "threshold": 1.5,
+      "gain": 0.02,
+      "stimulus_amplitude": 3,
+      "adaptation": null,
+      "leak": 0
+    },
+    "recruitment": {
+      "budget": 60000,
+      "hops": 3,
+      "min_count": 6,
+      "hop_counts": [
+        11722,
+        34387,
+        13891
+      ]
+    }
+  },
+  "results": [
+    {
+      "arm": "measured",
+      "duration_simulated_s": 0.5000000000000003,
+      "body_steps": 1000,
+      "wall_time_ms": 10800.489416,
+      "solve_latency_ms": {
+        "total": 10793.296209999999,
+        "mean": 431.73184839999993,
+        "median": 406.12008400000013,
+        "maximum": 623.4225420000002
+      },
+      "solver_failures": 5,
+      "accepted_commands": 20,
+      "active_command_body_steps": 800,
+      "maximum_frequency_hz": 200,
+      "maximum_amplitude": 0.04533027204393047,
+      "maximum_proboscis": 0.000014420942377534503,
+      "maximum_tilt_radians": 2.987699783995027,
+      "maximum_speed_m_s": 2.316371656523493,
+      "minimum_height_m": 0.0007043674093750922,
+      "height_lost_m": 0.49880981,
+      "exceeded_height_loss_threshold": true,
+      "first_contact_s": 0.35750000000000026,
+      "severe_tilt_at_s": 0.36250000000000027,
+      "finite_body": true,
+      "passive_trajectory_exact_match": null,
+      "initial": {
+        "position": [
+          2,
+          1.5,
+          0.5
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "quaternion": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "angular_velocity": [
+          0,
+          0,
+          0
+        ],
+        "phase": 0,
+        "tilt_radians": 0,
+        "speed_m_s": 0,
+        "touching": 0,
+        "on_floor": false,
+        "landed": false
+      },
+      "final": {
+        "position": [
+          1.999996919732343,
+          1.5000394165254045,
+          0.0011901900000000003
+        ],
+        "velocity": [
+          -2.3649336939529542e-169,
+          -1.4541277491454896e-169,
+          -1.812718269759983e-16
+        ],
+        "quaternion": [
+          -0.11688968854099092,
+          0.9812668615181951,
+          0.14950622158715096,
+          -0.033166804274081904
+        ],
+        "angular_velocity": [
+          0.0000051169851238599,
+          0.14405441878585254,
+          -0.10800521648142539
+        ],
+        "phase": 6.283185307179586,
+        "tilt_radians": 2.8979825982829155,
+        "speed_m_s": 1.812718269759983e-16,
+        "touching": 1,
+        "on_floor": true,
+        "landed": true
+      },
+      "unsupported": {
+        "walking": true,
+        "grooming": true,
+        "legForces": true
+      },
+      "rows": [
+        {
+          "request_id": 1,
+          "t_s": 0,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0,
+            "jo:E:left": 0,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0,
+            "jo:E:right": 0,
+            "orn:decaying_fruit:left": 0.0883182888003951,
+            "orn:decaying_fruit:right": 0.0883182888003951,
+            "orn:yeasty:left": 0.0883182888003951,
+            "orn:yeasty:right": 0.0883182888003951
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 121,
+            "residual": 9.951679711406314e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 315.042458,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 3.3703759827042816e-7,
+            "power:right": 0.000006813790141609182,
+            "mn:wing:b1:left": 0.0018829071690317591,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.001549742343256396,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004290920177829214,
+            "mn:wing:b3:right": 0.0010129652588959143,
+            "mn:wing:i1:left": 0.0031682836752331385,
+            "mn:wing:i1:right": 0.004046731284602865,
+            "mn:wing:i2:left": 0.0031458819645525373,
+            "mn:wing:i2:right": 0.005201792036857587,
+            "mn:wing:iii1:left": 0.00029881456120719026,
+            "mn:wing:iii1:right": 0.0018807152713761792,
+            "mn:wing:iii3:left": 0.0004581270952515649,
+            "mn:wing:iii3:right": 0.00047822432583148806,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0,
+            "mn9": 0.000014420942377534503,
+            "mn:ttm:left": 0.0004376381850757367,
+            "mn:ttm:right": 0.00009532331720959564
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0005805026412067652,
+            "aR": 0.002610059612914374,
+            "betaL": -0.0004143211193452767,
+            "betaR": -0.001235085253348546,
+            "sL": -2.373756757261182e-8,
+            "sR": 2.0897115088615895e-7,
+            "f": 200
+          },
+          "proboscis": 0.000014420942377534503,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 1,
+            "residual": 9.951679711406314e-7,
+            "iterations": 121,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999999999914104,
+              1.4999999999785951,
+              0.4979907439111994
+            ],
+            "velocity": [
+              -8.372127015773385e-10,
+              -4.095085570371105e-9,
+              -0.1958668124617783
+            ],
+            "quaternion": [
+              0.9999999211837349,
+              -0.0003970296240262533,
+              -3.9367480900818016e-8,
+              -4.313314918776076e-9
+            ],
+            "angular_velocity": [
+              -0.11459638956509899,
+              -0.000011181074584478376,
+              -8.458706216565151e-7
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.0007940592728642585,
+            "speed_m_s": 0.19586681246177837,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 2,
+          "t_s": 0.02,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.7067845495121249,
+            "ocelli:right": 0.7074286582238076,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.4971353486409716,
+            "lptc:vs:left": 0.4971353486409716,
+            "jo:C:left": 0.19586681246177837,
+            "jo:E:left": 0.19586681246177837,
+            "lptc:hs:right": 0.5028652104127577,
+            "lptc:vs:right": 0.5028652104127577,
+            "jo:C:right": 0.19586681246177837,
+            "jo:E:right": 0.19586681246177837,
+            "orn:decaying_fruit:left": 0.08872112697184333,
+            "orn:decaying_fruit:right": 0.0887000812078115,
+            "orn:yeasty:left": 0.08872112720071518,
+            "orn:yeasty:right": 0.08870008120628765
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 129,
+            "residual": 9.458590640269715e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 309.417417,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.000005743879538359726,
+            "power:right": 0.000007316261590420941,
+            "mn:wing:b1:left": 0.777772790065217,
+            "mn:wing:b1:right": 0.5100453875902379,
+            "mn:wing:b2:left": 0.13602578480305547,
+            "mn:wing:b2:right": 0.0023563269137533128,
+            "mn:wing:b3:left": 0.0801495142306356,
+            "mn:wing:b3:right": 0.06454558939462948,
+            "mn:wing:i1:left": 0.00041811796435911597,
+            "mn:wing:i1:right": 0.0030849208534490797,
+            "mn:wing:i2:left": 0.02708227452778864,
+            "mn:wing:i2:right": 0.12109007762866414,
+            "mn:wing:iii1:left": 0.000286986736905191,
+            "mn:wing:iii1:right": 0.0018528333121437745,
+            "mn:wing:iii3:left": 0.02682592159168548,
+            "mn:wing:iii3:right": 0.04041608491874944,
+            "mn:wing:iii4:left": 0.006853375509990842,
+            "mn:wing:iii4:right": 0.004123427617854766,
+            "mn9": 0.000009862209635921259,
+            "mn:ttm:left": 0.0008912720880811919,
+            "mn:ttm:right": 0.0016620467261813526
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0024365782964830057,
+            "aR": 0.00272891975236809,
+            "betaL": 0.02168543473182927,
+            "betaR": -0.03153978705056282,
+            "sL": -0.000004975454244350898,
+            "sR": -0.000006360315204444605,
+            "f": 200
+          },
+          "proboscis": 0.000009862209635921259,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 2,
+            "residual": 9.458590640269715e-7,
+            "iterations": 129,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999999998674363,
+              1.4999999996757545,
+              0.49208106180417593
+            ],
+            "velocity": [
+              -1.1331181979852784e-8,
+              -2.64706865200724e-8,
+              -0.38978287317323285
+            ],
+            "quaternion": [
+              0.9999984464288121,
+              -0.0017626900361553852,
+              0.000007985201386177098,
+              -1.88187814789408e-7
+            ],
+            "angular_velocity": [
+              -0.16243524859027214,
+              0.0017683280120431386,
+              -0.00003187323068284343
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.0035254180717345395,
+            "speed_m_s": 0.3897828731732339,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 3,
+          "t_s": 0.04,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.7056633162407892,
+            "ocelli:right": 0.70852295760295,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.495894113754175,
+            "lptc:vs:left": 0.495894113754175,
+            "jo:C:left": 0.3897828731732339,
+            "jo:E:left": 0.3897828731732339,
+            "lptc:hs:right": 0.5040174698452228,
+            "lptc:vs:right": 0.5040174698452228,
+            "jo:C:right": 0.3897828731732339,
+            "jo:E:right": 0.3897828731732339,
+            "orn:decaying_fruit:left": 0.08986483071172773,
+            "orn:decaying_fruit:right": 0.08977139072433156,
+            "orn:yeasty:left": 0.08986484006657564,
+            "orn:yeasty:right": 0.08977139070052927
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 145,
+            "residual": 9.59895539484612e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 358.74062500000014,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.000004130944170652148,
+            "power:right": 0.00001040466173024496,
+            "mn:wing:b1:left": 0.6855517586007286,
+            "mn:wing:b1:right": 0.5870425874237443,
+            "mn:wing:b2:left": 0.10206272865240162,
+            "mn:wing:b2:right": 0.0035058425846824248,
+            "mn:wing:b3:left": 0.04317744602180034,
+            "mn:wing:b3:right": 0.047915511279976154,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0.0017116609358453713,
+            "mn:wing:i2:left": 0.025038657142216935,
+            "mn:wing:i2:right": 0.1117484052303606,
+            "mn:wing:iii1:left": 0.00017492763530156246,
+            "mn:wing:iii1:right": 0.001861916034305828,
+            "mn:wing:iii3:left": 0.0644087503241477,
+            "mn:wing:iii3:right": 0.05169409663555706,
+            "mn:wing:iii4:left": 0.00474443772396004,
+            "mn:wing:iii4:right": 0.03978247586875235,
+            "mn9": 0.000004868344788319727,
+            "mn:ttm:left": 0.0004741347836441434,
+            "mn:ttm:right": 0.0014039563297190815
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.002062733383231651,
+            "aR": 0.003260521980113759,
+            "betaL": 0.010174071071021161,
+            "betaR": -0.030438341688704674,
+            "sL": -0.000010277760801508117,
+            "sR": -0.000013352583814030533,
+            "f": 200
+          },
+          "proboscis": 0.000004868344788319727,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 3,
+            "residual": 9.59895539484612e-7,
+            "iterations": 145,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999999993548585,
+              1.4999999987160415,
+              0.4823280891714229
+            ],
+            "velocity": [
+              -3.933414855586899e-8,
+              -7.709644019872225e-8,
+              -0.5800041271157571
+            ],
+            "quaternion": [
+              0.9999876318019009,
+              -0.004973230664025837,
+              0.000056742514706609886,
+              -5.246263014031914e-7
+            ],
+            "angular_velocity": [
+              -0.49186540336159124,
+              0.008242170324682612,
+              -0.000004614091327961114
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.009947149725189895,
+            "speed_m_s": 0.5800041271157635,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 4,
+          "t_s": 0.06,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.7029720351857951,
+            "ocelli:right": 0.7110401027924479,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.48749719530555996,
+            "lptc:vs:left": 0.48749719530555996,
+            "jo:C:left": 0.5800041271157635,
+            "jo:E:left": 0.5800041271157635,
+            "lptc:hs:right": 0.5120906961782059,
+            "lptc:vs:right": 0.5120906961782059,
+            "jo:C:right": 0.5800041271157635,
+            "jo:E:right": 0.5800041271157635,
+            "orn:decaying_fruit:left": 0.09178527169922485,
+            "orn:decaying_fruit:right": 0.09152181595484302,
+            "orn:yeasty:left": 0.09178528489428574,
+            "orn:yeasty:right": 0.09152181583674267
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 145,
+            "residual": 9.950542205761082e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 341.0445420000001,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0000039776584317905,
+            "power:right": 0.0006819968570170504,
+            "mn:wing:b1:left": 0.7349245178467493,
+            "mn:wing:b1:right": 0.9570443282032609,
+            "mn:wing:b2:left": 0.09226954738647061,
+            "mn:wing:b2:right": 0.018805560654103416,
+            "mn:wing:b3:left": 0.03823224898801446,
+            "mn:wing:b3:right": 0.02355884434630194,
+            "mn:wing:i1:left": 0.05251900538520604,
+            "mn:wing:i1:right": 0.067253128794596,
+            "mn:wing:i2:left": 0.4873569483333441,
+            "mn:wing:i2:right": 0.9166449793457058,
+            "mn:wing:iii1:left": 0.0003862126241030077,
+            "mn:wing:iii1:right": 0.0019030159527858848,
+            "mn:wing:iii3:left": 0.4344532201612607,
+            "mn:wing:iii3:right": 0.9182850531050626,
+            "mn:wing:iii4:left": 0.0044409172300117344,
+            "mn:wing:iii4:right": 0.034352271535928486,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006137681222656182,
+            "mn:ttm:right": 0.0002909900052337014
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0020237821177429803,
+            "aR": 0.026577326073081664,
+            "betaL": -0.13899528050324336,
+            "betaR": -0.30803490157041835,
+            "sL": -0.00006533768079030824,
+            "sR": -0.00014165941199454257,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 4,
+            "residual": 9.950542205761082e-7,
+            "iterations": 145,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999997828227707,
+              1.499999978159015,
+              0.46884132758429903
+            ],
+            "velocity": [
+              -0.000021066238156416105,
+              -0.000002681413007385142,
+              -0.7630145264919016
+            ],
+            "quaternion": [
+              0.9984031576081468,
+              -0.05642097190650932,
+              0.002794370887484053,
+              0.000017278591225399783
+            ],
+            "angular_velocity": [
+              -9.833054794171762,
+              0.5472391346263125,
+              0.02798838710387319
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.11304043197342188,
+            "speed_m_s": 0.7630145267874243,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 5,
+          "t_s": 0.08,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.6536674290342289,
+            "ocelli:right": 0.7450540104362633,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.24119236145764494,
+            "lptc:vs:left": 0.24119236145764494,
+            "jo:C:left": 0.7630145267874243,
+            "jo:E:left": 0.7630145267874243,
+            "lptc:hs:right": 0.7314456818110394,
+            "lptc:vs:right": 0.7314456818110394,
+            "jo:C:right": 0.7630145267874243,
+            "jo:E:right": 0.7630145267874243,
+            "orn:decaying_fruit:left": 0.09691131374128854,
+            "orn:decaying_fruit:right": 0.09392908474783167,
+            "orn:yeasty:left": 0.09690141243903012,
+            "orn:yeasty:right": 0.09392904394209506
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 163,
+            "residual": 9.433855376883571e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 411.216042,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0001167536384773048,
+            "power:right": 0.0005981132460139188,
+            "mn:wing:b1:left": 0.6381749579711754,
+            "mn:wing:b1:right": 0.9054888428261396,
+            "mn:wing:b2:left": 0.039170103356896115,
+            "mn:wing:b2:right": 0.004779757452001686,
+            "mn:wing:b3:left": 0.050665194916129024,
+            "mn:wing:b3:right": 0.03598023669384922,
+            "mn:wing:i1:left": 0.10260130598325803,
+            "mn:wing:i1:right": 0.040852768135786595,
+            "mn:wing:i2:left": 0.6661237334741158,
+            "mn:wing:i2:right": 0.9028500245895911,
+            "mn:wing:iii1:left": 0.0014916339503376278,
+            "mn:wing:iii1:right": 0.0024582139094403966,
+            "mn:wing:iii3:left": 0.5133922684388403,
+            "mn:wing:iii3:right": 0.5447715415387078,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.10354186992231879,
+            "mn9": 0.0000017236621167193918,
+            "mn:ttm:left": 0.007235721996405606,
+            "mn:ttm:right": 0.0007719352080476716
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.010918515859425274,
+            "aR": 0.02486400981608689,
+            "betaL": -0.20058849650441726,
+            "betaR": -0.26569352060487617,
+            "sL": -0.0000762731945387869,
+            "sR": -0.00009623242443518635,
+            "f": 200
+          },
+          "proboscis": 0.0000017236621167193918,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 5,
+            "residual": 9.433855376883571e-7,
+            "iterations": 163,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999991769170262,
+              1.499999887839845,
+              0.4517727930984652
+            ],
+            "velocity": [
+              -0.000038974842089264614,
+              -0.00000493653317476226,
+              -0.9381464369688277
+            ],
+            "quaternion": [
+              0.9840667050366754,
+              -0.17746213046202164,
+              0.010887759895479653,
+              0.0011700318797745518
+            ],
+            "angular_velocity": [
+              -14.171855810074732,
+              1.0457934489844674,
+              0.2749229695305361
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.3574922435720015,
+            "speed_m_s": 0.9381464377914113,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 6,
+          "t_s": 0.1,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.5081028451965268,
+            "ocelli:right": 0.7913951921911997,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.12643184276178343,
+            "lptc:vs:left": 0.12643184276178343,
+            "jo:C:left": 0.9381464377914113,
+            "jo:E:left": 0.9381464377914113,
+            "lptc:hs:right": 0.8212784847889932,
+            "lptc:vs:right": 0.8212784847889932,
+            "jo:C:right": 0.9381464377914113,
+            "jo:E:right": 0.9381464377914113,
+            "orn:decaying_fruit:left": 0.1062299389301758,
+            "orn:decaying_fruit:right": 0.09695807653081387,
+            "orn:yeasty:left": 0.1060503008944288,
+            "orn:yeasty:right": 0.09695791686173877
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 142,
+            "residual": 9.099863964578958e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 364.12304100000006,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00024213123663175282,
+            "power:right": 0.000588711827861767,
+            "mn:wing:b1:left": 0.42003317053452527,
+            "mn:wing:b1:right": 0.9006753484731417,
+            "mn:wing:b2:left": 0.02207123581623091,
+            "mn:wing:b2:right": 0.00014258426763737178,
+            "mn:wing:b3:left": 0.062496414390457514,
+            "mn:wing:b3:right": 0.05806480622651777,
+            "mn:wing:i1:left": 0.1485342180344854,
+            "mn:wing:i1:right": 0.04212705743599022,
+            "mn:wing:i2:left": 0.7588143186379629,
+            "mn:wing:i2:right": 0.9093151815186503,
+            "mn:wing:iii1:left": 0.002044859457950499,
+            "mn:wing:iii1:right": 0.002730571761591766,
+            "mn:wing:iii3:left": 0.5874126232780039,
+            "mn:wing:iii3:right": 0.4380296272535765,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.08423556348312523,
+            "mn9": 0.000001671354558200143,
+            "mn:ttm:left": 0.005050131053495376,
+            "mn:ttm:right": 0.0007456082798031653
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.01563247949701765,
+            "aR": 0.02465190247287151,
+            "betaL": -0.2339120125425866,
+            "betaR": -0.2560985422692609,
+            "sL": -0.00008721979680918795,
+            "sR": -0.00007741065822729139,
+            "f": 200
+          },
+          "proboscis": 0.000001671354558200143,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 6,
+            "residual": 9.099863964578958e-7,
+            "iterations": 142,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999982011215958,
+              1.499999921291835,
+              0.4312916644980776
+            ],
+            "velocity": [
+              -0.00005784440081339094,
+              0.00001151621703184998,
+              -1.10432317661806
+            ],
+            "quaternion": [
+              0.9503497687063158,
+              -0.31020119266627777,
+              0.024102507993190848,
+              0.005441166851780483
+            ],
+            "angular_velocity": [
+              -12.676296487675137,
+              1.4493502014184922,
+              0.805106474452185
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.6327765965848658,
+            "speed_m_s": 1.1043231781930507,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 7,
+          "t_s": 0.12,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.3026889859982633,
+            "ocelli:right": 0.7807353138360635,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.16698649463396392,
+            "lptc:vs:left": 0.16698649463396392,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.7605459952951115,
+            "lptc:vs:right": 0.7605459952951115,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.11629607651520928,
+            "orn:decaying_fruit:right": 0.10056217560412191,
+            "orn:yeasty:left": 0.11553141624327497,
+            "orn:yeasty:right": 0.10056181348183564
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 155,
+            "residual": 9.134352900730391e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 372.3204999999998,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00046452879921541636,
+            "power:right": 0.000546551551825167,
+            "mn:wing:b1:left": 0.5621231219459493,
+            "mn:wing:b1:right": 0.9674600249595778,
+            "mn:wing:b2:left": 0.1993508130411016,
+            "mn:wing:b2:right": 0.03234328388769769,
+            "mn:wing:b3:left": 0.03445939407766652,
+            "mn:wing:b3:right": 0.02939995349744356,
+            "mn:wing:i1:left": 0.1391729135267924,
+            "mn:wing:i1:right": 0.02935096830080959,
+            "mn:wing:i2:left": 0.7533399722038625,
+            "mn:wing:i2:right": 0.8027495760758646,
+            "mn:wing:iii1:left": 0.000803535577968898,
+            "mn:wing:iii1:right": 0.0009477853758765982,
+            "mn:wing:iii3:left": 0.30467099696184013,
+            "mn:wing:iii3:right": 0.22098085837350337,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.0792204842494562,
+            "mn9": 0,
+            "mn:ttm:left": 0.006933812001243723,
+            "mn:ttm:right": 0.0027345197600467555
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.02180632436802051,
+            "aR": 0.02381844880519271,
+            "betaL": -0.1603356972851156,
+            "betaR": -0.19996355575210653,
+            "sL": -0.00004527625174619681,
+            "sR": -0.00004458878002981536,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 7,
+            "residual": 9.134352900730391e-7,
+            "iterations": 155,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999969059868237,
+              1.5000006692160828,
+              0.40758890087185934
+            ],
+            "velocity": [
+              -0.00007088390695939641,
+              0.0000659973660909539,
+              -1.260435709597592
+            ],
+            "quaternion": [
+              0.922187163138076,
+              -0.3843761786287157,
+              0.04088320444782593,
+              0.012423889898504
+            ],
+            "angular_velocity": [
+              -2.9997776526466726,
+              1.4722947179534023,
+              1.25074953233864
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.7937633443555714,
+            "speed_m_s": 1.260435713318599,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 8,
+          "t_s": 0.14,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.15947464267275852,
+            "ocelli:right": 0.7337088624756529,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.4194669290434641,
+            "lptc:vs:left": 0.4194669290434641,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5069183350588657,
+            "lptc:vs:right": 0.5069183350588657,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.12371022896276017,
+            "orn:decaying_fruit:right": 0.10467991130227779,
+            "orn:yeasty:left": 0.12199537599857625,
+            "orn:yeasty:right": 0.1046792620325536
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 132,
+            "residual": 9.961420365245388e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 321.0015000000003,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0014130849126595434,
+            "power:right": 0.0007915083759613672,
+            "mn:wing:b1:left": 0.5908924269614125,
+            "mn:wing:b1:right": 0.9860643595234004,
+            "mn:wing:b2:left": 0.7355523568165296,
+            "mn:wing:b2:right": 0.20641710200184904,
+            "mn:wing:b3:left": 0.027847141794778242,
+            "mn:wing:b3:right": 0.015402943903197238,
+            "mn:wing:i1:left": 0.12648006864842112,
+            "mn:wing:i1:right": 0.018330625966871947,
+            "mn:wing:i2:left": 0.7749256876097447,
+            "mn:wing:i2:right": 0.7925918313061265,
+            "mn:wing:iii1:left": 0.0005125816699575669,
+            "mn:wing:iii1:right": 0.00018443393635103196,
+            "mn:wing:iii3:left": 0.23406115871231464,
+            "mn:wing:iii3:right": 0.2249009806820377,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.06866887936758119,
+            "mn9": 0,
+            "mn:ttm:left": 0.0004489298547554121,
+            "mn:ttm:right": 0.0006238276594543537
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.03847224364553779,
+            "aR": 0.02878575732376302,
+            "betaL": -0.03550368760390753,
+            "betaR": -0.15858792485948228,
+            "sL": -0.0000347987379793112,
+            "sR": -0.000043714428490876904,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 8,
+            "residual": 9.961420365245388e-7,
+            "iterations": 132,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.999995473400171,
+              1.5000036104074261,
+              0.38089982907330827
+            ],
+            "velocity": [
+              -0.00007164756225645994,
+              0.00022386270763064973,
+              -1.4031938422598973
+            ],
+            "quaternion": [
+              0.9508663144282693,
+              -0.30299076761668076,
+              0.061635107560419275,
+              0.015841727830938186
+            ],
+            "angular_velocity": [
+              19.379751955096427,
+              1.62315155123959,
+              1.5859623522683601
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.6286954037604773,
+            "speed_m_s": 1.4031938619463735,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 9,
+          "t_s": 0.16,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.2655448546912763,
+            "ocelli:right": 0.7313569850009681,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.98356406890313,
+            "lptc:vs:left": 0.98356406890313,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.12477984851845633,
+            "orn:decaying_fruit:right": 0.10923140595739102,
+            "orn:yeasty:left": 0.12254740730204589,
+            "orn:yeasty:right": 0.10923041074066443
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 136,
+            "residual": 9.454999966296285e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 330.36741699999993,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0008685012468150826,
+            "power:right": 0.0006880460912424714,
+            "mn:wing:b1:left": 0.46693516352348996,
+            "mn:wing:b1:right": 0.987995342253707,
+            "mn:wing:b2:left": 0.26947041944780326,
+            "mn:wing:b2:right": 0.1772418994273374,
+            "mn:wing:b3:left": 0.07029051753706939,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.2538067925877713,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0.8381818556615791,
+            "mn:wing:i2:right": 0.3642154871645863,
+            "mn:wing:iii1:left": 0.0009474907534502803,
+            "mn:wing:iii1:right": 0.0007765802038954463,
+            "mn:wing:iii3:left": 0.05458073491109718,
+            "mn:wing:iii3:right": 0.28262661949193474,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.08092931926160193,
+            "mn9": 0,
+            "mn:ttm:left": 0.000378296462832142,
+            "mn:ttm:right": 0.0003670284586308654
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.029713362552991156,
+            "aR": 0.02684193089019755,
+            "betaL": -0.13529240943293666,
+            "betaR": -0.0745211257286901,
+            "sL": -0.000007991353379489387,
+            "sR": -0.00005405412442389655,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 9,
+            "residual": 9.454999966296285e-7,
+            "iterations": 136,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999940360873927,
+              1.5000091104812185,
+              0.35144259183657517
+            ],
+            "velocity": [
+              -0.00007048414727809918,
+              0.0003157541107694405,
+              -1.5374365502412322
+            ],
+            "quaternion": [
+              0.9947241390026287,
+              -0.05749538958736369,
+              0.084631489944218,
+              0.0074617941205974165
+            ],
+            "angular_velocity": [
+              28.724188623492854,
+              1.8620369213984378,
+              1.0908805228793907
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.2049872389424127,
+            "speed_m_s": 1.5374365842812296,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 10,
+          "t_s": 0.18,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.5484012715421678,
+            "ocelli:right": 0.6401605336015079,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.11733062235850919,
+            "orn:decaying_fruit:right": 0.11413730280053386,
+            "orn:yeasty:left": 0.11647396780371731,
+            "orn:yeasty:right": 0.1141359168762066
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 141,
+            "residual": 8.987102383395396e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 338.7561249999999,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00048167775636936164,
+            "power:right": 0.0005203707618153765,
+            "mn:wing:b1:left": 0.4021805065298558,
+            "mn:wing:b1:right": 0.9834038184403379,
+            "mn:wing:b2:left": 0.010815822465467095,
+            "mn:wing:b2:right": 0.01957419419756188,
+            "mn:wing:b3:left": 0.06898378770459822,
+            "mn:wing:b3:right": 0.00503889717680591,
+            "mn:wing:i1:left": 0.16602720293081472,
+            "mn:wing:i1:right": 0.0033300907881736452,
+            "mn:wing:i2:left": 0.8432183260749313,
+            "mn:wing:i2:right": 0.6967192321342175,
+            "mn:wing:iii1:left": 0.0028391384377111947,
+            "mn:wing:iii1:right": 0.003392040997769464,
+            "mn:wing:iii3:left": 0.04645723119949726,
+            "mn:wing:iii3:right": 0.3585049213907193,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.029863678466014235,
+            "mn9": 0,
+            "mn:ttm:left": 0.00017685151807486903,
+            "mn:ttm:right": 0.0002509710373687156
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.022025283723322946,
+            "aR": 0.023265409735480403,
+            "betaL": -0.19422826406049132,
+            "betaR": -0.19440223218946748,
+            "sL": -0.0000064990958215061235,
+            "sR": -0.00005736150726998565,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 10,
+            "residual": 8.987102383395396e-7,
+            "iterations": 141,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999926176715104,
+              1.5000156707118097,
+              0.31938559080241125
+            ],
+            "velocity": [
+              -0.0000701991813929572,
+              0.0003286605951907571,
+              -1.6633864356769037
+            ],
+            "quaternion": [
+              0.9729552143854826,
+              0.20669706256222295,
+              0.10263983321201457,
+              -0.009976961784937137
+            ],
+            "angular_velocity": [
+              22.896711057213327,
+              1.7581403141196787,
+              0.1582519164938642
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.4657549415288865,
+            "speed_m_s": 1.6633864696274363,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 11,
+          "t_s": 0.2,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.6760099571281376,
+            "ocelli:right": 0.35141155379216493,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.11935127006641538,
+            "orn:decaying_fruit:right": 0.13010846055708034,
+            "orn:yeasty:left": 0.11934941891124781,
+            "orn:yeasty:right": 0.12777348680941553
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 202,
+            "residual": 9.619401772908986e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 486.12295799999947,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00044907790686451787,
+            "power:right": 0.0006093950025485901,
+            "mn:wing:b1:left": 0.5141691253084081,
+            "mn:wing:b1:right": 0.9884117098161185,
+            "mn:wing:b2:left": 0.053891766767954416,
+            "mn:wing:b2:right": 0.09872215362851594,
+            "mn:wing:b3:left": 0.05997297633128424,
+            "mn:wing:b3:right": 0.0034542514477408684,
+            "mn:wing:i1:left": 0.12697044159504509,
+            "mn:wing:i1:right": 0.002520921862724797,
+            "mn:wing:i2:left": 0.7654438911363407,
+            "mn:wing:i2:right": 0.6679437431041759,
+            "mn:wing:iii1:left": 0.0009461104481008828,
+            "mn:wing:iii1:right": 0.0014373914430356786,
+            "mn:wing:iii3:left": 0.006559631981324263,
+            "mn:wing:iii3:right": 0.2849988589282495,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.06472867712858815,
+            "mn9": 0,
+            "mn:ttm:left": 0.0003259930032535055,
+            "mn:ttm:right": 0.0003837670411691579
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.02135298704838228,
+            "aR": 0.025219715311394966,
+            "betaL": -0.16226685046150402,
+            "betaR": -0.16156067129933116,
+            "sL": -8.364147084502836e-7,
+            "sR": -0.00005189523154745649,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 11,
+            "residual": 9.619401772908986e-7,
+            "iterations": 202,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999912948539318,
+              1.5000217756230672,
+              0.2849180012546938
+            ],
+            "velocity": [
+              -0.00006238467642201458,
+              0.0002746672117845036,
+              -1.7787959873763213
+            ],
+            "quaternion": [
+              0.9302792423901757,
+              0.34768066129569,
+              0.11444944533338651,
+              -0.024495170990070505
+            ],
+            "angular_velocity": [
+              6.261254674761047,
+              1.0112734376985093,
+              -0.6181901666453006
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.7494862496521156,
+            "speed_m_s": 1.7787960096762154,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 12,
+          "t_s": 0.22,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.6445104753982382,
+            "ocelli:right": 0.12433550831501239,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.6157947767604309,
+            "lptc:vs:left": 0.6157947767604309,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.3336415513546436,
+            "lptc:vs:right": 0.3336415513546436,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.12491590463117169,
+            "orn:decaying_fruit:right": 0.14325767696349995,
+            "orn:yeasty:left": 0.12491343243081889,
+            "orn:yeasty:right": 0.13776287084689712
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 167,
+            "residual": 6.802845762265974e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 406.12008400000013,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0018852133054562544,
+            "power:right": 0.0019232202479490654,
+            "mn:wing:b1:left": 0.7797041674959837,
+            "mn:wing:b1:right": 0.9874915701962672,
+            "mn:wing:b2:left": 0.9231780649888137,
+            "mn:wing:b2:right": 0.7178398445960402,
+            "mn:wing:b3:left": 0.0643966980798378,
+            "mn:wing:b3:right": 0.000060690436958535886,
+            "mn:wing:i1:left": 0.11502499669324798,
+            "mn:wing:i1:right": 0.022734413080757836,
+            "mn:wing:i2:left": 0.6909224943100014,
+            "mn:wing:i2:right": 0.8166778131283853,
+            "mn:wing:iii1:left": 0.00022177895780139202,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0,
+            "mn:wing:iii3:right": 0.8133414349599383,
+            "mn:wing:iii4:left": 0.09073247692132758,
+            "mn:wing:iii4:right": 0.055594020707910675,
+            "mn9": 0,
+            "mn:ttm:left": 0.00011119328701064929,
+            "mn:ttm:right": 0.00011464291111918954
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0447419870955685,
+            "aR": 0.04533027204393047,
+            "betaL": 0.052722014544090395,
+            "betaR": -0.11475047172479531,
+            "sL": -0.000013486093996565401,
+            "sR": -0.00012947138289450948,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 12,
+            "residual": 6.802845762265974e-7,
+            "iterations": 167,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999907226578204,
+              1.5000244506724372,
+              0.2483413614934435
+            ],
+            "velocity": [
+              0.0000036681924110426193,
+              -0.0000014262011972593234,
+              -1.8748900440216176
+            ],
+            "quaternion": [
+              0.9562990932122072,
+              0.26167529615905416,
+              0.1283032575587076,
+              -0.023587238104658043
+            ],
+            "angular_velocity": [
+              -22.092902721434847,
+              0.6502152089915727,
+              -1.9586462524104993
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.5914579907897551,
+            "speed_m_s": 1.8748900440257485,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 13,
+          "t_s": 0.24,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.6382307402207206,
+            "ocelli:right": 0.2371714978997237,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0,
+            "lptc:vs:left": 0,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 1,
+            "lptc:vs:right": 1,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.13107240096552314,
+            "orn:decaying_fruit:right": 0.14689546069626783,
+            "orn:yeasty:left": 0.1310691282502552,
+            "orn:yeasty:right": 0.14088392197619612
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 202,
+            "residual": 9.66481686681675e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 487.7121670000006,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00038899263045730556,
+            "power:right": 0.0008776306447520705,
+            "mn:wing:b1:left": 0.7116498908292612,
+            "mn:wing:b1:right": 0.7748380363184644,
+            "mn:wing:b2:left": 0.3956366941704981,
+            "mn:wing:b2:right": 0.04906373050161575,
+            "mn:wing:b3:left": 0.01714147299455406,
+            "mn:wing:b3:right": 0.0007938237383378356,
+            "mn:wing:i1:left": 0.055142399286901206,
+            "mn:wing:i1:right": 0.013654565539182406,
+            "mn:wing:i2:left": 0.6610140004610825,
+            "mn:wing:i2:right": 0.8057286947491359,
+            "mn:wing:iii1:left": 0.00006396228327873561,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.29667137003800986,
+            "mn:wing:iii3:right": 0.6527208302440074,
+            "mn:wing:iii4:left": 0.0042055072550018875,
+            "mn:wing:iii4:right": 0.4206255269675134,
+            "mn9": 0,
+            "mn:ttm:left": 0.007172130450194547,
+            "mn:ttm:right": 0.001233708967953157
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.02013116111637104,
+            "aR": 0.030104429955769157,
+            "betaL": -0.09391284902727677,
+            "betaR": -0.24584676111688195,
+            "sL": -0.00004482112433645022,
+            "sR": -0.00015992860722451656,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 13,
+            "residual": 9.66481686681675e-7,
+            "iterations": 202,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999907720080319,
+              1.5000235586242634,
+              0.20984574771933
+            ],
+            "velocity": [
+              0.0000023586271256060997,
+              -0.00008000066241867976,
+              -1.970700538509759
+            ],
+            "quaternion": [
+              0.9877862593281269,
+              -0.04554062662721076,
+              0.14899405272871896,
+              -0.002264831212009527
+            ],
+            "angular_velocity": [
+              -37.099573422570415,
+              2.2355668466877088,
+              -2.3619633822432125
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.3128715709013517,
+            "speed_m_s": 1.9707005401349853,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 14,
+          "t_s": 0.26,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.46564064205407296,
+            "ocelli:right": 0.5391671498569308,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0,
+            "lptc:vs:left": 0,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 1,
+            "lptc:vs:right": 1,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.14143866857044785,
+            "orn:decaying_fruit:right": 0.13842571278138113,
+            "orn:yeasty:left": 0.1407887992310852,
+            "orn:yeasty:right": 0.1384211374227396
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 162,
+            "residual": 9.60596427068694e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 391.5548339999996,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00026592143644463983,
+            "power:right": 0.0005442359055911327,
+            "mn:wing:b1:left": 0.5140972188605115,
+            "mn:wing:b1:right": 0.8225497362160494,
+            "mn:wing:b2:left": 0.015207404133882968,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.03435865253050576,
+            "mn:wing:b3:right": 0.0220538759678417,
+            "mn:wing:i1:left": 0.10786364788109688,
+            "mn:wing:i1:right": 0.015822014014249985,
+            "mn:wing:i2:left": 0.7001185744296096,
+            "mn:wing:i2:right": 0.8288323110884362,
+            "mn:wing:iii1:left": 0.0017310850869506835,
+            "mn:wing:iii1:right": 0.0023230156577378463,
+            "mn:wing:iii3:left": 0.4657874934376858,
+            "mn:wing:iii3:right": 0.22406003010701145,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.1885462119873445,
+            "mn9": 4.502104862244027e-7,
+            "mn:ttm:left": 0.00994214566463504,
+            "mn:ttm:right": 0.001029097925444531
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.016433341517406223,
+            "aR": 0.02369497520787328,
+            "betaL": -0.20834171616230726,
+            "betaR": -0.21357574803422083,
+            "sL": -0.00006914440484425952,
+            "sR": -0.00006113220073905608,
+            "f": 200
+          },
+          "proboscis": 4.502104862244027e-7,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 14,
+            "residual": 9.60596427068694e-7,
+            "iterations": 162,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999908443669894,
+              1.5000216930196917,
+              0.16950465597396372
+            ],
+            "velocity": [
+              0.000005950400491583825,
+              -0.0000954739354101883,
+              -2.059675868617514
+            ],
+            "quaternion": [
+              0.9031076658543046,
+              -0.3953651193273578,
+              0.16435528489438897,
+              0.03271554098189576
+            ],
+            "angular_velocity": [
+              -32.68827397286588,
+              2.5650580154281277,
+              -0.9829186351600198
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.8849250230506802,
+            "speed_m_s": 2.059675870838902,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 15,
+          "t_s": 0.28,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0,
+            "ocelli:right": 0.5461788125115077,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0,
+            "lptc:vs:left": 0,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 1,
+            "lptc:vs:right": 1,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.18553276578912103,
+            "orn:decaying_fruit:right": 0.14787512561691646,
+            "orn:yeasty:left": 0.16347874152053402,
+            "orn:yeasty:right": 0.1478681076172852
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 160,
+            "residual": 9.895923014369146e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 383.323625,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0009626766552889416,
+            "power:right": 0.000869336219747439,
+            "mn:wing:b1:left": 0.5697348516265002,
+            "mn:wing:b1:right": 0.8329506304690175,
+            "mn:wing:b2:left": 0.4537273005891059,
+            "mn:wing:b2:right": 0.030981178476208775,
+            "mn:wing:b3:left": 0.023601836926161492,
+            "mn:wing:b3:right": 0.014512982248119305,
+            "mn:wing:i1:left": 0.11452330255693784,
+            "mn:wing:i1:right": 0.00910592686013222,
+            "mn:wing:i2:left": 0.6229642463729701,
+            "mn:wing:i2:right": 0.7071623070605999,
+            "mn:wing:iii1:left": 0.00035840096169686086,
+            "mn:wing:iii1:right": 0.000017242297325416287,
+            "mn:wing:iii3:left": 0.2886688088769649,
+            "mn:wing:iii3:right": 0.08798892620949125,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.6439446433187979,
+            "mn9": 0,
+            "mn:ttm:left": 0.01269148920140944,
+            "mn:ttm:right": 0.004296612346370942
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0315764186216601,
+            "aR": 0.029980032381908887,
+            "betaL": -0.07118069650047269,
+            "betaR": -0.16347985931343406,
+            "sL": -0.00004295825077937493,
+            "sR": -0.00010905553275741358,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 15,
+            "residual": 9.895923014369146e-7,
+            "iterations": 160,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999912918961371,
+              1.5000211006217576,
+              0.12752858971305744
+            ],
+            "velocity": [
+              0.000034612215200982,
+              0.000044758198697353114,
+              -2.1347207327018363
+            ],
+            "quaternion": [
+              0.8237347456054803,
+              -0.536727046394566,
+              0.17465173651355045,
+              0.05368349358640205
+            ],
+            "angular_velocity": [
+              -0.0578983963712415,
+              0.8629030902101611,
+              1.3224456719110094
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 1.1994807174819524,
+            "speed_m_s": 2.134720733451654,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 16,
+          "t_s": 0.3,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0,
+            "ocelli:right": 0.4075506435770502,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5100411046332401,
+            "lptc:vs:left": 0.5100411046332401,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.44681374085625175,
+            "lptc:vs:right": 0.44681374085625175,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.2232994915662589,
+            "orn:decaying_fruit:right": 0.15989782916599704,
+            "orn:yeasty:left": 0.17369999286753585,
+            "orn:yeasty:right": 0.15988739521749143
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 135,
+            "residual": 9.737801091036502e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 327.4069159999999,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0017653649721162924,
+            "power:right": 0.000994811396032705,
+            "mn:wing:b1:left": 0.6593466783994588,
+            "mn:wing:b1:right": 0.9814283094470397,
+            "mn:wing:b2:left": 0.7030659181438584,
+            "mn:wing:b2:right": 0.28373897844773677,
+            "mn:wing:b3:left": 0.012990319846155276,
+            "mn:wing:b3:right": 0.01175217701684803,
+            "mn:wing:i1:left": 0.037751518272449464,
+            "mn:wing:i1:right": 0.013401236235777176,
+            "mn:wing:i2:left": 0.6623360423977216,
+            "mn:wing:i2:right": 0.7422923215259495,
+            "mn:wing:iii1:left": 0.00021910923048037547,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.18974264106938693,
+            "mn:wing:iii3:right": 0.2641228695810775,
+            "mn:wing:iii4:left": 0.0025945830021814422,
+            "mn:wing:iii4:right": 0.09945613921953038,
+            "mn9": 0,
+            "mn:ttm:left": 0.0005695065356341175,
+            "mn:ttm:right": 0.005781780721901587
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0431184761647269,
+            "aR": 0.03232284727364432,
+            "betaL": -0.012290107967002353,
+            "betaR": -0.1340695545762066,
+            "sL": -0.000028625599111322108,
+            "sR": -0.00005417327231129057,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 16,
+            "residual": 9.737801091036502e-7,
+            "iterations": 135,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999924121922719,
+              1.5000245710310307,
+              0.08416771434938561
+            ],
+            "velocity": [
+              0.00007620573486712004,
+              0.00029229546628052394,
+              -2.1985674126662964
+            ],
+            "quaternion": [
+              0.9209687716810644,
+              -0.3372813625706556,
+              0.19202201378056127,
+              0.034428916253803094
+            ],
+            "angular_velocity": [
+              41.98025370937857,
+              -1.2018927134253883,
+              3.48159010065721
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.7971649356647105,
+            "speed_m_s": 2.198567433417071,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 17,
+          "t_s": 0.32,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.02915699072955652,
+            "ocelli:right": 0.522365523782832,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.2218888255874102,
+            "orn:decaying_fruit:right": 0.1732335583993138,
+            "orn:yeasty:left": 0.1746244558891121,
+            "orn:yeasty:right": 0.17322037919735145
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 186,
+            "residual": 9.922517405502873e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 456.4470000000001,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0015911251749684198,
+            "power:right": 0.0009594667244676027,
+            "mn:wing:b1:left": 0.5054772847499766,
+            "mn:wing:b1:right": 0.9867862232123144,
+            "mn:wing:b2:left": 0.4617050540171993,
+            "mn:wing:b2:right": 0.316957557519071,
+            "mn:wing:b3:left": 0.03452371737778988,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.11710515091417634,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0.7584018720240238,
+            "mn:wing:i2:right": 0.2245159287167205,
+            "mn:wing:iii1:left": 0.0003981070669064433,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.04560134566481254,
+            "mn:wing:iii3:right": 0.2599666965294008,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.1333530022794473,
+            "mn9": 0,
+            "mn:ttm:left": 0.0006670839106241221,
+            "mn:ttm:right": 0.00912576414433495
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.04053954121256388,
+            "aR": 0.03178293592575342,
+            "betaL": -0.07252593042050538,
+            "betaR": -0.008521970317953424,
+            "sL": -0.000006735282551088008,
+            "sR": -0.00005860463512251836,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 17,
+            "residual": 9.922517405502873e-7,
+            "iterations": 186,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999945296131652,
+              1.5000322491913303,
+              0.03959423680797998
+            ],
+            "velocity": [
+              0.0001404508266614608,
+              0.0004413588638990847,
+              -2.2562018660633756
+            ],
+            "quaternion": [
+              0.9652575579840281,
+              0.17964492572405635,
+              0.18832999289227256,
+              -0.023181052467599578
+            ],
+            "angular_velocity": [
+              55.65116300695053,
+              -0.4556443532752165,
+              5.141452764123667
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 0.5266037100502354,
+            "speed_m_s": 2.2562019136043516,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 18,
+          "t_s": 0.34,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0.5330076122728622,
+            "ocelli:right": 0.2587741333527871,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.1840894778181221,
+            "orn:decaying_fruit:right": 0.20947943493838,
+            "orn:yeasty:left": 0.19303628322417268,
+            "orn:yeasty:right": 0.1840774386755238
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.07534161499335745,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 623.4225420000002,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.0009588003165882778,
+            "power:right": 0.0007939915746277639,
+            "mn:wing:b1:left": 0.7481241012654951,
+            "mn:wing:b1:right": 0.9815741276181226,
+            "mn:wing:b2:left": 0.5987721110156583,
+            "mn:wing:b2:right": 0.6330208578138089,
+            "mn:wing:b3:left": 0.0454578358855938,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.11389114523085768,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0.6881460283499073,
+            "mn:wing:i2:right": 0.19311674955197977,
+            "mn:wing:iii1:left": 0.000261227595766146,
+            "mn:wing:iii1:right": 0.00011720582902755446,
+            "mn:wing:iii3:left": 0,
+            "mn:wing:iii3:right": 0.20015929183147227,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.09500752624198619,
+            "mn9": 0,
+            "mn:ttm:left": 0.00101418119251889,
+            "mn:ttm:right": 0.0014443496020790515
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              1.9999968605049259,
+              1.5000395738882633,
+              0.0014057134489728004
+            ],
+            "velocity": [
+              -1.8617019486199506e-7,
+              -5.850294202554384e-7,
+              0.2214380521407059
+            ],
+            "quaternion": [
+              0.7345350259121324,
+              0.6566852839955397,
+              0.15759993553189675,
+              -0.06621928580332645
+            ],
+            "angular_velocity": [
+              36.67865328247245,
+              3.273825664772081,
+              3.5012144812303827
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 1.4828295242990865,
+            "speed_m_s": 0.22143805214155696,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 19,
+          "t_s": 0.36,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.26044425499987034,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 0.22143805214155696,
+            "jo:E:left": 0.22143805214155696,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 0.22143805214155696,
+            "jo:E:right": 0.22143805214155696,
+            "orn:decaying_fruit:left": 0.18771038568819992,
+            "orn:decaying_fruit:right": 0.23875759304383176,
+            "orn:yeasty:left": 0.23695799119369246,
+            "orn:yeasty:right": 0.18770298318993617
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 193,
+            "residual": 9.395388333999222e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 464.41333399999985,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00000420599603285074,
+            "power:right": 0.000002418364292918707,
+            "mn:wing:b1:left": 0.00001449717809803035,
+            "mn:wing:b1:right": 0.0000563391502558741,
+            "mn:wing:b2:left": 0.0003278883520215062,
+            "mn:wing:b2:right": 0.00183081470574435,
+            "mn:wing:b3:left": 0.00619778406362201,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.00018452646246179595,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0.001417351071557233,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0.000030004974580860054,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0,
+            "mn:wing:iii3:right": 0,
+            "mn:wing:iii4:left": 0.0005767755301894659,
+            "mn:wing:iii4:right": 0.000329891989052477,
+            "mn9": 0,
+            "mn:ttm:left": 0.00003927107421115808,
+            "mn:ttm:right": 0.005282739679217155
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.002050604773768688,
+            "aR": 0.0015551677881771428,
+            "betaL": -0.00024730803733460997,
+            "betaR": 0.00041559493820396746,
+            "sL": -8.146881278568226e-8,
+            "sR": -4.9153906368819064e-8,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 19,
+            "residual": 9.395388333999222e-7,
+            "iterations": 193,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999968674753423,
+              1.5000395629629475,
+              0.0038161372641611867
+            ],
+            "velocity": [
+              8.343375002059397e-7,
+              -0.0000010838946620562231,
+              0.024733389960529234
+            ],
+            "quaternion": [
+              0.44467252948611263,
+              0.8819548279865852,
+              0.13802208432473764,
+              -0.07329343183553341
+            ],
+            "angular_velocity": [
+              36.642643494018124,
+              4.6765705072516,
+              1.153469235039283
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.2065558685216375,
+            "speed_m_s": 0.02473338999835152,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 20,
+          "t_s": 0.38,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 0.02473338999835152,
+            "jo:E:left": 0.02473338999835152,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 0.02473338999835152,
+            "jo:E:right": 0.02473338999835152,
+            "orn:decaying_fruit:left": 0.18773726993851378,
+            "orn:decaying_fruit:right": 0.2405552041952796,
+            "orn:yeasty:left": 0.23665875202013778,
+            "orn:yeasty:right": 0.18772988574363228
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 167,
+            "residual": 9.98582844857765e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 431.6229579999999,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.000024402948040265518,
+            "power:right": 0.000008735869936516946,
+            "mn:wing:b1:left": 0.4759414122755392,
+            "mn:wing:b1:right": 0.5063605612347619,
+            "mn:wing:b2:left": 0.11815529804495499,
+            "mn:wing:b2:right": 0.029553780254106026,
+            "mn:wing:b3:left": 0.2377159212746119,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.006457654448460305,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0.08502626301002829,
+            "mn:wing:i2:right": 0.0014534423325027197,
+            "mn:wing:iii1:left": 0.000003502895169036939,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.03901594385302115,
+            "mn:wing:iii3:right": 0.03198714543594146,
+            "mn:wing:iii4:left": 0.025329768022495296,
+            "mn:wing:iii4:right": 0.00879721895788984,
+            "mn9": 0,
+            "mn:ttm:left": 0.0005514046504192532,
+            "mn:ttm:right": 0.014646965365506253
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.0049745059556136825,
+            "aR": 0.0029873300198071523,
+            "betaL": 0.0030919813256104606,
+            "betaR": 0.0027482357012245952,
+            "sL": -0.000009586989138071764,
+            "sR": -0.000006076870294680863,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 20,
+            "residual": 9.98582844857765e-7,
+            "iterations": 167,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.9999969040361931,
+              1.500039473364059,
+              0.002301099304827909
+            ],
+            "velocity": [
+              0.000002665855662066362,
+              -0.000008571038282300346,
+              -0.171196226395485
+            ],
+            "quaternion": [
+              0.0943356335900657,
+              0.9845557632305554,
+              0.1262779228473647,
+              -0.07618807994702598
+            ],
+            "angular_velocity": [
+              36.161163086821595,
+              4.566626119611968,
+              -1.5591558487630683
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.8984756164447227,
+            "speed_m_s": 0.17119622663079828,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 21,
+          "t_s": 0.4,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 1,
+            "lptc:vs:left": 1,
+            "jo:C:left": 0.17119622663079828,
+            "jo:E:left": 0.17119622663079828,
+            "lptc:hs:right": 0,
+            "lptc:vs:right": 0,
+            "jo:C:right": 0.17119622663079828,
+            "jo:E:right": 0.17119622663079828,
+            "orn:decaying_fruit:left": 0.18781565056872265,
+            "orn:decaying_fruit:right": 0.23132713044077516,
+            "orn:yeasty:left": 0.23085409947575597,
+            "orn:yeasty:right": 0.18780834737860536
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 179,
+            "residual": 9.429726225418378e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 436.7545,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.000024067624964108657,
+            "power:right": 0.000009092268532511943,
+            "mn:wing:b1:left": 0.4742760927675068,
+            "mn:wing:b1:right": 0.5070931023247024,
+            "mn:wing:b2:left": 0.11623926287024793,
+            "mn:wing:b2:right": 0.0297854703765317,
+            "mn:wing:b3:left": 0.23863243612106103,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.0064527413562668,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0.08444567945630274,
+            "mn:wing:i2:right": 0.0013692608168242137,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.03644100019051381,
+            "mn:wing:iii3:right": 0.03168911811786851,
+            "mn:wing:iii4:left": 0.022790389671190136,
+            "mn:wing:iii4:right": 0.008456153627253613,
+            "mn9": 0,
+            "mn:ttm:left": 0.0005465071863597146,
+            "mn:ttm:right": 0.014455353189648672
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0.004939769330871019,
+            "aR": 0.003047716291867354,
+            "betaL": 0.00308108991334224,
+            "betaR": 0.0028537646636755238,
+            "sL": -0.000008825477089393886,
+            "sR": -0.000005981645490023195,
+            "f": 200
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 21,
+            "residual": 9.429726225418378e-7,
+            "iterations": 179,
+            "unsupportedLegDrive": true
+          },
+          "after": {
+            "position": [
+              1.999996919732343,
+              1.5000394165254045,
+              0.001190191849036643
+            ],
+            "velocity": [
+              -2.691455153683342e-8,
+              -1.6549304356377855e-8,
+              -0.0000013277065985675015
+            ],
+            "quaternion": [
+              -0.10237403115703321,
+              0.9839633954484779,
+              0.1307117490450834,
+              -0.06519227579810612
+            ],
+            "angular_velocity": [
+              3.183917302790219,
+              2.352896492073689,
+              -1.7120321651279102
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.8982543892986268,
+            "speed_m_s": 0.0000013280824840493882,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        },
+        {
+          "request_id": 22,
+          "t_s": 0.42,
+          "senses": {
+            "haltere:left": 0.5,
+            "haltere:right": 0.5,
+            "ocelli:left": 0,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0.6,
+            "lptc:hs:left": 0.4779747161397155,
+            "lptc:vs:left": 0.4779747161397155,
+            "jo:C:left": 0.0000013280824840493882,
+            "jo:E:left": 0.0000013280824840493882,
+            "lptc:hs:right": 0.40438045925660004,
+            "lptc:vs:right": 0.40438045925660004,
+            "jo:C:right": 0.0000013280824840493882,
+            "jo:E:right": 0.0000013280824840493882,
+            "orn:decaying_fruit:left": 0.18788135634544995,
+            "orn:decaying_fruit:right": 0.227796409991098,
+            "orn:yeasty:left": 0.22818023541933535,
+            "orn:yeasty:right": 0.18787408675141679
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 7.754298331145033,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 612.5618749999994,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.10408158053541894,
+            "power:right": 0.29986497215657637,
+            "mn:wing:b1:left": 0.6596082152711653,
+            "mn:wing:b1:right": 0.9120649758575167,
+            "mn:wing:b2:left": 0.9999966073443374,
+            "mn:wing:b2:right": 0.9997571478412194,
+            "mn:wing:b3:left": 0.0005984495173947829,
+            "mn:wing:b3:right": 0.011925982312886598,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.7421121348789815,
+            "mn:wing:iii3:right": 0.0881579250368984,
+            "mn:wing:iii4:left": 0.9959249752295409,
+            "mn:wing:iii4:right": 0.8639680363199004,
+            "mn9": 0,
+            "mn:ttm:left": 0.013197777681307385,
+            "mn:ttm:right": 0.029496358249045125
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              1.999996919732343,
+              1.5000394165254045,
+              0.001190190000018595
+            ],
+            "velocity": [
+              -2.3649336939530243e-169,
+              -1.4541277491455334e-169,
+              -1.2396732071591737e-11
+            ],
+            "quaternion": [
+              -0.11402315527759642,
+              0.9822870514728542,
+              0.1405282765642514,
+              -0.04860732511863452
+            ],
+            "angular_velocity": [
+              0.11336392469778063,
+              1.1616315875172327,
+              -0.8700122708657331
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.8930506100705524,
+            "speed_m_s": 1.2396732071591737e-11,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        },
+        {
+          "request_id": 23,
+          "t_s": 0.44,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0.6,
+            "lptc:hs:left": 0.45204300165787037,
+            "lptc:vs:left": 0.45204300165787037,
+            "jo:C:left": 1.2396732071591737e-11,
+            "jo:E:left": 1.2396732071591737e-11,
+            "lptc:hs:right": 0.489875418966268,
+            "lptc:vs:right": 0.489875418966268,
+            "jo:C:right": 1.2396732071591737e-11,
+            "jo:E:right": 1.2396732071591737e-11,
+            "orn:decaying_fruit:left": 0.18793793008554519,
+            "orn:decaying_fruit:right": 0.2313666449097532,
+            "orn:yeasty:left": 0.23178127344808575,
+            "orn:yeasty:right": 0.18793065830253317
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 7.260470907182514,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 609.5081250000003,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.09717997433990859,
+            "power:right": 0.28238806574421554,
+            "mn:wing:b1:left": 0.0010618383326218802,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.9999839447178472,
+            "mn:wing:b2:right": 0.9896448644941734,
+            "mn:wing:b3:left": 0.0006889852207676224,
+            "mn:wing:b3:right": 0.02131595244252914,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.02366197626112869,
+            "mn:wing:iii3:right": 0,
+            "mn:wing:iii4:left": 0.9995900940064768,
+            "mn:wing:iii4:right": 0.4844123049535143,
+            "mn9": 0,
+            "mn:ttm:left": 0.02575884006678402,
+            "mn:ttm:right": 0.03232719608585369
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              1.999996919732343,
+              1.5000394165254045,
+              0.0011901900000000003
+            ],
+            "velocity": [
+              -2.3649336939529542e-169,
+              -1.4541277491454896e-169,
+              -1.812718269759983e-16
+            ],
+            "quaternion": [
+              -0.11579372426751951,
+              0.9817280693416335,
+              0.14566564116843272,
+              -0.039791107926217116
+            ],
+            "angular_velocity": [
+              0.004036342090801731,
+              0.5791399130203376,
+              -0.4341954276753287
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.8960969193707475,
+            "speed_m_s": 1.812718269759983e-16,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        },
+        {
+          "request_id": 24,
+          "t_s": 0.46,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0.6,
+            "lptc:hs:left": 0.4747675250348784,
+            "lptc:vs:left": 0.4747675250348784,
+            "jo:C:left": 1.812718269759983e-16,
+            "jo:E:left": 1.812718269759983e-16,
+            "lptc:hs:right": 0.49627547931410476,
+            "lptc:vs:right": 0.49627547931410476,
+            "jo:C:right": 1.812718269759983e-16,
+            "jo:E:right": 1.812718269759983e-16,
+            "orn:decaying_fruit:left": 0.1879945038152523,
+            "orn:decaying_fruit:right": 0.23340617639302605,
+            "orn:yeasty:left": 0.23382330688121408,
+            "orn:yeasty:right": 0.18798722984326288
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 5.125903562575007,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 607.9261669999996,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.08937049940908785,
+            "power:right": 0.26028912750605443,
+            "mn:wing:b1:left": 0.0004552321582801975,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.9999671291010126,
+            "mn:wing:b2:right": 0.9847946942514141,
+            "mn:wing:b3:left": 0.0018769169178925707,
+            "mn:wing:b3:right": 0.02022474064918391,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.022689373326887467,
+            "mn:wing:iii3:right": 0,
+            "mn:wing:iii4:left": 0.9992385101747211,
+            "mn:wing:iii4:right": 0.44831504993729443,
+            "mn9": 0,
+            "mn:ttm:left": 0.02599593568424452,
+            "mn:ttm:right": 0.043806311078365204
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              1.999996919732343,
+              1.5000394165254045,
+              0.0011901900000000003
+            ],
+            "velocity": [
+              -2.3649336939529542e-169,
+              -1.4541277491454896e-169,
+              -1.812718269759983e-16
+            ],
+            "quaternion": [
+              -0.11652915223281285,
+              0.9814264810264323,
+              0.1482290287495921,
+              -0.035371938820606776
+            ],
+            "angular_velocity": [
+              0.00014371465629309355,
+              0.28883665203894965,
+              -0.21655583284095045
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.897427835473303,
+            "speed_m_s": 1.812718269759983e-16,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        },
+        {
+          "request_id": 25,
+          "t_s": 0.48,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0,
+            "ocelli:right": 0,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0.6,
+            "lptc:hs:left": 0.4873687807444098,
+            "lptc:vs:left": 0.4873687807444098,
+            "jo:C:left": 1.812718269759983e-16,
+            "jo:E:left": 1.812718269759983e-16,
+            "lptc:hs:right": 0.4981893866536427,
+            "lptc:vs:right": 0.4981893866536427,
+            "jo:C:right": 1.812718269759983e-16,
+            "jo:E:right": 1.812718269759983e-16,
+            "orn:decaying_fruit:left": 0.1880510775449593,
+            "orn:decaying_fruit:right": 0.23446583250243924,
+            "orn:yeasty:left": 0.23488370059752323,
+            "orn:yeasty:right": 0.1880438013839925
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 3.2290155268851373,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 606.3694579999992,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.08347469982078352,
+            "power:right": 0.24164451384728988,
+            "mn:wing:b1:left": 0.0003582330375295107,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.9999531375744808,
+            "mn:wing:b2:right": 0.9816066072546977,
+            "mn:wing:b3:left": 0.00237389865140674,
+            "mn:wing:b3:right": 0.01949101045889664,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.021622165844081078,
+            "mn:wing:iii3:right": 0,
+            "mn:wing:iii4:left": 0.9988061370518001,
+            "mn:wing:iii4:right": 0.42601001109685943,
+            "mn9": 0,
+            "mn:ttm:left": 0.024182045349065606,
+            "mn:ttm:right": 0.05227311007903197
+          },
+          "motor_intervention": false,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              1.999996919732343,
+              1.5000394165254045,
+              0.0011901900000000003
+            ],
+            "velocity": [
+              -2.3649336939529542e-169,
+              -1.4541277491454896e-169,
+              -1.812718269759983e-16
+            ],
+            "quaternion": [
+              -0.11688968854099092,
+              0.9812668615181951,
+              0.14950622158715096,
+              -0.033166804274081904
+            ],
+            "angular_velocity": [
+              0.0000051169851238599,
+              0.14405441878585254,
+              -0.10800521648142539
+            ],
+            "phase": 6.283185307179586,
+            "tilt_radians": 2.8979825982829155,
+            "speed_m_s": 1.812718269759983e-16,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        }
+      ]
+    },
+    {
+      "arm": "zero_motor",
+      "duration_simulated_s": 0.5000000000000003,
+      "body_steps": 1000,
+      "wall_time_ms": 8971.066584,
+      "solve_latency_ms": {
+        "total": 8961.462667999984,
+        "mean": 358.4585067199994,
+        "median": 307.65591700000004,
+        "maximum": 664.0656669999989
+      },
+      "solver_failures": 8,
+      "accepted_commands": 17,
+      "active_command_body_steps": 0,
+      "maximum_frequency_hz": 0,
+      "maximum_amplitude": 0,
+      "maximum_proboscis": 0,
+      "maximum_tilt_radians": 0,
+      "maximum_speed_m_s": 2.3896830406900373,
+      "minimum_height_m": 0.00029757251712446094,
+      "height_lost_m": 0.4988098100000006,
+      "exceeded_height_loss_threshold": true,
+      "first_contact_s": 0.35200000000000026,
+      "severe_tilt_at_s": null,
+      "finite_body": true,
+      "passive_trajectory_exact_match": true,
+      "initial": {
+        "position": [
+          2,
+          1.5,
+          0.5
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "quaternion": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "angular_velocity": [
+          0,
+          0,
+          0
+        ],
+        "phase": 0,
+        "tilt_radians": 0,
+        "speed_m_s": 0,
+        "touching": 0,
+        "on_floor": false,
+        "landed": false
+      },
+      "final": {
+        "position": [
+          2,
+          1.5,
+          0.0011901899999993987
+        ],
+        "velocity": [
+          0,
+          0,
+          4.007568541884894e-13
+        ],
+        "quaternion": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "angular_velocity": [
+          0,
+          0,
+          0
+        ],
+        "phase": 0,
+        "tilt_radians": 0,
+        "speed_m_s": 4.007568541884894e-13,
+        "touching": 1,
+        "on_floor": true,
+        "landed": true
+      },
+      "unsupported": {
+        "walking": true,
+        "grooming": true,
+        "legForces": true
+      },
+      "rows": [
+        {
+          "request_id": 1,
+          "t_s": 0,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0,
+            "jo:E:left": 0,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0,
+            "jo:E:right": 0,
+            "orn:decaying_fruit:left": 0.0883182888003951,
+            "orn:decaying_fruit:right": 0.0883182888003951,
+            "orn:yeasty:left": 0.0883182888003951,
+            "orn:yeasty:right": 0.0883182888003951
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 121,
+            "residual": 9.951679711406314e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 307.65591700000004,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 3.3703759827042816e-7,
+            "power:right": 0.000006813790141609182,
+            "mn:wing:b1:left": 0.0018829071690317591,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.001549742343256396,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004290920177829214,
+            "mn:wing:b3:right": 0.0010129652588959143,
+            "mn:wing:i1:left": 0.0031682836752331385,
+            "mn:wing:i1:right": 0.004046731284602865,
+            "mn:wing:i2:left": 0.0031458819645525373,
+            "mn:wing:i2:right": 0.005201792036857587,
+            "mn:wing:iii1:left": 0.00029881456120719026,
+            "mn:wing:iii1:right": 0.0018807152713761792,
+            "mn:wing:iii3:left": 0.0004581270952515649,
+            "mn:wing:iii3:right": 0.00047822432583148806,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0,
+            "mn9": 0.000014420942377534503,
+            "mn:ttm:left": 0.0004376381850757367,
+            "mn:ttm:right": 0.00009532331720959564
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 1,
+            "residual": 9.951679711406314e-7,
+            "iterations": 121,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.49799048699432996
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.19590401451602882
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.19590401451602882,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 2,
+          "t_s": 0.02,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.19590401451602882,
+            "jo:E:left": 0.19590401451602882,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.19590401451602882,
+            "jo:E:right": 0.19590401451602882,
+            "orn:decaying_fruit:left": 0.08870012660307107,
+            "orn:decaying_fruit:right": 0.08870012660307107,
+            "orn:yeasty:left": 0.08870012660307107,
+            "orn:yeasty:right": 0.08870012660307107
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 119,
+            "residual": 9.651757397755034e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 293.11670799999956,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 3.724171840237531e-7,
+            "power:right": 0.000007029668782604648,
+            "mn:wing:b1:left": 0.002535495414952452,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0019478327542176324,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004210700155209644,
+            "mn:wing:b3:right": 0.001127150452397598,
+            "mn:wing:i1:left": 0.0030410085932055055,
+            "mn:wing:i1:right": 0.004477819580548103,
+            "mn:wing:i2:left": 0.0031179496681779757,
+            "mn:wing:i2:right": 0.005342507743383134,
+            "mn:wing:iii1:left": 0.0002844860718009384,
+            "mn:wing:iii1:right": 0.0018747106253733316,
+            "mn:wing:iii3:left": 0.0004845207343912443,
+            "mn:wing:iii3:right": 0.00047835471913688845,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0,
+            "mn9": 0.000014376840589576114,
+            "mn:ttm:left": 0.0005179207478146194,
+            "mn:ttm:right": 0.00008313727647853089
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 2,
+            "residual": 9.651757397755034e-7,
+            "iterations": 119,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.49207841301119815
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.3899997941820175
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.3899997941820175,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 3,
+          "t_s": 0.04,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.3899997941820175,
+            "jo:E:left": 0.3899997941820175,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.3899997941820175,
+            "jo:E:right": 0.3899997941820175,
+            "orn:decaying_fruit:left": 0.08977185878039684,
+            "orn:decaying_fruit:right": 0.08977185878039684,
+            "orn:yeasty:left": 0.08977185878039684,
+            "orn:yeasty:right": 0.08977185878039684
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 128,
+            "residual": 9.014969470921841e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 335.30354199999965,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 2.1714047947906454e-7,
+            "power:right": 0.000055974765357281705,
+            "mn:wing:b1:left": 0.0002863397415440649,
+            "mn:wing:b1:right": 0.0008401299116514275,
+            "mn:wing:b2:left": 0.0007120680118924422,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.00168678326136894,
+            "mn:wing:b3:right": 0.0003137492992203055,
+            "mn:wing:i1:left": 0.0005220566393833634,
+            "mn:wing:i1:right": 0.00263547285111957,
+            "mn:wing:i2:left": 0.0026308803244205143,
+            "mn:wing:i2:right": 0.005098452746238981,
+            "mn:wing:iii1:left": 0.00014712971637035737,
+            "mn:wing:iii1:right": 0.0018852207194066095,
+            "mn:wing:iii3:left": 0.001311075931538756,
+            "mn:wing:iii3:right": 0.0008844220762552384,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.010491905160153275,
+            "mn9": 0.000009482050574039876,
+            "mn:ttm:left": 0.00014116772905003737,
+            "mn:ttm:right": 0.00002610982995688769
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 3,
+            "residual": 9.014969470921841e-7,
+            "iterations": 128,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.4823181974858825
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.5805224978836402
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.5805224978836402,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 4,
+          "t_s": 0.06,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.5805224978836402,
+            "jo:E:left": 0.5805224978836402,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.5805224978836402,
+            "jo:E:right": 0.5805224978836402,
+            "orn:decaying_fruit:left": 0.09152356267794141,
+            "orn:decaying_fruit:right": 0.09152356267794141,
+            "orn:yeasty:left": 0.09152356267794141,
+            "orn:yeasty:right": 0.09152356267794141
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 144,
+            "residual": 8.841822110028374e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 391.2414169999993,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00021053041020059504,
+            "power:right": 0.0010361260689928508,
+            "mn:wing:b1:left": 0.004185566413572768,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.008574322106953311,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.0029423297529323224,
+            "mn:wing:b3:right": 0.0013524509045591906,
+            "mn:wing:i1:left": 0.005576544986944051,
+            "mn:wing:i1:right": 0.0813131747473189,
+            "mn:wing:i2:left": 0.005081476010629302,
+            "mn:wing:i2:right": 0.12236041166758095,
+            "mn:wing:iii1:left": 0.00027980776882223144,
+            "mn:wing:iii1:right": 0.0019505218635180483,
+            "mn:wing:iii3:left": 0.007065970797016755,
+            "mn:wing:iii3:right": 0.015395152623420956,
+            "mn:wing:iii4:left": 0.0013070186508446833,
+            "mn:wing:iii4:right": 0.008423800582234204,
+            "mn9": 0,
+            "mn:ttm:left": 0,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 4,
+            "residual": 8.841822110028374e-7,
+            "iterations": 144,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.4687983310233989
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.7658363865429733
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.7658363865429733,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 5,
+          "t_s": 0.08,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.7658363865429733,
+            "jo:E:left": 0.7658363865429733,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.7658363865429733,
+            "jo:E:right": 0.7658363865429733,
+            "orn:decaying_fruit:left": 0.09393663954679382,
+            "orn:decaying_fruit:right": 0.09393663954679382,
+            "orn:yeasty:left": 0.09393663954679382,
+            "orn:yeasty:right": 0.09393663954679382
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 132,
+            "residual": 9.80098531888629e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 325.59479099999953,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00023213713549291796,
+            "power:right": 0.0008095607280858211,
+            "mn:wing:b1:left": 0.0031649243323859546,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.003519220217222132,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004000890386707057,
+            "mn:wing:b3:right": 0.0011634567073326128,
+            "mn:wing:i1:left": 0.013113835347702574,
+            "mn:wing:i1:right": 0.04898197214451899,
+            "mn:wing:i2:left": 0.01878199759947369,
+            "mn:wing:i2:right": 0.09476944732453739,
+            "mn:wing:iii1:left": 0.0011326395145317488,
+            "mn:wing:iii1:right": 0.0025058183718922574,
+            "mn:wing:iii3:left": 0.0053576883167630665,
+            "mn:wing:iii3:right": 0.005861548386772694,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.008440741895442874,
+            "mn9": 0,
+            "mn:ttm:left": 0.00005931738055585841,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 5,
+            "residual": 9.80098531888629e-7,
+            "iterations": 132,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.4516382305643219
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.9444878309374232
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.9444878309374232,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 6,
+          "t_s": 0.1,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.9444878309374232,
+            "jo:E:left": 0.9444878309374232,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.9444878309374232,
+            "jo:E:right": 0.9444878309374232,
+            "orn:decaying_fruit:left": 0.09698158192165188,
+            "orn:decaying_fruit:right": 0.09698158192165188,
+            "orn:yeasty:left": 0.09698158192165188,
+            "orn:yeasty:right": 0.09698158192165188
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 122,
+            "residual": 9.523345623208002e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 316.09099999999853,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00034405158255851093,
+            "power:right": 0.0008060689127118982,
+            "mn:wing:b1:left": 0.002294282063059105,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.001830127227777311,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.00473057279825943,
+            "mn:wing:b3:right": 0.00023497502071350153,
+            "mn:wing:i1:left": 0.01815783896556038,
+            "mn:wing:i1:right": 0.04254548807192479,
+            "mn:wing:i2:left": 0.030732463173720543,
+            "mn:wing:i2:right": 0.08508751185679515,
+            "mn:wing:iii1:left": 0.0014500113284942526,
+            "mn:wing:iii1:right": 0.0026384970238096774,
+            "mn:wing:iii3:left": 0.005142467658750517,
+            "mn:wing:iii3:right": 0.005628662389351819,
+            "mn:wing:iii4:left": 0.0004590229452555306,
+            "mn:wing:iii4:right": 0.006454236300873275,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006684568530895996,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 6,
+            "residual": 9.523345623208002e-7,
+            "iterations": 122,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.4309841643671538
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.1152452113447633
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.1152452113447633,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 7,
+          "t_s": 0.12,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.1006153848867764,
+            "orn:decaying_fruit:right": 0.1006153848867764,
+            "orn:yeasty:left": 0.1006153848867764,
+            "orn:yeasty:right": 0.1006153848867764
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 107,
+            "residual": 9.424462410478895e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 250.70758399999977,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0003446459448821876,
+            "power:right": 0.0007993909047060019,
+            "mn:wing:b1:left": 0.0022233059881314387,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.001654249990209933,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004785865419828128,
+            "mn:wing:b3:right": 0.00012530187779582043,
+            "mn:wing:i1:left": 0.01849370785706746,
+            "mn:wing:i1:right": 0.04158582595489391,
+            "mn:wing:i2:left": 0.03140947537003691,
+            "mn:wing:i2:right": 0.08394263759994895,
+            "mn:wing:iii1:left": 0.0014269690192304989,
+            "mn:wing:iii1:right": 0.0026143036390617416,
+            "mn:wing:iii3:left": 0.005147103565454098,
+            "mn:wing:iii3:right": 0.005642377779472209,
+            "mn:wing:iii4:left": 0.0005650877288682551,
+            "mn:wing:iii4:right": 0.006145385494539235,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006620567884229025,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 7,
+            "residual": 9.424462410478895e-7,
+            "iterations": 107,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.40700453032391926
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.2771238923111699
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.2771238923111699,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 8,
+          "t_s": 0.14,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.1047795293691794,
+            "orn:decaying_fruit:right": 0.1047795293691794,
+            "orn:yeasty:left": 0.1047795293691794,
+            "orn:yeasty:right": 0.1047795293691794
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 62,
+            "residual": 8.704969515910266e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 150.29975000000013,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0003446428570747116,
+            "power:right": 0.000799383626513175,
+            "mn:wing:b1:left": 0.0022233284435709093,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016542403310741609,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004785875615261732,
+            "mn:wing:b3:right": 0.00012530763292586684,
+            "mn:wing:i1:left": 0.018493731522684385,
+            "mn:wing:i1:right": 0.04158594724896511,
+            "mn:wing:i2:left": 0.03140953480021324,
+            "mn:wing:i2:right": 0.08394294244150648,
+            "mn:wing:iii1:left": 0.0014269082377364585,
+            "mn:wing:iii1:right": 0.0026142489986668814,
+            "mn:wing:iii3:left": 0.005147099889339138,
+            "mn:wing:iii3:right": 0.005642387090082859,
+            "mn:wing:iii4:left": 0.0005650865900298854,
+            "mn:wing:iii4:right": 0.006145331138201322,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006620356884026678,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 8,
+            "residual": 8.704969515910266e-7,
+            "iterations": 62,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.3798847907369609
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.4293960749403725
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.4293960749403725,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 9,
+          "t_s": 0.16,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.10940084190585196,
+            "orn:decaying_fruit:right": 0.10940084190585196,
+            "orn:yeasty:left": 0.10940084190585196,
+            "orn:yeasty:right": 0.10940084190585196
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 63,
+            "residual": 9.351999871454186e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 153.0948329999992,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00034463916850739585,
+            "power:right": 0.0007993742277501616,
+            "mn:wing:b1:left": 0.002223355443024565,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016542259550570123,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004785887661669909,
+            "mn:wing:b3:right": 0.00012531396739322466,
+            "mn:wing:i1:left": 0.018493764142674587,
+            "mn:wing:i1:right": 0.04158606475679153,
+            "mn:wing:i2:left": 0.031409624665435724,
+            "mn:wing:i2:right": 0.08394329835581002,
+            "mn:wing:iii1:left": 0.0014268318462598926,
+            "mn:wing:iii1:right": 0.0026141805117571443,
+            "mn:wing:iii3:left": 0.005147095759510019,
+            "mn:wing:iii3:right": 0.005642386374551976,
+            "mn:wing:iii4:left": 0.0005650759479539294,
+            "mn:wing:iii4:right": 0.006145262599565189,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006620097351229096,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 9,
+            "residual": 9.351999871454186e-7,
+            "iterations": 63,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.34982235550642066
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.571586757219186
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.571586757219186,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 10,
+          "t_s": 0.18,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.11440108486035268,
+            "orn:decaying_fruit:right": 0.11440108486035268,
+            "orn:yeasty:left": 0.11440108486035268,
+            "orn:yeasty:right": 0.11440108486035268
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 65,
+            "residual": 8.300719092774189e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 158.38308300000062,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0003446347985348844,
+            "power:right": 0.0007993631036346443,
+            "mn:wing:b1:left": 0.0022233874661538667,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016542091656284387,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004785901941862171,
+            "mn:wing:b3:right": 0.00012532163724742154,
+            "mn:wing:i1:left": 0.018493802795487933,
+            "mn:wing:i1:right": 0.041586204215708446,
+            "mn:wing:i2:left": 0.03140973058814289,
+            "mn:wing:i2:right": 0.08394371945914844,
+            "mn:wing:iii1:left": 0.0014267414134602684,
+            "mn:wing:iii1:right": 0.0026140994410853327,
+            "mn:wing:iii3:left": 0.005147090859139885,
+            "mn:wing:iii3:right": 0.0056423853470857705,
+            "mn:wing:iii4:left": 0.0005650630505656957,
+            "mn:wing:iii4:right": 0.006145181708933097,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006619790280039609,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 10,
+            "residual": 8.300719092774189e-7,
+            "iterations": 65,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.31702166948367894
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.703458093893186
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.703458093893186,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 11,
+          "t_s": 0.2,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.11972885270951716,
+            "orn:decaying_fruit:right": 0.11972885270951716,
+            "orn:yeasty:left": 0.11972885270951716,
+            "orn:yeasty:right": 0.11972885270951716
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 66,
+            "residual": 8.998746748312136e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 155.7514169999995,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0003446296574338738,
+            "power:right": 0.000799350019046941,
+            "mn:wing:b1:left": 0.0022234250525747443,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016541895724066689,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004785918718894042,
+            "mn:wing:b3:right": 0.00012533046683019605,
+            "mn:wing:i1:left": 0.01849384848415771,
+            "mn:wing:i1:right": 0.04158636625714665,
+            "mn:wing:i2:left": 0.03140985545491941,
+            "mn:wing:i2:right": 0.08394421244318094,
+            "mn:wing:iii1:left": 0.0014266349903840733,
+            "mn:wing:iii1:right": 0.0026140040266917335,
+            "mn:wing:iii3:left": 0.005147085066227326,
+            "mn:wing:iii3:right": 0.005642384059447933,
+            "mn:wing:iii4:left": 0.0005650477452875585,
+            "mn:wing:iii4:right": 0.006145086812295761,
+            "mn9": 0,
+            "mn:ttm:left": 0.0000661942868931371,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 11,
+            "residual": 8.998746748312136e-7,
+            "iterations": 66,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.28168970686766304
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.8249850606754274
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.8249850606754274,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 12,
+          "t_s": 0.22,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.1254380437220932,
+            "orn:decaying_fruit:right": 0.1254380437220932,
+            "orn:yeasty:left": 0.1254380437220932,
+            "orn:yeasty:right": 0.1254380437220932
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 68,
+            "residual": 8.371141641955182e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 159.5262909999983,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00034462351709773877,
+            "power:right": 0.0007993343994399238,
+            "mn:wing:b1:left": 0.0022234700856574225,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016541664914784743,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004785938785853396,
+            "mn:wing:b3:right": 0.00012534131250281055,
+            "mn:wing:i1:left": 0.018493903135168438,
+            "mn:wing:i1:right": 0.04158656034572817,
+            "mn:wing:i2:left": 0.031410003914215064,
+            "mn:wing:i2:right": 0.08394480094162521,
+            "mn:wing:iii1:left": 0.001426507978731596,
+            "mn:wing:iii1:right": 0.0026138901687948637,
+            "mn:wing:iii3:left": 0.005147078127244587,
+            "mn:wing:iii3:right": 0.005642382263645763,
+            "mn:wing:iii4:left": 0.0005650289682594744,
+            "mn:wing:iii4:right": 0.006144973645657334,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006618997391626046,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 12,
+            "residual": 8.371141641955182e-7,
+            "iterations": 68,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.24403201494184731
+            ],
+            "velocity": [
+              0,
+              0,
+              -1.9363255035675324
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 1.9363255035675324,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 13,
+          "t_s": 0.24,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.13183143824477248,
+            "orn:decaying_fruit:right": 0.13183143824477248,
+            "orn:yeasty:left": 0.13183143824477248,
+            "orn:yeasty:right": 0.13183143824477248
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 70,
+            "residual": 8.653573209393972e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 165.81083299999955,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00034461574383710166,
+            "power:right": 0.0007993146394362029,
+            "mn:wing:b1:left": 0.0022235274502937856,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016541378473803028,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.00478596423444475,
+            "mn:wing:b3:right": 0.00012535562149995126,
+            "mn:wing:i1:left": 0.01849397239494765,
+            "mn:wing:i1:right": 0.0415868076589249,
+            "mn:wing:i2:left": 0.03141019072568679,
+            "mn:wing:i2:right": 0.08394554643879983,
+            "mn:wing:iii1:left": 0.001426347402387567,
+            "mn:wing:iii1:right": 0.0026137462613712694,
+            "mn:wing:iii3:left": 0.005147069310046635,
+            "mn:wing:iii3:right": 0.005642379710688309,
+            "mn:wing:iii4:left": 0.000565004473304396,
+            "mn:wing:iii4:right": 0.006144830426532139,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006618452166696458,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 13,
+            "residual": 8.653573209393972e-7,
+            "iterations": 70,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.20424938920597144
+            ],
+            "velocity": [
+              0,
+              0,
+              -2.0377874703823946
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 2.0377874703823946,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 14,
+          "t_s": 0.26,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.13960571629235288,
+            "orn:decaying_fruit:right": 0.13960571629235288,
+            "orn:yeasty:left": 0.13960571629235288,
+            "orn:yeasty:right": 0.13960571629235288
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 73,
+            "residual": 8.945244336922009e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 174.42612499999996,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0003446047615036835,
+            "power:right": 0.0007992867125951328,
+            "mn:wing:b1:left": 0.0022236091708146446,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016540977513436052,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.00478600033000695,
+            "mn:wing:b3:right": 0.00012537673414626522,
+            "mn:wing:i1:left": 0.01849407050999521,
+            "mn:wing:i1:right": 0.04158716031961749,
+            "mn:wing:i2:left": 0.03141045314370782,
+            "mn:wing:i2:right": 0.08394660222373214,
+            "mn:wing:iii1:left": 0.001426120802539175,
+            "mn:wing:iii1:right": 0.002613543254538679,
+            "mn:wing:iii3:left": 0.005147056808296349,
+            "mn:wing:iii3:right": 0.00564237569131217,
+            "mn:wing:iii4:left": 0.0005649685541686063,
+            "mn:wing:iii4:right": 0.0061446270903542325,
+            "mn9": 0,
+            "mn:ttm:left": 0.0000661768351432636,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 14,
+            "residual": 8.945244336922009e-7,
+            "iterations": 73,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.16253520811874445
+            ],
+            "velocity": [
+              0,
+              0,
+              -2.129796290816598
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 2.129796290816598,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 15,
+          "t_s": 0.28,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.1497151957470883,
+            "orn:decaying_fruit:right": 0.1497151957470883,
+            "orn:yeasty:left": 0.1497151957470883,
+            "orn:yeasty:right": 0.1497151957470883
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 78,
+            "residual": 8.611340328590344e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 185.45316699999967,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.0003445872909732932,
+            "power:right": 0.0007992421549439313,
+            "mn:wing:b1:left": 0.0022237415984272023,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016540334752782671,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.0047860584016553,
+            "mn:wing:b3:right": 0.0001254131436143215,
+            "mn:wing:i1:left": 0.018494227732051925,
+            "mn:wing:i1:right": 0.04158773489385884,
+            "mn:wing:i2:left": 0.03141086830636266,
+            "mn:wing:i2:right": 0.08394829845754985,
+            "mn:wing:iii1:left": 0.0014257608122537674,
+            "mn:wing:iii1:right": 0.002613220971121684,
+            "mn:wing:iii3:left": 0.005147036803242708,
+            "mn:wing:iii3:right": 0.005642368362771973,
+            "mn:wing:iii4:left": 0.0005649078359925601,
+            "mn:wing:iii4:right": 0.006144297661281121,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006616465841801692,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 15,
+            "residual": 8.611340328590344e-7,
+            "iterations": 78,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.1190734119579812
+            ],
+            "velocity": [
+              0,
+              0,
+              -2.2128633113325207
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 2.2128633113325207,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 16,
+          "t_s": 0.3,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.16249514151168112,
+            "orn:decaying_fruit:right": 0.16249514151168112,
+            "orn:yeasty:left": 0.16249514151168112,
+            "orn:yeasty:right": 0.16249514151168112
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 86,
+            "residual": 8.739482807440524e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 204.83554200000071,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00034455776717198794,
+            "power:right": 0.0007991651863864662,
+            "mn:wing:b1:left": 0.002223969919360865,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016538943003362627,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004786159419968337,
+            "mn:wing:b3:right": 0.00012546816139714307,
+            "mn:wing:i1:left": 0.018494502611931224,
+            "mn:wing:i1:right": 0.04158871588128412,
+            "mn:wing:i2:left": 0.03141159264171235,
+            "mn:wing:i2:right": 0.08395123382011961,
+            "mn:wing:iii1:left": 0.001425147489921049,
+            "mn:wing:iii1:right": 0.0026126725292687585,
+            "mn:wing:iii3:left": 0.005147003338930829,
+            "mn:wing:iii3:right": 0.005642362275903308,
+            "mn:wing:iii4:left": 0.0005648004388161658,
+            "mn:wing:iii4:right": 0.006143679511667734,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006614417309481784,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 16,
+            "residual": 8.739482807440524e-7,
+            "iterations": 86,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.07403707823220466
+            ],
+            "velocity": [
+              0,
+              0,
+              -2.2875576029098936
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 2.2875576029098936,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 17,
+          "t_s": 0.32,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.17610700027892978,
+            "orn:decaying_fruit:right": 0.17610700027892978,
+            "orn:yeasty:left": 0.17610700027892978,
+            "orn:yeasty:right": 0.17610700027892978
+          },
+          "solve": {
+            "converged": true,
+            "iterations": 113,
+            "residual": 9.220794273678834e-7,
+            "tolerance": 0.000001,
+            "reason": "residual_tolerance"
+          },
+          "solve_ms": 269.96416599999975,
+          "accepted": true,
+          "neural_motor_readouts": {
+            "power:left": 0.00034450489239172235,
+            "power:right": 0.0007990071934427856,
+            "mn:wing:b1:left": 0.002224446967289973,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0016532985251113438,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004786374241314382,
+            "mn:wing:b3:right": 0.00012551770970778618,
+            "mn:wing:i1:left": 0.01849509323186203,
+            "mn:wing:i1:right": 0.04159074814294039,
+            "mn:wing:i2:left": 0.03141317943193173,
+            "mn:wing:i2:right": 0.08395747597889962,
+            "mn:wing:iii1:left": 0.0014239853937686843,
+            "mn:wing:iii1:right": 0.0026116413901941483,
+            "mn:wing:iii3:left": 0.005146944511134241,
+            "mn:wing:iii3:right": 0.00564242261881761,
+            "mn:wing:iii4:left": 0.0005645558462529599,
+            "mn:wing:iii4:right": 0.006141853202059814,
+            "mn9": 0,
+            "mn:ttm:left": 0.00006610843000536803,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "active",
+            "reason": "settled motor command",
+            "generation": 1,
+            "requestId": 17,
+            "residual": 9.220794273678834e-7,
+            "iterations": 113,
+            "unsupportedLegDrive": false
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.02758752540031203
+            ],
+            "velocity": [
+              0,
+              0,
+              -2.354481417024923
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 2.354481417024923,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 18,
+          "t_s": 0.34,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 1,
+            "jo:E:left": 1,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 1,
+            "jo:E:right": 1,
+            "orn:decaying_fruit:left": 0.18589034741268948,
+            "orn:decaying_fruit:right": 0.18589034741268948,
+            "orn:yeasty:left": 0.18589034741268948,
+            "orn:yeasty:right": 0.18589034741268948
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.05857169343883761,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 604.2758749999994,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.00032639205401814353,
+            "power:right": 0.0007485910813172034,
+            "mn:wing:b1:left": 0.0022600356437120876,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0014871110044460574,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.004832961964883099,
+            "mn:wing:b3:right": 0,
+            "mn:wing:i1:left": 0.01872098273905814,
+            "mn:wing:i1:right": 0.04108519100582675,
+            "mn:wing:i2:left": 0.03221279703709813,
+            "mn:wing:i2:right": 0.08503985300587161,
+            "mn:wing:iii1:left": 0.0010080945279094529,
+            "mn:wing:iii1:right": 0.0022410409925234975,
+            "mn:wing:iii3:left": 0.00512416562630509,
+            "mn:wing:iii3:right": 0.005684555458290952,
+            "mn:wing:iii4:left": 0.0005930461809451666,
+            "mn:wing:iii4:right": 0.005732583076714503,
+            "mn9": 0,
+            "mn:ttm:left": 0.00004832739198499774,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.003779408095602029
+            ],
+            "velocity": [
+              0,
+              0,
+              0.3696194184953682
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.3696194184953682,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 19,
+          "t_s": 0.36,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.3696194184953682,
+            "jo:E:left": 0.3696194184953682,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.3696194184953682,
+            "jo:E:right": 0.3696194184953682,
+            "orn:decaying_fruit:left": 0.18767767556147755,
+            "orn:decaying_fruit:right": 0.18767767556147755,
+            "orn:yeasty:left": 0.18767767556147755,
+            "orn:yeasty:right": 0.18767767556147755
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.015311190365475014,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 622.534083999999,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 6.781542143928809e-7,
+            "power:right": 0.000019861460288422945,
+            "mn:wing:b1:left": 0.0012461689636491175,
+            "mn:wing:b1:right": 0.000014725787940205259,
+            "mn:wing:b2:left": 0.0006192526702198503,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.0045802076974152004,
+            "mn:wing:b3:right": 0.0005674993844093052,
+            "mn:wing:i1:left": 0.0038537397277079426,
+            "mn:wing:i1:right": 0.0038900078194761024,
+            "mn:wing:i2:left": 0.003674257521665381,
+            "mn:wing:i2:right": 0.007020990004129607,
+            "mn:wing:iii1:left": 0.00021978501338314608,
+            "mn:wing:iii1:right": 0.0019091680299023913,
+            "mn:wing:iii3:left": 0.0007660265940303603,
+            "mn:wing:iii3:right": 0.0006684801085850605,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.00048498876030452577,
+            "mn9": 0.00001309446914626929,
+            "mn:ttm:left": 0.00043308536653824533,
+            "mn:ttm:right": 0.00009587448023235418
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.009137307217816575
+            ],
+            "velocity": [
+              0,
+              0,
+              0.17155432110472157
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.17155432110472157,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 20,
+          "t_s": 0.38,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.17155432110472157,
+            "jo:E:left": 0.17155432110472157,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.17155432110472157,
+            "jo:E:right": 0.17155432110472157,
+            "orn:decaying_fruit:left": 0.18757134729503921,
+            "orn:decaying_fruit:right": 0.18757134729503921,
+            "orn:yeasty:left": 0.18757134729503921,
+            "orn:yeasty:right": 0.18757134729503921
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.006001593361304458,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 620.5891249999986,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 4.953005016394983e-7,
+            "power:right": 0.000006944408444106709,
+            "mn:wing:b1:left": 0.003036106644534254,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.001879762784924945,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.003713217128409608,
+            "mn:wing:b3:right": 0.0011399414717457588,
+            "mn:wing:i1:left": 0.0026942437170876968,
+            "mn:wing:i1:right": 0.004572063129900941,
+            "mn:wing:i2:left": 0.003201434013156023,
+            "mn:wing:i2:right": 0.005900655795835219,
+            "mn:wing:iii1:left": 0.00018641361852165487,
+            "mn:wing:iii1:right": 0.0018872035329358793,
+            "mn:wing:iii3:left": 0.0004796565047856582,
+            "mn:wing:iii3:right": 0.00047979279449887597,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0,
+            "mn9": 0.000014206632537409459,
+            "mn:ttm:left": 0.0006616504857348128,
+            "mn:ttm:right": 0.00016065954591868367
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.01055395325270214
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.024859551506116274
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.024859551506116274,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 21,
+          "t_s": 0.4,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.024859551506116274,
+            "jo:E:left": 0.024859551506116274,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.024859551506116274,
+            "jo:E:right": 0.024859551506116274,
+            "orn:decaying_fruit:left": 0.18756232421719035,
+            "orn:decaying_fruit:right": 0.18756232421719035,
+            "orn:yeasty:left": 0.18756232421719035,
+            "orn:yeasty:right": 0.18756232421719035
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.0009802289233231676,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 609.9071249999979,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 4.6598173998797103e-7,
+            "power:right": 0.0000067880616287299844,
+            "mn:wing:b1:left": 0.00253039870506088,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0015633937709149898,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.003780502710850933,
+            "mn:wing:b3:right": 0.0010516611694292818,
+            "mn:wing:i1:left": 0.0027978501475424866,
+            "mn:wing:i1:right": 0.004252162721035577,
+            "mn:wing:i2:left": 0.003222257115650748,
+            "mn:wing:i2:right": 0.005777458900268266,
+            "mn:wing:iii1:left": 0.00019685106098574543,
+            "mn:wing:iii1:right": 0.0018908052048046283,
+            "mn:wing:iii3:left": 0.00046175570986239245,
+            "mn:wing:iii3:right": 0.0004795116464408264,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0,
+            "mn9": 0.000014234077137137236,
+            "mn:ttm:left": 0.0006044734816299771,
+            "mn:ttm:right": 0.00017463218799283726
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.00804817923892148
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.2206350333872073
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.2206350333872073,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 22,
+          "t_s": 0.42,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.2206350333872073,
+            "jo:E:left": 0.2206350333872073,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.2206350333872073,
+            "jo:E:right": 0.2206350333872073,
+            "orn:decaying_fruit:left": 0.18772840849389288,
+            "orn:decaying_fruit:right": 0.18772840849389288,
+            "orn:yeasty:left": 0.18772840849389288,
+            "orn:yeasty:right": 0.18772840849389288
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.0007576887501414831,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 617.4234169999982,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 5.027923601098487e-7,
+            "power:right": 0.000007109514810549474,
+            "mn:wing:b1:left": 0.0036209085617266807,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0.0022043417164080057,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.003593868562920022,
+            "mn:wing:b3:right": 0.0012242631787933828,
+            "mn:wing:i1:left": 0.0025338779337539916,
+            "mn:wing:i1:right": 0.004906462031334342,
+            "mn:wing:i2:left": 0.0031674756520246243,
+            "mn:wing:i2:right": 0.006043379268151401,
+            "mn:wing:iii1:left": 0.00017563214605083305,
+            "mn:wing:iii1:right": 0.0018855463939866355,
+            "mn:wing:iii3:left": 0.0004994514138878662,
+            "mn:wing:iii3:right": 0.0004809978813713772,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0,
+            "mn9": 0.000014176011618161419,
+            "mn:ttm:left": 0.0007463612066446839,
+            "mn:ttm:right": 0.00014852911595225873
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.0016447737175063833
+            ],
+            "velocity": [
+              0,
+              0,
+              -0.4143736157542392
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.4143736157542392,
+            "touching": 0,
+            "on_floor": false,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 23,
+          "t_s": 0.44,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.4143736157542392,
+            "jo:E:left": 0.4143736157542392,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.4143736157542392,
+            "jo:E:right": 0.4143736157542392,
+            "orn:decaying_fruit:left": 0.18793125546443454,
+            "orn:decaying_fruit:right": 0.18793125546443454,
+            "orn:yeasty:left": 0.18793125546443454,
+            "orn:yeasty:right": 0.18793125546443454
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 0.0008883338304936927,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 664.0656669999989,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 3.7906463443934216e-7,
+            "power:right": 0.00022351365717421118,
+            "mn:wing:b1:left": 0,
+            "mn:wing:b1:right": 0,
+            "mn:wing:b2:left": 0,
+            "mn:wing:b2:right": 0,
+            "mn:wing:b3:left": 0.0031878008454248787,
+            "mn:wing:b3:right": 0.00031871161571551856,
+            "mn:wing:i1:left": 0.005171342653896811,
+            "mn:wing:i1:right": 0.008240802901024368,
+            "mn:wing:i2:left": 0.004740110229357243,
+            "mn:wing:i2:right": 0.01158967745426386,
+            "mn:wing:iii1:left": 0.00011074099363044634,
+            "mn:wing:iii1:right": 0.0018511598925674345,
+            "mn:wing:iii3:left": 0.004959305033716755,
+            "mn:wing:iii3:right": 0.006309176257428979,
+            "mn:wing:iii4:left": 0,
+            "mn:wing:iii4:right": 0.007721133987863675,
+            "mn9": 0,
+            "mn:ttm:left": 0.000005093515696613673,
+            "mn:ttm:right": 0
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.001184245888146715
+            ],
+            "velocity": [
+              0,
+              0,
+              0.003962718902314219
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 0.003962718902314219,
+            "touching": 1,
+            "on_floor": true,
+            "landed": false
+          }
+        },
+        {
+          "request_id": 24,
+          "t_s": 0.46,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0.6,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 0.003962718902314219,
+            "jo:E:left": 0.003962718902314219,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 0.003962718902314219,
+            "jo:E:right": 0.003962718902314219,
+            "orn:decaying_fruit:left": 0.18799090372690533,
+            "orn:decaying_fruit:right": 0.18799090372690533,
+            "orn:yeasty:left": 0.18799090372690533,
+            "orn:yeasty:right": 0.18799090372690533
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 2.521252479361366,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 619.354124999998,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.09793392551168416,
+            "power:right": 0.2860711926122606,
+            "mn:wing:b1:left": 0.007291557561563508,
+            "mn:wing:b1:right": 0.004862312737264787,
+            "mn:wing:b2:left": 0.9999997802697742,
+            "mn:wing:b2:right": 0.9980652759771016,
+            "mn:wing:b3:left": 0,
+            "mn:wing:b3:right": 0.003117327377830018,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.016798098340798165,
+            "mn:wing:iii3:right": 0,
+            "mn:wing:iii4:left": 0.9999094260125596,
+            "mn:wing:iii4:right": 0.5255452866872179,
+            "mn9": 0,
+            "mn:ttm:left": 0.023180259974875616,
+            "mn:ttm:right": 0.09485439407170017
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.0011901899402222804
+            ],
+            "velocity": [
+              0,
+              0,
+              3.985181307283365e-8
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 3.985181307283365e-8,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        },
+        {
+          "request_id": 25,
+          "t_s": 0.48,
+          "senses": {
+            "haltere:left": 0,
+            "haltere:right": 0,
+            "ocelli:left": 0.7071067811865475,
+            "ocelli:right": 0.7071067811865475,
+            "vis:LC4": 0,
+            "vis:LPLC2": 0,
+            "grn:sugar:labellum": 0,
+            "grn:sugar:front_leg": 0,
+            "leg_touch": 0.6,
+            "lptc:hs:left": 0.5,
+            "lptc:vs:left": 0.5,
+            "jo:C:left": 3.985181307283365e-8,
+            "jo:E:left": 3.985181307283365e-8,
+            "lptc:hs:right": 0.5,
+            "lptc:vs:right": 0.5,
+            "jo:C:right": 3.985181307283365e-8,
+            "jo:E:right": 3.985181307283365e-8,
+            "orn:decaying_fruit:left": 0.18804744303388346,
+            "orn:decaying_fruit:right": 0.18804744303388346,
+            "orn:yeasty:left": 0.18804744303388346,
+            "orn:yeasty:right": 0.18804744303388346
+          },
+          "solve": {
+            "converged": false,
+            "iterations": 256,
+            "residual": 2.5435067586451185,
+            "tolerance": 0.000001,
+            "reason": "iteration_limit"
+          },
+          "solve_ms": 606.057084,
+          "accepted": false,
+          "neural_motor_readouts": {
+            "power:left": 0.09760436904778434,
+            "power:right": 0.28484567062419425,
+            "mn:wing:b1:left": 0.007272688748530678,
+            "mn:wing:b1:right": 0.004859374871609056,
+            "mn:wing:b2:left": 0.9999997772071182,
+            "mn:wing:b2:right": 0.9980477553964082,
+            "mn:wing:b3:left": 0,
+            "mn:wing:b3:right": 0.0031164880816872253,
+            "mn:wing:i1:left": 0,
+            "mn:wing:i1:right": 0,
+            "mn:wing:i2:left": 0,
+            "mn:wing:i2:right": 0,
+            "mn:wing:iii1:left": 0,
+            "mn:wing:iii1:right": 0,
+            "mn:wing:iii3:left": 0.01679131607263842,
+            "mn:wing:iii3:right": 0,
+            "mn:wing:iii4:left": 0.9999088090932454,
+            "mn:wing:iii4:right": 0.5237947109517318,
+            "mn9": 0,
+            "mn:ttm:left": 0.02244702954616546,
+            "mn:ttm:right": 0.09511258582958533
+          },
+          "motor_intervention": true,
+          "controls": {
+            "aL": 0,
+            "aR": 0,
+            "betaL": 0,
+            "betaR": 0,
+            "sL": 0,
+            "sR": 0,
+            "f": 0
+          },
+          "proboscis": 0,
+          "command_status": {
+            "state": "unavailable",
+            "reason": "controller did not converge",
+            "generation": 1
+          },
+          "after": {
+            "position": [
+              2,
+              1.5,
+              0.0011901899999993987
+            ],
+            "velocity": [
+              0,
+              0,
+              4.007568541884894e-13
+            ],
+            "quaternion": [
+              1,
+              0,
+              0,
+              0
+            ],
+            "angular_velocity": [
+              0,
+              0,
+              0
+            ],
+            "phase": 0,
+            "tilt_radians": 0,
+            "speed_m_s": 4.007568541884894e-13,
+            "touching": 1,
+            "on_floor": true,
+            "landed": true
+          }
+        }
+      ]
+    }
+  ],
+  "flight_competency_established": false,
+  "limitations": [
+    "One initial condition and half a simulated second, no training or held-out behavior experiment.",
+    "Synchronous offline solves pause simulated physics; elapsed solve time is measured but no real-time scheduling deadline is passed.",
+    "The actual 60000-neuron recruited payload is used, not all 150802 neurons of the whole-brain atlas.",
+    "Residual qualification is approximate equation agreement, not a global contraction, uniqueness or biological fidelity certificate.",
+    "Walking, leg forces and grooming are unsupported; wingbeat is a supplied stroke-averaged actuator carrier.",
+    "Worker message transport, renderer behavior, learning and external surface geometry are outside this probe."
+  ],
+  "sha256": "4dd23efe924d7b9f7e8343f5bcfd3f8045eeb286709b578a46fc6d2d0451ed80"
+}

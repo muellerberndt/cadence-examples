@@ -1,0 +1,64 @@
+{
+  "schema": "cadence.fly-matrix.browser-motion-check/v1",
+  "created_utc": "2026-09-27T05:57:53.833773+00:00",
+  "command": "python tools/check_settled_page.py --full --url http://127.0.0.1:8817/",
+  "browser_mode": "Playwright Chromium headless with SwiftShader; full atlas, bloom, close-up and eye views",
+  "result": {
+    "passed": true,
+    "full_visualization": true,
+    "motion": {
+      "start": {
+        "wall": 5931.800000011921,
+        "time": 0,
+        "p": [
+          1.2,
+          1,
+          1.2
+        ]
+      },
+      "end": {
+        "wall": 8647.400000035763,
+        "time": 0.5999999999999893,
+        "p": [
+          1.2,
+          1,
+          0.04759562139446946
+        ],
+        "replies": 4,
+        "late": 4,
+        "frames": 15
+      }
+    },
+    "checks": [
+      "full physical body moves while asynchronous neural solves run",
+      "default actual worker reports settled or failed outcomes without learner or pilot",
+      "pause revokes power and rejects an in-flight worker reply",
+      "reset holds the declared initial condition while loading a fresh worker",
+      "motor-off mode falls under passive physics with zero active commands",
+      "legacy comparison is explicit; learner and stale worker errors cannot survive a mode change",
+      "transport failure removes motor authority",
+      "queued replies cannot power past physics or survive a missed deadline",
+      "strict renderer has no idle behavioral motion; powered wings follow body phase"
+    ],
+    "page_errors": []
+  },
+  "sources": {
+    "tools/check_settled_page.py": "9e79b3b8d906cbaa7083478e226050e08d3ebdf0c9c0ab39aa253166990172c1",
+    "web/page.js": "724b3f8c2517dd058952810829b09a5be8c54d529a8eede9c6c83077ec1ba9e3",
+    "web/physics-clock.js": "58aa51a72f2723d049f8992af873aa106ea78d7aec62bd219664416ca4158b3a",
+    "web/room.js": "4f3225513f4c28b3896e224d3992288a65a2b9aab324a4d0c6b77b93d4a10895",
+    "web/brain.js": "ccdb65639f6a96be67cb79def67f6801b1ba481111e12b1fa2d44581c51e9416",
+    "web/worker.js": "9adda942d436abb0b8c3511927606a65fd85704b906812341d49732c9d0cc16c",
+    "web/settled-life.js": "5f883d69b88cbec93ab774d770af60c266299a76ffe4a1bfeed7bbf66619952a",
+    "web/body.js": "904a954a5b7afd1d6ed3d0753de34b3ad63f662b07bb71b875b692d501bd5d96",
+    "web/motor.js": "f32370e1e25ffdfa40a1764e53ae3fadb943fbb7574f28093e84c392e4d31744",
+    "web/fly.js": "61a3b44383d70138971bf23a2b0bf8402b31f1c703d7601c79f4c6ecaad80aa9",
+    "web/index.html": "2bad3e1d82d03a757fa67944f56e5ef0759bc90e804333c7a4c6e8a65c85e7f3",
+    "web/data/brain.json": "f43f50887302467132a0205ec7f9b0da3e32247f39678fe0d03b9f1a527b5657"
+  },
+  "limitations": [
+    "Browser rendering is software GPU emulation; timings do not predict native GPU performance.",
+    "Actual connectome replies in the motion window were all late and correctly discarded. Motion was passive falling, not controlled flight.",
+    "The queued-command test deliberately uses a synthetic motor packet to test admission timing, not acquired neural competence."
+  ]
+}

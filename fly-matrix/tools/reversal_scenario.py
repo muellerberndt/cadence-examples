@@ -3,27 +3,40 @@
 # click on the fly, the rest through the page's strike), until it finds the sugar on the bread; then a spell of
 # free behaviour to count where it lands and what it found. Playwright's own Chromium (headless, SwiftShader)
 # against a local static server of web/; PASS when the fly finds the sugar on the bread.
-#   python tools/reversal_scenario.py [--seed 1] [--speed 2] [--headed] [--first banana|bread]
-# Each direction's numbers go into receipts/page_reversal.json (--receipt), one entry per first fruit.
+#   python tools/reversal_scenario.py --legacy --receipt runs/reversal_legacy_rerun.json [--seed 1] [--speed 2]
+# This measures the explicitly selected legacy hybrid, not the default direct-motor controller.
+# Each invocation requires a fresh receipt path; archived receipts are never overwritten.
 # At speed 2 a run takes 10 to 20 minutes of wall time: the worker's brain step dominates.
-import argparse, hashlib, json, os, subprocess, sys, time, socket
-from playwright.sync_api import sync_playwright
+import argparse, hashlib, json, math, os, subprocess, sys, time, socket
 ap = argparse.ArgumentParser()
 ap.add_argument("--web", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "web"))
 ap.add_argument("--seed", type=int, default=1); ap.add_argument("--speed", type=float, default=2.0)
 ap.add_argument("--phase1-max", type=float, default=300); ap.add_argument("--phase2-max", type=float, default=900); ap.add_argument("--after", type=float, default=240)
-ap.add_argument("--headed", action="store_true"); ap.add_argument("--pilot", default="brain")
-ap.add_argument("--receipt", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "receipts", "page_reversal.json"))
+ap.add_argument("--headed", action="store_true"); ap.add_argument("--pilot", default="legacy", choices=["legacy", "legacy-shuffled", "instincts", "brain", "shuffled"])
+ap.add_argument("--legacy", action="store_true", help="explicitly enable this historical hybrid measurement")
+ap.add_argument("--receipt", required=True, help="new output path; existing receipts are refused")
+ap.add_argument("--wall-timeout", type=float, default=3600); ap.add_argument("--stall-timeout", type=float, default=60)
 ap.add_argument("--first", default="banana", choices=["banana", "bread"], help="the fruit the sugar starts on; the other is the reversal")
 a = ap.parse_args()
+if not a.legacy: ap.error("this historical measurement requires explicit --legacy")
+if os.path.exists(a.receipt): ap.error("receipt already exists; choose a new output path")
+if not all(math.isfinite(v) for v in [a.speed, a.phase1_max, a.phase2_max, a.wall_timeout, a.stall_timeout, a.after]) or min(a.speed, a.phase1_max, a.phase2_max, a.wall_timeout, a.stall_timeout) <= 0 or a.after < 0: ap.error("durations and speed must be finite and positive, with nonnegative after time")
+a.pilot = {"brain": "legacy", "shuffled": "legacy-shuffled"}.get(a.pilot, a.pilot)
+from playwright.sync_api import sync_playwright
 s = socket.socket(); s.bind(("127.0.0.1", 0)); port = s.getsockname()[1]; s.close()
 srv = subprocess.Popen([sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"], cwd=a.web, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(0.8)
 STATE = """() => { const app = window.__app, L = app.life(); return { clock: L.clock, mode: L.mode, on: L.onWhich || null, visits: L.visits, sweet: L.visits.sweet, hunger: L.hunger, lastP: L.lastP, search: L.search ? { fruit: L.search.fruit, asked: !!L.search.asked, landed: L.search.landed || null } : null, events: L.events.slice(-40), decisions: app.S.decisions, lessons: app.S.lessons.slice(), fps: app.S.fps, sugar: L.sugar, smelled: L.smelled, pending: app.S.pending }; }"""
 PROJECT = """async () => { const THREE = await import("three"); const app = window.__app, p = app.flight().p; const v = new THREE.Vector3(p[0], p[2], -p[1]).project(app.rig.camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; }"""
 seen = set()
+deadline, last_progress_clock, last_progress_at = None, None, None
 def tick(page, log):
+    global last_progress_clock, last_progress_at
     st = page.evaluate(STATE)
+    now = time.monotonic()
+    if deadline is not None and now > deadline: raise TimeoutError("legacy reversal exceeded wall-time budget")
+    if last_progress_clock is None or st["clock"] > last_progress_clock: last_progress_clock, last_progress_at = st["clock"], now
+    elif now - last_progress_at > a.stall_timeout: raise TimeoutError("legacy simulation clock stopped advancing")
     for t, text in st["events"]:
         key = (round(t, 3), text)
         if key not in seen: seen.add(key); log.append((t, text))
@@ -35,11 +48,13 @@ try:
         browser = p.chromium.launch(headless=not a.headed, args=args)
         page = browser.new_page(viewport={"width": 1400, "height": 900})
         errors = []; page.on("pageerror", lambda e: errors.append(str(e)))
-        page.goto(f"http://127.0.0.1:{port}/index.html?seed={a.seed}&noscan=1&nobloom=1&noviews=1")
+        page.goto(f"http://127.0.0.1:{port}/index.html?controller={a.pilot}&seed={a.seed}&noscan=1&nobloom=1&noviews=1")
         page.wait_for_function("window.__app && window.__app.S.ready && window.__app.S.learnReady", timeout=180000)
+        assert page.evaluate("window.__app.S.pilot") == a.pilot
         A, B = a.first, ("bread" if a.first == "banana" else "banana")  # the first fruit, and the other
-        page.evaluate(f"window.__app.setCam('follow'); window.__app.setPilot('{a.pilot}'); window.__app.S.speed = {a.speed}; window.__app.setSugar('{A}');")
+        page.evaluate("({speed, sugar}) => { window.__app.setCam('follow'); window.__app.S.speed = speed; window.__app.setSugar(sugar); }", {"speed": a.speed, "sugar": A})
         log = []; t0 = time.time()
+        deadline = time.monotonic() + a.wall_timeout
         # phase 1: sugar on the first fruit until the fly has fed there
         st = tick(page, log); assert st["sugar"] == A, st["sugar"]
         while st["clock"] < a.phase1_max and count(log, f"lands on the {A}: sugar") < 1:
@@ -81,9 +96,10 @@ try:
         try: page_commit = subprocess.check_output(["git", "-C", a.web, "rev-parse", "HEAD"], text=True).strip()
         except Exception: page_commit = None
         data = os.path.join(a.web, "data"); payload = {f: hashlib.sha256(open(os.path.join(data, f), "rb").read()).hexdigest() for f in sorted(os.listdir(data)) if f.endswith(".json")}
-        receipt = json.load(open(a.receipt)) if os.path.exists(a.receipt) else {}
-        receipt.update({"tool": "tools/reversal_scenario.py", "page": page_commit, "payload": payload}); receipt.setdefault("directions", {})[f"{A} first, seed {a.seed}"] = dict(rec, page=page_commit)
-        os.makedirs(os.path.dirname(a.receipt), exist_ok=True); json.dump(receipt, open(a.receipt, "w"), indent=1)
+        source = {f: hashlib.sha256(open(os.path.join(a.web, f), "rb").read()).hexdigest() for f in sorted(os.listdir(a.web)) if f.endswith(".js") or f == "index.html"}
+        receipt = {"tool": "tools/reversal_scenario.py", "architecture": "legacy_hybrid_explicit", "page": page_commit, "source_sha256": source, "payload": payload, "directions": {f"{A} first, seed {a.seed}": dict(rec, page=page_commit)}}
+        os.makedirs(os.path.dirname(os.path.abspath(a.receipt)), exist_ok=True)
+        with open(a.receipt, "x") as handle: json.dump(receipt, handle, indent=1)
         print("receipt:", os.path.relpath(a.receipt))
         browser.close()
 finally:
