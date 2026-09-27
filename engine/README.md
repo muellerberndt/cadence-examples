@@ -65,7 +65,7 @@ payload, device and browser; a legacy subset timing is not a full-graph guarante
 
 `brain_scan.js` from [`../viewer`](../viewer/README.md) draws every neuron where it sits (the anatomical mode on an
 atlas with `positions3`) or wrapped into a stylised brain, with the activity live and the recent
-change glowing; [pages.md](https://github.com/muellerberndt/cadence/blob/main/docs/pages.md)
+change glowing; [pages.md](../viewer/reference.md)
 documents the atlas export and every option. Copy the file into `web/`. Budget it first: it is
 the frame cost of a page. On a 1440 by 900 window at pixel ratio 2, 200,000 ribbons with 150,000
 particles gave 30 fps and 60,000 with 40,000 gave 60; the bloom pass and two extra scene views

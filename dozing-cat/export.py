@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Export what the page needs: the pretrained belief, the genomes and the world's constants as
-``web/data/brain.json``, and the library's viewer as ``web/brain_scan.js``.
+``web/data/brain.json``, and the examples' viewer as ``web/brain_scan.js``.
 
     python dozing-cat/export.py                       # web/data/brain.json and web/brain_scan.js beside this file
     python dozing-cat/export.py --out /tmp/dozing-cat # brain.json there, the viewer left alone
@@ -13,7 +13,7 @@ the governors compare with; the machinery every arm shares; the world's constant
 directions, the retina's grid) as the floats numpy computes them; and the genomes of both
 governors: hand-set (with the habit the pretraining fitted, as the experiment's demo runs it),
 evolved and best of random search, from the evolution receipts, with the held-out winner as
-the default. The viewer is copied from the library checkout as it stands, with its commit and
+the default. The viewer is copied from the examples checkout as it stands, with its commit and
 the sha256 of the copy recorded in ``brain.json``.
 """
 
@@ -56,15 +56,15 @@ def library_info() -> dict:
 
 
 def viewer_info(text: str) -> dict:
-    root = Path(cadence.__file__).resolve().parents[2]
-    source = Path(cadence.__file__).with_name("brain_scan.js")
+    source = Path(brain_scan_script.__code__.co_filename).resolve().with_name("brain_scan.js")
+    root = source.parent.parent
     dirty = git(root, "status", "--porcelain", "--", str(source)) if (root / ".git").exists() else None
     version = None
     for line in text.splitlines():
         if line.startswith("export const VERSION"):
             version = line.split('"')[1]
             break
-    return {"file": "brain_scan.js", "version": version, "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "commit": git(root, "rev-parse", "HEAD") if (root / ".git").exists() else None, "uncommitted_changes": bool(dirty) if dirty is not None else None, "style": "brain" if "brainLayout" in text else "scan"}
+    return {"file": "brain_scan.js", "repository": "cadence-examples", "source": source.relative_to(root).as_posix(), "version": version, "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "commit": git(root, "rev-parse", "HEAD") if (root / ".git").exists() else None, "uncommitted_changes": bool(dirty) if dirty is not None else None, "style": "brain" if "brainLayout" in text else "scan"}
 
 
 def belief_state(patch: BeliefPatch) -> dict:
@@ -169,7 +169,7 @@ def main() -> int:
         target = HERE / "web" / "brain_scan.js"
         target.write_text(viewer_text, encoding="utf-8")
         v = body["viewer"]
-        print(f"copied brain_scan.js ({v['version']}, style {v['style']}, sha256 {v['sha256'][:12]}, library commit {v['commit']}{' with uncommitted changes' if v['uncommitted_changes'] else ''})")
+        print(f"copied brain_scan.js ({v['version']}, style {v['style']}, sha256 {v['sha256'][:12]}, examples commit {v['commit']}{' with uncommitted changes' if v['uncommitted_changes'] else ''})")
     return 0
 
 
