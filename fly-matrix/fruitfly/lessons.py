@@ -4,11 +4,12 @@ Three declared, generic steps (cadence: ``Brain(log_gain=...)``, ``naive_efficac
 ``calibrate_bias``), each with its reason and its receipt (``receipts/lessons_setup.json``):
 
 - the class gains of the dictionary (``fruitfly.brain.CLASS_LOG_GAIN``: the antennal lobe's
-  local neurons at a twentieth of their measured output, selected by protocol on the Kenyon cell
-  code, ``tools/class_gains.py``);
-- the plastic seam started naive: every Kenyon-cell-to-MBON class at the same weight, because a
-  specimen's counts at its memory site are that specimen's memories (on the measured counts the
-  naive fly avoided the fruit odour and approached the yeast before any lesson);
+  local neurons receive an output-gain multiplier ``exp(-3)`` (about one twentieth), selected
+  by protocol on the Kenyon cell code, ``tools/class_gains.py``);
+- the plastic seam starts from supplied equal effective Kenyon-cell-to-MBON weights. This
+  establishes a controlled starting point for the lesson; contact counts alone do not identify
+  which strengths were innate or learned. With measured relative counts, this rate model
+  avoided the fruit odour and approached the yeast before any lesson;
 - the two output cells calibrated jointly over the situations the fly decides in (hovering over
   a fruit: that fruit's odour full on its receptor class, the other's at its plume level, the
   flight tone), so a nudge has a slope on each: the approach cell to 0.6 and the avoidance cell
