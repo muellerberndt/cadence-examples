@@ -1,5 +1,7 @@
 # Cadence examples
 
+[Website](https://floatingpragma.io/cadence/) · [Library](https://github.com/muellerberndt/cadence) · [Paper](https://philpapers.org/rec/MUECAP-2) · [PyPI](https://pypi.org/project/cadence-net/)
+
 Six worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each is one directory
 with its own README, its page, the receipts behind every number it states, and a check that
 recomputes them. Each page runs its brain in the browser with the arithmetic of the library, and a
