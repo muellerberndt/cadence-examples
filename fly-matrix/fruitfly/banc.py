@@ -37,7 +37,7 @@ SOURCES: Final[dict[str, dict[str, str]]] = {
         "url": _BUCKET + "banc_888_meta.feather",
         "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
         "citation": (
-            "Lee lab and the BANC community (2025). The Brain-And-Nerve-Cord connectome of an "
+            "Lee lab and the BANC community (2026). The Brain-And-Nerve-Cord connectome of an "
             "adult female Drosophila, release 888: neuron annotations (side, region, class, type, "
             "function, peripheral target, soma position)."
         ),
