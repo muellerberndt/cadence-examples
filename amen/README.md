@@ -1,5 +1,9 @@
 # Amen: a jungle composer in one patch, running in the browser
 
+> Version-pinned historical example. For the public demo collection, see
+> [Cadence demos](https://floatingpragma.io/demos/). This guide describes the
+> model and evidence preserved in this directory.
+
 One Cadence record patch learned jungle tracks as events per half-beat: a slice of a drum
 break, a sub-bass note, a change flag and a texture. The page ships that brain as a row of
 checkpoints, each of which heard more material than the one before and can be trained
@@ -9,10 +13,9 @@ hearing each half-beat it plays, while the page shows its activity. When the tra
 computed it is rendered through the instrument and played, with every note and the brain
 in time with the sound. The page says on its face that the brain is still training.
 
-[![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](https://floatingpragma.io/cadence-examples/amen-beats/)
+[![A dub playing: the studio and the waveform on the left, the brain on the right with its context channels, record cells and the loop through the world](screenshot.png)](#run-it-locally)
 
-Live page: [floatingpragma.io/cadence-examples/amen-beats](https://floatingpragma.io/cadence-examples/amen-beats/).
-The same page runs from this directory; see [Run it locally](#run-it-locally).
+Run the preserved page locally; see [Run it locally](#run-it-locally).
 
 ## Card
 
@@ -30,7 +33,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
   - Records the brain wrote during a dub did not bring the opening back: record recall is by content, with a code overlap of 0.91 where the stream recurs and 0.16 after a phase shift. The page keeps the writes off.
   - A training run lost its receipt because the library's source changed mid-run and the run's source-freeze check failed. The run was repeated.
   - Headless Chrome under a virtual time budget never resolves audio decoding, so the browser tests drive Chrome over the DevTools protocol in real time.
-- **Hosted at:** https://floatingpragma.io/cadence-examples/amen-beats/
+- **Hosted at:** Local reproduction; see [Run](#run-it-locally). The public demo collection is [Cadence demos](https://floatingpragma.io/demos/).
 - **Receipts and checks:** `runs/record-composer-v12/receipt.json` (the sealed run, its independent verification and its held-out figures), `verify.py`, `parity.mjs` (the browser engine against the archived generation from silence). `python amen/verify.py` from the repository root.
 - **Data and rights:** The training material is two DJ mixes and 45 full tracks from the owner's library and is not part of this repository. The instrument is 32 half-beat slices of a sampled drum break and twelve sub-bass notes from a sample pack; whether they may be redistributed has not been verified, and the kit is a separate folder so it can be replaced.
 - **Work in progress:** a phrase clock for the placement of departures; a transformer or recurrent baseline on the same stream; a second training seed; a brain for a later Cadence release, admitted after listening.

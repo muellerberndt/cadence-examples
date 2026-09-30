@@ -1,5 +1,9 @@
 # The worm
 
+> Version-pinned historical example. For the public demo collection, see
+> [Cadence demos](https://floatingpragma.io/demos/). This guide describes the
+> model and evidence preserved in this directory.
+
 The nervous system of the hermaphrodite *C. elegans*, 302 neurons wired as measured, as one
 Cadence brain. It lives on a plate, smells, eats, gets hurt, and learns during its
 life what the smells around it predict. The page draws the whole nervous system inside the
@@ -15,10 +19,9 @@ sensory and command neurons by name, and what each cell is by the tint and shape
 (sensory, interneuron, command, motor, pharyngeal). Heat follows the logarithm of activity, because a signal
 fades by orders of magnitude as it spreads.
 
-[![The worm on its plate, the nervous system drawn inside the body, a lesson arriving from food](screenshot.png)](https://floatingpragma.io/cadence-examples/celegans/)
+[![The worm on its plate, the nervous system drawn inside the body, a lesson arriving from food](screenshot.png)](#run-it-locally)
 
-Live page: [floatingpragma.io/cadence-examples/celegans](https://floatingpragma.io/cadence-examples/celegans/).
-The same page runs from this directory; see [Run it locally](#run-it-locally).
+Run the preserved page locally; see [Run it locally](#run-it-locally).
 
 ## Card
 
@@ -37,7 +40,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
   - Float exports differ between machines at the last digits through libm's tanh, so a byte-for-byte gate on `brain.json` failed. `check_exports.py` compares exactly where nothing is rounded and to 1e-6 elsewhere.
   - The network has no spontaneous activity. Away from every smell it goes cold, and the page shows that instead of adding noise.
   - A 1.7 MB social card made X fall back to a card without an image. The card is a 1200 by 630 JPEG of about 100 kB.
-- **Hosted at:** https://floatingpragma.io/cadence-examples/celegans/
+- **Hosted at:** Local reproduction; see [Run](#run-it-locally). The public demo collection is [Cadence demos](https://floatingpragma.io/demos/).
 - **Receipts and checks:** `tests/parity.mjs` (the browser engine against the library along lived ticks and lessons, worst relative difference 4.8e-8), `tests/body.mjs` (the body's invariants under stress), `tests/test_learning_accounting.py` and `tests/learning-accounting.mjs` (lesson custody), `tools/check_exports.py` (the committed exports against a rebuild). `node worm/tests/parity.mjs && node worm/tests/body.mjs` from the repository root.
 - **Data and rights:** The connectome and the cell classes come from openworm's c302 and ConnectomeToolbox (MIT); the soma positions from Kaiser and Hilgetag (2006). Sources, hashes and citations are in `data/SOURCES.md`.
 - **Work in progress:** a conditioning receipt with paired, unpaired, frozen and lesioned controls across seeds; a body the motor neurons drive.

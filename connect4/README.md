@@ -1,14 +1,17 @@
 # Connect Four
 
+> Version-pinned historical example. For the public demo collection, see
+> [Cadence demos](https://floatingpragma.io/demos/). This guide describes the
+> model and evidence preserved in this directory.
+
 One `cadence.RecordPatchNet` reads a position right after a stone has landed, as the side that
 placed it sees it, and says how the game ends for that side. A supplied search knows the rules,
 imagines moves and reads the patch where it stops looking. The page plays it in the browser
 with the same arithmetic as the library and draws every sampled read.
 
-[![A game in progress: the board, and beside it the brain mid-thought, its reading, context channels and record cells lit](screenshot.png)](https://floatingpragma.io/cadence-examples/connect4/)
+[![A game in progress: the board, and beside it the brain mid-thought, its reading, context channels and record cells lit](screenshot.png)](#run-it-locally)
 
-Live page: [floatingpragma.io/cadence-examples/connect4](https://floatingpragma.io/cadence-examples/connect4/).
-The same page runs from this directory; see [Run it locally](#run-it-locally).
+Run the preserved page locally; see [Run it locally](#run-it-locally).
 
 ## Card
 
@@ -28,7 +31,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
   - Records by day and slow parameters by night were measured. At every matched update count the school is one to three points ahead, so the deployed brain is the schooled one.
   - alpha-zero-general's game package is also named `connect4`, which shadows this directory on import. The AlphaZero bridge is launched by path and loads the wrapper under another name.
   - Social-card tags copied from another page produced no card on X. The page carries explicit Twitter tags, a canonical link and a baseline JPEG.
-- **Hosted at:** https://floatingpragma.io/cadence-examples/connect4/
+- **Hosted at:** Local reproduction; see [Run](#run-it-locally). The public demo collection is [Cadence demos](https://floatingpragma.io/demos/).
 - **Receipts and checks:** `web/receipt.json` (every game and every graded move of the deployed build, bound to the page's files), `receipts/` (records drown, record addresses, the rules-only control, the sleep regime), `verify.py`, `web/parity.mjs`. `python connect4/verify.py` from the repository root.
 - **Data and rights:** The school is generated from Pascal Pons' perfect solver and its opening book, and the AlphaZero baseline is trained with alpha-zero-general; `bench/setup_external.sh` fetches both, and neither is redistributed here. School files are regenerated from their seed and are not stored.
 - **Work in progress:** learning from the games played on the page; a proof search for the late game; the solver's grade of each move stored move by move in the receipt.

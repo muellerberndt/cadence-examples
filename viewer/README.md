@@ -10,14 +10,14 @@ neurons change, synapses lit by their source, an EEG-style montage per region);
 
 ## Setup and migration
 
-The viewer is source code in this repository, not a module installed by
-`pip install cadence-net`. Install Cadence and clone the examples alongside your
-application, then run from the examples repository root:
+The viewer is source code in this version-pinned archive. Clone the examples
+alongside your application and install the exact Cadence 0.18.0 source used by
+its CI checks:
 
 ```bash
-python -m pip install cadence-net
 git clone https://github.com/muellerberndt/cadence-examples.git
 cd cadence-examples
+python -m pip install "cadence-net @ git+https://github.com/muellerberndt/cadence@318a48c510eddfafa0cd299451446bf644aa9287" pytest
 ```
 
 Cadence 0.18 removes `cadence.atlas`, its top-level atlas exports and the

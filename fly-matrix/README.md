@@ -1,5 +1,9 @@
 # A fly in the Matrix
 
+> Version-pinned historical example. For the public demo collection, see
+> [Cadence demos](https://floatingpragma.io/demos/). This guide describes the
+> model and evidence preserved in this directory.
+
 **Import a biological connectome, get it running as a Cadence patch net, feed in
 sensory data and read out neural decisions. That is the purpose of this example:
 a practical working loop using its versioned library model and browser
@@ -66,8 +70,7 @@ under [Run](#run); historical receipts are not tests of the current page.
 
 ![A fly in the Matrix: the flying body, recorded nervous-system repairs, the live fly's-eye inset, and the neural-event console](receipts/browser_goal_responsive_learning_2026-09-27.png)
 
-Live page: [floatingpragma.io/cadence-examples/fly-matrix](https://floatingpragma.io/cadence-examples/fly-matrix/).
-The same page runs from this directory; see [Run](#run).
+Run the preserved page locally; see [Run](#run).
 
 ## Layout and version
 
@@ -95,6 +98,8 @@ ordinary console. It witnessed a nonzero matched synaptic update. These checks
 validate the specified integration; they do not establish reliable innate food
 seeking, biological completeness or performance on every device.
 
+
+From `fly-matrix/`:
 
 ```bash
 python3 -m http.server 8813 --directory web
@@ -376,7 +381,7 @@ settlements and use no injected pose, fabricated readout or manufactured reward.
   - A connectome carries no operating point: at the global threshold the approach cell sat at 1.00 under every odour and the avoidance cell at 0.01, where a nudge has no slope, and on the measured seam counts the naive fly avoided the fruit odour and approached the yeast (0.17 against 0.83) before any lesson, so the fruit was never approached and never rewarded. The lesson starts naive (every plastic class the same weight, `naive_efficacy`) and the two output cells are calibrated jointly over the situations the fly decides in, the approach cell to 0.6 and the avoidance cell to 0.4, the naive fly's attraction to food smells (`calibrate_bias`; `fruitfly/lessons.py`, `receipts/lessons_setup.json`; at one half each the naive fly made eleven fruitless searches before its first sugar on the page). With the three in place the T-maze reverses in both directions on the library's actor-critic (`tools/tmaze.py`): sugar at the fruit, blows there, sugar at the yeast ends at 0.17 for the fruit against 0.85 for the yeast; the same the other way round ends at 0.85 against 0.37.
   - Three traps of the readout were measured in pilots: at the worm's softmax temperature (0.05) two cells in [0, 1] make a certain choice and the nudge has nothing to push; balancing the pair at one half in an open field leaves a fly that avoids every smell and is never rewarded; and with approach paying half the time the rule first silences the avoidance cell for both smells before the value catches up. The arena is therefore the animal's T-maze, where avoiding one smell means taking the other.
   - A first design read the actions from descending neurons (DNa02 left and right, DNp09); inside the olfactory sub-net those neurons receive almost no lateralized odour input, so the wiring could not express a left-right policy. The actions are read from the mushroom body's own output neurons by Aso's transmitter rule.
-- **Hosted at:** https://floatingpragma.io/cadence-examples/fly-matrix/
+- **Hosted at:** Local reproduction; see [Run](#run). The public demo collection is [Cadence demos](https://floatingpragma.io/demos/).
 - **Receipts and checks:** `fruitfly/fixtures/banc_888_manifest.json` (custody, the seam kept at every count), `receipts/g2_reflex_facts.json` and `receipts/g2_reflex_loop.json` (the steering circuit), `receipts/g3_instinct_facts.json`, `receipts/class_gains.json` (the local neurons' gain by protocol, with shuffled controls), `receipts/lessons_setup.json` (the naive seam, the calibrated readouts and the library's `preflight` on the page's sub-net: no warnings before the first lesson), `receipts/g4_tmaze_reversal.json` (the T-maze reversal in both directions on the library's actor-critic, against a shuffled wiring), `receipts/page_reversal.json` (the visitor's reversal on the real page in a headless browser, three seeds in each direction), `receipts/subnet_closure.json`, `receipts/odour_code.json`, `receipts/g4_lessons.json` (the lessons against the controls), `receipts/g3b_ethogram.json`, `tests/parity.mjs` (the browser brain against the library, 4e-16), `tests/body.mjs` (the body's twins bit-identical over 71,000 steps), `tests/learner_smoke.mjs`. `node fly-matrix/tests/parity.mjs --legacy-subset && node fly-matrix/tests/body.mjs && node fly-matrix/tests/learner_smoke.mjs` from the repository root.
 - **Data and rights:** BANC release 888 (the Lee lab and the BANC community, CC BY): `meta.feather`, `edgelist_simple_v3.feather`, `neurotransmitter_prediction_v2.csv` from the public bucket, pinned by SHA-256 in `fruitfly/banc.py`. The ethogram's reference numbers and their sources are in `docs/REAL_FLY.md`.
 - **Work in progress:** the gate-4 receipt across seeds and controls; a parity test of the browser learner against the library's actor-critic on recorded decisions; the optic lobe as a sense.

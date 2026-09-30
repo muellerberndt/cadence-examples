@@ -1,5 +1,9 @@
 # Patch World
 
+> Version-pinned historical example. For the public demo collection, see
+> [Cadence demos](https://floatingpragma.io/demos/). This guide describes the
+> model and evidence preserved in this directory.
+
 Soft bodies live on a torus that conserves its mass under one moving sun. A body is a graph of
 point masses and springs. Some springs are muscles. Every node keeps more of a step along its
 head-ward axis than against it or across it, and that grip is all that makes a shape crawl.
@@ -17,10 +21,9 @@ line that shines with the signal it carries this tick, the record cells a grid w
 reading's code lit, and the muscles a column of motor neurons between the two halves. Every
 group, cortex and port carries its name.
 
-[![A world in its first day: soft bodies on the torus, the world's counters and lineages beside it](screenshot.png)](https://floatingpragma.io/cadence-examples/patchworld/)
+[![A world in its first day: soft bodies on the torus, the world's counters and lineages beside it](screenshot.png)](#run-it-locally)
 
-Live page: [floatingpragma.io/cadence-examples/patchworld](https://floatingpragma.io/cadence-examples/patchworld/).
-The same page runs from this directory; see [Run it locally](#run-it-locally).
+Run the preserved page locally; see [Run it locally](#run-it-locally).
 
 ## Card
 
@@ -42,7 +45,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
   - The sleep gene loses in every run: the awake learner has the world at every tick, and the sleeper trades its actions for second-hand presentations of what it holds.
   - Under the prices the measured worlds keep small brains; a second cortex that pays for itself is the open question.
   - Headless Chromium renders the page slowly, so every number comes from the node probe and the browser gives the screenshot.
-- **Hosted at:** https://floatingpragma.io/cadence-examples/patchworld/
+- **Hosted at:** Local reproduction; see [Run](#run-it-locally). The public demo collection is [Cadence demos](https://floatingpragma.io/demos/).
 - **Receipts and checks:** `receipts/*.jsonl` (worlds of 20,000 ticks, base and sleep), `sim/founder.json`, `sim/parity.js` against `ref/fixture.json`, `tests/physics.test.js`, `web/build.py --check`. `node patchworld/sim/parity.js patchworld/ref/fixture.json && node patchworld/tests/physics.test.js` from the repository root.
 - **Data and rights:** No external data. Every world is generated from its seed.
 - **Work in progress:** a world in which a second cortex pays for itself; planning over whole-gait alternatives with the policy in the loop; per-patch record-cell genes.
