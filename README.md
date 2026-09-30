@@ -1,4 +1,16 @@
+> [!CAUTION]
+> # This repository is deprecated
+>
+> **Cadence has had a major update, and the examples in this repository are no longer compatible
+> with it.** They were written for an earlier version of the library and do not run on the current
+> one.
+>
+> **The official Cadence examples are now in
+> [cadence-demos](https://github.com/muellerberndt/cadence-demos).**
+
 # Cadence examples
+
+[Website](https://floatingpragma.io/cadence/) · [Library](https://github.com/muellerberndt/cadence) · [Paper](https://philpapers.org/rec/MUECAP-2) · [PyPI](https://pypi.org/project/cadence-net/)
 
 Six worked examples for [Cadence](https://github.com/muellerberndt/cadence). Each is one directory
 with its own README, its page, the receipts behind every number it states, and a check that
