@@ -18,15 +18,16 @@ const clamp = (v, m) => Math.max(-m, Math.min(m, v));
 
 export class Life {
   constructor(spec, p, seed = 0) {
-    this.p = p; this.brain = new Brain(spec);
+    this.p = p; this.brain = new Brain(spec); this.brain.p = p;
+    this.order = []; spec.pos.forEach((place, i) => { this.order[place] = i; });
     this.random = mulberry32(seed * 7919 + 17);
     this.uniform = (lo, hi) => lo + (hi - lo) * this.random();
     [this.w, this.h] = p.plate;
     this.t = 0; this.tick_count = 0; this.items = []; this.events = [];
     this.prev = { food: 0, pain: 0 }; this.value_prev = 0; this.bias = 0;
     this.pending = { food: 0, pain: 0 };
-    this.stretch = []; this.path = null; this.readout = [0, 0]; this.input = [0, 0, 0, 0];
-    this.activity = new Float64Array(spec.H); this.previousActivity = new Float64Array(spec.H);
+    this.readout = [0, 0]; this.input = [0, 0, 0, 0];
+    this.activity = this.brain.activity(); this.previousActivity = this.activity;
     this.lessons = 0; this.rejected = 0;
     // The body is its centreline: points from the head (first) to the tail (last),
     // always exactly one body length. Whichever end leads lays the track, the rest
@@ -164,50 +165,28 @@ export class Life {
 
   // ---- the brain, by cadence's documented calls ------------------------------------------
   sense(u) {
-    const T = this.p.window;
-    this.stretch.push(Float64Array.from(u));
-    if (this.stretch.length > 2 * T) { this.brain.advance(this.stretch.slice(0, T)); this.stretch = this.stretch.slice(T); }
-    this.path = this.brain.imagine(this.stretch);
-    const H = this.brain.H, last = this.path.T - 1;
+    const y = this.brain.sense(u);
     this.previousActivity = this.activity;
-    this.activity = this.path.hidden.slice(last * H, (last + 1) * H).map(Math.tanh);
-    return [this.path.output[last * 2], this.path.output[last * 2 + 1]];
+    this.activity = this.brain.activity();
+    return [y[0], y[1]];
   }
 
   learn(kinds) {
-    const O = 2, T = this.path.T, y = this.path.output.slice(), k = Math.min(this.p.teach, T);
-    for (const kind of kinds) {
-      const want = kind === "food" ? 0 : 1;
-      for (let t = T - k; t < T; t++) { y[t * O + want] = this.p.teach_level; if (kinds.length === 1) y[t * O + 1 - want] = 0; }
-    }
-    const updatesBefore = this.brain.updates;
-    const r = this.brain.observe(this.stretch, y, this.p.beta, this.p.rate);
-    const stretch = this.stretch; this.stretch = [];
-    let halvings = 0;
-    if (r.updated) {
-      let after = this.brain.parameters();
-      const passes = () => { const estimate = this.brain.growth(after.A); return Number.isFinite(estimate) && estimate <= this.p.stability; };
-      while (!passes() && halvings < 12) {
-        after = { A: r.before.A.map((v, i) => v + 0.5 * (after.A[i] - v)),
-                  B: r.before.B.map((v, i) => v + 0.5 * (after.B[i] - v)),
-                  C: r.before.C.map((v, i) => v + 0.5 * (after.C[i] - v)) };
-        halvings++;
-      }
-      if (!passes()) after = r.before;   // no passing share of it: the lesson is not kept
-      if (halvings) this.brain.setParameters(after);
-    }
-    const after = r.updated ? this.brain.parameters() : null;
-    const updated = Boolean(r.updated && ["A", "B", "C"].some(key => after[key].some((v, i) => v !== r.before[key][i])));
-    let reason = r.reason;
-    if (r.updated && !updated) { this.brain.updates = updatesBefore; reason = "growth_filter_rejected"; }
-    else if (updated && halvings) reason = "updated_after_growth_filter";
-    if (updated) this.lessons++; else this.rejected++;
+    const r = this.brain.learn(kinds);
+    this.lessons = this.brain.lessons; this.rejected = this.brain.rejected;
     // what the visual layer needs: each synapse's applied change, each neuron's credit
-    const H = this.brain.H, applied = r.updated ? after.A.map((v, i) => v - r.before.A[i]) : null;
-    const credit = new Float64Array(H);
-    if (r.plus && r.minus) for (let t = 0; t < r.plus.T; t++) for (let i = 0; i < H; i++)
-      credit[i] += Math.abs(r.plus.hidden[t * H + i] - r.minus.hidden[t * H + i]) / r.plus.T;
-    return { kinds, updated, reason, applied, credit, halvings, length: stretch.length, at: this.t };
+    let applied = null;
+    const credit = new Float64Array(this.brain.H);
+    if (r.updated) {
+      const spec = this.brain.spec, H = this.brain.H;
+      applied = Float64Array.from(spec.A.edge, (k) => r.applied[k]);
+      spec.edges.forEach(([, , target], k) => {
+        if (target < H) credit[this.order[target]] += Math.abs(r.applied[k]);
+      });
+      for (let p = 0; p < H; p++) credit[this.order[p]] += Math.abs(r.appliedBiases[p]);
+    }
+    return { kinds, updated: r.updated, reason: r.reason, applied, credit,
+             rows: r.rows, length: r.length, at: this.t };
   }
 
   // ---- one tick: ten physics steps, then the brain thinks once -----------------------------
@@ -259,10 +238,15 @@ export class Life {
   treat() { this.pending.food = 2; this.events.push({ tick: this.tick_count, t: this.t, event: "treat" }); }
   poke() { this.pending.pain = 2; this.events.push({ tick: this.tick_count, t: this.t, event: "poke" }); }
 
-  probe(sense) {       // what one smell alone now does to the command neurons, from rest
-    const T = this.p.window, k = { odour_A: 0, odour_B: 1 }[sense];
-    const U = Array.from({ length: T }, () => { const u = new Float64Array(4); u[k] = 1; return u; });
-    const out = this.brain.imagine(U, new Float64Array(this.brain.H)).output;
-    return [out[(T - 1) * 2], out[(T - 1) * 2 + 1]];
+  probe(sense) {       // what one smell alone now does to the command drives, from rest.
+    // A probe is a rollout of settles, so it is dear; it can only change when a
+    // lesson is admitted, so it is recomputed once per admission.
+    const key = `${sense}@${this.brain.admissions}`;
+    if (!this._probes) this._probes = new Map();
+    if (!this._probes.has(key)) {
+      if (this._probes.size > 16) this._probes.clear();
+      this._probes.set(key, this.brain.probe(sense));
+    }
+    return this._probes.get(key);
   }
 }

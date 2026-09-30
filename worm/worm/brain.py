@@ -1,22 +1,30 @@
-"""The worm's brain: its connectome as a masked TemporalPatchNet, used strictly
-through the library's documented calls.
+"""The worm's brain: the connectome compiled into one Cadence 0.50 brain, used
+strictly through the library's documented calls.
 
-The live state sits at the start of the stretch of experience the brain has
-not yet committed. Every tick, `imagine` reads privately what the brain's
-command neurons are doing now, from that state through the stretch. When an
-outcome arrives (food, pain, a treat, a poke), `observe` learns the stretch
-with targets saying what the command neurons should have been doing on the way
-there, and carries the live state to the present. Quiet stretches are
-committed with `advance`, which carries the state without learning.
+Every neuron is one processing patch, and its declared inputs are exactly its
+synapses: nothing else can grow. The neurons are declared in order of synaptic
+distance from the sensory cells, so every synapse running down that order is a
+live state connection inside the tick's one joint settlement, while every
+synapse running back up it, and each neuron's own persistence term, arrives
+through the previous tick's settled states. Signals flow from the senses
+toward the commands within a tick; feedback takes a tick; and a lesson's
+correction reaches back through the live chain into the weights of every
+synapse on it. Two readout patches, `forward drive` and `reverse drive`, read
+the live states of the command interneurons in the same settlement, and the
+body reads them through the brain's two declared outputs.
 
-Readouts are the command interneurons themselves: `forward` averages AVB and
-PVC, `reverse` averages AVA, AVD and AVE. The body reads them directly."""
+Every tick, `sense` feeds the previous settled states back in with the current
+senses and commits one `step`. When an outcome arrives (food, pain, a treat, a
+poke), `observe_batch` learns the ticks that led there under constructed
+command targets (`source="estimate"`): the whole proposal must qualify, the
+parameter anchor bounds how far one lesson moves the weights, and a refused
+solve changes nothing. The live state is preserved; life continues."""
 from __future__ import annotations
 
 from dataclasses import dataclass
 
 import numpy as np
-from cadence.experimental import PartitionedTemporalPatchNet
+from cadence import Cortex
 
 from .connectome import params, wiring
 
@@ -26,15 +34,13 @@ class Lesson:
     kind: str
     updated: bool
     reason: str
-    delta: dict | None
-    inputs: np.ndarray
-    target: np.ndarray
-    free: np.ndarray
-    plus: np.ndarray | None
-    minus: np.ndarray | None
-    # delta is the learner's proposed gradient; applied is the final parameter change.
+    rows: int
+    event_id: int | None
+    energy: float | None
+    stationarity: float | None
+    sweeps: int | None
+    # applied is the retained parameter change of an accepted lesson, per edge and per patch.
     applied: dict | None = None
-    halvings: int = 0
 
 
 class WormBrain:
@@ -42,143 +48,154 @@ class WormBrain:
                  p: dict | None = None) -> None:
         self.p = p or params()
         w = wiring(self.p, lesion)
-        self.names, self.inputs, self.outputs = w.names, w.inputs, w.outputs
+        self.names, self.senses, self.readouts = w.names, w.senses, w.readouts
+        self.order, self.pos = w.order, w.pos
         self.H = len(w.names)
-        index = {n: i for i, n in enumerate(self.names)}
-        C = np.zeros_like(w.C)
-        for k, readout in enumerate(self.outputs):
-            cells = self.p["outputs"][readout]
-            for c in cells:
-                C[k, index[c]] = 1.0 / len(cells)
-        self.net = PartitionedTemporalPatchNet(len(self.inputs), self.H, len(self.outputs),
-                                               masks=w.masks, seed=seed)
-        self.net.set_parameters({"A": w.A, "B": w.B, "C": C})
+        layout = Cortex(seed=seed, tolerance=self.p["tolerance"])
+        prev = [layout.input(f"~{n}", shape=(1,)) for n in w.names]
+        sensors = {s: layout.input(s, shape=(1,)) for s in self.senses}
+        index = {n: i for i, n in enumerate(w.names)}
+        cells: dict[int, object] = {}
+        for i in w.order:
+            live = set(w.state_partners[i])
+            sources = tuple(sensors[s] for s in w.cell_senses[i])
+            sources += tuple(cells[j] if j in live else prev[j]
+                             for j in sorted(live | set(w.prev_partners[i])))
+            cells[i] = layout.column(w.names[i], patches=1, inputs=sources)
+        for readout in self.readouts:
+            group = layout.column(f"{readout} drive", patches=1,
+                                  inputs=tuple(cells[index[c]] for c in self.p["outputs"][readout]))
+            layout.output(readout, shape=(1,), reads=group)
+        self.brain = layout.build()
         self.frozen = frozen
-        self.stretch: list[np.ndarray] = []
-        self.path = None
-        self.lessons = self.rejected = self.halvings = 0
+        self.stretch: list[dict] = []
+        self.readout = np.zeros(len(self.readouts))
+        self.lessons = self.rejected = self.refusals = 0
 
     # ---- living ------------------------------------------------------------------
-    def sense(self, u: np.ndarray) -> np.ndarray:
-        """Add this tick's senses to the uncommitted stretch and read the command
-        neurons privately (the live state is not moved)."""
-        self.stretch.append(np.asarray(u, float))
-        T = self.p["window"]
-        if len(self.stretch) > 2 * T:
-            self.net.advance(np.stack(self.stretch[:T])[None])
-            self.stretch = self.stretch[T:]
-        self.path = self.net.imagine(np.stack(self.stretch)[None])
-        return self.path.output[0, -1]
+    def _inputs(self, u, state=None) -> dict:
+        state = self.brain.state if state is None else state
+        inputs = {f"~{n}": (state[self.pos[i]],) for i, n in enumerate(self.names)}
+        inputs.update({s: (float(u[k]),) for k, s in enumerate(self.senses)})
+        return inputs
+
+    def sense(self, u) -> np.ndarray:
+        """Feed the previous settled states back in with this tick's senses,
+        commit one step, and read the command drives. Each committed tick joins
+        the stretch a lesson can reach, together with what the drives freely
+        did. A refused step keeps the previous state and readout; nothing
+        partial is retained."""
+        inputs = self._inputs(u)
+        r = self.brain.step(inputs)
+        if r["accepted"]:
+            self.stretch.append((inputs, r["outputs"]))
+            if len(self.stretch) > self.p["window"]:
+                self.stretch.pop(0)
+            self.readout = np.array([r["outputs"][k][0] for k in self.readouts])
+        else:
+            self.refusals += 1
+        return self.readout
 
     def activity(self) -> np.ndarray:
-        return np.tanh(self.path.hidden[0, -1])
+        """Each neuron's settled state, in connectome order."""
+        state = self.brain.state
+        return np.array([state[self.pos[i]] for i in range(self.H)])
 
-    def _target(self, kinds: tuple[str, ...]) -> np.ndarray:
+    def _targets(self, kinds: tuple[str, ...], free: dict) -> dict:
         """Correct only the last `teach` ticks before the outcome: the command
-        neuron that should have led there goes to `teach_level`, its rival to zero.
-        Earlier ticks get the brain's own free prediction, so they carry no
-        correction at all."""
-        y = self.path.output[0].copy()
-        k = min(self.p["teach"], len(y))
+        drive that should have led there is asked to reach `teach_level`, its
+        rival to rest. Earlier ticks keep the brain's own free prediction as
+        their target, so they carry no correction at all — and the drives'
+        biases cannot absorb the outcome, because the same batch restates what
+        the drives freely did before it."""
         drive = {"food": "forward", "pain": "reverse"}
+        targets = {k: (free[k][0],) for k in self.readouts}
         for kind in kinds:
-            want = self.outputs.index(drive[kind])
-            y[-k:, want] = self.p["teach_level"]
-            if len(kinds) == 1:
-                y[-k:, 1 - want] = 0.0
-        return y
+            targets[drive[kind]] = (self.p["teach_level"],)
+        if len(kinds) == 1:
+            (want,) = kinds
+            rival = "reverse" if drive[want] == "forward" else "forward"
+            targets[rival] = (0.0,)
+        return targets
 
     def learn(self, *kinds: str) -> Lesson:
-        """The stretch led to these outcomes: learn what the command neurons
-        should have been doing on the way, then carry the state to the present."""
-        u = np.stack(self.stretch)[None]
-        y = self._target(kinds)[None]
-        return self._observe("+".join(kinds), u, y)
+        """The recent ticks led to these outcomes: learn them as one batch of
+        constructed-target experiences, preserving the live state."""
+        k = min(self.p["teach"], len(self.stretch))
+        rows = [(inputs, {r: (free[r][0],) for r in self.readouts})
+                for inputs, free in self.stretch[:len(self.stretch) - k]]
+        rows += [(inputs, self._targets(kinds, free))
+                 for inputs, free in self.stretch[len(self.stretch) - k:]]
+        return self._admit("+".join(kinds), rows)
 
-    def growth(self, A: np.ndarray | None = None) -> float:
-        """Recurrent growth rate: (|A^64 x| / |x|)^(1/64) from a fixed start.
-        This single-start estimate can miss modes; it is not a stability or
-        contraction certificate. Same function in web/brain.js."""
-        A = self.net.parameters()["A"] if A is None else A
-        x = np.linspace(1.0, 2.0, self.H)
-        x /= np.linalg.norm(x)
-        log = 0.0
-        for _ in range(64):
-            x = A @ x
-            n = float(np.linalg.norm(x))
-            if n == 0.0:
-                return 0.0
-            log += np.log(n)
-            x /= n
-        return float(np.exp(log / 64))
-
-    def _stabilize(self, before: dict) -> int:
-        """Heuristic growth filter: halve the proposal until its estimate passes."""
-        halvings = 0
-        after = self.net.parameters()
-        def passes():
-            estimate = self.growth(after["A"])
-            return np.isfinite(estimate) and estimate <= self.p["stability"]
-        while not passes() and halvings < 12:
-            after = {k: before[k] + 0.5 * (after[k] - before[k]) for k in after}
-            halvings += 1
-        if not passes():
-            after = before              # no stable share of it: the lesson is not kept
-        if halvings:
-            self.net.set_parameters(after)
-        return halvings
-
-    def _observe(self, kind: str, u: np.ndarray, y: np.ndarray) -> Lesson:
-        before = self.net.parameters()
-        updates_before = self.net.updates
-        r = self.net.observe(u, y, beta=self.p["beta"], rate=0.0 if self.frozen else self.p["rate"],
-                             backtrack=not self.frozen)
-        self.halvings = self._stabilize(before) if r.updated and not self.frozen else 0
-        applied = {k: v - before[k] for k, v in self.net.parameters().items()} if r.updated else None
-        updated = bool(r.updated and any(np.any(v != 0) for v in applied.values()))
-        reason = r.reason
-        if r.updated and not updated:
-            self.net.updates = updates_before
-            reason = "growth_filter_rejected"
-        elif updated and self.halvings:
-            reason = "updated_after_growth_filter"
+    def _admit(self, kind: str, rows: list) -> Lesson:
+        """One outcome, one proposal: the whole batch qualifies or nothing is
+        kept. The stretch is spent either way; an admitted lesson's applied
+        change is the retained parameter movement."""
         self.stretch = []
-        if updated and not self.frozen:
-            self.lessons += 1
-        elif not updated:
+        if self.frozen or not rows:
             self.rejected += 1
-        return Lesson(kind, updated, reason, r.delta, u[0], y[0], r.free.hidden[0],
-                      None if r.plus is None else r.plus.hidden[0],
-                      None if r.minus is None else r.minus.hidden[0], applied, self.halvings)
+            return Lesson(kind, False, "frozen" if self.frozen else "no_experience",
+                          len(rows), None, None, None, None)
+        before_w, before_b = self.brain.weights, self.brain.biases
+        r = self.brain.observe_batch(rows, source="estimate")
+        if r["accepted"]:
+            self.lessons += 1
+            applied = {
+                "weights": tuple(a - b for a, b in zip(self.brain.weights, before_w)),
+                "biases": tuple(a - b for a, b in zip(self.brain.biases, before_b)),
+            }
+            return Lesson(kind, True, r["reason"], len(rows), r["event_id"],
+                          r["energy"], r["stationarity"], r["sweeps"], applied)
+        self.rejected += 1
+        return Lesson(kind, False, r["reason"], len(rows), r["event_id"],
+                      r.get("energy"), r.get("stationarity"), r.get("sweeps"))
 
     # ---- before birth --------------------------------------------------------------
     def born(self) -> list[Lesson]:
         """Prenatal lessons give the reflex every worm is born with: when the
-        nociceptors fire, reverse. Same rule, same brain, before the life."""
-        T, out = self.p["window"], []
-        k = self.inputs.index("pain")
+        nociceptors fire, reverse; when nothing happens, rest. Each episode is
+        lived first (quiet, then a sting long enough to spread through the
+        wiring), then taught as one batch that must fit both of its contexts:
+        the quiet ticks are asked for rest, the last ticks of the sting for the
+        withdrawal. A drive's bias can satisfy neither alone, so the sting has
+        to be read out of the wiring. Frozen worms are taught too; their freeze
+        is on the life, not on what they hatch with."""
+        frozen, self.frozen = self.frozen, False
+        quiet = np.zeros(len(self.senses))
+        sting = np.zeros(len(self.senses))
+        sting[self.senses.index("pain")] = 1.0
+        stung = self.p["teach"] + 2
+        rest = {r: (0.0,) for r in self.readouts}
+        out = []
         for _ in range(self.p["prenatal_lessons"]):
-            self.net.reset()
-            u = np.zeros((1, T, len(self.inputs)))
-            u[0, :, k] = 1.0
-            y = np.zeros((1, T, len(self.outputs)))
-            y[0, 2:, self.outputs.index("reverse")] = self.p["teach_level"]
-            before = self.net.parameters()
-            updates_before = self.net.updates
-            r = self.net.observe(u, y, beta=self.p["beta"], rate=self.p["rate"], backtrack=True)
-            if r.updated:
-                self._stabilize(before)
-            kept = bool(r.updated and any(np.any(v != before[k]) for k, v in self.net.parameters().items()))
-            if r.updated and not kept:
-                self.net.updates = updates_before
-            out.append(kept)
-        self.net.reset()
+            for _ in range(self.p["window"]):
+                self.sense(quiet)
+            for _ in range(stung):
+                self.sense(sting)
+            rows = [(inputs, rest) for inputs, _ in self.stretch[:-stung]]
+            rows += [(inputs, {r: (free[r][0],) for r in self.readouts})
+                     for inputs, free in self.stretch[-stung:-self.p["teach"]]]
+            rows += [(inputs, self._targets(("pain",), free))
+                     for inputs, free in self.stretch[-self.p["teach"]:]]
+            out.append(self._admit("pain", rows))
+        for _ in range(self.p["window"]):
+            self.sense(quiet)
+        self.frozen = frozen
         self.stretch = []
+        self.lessons = self.rejected = self.refusals = 0
         return out
 
     def probe(self, sense: str) -> np.ndarray:
-        """What one smell alone does to the command neurons now, from rest."""
-        T = self.p["window"]
-        u = np.zeros((1, T, len(self.inputs)))
-        u[0, :, self.inputs.index(sense)] = 1.0
-        return self.net.imagine(u, state=np.zeros((1, self.H))).output[0, -1]
+        """What one sense alone does to the command drives now, from rest: a
+        pure rollout of settles that never touches the live state."""
+        u = np.zeros(len(self.senses))
+        u[self.senses.index(sense)] = 1.0
+        state = (0.0,) * self.H
+        outputs = {k: (0.0,) for k in self.readouts}
+        for _ in range(self.p["probe_ticks"]):
+            r = self.brain.settle(self._inputs(u, state))
+            if not r["qualified"]:
+                break
+            state, outputs = r["state"][:self.H], r["outputs"]
+        return np.array([outputs[k][0] for k in self.readouts])

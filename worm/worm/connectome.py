@@ -2,10 +2,9 @@
 from __future__ import annotations
 
 import json
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
-
-import numpy as np
 
 DATA = Path(__file__).resolve().parents[1] / "data"
 
@@ -16,13 +15,14 @@ def params() -> dict:
 
 @dataclass(frozen=True)
 class Wiring:
-    names: list[str]
-    A: np.ndarray        # (post, pre) inherited recurrent weights
-    B: np.ndarray        # (neuron, sense)
-    C: np.ndarray        # (readout, neuron)
-    masks: dict[str, np.ndarray]
-    inputs: list[str]
-    outputs: list[str]
+    names: list[str]                          # the 302 neurons, in connectome order
+    order: list[int]                          # declaration order: indices by sensory depth
+    pos: list[int]                            # each neuron's place in that order
+    state_partners: list[tuple[int, ...]]     # per neuron: presynaptic partners read within the tick
+    prev_partners: list[tuple[int, ...]]      # per neuron: partners read from the previous tick, and itself
+    cell_senses: list[tuple[str, ...]]        # per neuron: the senses it receives
+    senses: list[str]                         # sense order, as the brain's input vector has it
+    readouts: list[str]                       # readout order: forward, reverse
 
 
 def load() -> dict:
@@ -30,39 +30,60 @@ def load() -> dict:
 
 
 def wiring(p: dict | None = None, lesion: tuple[str, ...] = ()) -> Wiring:
-    """Inherited weights: log synapse count, sign from the transmitter's receptor
-    class (GABA inhibitory), gap junctions symmetric, then one global scale so
-    the recurrent spectral radius is p['radius'], plus a self term for membrane
-    persistence. Learning may change every permitted entry, including signs."""
+    """Which connections exist: every chemical synapse, every gap junction both
+    ways, and each neuron's own state a moment ago. The neurons are declared in
+    order of synaptic distance from the sensory cells, and each synapse that
+    runs down that order is read live, within the tick's joint settlement,
+    while each synapse that runs back up it, and every neuron's persistence
+    term, is read from the previous tick. Signals therefore flow from the
+    senses toward the commands within a tick, and feedback takes a tick — and
+    a lesson's correction can reach back through the live chain to the weights
+    of every synapse on it. Cadence 0.50 has no way to install inherited
+    synaptic strengths, so existence is all the connectome supplies; every
+    weight starts at the library's seeded value and is learned."""
     p = p or params()
     c = load()
     names = [n["name"] for n in c["neurons"]]
     index = {n: i for i, n in enumerate(names)}
     H = len(names)
-    A = np.zeros((H, H))
-    mA = np.zeros((H, H), bool)
-    for pre, post, count, sign, _ in c["chemical"]:
-        A[post, pre] += sign * np.log1p(count)
-        mA[post, pre] = True
-    for a, b, count in c["gap"]:
-        A[b, a] += np.log1p(count)
-        A[a, b] += np.log1p(count)
-        mA[b, a] = mA[a, b] = True
-    rho = float(max(abs(np.linalg.eigvals(A))))
-    A *= p["radius"] / rho
-    if p["persistence"] > 0:
-        A[np.diag_indices(H)] += p["persistence"]
-        np.fill_diagonal(mA, True)
+    forward: list[set[int]] = [set() for _ in range(H)]   # pre -> its postsynaptic cells
+    partners: list[set[int]] = [set() for _ in range(H)]  # post -> its presynaptic cells
+    for pre, post, _count, _sign, _kind in c["chemical"]:
+        forward[pre].add(post)
+        partners[post].add(pre)
+    for a, b, _count in c["gap"]:
+        forward[a].add(b)
+        forward[b].add(a)
+        partners[a].add(b)
+        partners[b].add(a)
 
-    inputs, outputs = list(p["inputs"]), list(p["outputs"])
-    B = np.zeros((H, len(inputs)))
-    for k, sense in enumerate(inputs):
-        for cell in p["inputs"][sense]:
+    # synaptic distance from the sensory cells; cells no path reaches come last
+    depth = [H] * H
+    queue = deque()
+    for cells in p["inputs"].values():
+        for cell in cells:
+            if depth[index[cell]] == H:
+                depth[index[cell]] = 0
+                queue.append(index[cell])
+    while queue:
+        i = queue.popleft()
+        for j in forward[i]:
+            if depth[j] > depth[i] + 1:
+                depth[j] = depth[i] + 1
+                queue.append(j)
+    order = sorted(range(H), key=lambda i: (depth[i], i))
+    pos = [0] * H
+    for place, i in enumerate(order):
+        pos[i] = place
+
+    state_partners = [tuple(sorted(j for j in partners[i] if pos[j] < pos[i]))
+                      for i in range(H)]
+    prev_partners = [tuple(sorted({i, *(j for j in partners[i] if pos[j] > pos[i])}))
+                     for i in range(H)]
+    cell_senses: list[list[str]] = [[] for _ in names]
+    for sense, cells in p["inputs"].items():
+        for cell in cells:
             if cell not in lesion:
-                B[index[cell], k] = 1.0
-    C = np.zeros((len(outputs), H))
-    mC = np.zeros_like(C, bool)
-    for k, readout in enumerate(outputs):
-        for cell in p["outputs"][readout]:
-            mC[k, index[cell]] = True
-    return Wiring(names, A, B, C, {"A": mA, "B": B != 0, "C": mC}, inputs, outputs)
+                cell_senses[index[cell]].append(sense)
+    return Wiring(names, order, pos, state_partners, prev_partners,
+                  [tuple(s) for s in cell_senses], list(p["inputs"]), list(p["outputs"]))

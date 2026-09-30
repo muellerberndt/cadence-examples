@@ -209,7 +209,7 @@ export class Renderer {
     for (const it of life.items) this.item(g, it, view.now);
 
     // transmitter released onto each cell, by family: it wells up as fast as it is released and drains slowly
-    const act = view.activity, A = life.brain.val, up = 1 - Math.exp(-view.dt * 14), down = 1 - Math.exp(-view.dt * 1.5);
+    const act = view.activity, A = life.brain.aVals, up = 1 - Math.exp(-view.dt * 14), down = 1 - Math.exp(-view.dt * 1.5);
     const now = {}; for (const k of FAMILIES) now[k] = new Float32Array(this.cells.length);
     for (const e of this.synapses) if (now[e.family]) now[e.family][e.b] += Math.abs(A[e.k] * act[e.a]);
     for (const k of FAMILIES) { const level = this.flood[k], n = now[k]; for (let i = 0; i < level.length; i++) { const v = fire(n[i] * 10); level[i] += (v - level[i]) * (v > level[i] ? up : down); } }
@@ -223,7 +223,8 @@ export class Renderer {
     g.globalCompositeOperation = "lighter";
     const head = this.toScreen(...this.at(f, 0.01, 0));
     for (const e of view.effects) {
-      const age = (view.now - e.at) / 1000; if (age > e.dur) continue;
+      // an effect can be stamped between frames, so its age at the next frame may come out negative
+      const age = Math.max(0, (view.now - e.at) / 1000); if (age > e.dur) continue;
       const t = age / e.dur, c = COLORS[e.color];
       const R = (18 + 120 * t) * Math.min(1.6, S / 700);
       const gr = g.createRadialGradient(head[0], head[1], 0, head[0], head[1], R);
@@ -239,7 +240,7 @@ export class Renderer {
 
   // the whole nervous system: wiring, cords, live connections, vesicles, lessons, neurons
   nervous(g, f, T, life, view, o) {
-    const act = view.activity, A = life.brain.val, cells = this.cells;
+    const act = view.activity, A = life.brain.aVals, cells = this.cells;
     const pos = cells.map((c) => T(...this.at(f, c.s, c.dv)));
     this.pos = pos;
 

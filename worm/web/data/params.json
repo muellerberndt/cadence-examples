@@ -19,16 +19,11 @@
   "food_radius": 0.45,
   "noxious_radius": 0.32,
   "odour_sigma": 1.2,
-  "window": 8,
-  "beta": 0.01,
-  "rate": 4.0,
   "pirouette_reverse": 1.2,
   "base_turn": 0.015,
   "kinesis": 1.6,
   "taxis": 0.9,
   "taxis_memory": 0.75,
-  "radius": 0.5,
-  "persistence": 0.3,
   "inputs": {
     "odour_A": [
       "AWAL",
@@ -76,5 +71,7 @@
   "noxious_drops": 2,
   "teach": 4,
   "teach_level": 0.8,
-  "stability": 0.97
+  "probe_ticks": 8,
+  "window": 8,
+  "tolerance": 0.0001
 }

@@ -121,7 +121,7 @@ function tick(res) {
       const top = R.edges.map((s) => [Math.abs(L.applied[s.k]), s]).sort((a, b) => b[0] - a[0]).slice(0, 160);
       state.lesson = { ...L, top, max: top[0][0] || 1, creditMax: Math.max(...L.credit) || 1, shownAt: performance.now() };
       const what = L.kinds.includes("pain") ? "pain" : "food";
-      toast(`<b>Learned from ${what}.</b> The ${L.length} ticks before it were relived with the command neurons nudged toward ${what === "pain" ? "reversing" : "moving on"}; every connection changed by its own two ends.`);
+      toast(`<b>Learned from ${what}.</b> The ${L.length} ticks before it were relived as one batch with the command drives held toward ${what === "pain" ? "reversing" : "moving on"}; the whole proposed change qualified before any of it was kept.`);
     }
   }
   for (const e of life.events.splice(0)) if (e.event === "treat" || e.event === "poke") history.events.push({ tick: e.tick, event: e.event });
@@ -154,7 +154,8 @@ function panel() {
   $("fwd").style.width = `${Math.max(0, Math.min(1, life.readout[0])) * 100}%`;
   $("rev").style.width = `${Math.max(0, Math.min(1, life.readout[1])) * 100}%`;
   const m = Math.floor(life.t / 60), s = String(Math.floor(life.t % 60)).padStart(2, "0");
-  $("stats").textContent = `age ${m}:${s} · ${life.lessons} lessons · ${life.brain.growth().toFixed(2)} growth estimate`;
+  const refused = life.rejected ? ` · ${life.rejected} refused` : "";
+  $("stats").textContent = `age ${m}:${s} · ${life.lessons} lessons${refused}`;
 }
 setInterval(panel, 250);
 

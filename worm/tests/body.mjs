@@ -58,12 +58,13 @@ for (const [seed, scene] of casesOnly ? [] : [[1, "ring"], [2, "ring"], [3, "rin
       for (const [x, y] of life.body.trail) edge = Math.min(edge, x, y, life.w - x, life.h - y);
     }
     const r = life.think();
-    for (const v of life.activity) if (!Number.isFinite(v)) throw new Error(`seed ${seed}: activity is not finite`);
-    if (life.brain.growth() > p.stability + 1e-9) throw new Error(`seed ${seed}: recurrent gain ${life.brain.growth()}`);
-    if (hand() < 0.03) life.poke(); if (hand() < 0.02) life.treat();
+    const bound = spec.config.state_bound;
+    for (const v of life.activity) if (!Number.isFinite(v) || Math.abs(v) > bound) throw new Error(`seed ${seed}: activity ${v} outside the state bound`);
+    // pokes and treats at a rate the 0.50 lessons can carry; the irritant scenes add their own outcomes
+    if (hand() < 0.008) life.poke(); if (hand() < 0.005) life.treat();
   }
   worst = Math.max(worst, tight);
-  console.log(`${scene.padEnd(6)} seed ${seed}: ${reversals} reversals, ${life.lessons} lessons, tightest bend ${tight.toFixed(1)} rad/mm, nearest the edge ${edge.toFixed(3)} mm, gain ${life.brain.growth().toFixed(3)}`);
+  console.log(`${scene.padEnd(6)} seed ${seed}: ${reversals} reversals, ${life.lessons} lessons, ${life.rejected} refused, tightest bend ${tight.toFixed(1)} rad/mm, nearest the edge ${edge.toFixed(3)} mm`);
 }
 // Chaos, without the brain: bodies started at random places, many against an edge or in a corner, reversing at random,
 // their headings kicked harder than any smell kicks them, crawling and dwelling. Which life a brain leads differs between

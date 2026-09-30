@@ -27,7 +27,7 @@ checks the capabilities it demonstrates.
 
 | Example | What it shows | The brain | Evidence | Check |
 |---|---|---|---|---|
-| [worm](worm/) | Learning from experience in one life, simple affect (food and pain), direct motor control, a measured connectome as the only wiring | The 302 neurons of *C. elegans* as one `PartitionedTemporalPatchNet` masked by the connectome | the browser brain reproduces the library to a relative difference of 8.5e-12 on lessons it lives through; the body holds its invariants under stress | [parity](worm/tests/parity.mjs), [body](worm/tests/body.mjs) |
+| [worm](worm/) | Learning from experience in one life, simple affect (food and pain), direct motor control, a measured connectome as the only wiring | The 302 neurons of *C. elegans*, each one declared patch of one `Cortex`, its synapses the only connections | the browser engine reproduces the library to a relative difference of 4.8e-8 along ticks and lessons it lives through; the body holds its invariants under stress | [parity](worm/tests/parity.mjs), [body](worm/tests/body.mjs) |
 | [amen](amen/) | Creation: from silence it computes sixteen bars of drums, bass and texture, hearing each half-beat it plays | One `RecordPatchNet`: 128 context channels, 8,192 record cells | on held-out tracks, next drum slice 0.85 to 0.88 (most frequent slice 0.03 to 0.05), next bass note 0.41 to 0.64 (repeat previous 0.13 to 0.52), texture error 0.080 to 0.134 (repeat previous 0.099 to 0.173); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v12/receipt.json), [verify](amen/verify.py) |
 | [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
 | [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 and at 100 simulations; 37-1-2 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 10-9-1 with 0.893 of its moves optimal, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
@@ -86,13 +86,15 @@ does not do: [dozing-cat/README.md](dozing-cat/README.md).
 
 ## The worm
 
-The worm's brain is its connectome: every chemical synapse and gap junction becomes one permitted
-connection of a `PartitionedTemporalPatchNet`, weighted at birth by synapse count and signed by
-transmitter. Smells reach the olfactory neurons AWA and AWC, bacteria the dopaminergic CEP, ADE
-and PDE, pain the ASH nociceptors. The body reads the command interneurons directly: AVB and PVC
-drive it forward, AVA, AVD and AVE drive it backward. When food or pain arrives, the worm relives
-the moments that led there and learns, by centred equilibrium detuning, what its command neurons
-should have been doing on the way. Details, sources and limits: [worm/README.md](worm/README.md).
+The worm's brain is its connectome: every neuron is one declared patch of one `Cortex`, and its
+declared inputs are exactly its synapses — chemical, gap junctions both ways, and its own state
+a tick ago — so nothing else can grow. Synapses running toward the commands act live within a
+tick's joint settlement; synapses running back act across ticks. Smells reach the olfactory
+neurons AWA and AWC, bacteria the dopaminergic CEP, ADE and PDE, pain the ASH nociceptors. The
+body reads the command interneurons through two learned drive readouts: AVB and PVC drive it
+forward, AVA, AVD and AVE drive it backward. When food or pain arrives, the worm relives the
+moments that led there as one qualified batch and learns what its command drives should have
+been doing on the way. Details, sources and limits: [worm/README.md](worm/README.md).
 
 ## Connect Four
 
@@ -139,13 +141,15 @@ python -m http.server -d patchworld/web 8804    # then open http://127.0.0.1:880
 python -m http.server -d dozing-cat/web 8805    # then open http://127.0.0.1:8805
 ```
 
-Every example is verified against the Cadence release its checks pin (0.12.0 for the first four, and for the dozing cat the library's commit `f06eab06` after 0.13.0, where the belief patch's boundary state landed): its receipts are replayed, its exports rebuilt and its browser engine checked against the library at that release. A receipt names the commit its own numbers were produced with. The same checks run in CI on every push.
+Every example is verified against the Cadence release its checks pin (0.50.0 for the worm, 0.12.0 for connect4, amen and patchworld, and for the dozing cat the library's commit `f06eab06` after 0.13.0, where the belief patch's boundary state landed): its receipts are replayed, its exports rebuilt and its browser engine checked against the library at that release. A receipt names the commit its own numbers were produced with. The same checks run in CI on every push.
 
 ```bash
-python -m pip install "cadence-net==0.12.0" scipy
-
-# worm
+# worm: the library at its own pin
+python -m pip install "cadence-net==0.50.0" numpy scipy pytest
 python worm/tools/export_web.py && node worm/tests/parity.mjs && node worm/tests/body.mjs
+
+# connect4, amen and patchworld: the library at theirs
+python -m pip install "cadence-net==0.12.0" scipy
 
 # connect4
 python connect4/verify.py

@@ -1,29 +1,75 @@
-// Synthetic learner proposals test final adapter custody without running a life.
+// Synthetic admissions test lesson custody without running a solve.
 import assert from 'node:assert/strict';
-import { Life } from '../web/life.js';
-const copy=p=>Object.fromEntries(Object.entries(p).map(([k,v])=>[k,v.slice()]));
-function fixture(growth, accepted=true) {
-  let params=Object.fromEntries(['A','B','C'].map(k=>[k,Float64Array.of(0)]));
-  const brain={H:1,updates:7,parameters:()=>copy(params),setParameters:p=>{params=copy(p)},growth,
-    observe(){const before=copy(params);if(accepted){params=Object.fromEntries(['A','B','C'].map(k=>[k,Float64Array.of(2)]));this.updates++;}return {updated:accepted,reason:accepted?'updated':'phase_failed',before};}};
-  const life=Object.assign(Object.create(Life.prototype),{brain,p:{teach:1,teach_level:.8,beta:.01,rate:1,stability:.97},path:{T:1,output:Float64Array.of(0,0)},stretch:[Float64Array.of(1)],lessons:0,rejected:0,t:0});
-  return life;
+import { Brain } from '../web/brain.js';
+
+function fixture({ frozen = false, accept = true, ticks = 3 } = {}) {
+  const brain = Object.create(Brain.prototype);
+  brain.p = { teach: 2, teach_level: 0.8, window: 4 };
+  brain.readouts = ['forward', 'reverse'];
+  brain.outputPatch = { forward: 2, reverse: 3 };
+  brain.frozen = frozen;
+  brain.state = Float64Array.of(0.5, -0.5, 0, 0);
+  brain.weights = Float64Array.of(0, 0);
+  brain.biases = Float64Array.of(0, 0, 0, 0);
+  brain.stretch = Array.from({ length: ticks }, (_, t) =>
+    [Float64Array.of(0.1 * t, 0, 0), [0.1 * t, 0.1 * t + 0.05]]);
+  brain.admissions = 0; brain.lessons = 0; brain.rejected = 0; brain.refusals = 0;
+  brain.calls = [];
+  brain.engine = {
+    nPatches: 4, nInputs: 3,
+    settle(inputs, state, weights, biases, opts) {
+      brain.calls.push({ inputs: Float64Array.from(inputs), clamps: new Map(opts.clamps), B: opts.B, learn: opts.learn });
+      if (!accept) return { qualified: false, reason: 'line_search' };
+      return { qualified: true, reason: 'qualified', energy: 0.5, sweeps: 9,
+               weights: Float64Array.of(1, -0.5), biases: Float64Array.of(0.25, 0, 0, 0) };
+    },
+  };
+  return brain;
 }
-{
- const life=fixture(A=>Math.abs(A[0])),r=life.learn(['food']);
- assert.equal(r.updated,true);assert.equal(r.reason,'updated_after_growth_filter');assert.equal(r.halvings,2);
- assert.deepEqual(Array.from(r.applied),[.5]);assert.equal(life.lessons,1);assert.equal(life.rejected,0);assert.equal(life.brain.updates,8);
- for(const a of Object.values(life.brain.parameters()))assert.deepEqual(Array.from(a),[.5]);
+
+{ // an accepted lesson: retained change, counters, spent stretch, built clamps
+  const b = fixture();
+  const r = b.learn(['food']);
+  assert.equal(r.updated, true); assert.equal(r.reason, 'qualified'); assert.equal(r.rows, 3);
+  assert.equal(b.lessons, 1); assert.equal(b.rejected, 0); assert.equal(b.admissions, 1);
+  assert.equal(b.stretch.length, 0);
+  assert.deepEqual(Array.from(r.applied), [1, -0.5]);
+  assert.deepEqual(Array.from(r.appliedBiases), [0.25, 0, 0, 0]);
+  assert.deepEqual(Array.from(b.weights), [1, -0.5]);
+  const [call] = b.calls;
+  assert.equal(call.B, 3); assert.equal(call.learn, true);
+  // the early tick restates the free prediction; the last two are corrected
+  assert.deepEqual([call.clamps.get(2), call.clamps.get(3)], [0, 0.05]);
+  for (const row of [1, 2])
+    assert.deepEqual([call.clamps.get(row * 4 + 2), call.clamps.get(row * 4 + 3)], [0.8, 0]);
+  // every row starts from the same retained live state
+  assert.deepEqual(Array.from(call.inputs.subarray(0, 3)), [0, 0, 0]);
 }
-for(const growth of [A=>A[0]===0?0:1,()=>NaN,()=>Infinity]) {
- const life=fixture(growth),r=life.learn(['food']);
- assert.equal(r.updated,false);assert.equal(r.reason,'growth_filter_rejected');assert.equal(r.halvings,12);
- assert.deepEqual(Array.from(r.applied),[0]);assert.equal(life.lessons,0);assert.equal(life.rejected,1);assert.equal(life.brain.updates,7);
- for(const a of Object.values(life.brain.parameters()))assert.deepEqual(Array.from(a),[0]);
+{ // pain and joint outcomes build their targets
+  const pain = fixture(); pain.learn(['pain']);
+  const p = pain.calls[0].clamps;
+  assert.deepEqual([p.get(2 * 4 + 2), p.get(2 * 4 + 3)], [0, 0.8]);
+  const both = fixture(); both.learn(['food', 'pain']);
+  const q = both.calls[0].clamps;
+  assert.deepEqual([q.get(2 * 4 + 2), q.get(2 * 4 + 3)], [0.8, 0.8]);   // no rival to rest
 }
-{
- const life=fixture(()=>{throw Error('growth checked rejected solver');},false),r=life.learn(['pain']);
- assert.equal(r.updated,false);assert.equal(r.reason,'phase_failed');assert.equal(r.applied,null);
- assert.equal(life.lessons,0);assert.equal(life.rejected,1);assert.equal(life.brain.updates,7);
+{ // a refused solve never claims applied learning
+  const b = fixture({ accept: false });
+  const r = b.learn(['food']);
+  assert.equal(r.updated, false); assert.equal(r.reason, 'line_search'); assert.equal(r.applied, undefined);
+  assert.equal(b.lessons, 0); assert.equal(b.rejected, 1); assert.equal(b.admissions, 0);
+  assert.deepEqual(Array.from(b.weights), [0, 0]);
+}
+{ // a frozen worm spends the stretch without a solve
+  const b = fixture({ frozen: true });
+  const r = b.learn(['pain']);
+  assert.equal(r.updated, false); assert.equal(r.reason, 'frozen');
+  assert.equal(b.calls.length, 0); assert.equal(b.rejected, 1); assert.equal(b.stretch.length, 0);
+}
+{ // an outcome without experience is rejected
+  const b = fixture({ ticks: 0 });
+  const r = b.learn(['food']);
+  assert.equal(r.updated, false); assert.equal(r.reason, 'no_experience');
+  assert.equal(b.calls.length, 0); assert.equal(b.rejected, 1);
 }
 console.log('worm learning accounting: 5 scenarios passed');

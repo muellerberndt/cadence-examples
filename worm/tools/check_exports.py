@@ -3,8 +3,8 @@
 
 Files without computed floats must be identical. Files that carry the library's
 arithmetic (the newborn brain, the parity cases, the body cases) differ between
-machines in the last digits, through BLAS and libm, so they must have the same
-structure and the same numbers to a tolerance.
+machines in the last digits, through libm's tanh and exp, so they must have the
+same structure and the same numbers to a tolerance.
 
   python worm/tools/check_exports.py
 """

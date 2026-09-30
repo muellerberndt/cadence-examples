@@ -1,102 +1,84 @@
-"""Bounded adapter regressions; synthetic proposals exercise post-learning custody."""
+"""Bounded adapter regressions; synthetic admissions exercise lesson custody."""
 from pathlib import Path
-from types import SimpleNamespace
 import sys
-
-import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from worm.brain import WormBrain
 
 
-class Net:
-    def __init__(self, accept=True, value=2.0):
-        self.values = {k: np.zeros((1, 1)) for k in ('A', 'B', 'C')}
-        self.updates = 7
-        self.accept, self.value = accept, value
+class FakeBrain:
+    """The admission surface of a cadence Brain, without a solve."""
 
-    def parameters(self):
-        return {k: v.copy() for k, v in self.values.items()}
+    def __init__(self, accept=True):
+        self.weights = (0.0, 0.0)
+        self.biases = (0.0,)
+        self.accept = accept
+        self.calls = []
 
-    def set_parameters(self, values):
-        self.values = {k: v.copy() for k, v in values.items()}
-
-    def reset(self):
-        pass
-
-    def observe(self, u, y, **kw):
-        updated = self.accept and kw['rate'] > 0
-        if updated:
-            self.values = {k: v + self.value for k, v in self.values.items()}
-            self.updates += 1
-        return SimpleNamespace(updated=updated, reason='updated' if updated else 'no_step',
-            delta={k: np.ones((1, 1)) for k in self.values},
-            free=SimpleNamespace(hidden=np.zeros((1, 2, 1))), plus=None, minus=None)
+    def observe_batch(self, rows, *, source):
+        self.calls.append((rows, source))
+        if self.accept:
+            self.weights = (1.0, -0.5)
+            self.biases = (0.25,)
+            return {"accepted": True, "reason": "qualified", "event_id": 3,
+                    "energy": 0.5, "stationarity": 1e-7, "sweeps": 9}
+        return {"accepted": False, "reason": "line_search", "event_id": None}
 
 
-def worm(*, accept=True, frozen=False, value=2.0):
+def worm(*, frozen=False, accept=True, ticks=3):
     b = WormBrain.__new__(WormBrain)
-    b.net = Net(accept, value)
-    b.p = dict(stability=.97, beta=.01, rate=1., window=2, prenatal_lessons=2, teach_level=.8)
+    b.p = {"teach": 2, "teach_level": 0.8, "window": 4}
+    b.readouts = ["forward", "reverse"]
     b.frozen = frozen
-    b.stretch = [np.ones(1)]
-    b.lessons = b.rejected = b.halvings = 0
-    b.inputs, b.outputs = ['pain'], ['forward', 'reverse']
-    b.growth = lambda A=None: float(np.max(np.abs(b.net.values['A'] if A is None else A)))
+    b.brain = FakeBrain(accept)
+    b.stretch = [({"~X": (0.1 * t,)}, {"forward": (0.1 * t,), "reverse": (0.1 * t + 0.05,)})
+                 for t in range(ticks)]
+    b.lessons = b.rejected = b.refusals = 0
     return b
 
 
-def observe(b):
-    return b._observe('food', np.ones((1, 2, 1)), np.zeros((1, 2, 2)))
-
-
-def test_scaled_commit_reports_actual_change_and_counts_once():
+def test_accepted_lesson_reports_retained_change_and_counts_once():
     b = worm()
-    r = observe(b)
-    assert r.updated and r.reason == 'updated_after_growth_filter'
-    assert r.halvings == 2 and b.lessons == 1 and b.rejected == 0 and b.net.updates == 8
-    for key in ('A', 'B', 'C'):
-        np.testing.assert_array_equal(r.applied[key], [[.5]])
-        np.testing.assert_array_equal(r.delta[key], [[1.]])  # proposal gradient is not applied change
-    assert b.stretch == []
+    r = b.learn("food")
+    assert r.updated and r.reason == "qualified" and r.rows == 3 and r.event_id == 3
+    assert b.lessons == 1 and b.rejected == 0 and b.stretch == []
+    assert r.applied == {"weights": (1.0, -0.5), "biases": (0.25,)}
+    (rows, source), = b.brain.calls
+    assert source == "estimate"
+    # the early tick restates the brain's own free prediction; the last two are corrected
+    assert rows[0][1] == {"forward": (0.0,), "reverse": (0.05,)}
+    for _, targets in rows[1:]:
+        assert targets == {"forward": (0.8,), "reverse": (0.0,)}
 
 
-def test_full_filter_rollback_is_rejected_and_restores_update_counter():
+def test_pain_and_joint_outcomes_build_their_targets():
     b = worm()
-    b.growth = lambda A=None: 0 if not np.any(A) else 1
-    r = observe(b)
-    assert not r.updated and r.reason == 'growth_filter_rejected'
-    assert r.halvings == 12 and b.lessons == 0 and b.rejected == 1 and b.net.updates == 7
-    for key in ('A', 'B', 'C'):
-        np.testing.assert_array_equal(b.net.values[key], [[0.]])
-        np.testing.assert_array_equal(r.applied[key], [[0.]])
-
-
-def test_nonfinite_growth_fails_closed():
+    b.learn("pain")
+    (rows, _), = b.brain.calls
+    assert rows[-1][1] == {"forward": (0.0,), "reverse": (0.8,)}
     b = worm()
-    b.growth = lambda A=None: float('nan')
-    r = observe(b)
-    assert not r.updated and r.halvings == 12 and b.net.updates == 7
-    assert all(not np.any(v) for v in b.net.parameters().values())
+    b.learn("food", "pain")
+    (rows, _), = b.brain.calls
+    assert rows[-1][1] == {"forward": (0.8,), "reverse": (0.8,)}   # no rival to rest
 
 
-def test_frozen_and_solver_rejection_never_claim_applied_learning():
-    for b in (worm(frozen=True), worm(accept=False)):
-        r = observe(b)
-        assert not r.updated and r.applied is None
-        assert b.lessons == 0 and b.rejected == 1 and b.net.updates == 7
+def test_refused_solve_never_claims_applied_learning():
+    b = worm(accept=False)
+    r = b.learn("food")
+    assert not r.updated and r.reason == "line_search" and r.applied is None
+    assert b.lessons == 0 and b.rejected == 1 and b.stretch == []
+    assert b.brain.weights == (0.0, 0.0) and b.brain.biases == (0.0,)
 
 
-def test_birth_admission_counts_final_weights_after_filter():
-    b = worm()
-    b.growth = lambda A=None: 0 if not np.any(A) else 1
-    assert b.born() == [False, False]
-    assert b.net.updates == 7 and all(not np.any(v) for v in b.net.parameters().values())
+def test_frozen_worm_spends_the_stretch_without_a_solve():
+    b = worm(frozen=True)
+    r = b.learn("pain")
+    assert not r.updated and r.reason == "frozen" and r.applied is None
+    assert b.brain.calls == [] and b.rejected == 1 and b.stretch == []
 
 
-def test_single_start_growth_is_not_a_stability_certificate():
-    b = WormBrain.__new__(WormBrain)
-    b.H = 2
-    A = np.array([[4., -2.], [-2., 1.]])  # the fixed start [1,2] misses its eigenvalue 5
-    assert WormBrain.growth(b, A) == 0
-    assert max(abs(np.linalg.eigvals(A))) == 5
+def test_outcome_without_experience_is_rejected():
+    b = worm(ticks=0)
+    r = b.learn("food")
+    assert not r.updated and r.reason == "no_experience"
+    assert b.brain.calls == [] and b.rejected == 1
