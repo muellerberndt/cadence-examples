@@ -27,12 +27,37 @@ checks the capabilities it demonstrates.
 
 | Example | What it shows | The brain | Evidence | Check |
 |---|---|---|---|---|
-| [worm](worm/) | Learning from experience in one life, simple affect (food and pain), direct motor control, a measured connectome as the only wiring | The 302 neurons of *C. elegans*, each one declared patch of one `Cortex`, its synapses the only connections | the browser engine reproduces the library to a relative difference of 4.8e-8 along ticks and lessons it lives through; the body holds its invariants under stress | [parity](worm/tests/parity.mjs), [body](worm/tests/body.mjs) |
+| [worm](worm/) | Learning from experience in one life, simple affect (food and pain), neural command readouts, a measured connectome as the only wiring | The 302 neurons of *C. elegans*, each one declared patch of one `Cortex`, its synapses the only connections | the browser engine reproduces the library to a relative difference of 4.8e-8 along ticks and lessons it lives through; the body holds its invariants under stress | [parity](worm/tests/parity.mjs), [body](worm/tests/body.mjs) |
 | [amen](amen/) | Creation: from silence it computes sixteen bars of drums, bass and texture, hearing each half-beat it plays | One `RecordPatchNet`: 128 context channels, 8,192 record cells | on held-out tracks, next drum slice 0.85 to 0.88 (most frequent slice 0.03 to 0.05), next bass note 0.41 to 0.64 (repeat previous 0.13 to 0.52), texture error 0.080 to 0.134 (repeat previous 0.099 to 0.173); browser engine equal to the library on 128 half-beats | [receipt](amen/runs/record-composer-v12/receipt.json), [verify](amen/verify.py) |
 | [patchworld](patchworld/) | Evolution of bodies and wiring, learning in one life, planning through a learned model, muscles driven directly, drives, computation priced in mass | Two `RecordPatchNet`s per being, a policy and a model, each a list of inherited cortices | the browser brain reproduces the library to 1e-15 on observation, windows, backtracking and planning; mass is conserved at every tick; in two worlds of 20,000 ticks mean speed rises from 0.040 to 0.071 and from 0.042 to 0.063 cells per tick | [parity](patchworld/sim/parity.js), [physics](patchworld/tests/physics.test.js) |
-| [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 and at 100 simulations; 37-1-2 against the perfect solver playing 70% of its moves, where the search alone scores 28-2-10; moving first against the perfect solver 10-9-1 with 0.893 of its moves optimal, the search alone 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
+| [connect4](connect4/) | Planning: a search over imagined boards reads a value learned by watching a perfect player, and every move is graded by that player | One `RecordPatchNet`: 256 context channels, 4,096 record cells left empty by the school | 40-0-0 against AlphaZero at 25 and at 100 simulations; 37-1-2 against the perfect solver playing 70% of its moves, a rules-only control with different search and budget scores 28-2-10; moving first against the perfect solver 10-9-1 with 0.893 of its moves optimal, the control 0-0-20; the browser engine selects the library's record cells and agrees with its values to 1e-15 | [receipt](connect4/web/receipt.json), [verify](connect4/verify.py) |
 | [fly-matrix](fly-matrix/) | An imported nervous system choosing food goals for a supplied flight controller, with local learning from an enacted choice and its outcome | `cadence.Brain` on 150,802 retained BANC neurons and 1,877,099 directed edge classes; an external actor-critic drives local Kenyon-cell-to-MBON updates | one full-graph synthetic rewarded lesson changes approach probability from 47.39% to 71.09%; exact weight restoration and reinstatement recover both responses; browser checks witness a neural choice, feeding and a matched synaptic update | [causal receipt](fly-matrix/receipts/goal_learning_causal_2026-09-27.json), [browser receipt](fly-matrix/receipts/release_0_17_local_learning.json), [checks and scope](fly-matrix/README.md) |
 | [dozing-cat](dozing-cat/) | Metacognition: a brain that reads its own surprise and returns its mode (doze, chase, learn), the governor a settling patch whose every synapse is a gene, selected against hand-set thresholds and a random search at a priced compute | One `BeliefPatch` (32 units, a 512-cell store left empty) and one `Brain` of 14 neurons as the governor | the evolved governor catches 0.961 of its dots awake 0.24 of the time at 15.3 moments per decision, against 0.977 at 37.3 hand-set, 0.931 for the thresholds and 0.249 for a cat that never wakes; the browser brain reproduces the library's decisions, imagination and learning to 4.8e-12 on the committed recording | [receipts](dozing-cat/receipts/), [parity](dozing-cat/tests/parity.mjs), [verify](dozing-cat/verify.py) |
+
+## Choose a current layout
+
+Cadence 0.50.0 supports three design patterns. **All three settle under the same
+patch rule, repair procedure and qualification checks.** Choose the wiring that
+fits the task and measure its behavior and cost.
+
+| Pattern | Wiring | A useful starting point for |
+| --- | --- | --- |
+| Flat, input-only | Patches read fixed sensory inputs independently | Small direct sensor-to-action relations |
+| Ordinary state-coupled | Columns read other columns' live states | Learned intermediate representations |
+| Recursive observation | Observers read states and exact live prediction errors; observers can observe observers | Tasks where feedback about internal errors improves behavior |
+
+See the canonical [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md)
+for construction examples and measured comparisons. A flat current brain still
+settles; extra observation depth is an optional design choice.
+
+The examples below retain their own versions and mechanisms. The worm's 0.50
+source uses ordinary state-coupled columns with feedback across ticks. Amen,
+Connect Four and Patch World use legacy gated record patches; the cat combines
+a belief patch with a separately settling governor; the fly uses a recurrent
+neuron-rate network. Their temporal loops, search and older equilibrium solvers
+are distinct from the current state-and-error observer wiring. Each example's
+guide explains its layout and links to the current choices.
 
 ## Build your own
 
@@ -43,7 +68,7 @@ made to do. Every brain is short enough to read in an evening, every page runs f
 and every check runs from one command, so a change shows at once whether it kept the numbers or
 broke them.
 
-The browser engine every settling-brain page shares, with a guide for building your own example
+The legacy connectome browser engine used by the fly, with a guide for building an example on that model
 (the payload, the settle loop, the viewer, the lessons, the parity test, the page conventions),
 is in [engine/](engine/README.md).
 
@@ -106,8 +131,8 @@ store is left empty, because writing millions of positions into it drowns it (on
 [receipt](connect4/receipts/records_drown.json)). A supplied search knows the rules,
 imagines moves and reads the patch where it stops looking; a line it can follow to the end of
 the game is proven. Measured on the build the page plays, 40 paired games against each
-opponent with every move graded by the solver: what the search alone achieves, what the patch
-adds, and where it still errs are in [connect4/README.md](connect4/README.md). It does not yet
+opponent with every move graded by the solver: the learned player's results, a rules-only
+control with a different search budget, and where it still errs are in [connect4/README.md](connect4/README.md). It does not yet
 learn from the games played on its page.
 
 ## The composer

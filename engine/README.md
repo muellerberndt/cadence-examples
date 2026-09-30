@@ -1,11 +1,18 @@
 # The browser engine
 
-A settling brain of the library, in a page, with the library's arithmetic: `brain.js` settles a
+A legacy settling brain of the library, in a page, with the library's arithmetic: `brain.js` settles a
 sparse connectome (the rate model, the free phase, the nudged phase), `learner.js` runs the
 one-stream actor-critic on it, `export.py` writes what the engine reads from a `cadence.Brain`,
 and `parity.mjs` holds the two to each other. The current fruit fly runs all 150,802 retained neurons and 1,877,099
-connection classes on it in a worker; the worm's temporal patch is a
-different model and carries its own engine.
+connection classes on it in a worker. It uses the legacy `Brain`/`Connectome`
+neuron-rate model checked for the fly on Cadence 0.17.0. The worm's current
+0.50 `Cortex` layout carries its own engine for the patch/repair law.
+
+For new 0.50 layouts, see the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+Flat input-only, ordinary state-coupled and recursive state-and-error layouts
+all settle under that same law; the engine documented here implements the
+older recurrent neuron model.
 
 This page is the guide for building an example of your own: the payload, the settle loop, the
 viewer, the lessons, the parity test, and the conventions every example page follows.

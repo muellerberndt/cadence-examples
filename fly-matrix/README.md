@@ -2,7 +2,7 @@
 
 **Import a biological connectome, get it running as a Cadence patch net, feed in
 sensory data and read out neural decisions. That is the purpose of this example:
-a practical working loop using the current library and its browser
+a practical working loop using its versioned library model and browser
 implementation. It does not yet simulate every neural or bodily detail, such as
 precise spike timing, the complete neurotransmitter and receptor system,
 biological hunger regulation or individual muscle dynamics. The demo will
@@ -68,6 +68,21 @@ under [Run](#run); historical receipts are not tests of the current page.
 
 Live page: [floatingpragma.io/cadence-examples/fly-matrix](https://floatingpragma.io/cadence-examples/fly-matrix/).
 The same page runs from this directory; see [Run](#run).
+
+## Layout and version
+
+The fly's 0.17 model is a recurrent neuron-rate network. Its browser engine
+iterates the coupled activity and checks the network equation residual; an
+external actor-critic supplies local learning signals. It uses the legacy
+`Brain`/`Connectome` API, distinct from the 0.50 `Cortex`/`Brain` layout API.
+
+Current Cadence supports flat input-only, ordinary state-coupled and recursive
+state-and-error layouts. All three settle under the same patch rule, repair
+and qualification checks. A recurrent connectome does not by itself declare
+the exact-error ports of a current observer. For a new layout or a port of this
+example, see the [layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+Keep the fly's existing receipts tied to their recorded model and source.
 
 ## Run
 

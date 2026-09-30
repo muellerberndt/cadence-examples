@@ -30,9 +30,21 @@ from connect4.bench.pons import INVALID, Solver, move_quality  # noqa: E402
 from connect4.brain import Brain  # noqa: E402
 from connect4.game import Position  # noqa: E402
 from connect4.opponents import make_opponent, play  # noqa: E402
-from connect4.patch import ValuePatch  # noqa: E402
 
 BANDS = ((0, 8), (8, 16), (16, 24), (24, 42))
+
+
+def load_patch(path: Path):
+    """The saved value patch, whichever kind: the deep brain is a JSON checkpoint
+    around the library's snapshot, the record patch an ``.npz``. The deep brain is
+    read through the reference engine regardless of the device that trained it."""
+    if path.read_bytes()[:1] == b"{":
+        from connect4.deep import DeepValuePatch
+
+        return DeepValuePatch.load(path, device="python")
+    from connect4.patch import ValuePatch  # the 0.12 record-patch library
+
+    return ValuePatch.load(path)
 
 
 def grade(columns: list[int], subject_first: bool, solver: Solver) -> list[dict]:
@@ -69,7 +81,7 @@ def main() -> None:
         raise SystemExit("give exactly one of --patch or --policy")
     solver, shared = Solver(), {}
     shared["solver"] = solver
-    subject = Brain(ValuePatch.load(a.patch), reads=a.budget, late_stones=a.late_stones, late_reads=a.late_budget, seed=a.seed) if a.patch else make_opponent(a.policy, a.seed, shared)
+    subject = Brain(load_patch(a.patch), reads=a.budget, late_stones=a.late_stones, late_reads=a.late_budget, seed=a.seed) if a.patch else make_opponent(a.policy, a.seed, shared)
     receipt = {"format": "cadence-examples.connect4.bench/1", "subject": str(a.patch or a.policy), "games_per_opponent": a.games,
                "search": {"budget": a.budget, "late_stones": a.late_stones, "late_budget": a.late_budget} if a.patch else None, "opponents": {}}
     a.out.mkdir(parents=True, exist_ok=True)

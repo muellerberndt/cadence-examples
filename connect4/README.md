@@ -33,6 +33,22 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 - **Data and rights:** The school is generated from Pascal Pons' perfect solver and its opening book, and the AlphaZero baseline is trained with alpha-zero-general; `bench/setup_external.sh` fetches both, and neither is redistributed here. School files are regenerated from their seed and are not stored.
 - **Work in progress:** learning from the games played on the page; a proof search for the late game; the solver's grade of each move stored move by move in the receipt.
 
+## Layout and version
+
+The shipped 0.12 evaluator makes one reading from zero context per board. Its
+empty record table leaves a gated hidden representation and linear readout.
+The supplied search can call that evaluator thousands of times for one move;
+game-tree recursion is separate from recursive neural observation. Browser play
+uses fixed trained parameters and does not teach the evaluator.
+
+Cadence 0.50.0 supports flat input-only, ordinary state-coupled and recursive
+state-and-error layouts, all using the same repair and qualification procedure.
+The separate 0.50 observer-ladder work has not replaced this browser checkpoint
+or its receipts. To compare evaluators, keep the school, held-out positions,
+search implementation and search budget fixed. See the
+[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+
 ## What this example shows
 
 - **Planning.** The brain chooses a move by imagining boards and reading a learned value where it stops looking. A line it can follow to the end of the game is proven and outranks anything it reads.
@@ -55,7 +71,7 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 | `brain/v2.npz` | the deployed patch the page's `brain.json` is exported from |
 | `receipts/record_address.json` | what two moves that differ by one stone share in the record store, and what a write to one does to the other, plain and anchored (`tools/record_address.py`, reproduced from this directory alone) |
 | `receipts/records_drown.json` | three runs schooled with every position written into the records: the slow readout alone against the value with the record read (`tools/records_drown.py`) |
-| `receipts/control_rules_only.json` | the same opponents against the search alone, with no value patch: what the patch adds is the difference |
+| `receipts/control_rules_only.json` | the same opponents against a rules-only control with a different search implementation and budget; a system comparison, not a matched evaluator ablation |
 | `verify.py` | replays every game of the receipt with the rules, recounts its table, and checks that the receipt is bound to the page's brain and engine and that the page's brain is the export of `brain/v2.npz` |
 | `tools/make_card.py` | draws the social card with the page itself, mid-thought |
 

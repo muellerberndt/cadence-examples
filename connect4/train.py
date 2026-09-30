@@ -23,23 +23,8 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
+from connect4.data import BANDS, keys_of, load, packed  # noqa: E402, F401  (re-exported)
 from connect4.patch import ValuePatch, value_target  # noqa: E402
-
-BANDS = ((0, 8), (8, 16), (16, 24), (24, 43))
-
-
-def load(files: list[Path]) -> dict[str, np.ndarray]:
-    parts = [np.load(f) for f in files]
-    return {k: np.concatenate([p[k] for p in parts]) for k in ("own", "other", "z", "n", "plies")}
-
-
-def keys_of(data: dict[str, np.ndarray]) -> np.ndarray:
-    return np.stack((data["own"], data["other"]), axis=1)
-
-
-def packed(keys: np.ndarray) -> np.ndarray:
-    """Each key as one structured value, for set operations."""
-    return np.ascontiguousarray(keys).view([("a", keys.dtype), ("b", keys.dtype)]).reshape(-1)
 
 
 def score(patch: ValuePatch, keys: np.ndarray, z: np.ndarray, target: np.ndarray) -> dict[str, float]:

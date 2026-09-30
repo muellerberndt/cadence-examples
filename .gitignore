@@ -7,3 +7,7 @@ __pycache__/
 /runs/
 # Connect Four's local checkpoints and the external solver and AlphaZero checkouts
 connect4/external/
+
+# Bulky local data and nested repositories stay out of git
+/fly-matrix/receipts/browser_settlement_view_schema_fixed.json
+/fly-matrix/receipts/browser_settlement_view_verified.json

@@ -47,6 +47,21 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 - **Data and rights:** No external data. Every world is generated from its seed.
 - **Work in progress:** a world in which a second cortex pays for itself; planning over whole-gait alternatives with the policy in the loop; per-patch record-cell genes.
 
+## Layout and version
+
+Each being uses two legacy 0.12 `RecordPatchNet`s, one policy and one model.
+Its inherited “cortices” are blocks of context channels with sensory masks and
+timescales. The context advances over time; planning adjusts proposed actions
+through model rollouts. These cortices do not read other cortices' exact errors
+inside a shared observer settlement.
+
+For new experiments, Cadence 0.50.0 supports flat input-only, ordinary
+state-coupled and recursive state-and-error layouts. All three settle with the
+same patch rule and qualification checks. Compare useful behavior and complete
+action cost as wiring evolves. See the
+[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+
 ## What this example shows
 
 - **Evolution of bodies and wiring.** Shape, muscles and each patch's list of cortices with their reading masks mutate at every birth. Energy and death select; the world has no fitness function.

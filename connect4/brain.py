@@ -19,9 +19,14 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .game import Position
-from .patch import GAMMA, ValuePatch
+from typing import TYPE_CHECKING
 
+from .game import Position
+
+if TYPE_CHECKING:  # the record patch imports the 0.12 library; the deep patch 0.50
+    from .patch import ValuePatch
+
+GAMMA = 0.99  # matches patch.GAMMA and deep.GAMMA: a win one ply nearer reads higher
 PROVEN = 2.0
 EXACT, LOWER, UPPER = 0, 1, 2
 
@@ -58,11 +63,21 @@ class Brain:
         self._values: dict[tuple[int, int], float] = {}
         self._reads = 0
         self._limit = 0
+        self._pending: list[tuple[int, int]] = []
+        self._scheduled: set[tuple[int, int]] = set()
+        self._dirty = False
 
     # ------------------------------------------------------------------ search
 
     def _frontier(self, position: Position, ply: int) -> tuple[float, int]:
-        """The value of a node one ply above the horizon: the best of its imagined boards."""
+        """The value of a node one ply above the horizon: the best of its imagined boards.
+
+        A position not yet read is scheduled and stands in as zero for the rest of this
+        pass; the pass is marked provisional, the scheduled positions are settled in one
+        batched read, and the deepening runs again. A row's settled value does not depend
+        on what else is in its batch, so the reruns converge on exactly the values a
+        read-at-once search would have used, in far fewer reads of the patch.
+        """
         legal = position.legal()
         children = [position.play(c) for c in legal]
         values = np.empty(len(legal))
@@ -75,19 +90,29 @@ class Brain:
             else:
                 unread.append(k)
         if unread:
-            # A position is read once in a search and its value kept: the library's batched
-            # read of a row differs in the last bits with the size of the batch, and a search
-            # that met one position twice would otherwise compare it with itself and differ.
+            # A position is read once in a search and its value kept.
             keys = [children[k].key for k in unread]
-            fresh = list(dict.fromkeys(key for key in keys if key not in self._values))
-            if self._reads + len(fresh) > self._limit:
+            fresh = [key for key in dict.fromkeys(keys) if key not in self._values and key not in self._scheduled]
+            if self._reads + len(self._pending) + len(fresh) > self._limit:
                 raise Spent
             if fresh:
-                self._reads += len(fresh)
-                self._values.update(zip(fresh, np.clip(self.patch.values(fresh), -0.999, 0.999).tolist()))
-            values[unread] = [self._values[key] for key in keys]
+                self._pending.extend(fresh)
+                self._scheduled.update(fresh)
+            if any(key not in self._values for key in keys):
+                self._dirty = True
+            values[unread] = [self._values.get(key, 0.0) for key in keys]
         best = int(np.argmax(values))
         return float(values[best]), legal[best]
+
+    def _settle_pending(self) -> None:
+        """One batched read of every scheduled position."""
+        if not self._pending:
+            return
+        self._reads += len(self._pending)
+        self._values.update(zip(self._pending,
+                                np.clip(self.patch.values(self._pending), -0.999, 0.999).tolist()))
+        self._pending.clear()
+        self._scheduled.clear()
 
     def _negamax(self, position: Position, depth: int, alpha: float, beta: float, ply: int) -> float:
         self._visits += 1
@@ -123,11 +148,13 @@ class Brain:
         if forced is not None:
             value = -self._negamax(position.play(forced), max(depth - 1, 1), -beta, -alpha, ply + 1)
             flag = UPPER if value <= alpha else LOWER if value >= beta else EXACT
-            self._table[key] = (depth, flag, value, forced)
+            if not self._dirty:  # an entry may not rest on a stand-in value
+                self._table[key] = (depth, flag, value, forced)
             return value
         if depth <= 1:
             value, column = self._frontier(position, ply)
-            self._table[key] = (1, EXACT, value, column)
+            if not self._dirty:
+                self._table[key] = (1, EXACT, value, column)
             return value
         order = list(legal)
         if first is not None and first in order:
@@ -142,7 +169,8 @@ class Brain:
             if alpha >= beta:
                 break
         flag = UPPER if best <= floor else LOWER if best >= beta else EXACT
-        self._table[key] = (depth, flag, best, best_column)
+        if not self._dirty:
+            self._table[key] = (depth, flag, best, best_column)
         return best
 
     def think(self, position: Position) -> Thought:
@@ -151,24 +179,33 @@ class Brain:
         if not legal:
             raise ValueError("the board is full")
         self._table, self._values, self._reads, self._visits = {}, {}, 0, 0
+        self._pending, self._scheduled, self._dirty = [], set(), False
         self._limit = self.late_reads if position.plies >= self.late_stones else self.reads_limit
         deepest = 42 - position.plies
         thought = Thought(legal[0], 0.0, 0, 0, False)
         for depth in range(1, deepest + 1):
             try:
-                columns = {}
-                alpha = -np.inf
-                for column in self._ordered(position, legal, thought.column):
-                    if position.wins(column):
-                        value = PROVEN - 1 / 100
-                    elif position.plies == 41:
-                        value = 0.0
-                    elif depth == 1:
-                        value = -self._negamax(position.play(column), 1, -np.inf, np.inf, 1)
-                    else:
-                        value = -self._negamax(position.play(column), depth - 1, -np.inf, -alpha, 1)
-                    columns[column] = value
-                    alpha = max(alpha, value - 1e-9)
+                # A deepening runs as often as it schedules unread positions: each pass
+                # settles what the previous one scheduled in one batched read, and only a
+                # pass that read nothing new stands.
+                while True:
+                    self._dirty = False
+                    columns = {}
+                    alpha = -np.inf
+                    for column in self._ordered(position, legal, thought.column):
+                        if position.wins(column):
+                            value = PROVEN - 1 / 100
+                        elif position.plies == 41:
+                            value = 0.0
+                        elif depth == 1:
+                            value = -self._negamax(position.play(column), 1, -np.inf, np.inf, 1)
+                        else:
+                            value = -self._negamax(position.play(column), depth - 1, -np.inf, -alpha, 1)
+                        columns[column] = value
+                        alpha = max(alpha, value - 1e-9)
+                    if not self._dirty:
+                        break
+                    self._settle_pending()
             except Spent:
                 break
             top = max(columns.values())

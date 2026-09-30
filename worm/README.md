@@ -42,6 +42,22 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 - **Data and rights:** The connectome and the cell classes come from openworm's c302 and ConnectomeToolbox (MIT); the soma positions from Kaiser and Hilgetag (2006). Sources, hashes and citations are in `data/SOURCES.md`.
 - **Work in progress:** a conditioning receipt with paired, unpaired, frozen and lesioned controls across seeds; a body the motor neurons drive.
 
+## Layout and version
+
+The 0.50 worm uses **ordinary state-coupled settlement**: each neuron is a
+single-patch column, forward connections read live patch states, and feedback
+connections read states retained from the previous tick. The command drives
+join that same solve. The layout declares no error-reading observers.
+
+Flat input-only columns and recursive observers are also supported Cadence
+design patterns. All three use the same patch rule, repair and qualification;
+recursion adds state-and-exact-error connections. Choose connections that fit
+the available signals and compare behavior and cost. See the
+[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+Earlier worm revisions used `PartitionedTemporalPatchNet`; their receipts refer
+to that versioned model.
+
 ## What this example shows
 
 - **Learning from experience in one life.** Apart from twelve reflex lessons before birth, nothing is trained in advance. What a smell means is learned from the food or the pain it came before, while the worm lives on the plate.

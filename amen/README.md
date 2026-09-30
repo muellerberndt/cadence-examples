@@ -35,6 +35,21 @@ The same page runs from this directory; see [Run it locally](#run-it-locally).
 - **Data and rights:** The training material is two DJ mixes and 45 full tracks from the owner's library and is not part of this repository. The instrument is 32 half-beat slices of a sampled drum break and twelve sub-bass notes from a sample pack; whether they may be redistributed has not been verified, and the kit is a separate folder so it can be replaced.
 - **Work in progress:** a phrase clock for the placement of departures; a transformer or recurrent baseline on the same stream; a second training seed; a brain for a later Cadence release, admitted after listening.
 
+## Layout and version
+
+This composer uses the legacy gated `RecordPatchNet`: one context update,
+record read and output readout per half-beat. Context persists between events,
+and the next input includes the music it played. The page keeps record writes
+off and uses the trained weights. Its temporal loop has no observer hierarchy.
+
+For a new composer, Cadence 0.50.0 offers flat input-only, ordinary state-coupled
+and recursive state-and-error layouts. All three use the same settlement and
+qualification procedure. Start with a small layout, then compare musical quality
+and generation cost as you add connections. See the
+[layout guide](https://github.com/muellerberndt/cadence/blob/main/docs/VARIANTS.md)
+and [performance guide](https://github.com/muellerberndt/cadence/blob/main/docs/PERFORMANCE.md).
+The versioned browser model described here remains the 0.11-trained record patch.
+
 ## What this example shows
 
 - **Creation.** The brain starts from silence and computes a track of its own, one half-beat at a time. Nothing on the page is recorded.
