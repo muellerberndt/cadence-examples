@@ -11,6 +11,9 @@ function fixture({ frozen = false, accept = true, ticks = 3 } = {}) {
   brain.state = Float64Array.of(0.5, -0.5, 0, 0);
   brain.weights = Float64Array.of(0, 0);
   brain.biases = Float64Array.of(0, 0, 0, 0);
+  // The constructor also maps retained weights into the page's live view.
+  brain.aEdge = Int32Array.of(1, 0);
+  brain.aVals = Float64Array.of(0, 0);
   brain.stretch = Array.from({ length: ticks }, (_, t) =>
     [Float64Array.of(0.1 * t, 0, 0), [0.1 * t, 0.1 * t + 0.05]]);
   brain.admissions = 0; brain.lessons = 0; brain.rejected = 0; brain.refusals = 0;
@@ -36,6 +39,7 @@ function fixture({ frozen = false, accept = true, ticks = 3 } = {}) {
   assert.deepEqual(Array.from(r.applied), [1, -0.5]);
   assert.deepEqual(Array.from(r.appliedBiases), [0.25, 0, 0, 0]);
   assert.deepEqual(Array.from(b.weights), [1, -0.5]);
+  assert.deepEqual(Array.from(b.aVals), [-0.5, 1]);
   const [call] = b.calls;
   assert.equal(call.B, 3); assert.equal(call.learn, true);
   // the early tick restates the free prediction; the last two are corrected
@@ -59,12 +63,14 @@ function fixture({ frozen = false, accept = true, ticks = 3 } = {}) {
   assert.equal(r.updated, false); assert.equal(r.reason, 'line_search'); assert.equal(r.applied, undefined);
   assert.equal(b.lessons, 0); assert.equal(b.rejected, 1); assert.equal(b.admissions, 0);
   assert.deepEqual(Array.from(b.weights), [0, 0]);
+  assert.deepEqual(Array.from(b.aVals), [0, 0]);
 }
 { // a frozen worm spends the stretch without a solve
   const b = fixture({ frozen: true });
   const r = b.learn(['pain']);
   assert.equal(r.updated, false); assert.equal(r.reason, 'frozen');
   assert.equal(b.calls.length, 0); assert.equal(b.rejected, 1); assert.equal(b.stretch.length, 0);
+  assert.deepEqual(Array.from(b.aVals), [0, 0]);
 }
 { // an outcome without experience is rejected
   const b = fixture({ ticks: 0 });
